@@ -110,7 +110,6 @@ void QgsNorthArrowPlugin::initGui()
 
 void QgsNorthArrowPlugin::projectRead()
 {
-  QgsDebugMsg("+++++++++ north arrow plugin - project read slot called....");
   //default text to start with - try to fetch it from qgsproject
 
   mRotationInt = QgsProject::instance()->readNumEntry("NorthArrow","/Rotation",0);
@@ -160,11 +159,11 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
   {
     if (theQPainter->isActive())
     {
-      QgsDebugMsg("Rendering north arrow on active painter");
+      //QgsDebugMsg("Rendering north arrow on active painter");
     }
     else 
     {
-      QgsDebugMsg("Rendering north arrow on INactive painter!!!");
+      //QgsDebugMsg("Rendering north arrow on INactive painter!!!");
     }
     
     QPixmap myQPixmap; //to store the north arrow image in
@@ -172,7 +171,7 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
     QString myFileNameQString = QDir::cleanPath( QgsApplication::pkgDataPath() +
 						 "/images/north_arrows/default.png" );
 
-    QgsDebugMsg("Trying to load " + myFileNameQString);
+    //QgsDebugMsg("Trying to load " + myFileNameQString);
     if (myQPixmap.load(myFileNameQString))
     {
 
@@ -205,27 +204,29 @@ void QgsNorthArrowPlugin::renderNorthArrow(QPainter * theQPainter)
       int myHeight = theQPainter->device()->height();
       int myWidth = theQPainter->device()->width();
 
-      QgsDebugMsg("Rendering north arrow at " + mPlacementLabels.at(mPlacementIndex));
+      //QgsDebugMsg("Rendering north arrow at " + mPlacementLabels.at(mPlacementIndex));
 
       //Determine placement of label from form combo box
       switch (mPlacementIndex)
       {
-      case 0: // Bottom Left
-        theQPainter->translate(0,myHeight-myQPixmap.height());
-	break;
-      case 1: // Top Left
-        //no need to translate for TL corner because we're already at the origin
-        theQPainter->translate(0, 0);
-	break;
-      case 2: // Top Right
-        theQPainter->translate(myWidth-myQPixmap.width(),0);
-	break;
-      case 3: // Bottom Right
-        theQPainter->translate(myWidth-myQPixmap.width(),
-                             myHeight-myQPixmap.height());
-	break;
-      default:
-	QgsDebugMsg("Unable to determine where to put north arrow so defaulting to top left");
+        case 0: // Bottom Left
+          theQPainter->translate(0,myHeight-myQPixmap.height());
+          break;
+        case 1: // Top Left
+          //no need to translate for TL corner because we're already at the origin
+          theQPainter->translate(0, 0);
+          break;
+        case 2: // Top Right
+          theQPainter->translate(myWidth-myQPixmap.width(),0);
+          break;
+        case 3: // Bottom Right
+          theQPainter->translate(myWidth-myQPixmap.width(),
+              myHeight-myQPixmap.height());
+          break;
+        default:
+          {
+            //QgsDebugMsg("Unable to determine where to put north arrow so defaulting to top left");
+          }
       }
       //rotate the canvas by the north arrow rotation amount
       theQPainter->rotate( mRotationInt );
@@ -324,7 +325,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
       {
         Q_UNUSED(e);
         // just give up
-        QgsDebugMsg("Transformation error, quitting");
+        QgsDebugMsg("North Arrow: Transformation error, quitting");
         return false;
       }
 
