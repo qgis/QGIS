@@ -114,6 +114,7 @@ void QgsAttributeTableDisplay::setTheme()
   mZoomMapToSelectedRowsButton->setIcon(QgisApp::getThemeIcon("/mActionZoomToSelected.png"));
   mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
   mDeleteAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
+  btnEdit->setIcon(QgisApp::getThemeIcon("/mActionToggleEditing.png"));
 }
 
 void QgsAttributeTableDisplay::setTitle(QString title)
