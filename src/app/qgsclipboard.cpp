@@ -62,7 +62,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
   {
     textFields += fit->name();
   }
-  textLines += textFields.join(",");
+  textLines += textFields.join("\t");
   textFields.clear();
 
   
@@ -92,7 +92,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
       textFields += it2->toString();
     }
 
-    textLines += textFields.join(",");
+    textLines += textFields.join("\t");
     textFields.clear();
   }
   
