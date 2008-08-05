@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include <QProcess>
+#include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess(const QString& action, bool capture)
   : mProcess(NULL), mOutput(NULL)
@@ -45,13 +46,10 @@ QgsRunProcess::QgsRunProcess(const QString& action, bool capture)
     // the output from the process, hence this connect() call is
     // inside the capture if() statement.
     connect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processExit(int,QProcess::ExitStatus)));
-  }
 
-  // start the process!
-  mProcess->start(action);
+    // start the process!
+    mProcess->start(action);
   
-  if (capture)
-  {
     // Use QgsMessageOutput for displaying output to user
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
@@ -69,6 +67,12 @@ QgsRunProcess::QgsRunProcess(const QString& action, bool capture)
   }
   else
   {
+      if ( ! mProcess->startDetached(action) ) // let the program run by itself
+      {
+	  QMessageBox::critical(0, tr("Action"),
+				tr("Unable to run command") + "\n" + action
+				, QMessageBox::Ok, Qt::NoButton);
+      }
     // We're not capturing the output from the process, so we don't
     // need to exist anymore.
     die();
