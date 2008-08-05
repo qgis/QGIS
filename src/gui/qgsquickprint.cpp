@@ -96,12 +96,12 @@ void QgsQuickPrint::setOutputPdf(QString theFileName)
 }
 void QgsQuickPrint::setMapCanvas(QgsMapCanvas * thepMapCanvas)
 {
-  mpMapRender=thepMapCanvas->mapRender();
+  mpMapRenderer=thepMapCanvas->mapRender();
   mMapBackgroundColour = thepMapCanvas->canvasColor();
 }
-void QgsQuickPrint::setMapRender(QgsMapRender * thepMapRender)
+void QgsQuickPrint::setMapRenderer(QgsMapRenderer * thepMapRenderer)
 {
-  mpMapRender=thepMapRender;
+  mpMapRenderer=thepMapRenderer;
 }
 void QgsQuickPrint::setMapBackgroundColor(QColor theColor)
 {
@@ -118,7 +118,7 @@ void QgsQuickPrint::printMap()
   {
     return;
   }
-  if ( mpMapRender == NULL )
+  if ( mpMapRenderer == NULL )
   {
     return;
   }
@@ -226,10 +226,10 @@ void QgsQuickPrint::printMap()
   // Remember the size and dpi of the maprender
   // so we can restore it properly
   //
-  int myOriginalDpi = mpMapRender->outputDpi();
+  int myOriginalDpi = mpMapRenderer->outputDpi();
   //sensible default to prevent divide by zero
   if (0==myOriginalDpi) myOriginalDpi=96; 
-  QSize myOriginalSize = mpMapRender->outputSize();
+  QSize myOriginalSize = mpMapRenderer->outputSize();
   int mySymbolScalingAmount = myPrintResolutionDpi / myOriginalDpi; 
 
   //define the font sizes and family
@@ -346,11 +346,11 @@ void QgsQuickPrint::printMap()
   QPainter myMapPainter;
   myMapPainter.begin( &myMapPixmap );
   // Now resize for print
-  mpMapRender->setOutputSize( 
+  mpMapRenderer->setOutputSize( 
       QSize ( myMapDimensionX, myMapDimensionY ), myPrinter.resolution() ); 
   scalePointSymbols(mySymbolScalingAmount, ScaleUp);
   scaleTextLabels(mySymbolScalingAmount, ScaleUp);
-  mpMapRender->render( &myMapPainter );
+  mpMapRenderer->render( &myMapPainter );
 
   myMapPainter.end();
   //draw the map pixmap onto our pdf print device
@@ -394,7 +394,7 @@ void QgsQuickPrint::printMap()
   int myLegendVerticalSpacer = myLegendFontHeight/3; //for vertical between rows
   int myIconWidth = myLegendFontHeight;
   myPrintPainter.setFont( myLegendFont );
-  QStringList myLayerSet = mpMapRender->layerSet();
+  QStringList myLayerSet = mpMapRenderer->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   //second clause below is to prevent legend spilling out the bottom
   while ( myLayerIterator.hasNext() && 
@@ -656,7 +656,7 @@ void QgsQuickPrint::printMap()
       myOriginY, 
       myOriginalViewport.width(),
       myOriginalViewport.height());
-  renderPrintScaleBar(&myPrintPainter, mpMapRender, myLogoXDim);
+  renderPrintScaleBar(&myPrintPainter, mpMapRenderer, myLogoXDim);
   myPrintPainter.setViewport(myOriginalViewport); 
 
   //
@@ -679,7 +679,7 @@ void QgsQuickPrint::printMap()
   //
   // Restore the map render to its former glory
   //
-  mpMapRender->setOutputSize( myOriginalSize, myOriginalDpi); 
+  mpMapRenderer->setOutputSize( myOriginalSize, myOriginalDpi); 
 } 
 
 void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDirection)
@@ -689,7 +689,7 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
     QgsDebugMsg ("QgsQuickPrintGui::scaleTextLabels invalid scale factor");
     return;
   }
-  QStringList myLayerSet = mpMapRender->layerSet();
+  QStringList myLayerSet = mpMapRenderer->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   while ( myLayerIterator.hasNext() )
   {
@@ -729,7 +729,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
     QgsDebugMsg ("QgsQuickPrintGui::scalePointSymbolsForPrint invalid scale factor");
     return;
   }
-  QStringList myLayerSet = mpMapRender->layerSet();
+  QStringList myLayerSet = mpMapRenderer->layerSet();
   QStringListIterator myLayerIterator ( myLayerSet );
   while ( myLayerIterator.hasNext() )
   {
@@ -790,7 +790,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
 
 
 void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter, 
-    QgsMapRender * thepMapRender,
+    QgsMapRenderer * thepMapRenderer,
     int theMaximumWidth)
 {
   //hard coding some options for now
@@ -813,10 +813,10 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMuppDouble = std::abs(thepMapRender->mupp());
+  double myMuppDouble = std::abs(thepMapRenderer->mupp());
   // 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  int myLayerCount=thepMapRender->layerSet().count();
+  int myLayerCount=thepMapRenderer->layerSet().count();
   if (!myLayerCount || !myMuppDouble) return;
 
   //Calculate size of scale bar for preferred number of map units
@@ -837,7 +837,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   }
 
   //Get type of map units and set scale bar unit label text
-  QGis::units myMapUnits=thepMapRender->mapUnits();
+  QGis::units myMapUnits=thepMapRenderer->mapUnits();
   QString myScaleBarUnitLabel;
   switch (myMapUnits)
   {

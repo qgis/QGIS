@@ -22,7 +22,8 @@
 #include <QPalette>
 
 #include <qgsconfig.h>
-#include <qgslogger.h>
+
+#include <iostream>
 
 // for htonl
 #ifdef WIN32
@@ -60,8 +61,6 @@ QgsApplication::QgsApplication(int & argc, char ** argv, bool GUIenabled)
   QString myPrefix = myDir.absolutePath();
   setPrefixPath(myPrefix, true);
 #endif
-  //for debuggin
-  showSettings();
 }
 
 QgsApplication::~QgsApplication()
@@ -267,18 +266,24 @@ void QgsApplication::exitQgis()
   delete QgsProviderRegistry::instance();
 }
 
-void QgsApplication::showSettings()
+QString QgsApplication::showSettings()
 {
-  qDebug("\n**********************************");
-  qDebug("QgsApplication state:");
-  qDebug("Prefix       :" + mPrefixPath.toLocal8Bit());
-  qDebug("Plugin Path  :" + mPluginPath.toLocal8Bit());
-  qDebug("PkgData Path :" + mPkgDataPath.toLocal8Bit());
-  qDebug("Active Theme Name   :" + themeName().toLocal8Bit());
-  qDebug("Active Theme Path   :" + activeThemePath().toLocal8Bit());
-  qDebug("Default Theme Path   :" + defaultThemePath().toLocal8Bit());
-  qDebug("User DB Path :" + qgisMasterDbFilePath().toLocal8Bit());
-  qDebug("**********************************\n");
+  QString myState = QString("Application state:\n"  
+  "Prefix              : %1\n" 
+  "Plugin Path         : %2\n" 
+  "Package Data Path   : %3\n" 
+  "Active Theme Name   : %4\n" 
+  "Active Theme Path   : %5\n"
+  "Default Theme Path  : %6\n"
+  "User DB Path        : %7\n")
+  .arg(mPrefixPath)
+  .arg(mPluginPath)
+  .arg(mPkgDataPath)
+  .arg(themeName())
+  .arg(activeThemePath())
+  .arg(defaultThemePath())
+  .arg(qgisMasterDbFilePath());
+return myState;
 }
 
 QString QgsApplication::reportStyleSheet()

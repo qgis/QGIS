@@ -30,7 +30,7 @@ email                : tim@linfiniti.com
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsapplication.h"
 
 // qt includes

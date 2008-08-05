@@ -93,7 +93,7 @@ void QgsCopyrightLabelPlugin::initGui()
 void QgsCopyrightLabelPlugin::projectRead()
 {
 #ifdef QGISDEBUG
-    std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
+    //std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
 #endif    //default text to start with - try to fetch it from qgsproject
 
     QDate now;

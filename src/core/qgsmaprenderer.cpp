@@ -19,7 +19,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
@@ -34,7 +34,7 @@
 #include <QTime>
 
 
-QgsMapRender::QgsMapRender()
+QgsMapRenderer::QgsMapRenderer()
 {
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
@@ -51,7 +51,7 @@ QgsMapRender::QgsMapRender()
   mDestSRS = new QgsSpatialRefSys(EPSGID, QgsSpatialRefSys::EPSG); //WGS 84
 }
 
-QgsMapRender::~QgsMapRender()
+QgsMapRenderer::~QgsMapRenderer()
 {
   delete mScaleCalculator;
   delete mDistArea;
@@ -59,18 +59,18 @@ QgsMapRender::~QgsMapRender()
 }
 
 
-QgsRect QgsMapRender::extent()
+QgsRect QgsMapRenderer::extent()
 {
   return mExtent;
 }
 
-void QgsMapRender::updateScale()
+void QgsMapRenderer::updateScale()
 {
   
   mScale = mScaleCalculator->calculate(mExtent, mSize.width());
 }
 
-bool QgsMapRender::setExtent(const QgsRect& extent)
+bool QgsMapRenderer::setExtent(const QgsRect& extent)
 {
 
   // Don't allow zooms where the current extent is so small that it
@@ -110,22 +110,22 @@ bool QgsMapRender::setExtent(const QgsRect& extent)
 
 
 
-void QgsMapRender::setOutputSize(QSize size, int dpi)
+void QgsMapRenderer::setOutputSize(QSize size, int dpi)
 {
   mSize = size;
   mScaleCalculator->setDpi(dpi);
   adjustExtentToSize();
 }
-int QgsMapRender::outputDpi()
+int QgsMapRenderer::outputDpi()
 {
   return mScaleCalculator->dpi();
 }
-QSize QgsMapRender::outputSize()
+QSize QgsMapRenderer::outputSize()
 {
   return mSize;
 }
 
-void QgsMapRender::adjustExtentToSize()
+void QgsMapRenderer::adjustExtentToSize()
 {
   int myHeight = mSize.height();
   int myWidth = mSize.width();
@@ -168,15 +168,13 @@ void QgsMapRender::adjustExtentToSize()
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsg("========== Current Scale ==========");
-  QgsDebugMsg("Current extent is " + mExtent.stringRep());
-  QgsLogger::debug("MuppX", muppX, 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("MuppY", muppY, 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("Pixmap width", myWidth, 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("Pixmap height", myHeight, 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("Extent width", mExtent.width(), 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("Extent height", mExtent.height(), 1, __FILE__, __FUNCTION__, __LINE__);
-  QgsLogger::debug("whitespace: ", whitespace, 1, __FILE__, __FUNCTION__, __LINE__);
+  QString myMessage = "+-------------------MapRenderer--------------------------------+\n";
+  myMessage += QString("Map units per pixel (x,y) : %1, %2\n").arg(muppX).arg(muppY);
+  myMessage += QString("Pixmap dimensions (x,y) : %1, %2\n").arg(myWidth).arg(myHeight);
+  myMessage += QString("Extent dimensions (x,y) : %1, %2\n").arg(mExtent.width()).arg(mExtent.height());
+  myMessage += mExtent.stringRep();
+  //purposely using std::cout [TS]
+  std::cout << myMessage.toLocal8Bit().constData() << std::endl;
 #endif
 
 
@@ -199,7 +197,7 @@ void QgsMapRender::adjustExtentToSize()
 }
 
 
-void QgsMapRender::render(QPainter* painter)
+void QgsMapRenderer::render(QPainter* painter)
 {
   QgsDebugMsg("========== Rendering ==========");
 
@@ -419,14 +417,14 @@ void QgsMapRender::render(QPainter* painter)
   emit drawingProgress(1,1);      
 
 #ifdef QGISDEBUG
-  QgsDebugMsg("Rendering done in (seconds): " + QString("%1").arg(renderTime.elapsed() / 1000.0) );
+  QgsDebugMsg("Rendering completed in (seconds): " + QString("%1").arg(renderTime.elapsed() / 1000.0) );
 #endif
 
   mDrawing = false;
 
 }
 
-void QgsMapRender::setMapUnits(QGis::units u)
+void QgsMapRenderer::setMapUnits(QGis::units u)
 {
   mScaleCalculator->setMapUnits(u);
 
@@ -436,12 +434,12 @@ void QgsMapRender::setMapUnits(QGis::units u)
   emit mapUnitsChanged();
 }
 
-QGis::units QgsMapRender::mapUnits() const
+QGis::units QgsMapRenderer::mapUnits() const
 {
   return mScaleCalculator->mapUnits();
 }
 
-void QgsMapRender::onDrawingProgress(int current, int total)
+void QgsMapRenderer::onDrawingProgress(int current, int total)
 {
   // TODO: emit signal with progress
   //std::cout << "onDrawingProgress: " << current << " / " << total << std::endl;
@@ -450,7 +448,7 @@ void QgsMapRender::onDrawingProgress(int current, int total)
 
 
 
-void QgsMapRender::setProjectionsEnabled(bool enabled)
+void QgsMapRenderer::setProjectionsEnabled(bool enabled)
 {
   if (mProjectionsEnabled != enabled)
   {
@@ -462,16 +460,15 @@ void QgsMapRender::setProjectionsEnabled(bool enabled)
   }
 }
 
-bool QgsMapRender::projectionsEnabled()
+bool QgsMapRenderer::projectionsEnabled()
 {
   return mProjectionsEnabled;
 }
 
-void QgsMapRender::setDestinationSrs(const QgsSpatialRefSys& srs)
+void QgsMapRenderer::setDestinationSrs(const QgsSpatialRefSys& srs)
 {
-  QgsDebugMsg("* Setting destSRS");
+  QgsDebugMsg("* Setting destSRS : = " + srs.proj4String());
   QgsDebugMsg("* DestSRS.srsid() = " + QString::number(srs.srsid()));
-  QgsDebugMsg("* DestSRS.proj4() = " + srs.proj4String());
   if (*mDestSRS != srs)
   {
     QgsDebugMsg("Setting DistArea SRS to " + QString::number(srs.srsid()));
@@ -482,7 +479,7 @@ void QgsMapRender::setDestinationSrs(const QgsSpatialRefSys& srs)
   }
 }
 
-const QgsSpatialRefSys& QgsMapRender::destinationSrs()
+const QgsSpatialRefSys& QgsMapRenderer::destinationSrs()
 {
   QgsDebugMsg("* Returning destSRS");
   QgsDebugMsg("* DestSRS.srsid() = " + QString::number(mDestSRS->srsid()));
@@ -491,7 +488,7 @@ const QgsSpatialRefSys& QgsMapRender::destinationSrs()
 }
 
 
-bool QgsMapRender::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRect& r2)
+bool QgsMapRenderer::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRect& r2)
 {
   bool split = false;
 
@@ -502,8 +499,8 @@ bool QgsMapRender::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRec
       QgsCoordinateTransform tr(layer->srs(), *mDestSRS);
       
 #ifdef QGISDEBUG
-      QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__,\
-        __FUNCTION__, __LINE__);
+     // QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__,\
+     //   __FUNCTION__, __LINE__);
 #endif
       // Split the extent into two if the source SRS is
       // geographic and the extent crosses the split in
@@ -550,7 +547,7 @@ bool QgsMapRender::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRec
 }
 
 
-QgsRect QgsMapRender::layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent)
+QgsRect QgsMapRenderer::layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent)
 {
   if (projectionsEnabled())
   {
@@ -572,7 +569,7 @@ QgsRect QgsMapRender::layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect e
   return extent;
 }
 
-QgsPoint QgsMapRender::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point)
+QgsPoint QgsMapRenderer::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point)
 {
   if (projectionsEnabled())
   {
@@ -593,7 +590,7 @@ QgsPoint QgsMapRender::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint
   return point;
 }
 
-QgsPoint QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point)
+QgsPoint QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point)
 {
   if (projectionsEnabled())
   {
@@ -615,7 +612,7 @@ QgsPoint QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint
   return point;
 }
 
-QgsRect QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect)
+QgsRect QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect)
 {
   if (projectionsEnabled())
   {
@@ -634,9 +631,9 @@ QgsRect QgsMapRender::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect r
 }
 
 
-void QgsMapRender::updateFullExtent()
+void QgsMapRenderer::updateFullExtent()
 {
-  QgsDebugMsg("QgsMapRender::updateFullExtent() called !");
+  QgsDebugMsg("QgsMapRenderer::updateFullExtent() called !");
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
   
   // reset the map canvas extent since the extent may now be smaller
@@ -696,24 +693,24 @@ void QgsMapRender::updateFullExtent()
   QgsDebugMsg("Full extent: " + mFullExtent.stringRep());
 }
 
-QgsRect QgsMapRender::fullExtent()
+QgsRect QgsMapRenderer::fullExtent()
 {
   updateFullExtent();
   return mFullExtent;
 }
 
-void QgsMapRender::setLayerSet(const QStringList& layers)
+void QgsMapRenderer::setLayerSet(const QStringList& layers)
 {
   mLayerSet = layers;
   updateFullExtent();
 }
 
-QStringList& QgsMapRender::layerSet()
+QStringList& QgsMapRenderer::layerSet()
 {
   return mLayerSet;
 }
 
-bool QgsMapRender::readXML(QDomNode & theNode)
+bool QgsMapRenderer::readXML(QDomNode & theNode)
 {
   QDomNode myNode = theNode.namedItem("units");
   QDomElement element = myNode.toElement();
@@ -785,7 +782,7 @@ bool QgsMapRender::readXML(QDomNode & theNode)
   return true;
 }
 
-bool QgsMapRender::writeXML(QDomNode & theNode, QDomDocument & theDoc)
+bool QgsMapRenderer::writeXML(QDomNode & theNode, QDomDocument & theDoc)
 {
   // units
   

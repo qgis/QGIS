@@ -23,7 +23,7 @@
 
 #include <iostream>
 //qgis includes...
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 #include <qgsmaplayer.h> 
 #include <qgsvectorlayer.h> 
 #include <qgsapplication.h>
@@ -48,7 +48,7 @@ class TestQgsQuickPrint: public QObject
     void basicMapTest();
   private:
     bool imageCheck(QString theType); //as above
-    QgsMapRender * mpMapRenderer;
+    QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -104,7 +104,7 @@ void TestQgsQuickPrint::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRender();
+  mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpPointsLayer->getLayerID();
   myLayers << mpPolysLayer->getLayerID();
@@ -141,7 +141,7 @@ void TestQgsQuickPrint::basicMapTest()
   QgsQuickPrint myQuickPrint;
   myQuickPrint.setMapBackgroundColor ( Qt::cyan );
   myQuickPrint.setOutputPdf (QDir::tempPath() + QDir::separator() + "quickprinttest.pdf");
-  myQuickPrint.setMapRender (mpMapRenderer);
+  myQuickPrint.setMapRenderer (mpMapRenderer);
   myQuickPrint.setTitle ("Map Title");
   myQuickPrint.setName ("Map Name");
   myQuickPrint.setCopyright ("Copyright Text");

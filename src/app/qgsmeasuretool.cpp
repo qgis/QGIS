@@ -17,7 +17,7 @@
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
 
@@ -122,7 +122,7 @@ void QgsMeasureTool::updateProjection()
   // mCalc->setEllipsoid(ellipsoid);
 
   // set source SRS and projections enabled flag
-  // QgsMapRender* mapRender = mCanvas->mapRender();
+  // QgsMapRenderer* mapRender = mCanvas->mapRender();
   // mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
   // int srsid = mapRender->destinationSrs().srsid();
   // mCalc->setSourceSRS(srsid);

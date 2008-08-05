@@ -233,25 +233,25 @@ ELSE (APPLE)
   ADD_TEST(qgis_rendererstest ${CMAKE_INSTALL_PREFIX}/bin/qgis_rendererstest)
 ENDIF (APPLE)
 #
-# QgsMapRender test
+# QgsMapRenderer test
 #
-SET(qgis_maprendertest_SRCS testqgsmaprender.cpp ${util_SRCS})
-SET(qgis_maprendertest_MOC_CPPS testqgsmaprender.cpp)
-QT4_WRAP_CPP(qgis_maprendertest_MOC_SRCS ${qgis_maprendertest_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_maprendertestmoc ALL DEPENDS ${qgis_maprendertest_MOC_SRCS})
-ADD_EXECUTABLE(qgis_maprendertest ${qgis_maprendertest_SRCS})
-ADD_DEPENDENCIES(qgis_maprendertest qgis_maprendertestmoc)
-TARGET_LINK_LIBRARIES(qgis_maprendertest ${QT_LIBRARIES} qgis_core)
-SET_TARGET_PROPERTIES(qgis_maprendertest 
+SET(qgis_maprenderertest_SRCS testqgsmaprenderer.cpp ${util_SRCS})
+SET(qgis_maprenderertest_MOC_CPPS testqgsmaprenderer.cpp)
+QT4_WRAP_CPP(qgis_maprenderertest_MOC_SRCS ${qgis_maprenderertest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_maprenderertestmoc ALL DEPENDS ${qgis_maprenderertest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_maprenderertest ${qgis_maprenderertest_SRCS})
+ADD_DEPENDENCIES(qgis_maprenderertest qgis_maprenderertestmoc)
+TARGET_LINK_LIBRARIES(qgis_maprenderertest ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(qgis_maprenderertest 
   PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
   INSTALL_RPATH_USE_LINK_PATH true)
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  INSTALL(TARGETS qgis_maprendertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-  ADD_TEST(qgis_maprendertest ${CMAKE_INSTALL_PREFIX}/qgis_maprendertest)
+  INSTALL(TARGETS qgis_maprenderertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+  ADD_TEST(qgis_maprenderertest ${CMAKE_INSTALL_PREFIX}/qgis_maprenderertest)
 ELSE (APPLE)
-  INSTALL(TARGETS qgis_maprendertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  ADD_TEST(qgis_maprendertest ${CMAKE_INSTALL_PREFIX}/bin/qgis_maprendertest)
+  INSTALL(TARGETS qgis_maprenderertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  ADD_TEST(qgis_maprenderertest ${CMAKE_INSTALL_PREFIX}/bin/qgis_maprenderertest)
 ENDIF (APPLE)
 #
 # QgsGeometry test

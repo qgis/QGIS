@@ -32,7 +32,7 @@
 #include <qgsrasterbandstats.h> 
 #include <qgsmaplayerregistry.h> 
 #include <qgsapplication.h>
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -55,7 +55,7 @@ class Regression992: public QObject
     bool render(QString theFileName);
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
-    QgsMapRender * mpMapRenderer;
+    QgsMapRenderer * mpMapRenderer;
     QString mReport;
 };
 
@@ -76,7 +76,7 @@ void Regression992::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRender();
+  mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpRasterLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);

@@ -50,7 +50,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsmaplayer.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
 #include "qgsmaptoolpan.h"

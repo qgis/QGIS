@@ -3937,6 +3937,9 @@ bool QgsGeometry::exportWkbToGeos()
     }
   }
   CATCH_GEOS(FALSE)
+  {
+    return false;
+  }
 
   return TRUE;
 }

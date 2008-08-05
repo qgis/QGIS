@@ -106,7 +106,7 @@
 #include "qgsmaplayerinterface.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapoverviewcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptip.h"
 #include "qgsmessageviewer.h"
 #include "qgsoptions.h"
@@ -268,9 +268,9 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
     proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
     QgsSpatialRefSys defaultSRS;
     if(defaultSRS.createFromProj4(proj4String))
-      {
-	mySelector->setSelectedSRSID(defaultSRS.srsid());
-      }
+    {
+      mySelector->setSelectedSRSID(defaultSRS.srsid());
+    }
 
     if(mySelector->exec())
     {
@@ -328,6 +328,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   createStatusBar();
   updateRecentProjectPaths();
   createCanvas();
+  mMapCanvas->freeze();
   createLegend();
   createOverview();
   createMapTips();
@@ -361,44 +362,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   
   mSplash->showMessage(tr("Starting Python"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
-  // try to load python support
-  QString pythonlibName("qgispython");
-#ifdef Q_WS_MAC
-  pythonlibName.prepend(QgsApplication::prefixPath() + "/lib/");
-#endif
-  QLibrary pythonlib(pythonlibName);
-  // It's necessary to set these two load hints, otherwise Python library won't work correctly
-  // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
-  pythonlib.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
-  if (pythonlib.load())
-  {
-    QgsDebugMsg("Python support library loaded successfully.");
-    typedef QgsPythonUtils* (*inst)();
-    inst pythonlib_inst = (inst) pythonlib.resolve("instance");
-    if (pythonlib_inst)
-    {
-      QgsDebugMsg("Python support library's instance() symbol resolved.");
-      mPythonUtils = pythonlib_inst();
-      mPythonUtils->initPython(mQgisInterface);
-    }
-    else
-    {
-      QgsDebugMsg("Couldn't resolve python support library's instance() symbol.");
-    }
-  }
-  else
-  {
-    QgsDebugMsg("Couldn't load Python support library.");
-  }
-  
-  if (mPythonUtils && mPythonUtils->isEnabled())
-  {
-    mActionShowPythonDialog = new QAction(tr("Python console"), this);
-    connect(mActionShowPythonDialog, SIGNAL(triggered()), this, SLOT(showPythonDialog()));
+  loadPythonSupport();
 
-    mPluginMenu->addAction(mActionShowPythonDialog);
-    QgsDebugMsg("Python support ENABLED :-)");
-  }
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -447,6 +412,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   qApp->processEvents();
   //finally show all the application settings as initialised above
   QgsApplication::showSettings();
+  mMapCanvas->freeze(false);
 } // QgisApp ctor
 
 
@@ -527,12 +493,6 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value("/UI/recentProjectsList").toStringList();
-/*
-  // Set the behaviour when the map splitters are resized
-  bool splitterRedraw = settings.value("/qgis/splitterRedraw", true).toBool();
-  canvasLegendSplit->setOpaqueResize(splitterRedraw);
-  legendOverviewSplit->setOpaqueResize(splitterRedraw);
-*/
 }
 
 
@@ -574,14 +534,6 @@ void QgisApp::createActions()
   mActionSaveMapAsImage->setShortcut(tr("Ctrl+I","Save map as image"));
   mActionSaveMapAsImage->setStatusTip(tr("Save map as image"));
   connect(mActionSaveMapAsImage, SIGNAL(triggered()), this, SLOT(saveMapAsImage()));
-  //
- // TODO: Remove the mActionExportMapServer related code once the mapserver export plugin
- // is complete and tested.
- /* mActionExportMapServer= new QAction(getThemeIcon("/mActionExportMapServer.png"), tr("Export to MapServer Map..."), this);
-  mActionExportMapServer->setShortcut(tr("M","Export as MapServer .map file"));
-  mActionExportMapServer->setStatusTip(tr("Export as MapServer .map file"));
-  connect(mActionExportMapServer, SIGNAL(triggered()), this, SLOT(exportMapServer()));
-  */
   //
   mActionFileExit= new QAction(getThemeIcon("/mActionFileExit.png"), tr("Exit"), this);
   mActionFileExit->setShortcut(tr("Ctrl+Q","Exit QGIS"));
@@ -963,10 +915,6 @@ void QgisApp::createMenus()
   mFileMenu->addAction(mActionFileSaveAs);
   mFileMenu->addAction(mActionSaveMapAsImage);
   mFileMenu->addSeparator();
-  // TODO: remove the addAction once the mapserver export plugin is complete and tested
-  /*
-  mFileMenu->addAction(mActionExportMapServer);
-  */
   mFileMenu->addAction(mActionFilePrint);
   mFileMenu->addSeparator();
   mFileMenu->addAction(mActionFileExit);
@@ -1272,17 +1220,13 @@ void QgisApp::setTheme(QString theThemeName)
   //
   */
   QgsApplication::setThemeName(theThemeName);
-  QgsDebugMsg("Setting theme to \n" + theThemeName);
+  //QgsDebugMsg("Setting theme to \n" + theThemeName);
   mActionFileNew->setIcon(getThemeIcon( "/mActionFileNew.png"));
   mActionFileSave->setIcon(getThemeIcon( "/mActionFileSave.png"));
   mActionFileSaveAs->setIcon(getThemeIcon( "/mActionFileSaveAs.png"));
   mActionFileOpen->setIcon(getThemeIcon( "/mActionFileOpen.png"));
   mActionFilePrint->setIcon(getThemeIcon( "/mActionFilePrint.png"));
   mActionSaveMapAsImage->setIcon(getThemeIcon( "/mActionSaveMapAsImage.png"));
-  // TODO: Remove the mActionExportMapServer related code once the mapserver export plugin 
-  /*
-  mActionExportMapServer->setIcon(getThemeIcon( "/mActionExportMapServer.png"));
-  */
   mActionFileExit->setIcon(getThemeIcon( "/mActionFileExit.png"));
   mActionAddOgrLayer->setIcon(getThemeIcon( "/mActionAddOgrLayer.png"));
   mActionAddRasterLayer->setIcon(getThemeIcon( "/mActionAddRasterLayer.png"));
@@ -1574,8 +1518,6 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue("/UI/geometry", saveGeometry());
-//  settings.setValue("/UI/canvasSplitterState", canvasLegendSplit->saveState());
-//  settings.setValue("/UI/legendSplitterState", legendOverviewSplit->saveState());
 }
 
 void QgisApp::restoreWindowState()
@@ -1587,8 +1529,6 @@ void QgisApp::restoreWindowState()
 
   // restore window geometry
   restoreGeometry(settings.value("/UI/geometry").toByteArray());
-//  canvasLegendSplit->restoreState(settings.value("/UI/canvasSplitterState").toByteArray());
-//  legendOverviewSplit->restoreState(settings.value("/UI/legendSplitterState").toByteArray());
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 
@@ -1670,8 +1610,6 @@ void QgisApp::about()
 void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 {
   QSettings mySettings;
-  QgsDebugMsg("\n\n*************************************************");
-  QgsDebugMsg("Restoring plugins from last session " + thePluginDirString);
   
 #ifdef WIN32
   QString pluginExt = "*.dll";
@@ -1686,14 +1624,11 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   {
     QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
 
-    QgsDebugMsg("Examining " + myFullPath);
 
     QLibrary *myLib = new QLibrary(myFullPath);
     bool loaded = myLib->load();
     if (loaded)
     {
-        //purposely leaving this one to stdout!
-        std::cout << "Loaded " << myLib->fileName().toLocal8Bit().data() << std::endl;
         
         name_t * myName =(name_t *) myLib->resolve("name");
         description_t *  myDescription = (description_t *)  myLib->resolve("description");
@@ -1707,24 +1642,24 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
 
           if (mySettings.value("/Plugins/" + myEntryName).toBool())
           {
-            QgsDebugMsg("Loading plugin: " + myEntryName);
+            //QgsDebugMsg("Loading plugin: " + myEntryName);
 
             loadPlugin(myName(), myDescription(), myFullPath);
           }
           else
           {
-            QgsDebugMsg("Plugin was not active last session, leaving disabled: " + myEntryName);
+            //QgsDebugMsg("Plugin was not active last session, leaving disabled: " + myEntryName);
           }
         }
         else
         {
-          QgsDebugMsg("Failed to get name, description, or type for " + myLib->fileName());
+          //QgsDebugMsg("Failed to get name, description, or type for " + myLib->fileName());
         }
     }
     else
     {
-      QgsDebugMsg("Failed to load " + myLib->fileName());
-      QgsDebugMsg("Reason: " + myLib->errorString());
+      //QgsDebugMsg("Failed to load " + myLib->fileName());
+      //QgsDebugMsg("Reason: " + myLib->errorString());
     }
     delete myLib;
   }
@@ -1736,6 +1671,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
   
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
+    std::cout << "Loading python plugins" << std::endl;
 
     for (int i = 0; i < pluginList.size(); i++)
     {
@@ -1767,9 +1703,7 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
       }
     }
   }
-  
-  QgsDebugMsg("Loading plugins completed");
-  QgsDebugMsg("*************************************************\n\n");
+  std::cout << "Plugin loading completed";
 }
 
 
@@ -1924,7 +1858,7 @@ static void buildSupportedVectorFileFilter_(QString & fileFilters)
 #endif // DEPRECATED
 
   fileFilters = QgsProviderRegistry::instance()->fileVectorFilters();
-  QgsDebugMsg("Vector file filters: " + fileFilters);
+  //QgsDebugMsg("Vector file filters: " + fileFilters);
 
 }                               // buildSupportedVectorFileFilter_()
 
@@ -2550,7 +2484,7 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
     }
   }
   
-  QgsDebugMsg("erasing project");
+  //QgsDebugMsg("erasing project");
   
   mMapCanvas->freeze(true);
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
@@ -2589,11 +2523,9 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
 
   setTitleBarText_( *this );
     
-  QgsDebugMsg("emiting new project signal");
+  //QgsDebugMsg("emiting new project signal");
 
-  //note by Tim: I did some casual egrepping and this signal doesnt actually
-  //seem to be connected to anything....why is it here? Just for future needs?
-  //note by Martin: actually QgsComposer does use it
+  //emit signal so QgsComposer knows we have a new project
   emit newProject();
 
   mMapCanvas->freeze(false);
@@ -2611,9 +2543,9 @@ void QgisApp::newVectorLayer()
 {
 
   if(mMapCanvas && mMapCanvas->isDrawing())
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   QGis::WKBTYPE geometrytype;
   QString fileformat;
@@ -3344,10 +3276,10 @@ void QgisApp::stopRendering()
 {
   if(mMapCanvas)
   {
-    QgsMapRender* mypMapRender = mMapCanvas->mapRender();
-    if(mypMapRender)
+    QgsMapRenderer* mypMapRenderer = mMapCanvas->mapRender();
+    if(mypMapRenderer)
     {
-      QgsRenderContext* mypRenderContext = mypMapRender->renderContext();
+      QgsRenderContext* mypRenderContext = mypMapRenderer->renderContext();
       if(mypRenderContext)
       {
         mypRenderContext->setRenderingStopped(true);
@@ -3377,39 +3309,6 @@ void QgisApp::showAllLayers()
 
   legend()->selectAll(true);
 }
-
-// TODO: remove the method once the mapserver export plugin is complete and tested
-/*
-void QgisApp::exportMapServer()
-{
-  // check to see if there are any layers to export
-  // Possibly we may reinstate this in the future if we provide 'active project' export again
-  //if (mMapCanvas->layerCount() > 0)
-  //{
-    QString myMSExportPath = QgsApplication::msexportAppPath(); 
-    QProcess *process = new QProcess;
-#ifdef WIN32
-    // quote the application path on windows
-    myMSExportPath = QString("\"") + myMSExportPath + QString("\"");
-#endif
-    process->start(myMSExportPath);
-
-    // Delete this object if the process terminates
-    connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), 
-        SLOT(processExited()));
-
-    // Delete the process if the application quits
-    connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(terminate()));
-
-  //}
-  //else
-  //{
-  //  QMessageBox::warning(this, tr("No Map Layers"),
-  //      tr("No layers to export. You must add at least one layer to the map in order to export the view."));
-  //}
-}
-*/
-
 
 
 void QgisApp::zoomIn()
@@ -3539,15 +3438,12 @@ void QgisApp::splitFeatures()
 void QgisApp::capturePoint()
 {
   if(mMapCanvas && mMapCanvas->isDrawing())
-    {
-      return;
-    }
-  
+  {
+    return;
+  }
+
   // set current map tool to select
   mMapCanvas->setMapTool(mMapTools.mCapturePoint);
-  
-  // FIXME: is this still actual or something old that's not used anymore?
-  //connect(t, SIGNAL(xyClickCoordinates(QgsPoint &)), this, SLOT(showCapturePointCoordinate(QgsPoint &)));
 }
 
 void QgisApp::captureLine()
@@ -3711,8 +3607,6 @@ void QgisApp::pasteTransformations()
 
 void QgisApp::refreshMapCanvas()
 {
-  QgsDebugMsg("called.");
-
   mMapCanvas->refresh();
 }
 
@@ -3768,7 +3662,7 @@ void QgisApp::showMouseCoordinate(QgsPoint & p)
       mpMaptip->clear ( mMapCanvas );
       // don't start the timer if the mouse is not over the map canvas
       mpMapTipsTimer->start();
-      QgsDebugMsg("Started maptips timer");
+      //QgsDebugMsg("Started maptips timer");
     }
   }
 }
@@ -3911,6 +3805,50 @@ void QgisApp::showPluginManager()
   }
 }
 
+void QgisApp::loadPythonSupport()
+{
+  QString pythonlibName("qgispython");
+#ifdef Q_WS_MAC
+  pythonlibName.prepend(QgsApplication::prefixPath() + "/lib/");
+#endif
+  QLibrary pythonlib(pythonlibName);
+  // It's necessary to set these two load hints, otherwise Python library won't work correctly
+  // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
+  pythonlib.setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
+  if (pythonlib.load())
+  {
+    //QgsDebugMsg("Python support library loaded successfully.");
+    typedef QgsPythonUtils* (*inst)();
+    inst pythonlib_inst = (inst) pythonlib.resolve("instance");
+    if (pythonlib_inst)
+    {
+      //QgsDebugMsg("Python support library's instance() symbol resolved.");
+      mPythonUtils = pythonlib_inst();
+      mPythonUtils->initPython(mQgisInterface);
+    }
+    else
+    {
+      //using stderr on purpose because we want end users to see this [TS]
+      std::cerr << "Couldn't resolve python support library's instance() symbol." << std::endl;
+    }
+  }
+  else
+  {
+    //using stderr on purpose because we want end users to see this [TS]
+    std::cerr << "Couldn't load Python support library." << std::endl;
+  }
+
+  if (mPythonUtils && mPythonUtils->isEnabled())
+  {
+    mActionShowPythonDialog = new QAction(tr("Python console"), this);
+    connect(mActionShowPythonDialog, SIGNAL(triggered()), this, SLOT(showPythonDialog()));
+
+    mPluginMenu->addAction(mActionShowPythonDialog);
+    // Purposely using stdout here [TS]
+    std::cout << "Python support ENABLED :-) " << std::endl;
+  }
+}
+
 void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
 {
   if (!mPythonUtils || !mPythonUtils->isEnabled())
@@ -3919,7 +3857,6 @@ void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
     return;
   }
   
-  QgsDebugMsg("I should load python plugin: " + pluginName + " (package: " + packageName + ")");
   
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
   
@@ -3937,6 +3874,8 @@ void QgisApp::loadPythonPlugin(QString packageName, QString pluginName)
     // add to settings
     QSettings settings;
     settings.setValue("/PythonPlugins/" + packageName, true);
+    std::cout << "Loaded : " << pluginName.toLocal8Bit().constData() << " (package: " 
+      << packageName.toLocal8Bit().constData() << ")" << std::endl;
   }
 }
 
@@ -3955,13 +3894,13 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
   {
     QLibrary *myLib = new QLibrary(theFullPathName);
 
-    QgsDebugMsg("Library name is " + myLib->fileName());
+    QString myError; //we will only show detailed diagnostics if something went wrong
+    myError +="Library name is " + myLib->fileName() + " " + QString(__LINE__) + " in " + QString(__FUNCTION__) + "\n";
 
     bool loaded = myLib->load();
     if (loaded)
     {
-      QgsDebugMsg("Loaded test plugin library");
-      QgsDebugMsg("Attempting to resolve the classFactory function");
+      myError += "Attempting to resolve the classFactory function " +  QString (__LINE__) + " in " + QString (__FUNCTION__ ) + "\n";
 
       type_t *pType = (type_t *) myLib->resolve("type");
 
@@ -3986,7 +3925,9 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
               else
               {
                 // something went wrong
-                QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading %1."));
+                QMessageBox::warning(this, tr("Error Loading Plugin"), tr("There was an error loading a plugin."
+                      "The following diagnostic information may help the QGIS developers resolve the issue:\n%1.").arg
+                    (myError));
                 //disable it to the qsettings file [ts]
                 settings.setValue("/Plugins/" + name, false);
               }
@@ -4033,181 +3974,12 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
           QgsDebugMsg("Plugin " + theFullPathName + " did not return a valid type and cannot be loaded");
           break;
       }
-
-      /*  }else{
-          QgsDebugMsg("Unable to find the class factory for " + mFullPathName);
-          } */
-
-  }
-  else
-  {
-    QgsDebugMsg("Failed to load " + theFullPathName);
-  }
-  delete myLib;
-}
-}
-void QgisApp::testMapLayerPlugins()
-{
-#ifndef WIN32
-  // map layer plugins live in their own directory (somewhere to be determined)
-  QDir mlpDir("../plugins/maplayer", "*.so.1.0.0", QDir::Name | QDir::IgnoreCase, QDir::Files);
-  if (mlpDir.count() == 0)
-  {
-    QMessageBox::information(this, tr("No MapLayer Plugins"), tr("No MapLayer plugins in ../plugins/maplayer"));
-  }
-  else
-  {
-    for (unsigned i = 0; i < mlpDir.count(); i++)
-    {      
-      QgsDebugMsg("Getting information for plugin: " + mlpDir[i]);
-      QgsDebugMsg("Attempting to load the plugin using dlopen");
-
-      //          void *handle = dlopen("../plugins/maplayer/" + mlpDir[i], RTLD_LAZY);
-      void *handle = dlopen(("../plugins/maplayer/" + mlpDir[i]).toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
-      if (!handle)
-      {
-        QgsDebugMsg( QString("Error in dlopen: %1").arg( dlerror() ));
-      }
-      else
-      {
-        QgsDebugMsg("dlopen succeeded");
-        dlclose(handle);
-      }
-
-      QLibrary *myLib = new QLibrary("../plugins/maplayer/" + mlpDir[i]);
-      QgsDebugMsg("Library name is " + myLib->fileName());
-
-      bool loaded = myLib->load();
-      if (loaded)
-      {
-        QgsDebugMsg("Loaded test plugin library");
-        QgsDebugMsg("Attempting to resolve the classFactory function");
-
-        create_it *cf = (create_it *) myLib->resolve("classFactory");
-
-        if (cf)
-        {
-          QgsDebugMsg("Getting pointer to a MapLayerInterface object from the library");
-
-          QgsMapLayerInterface *pl = cf();
-          if (pl)
-          {
-            QgsDebugMsg("Instantiated the maplayer test plugin");
-
-            // set the main window pointer for the plugin
-            pl->setQgisMainWindow(this);
-
-            //the call to getInt is deprecated and this line should be removed
-            //QgsDebugMsg("getInt returned " + QString::number(pl->getInt()) + " from map layer plugin");
-
-            // set up the gui
-            pl->initGui();
-          }
-          else
-          {
-            QgsDebugMsg("Unable to instantiate the maplayer test plugin");
-          }
-        }
-      }
-      else
-      {
-        QgsDebugMsg("Failed to load " + mlpDir[i]);
-      }
-    }
-  }
-#endif //#ifndef WIN32
-}
-void QgisApp::testPluginFunctions()
-{
-  // test maplayer plugins first
-  testMapLayerPlugins();
-  if (false)
-  {
-    // try to load plugins from the plugin directory and test each one
-
-    QDir pluginDir("../plugins", "*.so*", QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks);
-    //pluginDir.setFilter(QDir::Files || QDir::NoSymLinks);
-    //pluginDir.setNameFilter("*.so*");
-    if (pluginDir.count() == 0)
-    {
-      QMessageBox::information(this, tr("No Plugins"),
-          tr("No plugins found in ../plugins. To test plugins, start qgis from the src directory"));
     }
     else
     {
-
-      for (unsigned i = 0; i < pluginDir.count(); i++)
-      {
-        QgsDebugMsg("Getting information for plugin: " + pluginDir[i]);
-
-        QLibrary *myLib = new QLibrary("../plugins/" + pluginDir[i]); //"/home/gsherman/development/qgis/plugins/" + pluginDir[i]);
-
-        QgsDebugMsg("Library name is " + myLib->fileName());
-        //QLibrary myLib("../plugins/" + pluginDir[i]);
-        QgsDebugMsg("Attempting to load ../plugins/" + pluginDir[i]);
-
-        /*  void *handle = dlopen("/home/gsherman/development/qgis/plugins/" + pluginDir[i], RTLD_LAZY);
-            if (!handle) {
-            std::cout << "Error in dlopen: " <<  dlerror() << std::endl;
-
-            }else{
-            std::cout << "dlopen suceeded" << std::endl;
-            dlclose(handle);
-            }
-
-*/
-        bool loaded = myLib->load();
-        if (loaded)
-        {
-          QgsDebugMsg("Loaded test plugin library");
-          QgsDebugMsg("Getting the name of the plugin");
-
-          name_t *pName = (name_t *) myLib->resolve("name");
-          if (pName)
-          {
-            QMessageBox::information(this, tr("Name"), tr("Plugin %1 is named %2").arg(pluginDir[i]).arg(pName()));
-          }
-          QgsDebugMsg("Attempting to resolve the classFactory function");
-
-          create_t *cf = (create_t *) myLib->resolve("classFactory");
-
-          if (cf)
-          {
-            QgsDebugMsg("Getting pointer to a QgisPlugin object from the library");
-
-            QgisPlugin *pl = cf(mQgisInterface);
-
-            QgsDebugMsg("Displaying name, version, and description");
-            QgsDebugMsg("Plugin name: " + pl->name());
-            QgsDebugMsg("Plugin version: " + pl->version());
-            QgsDebugMsg("Plugin description: " + pl->description());
-
-            QMessageBox::information(this, tr("Plugin Information"), tr("QGis loaded the following plugin:") +
-                tr("Name: %1").arg(pl->name()) + "\n" + tr("Version: %1").arg(pl->version()) + "\n" +
-                tr("Description: %1").arg(pl->description()));
-            // unload the plugin (delete it)
-
-            QgsDebugMsg("Attempting to resolve the unload function");
-
-            /*
-               unload_t *ul = (unload_t *) myLib.resolve("unload");
-               if (ul) {
-               ul(pl);
-               std::cout << "Unloaded the plugin\n";
-               } else {
-               std::cout << "Unable to resolve unload function. Plugin was not unloaded\n";
-               }
-               */
-          }
-        }
-        else
-        {
-          QMessageBox::warning(this, tr("Unable to Load Plugin"),
-              tr("QGIS was unable to load the plugin from: %1").arg(pluginDir[i]));
-          QgsDebugMsg("Unable to load library");
-        }
-      }
+      QgsDebugMsg("Failed to load " + theFullPathName);
     }
+    delete myLib;
   }
 }
 
@@ -4359,9 +4131,6 @@ void QgisApp::options()
     double zoomFactor = mySettings.value("/qgis/zoom_factor", 2).toDouble();
     mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
 
-//    bool splitterRedraw = mySettings.value("/qgis/splitterRedraw", true).toBool();
-//    canvasLegendSplit->setOpaqueResize(splitterRedraw);
-//    legendOverviewSplit->setOpaqueResize(splitterRedraw);
     setupProxy();
   }
 }
@@ -4529,9 +4298,9 @@ bool QgisApp::saveDirty()
   QMessageBox::StandardButton answer(QMessageBox::Discard);
   mMapCanvas->freeze(true);
 
-  QgsDebugMsg(QString("Layer count is %1").arg(mMapCanvas->layerCount()));
-  QgsDebugMsg(QString("Project is %1dirty").arg( QgsProject::instance()->dirty() ? "" : "not "));
-  QgsDebugMsg(QString("Map canvas is %1dirty").arg(mMapCanvas->isDirty() ? "" : "not "));
+  //QgsDebugMsg(QString("Layer count is %1").arg(mMapCanvas->layerCount()));
+  //QgsDebugMsg(QString("Project is %1dirty").arg( QgsProject::instance()->dirty() ? "" : "not "));
+  //QgsDebugMsg(QString("Map canvas is %1dirty").arg(mMapCanvas->isDirty() ? "" : "not "));
 
   QSettings settings;
   bool askThem = settings.value("qgis/askToSaveProjectChanges", true).toBool();
@@ -4665,8 +4434,6 @@ void QgisApp::projectionsEnabled(bool theFlag)
 // slot to update the progress bar in the status bar
 void QgisApp::showProgress(int theProgress, int theTotalSteps)
 {
-  QgsDebugMsg( QString("%1/%2").arg(theProgress).arg(theTotalSteps) );
-
   if (theProgress==theTotalSteps)
   {
     mProgressBar->reset();
@@ -4682,8 +4449,6 @@ void QgisApp::showProgress(int theProgress, int theTotalSteps)
     mProgressBar->setMaximum(theTotalSteps);
     mProgressBar->setValue(theProgress);
   }
-
-
 }
 
 void QgisApp::mapToolChanged(QgsMapTool *tool)
@@ -4733,8 +4498,6 @@ void QgisApp::updateMouseCoordinatePrecision()
 
 void QgisApp::showStatusMessage(QString theMessage)
 {
-  //QgsDebugMsg("message '" + theMessage + "'.");
-
   statusBar()->showMessage(theMessage);
 }
 
@@ -4750,20 +4513,12 @@ void QgisApp::showMapTip()
   {
     QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
-    // Following is debug stuff
-    QgsDebugMsg ( "Mouse IS over canvas" );
-    QgsDebugMsg ( "Maptips timer fired:" );
-    QgsDebugMsg ( mLastMapPosition.stringRep() );
-    QgsDebugMsg ( "Pixel coordinates of mouse position:" );
-    QgsDebugMsg ( QString::number ( myPointerPos.x() ) + "," + QString::number ( myPointerPos.y() ) );
-    // end debug stuff
-
     //  Make sure there is an active layer before proceeding
 
     QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
     if ( mypLayer )
     {
-      QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
+      //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
       // only process vector layers
       if ( mypLayer->type() == QgsMapLayer::VECTOR )
       {
@@ -4776,7 +4531,7 @@ void QgisApp::showMapTip()
     }
     else
     {
-      QgsDebugMsg ( "Maptips require an active layer" );
+      showStatusMessage(tr( "Maptips require an active layer" ));
     }
   }
 }
@@ -4817,7 +4572,7 @@ void QgisApp::projectProperties()
   //pass any refresg signals off to canvases
   //connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
 
-  QgsMapRender* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRender();
   bool wasProjected = myRender->projectionsEnabled();
   long oldSRSID = myRender->destinationSrs().srsid();
 
@@ -5046,41 +4801,6 @@ void QgisApp::activateDeactivateLayerRelatedActions(QgsMapLayer* layer)
   }
 }
 
-
-//copy the click coord to clipboard and let the user know its there
-void QgisApp::showCapturePointCoordinate(QgsPoint & theQgsPoint)
-{
-  QgsDebugMsg("Capture point (clicked on map) at position " + theQgsPoint.stringRep(2));
-
-  QClipboard *myClipboard = QApplication::clipboard();
-  //if we are on x11 system put text into selection ready for middle button pasting
-  if (myClipboard->supportsSelection())
-  {
-    myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Selection);
-    QString myMessage = tr("Clipboard contents set to: ");
-    statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Selection));
-  }
-  else
-  {
-    //user has an inferior operating system....
-    myClipboard->setText(theQgsPoint.stringRep(2),QClipboard::Clipboard );
-    QString myMessage = tr("Clipboard contents set to: ");
-    statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Clipboard));
-  }
-#ifdef QGISDEBUG
-  /* Well use this in ver 0.5 when we do digitising! */
-  /*
-     QgsVectorFileWriter myFileWriter("/tmp/test.shp", wkbPoint);
-     if (myFileWriter.initialise())
-     {
-     myFileWriter.createField("TestInt",OFTInteger,8,0);
-     myFileWriter.createField("TestRead",OFTReal,8,3);
-     myFileWriter.createField("TestStr",OFTString,255,0);
-     myFileWriter.writePoint(&theQgsPoint);
-     }
-     */
-#endif
-}
 
 
 

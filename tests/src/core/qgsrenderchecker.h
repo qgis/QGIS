@@ -18,7 +18,7 @@
 #define QGSRENDERCHECKER_H
 
 #include <QString>
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 
 
 /** \ingroup UnitTests
@@ -45,7 +45,7 @@ public:
   void setElapsedTimeTarget(int theTarget) { mElapsedTimeTarget = theTarget; };
   void setExpectedImage (QString theImageFileName) { mExpectedImageFile = theImageFileName; };
   void setRenderedImage (QString theImageFileName) { mRenderedImageFile = theImageFileName; };
-  void setMapRenderer ( QgsMapRender *  thepMapRenderer) { mpMapRenderer = thepMapRenderer; };
+  void setMapRenderer ( QgsMapRenderer *  thepMapRenderer) { mpMapRenderer = thepMapRenderer; };
   /**
    * Test using renderer to generate the image to be compared.
    * @param theTestName - to be used as the basis for writing a file to 
@@ -69,7 +69,7 @@ private:
   unsigned int mMatchTarget;
   int mElapsedTime;
   int mElapsedTimeTarget;
-  QgsMapRender * mpMapRenderer;
+  QgsMapRenderer * mpMapRenderer;
 
 }; // class QgsRenderChecker
 

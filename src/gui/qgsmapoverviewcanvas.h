@@ -28,7 +28,7 @@
 #include <QPixmap>
 
 class QgsMapCanvas;
-class QgsMapRender;
+class QgsMapRenderer;
 class QgsPanningWidget; // defined in .cpp
 class QgsRect;
 
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     QgsMapCanvas* mMapCanvas;
     
     //! for rendering overview
-    QgsMapRender* mMapRender;
+    QgsMapRenderer* mMapRenderer;
     
     //! pixmap where the map is stored
     QPixmap mPixmap;

@@ -62,7 +62,7 @@ class QgsMapCanvas : QGraphicsView
     
     QgsMapCanvasMap* map();
     
-    QgsMapRender* mapRender();
+    QgsMapRenderer* mapRender();
     
     //! Accessor for the canvas pixmap
     QPixmap& canvasPixmap();

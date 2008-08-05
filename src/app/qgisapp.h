@@ -58,6 +58,7 @@ class QgsVectorLayer;
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
+#include <QPointer>
 
 #include "qgsconfig.h"
 #include <qgspoint.h>
@@ -190,8 +191,6 @@ public slots:
   void inOverview();
   //! Slot to show the map coordinate position of the mouse cursor
   void showMouseCoordinate(QgsPoint &);
-  //copy the click coord to clipboard and let the user know its there
-  void showCapturePointCoordinate(QgsPoint &);
   //! Slot to show current map scale;
   void showScale(double theScale);
   //! Slot to handle user scale input;
@@ -202,12 +201,10 @@ public slots:
   void zoomToLayerExtent();
   //! load any plugins used in the last qgis session
   void restoreSessionPlugins(QString thePluginDirString);
-  //! test plugin functionality
-  void testPluginFunctions();
-  //! test maplayer plugins
-  void testMapLayerPlugins();
   //! plugin manager
   void showPluginManager();
+  //! load python support if possible
+  void loadPythonSupport();
   //! plugin loader
   void loadPlugin(QString name, QString description, QString mFullPath);
   //! python plugin loader
@@ -332,6 +329,7 @@ public slots:
   /** Activates or deactivates actions depending on the current maplayer type.
   Is called from the legend when the current legend item has changed*/
   void activateDeactivateLayerRelatedActions(QgsMapLayer* layer);
+
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
@@ -639,6 +637,8 @@ class Tools
   QString mStartupPath;
   //! full path name of the current map file (if it has been saved or loaded)
   QString mFullPathName;
+  //! A dock to show the attribute table (user optional)
+  QPointer<QDockWidget> mpTableDockWidget;
 
   //! interface to QgisApp for plugins
   QgisAppInterface *mQgisInterface;

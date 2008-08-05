@@ -326,7 +326,7 @@ QgsProject * QgsProject::theProject_;
       */ 
      void clear()
      {
-         QgsDebugMsg( "Clearing project properties Impl->clear();" );
+         //QgsDebugMsg( "Clearing project properties Impl->clear();" );
 
          properties_.clearKeys();
          title = "";
@@ -1034,7 +1034,7 @@ bool QgsProject::write()
 
 void QgsProject::clearProperties()
 {
-    QgsDebugMsg("Clearing project properties QgsProject::clearProperties()");
+    //QgsDebugMsg("Clearing project properties QgsProject::clearProperties()");
     
     imp_->clear();
 

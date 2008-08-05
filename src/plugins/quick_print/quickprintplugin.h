@@ -41,7 +41,7 @@
 
 //QGIS includes
 #include "qgisplugin.h"
-#include <qgsmaprender.h>
+#include <qgsmaprenderer.h>
 #include <qgsmapcanvas.h>
 
 //forward declarations

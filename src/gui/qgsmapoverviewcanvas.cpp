@@ -18,7 +18,7 @@
 /* $Id$ */
 
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaptopixel.h"
 
@@ -70,21 +70,21 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas(QWidget * parent, QgsMapCanvas* mapCa
   setObjectName("theOverviewCanvas");
   mPanningWidget = new QgsPanningWidget(this);
   
-  mMapRender = new QgsMapRender;
-  mMapRender->setOverview();
+  mMapRenderer = new QgsMapRenderer;
+  mMapRenderer->setOverview();
   
   setbgColor(palette().window().color());
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
 {
-  delete mMapRender;
+  delete mMapRenderer;
 }
 
 void QgsMapOverviewCanvas::resizeEvent(QResizeEvent* e)
 {
   mPixmap = QPixmap(e->size());
-  mMapRender->setOutputSize(e->size(), mPixmap.logicalDpiX());
+  mMapRenderer->setOutputSize(e->size(), mPixmap.logicalDpiX());
   refresh();
 }
 
@@ -100,7 +100,7 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     return;
   }
   
-  const QgsMapToPixel* cXf = mMapRender->coordXForm();
+  const QgsMapToPixel* cXf = mMapRenderer->coordXForm();
   QgsPoint ll(extent.xMin(), extent.yMin());
   QgsPoint ur(extent.xMax(), extent.yMax());
   if(cXf)
@@ -184,7 +184,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
   if ((e->buttons() & Qt::LeftButton) == Qt::LeftButton)
   {
     // set new extent
-    const QgsMapToPixel* cXf = mMapRender->coordXForm();
+    const QgsMapToPixel* cXf = mMapRenderer->coordXForm();
     QRect rect = mPanningWidget->geometry();
     
     QgsPoint center = cXf->toMapCoordinates(rect.center());
@@ -244,7 +244,7 @@ void QgsMapOverviewCanvas::refresh()
     painter.setRenderHint(QPainter::Antialiasing);
   
   // render image
-  mMapRender->render(&painter);
+  mMapRenderer->render(&painter);
   
   painter.end();
   
@@ -268,27 +268,27 @@ void QgsMapOverviewCanvas::setbgColor(const QColor& color)
 
 void QgsMapOverviewCanvas::setLayerSet(const QStringList& layerSet)
 {
-  mMapRender->setLayerSet(layerSet);
+  mMapRenderer->setLayerSet(layerSet);
 }
 
 void QgsMapOverviewCanvas::updateFullExtent(const QgsRect& rect)
 {
-  mMapRender->setExtent(rect);
+  mMapRenderer->setExtent(rect);
   reflectChangedExtent();
 }
 
 void QgsMapOverviewCanvas::projectionsEnabled(bool flag)
 {
-  mMapRender->setProjectionsEnabled(flag);
+  mMapRenderer->setProjectionsEnabled(flag);
 }
 
 void QgsMapOverviewCanvas::destinationSrsChanged()
 {
   const QgsSpatialRefSys& srs = mMapCanvas->mapRender()->destinationSrs();
-  mMapRender->setDestinationSrs(srs);
+  mMapRenderer->setDestinationSrs(srs);
 }
 
 QStringList& QgsMapOverviewCanvas::layerSet()
 {
-  return mMapRender->layerSet();
+  return mMapRenderer->layerSet();
 }

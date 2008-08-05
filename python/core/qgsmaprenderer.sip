@@ -1,56 +1,23 @@
-/***************************************************************************
-    qgsmaprender.h  -  class for rendering map layer set
-    ----------------------
-    begin                : January 2006
-    copyright            : (C) 2006 by Martin Dobias
-    email                : wonder.sk at gmail dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-/* $Id$ */
-
-#ifndef QGSMAPRENDER_H
-#define QGSMAPRENDER_H
-
-#include <QSize>
-#include <QStringList>
-
-#include "qgis.h"
-#include "qgsrect.h"
-#include "qgsrendercontext.h"
-
-class QDomDocument;
-class QDomNode;
-class QPainter;
-
-class QgsMapToPixel;
-class QgsMapLayer;
-class QgsScaleCalculator;
-class QgsSpatialRefSys;
-class QgsDistanceArea;
 
 /**
- * \class QgsMapRender
+ * \class QgsMapRenderer
  * \brief Class for rendering map layer set
  *
  */
 
-class CORE_EXPORT QgsMapRender : public QObject
+class QgsMapRenderer : QObject
 {
-  Q_OBJECT
+%TypeHeaderCode
+#include <qgsmaprenderer.h>
+%End
       
   public:
     
     //! constructor
-    QgsMapRender();
+    QgsMapRenderer();
     
     //! destructor
-    ~QgsMapRender();
+    ~QgsMapRenderer();
 
     //! starts rendering
     void render(QPainter* painter);
@@ -61,27 +28,26 @@ class CORE_EXPORT QgsMapRender : public QObject
     //! returns current extent
     QgsRect extent();
     
-    const QgsMapToPixel* coordXForm() { return &(mRenderContext.mapToPixel()); }
+    const QgsMapToPixel* coordXForm();
     
-    double scale() const { return mScale; }
-    double mupp() const { return mMupp; }
+    double scale() const;
+    double mupp() const;
 
-    int width() const { return mSize.width(); };
-    int height() const { return mSize.height(); };
+    int width() const;
+    int height() const;
+
 
     //! Recalculate the map scale
     void updateScale();
 
-    //! Return the measuring object
-    QgsDistanceArea* distArea() { return mDistArea; }
     QGis::units mapUnits() const;
     void setMapUnits(QGis::units u);
     
     //! sets whether map image will be for overview
-    void setOverview(bool isOverview = true) { mOverview = isOverview; }
+    void setOverview(bool isOverview = true);
 
     void setOutputSize(QSize size, int dpi);
-
+    
     //!accessor for output dpi
     int outputDpi();
     //!accessor for output size
@@ -92,7 +58,7 @@ class CORE_EXPORT QgsMapRender : public QObject
     
     //! transform coordinates from layer's SRS to output SRS
     QgsPoint layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point);
-    
+
     //! transform coordinates from output SRS to layer's SRS
     QgsPoint outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point);
 
@@ -129,12 +95,9 @@ class CORE_EXPORT QgsMapRender : public QObject
     //! write settings
     bool writeXML(QDomNode & theNode, QDomDocument & theDoc);
 
-    //! Accessor for render context
-    QgsRenderContext* renderContext(){return &mRenderContext;}
-
   signals:
     
-    void drawingProgress(int current, int total);
+    void setProgress(int current, int total);
     
     void projectionsEnabled(bool flag);
     
@@ -165,46 +128,5 @@ class CORE_EXPORT QgsMapRender : public QObject
      */
     bool splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRect& r2);
 
-  protected:
-    
-    //! indicates drawing in progress
-    bool mDrawing;
-    
-    //! map units per pixel
-    double mMupp;
-    
-    //! Map scale at its current zool level
-    double mScale;
-    
-    //! scale calculator
-    QgsScaleCalculator * mScaleCalculator;
-    
-    //! current extent to be drawn
-    QgsRect mExtent;
-    
-    //! indicates whether it's map image for overview
-    bool mOverview;
-    
-    QSize mSize;
-
-    //! detemines whether on the fly projection support is enabled
-    bool mProjectionsEnabled;
-    
-    //! destination spatial reference system of the projection
-    QgsSpatialRefSys* mDestSRS;
-
-    //! stores array of layers to be rendered (identified by string)
-    QStringList mLayerSet;
-    
-    //! full extent of the layer set
-    QgsRect mFullExtent;
-
-    //! tool for measuring 
-    QgsDistanceArea* mDistArea;
-
-    //!Encapsulates context of rendering
-    QgsRenderContext mRenderContext;
 };
-
-#endif
 

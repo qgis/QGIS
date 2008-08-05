@@ -178,9 +178,9 @@ void QgsAttributeTableDisplay::startEditing()
       //make the dialog modal when in editable
       //otherwise map editing and table editing
       //may disturb each other
-      hide();
-      setModal(true);
-      show();
+      //hide();
+      //setModal(true);
+      //show();
     }
     else
     {

@@ -23,7 +23,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 
@@ -138,27 +138,27 @@ void QgsComposerMap::draw ( QPainter *painter, const QgsRect& extent, const QSiz
       return;
     }
 
-  QgsMapRender* canvasMapRender = mMapCanvas->mapRender();
-  if(!canvasMapRender)
+  QgsMapRenderer* canvasMapRenderer = mMapCanvas->mapRender();
+  if(!canvasMapRenderer)
     {
       return;
     }
 
-  QgsMapRender theMapRender;
-  theMapRender.setExtent(extent);
-  theMapRender.setOutputSize(size, dpi);
-  theMapRender.setLayerSet(canvasMapRender->layerSet());
-  theMapRender.setProjectionsEnabled(canvasMapRender->projectionsEnabled());
-  theMapRender.setDestinationSrs(canvasMapRender->destinationSrs());
+  QgsMapRenderer theMapRenderer;
+  theMapRenderer.setExtent(extent);
+  theMapRenderer.setOutputSize(size, dpi);
+  theMapRenderer.setLayerSet(canvasMapRenderer->layerSet());
+  theMapRenderer.setProjectionsEnabled(canvasMapRenderer->projectionsEnabled());
+  theMapRenderer.setDestinationSrs(canvasMapRenderer->destinationSrs());
   
-  QgsRenderContext* theRenderContext = theMapRender.renderContext();
+  QgsRenderContext* theRenderContext = theMapRenderer.renderContext();
   if(theRenderContext)
     {
       theRenderContext->setDrawEditingInformation(false);
       theRenderContext->setRenderingStopped(false);
     }
 
-  theMapRender.render(painter);
+  theMapRenderer.render(painter);
     
   mMapCanvas->freeze(false);
 }
