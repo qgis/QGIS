@@ -67,7 +67,7 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent):
 {
   QFont f(font());
   f.setFamily("Helvetica");
-  f.setPointSize(11);
+  f.setPointSize(9);
   setFont(f);
   mDelegate = new QgsAttributeTableItemDelegate(mFields, this);
   setItemDelegate(mDelegate);
