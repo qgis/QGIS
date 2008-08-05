@@ -137,10 +137,6 @@ int QgsWFSSourceSelect::getCapabilities(const QString& uri, QgsWFSSourceSelect::
 
 int QgsWFSSourceSelect::getCapabilitiesGET(QString uri, std::list<QString>& typenames, std::list< std::list<QString> >& crs, std::list<QString>& titles, std::list<QString>& abstracts)
 {
-  if(!(uri.contains("?"))) 
-    {
-      uri.append("?");
-    }
   QString request = uri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
   
   QByteArray result;
@@ -279,6 +275,16 @@ void QgsWFSSourceSelect::connectToServer()
   std::list< std::list<QString> > crsList;
   std::list<QString> titles;
   std::list<QString> abstracts;
+
+  //modify mUri to add '?' or '&' at the end if it is not already there
+  if ( !(mUri.contains("?")) ) 
+    {
+      mUri.append("?");
+    }
+  else if ((mUri.right(1) != "?") && (mUri.right(1) != "&"))
+    {
+      mUri.append("&");
+    }
 
   if(getCapabilities(mUri, QgsWFSSourceSelect::GET, typenames, crsList, titles, abstracts) != 0)
     {
