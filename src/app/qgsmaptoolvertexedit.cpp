@@ -16,7 +16,7 @@
 
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsmessageviewer.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"

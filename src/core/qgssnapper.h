@@ -22,7 +22,7 @@
 #include <QList>
 #include <QMultiMap>
 
-class QgsMapRender;
+class QgsMapRenderer;
 class QgsVectorLayer;
 class QPoint;
 
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSnapper
       ALL_RESULTS_WITHIN_GIVEN_TOLERANCES
     };
 
-  QgsSnapper(QgsMapRender* mapRender);
+  QgsSnapper(QgsMapRenderer* mapRender);
   ~QgsSnapper();
   /**Does the snapping operation
    @param startPoint the start point for snapping (in pixel coordinates)
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsSnapper
 
   /**The maprender object contains information about the output coordinate system
    of the map and about the relationship between pixel space and map space*/
-  QgsMapRender* mMapRender;
+  QgsMapRenderer* mMapRenderer;
   /**Snap mode to apply*/
   QgsSnapper::SNAP_MODE mSnapMode;
   /**The layers to which snapping is applied*/

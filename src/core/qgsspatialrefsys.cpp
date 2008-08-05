@@ -260,11 +260,11 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 
   if (myInputResult != OGRERR_NONE)
   {
-    QgsDebugMsg("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+    QgsDebugMsg("\n---------------------------------------------------------------");
     QgsDebugMsg("QgsSpatialRefSys::createFromWkt(QString theWkt) ");
     QgsDebugMsg("This SRS could *** NOT *** be set from the supplied WKT ");
     QgsDebugMsg("INPUT: " + theWkt);
-    QgsDebugMsg("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+    QgsDebugMsg("---------------------------------------------------------------\n");
     return mIsValidFlag;
   }
 
@@ -289,10 +289,9 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 bool QgsSpatialRefSys::isValid() const
 {
   if (mIsValidFlag)
+  {
     return true;
-
-  QgsDebugMsg("It's an invalid SRS without valid proj4 string");
-
+  }
   return false;
 }
 

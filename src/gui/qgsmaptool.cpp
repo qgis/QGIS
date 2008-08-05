@@ -17,8 +17,8 @@
 #include "qgslogger.h"
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
 #include "qgsmaptopixel.h"
+#include "qgsmaprenderer.h"
 #include <QAction>
 #include <QAbstractButton>
 

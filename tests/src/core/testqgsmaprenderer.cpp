@@ -35,7 +35,7 @@
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWKT
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 #include <qgsmaplayer.h> 
 #include <qgsvectorlayer.h> 
 #include <qgsapplication.h>
@@ -46,11 +46,11 @@
 #include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
- * This is a unit test for the QgsMapRender class.
+ * This is a unit test for the QgsMapRenderer class.
  * It will do some performance testing too
  *
  */
-class TestQgsMapRender: public QObject
+class TestQgsMapRenderer: public QObject
 {
   Q_OBJECT;
   private slots:
@@ -67,12 +67,12 @@ class TestQgsMapRender: public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsSpatialRefSys mSRS;
     QgsFieldMap mFields;
-    QgsMapRender * mpMapRenderer;
+    QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
 };
 
-void TestQgsMapRender::initTestCase()
+void TestQgsMapRenderer::initTestCase()
 {
   //
   // Runs once before any tests are run
@@ -169,7 +169,7 @@ void TestQgsMapRender::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayer(mpPolysLayer);
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRender();
+  mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpPolysLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);
@@ -177,7 +177,7 @@ void TestQgsMapRender::initTestCase()
 }
 
 
-void TestQgsMapRender::cleanupTestCase()
+void TestQgsMapRenderer::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + QDir::separator() + "maprendertest.html";
   QFile myFile ( myReportFile);
@@ -193,7 +193,7 @@ void TestQgsMapRender::cleanupTestCase()
 
 
 
-void TestQgsMapRender::performanceTest()
+void TestQgsMapRenderer::performanceTest()
 {
   mpMapRenderer->setExtent(mpPolysLayer->extent());
   QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
@@ -207,7 +207,7 @@ void TestQgsMapRender::performanceTest()
 }
 
 
-QTEST_MAIN(TestQgsMapRender)
-#include "moc_testqgsmaprender.cxx"
+QTEST_MAIN(TestQgsMapRenderer)
+#include "moc_testqgsmaprenderer.cxx"
 
 

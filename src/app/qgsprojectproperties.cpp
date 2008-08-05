@@ -26,7 +26,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
@@ -48,10 +48,10 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   connect(this, SIGNAL(accepted()), this, SLOT(apply()));
 
   ///////////////////////////////////////////////////////////
-  // Properties stored in map canvas's QgsMapRender
+  // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
   
-  QgsMapRender* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRender();
   QGis::units myUnit = myRender->mapUnits();
   setMapUnits(myUnit);
 
@@ -235,7 +235,7 @@ void QgsProjectProperties::apply()
     mapUnit=QGis::DEGREES;
   }
 
-  QgsMapRender* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRender();
       
   myRender->setMapUnits(mapUnit);
 

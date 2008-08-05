@@ -32,7 +32,7 @@
 #include "qgsmapcanvasmap.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"

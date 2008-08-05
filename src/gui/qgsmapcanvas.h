@@ -50,7 +50,7 @@ class QgsLegend;
 class QgsLegendView;
 class QgsRubberBand;
 
-class QgsMapRender;
+class QgsMapRenderer;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     
     QgsMapCanvasMap* map();
     
-    QgsMapRender* mapRender();
+    QgsMapRenderer* mapRender();
     
     //! Accessor for the canvas pixmap
     QPixmap& canvasPixmap();
@@ -350,7 +350,7 @@ private:
     QgsMapCanvas( QgsMapCanvas const & );
 
     //! all map rendering is done in this class
-    QgsMapRender* mMapRender;
+    QgsMapRenderer* mMapRenderer;
     
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap* mMap;

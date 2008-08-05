@@ -21,7 +21,7 @@
 #include <QPixmap>
 
 
-class QgsMapRender;
+class QgsMapRenderer;
 class QgsMapCanvas;
 
 class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
@@ -38,7 +38,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     
     void useQImageToRender(bool flag) { mUseQImageToRender = flag; }
 
-    //! renders map using QgsMapRender to mPixmap
+    //! renders map using QgsMapRenderer to mPixmap
     void render();
     
     void setBgColor(const QColor& color) { mBgColor = color; }
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     QPixmap mPixmap;
     QImage mImage;
 
-    //QgsMapRender* mRender;
+    //QgsMapRenderer* mRender;
     QgsMapCanvas* mCanvas;
     
     QColor mBgColor;

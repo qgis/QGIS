@@ -177,5 +177,19 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
+    /** \brief get a standard css style sheet for reports.
+     * Typically you will use this method by doing:
+     * QString myStyle = QgsApplication::reportStyleSheet();
+     * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     * @return QString containing the CSS 2.1 compliant stylesheet.
+     * @note you can use the special Qt extensions too, for example
+     * the gradient fills for backgrounds.
+     */
+    static QString reportStyleSheet();
+
+    /** Convenience function to get a summary of the paths used in this 
+     * application instance useful for debugging mainly.*/
+    static QString showSettings();
+
 };
 

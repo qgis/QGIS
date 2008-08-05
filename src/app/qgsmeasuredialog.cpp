@@ -21,7 +21,7 @@
 #include "qgscontexthelp.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsspatialrefsys.h"
 
 #include <QCloseEvent>

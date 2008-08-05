@@ -33,7 +33,7 @@
 #include <qgsrasterbandstats.h> 
 #include <qgsmaplayerregistry.h> 
 #include <qgsapplication.h>
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -63,7 +63,7 @@ class TestQgsRasterLayer: public QObject
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
-    QgsMapRender * mpMapRenderer;
+    QgsMapRenderer * mpMapRenderer;
     QString mReport;
 };
 
@@ -89,7 +89,7 @@ void TestQgsRasterLayer::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
   QgsMapLayerRegistry::instance()->addMapLayer(mpLandsatRasterLayer);
   // add the test layer to the maprender
-  mpMapRenderer = new QgsMapRender();
+  mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpRasterLayer->getLayerID();
   mpMapRenderer->setLayerSet(myLayers);

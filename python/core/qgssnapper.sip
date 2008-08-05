@@ -57,7 +57,7 @@ public:
       ALL_RESULTS_WITHIN_GIVEN_TOLERANCES
     };
 
-  QgsSnapper(QgsMapRender* mapRender);
+  QgsSnapper(QgsMapRenderer* mapRender);
   ~QgsSnapper();
   /**Does the snapping operation
    @param startPoint the start point for snapping (in pixel coordinates)

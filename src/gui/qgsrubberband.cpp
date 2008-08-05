@@ -19,7 +19,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include <QPainter>
 
 /*!
@@ -160,7 +160,7 @@ void QgsRubberBand::setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer)
   }
 
   //maprender object of canvas
-  QgsMapRender* mr = mMapCanvas->mapRender();
+  QgsMapRenderer* mr = mMapCanvas->mapRender();
   if(!mr)
   {
     return;

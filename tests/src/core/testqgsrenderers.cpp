@@ -24,7 +24,7 @@
 
 #include <iostream>
 //qgis includes...
-#include <qgsmaprender.h> 
+#include <qgsmaprenderer.h> 
 #include <qgsmaplayer.h> 
 #include <qgsvectorlayer.h> 
 #include <qgsapplication.h>
@@ -52,7 +52,7 @@ class TestQgsRenderers: public QObject
   private:
     bool setQml (QString theType); //uniquevalue / continuous / single / 
     bool imageCheck(QString theType); //as above
-    QgsMapRender * mpMapRenderer;
+    QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
     QgsMapLayer * mpPolysLayer;
@@ -113,7 +113,7 @@ void TestQgsRenderers::initTestCase()
   // since maprender does not require a qui
   // and is more light weight
   //
-  mpMapRenderer = new QgsMapRender();
+  mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpPointsLayer->getLayerID();
   myLayers << mpPolysLayer->getLayerID();

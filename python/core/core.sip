@@ -29,7 +29,7 @@
 %Include qgslogger.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerregistry.sip
-%Include qgsmaprender.sip
+%Include qgsmaprenderer.sip
 %Include qgsmaptopixel.sip
 %Include qgsmarkercatalogue.sip
 %Include qgsmessageoutput.sip

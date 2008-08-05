@@ -25,7 +25,7 @@
 #include <QPrinter>
 
 //QGIS includes
-#include <qgsmaprender.h>
+#include <qgsmaprenderer.h>
 #include <qgsmapcanvas.h>
 
 
@@ -59,11 +59,11 @@ public slots:
   //! This is just a convenience function to get the
   //map render from the mapcanvas
   void setMapCanvas(QgsMapCanvas * thepMapCanvas);
-  void setMapRender(QgsMapRender * thepMapRender);
+  void setMapRenderer(QgsMapRenderer * thepMapRenderer);
   void setMapBackgroundColor(QColor theColor);
 private:
   void renderPrintScaleBar(QPainter * thepPainter, 
-      QgsMapRender * thepMapRender, 
+      QgsMapRenderer * thepMapRenderer, 
       int theMaximumWidth);
   QStringList wordWrap(QString theString, 
                        QFontMetrics theMetrics, 
@@ -101,7 +101,7 @@ private:
    */
   void scaleTextLabels( int theScaleFactor, SymbolScalingType theDirection);
 
-  QgsMapRender * mpMapRender;
+  QgsMapRenderer * mpMapRenderer;
   QString mTitleText;
   QString mNameText;
   QString mCopyrightText;

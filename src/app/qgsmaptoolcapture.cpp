@@ -22,7 +22,7 @@
 #include "qgsgeometry.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprender.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsfeature.h"
 #include "qgsproject.h"

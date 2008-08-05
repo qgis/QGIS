@@ -42,14 +42,12 @@ QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 
 QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent) : QObject(parent) 
 {
-  QgsDebugMsg("QgsMapLayerRegistry created!");
   // constructor does nothing
 }
 
 QgsMapLayerRegistry::~QgsMapLayerRegistry()
 {
   removeAllMapLayers();
-  QgsDebugMsg("QgsMapLayerRegistry is gone!");
 }
 
 // get the layer count (number of registered layers)
@@ -68,7 +66,6 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer(QString theLayerId)
 QgsMapLayer *
   QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
 {
-  QgsDebugMsg("QgsMapLayerRegistry::addMaplayer - '" + theMapLayer->name());
   if( !theMapLayer->isValid() ) {
     QgsDebugMsg("cannot add invalid layers");
     return 0;
@@ -88,7 +85,6 @@ QgsMapLayer *
   }
   else
   {
-    QgsDebugMsg("addMaplayer - " + theMapLayer->name() + " already registered");
     return 0;
   }
 } //  QgsMapLayerRegistry::addMapLayer
@@ -97,19 +93,14 @@ QgsMapLayer *
 
 void QgsMapLayerRegistry::removeMapLayer(QString theLayerId, bool theEmitSignal)
 {
-  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - emitting signal to notify all users of this layer to release it.");
   if (theEmitSignal)
     emit layerWillBeRemoved(theLayerId); 
-  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - deleting map layer.");
   delete mMapLayers[theLayerId]; 
-  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - unregistering map layer.");
   mMapLayers.remove(theLayerId);
-  QgsDebugMsg("QgsMapLayerRegistry::removemaplayer - operation complete.");
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
-  QgsDebugMsg("QgsMapLayerRegistry::removeAllMapLayers");
   
   // moved before physically removing the layers
   emit removedAll();            // now let all canvas Observers know to clear
@@ -128,7 +119,6 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
 QMap<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 {
-  QgsDebugMsg("QgsMapLayerRegistry::mapLayers");
   return mMapLayers;
 }
 
@@ -136,5 +126,5 @@ QMap<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
-    QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
+    //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
 } //  QgsMapLayerRegistry::connectNotify
