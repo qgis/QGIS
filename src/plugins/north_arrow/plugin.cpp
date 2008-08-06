@@ -297,7 +297,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
   if (mapCanvas.layerCount() > 0)
   {
-    QgsSpatialRefSys outputSRS = mapCanvas.mapRender()->destinationSrs();
+    QgsSpatialRefSys outputSRS = mapCanvas.mapRenderer()->destinationSrs();
 
     if (outputSRS.isValid() && !outputSRS.geographicFlag())
     {

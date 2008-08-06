@@ -160,7 +160,7 @@ void QgsRubberBand::setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer)
   }
 
   //maprender object of canvas
-  QgsMapRenderer* mr = mMapCanvas->mapRender();
+  QgsMapRenderer* mr = mMapCanvas->mapRenderer();
   if(!mr)
   {
     return;

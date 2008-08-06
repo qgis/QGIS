@@ -96,7 +96,7 @@ void QgsQuickPrint::setOutputPdf(QString theFileName)
 }
 void QgsQuickPrint::setMapCanvas(QgsMapCanvas * thepMapCanvas)
 {
-  mpMapRenderer=thepMapCanvas->mapRender();
+  mpMapRenderer=thepMapCanvas->mapRenderer();
   mMapBackgroundColour = thepMapCanvas->canvasColor();
 }
 void QgsQuickPrint::setMapRenderer(QgsMapRenderer * thepMapRenderer)
