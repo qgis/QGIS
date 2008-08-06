@@ -51,7 +51,7 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   // Properties stored in map canvas's QgsMapRenderer
   // these ones are propagated to QgsProject by a signal
   
-  QgsMapRenderer* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
   QGis::units myUnit = myRender->mapUnits();
   setMapUnits(myUnit);
 
@@ -174,7 +174,7 @@ QgsProjectProperties::~QgsProjectProperties()
 // return the map units
 QGis::units QgsProjectProperties::mapUnits() const
 {
-  return mMapCanvas->mapRender()->mapUnits();
+  return mMapCanvas->mapRenderer()->mapUnits();
 }
 
 
@@ -197,7 +197,7 @@ void QgsProjectProperties::setMapUnits(QGis::units unit)
   {
     radDecimalDegrees->setChecked(true);
   }
-  mMapCanvas->mapRender()->setMapUnits(unit);
+  mMapCanvas->mapRenderer()->setMapUnits(unit);
 }
 
 
@@ -235,7 +235,7 @@ void QgsProjectProperties::apply()
     mapUnit=QGis::DEGREES;
   }
 
-  QgsMapRenderer* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
       
   myRender->setMapUnits(mapUnit);
 
