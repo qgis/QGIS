@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
-    <height>403</height>
+    <width>466</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -32,6 +32,9 @@
     <number>3</number>
    </property>
    <property name="bottomMargin" >
+    <number>3</number>
+   </property>
+   <property name="verticalSpacing" >
     <number>3</number>
    </property>
    <item row="0" column="0" >
@@ -65,7 +68,7 @@
    <item row="1" column="0" >
     <widget class="QTextEdit" name="teProjection" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -73,13 +76,19 @@
      <property name="minimumSize" >
       <size>
        <width>0</width>
-       <height>100</height>
+       <height>30</height>
       </size>
      </property>
      <property name="maximumSize" >
       <size>
        <width>16777215</width>
-       <height>100</height>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="baseSize" >
+      <size>
+       <width>0</width>
+       <height>50</height>
       </size>
      </property>
      <property name="autoFormatting" >
@@ -113,6 +122,9 @@
           <height>10</height>
          </size>
         </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="1" >
@@ -128,23 +140,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" >
-         <size>
-          <width>231</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" colspan="3" >
+      <item row="0" column="2" >
        <widget class="QLineEdit" name="leSearch" />
       </item>
-      <item row="1" column="3" >
+      <item row="0" column="3" >
        <widget class="QPushButton" name="pbnFind" >
         <property name="maximumSize" >
          <size>
@@ -167,5 +166,22 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>leSearch</sender>
+   <signal>editingFinished()</signal>
+   <receiver>pbnFind</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>292</x>
+     <y>380</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>375</x>
+     <y>373</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
