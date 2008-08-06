@@ -122,7 +122,7 @@ public:
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
   const long GEOSRS_ID = 2585;
   /**  Magic number for a geographic coord sys in EPSG ID format */
-  const long EPSGID = 4326;
+  const long GEOEPSG_ID = 4326;
   /** The length of teh string "+proj=" */
   const int PROJ_PREFIX_LEN = 6;
   /** The length of teh string "+ellps=" */

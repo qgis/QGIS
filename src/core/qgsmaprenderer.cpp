@@ -48,7 +48,7 @@ QgsMapRenderer::QgsMapRenderer()
   mSize = QSize(0,0);
   
   mProjectionsEnabled = FALSE;
-  mDestSRS = new QgsSpatialRefSys(EPSGID, QgsSpatialRefSys::EPSG); //WGS 84
+  mDestSRS = new QgsSpatialRefSys(GEOEPSG_ID, QgsSpatialRefSys::EPSG); //WGS 84
 }
 
 QgsMapRenderer::~QgsMapRenderer()

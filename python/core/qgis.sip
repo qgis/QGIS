@@ -99,7 +99,7 @@ public:
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
   const long GEOSRS_ID;
   /**  Magic number for a geographic coord sys in EPSG ID format */
-  const long EPSGID;
+  const long GEOEPSG_ID;
   /** The length of teh string "+proj=" */
   const int PROJ_PREFIX_LEN;
   /** The length of teh string "+ellps=" */
