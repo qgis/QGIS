@@ -43,6 +43,7 @@
 #include <QLineEdit>
 #include <QClipboard>
 #include <QPushButton>
+#include <QToolButton>
 
 static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z timlinux $";
 static const QString sName = QObject::tr("Coordinate Capture");
@@ -91,7 +92,8 @@ void CoordinateCapture::initGui()
 
   // create our map tool
   mpMapTool = new CoordinateCaptureMapTool(mQGisIface->getMapCanvas());
-  connect(mpMapTool, SIGNAL(pointCaptured(QgsPoint)), this, SLOT(update(QgsPoint)));
+  connect(mpMapTool, SIGNAL(mouseMoved(QgsPoint)), this, SLOT(mouseMoved(QgsPoint)));
+  connect(mpMapTool, SIGNAL(mouseClicked(QgsPoint)), this, SLOT(mouseClicked(QgsPoint)));
 
 
   // create a little widget with x and y display to put into our dock widget
@@ -102,22 +104,33 @@ void CoordinateCapture::initGui()
   
   QLabel * mypGeoLabel = new QLabel(mypWidget);
   mypGeoLabel->setPixmap(QPixmap(":/coordinatecapture/geographic.png"));
-  mypGeoLabel->setToolTip(tr("Coordinate in lat/long WGS84"));
+  
   QLabel * mypCRSLabel = new QLabel(mypWidget);
   mypCRSLabel->setPixmap(QPixmap(":/coordinatecapture/transformed.png"));
-  mypGeoLabel->setToolTip(tr("Coordinate in map canvas coordinate reference system"));
+  
   mpGeoEdit = new QLineEdit(mypWidget);
   mpGeoEdit->setReadOnly(true);
+  mpGeoEdit->setToolTip(tr("Coordinate in lat/long WGS84"));
+  
   mpTransformedEdit = new QLineEdit(mypWidget);
   mpTransformedEdit->setReadOnly(true);
+  mpTransformedEdit->setToolTip(tr("Coordinate in map canvas coordinate reference system"));
+  
   QPushButton * mypCopyButton = new QPushButton(mypWidget);
   mypCopyButton->setText(tr("Copy to clipboard"));
   connect(mypCopyButton, SIGNAL(clicked()), this, SLOT(copy()));
+
+  mpTrackMouseButton = new QToolButton(mypWidget);
+  mpTrackMouseButton->setCheckable(true);
+  mpTrackMouseButton->setToolTip(tr("Click to enable mouse tracking. Click the canvas to stop"));
+  mpTrackMouseButton->setChecked(false);
+  mpTrackMouseButton->setIcon(QIcon(":/coordinatecapture/tracking.png"));
 
   mypLayout->addWidget(mypGeoLabel, 0,0);
   mypLayout->addWidget(mpGeoEdit, 0,1);
   mypLayout->addWidget(mypCRSLabel, 1,0);
   mypLayout->addWidget(mpTransformedEdit, 1,1);
+  mypLayout->addWidget(mpTrackMouseButton, 2,0);
   mypLayout->addWidget(mypCopyButton, 2,1);
 
   
@@ -130,14 +143,29 @@ void CoordinateCapture::initGui()
   // now add our custom widget to the dock - ownership of the widget is passed to the dock
   mpDockWidget->setWidget(mypWidget);
 
-
 }
+
 //method defined in interface
 void CoordinateCapture::help()
 {
   //implement me!
 }
-
+void CoordinateCapture::mouseClicked(QgsPoint thePoint)
+{
+  //clicking on the canvas will update the widgets and then disable 
+  //tracking so the user can copy the click point coords
+  mpTrackMouseButton->setChecked(false);
+  update(thePoint);
+}
+void CoordinateCapture::mouseMoved(QgsPoint thePoint)
+{
+  //mouse movements will only update the widgets if the
+  //tracking button is checked
+  if(mpTrackMouseButton->isChecked())
+  {
+    update(thePoint);
+  }
+}
 void CoordinateCapture::update(QgsPoint thePoint)
 {
   //this is the coordinate resolved back to lat / lon

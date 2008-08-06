@@ -45,8 +45,11 @@ CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
   delete mpRubberBand;
 }
 
-void CoordinateCaptureMapTool::canvasMoveEvent(QMouseEvent * e)
+void CoordinateCaptureMapTool::canvasMoveEvent(QMouseEvent * thepEvent)
 {
+  QgsPoint myOriginalPoint = 
+    mCanvas->getCoordinateTransform()->toMapCoordinates(thepEvent->x(), thepEvent->y());
+  emit mouseMoved(myOriginalPoint);
 }
 
 void CoordinateCaptureMapTool::canvasPressEvent(QMouseEvent * thepEvent)
@@ -62,7 +65,7 @@ void CoordinateCaptureMapTool::canvasReleaseEvent(QMouseEvent * thepEvent)
 
   QgsPoint myOriginalPoint = 
     mCanvas->getCoordinateTransform()->toMapCoordinates(thepEvent->x(), thepEvent->y());
-  emit pointCaptured(myOriginalPoint);
+  emit mouseClicked(myOriginalPoint);
 
   //make a little box for display
 

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="32"
+   id="svg5215"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:docname="tracking.svg"
+   version="1.0"
+   inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/tracking.png"
+   inkscape:export-xdpi="94.536186"
+   inkscape:export-ydpi="94.536186">
+  <metadata
+     id="metadata5462">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs5460">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 765.35431 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1530.7086 : 765.35431 : 1"
+       inkscape:persp3d-origin="765.35431 : 510.23621 : 1"
+       id="perspective5464" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="986"
+     inkscape:window-width="1680"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="25"
+     inkscape:cx="16"
+     inkscape:cy="16"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:current-layer="g7445" />
+<!-- EMR_SETMAPMODE --><!-- EMR_SETWINDOWEXTEX --><!-- EMR_SETVIEWPORTEXTEX --><!-- EMR_SETBKMODE --><!-- EMR_STRETCHDIBITS --><!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#c00000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     id="path5221"
+     d="" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#c00000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     id="path5239"
+     d="" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#c00000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     id="path5339"
+     d="" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#c00000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     id="path5365"
+     d="" />
+<!-- EMR_SETBKCOLOR -->  <g
+     id="g7438"
+     transform="translate(559.935,-420.779)">
+    <g
+       id="g7445"
+       transform="matrix(1.23751,0,0,1.23751,-561.671,-729.504)">
+      <g
+         id="g3387"
+         transform="matrix(1.2441348,0,0,1.0636724,-4.8301853,-60.654504)">
+        <path
+           id="path3276"
+           d="M 19.100853,941.77982 C 19.008084,941.83744 18.955701,942.01187 18.934129,942.35366 C 18.908376,943.12101 17.116629,947.73404 12.391171,946.21524 C 10.879759,945.73974 12.972503,948.12699 11.618279,951.04591 C 14.657798,955.26914 18.375471,955.19637 21.597776,953.70485 C 24.769373,952.24327 26.244604,946.51729 24.004043,943.53193 C 20.906639,943.94438 19.547819,941.50216 19.100853,941.77982 z M 18.176749,947.79101 C 20.073882,946.60297 21.86885,949.64581 19.891076,950.81307 C 17.913302,951.98033 16.249687,948.92834 18.176749,947.79101 z"
+           style="fill:#b4a8a8;fill-opacity:1;stroke:none;stroke-width:0.05888587px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           id="path3278"
+           d="M 9.7699276,935.86406 C 9.7699276,935.86406 10.356887,937.09029 10.946336,937.97319 C 11.535783,938.85607 12.856787,937.73455 12.548342,937.09607 C 12.219114,936.53824 11.680379,935.62542 11.261362,934.91545 C 10.812416,934.15477 9.3118336,934.97202 9.7699276,935.86406"
+           style="fill:#b4a8a8;fill-opacity:1;stroke:none;stroke-width:1.14153004px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           id="path3280"
+           d="M 18.287483,947.93116 C 20.139762,946.83797 21.56912,949.65346 19.846068,950.67039 C 18.07994,951.71274 16.435202,949.02436 18.287483,947.93116"
+           style="fill:#b4a8a8;fill-opacity:1;stroke:none;stroke-width:0.05888587px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           id="path3286"
+           d="M 8.9834083,932.90943 C 8.6999176,933.00837 6.3347409,934.67778 5.7669574,936.38041 C 7.5478178,941.48323 12.322382,945.98161 15.56796,944.06611 C 18.783609,942.09989 17.173982,935.66522 13.91332,931.299 C 11.387662,931.42209 10.271995,932.08055 9.2369689,932.75978 C 9.6742805,933.73246 10.2338,934.56464 10.2338,934.56464 C 10.2338,934.56464 11.134983,934.2379 11.314561,934.54217 C 11.524071,934.89716 12.362104,936.3171 12.751191,936.97635 C 13.14028,937.63562 12.358815,938.1652 12.358815,938.1652 C 12.358815,938.1652 13.774661,940.68003 14.202826,941.52135 C 14.647601,941.46398 13.875284,942.12492 14.029906,941.69178 C 13.760539,941.23537 12.054542,938.34478 12.054542,938.34478 C 12.054542,938.34478 11.233998,938.6923 10.973777,938.36725 C 10.683629,937.99148 9.7649517,936.55076 9.5072196,935.88235 C 9.4382117,935.64957 9.3209809,935.10337 10.030951,934.68436 C 9.7225057,934.04588 9.1513525,933.4257 8.9834083,932.90943"
+           style="fill:#b4a8a8;fill-opacity:1;stroke:none;stroke-width:0.05888587px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+        <path
+           id="path3288"
+           d="M 11.499432,950.8434 C 12.150345,948.8182 12.007357,949.03935 11.681419,946.63341 C 11.412853,944.67224 13.360776,947.62518 16.424289,945.74875 C 19.517731,943.92304 18.15757,940.69158 19.604149,941.75236 C 21.080661,942.86386 21.439819,943.47241 23.914765,943.37925 C 22.968646,941.54446 20.130371,940.21102 17.994523,935.3177 C 16.951955,932.85607 14.641585,931.14269 14.044674,931.28985 C 15.02321,932.832 15.334142,933.12713 16.420761,935.08412 C 17.537311,937.09182 18.599056,942.48232 15.708462,944.18831 C 12.817869,945.89431 8.6718298,942.46089 7.5461337,940.32183 C 6.3697251,938.2127 6.6158241,939.09311 5.584891,936.41948 C 5.1002366,937.79954 6.5227443,940.78907 7.1030453,941.54061 C 9.7143992,944.92252 10.461038,949.19983 11.499432,950.8434"
+           style="fill:#b4a8a8;fill-opacity:1;stroke:none;stroke-width:0.05888587px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.77776337;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.77776341, 1.77776341;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 2.3401831,947.06548 C 3.600779,943.54228 6.5421694,943.67157 6.5421694,943.67157"
+         id="path3261" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.77776337;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.77776341, 1.77776341;stroke-dashoffset:0;stroke-opacity:1"
+         d="M 17.596626,934.45951 C 17.596626,934.45951 20.990538,935.97869 22.768302,933.42517 C 24.546065,930.87166 25.03091,930.32217 26.194537,930.25752"
+         id="path3263" />
+      <g
+         id="g3379"
+         transform="translate(-1.5838253,-0.2262608)">
+        <path
+           inkscape:export-ydpi="94.536186"
+           inkscape:export-xdpi="94.536186"
+           inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path5375.png"
+           id="path5371"
+           d="M 8.0298809,932.26863 C 7.7463902,932.36757 5.3812135,934.03698 4.81343,935.73961 C 6.5942904,940.84243 11.368855,945.34081 14.614433,943.42531 C 17.830082,941.45909 16.220455,935.02442 12.959793,930.6582 C 10.434135,930.78129 9.3184675,931.43975 8.2834415,932.11898 C 8.7207531,933.09166 9.2802725,933.92384 9.2802725,933.92384 C 9.2802725,933.92384 10.181456,933.5971 10.361034,933.90137 C 10.570544,934.25636 11.408577,935.6763 11.797664,936.33555 C 12.186753,936.99482 11.405288,937.5244 11.405288,937.5244 C 11.405288,937.5244 12.821134,940.03923 13.249299,940.88055 C 13.694074,940.82318 12.921757,941.48412 13.076379,941.05098 C 12.807012,940.59457 11.101015,937.70398 11.101015,937.70398 C 11.101015,937.70398 10.280471,938.0515 10.02025,937.72645 C 9.730102,937.35068 8.8114243,935.90996 8.5536922,935.24155 C 8.4846843,935.00877 8.3674535,934.46257 9.0774238,934.04356 C 8.7689783,933.40508 8.1978251,932.7849 8.0298809,932.26863"
+           style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.5135231;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <g
+           id="g3373">
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.5135231;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="M 18.147326,941.13902 C 18.054557,941.19664 18.002174,941.37107 17.980602,941.71286 C 17.954849,942.48021 16.163102,947.09324 11.437644,945.57444 C 9.9262317,945.09894 12.018976,947.48619 10.664752,950.40511 C 13.704271,954.62834 17.421944,954.55557 20.644249,953.06405 C 23.815846,951.60247 25.291077,945.87649 23.050516,942.89113 C 19.953112,943.30358 18.594292,940.86136 18.147326,941.13902 z M 17.223222,947.15021 C 19.120355,945.96217 20.915323,949.00501 18.937549,950.17227 C 16.959775,951.33953 15.29616,948.28754 17.223222,947.15021 z"
+             id="path5367"
+             inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path5375.png"
+             inkscape:export-xdpi="94.536186"
+             inkscape:export-ydpi="94.536186" />
+          <path
+             style="fill:#241b1b;fill-opacity:1;stroke:none;stroke-width:1.14153004px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+             d="M 8.8164002,935.22326 C 8.8164002,935.22326 9.4033595,936.44949 9.9928089,937.33239 C 10.582256,938.21527 11.90326,937.09375 11.594815,936.45527 C 11.265587,935.89744 10.726852,934.98462 10.307835,934.27465 C 9.8588887,933.51397 8.3583062,934.33122 8.8164002,935.22326"
+             id="path5373" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.5135231;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="M 17.333956,947.29036 C 19.186235,946.19717 20.615593,949.01266 18.892541,950.02959 C 17.126413,951.07194 15.481675,948.38356 17.333956,947.29036"
+             id="path5375"
+             inkscape:export-xdpi="94.536186"
+             inkscape:export-ydpi="94.536186" />
+          <path
+             style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:1.5135231;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             d="M 10.545905,950.2026 C 11.196818,948.1774 11.05383,948.39855 10.727892,945.99261 C 10.459326,944.03144 12.407249,946.98438 15.470762,945.10795 C 18.564204,943.28224 17.204043,940.05078 18.650622,941.11156 C 20.127134,942.22306 20.486292,942.83161 22.961238,942.73845 C 22.015119,940.90366 19.176844,939.57022 17.040996,934.6769 C 15.998428,932.21527 13.688058,930.50189 13.091147,930.64905 C 14.069683,932.1912 14.380615,932.48633 15.467234,934.44332 C 16.583784,936.45102 17.645529,941.84152 14.754935,943.54751 C 11.864342,945.25351 7.7183024,941.82009 6.5926063,939.68103 C 5.4161977,937.5719 5.6622967,938.45231 4.6313636,935.77868 C 4.1467092,937.15874 5.5692169,940.14827 6.1495179,940.89981 C 8.7608718,944.28172 9.5075103,948.55903 10.545905,950.2026"
+             id="path5369"
+             inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path5375.png"
+             inkscape:export-xdpi="94.536186"
+             inkscape:export-ydpi="94.536186" />
+        </g>
+      </g>
+    </g>
+  </g>
+  <path
+     style="fill:#e00a0e;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.0354331px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path5379"
+     d="" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:0.0354331px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     d=""
+     id="path5393" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:none;stroke:#ffffff;stroke-width:1.41732001px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     d=""
+     id="path5397" />
+<!-- EMR_SETBKCOLOR --><!-- EMR_SETBKCOLOR --><!-- EMR_SETBKCOLOR --><!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.885827px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path5413"
+     d="" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:0.885827px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     d=""
+     id="path5423" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:none;stroke:none"
+     d=""
+     id="path5433" />
+<!-- EMR_SETBKCOLOR -->  <path
+     style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.106299px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path5439"
+     d="" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:0.106299px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     d=""
+     id="path5445" />
+<!-- EMR_SETBKCOLOR -->  <g
+     id="g6218" />
+  <path
+     style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:0.106299px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     id="path5451"
+     d="" />
+  <path
+     style="fill:none;stroke:#ffffff;stroke-width:0.106299px;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+     d=""
+     id="path5457" />
+</svg>

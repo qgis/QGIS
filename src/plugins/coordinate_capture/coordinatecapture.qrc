@@ -3,5 +3,6 @@
         <file>coordinate_capture.png</file>
         <file>geographic.png</file>
         <file>transformed.png</file>
+        <file>tracking.png</file>
     </qresource>
 </RCC>
