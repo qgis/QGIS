@@ -321,6 +321,16 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 
   mSplash->showMessage(tr("Setting up the GUI"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
+
+  // Make the right and left docks consume all vertical space and top
+  // and bottom docks nest between them
+
+  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+
+
   createActions();
   createActionGroups();
   createMenus();
