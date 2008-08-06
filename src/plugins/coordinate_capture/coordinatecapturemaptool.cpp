@@ -31,10 +31,12 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool(QgsMapCanvas* thepCanvas)
   : QgsMapTool(thepCanvas)
 {
   // set cursor
-  QPixmap myIdentifyCursor = QPixmap((const char **) identify_cursor);
+  QPixmap myIdentifyCursor = QPixmap((const char **) capture_point_cursor);
   mCursor = QCursor(myIdentifyCursor, 1, 1);
   mpMapCanvas = thepCanvas;
   mpRubberBand = new QgsRubberBand(mpMapCanvas,false); //false - not a polygon
+  mpRubberBand->setColor(Qt::red);
+  mpRubberBand->setWidth(3);
 }
 
 CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
@@ -58,13 +60,15 @@ void CoordinateCaptureMapTool::canvasReleaseEvent(QMouseEvent * thepEvent)
     return;
   }
 
-  mpRubberBand->reset(false);
-
-  // convert screen coordinates to map coordinates
   QgsPoint myPoint = 
     mCanvas->getCoordinateTransform()->toMapCoordinates(thepEvent->x(), thepEvent->y());
-  mpRubberBand->addPoint(myPoint,true); //true - update canvas
   emit pointCaptured(myPoint);
+  mpRubberBand->reset(false);
+  // convert screen coordinates to map coordinates
+  mpRubberBand->addPoint(myPoint,false); //true - update canvas
+  mpRubberBand->addPoint(myPoint,false); //true - update canvas
+  mpRubberBand->addPoint(myPoint,false); //true - update canvas
+  mpRubberBand->show();
 }
 
 
