@@ -43,7 +43,7 @@ QgsDistanceArea::QgsDistanceArea()
   // init with default settings
   mProjectionsEnabled = FALSE;
   mCoordTransform = new QgsCoordinateTransform;
-  setSourceEPSG(EPSGID); // WGS 84
+  setSourceEPSG(GEOEPSG_ID); // WGS 84
   setEllipsoid("WGS84");
 }
 
