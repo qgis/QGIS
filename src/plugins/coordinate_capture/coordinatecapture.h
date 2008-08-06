@@ -97,11 +97,11 @@ private:
   //! Container for the coordinate info
   QPointer<QDockWidget> mpDockWidget;
 
-  //!output display for x coord
-  QPointer<QLineEdit> mpXEdit;
+  //!output display for geographic lat/long coords
+  QPointer<QLineEdit> mpGeoEdit;
 
-  //!output display for y coord
-  QPointer<QLineEdit> mpYEdit;
+  //!output display for CRS  coord
+  QPointer<QLineEdit> mpTransformedEdit;
 
   //!Our custom map tool to capture clicks
   CoordinateCaptureMapTool * mpMapTool;

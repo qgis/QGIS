@@ -24,6 +24,10 @@
 #include <qgisgui.h>
 #include <qgspoint.h>
 #include <qgsmapcanvas.h>
+#include <qgsmaprenderer.h>
+#include <qgis.h>
+#include <qgsspatialrefsys.h>
+#include <qgscoordinatetransform.h>
 
 #include "coordinatecapture.h"
 #include "coordinatecapturegui.h"
@@ -100,16 +104,16 @@ void CoordinateCapture::initGui()
   mypGeoLabel->setPixmap(QPixmap(":/coordinatecapture/geographic.png"));
   QLabel * mypCRSLabel = new QLabel(mypWidget);
   mypCRSLabel->setPixmap(QPixmap(":/coordinatecapture/transformed.png"));
-  mpXEdit = new QLineEdit(mypWidget);
-  mpYEdit = new QLineEdit(mypWidget);
+  mpGeoEdit = new QLineEdit(mypWidget);
+  mpTransformedEdit = new QLineEdit(mypWidget);
   QPushButton * mypCopyButton = new QPushButton(mypWidget);
   mypCopyButton->setText(tr("Copy to clipboard"));
   connect(mypCopyButton, SIGNAL(clicked()), this, SLOT(copy()));
 
   mypLayout->addWidget(mypGeoLabel, 0,0);
-  mypLayout->addWidget(mpXEdit, 0,1);
+  mypLayout->addWidget(mpGeoEdit, 0,1);
   mypLayout->addWidget(mypCRSLabel, 1,0);
-  mypLayout->addWidget(mpYEdit, 1,1);
+  mypLayout->addWidget(mpTransformedEdit, 1,1);
   mypLayout->addWidget(mypCopyButton, 2,1);
 
   
@@ -132,8 +136,16 @@ void CoordinateCapture::help()
 
 void CoordinateCapture::update(QgsPoint thePoint)
 {
-  mpXEdit->setText(QString::number( thePoint.x(),'f'));
-  mpYEdit->setText(QString::number( thePoint.y(),'f'));
+  //this is the coordinate resolved back to lat / lon
+  QgsSpatialRefSys mySrs;
+  mySrs.createFromEpsg(GEOEPSG_ID); //geo lat lon
+  QgsCoordinateTransform myTransform(mQGisIface->getMapCanvas()->mapRenderer()->destinationSrs(),mySrs);
+  QgsPoint myGeoPoint = myTransform.transform(thePoint);
+  mpGeoEdit->setText(QString::number( myGeoPoint.x(),'f',3) + "," +
+      QString::number( myGeoPoint.y(),'f',3));
+  // This is the coordinate space of the map canvas
+  mpTransformedEdit->setText(QString::number( thePoint.x(),'f',3) + "," +
+      QString::number( thePoint.y(),'f',3));
 }
 void CoordinateCapture::copy()
 {
@@ -141,14 +153,14 @@ void CoordinateCapture::copy()
   //if we are on x11 system put text into selection ready for middle button pasting 
   if (myClipboard->supportsSelection()) 
   { 
-    myClipboard->setText(mpXEdit->text() + "," + mpYEdit->text(),QClipboard::Selection); 
+    myClipboard->setText(mpGeoEdit->text() + "," + mpTransformedEdit->text(),QClipboard::Selection); 
     //QString myMessage = tr("Clipboard contents set to: "); 
     //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Selection)); 
   } 
   else 
   { 
     //user has an inferior operating system.... 
-    myClipboard->setText(mpXEdit->text() + "," + mpYEdit->text(),QClipboard::Clipboard ); 
+    myClipboard->setText(mpGeoEdit->text() + "," + mpTransformedEdit->text(),QClipboard::Clipboard ); 
     //QString myMessage = tr("Clipboard contents set to: "); 
     //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Clipboard)); 
   } 
