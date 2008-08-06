@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/coordinatecapture/" >
-        <file>coordinatecapture.png</file>
+        <file>coordinate_capture.png</file>
+        <file>geographic.png</file>
+        <file>transformed.png</file>
     </qresource>
 </RCC>
