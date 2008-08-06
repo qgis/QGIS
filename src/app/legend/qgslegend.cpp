@@ -1754,7 +1754,7 @@ void QgsLegend::legendLayerZoom()
     if (!theLayer)
       continue;
       
-    QgsRect lyrExtent = mMapCanvas->mapRender()->layerExtentToOutputExtent(theLayer, theLayer->extent());
+    QgsRect lyrExtent = mMapCanvas->mapRenderer()->layerExtentToOutputExtent(theLayer, theLayer->extent());
     
     if (!lyrExtent.isFinite())
       lyrExtent = theLayer->extent();

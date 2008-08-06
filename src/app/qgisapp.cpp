@@ -1297,9 +1297,9 @@ void QgisApp::setupConnections()
   //signal when mouse moved over window (coords display in status bar)
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
   //signal when mouse in capturePoint mode and mouse clicked on canvas
-  connect(mMapCanvas->mapRender(), SIGNAL(drawingProgress(int,int)), this, SLOT(showProgress(int,int)));
-  connect(mMapCanvas->mapRender(), SIGNAL(projectionsEnabled(bool)), this, SLOT(projectionsEnabled(bool)));
-  connect(mMapCanvas->mapRender(), SIGNAL(destinationSrsChanged()), this, SLOT(destinationSrsChanged()));
+  connect(mMapCanvas->mapRenderer(), SIGNAL(drawingProgress(int,int)), this, SLOT(showProgress(int,int)));
+  connect(mMapCanvas->mapRenderer(), SIGNAL(projectionsEnabled(bool)), this, SLOT(projectionsEnabled(bool)));
+  connect(mMapCanvas->mapRenderer(), SIGNAL(destinationSrsChanged()), this, SLOT(destinationSrsChanged()));
   connect(mMapCanvas, SIGNAL(extentsChanged()),this,SLOT(showExtents()));
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(showScale(double)));
   connect(mMapCanvas, SIGNAL(scaleChanged(double)), this, SLOT(updateMouseCoordinatePrecision()));
@@ -2541,7 +2541,7 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
   mMapCanvas->freeze(false);
   mMapCanvas->refresh();
   
-  mMapCanvas->mapRender()->setProjectionsEnabled(FALSE);
+  mMapCanvas->mapRenderer()->setProjectionsEnabled(FALSE);
   
   // set the initial map tool
   mMapCanvas->setMapTool(mMapTools.mPan);
@@ -3025,7 +3025,7 @@ void QgisApp::openProject(QAction *action)
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0);
-  mMapCanvas->mapRender()->setProjectionsEnabled(myProjectionEnabledFlag);
+  mMapCanvas->mapRenderer()->setProjectionsEnabled(myProjectionEnabledFlag);
 
 } // QgisApp::openProject
 
@@ -3286,7 +3286,7 @@ void QgisApp::stopRendering()
 {
   if(mMapCanvas)
   {
-    QgsMapRenderer* mypMapRenderer = mMapCanvas->mapRender();
+    QgsMapRenderer* mypMapRenderer = mMapCanvas->mapRenderer();
     if(mypMapRenderer)
     {
       QgsRenderContext* mypRenderContext = mypMapRenderer->renderContext();
@@ -4419,7 +4419,7 @@ void QgisApp::removePluginToolBarIcon(QAction *qAction)
 void QgisApp::destinationSrsChanged()
 {
   // save this information to project
-  long srsid = mMapCanvas->mapRender()->destinationSrs().srsid();
+  long srsid = mMapCanvas->mapRenderer()->destinationSrs().srsid();
   QgsProject::instance()->writeEntry("SpatialRefSys", "/ProjectSRSID", (int)srsid);
 
 }
@@ -4582,7 +4582,7 @@ void QgisApp::projectProperties()
   //pass any refresg signals off to canvases
   //connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
 
-  QgsMapRenderer* myRender = mMapCanvas->mapRender();
+  QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
   bool wasProjected = myRender->projectionsEnabled();
   long oldSRSID = myRender->destinationSrs().srsid();
 

@@ -138,7 +138,7 @@ void QgsComposerMap::draw ( QPainter *painter, const QgsRect& extent, const QSiz
       return;
     }
 
-  QgsMapRenderer* canvasMapRenderer = mMapCanvas->mapRender();
+  QgsMapRenderer* canvasMapRenderer = mMapCanvas->mapRenderer();
   if(!canvasMapRenderer)
     {
       return;

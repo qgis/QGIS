@@ -67,7 +67,7 @@ void QgsMeasureTool::activate()
   
   // If we suspect that they have data that is projected, yet the
   // map SRS is set to a geographic one, warn them.
-  if (mCanvas->mapRender()->distArea()->geographic() &&
+  if (mCanvas->mapRenderer()->distArea()->geographic() &&
       (mCanvas->extent().height() > 360 || 
        mCanvas->extent().width() > 720))
   {
@@ -122,7 +122,7 @@ void QgsMeasureTool::updateProjection()
   // mCalc->setEllipsoid(ellipsoid);
 
   // set source SRS and projections enabled flag
-  // QgsMapRenderer* mapRender = mCanvas->mapRender();
+  // QgsMapRenderer* mapRender = mCanvas->mapRenderer();
   // mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
   // int srsid = mapRender->destinationSrs().srsid();
   // mCalc->setSourceSRS(srsid);
