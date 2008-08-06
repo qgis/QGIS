@@ -47,6 +47,7 @@
 //forward declarations
 class QAction;
 class QToolBar;
+class QToolButton;
 class QDockWidget;
 class QLineEdit;
 
@@ -87,6 +88,11 @@ public slots:
   void unload();
   //! show the help document
   void help();
+  //! Called when mouse clicks on the canvas. Will populate text box with coords.
+  void mouseClicked(QgsPoint thePoint);
+  /** Called when mouse moved over the canvas. If the tracking button is toggled,
+   * the text box coords will be updated. */
+  void mouseMoved(QgsPoint thePoint);
   //! Called when mouse is clicked on the canvas
   void update(QgsPoint thePoint);
   //! Called when user clicks the copy button
@@ -105,6 +111,9 @@ private:
 
   //!Our custom map tool to capture clicks
   CoordinateCaptureMapTool * mpMapTool;
+
+  //!A toolbutton to keep track whether mouse tracking is enabled
+  QToolButton * mpTrackMouseButton;
 
   ////////////////////////////////////////////////////////////////////
   //

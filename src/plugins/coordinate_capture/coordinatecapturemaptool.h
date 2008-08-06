@@ -52,7 +52,8 @@ class CoordinateCaptureMapTool : public QgsMapTool
   public slots:
   
   signals:
-    void pointCaptured(QgsPoint);
+    void mouseMoved(QgsPoint);
+    void mouseClicked(QgsPoint);
   private:
 
     //! Rubber band for highlighting identified feature
