@@ -102,10 +102,14 @@ void CoordinateCapture::initGui()
   
   QLabel * mypGeoLabel = new QLabel(mypWidget);
   mypGeoLabel->setPixmap(QPixmap(":/coordinatecapture/geographic.png"));
+  mypGeoLabel->setToolTip(tr("Coordinate in lat/long WGS84"));
   QLabel * mypCRSLabel = new QLabel(mypWidget);
   mypCRSLabel->setPixmap(QPixmap(":/coordinatecapture/transformed.png"));
+  mypGeoLabel->setToolTip(tr("Coordinate in map canvas coordinate reference system"));
   mpGeoEdit = new QLineEdit(mypWidget);
+  mpGeoEdit->setReadOnly(true);
   mpTransformedEdit = new QLineEdit(mypWidget);
+  mpTransformedEdit->setReadOnly(true);
   QPushButton * mypCopyButton = new QPushButton(mypWidget);
   mypCopyButton->setText(tr("Copy to clipboard"));
   connect(mypCopyButton, SIGNAL(clicked()), this, SLOT(copy()));
