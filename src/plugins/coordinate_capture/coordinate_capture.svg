@@ -16,9 +16,9 @@
    version="1.0"
    sodipodi:docname="coordinate_capture.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/coordinatecapture.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/coordinate_capture.png"
+   inkscape:export-xdpi="92.84333"
+   inkscape:export-ydpi="92.84333">
   <defs
      id="defs4">
     <marker
@@ -53,8 +53,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="25"
-     inkscape:cx="9.06"
-     inkscape:cy="16"
+     inkscape:cx="16"
+     inkscape:cy="16.155723"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -79,29 +79,40 @@
      id="layer1">
     <path
        sodipodi:type="arc"
-       style="opacity:0.92642139999999995;fill:#171717;fill-opacity:0.90980392000000021;fill-rule:nonzero;stroke:#409fcc;stroke-width:0.69999999000000002;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:0.9264214;fill:#ff0000;fill-opacity:0.90980392;fill-rule:nonzero;stroke:#409fcc;stroke-width:0.69999999;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path3939"
        sodipodi:cx="16.879999"
        sodipodi:cy="15.5"
        sodipodi:rx="7.1599998"
        sodipodi:ry="6.6599998"
        d="M 24.039999,15.5 A 7.1599998,6.6599998 0 1 1 9.7199993,15.5 A 7.1599998,6.6599998 0 1 1 24.039999,15.5 z"
-       transform="translate(-0.52,0)" />
+       transform="matrix(0.6187253,0,0,0.6381491,6.0559165,5.8286885)" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.83856803px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 16.280361,5.9152738 L 16.361976,13.800716"
-       id="path2383" />
+       style="fill:#1b9ff7;fill-opacity:1;fill-rule:evenodd;stroke:#595959;stroke-width:0.93836414999999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 19.754901,1.9991821 L 16.396791,14.723911 L 12.736451,2.0685266 L 16.228885,5.5704276 L 19.754901,1.9991821 z"
+       id="path3172"
+       inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path3174.png"
+       inkscape:export-xdpi="92.84333"
+       inkscape:export-ydpi="92.84333" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.83856803px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 16.319888,25.918422 L 16.401503,18.03298"
-       id="path3933" />
+       style="fill:#1b9ff7;fill-opacity:1;fill-rule:evenodd;stroke:#595959;stroke-width:0.93836414999999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 2.6191821,12.703448 L 14.943446,16.170677 L 2.6863443,19.949956 L 6.0780353,16.344038 L 2.6191821,12.703448 z"
+       id="path3174"
+       inkscape:export-xdpi="92.84333"
+       inkscape:export-ydpi="92.84333" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.83856803px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 26.318423,15.839888 L 18.432981,15.921503"
-       id="path3935" />
+       style="fill:#1b9ff7;fill-opacity:1;fill-rule:evenodd;stroke:#595959;stroke-width:0.93836414999999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 30.180818,19.563233 L 17.856554,16.096004 L 30.113656,12.316725 L 26.721965,15.922643 L 30.180818,19.563233 z"
+       id="path3176"
+       inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path3174.png"
+       inkscape:export-xdpi="92.84333"
+       inkscape:export-ydpi="92.84333" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.83856803px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
-       d="M 6.2815774,16.120112 L 14.167019,16.038497"
-       id="path3937" />
+       style="fill:#1b9ff7;fill-opacity:1;fill-rule:evenodd;stroke:#595959;stroke-width:0.93836414999999995;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 19.73811,30.260818 L 16.38,17.536089 L 12.71966,30.191473 L 16.212095,26.689572 L 19.73811,30.260818 z"
+       id="path3178"
+       inkscape:export-filename="/home/timlinux/dev/cpp/qgis/src/plugins/coordinate_capture/path3174.png"
+       inkscape:export-xdpi="92.84333"
+       inkscape:export-ydpi="92.84333" />
   </g>
 </svg>
