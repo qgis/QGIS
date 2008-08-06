@@ -76,7 +76,7 @@ void CoordinateCapture::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/coordinatecapture/coordinatecapture.png"),tr("Coordinate Capture"), this);
+  mQActionPointer = new QAction(QIcon(":/coordinatecapture/coordinate_capture.png"),tr("Coordinate Capture"), this);
   // Set the what's this text
   mQActionPointer->setWhatsThis(tr("Click on the map to view coordinates and capture to clipboard."));
   // Connect the action to the run
@@ -92,18 +92,25 @@ void CoordinateCapture::initGui()
 
   // create a little widget with x and y display to put into our dock widget
   QWidget * mypWidget = new QWidget();
-  QLayout * mypLayout = new QVBoxLayout();
+  QGridLayout *mypLayout = new QGridLayout ( mypWidget );
+  mypLayout->setColumnMinimumWidth( 0, 36 );
   mypWidget->setLayout(mypLayout);
   
+  QLabel * mypGeoLabel = new QLabel(mypWidget);
+  mypGeoLabel->setPixmap(QPixmap(":/coordinatecapture/geographic.png"));
+  QLabel * mypCRSLabel = new QLabel(mypWidget);
+  mypCRSLabel->setPixmap(QPixmap(":/coordinatecapture/transformed.png"));
   mpXEdit = new QLineEdit(mypWidget);
   mpYEdit = new QLineEdit(mypWidget);
   QPushButton * mypCopyButton = new QPushButton(mypWidget);
   mypCopyButton->setText(tr("Copy to clipboard"));
   connect(mypCopyButton, SIGNAL(clicked()), this, SLOT(copy()));
 
-  mypLayout->addWidget(mpXEdit);
-  mypLayout->addWidget(mpYEdit);
-  mypLayout->addWidget(mypCopyButton);
+  mypLayout->addWidget(mypGeoLabel, 0,0);
+  mypLayout->addWidget(mpXEdit, 0,1);
+  mypLayout->addWidget(mypCRSLabel, 1,0);
+  mypLayout->addWidget(mpYEdit, 1,1);
+  mypLayout->addWidget(mypCopyButton, 2,1);
 
   
   //create the dock widget
