@@ -167,7 +167,7 @@ QgsMapCanvasMap* QgsMapCanvas::map()
   return mMap;
 }
 
-QgsMapRenderer* QgsMapCanvas::mapRender()
+QgsMapRenderer* QgsMapCanvas::mapRenderer()
 {
   return mMapRenderer;
 }

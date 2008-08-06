@@ -49,7 +49,7 @@ QRectF QgsMapCanvasMap::boundingRect() const
 void QgsMapCanvasMap::resize(QSize size)
 {
   mPixmap = QPixmap(size);
-  mCanvas->mapRender()->setOutputSize(size, mPixmap.logicalDpiX());
+  mCanvas->mapRenderer()->setOutputSize(size, mPixmap.logicalDpiX());
 }
 
 void QgsMapCanvasMap::setPanningOffset(const QPoint& point)
@@ -81,7 +81,7 @@ void QgsMapCanvasMap::render()
     if (mAntiAliasing)
       paint.setRenderHint(QPainter::Antialiasing);
   
-    mCanvas->mapRender()->render(&paint);
+    mCanvas->mapRenderer()->render(&paint);
 
     paint.end();
   
@@ -95,7 +95,7 @@ void QgsMapCanvasMap::render()
     paint.begin(&mPixmap);
     // Clip our drawing to the QPixmap
     paint.setClipRect(mPixmap.rect());
-    mCanvas->mapRender()->render(&paint);
+    mCanvas->mapRenderer()->render(&paint);
     paint.end();
   }
   update();

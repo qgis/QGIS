@@ -27,7 +27,7 @@ QgsMapCanvasSnapper::QgsMapCanvasSnapper(QgsMapCanvas* canvas): mMapCanvas(canva
 {
   if(canvas)
     {
-      QgsMapRenderer* canvasRender = canvas->mapRender();
+      QgsMapRenderer* canvasRender = canvas->mapRenderer();
       if(canvasRender)
 	{
 	  mSnapper = new QgsSnapper(canvasRender);
@@ -50,7 +50,7 @@ void QgsMapCanvasSnapper::setMapCanvas(QgsMapCanvas* canvas)
   mMapCanvas = canvas;
   if(mMapCanvas)
     {
-      mSnapper = new QgsSnapper(canvas->mapRender());
+      mSnapper = new QgsSnapper(canvas->mapRenderer());
     }
   else
     {

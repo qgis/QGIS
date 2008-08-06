@@ -113,7 +113,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     
     QgsMapCanvasMap* map();
     
-    QgsMapRenderer* mapRender();
+    QgsMapRenderer* mapRenderer();
     
     //! Accessor for the canvas pixmap
     QPixmap& canvasPixmap();
