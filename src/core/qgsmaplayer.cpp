@@ -434,7 +434,7 @@ bool QgsMapLayer::loadNamedStyleFromDb (const QString db, const QString theURI, 
   QgsDebugMsg( QString("Trying to load style for \"%1\" from \"%2\"").arg(theURI).arg(db) );
 
   myResult = sqlite3_open(db.toUtf8().data(), &myDatabase);
-  if (!myResult)
+  if (myResult!=SQLITE_OK)
   {
     return false;
   }
@@ -610,7 +610,7 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
     int myResult;
 
     myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb").toUtf8().data(), &myDatabase);
-    if (myResult)
+    if (myResult!=SQLITE_OK)
     {
       return tr("User database could not be opened.");
     }
