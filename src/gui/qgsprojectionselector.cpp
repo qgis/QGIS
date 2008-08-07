@@ -496,7 +496,9 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
 
   QFont fontTemp = mUserProjList->font(0);
   fontTemp.setItalic(TRUE);
+  fontTemp.setBold(TRUE);
   mUserProjList->setFont(0, fontTemp);
+  mUserProjList->setIcon(0,QIcon(QgsApplication::activeThemePath()+"user.png"));
 
   //determine where the user proj database lives for this user. If none is found an empty
   //now only will be shown
@@ -568,17 +570,21 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
   //
   // Geographic coordinate system node
   mGeoList = new QTreeWidgetItem(lstCoordinateSystems,QStringList(tr("Geographic Coordinate Systems")));
-
+  
   QFont fontTemp = mGeoList->font(0);
   fontTemp.setItalic(TRUE);
+  fontTemp.setBold(TRUE);
   mGeoList->setFont(0, fontTemp);
+  mGeoList->setIcon(0,QIcon(QgsApplication::activeThemePath()+"geographic.png"));
 
   // Projected coordinate system node
   mProjList = new QTreeWidgetItem(lstCoordinateSystems,QStringList(tr("Projected Coordinate Systems")));
 
   fontTemp = mProjList->font(0);
   fontTemp.setItalic(TRUE);
+  fontTemp.setBold(TRUE);
   mProjList->setFont(0, fontTemp);
+  mProjList->setIcon(0,QIcon(QgsApplication::activeThemePath()+"transformed.png"));
 
   //bail out in case the projections db does not exist
   //this is neccessary in case the pc is running linux with a
