@@ -198,6 +198,7 @@ void QgsIdentifyResults::addDerivedAttribute(QTreeWidgetItem * fnode, QString fi
     QFont font = daRootNode->font(0);
     font.setItalic(true);
     daRootNode->setFont(0, font);
+    mDerivedAttributeRootNodes[fnode] = daRootNode;
   }
 
   QStringList labels;
