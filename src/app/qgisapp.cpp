@@ -330,7 +330,6 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   createMenus();
   createToolBars();
   createStatusBar();
-  updateRecentProjectPaths();
   createCanvas();
   mMapCanvas->freeze();
   createLegend();
@@ -338,6 +337,7 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   createMapTips();
   setupProxy();
   readSettings();
+  updateRecentProjectPaths();
 
   mComposer = new QgsComposer(this); // Map composer
   mInternalClipboard = new QgsClipboard; // create clipboard
