@@ -88,6 +88,8 @@ public slots:
   void unload();
   //! show the help document
   void help();
+  //! Set the Coordinate Reference System used for displaying non canvas CRS coord
+  void setCRS();
   //! Called when mouse clicks on the canvas. Will populate text box with coords.
   void mouseClicked(QgsPoint thePoint);
   /** Called when mouse moved over the canvas. If the tracking button is toggled,
@@ -103,17 +105,20 @@ private:
   //! Container for the coordinate info
   QPointer<QDockWidget> mpDockWidget;
 
-  //!output display for geographic lat/long coords
-  QPointer<QLineEdit> mpGeoEdit;
+  //!output display for user defined Coordinate Reference System 
+  QPointer<QLineEdit> mpUserCrsEdit;
 
   //!output display for CRS  coord
-  QPointer<QLineEdit> mpTransformedEdit;
+  QPointer<QLineEdit> mpCanvasEdit;
 
   //!Our custom map tool to capture clicks
   CoordinateCaptureMapTool * mpMapTool;
 
   //!A toolbutton to keep track whether mouse tracking is enabled
   QToolButton * mpTrackMouseButton;
+
+  //!epsg id for showin in geoedit box
+  long mEpsgId;
 
   ////////////////////////////////////////////////////////////////////
   //
