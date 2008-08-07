@@ -105,8 +105,12 @@ QString QgsAttributeAction::expandAction(QString action, const std::vector<std::
 
   for (unsigned int i = 0; i < values.size(); ++i)
     {
-      QString to_replace = "%" + values[i].first;
-      expanded_action = expanded_action.replace(to_replace, values[i].second);
+      // Check for a replace a quoted version and a non-quoted version.
+      QString to_replace_1 = "[%" + values[i].first + "]";
+      QString to_replace_2 = "%" + values[i].first;
+
+      expanded_action = expanded_action.replace(to_replace_1, values[i].second);
+      expanded_action = expanded_action.replace(to_replace_2, values[i].second);
     }
 
   return expanded_action;
