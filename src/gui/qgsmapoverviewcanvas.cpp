@@ -181,7 +181,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent(QMouseEvent * e)
 //  if (mPanningWidget->isHidden())
 //    return;
 
-  if ((e->buttons() & Qt::LeftButton) == Qt::LeftButton)
+  if (e->button() == Qt::LeftButton)
   {
     // set new extent
     const QgsMapToPixel* cXf = mMapRenderer->coordXForm();
