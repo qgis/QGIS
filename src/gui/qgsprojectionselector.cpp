@@ -660,6 +660,10 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
       {
         // This is a projected srs
 
+        if (previousSrsTypeNode == NULL)
+        {
+          previousSrsTypeNode = mProjList;
+        }
         QTreeWidgetItem *node;
         QString srsType = QString::fromUtf8((char*)sqlite3_column_text(ppStmt, 3));
         // Find the node for this type and add the projection to it

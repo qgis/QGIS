@@ -516,54 +516,54 @@ void QgisApp::createActions()
   //
   // File Menu Related Items
   //
-  mActionFileNew= new QAction(getThemeIcon("/mActionFileNew.png"), tr("&New Project"), this);
+  mActionFileNew= new QAction(getThemeIcon("mActionFileNew.png"), tr("&New Project"), this);
   mActionFileNew->setShortcut(tr("Ctrl+N","New Project"));
   mActionFileNew->setStatusTip(tr("New Project"));
   connect(mActionFileNew, SIGNAL(triggered()), this, SLOT(fileNew()));
   //
-  mActionFileOpen= new QAction(getThemeIcon("/mActionFileOpen.png"), tr("&Open Project..."), this);
+  mActionFileOpen= new QAction(getThemeIcon("mActionFileOpen.png"), tr("&Open Project..."), this);
   mActionFileOpen->setShortcut(tr("Ctrl+O","Open a Project"));
   mActionFileOpen->setStatusTip(tr("Open a Project"));
   connect(mActionFileOpen, SIGNAL(triggered()), this, SLOT(fileOpen()));
   //
-  mActionFileSave= new QAction(getThemeIcon("/mActionFileSave.png"), tr("&Save Project"), this);
+  mActionFileSave= new QAction(getThemeIcon("mActionFileSave.png"), tr("&Save Project"), this);
   mActionFileSave->setShortcut(tr("Ctrl+S","Save Project"));
   mActionFileSave->setStatusTip(tr("Save Project"));
   connect(mActionFileSave, SIGNAL(triggered()), this, SLOT(fileSave()));
   //
-  mActionFileSaveAs= new QAction(getThemeIcon("/mActionFileSaveAs.png"), tr("Save Project &As..."), this);
+  mActionFileSaveAs= new QAction(getThemeIcon("mActionFileSaveAs.png"), tr("Save Project &As..."), this);
   mActionFileSaveAs->setShortcut(tr("Ctrl+A","Save Project under a new name"));
   mActionFileSaveAs->setStatusTip(tr("Save Project under a new name"));
   connect(mActionFileSaveAs, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
   //
-  mActionFilePrint= new QAction(getThemeIcon("/mActionFilePrint.png"), tr("&Print..."), this);
+  mActionFilePrint= new QAction(getThemeIcon("mActionFilePrint.png"), tr("&Print..."), this);
   mActionFilePrint->setShortcut(tr("Ctrl+P","Print"));
   mActionFilePrint->setStatusTip(tr("Print"));
   connect(mActionFilePrint, SIGNAL(triggered()), this, SLOT(filePrint()));
   //
-  mActionSaveMapAsImage= new QAction(getThemeIcon("/mActionSaveMapAsImage.png"), tr("Save as Image..."), this);
+  mActionSaveMapAsImage= new QAction(getThemeIcon("mActionSaveMapAsImage.png"), tr("Save as Image..."), this);
   mActionSaveMapAsImage->setShortcut(tr("Ctrl+I","Save map as image"));
   mActionSaveMapAsImage->setStatusTip(tr("Save map as image"));
   connect(mActionSaveMapAsImage, SIGNAL(triggered()), this, SLOT(saveMapAsImage()));
   //
-  mActionFileExit= new QAction(getThemeIcon("/mActionFileExit.png"), tr("Exit"), this);
+  mActionFileExit= new QAction(getThemeIcon("mActionFileExit.png"), tr("Exit"), this);
   mActionFileExit->setShortcut(tr("Ctrl+Q","Exit QGIS"));
   mActionFileExit->setStatusTip(tr("Exit QGIS"));
   connect(mActionFileExit, SIGNAL(triggered()), this, SLOT(fileExit()));
   //
   // Layer Menu Related Items
   //
-  mActionAddOgrLayer= new QAction(getThemeIcon("/mActionAddOgrLayer.png"), tr("Add a Vector Layer..."), this);
+  mActionAddOgrLayer= new QAction(getThemeIcon("mActionAddOgrLayer.png"), tr("Add a Vector Layer..."), this);
   mActionAddOgrLayer->setShortcut(tr("V","Add a Vector Layer"));
   mActionAddOgrLayer->setStatusTip(tr("Add a Vector Layer"));
   connect(mActionAddOgrLayer, SIGNAL(triggered()), this, SLOT(addVectorLayer()));
   //
-  mActionAddRasterLayer= new QAction(getThemeIcon("/mActionAddRasterLayer.png"), tr("Add a Raster Layer..."), this);
+  mActionAddRasterLayer= new QAction(getThemeIcon("mActionAddRasterLayer.png"), tr("Add a Raster Layer..."), this);
   mActionAddRasterLayer->setShortcut(tr("R","Add a Raster Layer"));
   mActionAddRasterLayer->setStatusTip(tr("Add a Raster Layer"));
   connect(mActionAddRasterLayer, SIGNAL(triggered()), this, SLOT(addRasterLayer()));
   //
-  mActionAddLayer= new QAction(getThemeIcon("/mActionAddLayer.png"), tr("Add a PostGIS Layer..."), this);
+  mActionAddLayer= new QAction(getThemeIcon("mActionAddLayer.png"), tr("Add a PostGIS Layer..."), this);
   mActionAddLayer->setShortcut(tr("D","Add a PostGIS Layer"));
   mActionAddLayer->setStatusTip(tr("Add a PostGIS Layer"));
 //#ifdef HAVE_POSTGRESQL
@@ -575,63 +575,63 @@ void QgisApp::createActions()
 //#endif
   connect(mActionAddLayer, SIGNAL(triggered()), this, SLOT(addDatabaseLayer()));
   //
-  mActionNewVectorLayer= new QAction(getThemeIcon("/mActionNewVectorLayer.png"), tr("New Vector Layer..."), this);
+  mActionNewVectorLayer= new QAction(getThemeIcon("mActionNewVectorLayer.png"), tr("New Vector Layer..."), this);
   mActionNewVectorLayer->setShortcut(tr("N","Create a New Vector Layer"));
   mActionNewVectorLayer->setStatusTip(tr("Create a New Vector Layer"));
   connect(mActionNewVectorLayer, SIGNAL(triggered()), this, SLOT(newVectorLayer()));
   //
-  mActionRemoveLayer= new QAction(getThemeIcon("/mActionRemoveLayer.png"), tr("Remove Layer"), this);
+  mActionRemoveLayer= new QAction(getThemeIcon("mActionRemoveLayer.png"), tr("Remove Layer"), this);
   mActionRemoveLayer->setShortcut(tr("Ctrl+D","Remove a Layer"));
   mActionRemoveLayer->setStatusTip(tr("Remove a Layer"));
   connect(mActionRemoveLayer, SIGNAL(triggered()), this, SLOT(removeLayer()));
   mActionRemoveLayer->setEnabled(false);
   //
-  mActionAddAllToOverview= new QAction(getThemeIcon("/mActionAddAllToOverview.png"), tr("Add All To Overview"), this);
+  mActionAddAllToOverview= new QAction(getThemeIcon("mActionAddAllToOverview.png"), tr("Add All To Overview"), this);
   mActionAddAllToOverview->setShortcut(tr("+","Show all layers in the overview map"));
   mActionAddAllToOverview->setStatusTip(tr("Show all layers in the overview map"));
   connect(mActionAddAllToOverview, SIGNAL(triggered()), this, SLOT(addAllToOverview()));
   //
-  mActionRemoveAllFromOverview= new QAction(getThemeIcon("/mActionRemoveAllFromOverview.png"), tr("Remove All From Overview"), this);
+  mActionRemoveAllFromOverview= new QAction(getThemeIcon("mActionRemoveAllFromOverview.png"), tr("Remove All From Overview"), this);
   mActionRemoveAllFromOverview->setShortcut(tr("-","Remove all layers from overview map"));
   mActionRemoveAllFromOverview->setStatusTip(tr("Remove all layers from overview map"));
   connect(mActionRemoveAllFromOverview, SIGNAL(triggered()), this, SLOT(removeAllFromOverview()));
   //
-  mActionToggleFullScreen = new QAction(getThemeIcon("/mActionToggleFullScreen.png"), tr("Toggle full screen mode"), this);
+  mActionToggleFullScreen = new QAction(getThemeIcon("mActionToggleFullScreen.png"), tr("Toggle full screen mode"), this);
   mActionToggleFullScreen->setShortcut(tr("Ctrl-F","Toggle fullscreen mode"));
   mActionToggleFullScreen->setStatusTip(tr("Toggle fullscreen mode"));
   connect(mActionToggleFullScreen, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 
   //
-  mActionShowAllLayers= new QAction(getThemeIcon("/mActionShowAllLayers.png"), tr("Show All Layers"), this);
+  mActionShowAllLayers= new QAction(getThemeIcon("mActionShowAllLayers.png"), tr("Show All Layers"), this);
   mActionShowAllLayers->setShortcut(tr("S","Show all layers"));
   mActionShowAllLayers->setStatusTip(tr("Show all layers"));
   connect(mActionShowAllLayers, SIGNAL(triggered()), this, SLOT(showAllLayers()));
   //
-  mActionHideAllLayers= new QAction(getThemeIcon("/mActionHideAllLayers.png"), tr("Hide All Layers"), this);
+  mActionHideAllLayers= new QAction(getThemeIcon("mActionHideAllLayers.png"), tr("Hide All Layers"), this);
   mActionHideAllLayers->setShortcut(tr("H","Hide all layers"));
   mActionHideAllLayers->setStatusTip(tr("Hide all layers"));
   connect(mActionHideAllLayers, SIGNAL(triggered()), this, SLOT(hideAllLayers()));
   //
   // Settings Menu Related Items
   //
-  mActionProjectProperties= new QAction(getThemeIcon("/mActionProjectProperties.png"), tr("Project Properties..."), this);
+  mActionProjectProperties= new QAction(getThemeIcon("mActionProjectProperties.png"), tr("Project Properties..."), this);
   mActionProjectProperties->setShortcut(tr("P","Set project properties"));
   mActionProjectProperties->setStatusTip(tr("Set project properties"));
   connect(mActionProjectProperties, SIGNAL(triggered()), this, SLOT(projectProperties()));
   //
-  mActionOptions= new QAction(getThemeIcon("/mActionOptions.png"), tr("Options..."), this);
+  mActionOptions= new QAction(getThemeIcon("mActionOptions.png"), tr("Options..."), this);
   // mActionOptions->setShortcut(tr("Alt+O","Change various QGIS options"));
   mActionOptions->setStatusTip(tr("Change various QGIS options"));
   connect(mActionOptions, SIGNAL(triggered()), this, SLOT(options()));
   //
-  mActionCustomProjection= new QAction(getThemeIcon("/mActionCustomProjection.png"), tr("Custom CRS..."), this);
+  mActionCustomProjection= new QAction(getThemeIcon("mActionCustomProjection.png"), tr("Custom CRS..."), this);
   // mActionCustomProjection->setShortcut(tr("Alt+I","Manage custom projections"));
   mActionCustomProjection->setStatusTip(tr("Manage custom coordinate reference systems"));
   connect(mActionCustomProjection, SIGNAL(triggered()), this, SLOT(customProjection()));
   //
   // Help Menu Related items
   //
-  mActionHelpContents= new QAction(getThemeIcon("/mActionHelpContents.png"), tr("Help Contents"), this);
+  mActionHelpContents= new QAction(getThemeIcon("mActionHelpContents.png"), tr("Help Contents"), this);
 #ifdef Q_WS_MAC
   mActionHelpContents->setShortcut(tr("Ctrl+?","Help Documentation (Mac)"));
 #else
@@ -640,89 +640,89 @@ void QgisApp::createActions()
   mActionHelpContents->setStatusTip(tr("Help Documentation"));
   connect(mActionHelpContents, SIGNAL(triggered()), this, SLOT(helpContents()));
   //
-  mActionQgisHomePage= new QAction(getThemeIcon("/mActionQgisHomePage.png"), tr("Qgis Home Page"), this);
+  mActionQgisHomePage= new QAction(getThemeIcon("mActionQgisHomePage.png"), tr("Qgis Home Page"), this);
 #ifndef Q_WS_MAC
   mActionQgisHomePage->setShortcut(tr("Ctrl+H","QGIS Home Page"));
 #endif
   mActionQgisHomePage->setStatusTip(tr("QGIS Home Page"));
   connect(mActionQgisHomePage, SIGNAL(triggered()), this, SLOT(helpQgisHomePage()));
   //
-  mActionHelpAbout= new QAction(getThemeIcon("/mActionHelpAbout.png"), tr("About"), this);
+  mActionHelpAbout= new QAction(getThemeIcon("mActionHelpAbout.png"), tr("About"), this);
   mActionHelpAbout->setStatusTip(tr("About QGIS"));
   connect(mActionHelpAbout, SIGNAL(triggered()), this, SLOT(about()));
   //
-  mActionCheckQgisVersion= new QAction(getThemeIcon("/mActionCheckQgisVersion.png"), tr("Check Qgis Version"), this);
+  mActionCheckQgisVersion= new QAction(getThemeIcon("mActionCheckQgisVersion.png"), tr("Check Qgis Version"), this);
   mActionCheckQgisVersion->setStatusTip(tr("Check if your QGIS version is up to date (requires internet access)"));
   connect(mActionCheckQgisVersion, SIGNAL(triggered()), this, SLOT(checkQgisVersion()));
   // 
   // View Menu Items
   //
-  mActionDraw= new QAction(getThemeIcon("/mActionDraw.png"), tr("Refresh"), this);
+  mActionDraw= new QAction(getThemeIcon("mActionDraw.png"), tr("Refresh"), this);
   mActionDraw->setShortcut(tr("Ctrl+R","Refresh Map"));
   mActionDraw->setStatusTip(tr("Refresh Map"));
   connect(mActionDraw, SIGNAL(triggered()), this, SLOT(refreshMapCanvas()));
   //
-  mActionZoomIn= new QAction(getThemeIcon("/mActionZoomIn.png"), tr("Zoom In"), this);
+  mActionZoomIn= new QAction(getThemeIcon("mActionZoomIn.png"), tr("Zoom In"), this);
   mActionZoomIn->setShortcut(tr("Ctrl++","Zoom In"));
   mActionZoomIn->setStatusTip(tr("Zoom In"));
   connect(mActionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
   //
-  mActionZoomOut= new QAction(getThemeIcon("/mActionZoomOut.png"), tr("Zoom Out"), this);
+  mActionZoomOut= new QAction(getThemeIcon("mActionZoomOut.png"), tr("Zoom Out"), this);
   mActionZoomOut->setShortcut(tr("Ctrl+-","Zoom Out"));
   mActionZoomOut->setStatusTip(tr("Zoom Out"));
   connect(mActionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
   //
-  mActionZoomFullExtent= new QAction(getThemeIcon("/mActionZoomFullExtent.png"), tr("Zoom Full"), this);
+  mActionZoomFullExtent= new QAction(getThemeIcon("mActionZoomFullExtent.png"), tr("Zoom Full"), this);
   mActionZoomFullExtent->setShortcut(tr("F","Zoom to Full Extents"));
   mActionZoomFullExtent->setStatusTip(tr("Zoom to Full Extents"));
   connect(mActionZoomFullExtent, SIGNAL(triggered()), this, SLOT(zoomFull()));
   //
-  mActionZoomToSelected= new QAction(getThemeIcon("/mActionZoomToSelected.png"), tr("Zoom To Selection"), this);
+  mActionZoomToSelected= new QAction(getThemeIcon("mActionZoomToSelected.png"), tr("Zoom To Selection"), this);
   mActionZoomToSelected->setShortcut(tr("Ctrl+F","Zoom to selection"));
   mActionZoomToSelected->setStatusTip(tr("Zoom to selection"));
   connect(mActionZoomToSelected, SIGNAL(triggered()), this, SLOT(zoomToSelected()));
   //
-  mActionPan= new QAction(getThemeIcon("/mActionPan.png"), tr("Pan Map"), this);
+  mActionPan= new QAction(getThemeIcon("mActionPan.png"), tr("Pan Map"), this);
   mActionPan->setStatusTip(tr("Pan the map"));
   connect(mActionPan, SIGNAL(triggered()), this, SLOT(pan()));
   //
-  mActionZoomLast= new QAction(getThemeIcon("/mActionZoomLast.png"), tr("Zoom Last"), this);
+  mActionZoomLast= new QAction(getThemeIcon("mActionZoomLast.png"), tr("Zoom Last"), this);
   //mActionZoomLast->setShortcut(tr("Ctrl+O","Zoom to Last Extent"));
   mActionZoomLast->setStatusTip(tr("Zoom to Last Extent"));
   connect(mActionZoomLast, SIGNAL(triggered()), this, SLOT(zoomPrevious()));
   //
-  mActionZoomToLayer= new QAction(getThemeIcon("/mActionZoomToLayer.png"), tr("Zoom To Layer"), this);
+  mActionZoomToLayer= new QAction(getThemeIcon("mActionZoomToLayer.png"), tr("Zoom To Layer"), this);
   //mActionZoomToLayer->setShortcut(tr("Ctrl+O","Zoom to Layer"));
   mActionZoomToLayer->setStatusTip(tr("Zoom to Layer"));
   connect(mActionZoomToLayer, SIGNAL(triggered()), this, SLOT(zoomToLayerExtent()));
   //
-  mActionIdentify= new QAction(getThemeIcon("/mActionIdentify.png"), tr("Identify Features"), this);
+  mActionIdentify= new QAction(getThemeIcon("mActionIdentify.png"), tr("Identify Features"), this);
   mActionIdentify->setShortcut(tr("I","Click on features to identify them"));
   mActionIdentify->setStatusTip(tr("Click on features to identify them"));
   connect(mActionIdentify, SIGNAL(triggered()), this, SLOT(identify()));
   //
-  mActionSelect= new QAction(getThemeIcon("/mActionSelect.png"), tr("Select Features"), this);
+  mActionSelect= new QAction(getThemeIcon("mActionSelect.png"), tr("Select Features"), this);
   mActionSelect->setStatusTip(tr("Select Features"));
   connect(mActionSelect, SIGNAL(triggered()), this, SLOT(select()));
   mActionSelect->setEnabled(false);
   //
-  mActionOpenTable= new QAction(getThemeIcon("/mActionOpenTable.png"), tr("Open Table"), this);
+  mActionOpenTable= new QAction(getThemeIcon("mActionOpenTable.png"), tr("Open Table"), this);
   //mActionOpenTable->setShortcut(tr("Ctrl+O","Open Table"));
   mActionOpenTable->setStatusTip(tr("Open Table"));
   connect(mActionOpenTable, SIGNAL(triggered()), this, SLOT(attributeTable()));
   mActionOpenTable->setEnabled(false);
   //
-  mActionMeasure= new QAction(getThemeIcon("/mActionMeasure.png"), tr("Measure Line "), this);
+  mActionMeasure= new QAction(getThemeIcon("mActionMeasure.png"), tr("Measure Line "), this);
   mActionMeasure->setShortcut(tr("Ctrl+M","Measure a Line"));
   mActionMeasure->setStatusTip(tr("Measure a Line"));
   connect(mActionMeasure, SIGNAL(triggered()), this, SLOT(measure()));
   //
-  mActionMeasureArea= new QAction(getThemeIcon("/mActionMeasureArea.png"), tr("Measure Area"), this);
+  mActionMeasureArea= new QAction(getThemeIcon("mActionMeasureArea.png"), tr("Measure Area"), this);
   mActionMeasureArea->setShortcut(tr("Ctrl+J","Measure an Area"));
   mActionMeasureArea->setStatusTip(tr("Measure an Area"));
   connect(mActionMeasureArea, SIGNAL(triggered()), this, SLOT(measureArea()));
   //
-  mActionShowBookmarks= new QAction(getThemeIcon("/mActionShowBookmarks.png"), tr("Show Bookmarks"), this);
+  mActionShowBookmarks= new QAction(getThemeIcon("mActionShowBookmarks.png"), tr("Show Bookmarks"), this);
   mActionShowBookmarks->setShortcut(tr("B","Show Bookmarks"));
   mActionShowBookmarks->setStatusTip(tr("Show Bookmarks"));
   connect(mActionShowBookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
@@ -739,17 +739,17 @@ void QgisApp::createActions()
   connect(mActionHideAllToolbars, SIGNAL(triggered()), this,
           SLOT(hideAllToolbars()));
   //
-  mActionNewBookmark= new QAction(getThemeIcon("/mActionNewBookmark.png"), tr("New Bookmark..."), this);
+  mActionNewBookmark= new QAction(getThemeIcon("mActionNewBookmark.png"), tr("New Bookmark..."), this);
   mActionNewBookmark->setShortcut(tr("Ctrl+B","New Bookmark"));
   mActionNewBookmark->setStatusTip(tr("New Bookmark"));
   connect(mActionNewBookmark, SIGNAL(triggered()), this, SLOT(newBookmark()));
   //
-  mActionAddWmsLayer= new QAction(getThemeIcon("/mActionAddWmsLayer.png"), tr("Add WMS Layer..."), this);
+  mActionAddWmsLayer= new QAction(getThemeIcon("mActionAddWmsLayer.png"), tr("Add WMS Layer..."), this);
   mActionAddWmsLayer->setShortcut(tr("W","Add Web Mapping Server Layer"));
   mActionAddWmsLayer->setStatusTip(tr("Add Web Mapping Server Layer"));
   connect(mActionAddWmsLayer, SIGNAL(triggered()), this, SLOT(addWmsLayer()));
   //
-  mActionInOverview= new QAction(getThemeIcon("/mActionInOverview.png"), tr("In Overview"), this);
+  mActionInOverview= new QAction(getThemeIcon("mActionInOverview.png"), tr("In Overview"), this);
   mActionInOverview->setShortcut(tr("O","Add current layer to overview map"));
   mActionInOverview->setStatusTip(tr("Add current layer to overview map"));
   connect(mActionInOverview, SIGNAL(triggered()), this, SLOT(inOverview()));
@@ -757,7 +757,7 @@ void QgisApp::createActions()
   //
   // Plugin Menu Related Items
   //
-  mActionShowPluginManager= new QAction(getThemeIcon("/mActionShowPluginManager.png"), tr("Plugin Manager..."), this);
+  mActionShowPluginManager= new QAction(getThemeIcon("mActionShowPluginManager.png"), tr("Plugin Manager..."), this);
   // mActionShowPluginManager->setShortcut(tr("Ctrl+P","Open the plugin manager"));
   mActionShowPluginManager->setStatusTip(tr("Open the plugin manager"));
   connect(mActionShowPluginManager, SIGNAL(triggered()), this, SLOT(showPluginManager()));
@@ -769,7 +769,7 @@ void QgisApp::createActions()
   // Digitising Toolbar Items
   //
 
-  mActionToggleEditing = new QAction(getThemeIcon("/mActionToggleEditing.png"), 
+  mActionToggleEditing = new QAction(getThemeIcon("mActionToggleEditing.png"), 
                                     tr("Toggle editing"), this);
   mActionToggleEditing->setStatusTip(tr("Toggles the editing state of the current layer")); 
   mActionToggleEditing->setCheckable(true);
@@ -777,81 +777,81 @@ void QgisApp::createActions()
   mActionToggleEditing->setEnabled(false);
   
   //
-  mActionCapturePoint= new QAction(getThemeIcon("/mActionCapturePoint.png"), tr("Capture Point"), this);
+  mActionCapturePoint= new QAction(getThemeIcon("mActionCapturePoint.png"), tr("Capture Point"), this);
   mActionCapturePoint->setShortcut(tr(".","Capture Points"));
   mActionCapturePoint->setStatusTip(tr("Capture Points"));
   connect(mActionCapturePoint, SIGNAL(triggered()), this, SLOT(capturePoint()));
   mActionCapturePoint->setEnabled(false);
   //
-  mActionCaptureLine= new QAction(getThemeIcon("/mActionCaptureLine.png"), tr("Capture Line"), this);
+  mActionCaptureLine= new QAction(getThemeIcon("mActionCaptureLine.png"), tr("Capture Line"), this);
   mActionCaptureLine->setShortcut(tr("/","Capture Lines"));
   mActionCaptureLine->setStatusTip(tr("Capture Lines"));
   connect(mActionCaptureLine, SIGNAL(triggered()), this, SLOT(captureLine()));
   mActionCaptureLine->setEnabled(false);
   //
-  mActionCapturePolygon= new QAction(getThemeIcon("/mActionCapturePolygon.png"), tr("Capture Polygon"), this);
+  mActionCapturePolygon= new QAction(getThemeIcon("mActionCapturePolygon.png"), tr("Capture Polygon"), this);
   mActionCapturePolygon->setShortcut(tr("Ctrl+/","Capture Polygons"));
   mActionCapturePolygon->setStatusTip(tr("Capture Polygons"));
   connect(mActionCapturePolygon, SIGNAL(triggered()), this, SLOT(capturePolygon()));
   mActionCapturePolygon->setEnabled(false);
   //
-  mActionDeleteSelected = new QAction(getThemeIcon("/mActionDeleteSelected.png"), tr("Delete Selected"), this);
+  mActionDeleteSelected = new QAction(getThemeIcon("mActionDeleteSelected.png"), tr("Delete Selected"), this);
   mActionDeleteSelected->setStatusTip(tr("Delete Selected"));
   connect(mActionDeleteSelected, SIGNAL(triggered()), this, SLOT(deleteSelected()));
   mActionDeleteSelected->setEnabled(false);
   //
-  mActionMoveFeature = new QAction(getThemeIcon("/mActionMoveFeature.png"), tr("Move Feature"), this);
+  mActionMoveFeature = new QAction(getThemeIcon("mActionMoveFeature.png"), tr("Move Feature"), this);
   mActionMoveFeature->setStatusTip(tr("Move Feature"));
   connect(mActionMoveFeature, SIGNAL(triggered()), this, SLOT(moveFeature()));
   mActionMoveFeature->setEnabled(false);
   //
-  mActionSplitFeatures = new QAction(getThemeIcon("/mActionSplitFeatures.png"), tr("Split Features"), this);
+  mActionSplitFeatures = new QAction(getThemeIcon("mActionSplitFeatures.png"), tr("Split Features"), this);
   mActionSplitFeatures->setStatusTip(tr("Split Features"));
   connect(mActionSplitFeatures, SIGNAL(triggered()), this, SLOT(splitFeatures()));
   mActionSplitFeatures->setEnabled(false);
   //
-  mActionAddVertex = new QAction(getThemeIcon("/mActionAddVertex.png"), tr("Add Vertex"), this);
+  mActionAddVertex = new QAction(getThemeIcon("mActionAddVertex.png"), tr("Add Vertex"), this);
   mActionAddVertex->setStatusTip(tr("Add Vertex"));
   connect(mActionAddVertex, SIGNAL(triggered()), this, SLOT(addVertex()));
   mActionAddVertex->setEnabled(false);
   //
-  mActionDeleteVertex = new QAction(getThemeIcon("/mActionDeleteVertex.png"), tr("Delete Vertex"), this);
+  mActionDeleteVertex = new QAction(getThemeIcon("mActionDeleteVertex.png"), tr("Delete Vertex"), this);
   mActionDeleteVertex->setStatusTip(tr("Delete Vertex"));
   connect(mActionDeleteVertex, SIGNAL(triggered()), this, SLOT(deleteVertex()));
   mActionDeleteVertex->setEnabled(false);
   //
-  mActionMoveVertex = new QAction(getThemeIcon("/mActionMoveVertex.png"), tr("Move Vertex"), this);
+  mActionMoveVertex = new QAction(getThemeIcon("mActionMoveVertex.png"), tr("Move Vertex"), this);
   mActionMoveVertex->setStatusTip(tr("Move Vertex"));
   connect(mActionMoveVertex, SIGNAL(triggered()), this, SLOT(moveVertex()));
   mActionMoveVertex->setEnabled(false);
 
-  mActionAddRing = new QAction(getThemeIcon("/mActionAddRing.png"), tr("Add Ring"), this);
+  mActionAddRing = new QAction(getThemeIcon("mActionAddRing.png"), tr("Add Ring"), this);
   mActionAddRing->setStatusTip(tr("Add Ring"));
   connect(mActionAddRing, SIGNAL(triggered()), this, SLOT(addRing()));
   mActionAddRing->setEnabled(false);
 
-  mActionAddIsland = new QAction(getThemeIcon("/mActionAddIsland.png"), tr("Add Island"), this);
+  mActionAddIsland = new QAction(getThemeIcon("mActionAddIsland.png"), tr("Add Island"), this);
   mActionAddIsland->setStatusTip(tr("Add Island to multipolygon"));
   connect(mActionAddIsland, SIGNAL(triggered()), this, SLOT(addIsland()));
   mActionAddIsland->setEnabled(false);
 
-  mActionEditCut = new QAction(getThemeIcon("/mActionEditCut.png"), tr("Cut Features"), this);
+  mActionEditCut = new QAction(getThemeIcon("mActionEditCut.png"), tr("Cut Features"), this);
   mActionEditCut->setStatusTip(tr("Cut selected features"));
   connect(mActionEditCut, SIGNAL(triggered()), this, SLOT(editCut()));
   mActionEditCut->setEnabled(false);
 
-  mActionEditCopy = new QAction(getThemeIcon("/mActionEditCopy.png"), tr("Copy Features"), this);
+  mActionEditCopy = new QAction(getThemeIcon("mActionEditCopy.png"), tr("Copy Features"), this);
   mActionEditCopy->setStatusTip(tr("Copy selected features"));
   connect(mActionEditCopy, SIGNAL(triggered()), this, SLOT(editCopy()));
   mActionEditCopy->setEnabled(false);
 
-  mActionEditPaste = new QAction(getThemeIcon("/mActionEditPaste.png"), tr("Paste Features"), this);
+  mActionEditPaste = new QAction(getThemeIcon("mActionEditPaste.png"), tr("Paste Features"), this);
   mActionEditPaste->setStatusTip(tr("Paste selected features"));
   connect(mActionEditPaste, SIGNAL(triggered()), this, SLOT(editPaste()));
   mActionEditPaste->setEnabled(false);
 
   // maptips
-  mActionMapTips = new QAction(getThemeIcon("/mActionMapTips.png"), tr("Map Tips"), this);
+  mActionMapTips = new QAction(getThemeIcon("mActionMapTips.png"), tr("Map Tips"), this);
   mActionMapTips->setStatusTip(tr("Show information about a feature when the mouse is hovered over it"));
   connect ( mActionMapTips, SIGNAL ( triggered() ), this, SLOT ( toggleMapTips() ) );
   mActionMapTips->setCheckable(true);
@@ -1123,6 +1123,28 @@ void QgisApp::createStatusBar()
   QFont myFont( "Arial", 9 );
 
   statusBar()->setFont(myFont);
+  //toggle to switch between mouse pos and extents display in status bar widget
+  mToggleExtentsViewButton = new QToolButton( statusBar() );
+  mToggleExtentsViewButton->setMaximumWidth(20);
+  mToggleExtentsViewButton->setMaximumHeight(20);
+  mToggleExtentsViewButton->setIcon(getThemeIcon("tracking.png"));
+  mToggleExtentsViewButton->setToolTip(tr("Toggle extents and mouse position display") );
+  mToggleExtentsViewButton->setCheckable(true);
+  connect(mToggleExtentsViewButton, SIGNAL(toggled(bool)), this, SLOT(extentsViewToggled(bool)));
+  statusBar()->addPermanentWidget(mToggleExtentsViewButton, 0);
+  //coords status bar widget
+  mCoordsLabel = new QLabel(QString(), statusBar());
+  mCoordsLabel->setMinimumWidth(10);
+  mCoordsLabel->setMaximumHeight(20);
+  mCoordsLabel->setFont(myFont);
+  mCoordsLabel->setMargin(3);
+  mCoordsLabel->setAlignment(Qt::AlignCenter);
+  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the "
+        "current cursor position. The display is continuously updated "
+        "as the mouse is moved."));
+  mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
+  statusBar()->addPermanentWidget(mCoordsLabel, 0);
+  // add a label to show current scale
   mScaleLabel = new QLabel(QString(),statusBar());
   mScaleLabel->setFont(myFont);
   mScaleLabel->setMinimumWidth(10);
@@ -1149,23 +1171,11 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget(mScaleEdit, 0);
   connect(mScaleEdit, SIGNAL(editingFinished()), this, SLOT(userScale()));
 
-  //coords status bar widget
-  mCoordsLabel = new QLabel(QString(), statusBar());
-  mCoordsLabel->setMinimumWidth(10);
-  mCoordsLabel->setMaximumHeight(20);
-  mCoordsLabel->setFont(myFont);
-  mCoordsLabel->setMargin(3);
-  mCoordsLabel->setAlignment(Qt::AlignCenter);
-  mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the "
-        "current cursor position. The display is continuously updated "
-        "as the mouse is moved."));
-  mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
-  statusBar()->addPermanentWidget(mCoordsLabel, 0);
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
   mStopRenderButton->setMaximumWidth(20);
   mStopRenderButton->setMaximumHeight(20);
-  mStopRenderButton->setIcon(getThemeIcon("/mIconDelete.png"));
+  mStopRenderButton->setIcon(getThemeIcon("mIconDelete.png"));
   mStopRenderButton->setToolTip(tr("Stop map rendering") );
   statusBar()->addPermanentWidget(mStopRenderButton, 0);
   // render suppression status bar widget
@@ -1186,7 +1196,7 @@ void QgisApp::createStatusBar()
   // Maintain uniform widget height in status bar by setting button height same as labels
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
   mOnTheFlyProjectionStatusButton->setMaximumHeight(mScaleLabel->height());
-  mOnTheFlyProjectionStatusButton->setIcon(getThemeIcon("/mIconProjectionDisabled.png"));
+  mOnTheFlyProjectionStatusButton->setIcon(getThemeIcon("mIconProjectionDisabled.png"));
   if (!QFile::exists(QgsApplication::defaultThemePath() + "/mIconProjectionDisabled.png"))
   {
     QMessageBox::critical(this, tr("Resource Location Error"), 
@@ -1297,7 +1307,6 @@ void QgisApp::setupConnections()
   
   //signal when mouse moved over window (coords display in status bar)
   connect(mMapCanvas, SIGNAL(xyCoordinates(QgsPoint &)), this, SLOT(showMouseCoordinate(QgsPoint &)));
-  //signal when mouse in capturePoint mode and mouse clicked on canvas
   connect(mMapCanvas->mapRenderer(), SIGNAL(drawingProgress(int,int)), this, SLOT(showProgress(int,int)));
   connect(mMapCanvas->mapRenderer(), SIGNAL(projectionsEnabled(bool)), this, SLOT(projectionsEnabled(bool)));
   connect(mMapCanvas->mapRenderer(), SIGNAL(destinationSrsChanged()), this, SLOT(destinationSrsChanged()));
@@ -3653,12 +3662,6 @@ void QgisApp::toggleEditing()
 
 void QgisApp::showMouseCoordinate(QgsPoint & p)
 {
-  mCoordsLabel->setText(p.stringRep(mMousePrecisionDecimalPlaces));
-  // Set minimum necessary width
-  if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
-  {
-    mCoordsLabel->setMinimumWidth(mCoordsLabel->width());
-  }
 
   if ( mMapTipsVisible )
   {
@@ -3674,6 +3677,20 @@ void QgisApp::showMouseCoordinate(QgsPoint & p)
       // don't start the timer if the mouse is not over the map canvas
       mpMapTipsTimer->start();
       //QgsDebugMsg("Started maptips timer");
+    }
+  }
+  if (mToggleExtentsViewButton->isChecked())
+  {
+    //we are in show extents mode so no need to do anything
+    return;
+  }
+  else
+  {
+    mCoordsLabel->setText(p.stringRep(mMousePrecisionDecimalPlaces));
+    // Set minimum necessary width
+    if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
+    {
+      mCoordsLabel->setMinimumWidth(mCoordsLabel->width());
     }
   }
 }
@@ -4434,12 +4451,12 @@ void QgisApp::projectionsEnabled(bool theFlag)
   if (theFlag)
   {
     mOnTheFlyProjectionStatusButton->setIcon(
-        getThemeIcon("/mIconProjectionEnabled.png"));
+        getThemeIcon("mIconProjectionEnabled.png"));
   }
   else
   {
     mOnTheFlyProjectionStatusButton->setIcon(
-        getThemeIcon("/mIconProjectionDisabled.png"));
+        getThemeIcon("mIconProjectionDisabled.png"));
   }
 }
 // slot to update the progress bar in the status bar
@@ -4470,12 +4487,36 @@ void QgisApp::mapToolChanged(QgsMapTool *tool)
   }
 }
 
+void QgisApp::extentsViewToggled(bool theFlag)
+{
+  if (theFlag)
+  {
+    //extents view mode!
+    mToggleExtentsViewButton->setIcon(getThemeIcon("extents.png"));
+    showExtents();
+  }
+  else
+  {
+    //mouse cursor pos view mode!
+    mToggleExtentsViewButton->setIcon(getThemeIcon("tracking.png"));
+  }
+}
+
 void QgisApp::showExtents()
 {
+  if (!mToggleExtentsViewButton->isChecked())
+  {
+    //we are in show coords mode so no need to do anything
+    return;
+  }
   // update the statusbar with the current extents.
   QgsRect myExtents = mMapCanvas->extent();
-  statusBar()->showMessage(QString(tr("Extents: ")) + myExtents.stringRep(true));
-
+  mCoordsLabel->setText(QString(tr("Extents: ")) + myExtents.stringRep(true));
+  //ensure the label is big enough
+  if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
+  {
+    mCoordsLabel->setMinimumWidth(mCoordsLabel->width());
+  }
 } // QgisApp::showExtents
 
 
@@ -5296,8 +5337,8 @@ void QgisApp::setupProxy()
 
 QIcon QgisApp::getThemeIcon(const QString theName)
 {
-  QString myPreferredPath = QgsApplication::activeThemePath() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath() + theName;
+  QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + theName;
   if (QFile::exists(myPreferredPath))
   {
     return QIcon(myPreferredPath);
@@ -5316,8 +5357,8 @@ QIcon QgisApp::getThemeIcon(const QString theName)
 
 QPixmap QgisApp::getThemePixmap(const QString theName)
 {
-  QString myPreferredPath = QgsApplication::activeThemePath() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath() + theName;
+  QString myPreferredPath = QgsApplication::activeThemePath()  + QDir::separator() + theName;
+  QString myDefaultPath = QgsApplication::defaultThemePath()  + QDir::separator() + theName;
   if (QFile::exists(myPreferredPath))
   {
     return QPixmap(myPreferredPath);
