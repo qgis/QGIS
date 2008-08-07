@@ -333,6 +333,7 @@ public slots:
 
 public slots:
   void showProgress(int theProgress, int theTotalSteps);
+  void extentsViewToggled(bool theFlag);
   void showExtents();
   void showStatusMessage(QString theMessage);
   void updateMouseCoordinatePrecision();
@@ -607,6 +608,8 @@ class Tools
   QProgressBar * mProgressBar;
   //! Widget used to suppress rendering
   QCheckBox * mRenderSuppressionCBox;
+  //! A toggle to switch between mouse coords and view extents display
+  QToolButton * mToggleExtentsViewButton;
   //! Button used to stop rendering
   QToolButton* mStopRenderButton;
   //! Widget in status bar used to show status of on the fly projection
