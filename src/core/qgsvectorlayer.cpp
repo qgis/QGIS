@@ -2027,9 +2027,9 @@ bool QgsVectorLayer::startEditing()
 }
 
   
-bool QgsVectorLayer::readXML_( QDomNode & layer_node )
+bool QgsVectorLayer::readXml( QDomNode & layer_node )
 {
-  QgsDebugMsg(QString("Datasource in QgsVectorLayer::readXML_: ") + mDataSource.toLocal8Bit().data());
+  QgsDebugMsg(QString("Datasource in QgsVectorLayer::readXml: ") + mDataSource.toLocal8Bit().data());
 
   // process the attribute actions
   mActions->readXML(layer_node);
@@ -2163,7 +2163,7 @@ bool QgsVectorLayer::readXML_( QDomNode & layer_node )
 
   return mValid;               // should be true if read successfully
 
-} // void QgsVectorLayer::readXML_
+} // void QgsVectorLayer::readXml
 
 
 
@@ -2253,7 +2253,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
 
 
-/* virtual */ bool QgsVectorLayer::writeXML_( QDomNode & layer_node,
+/* virtual */ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     QDomDocument & document )
 {
   // first get the layer element so that we can append the type attribute
@@ -2406,7 +2406,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   }
 
   return true;
-} // bool QgsVectorLayer::writeXML_
+} // bool QgsVectorLayer::writeXml
 
 
 int QgsVectorLayer::findFreeId()

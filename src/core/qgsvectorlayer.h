@@ -160,12 +160,12 @@ public:
   /** reads vector layer specific state from project file DOM node.
    *  @note Called by QgsMapLayer::readXML().
    */
-  virtual bool readXML_( QDomNode & layer_node );
+  virtual bool readXml( QDomNode & layer_node );
 
   /** write vector layer specific state to project file DOM node.
    *  @note Called by QgsMapLayer::writeXML().
    */
-  virtual bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
+  virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
 
   /**

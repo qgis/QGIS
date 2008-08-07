@@ -114,7 +114,7 @@ public:
        The DOM node corresponds to a DOM document project file XML element read
        by QgsProject.
 
-       This, in turn, calls readXML_(), which is over-rideable by sub-classes so
+       This, in turn, calls readXml(), which is over-rideable by sub-classes so
        that they can read their own specific state from the given DOM node.
 
        Invoked by QgsProject::read().
@@ -131,7 +131,7 @@ public:
        The DOM node corresponds to a DOM document project file XML element to be
        written by QgsProject.
 
-       This, in turn, calls writeXML_(), which is over-rideable by sub-classes so
+       This, in turn, calls writeXml(), which is over-rideable by sub-classes so
        that they can write their own specific state to the given DOM node.
 
        Invoked by QgsProject::write().
@@ -218,12 +218,12 @@ protected:
     /** called by readXML(), used by children to read state specific to them from
         project files.
     */
-    virtual bool readXML_( QDomNode & layer_node );
+    virtual bool readXml( QDomNode & layer_node );
 
     /** called by writeXML(), used by children to write state specific to them to
         project files.
     */
-    virtual bool writeXML_( QDomNode & layer_node, QDomDocument & document );
+    virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
