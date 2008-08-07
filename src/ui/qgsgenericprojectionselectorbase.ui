@@ -19,28 +19,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
-   </item>
-   <item row="0" column="0" colspan="2" >
+   <item row="0" column="0" >
     <widget class="QTextEdit" name="textEdit" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
@@ -68,26 +47,13 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>221</width>
-       <height>21</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="1" column="0" >
+    <widget class="QgsProjectionSelector" native="1" name="projectionSelector" />
    </item>
-   <item row="2" column="1" >
-    <widget class="QPushButton" name="pbnOK" >
-     <property name="text" >
-      <string>OK</string>
+   <item row="2" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -103,5 +69,38 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsGenericProjectionSelectorBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>475</x>
+     <y>534</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>493</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsGenericProjectionSelectorBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>566</x>
+     <y>534</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>600</x>
+     <y>530</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

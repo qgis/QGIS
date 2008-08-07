@@ -28,12 +28,8 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector(QWidget *parent,
   : QDialog(parent, fl)
 {
   setupUi(this);
-  
-
-  connect(pbnOK, SIGNAL(clicked()), this, SLOT( accept()));
   //we will show this only when a message is set
   textEdit->hide();
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsGenericProjectionSelector::setMessage(QString theMessage)
