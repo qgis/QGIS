@@ -27,7 +27,7 @@
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
 #include "qgslabel.h"
-#include "qgslayerprojectionselector.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgssinglesymboldialog.h"
@@ -609,11 +609,12 @@ QString QgsVectorLayerProperties::getMetadata()
 
 void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
-  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
+  mySelector->setMessage();
   mySelector->setSelectedSRSID(layer->srs().srsid());
   if(mySelector->exec())
   {
-    QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    QgsSpatialRefSys srs(mySelector->getSelectedSRSID(), QgsSpatialRefSys::QGIS_SRSID);
     layer->setSrs(srs);
   }
   else

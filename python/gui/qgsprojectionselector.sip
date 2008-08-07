@@ -54,7 +54,7 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
       const QString stringSQLSafe(const QString theSQL);
 
       //! Gets the current EPSG-style projection identifier
-      long getCurrentEpsg();
+      long getSelectedEpsg();
 
     public slots:
       void setSelectedSRSName(QString theSRSName);
@@ -62,14 +62,16 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
       QString getSelectedName();
 
       void setSelectedSRSID(long theSRSID);
+      
+      void setSelectedEpsg(long epsg);
 
-      QString getCurrentProj4String();
+      QString getSelectedProj4String();
 
       //! Gets the current PostGIS-style projection identifier
-      long getCurrentSRID();
+      long getSelectedSRID();
 
       //! Gets the current QGIS projection identfier
-      long getCurrentSRSID();
+      long getSelectedSRSID();
 
       /**
        * \brief filters this widget by the given CRSs

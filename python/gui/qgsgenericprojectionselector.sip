@@ -1,32 +1,37 @@
 
 /**
- * \class QgsLayerProjectionSelector
- * \brief Set Projection system for a layer
+ * \class QgsGenericProjectionSelector 
+ * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
-
-class QgsLayerProjectionSelector : QDialog //, private Ui::QgsLayerProjectionSelectorBase
+class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectionSelectorBase
 {
 %TypeHeaderCode
-#include <qgslayerprojectionselector.h>
+#include <qgsgenericprojectionselector.h>
 %End
 
   public:
     /**
      * Constructor
      */
-    QgsLayerProjectionSelector(QWidget *parent = 0, 
+    QgsGenericProjectionSelector(QWidget *parent = 0, 
                                Qt::WFlags fl = QgisGui::ModalDialogFlags);
 
     //! Destructor
-    ~QgsLayerProjectionSelector();
+    ~QgsGenericProjectionSelector();
 
  public slots:
-      QString getCurrentProj4String();
-      long getCurrentSRSID();
-      long getCurrentEpsg();
+      /** If no paramter is passed, the message will be a generic
+       * 'define the CRS for this layer'.
+       */
+      void setMessage(QString theMessage="");
+      
+      QString getSelectedProj4String();
+      long getSelectedSRSID();
+      long getSelectedEpsg();
 
       void setSelectedSRSName(QString theName);
       void setSelectedSRSID(long theID);
+      void setSelectedEpsg(long theID);
 
       /**
        * \brief filters this dialog by the given CRSs

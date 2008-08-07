@@ -21,7 +21,7 @@
 #include "ui_qgswfssourceselectbase.h"
 
 class QgisInterface;
-class QgsLayerProjectionSelector;
+class QgsGenericProjectionSelector;
 
 class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 {
@@ -42,7 +42,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
   QgsWFSSourceSelect(); //default constructor is forbidden
   QgisInterface* mIface; //pointer to the QGIS interface object (needed to add WFS layers)
   QString mUri; //uri of the currently connected server
-  QgsLayerProjectionSelector* mProjectionSelector;
+  QgsGenericProjectionSelector* mProjectionSelector;
   /**Stores the available CRS for a server connections.
    The first string is the typename, the corresponding list
   stores the CRS for the typename in the form 'EPSG:XXXX'*/

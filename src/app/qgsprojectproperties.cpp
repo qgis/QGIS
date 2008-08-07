@@ -245,15 +245,15 @@ void QgsProjectProperties::apply()
   // selected that has an srid. This prevents error if the user
   // selects a top-level node rather than an actual coordinate
   // system
-  long mySRSID = projectionSelector->getCurrentSRSID();
+  long mySRSID = projectionSelector->getSelectedSRSID();
   if (mySRSID)
   {
     QgsSpatialRefSys srs(mySRSID, QgsSpatialRefSys::QGIS_SRSID);
     myRender->setDestinationSrs(srs);
     
     // write the currently selected projections _proj string_ to project settings
-    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getCurrentProj4String().toLocal8Bit().data() << std::endl;
-    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getCurrentProj4String());
+    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getSelectedProj4String().toLocal8Bit().data() << std::endl;
+    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getSelectedProj4String());
 
     // Set the map units to the projected coordinates if we are projecting
     if (isProjected())

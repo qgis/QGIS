@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>QgsLayerProjectionSelectorBase</class>
- <widget class="QDialog" name="QgsLayerProjectionSelectorBase" >
+ <class>QgsGenericProjectionSelectorBase</class>
+ <widget class="QDialog" name="QgsGenericProjectionSelectorBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Layer Projection Selector</string>
+   <string>Projection Selector</string>
   </property>
   <property name="windowIcon" >
    <iconset/>
@@ -19,10 +19,22 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
+   <property name="leftMargin" >
     <number>9</number>
    </property>
-   <property name="spacing" >
+   <property name="topMargin" >
+    <number>9</number>
+   </property>
+   <property name="rightMargin" >
+    <number>9</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>9</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>6</number>
+   </property>
+   <property name="verticalSpacing" >
     <number>6</number>
    </property>
    <item row="1" column="0" colspan="2" >
@@ -31,9 +43,7 @@
    <item row="0" column="0" colspan="2" >
     <widget class="QTextEdit" name="textEdit" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>5</vsizetype>
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>

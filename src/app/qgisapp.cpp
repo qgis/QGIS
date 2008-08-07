@@ -96,7 +96,7 @@
 #include "qgsfeature.h"
 #include "qgsgeomtypedialog.h"
 #include "qgshelpviewer.h"
-#include "qgslayerprojectionselector.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgslegend.h"
 #include "qgslegendlayerfile.h"
 #include "qgslegendlayer.h"
@@ -264,7 +264,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
     //@note this class is not a descendent of QWidget so we cant pass
     //it in the ctor of the layer projection selector
 
-    QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector();
+    QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
+    mySelector->setMessage(); //shows a generic message
     proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
     QgsSpatialRefSys defaultSRS;
     if(defaultSRS.createFromProj4(proj4String))
@@ -274,8 +275,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 
     if(mySelector->exec())
     {
-      QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getCurrentSRSID()));
-      srs->createFromProj4(mySelector->getCurrentProj4String());
+      QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getSelectedSRSID()));
+      srs->createFromProj4(mySelector->getSelectedProj4String());
       srs->debugPrint();
     }
     else

@@ -20,7 +20,7 @@
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
-#include "qgslayerprojectionselector.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgsspatialrefsys.h"
 
 #include <QFileDialog>
@@ -365,7 +365,7 @@ void QgsOptions::saveOptions()
 void QgsOptions::on_pbnSelectProjection_clicked()
 {
   QSettings settings;
-  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
 
   //find out srs id of current proj4 string
   QgsSpatialRefSys refSys;
@@ -380,7 +380,7 @@ void QgsOptions::on_pbnSelectProjection_clicked()
     std::cout << "------ Global Default Projection Selection Set ----------" << std::endl;
 #endif 
     //! @todo changes this control name in gui to txtGlobalProjString
-    txtGlobalWKT->setText(mySelector->getCurrentProj4String());
+    txtGlobalWKT->setText(mySelector->getSelectedProj4String());
 #ifdef QGISDEBUG
     std::cout << "------ Global Default Projection now set to ----------\n" << mGlobalSRSID << std::endl;
 #endif

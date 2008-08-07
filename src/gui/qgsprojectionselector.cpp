@@ -20,6 +20,7 @@
 #include "qgis.h" //magick numbers here
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include <qgsspatialrefsys.h>
 
 //qt includes
 #include <QDir>
@@ -193,6 +194,10 @@ void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
   // selection there
 }
 
+void QgsProjectionSelector::setSelectedEpsg(long epsg)
+{
+  //QgsSpatial
+}
 
 void QgsProjectionSelector::applySRSNameSelection()
 {
@@ -264,7 +269,7 @@ QString QgsProjectionSelector::getSelectedName()
   }
 }
 // Returns the whole proj4 string for the selected projection node
-QString QgsProjectionSelector::getCurrentProj4String()
+QString QgsProjectionSelector::getSelectedProj4String()
 {
   // Only return the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -356,7 +361,7 @@ QString QgsProjectionSelector::getCurrentProj4String()
 
 }
 
-long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
+long QgsProjectionSelector::getSelectedLongAttribute(QString attributeName)
 {
   // Only return the attribute if there is a node in the tree
   // selected that has an srs_id.  This prevents error if the user
@@ -382,7 +387,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
         myFileInfo.setFile(myDatabaseFileName);
         if ( !myFileInfo.exists( ) )
         {
-          std::cout << " QgsSpatialRefSys::createFromSrid failed :  users qgis.db not found" << std::endl;
+          std::cout << " Projection selector :  users qgis.db not found" << std::endl;
           return 0;
         }
       }
@@ -416,14 +421,14 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
 #endif
       rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
       // XXX Need to free memory from the error msg if one is set
-      QString mySrid;
+      QString myAttributeValue;
       if(rc == SQLITE_OK)
       {
         // get the first row of the result set
         if(sqlite3_step(ppStmt) == SQLITE_ROW)
         {
-          // get the wkt
-          mySrid = QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 0));
+          // get the attribute
+          myAttributeValue = QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 0));
         }
       }
       // close the statement
@@ -431,7 +436,7 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
       // close the database
       sqlite3_close(db);
       // return the srs wkt
-      return mySrid.toLong();
+      return myAttributeValue.toLong();
     }
   }
 
@@ -440,19 +445,19 @@ long QgsProjectionSelector::getCurrentLongAttribute(QString attributeName)
 }
 
 
-long QgsProjectionSelector::getCurrentSRID()
+long QgsProjectionSelector::getSelectedSRID()
 {
-  return getCurrentLongAttribute("srid");
+  return getSelectedLongAttribute("srid");
 }
 
 
-long QgsProjectionSelector::getCurrentEpsg()
+long QgsProjectionSelector::getSelectedEpsg()
 {
-  return getCurrentLongAttribute("epsg");
+  return getSelectedLongAttribute("epsg");
 }
 
 
-long QgsProjectionSelector::getCurrentSRSID()
+long QgsProjectionSelector::getSelectedSRSID()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
 
@@ -705,8 +710,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
   {
     // Found a real SRS
     QString myDescription;
-    emit sridSelected(QString::number(getCurrentSRSID()));
-    QString myProjString = getCurrentProj4String();
+    emit sridSelected(QString::number(getSelectedSRSID()));
+    QString myProjString = getSelectedProj4String();
     lstCoordinateSystems->scrollToItem(theItem);
     teProjection->setText(myProjString);
   }
@@ -744,7 +749,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
 #endif
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
     // each time the find button is pressed. This means we can loop through all matches.
-    if (myLargestSrsId <= getCurrentSRSID())
+    if (myLargestSrsId <= getSelectedSRSID())
     {
       //roll search around to the beginning
       mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
@@ -754,7 +759,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     {
       // search ahead of the current postion
       mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
-             " and srs_id > " + QString::number(getCurrentSRSID()) + " order by srs_id limit 1";
+             " and srs_id > " + QString::number(getSelectedSRSID()) + " order by srs_id limit 1";
     }
   }
 #ifdef QGISDEBUG

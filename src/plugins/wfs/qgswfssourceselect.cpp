@@ -18,7 +18,7 @@
 #include "qgisinterface.h"
 #include "qgswfssourceselect.h"
 #include "qgsnewhttpconnection.h"
-#include "qgslayerprojectionselector.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgshttptransaction.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
@@ -47,7 +47,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect(QWidget* parent, QgisInterface* iface): Q
   connect(treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)), this, SLOT(changeCRSFilter()));
   populateConnectionList();
 
-  mProjectionSelector = new QgsLayerProjectionSelector(this);
+  mProjectionSelector = new QgsGenericProjectionSelector(this);
+  mProjectionSelector->setMessage();
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
@@ -354,7 +355,7 @@ void QgsWFSSourceSelect::addLayer()
   QString crsString;
   if(mProjectionSelector)
     {
-      long epsgNr = mProjectionSelector->getCurrentEpsg();
+      long epsgNr = mProjectionSelector->getSelectedEpsg();
       if(epsgNr != 0)
 	{
 	  crsString = "&SRSNAME=EPSG:"+QString::number(epsgNr);
@@ -372,7 +373,7 @@ void QgsWFSSourceSelect::changeCRS()
 {
   if(mProjectionSelector->exec())
     {
-      QString crsString = "EPSG: " + QString::number(mProjectionSelector->getCurrentEpsg());
+      QString crsString = "EPSG: " + QString::number(mProjectionSelector->getSelectedEpsg());
       labelCoordRefSys->setText(crsString);
     }
 }

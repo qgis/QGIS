@@ -23,7 +23,7 @@ SET(QGIS_UIS
   qgshelpviewerbase.ui
   qgsidentifyresultsbase.ui
   qgslabeldialogbase.ui
-  qgslayerprojectionselectorbase.ui
+  qgsgenericprojectionselectorbase.ui
   qgsludialogbase.ui
   qgsmeasurebase.ui
   qgsmessageviewer.ui
