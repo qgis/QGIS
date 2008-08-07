@@ -332,6 +332,10 @@ public slots:
 
 
 public slots:
+  /** Add a dock widget to the main window. Overloaded from QMainWindow.
+   * After adding the dock widget to the ui (by delegating to the QMainWindow
+   * parent class, it will also add it to the view menu list of docks.*/
+  void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget );
   void showProgress(int theProgress, int theTotalSteps);
   void extentsViewToggled(bool theFlag);
   void showExtents();

@@ -323,13 +323,6 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   mSplash->showMessage(tr("Setting up the GUI"), Qt::AlignHCenter | Qt::AlignBottom);
   qApp->processEvents();
 
-  // Make the right and left docks consume all vertical space and top
-  // and bottom docks nest between them
-
-  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
-  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
-  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
 
   createActions();
@@ -1397,7 +1390,6 @@ void QgisApp::createOverview()
   mOverviewDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
   mOverviewDock->setWidget(overviewCanvas);
   addDockWidget(Qt::LeftDockWidgetArea, mOverviewDock);
-  mViewMenu->addAction(mOverviewDock->toggleViewAction());
 
   mMapCanvas->setOverview(overviewCanvas);
   
@@ -1411,6 +1403,18 @@ void QgisApp::createOverview()
   mMapCanvas->setWheelAction((QgsMapCanvas::WheelAction) action, zoomFactor);
 }
 
+void QgisApp::addDockWidget ( Qt::DockWidgetArea theArea, QDockWidget * thepDockWidget )
+{
+  QMainWindow::addDockWidget ( theArea, thepDockWidget );
+  // Make the right and left docks consume all vertical space and top
+  // and bottom docks nest between them
+  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+  // add to the view menu
+  mViewMenu->addAction(thepDockWidget->toggleViewAction());
+}
 
 void QgisApp::createLegend()
 {
@@ -1432,7 +1436,6 @@ void QgisApp::createLegend()
 //  mLegendDock->setFeatures(mLegendDock->features() & ~QDockWidget::DockWidgetClosable);
   mLegendDock->setWidget(mMapLegend);
   addDockWidget(Qt::LeftDockWidgetArea, mLegendDock);
-  mViewMenu->addAction(mLegendDock->toggleViewAction());
   return;
 }
 
