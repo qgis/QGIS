@@ -31,7 +31,11 @@ ADD_LIBRARY (coordinatecaptureplugin MODULE ${coordinatecapture_SRCS} ${coordina
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ${CMAKE_CURRENT_BINARY_DIR}/../../ui/
+     ../../core 
+     ../../core/raster 
+     ../../core/renderer 
+     ../../core/symbology
      ../../gui
      ..
 )

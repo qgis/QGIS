@@ -28,6 +28,7 @@
 #include <qgis.h>
 #include <qgsspatialrefsys.h>
 #include <qgscoordinatetransform.h>
+#include <qgsgenericprojectionselector.h>
 
 #include "coordinatecapture.h"
 #include "coordinatecapturegui.h"
@@ -79,7 +80,7 @@ CoordinateCapture::~CoordinateCapture()
  */
 void CoordinateCapture::initGui()
 {
-
+  mEpsgId = GEOEPSG_ID;
   // Create the action for tool
   mQActionPointer = new QAction(QIcon(":/coordinatecapture/coordinate_capture.png"),tr("Coordinate Capture"), this);
   // Set the what's this text
@@ -102,19 +103,20 @@ void CoordinateCapture::initGui()
   mypLayout->setColumnMinimumWidth( 0, 36 );
   mypWidget->setLayout(mypLayout);
   
-  QLabel * mypGeoLabel = new QLabel(mypWidget);
-  mypGeoLabel->setPixmap(QPixmap(":/coordinatecapture/geographic.png"));
+  QToolButton * mypUserCrsToolButton = new QToolButton(mypWidget);
+  mypUserCrsToolButton->setIcon(QIcon(":/coordinatecapture/geographic.png"));
+  connect(mypUserCrsToolButton , SIGNAL(clicked()), this, SLOT(setCRS()));
   
   QLabel * mypCRSLabel = new QLabel(mypWidget);
   mypCRSLabel->setPixmap(QPixmap(":/coordinatecapture/transformed.png"));
   
-  mpGeoEdit = new QLineEdit(mypWidget);
-  mpGeoEdit->setReadOnly(true);
-  mpGeoEdit->setToolTip(tr("Coordinate in lat/long WGS84"));
+  mpUserCrsEdit = new QLineEdit(mypWidget);
+  mpUserCrsEdit->setReadOnly(true);
+  mpUserCrsEdit->setToolTip(tr("Coordinate in your selected CRS"));
   
-  mpTransformedEdit = new QLineEdit(mypWidget);
-  mpTransformedEdit->setReadOnly(true);
-  mpTransformedEdit->setToolTip(tr("Coordinate in map canvas coordinate reference system"));
+  mpCanvasEdit = new QLineEdit(mypWidget);
+  mpCanvasEdit->setReadOnly(true);
+  mpCanvasEdit->setToolTip(tr("Coordinate in map canvas coordinate reference system"));
   
   QPushButton * mypCopyButton = new QPushButton(mypWidget);
   mypCopyButton->setText(tr("Copy to clipboard"));
@@ -126,10 +128,10 @@ void CoordinateCapture::initGui()
   mpTrackMouseButton->setChecked(false);
   mpTrackMouseButton->setIcon(QIcon(":/coordinatecapture/tracking.png"));
 
-  mypLayout->addWidget(mypGeoLabel, 0,0);
-  mypLayout->addWidget(mpGeoEdit, 0,1);
+  mypLayout->addWidget(mypUserCrsToolButton, 0,0);
+  mypLayout->addWidget(mpUserCrsEdit, 0,1);
   mypLayout->addWidget(mypCRSLabel, 1,0);
-  mypLayout->addWidget(mpTransformedEdit, 1,1);
+  mypLayout->addWidget(mpCanvasEdit, 1,1);
   mypLayout->addWidget(mpTrackMouseButton, 2,0);
   mypLayout->addWidget(mypCopyButton, 2,1);
 
@@ -150,6 +152,17 @@ void CoordinateCapture::help()
 {
   //implement me!
 }
+
+void CoordinateCapture::setCRS()
+{
+  QgsGenericProjectionSelector mySelector(mQGisIface->getMainWindow());
+  mySelector.setSelectedEpsg(mEpsgId);
+  if (mySelector.exec())
+  {
+    mEpsgId = mySelector.getSelectedEpsg();
+  }
+}
+
 void CoordinateCapture::mouseClicked(QgsPoint thePoint)
 {
   //clicking on the canvas will update the widgets and then disable 
@@ -170,13 +183,13 @@ void CoordinateCapture::update(QgsPoint thePoint)
 {
   //this is the coordinate resolved back to lat / lon
   QgsSpatialRefSys mySrs;
-  mySrs.createFromEpsg(GEOEPSG_ID); //geo lat lon
+  mySrs.createFromEpsg(mEpsgId); //geo lat lon
   QgsCoordinateTransform myTransform(mQGisIface->getMapCanvas()->mapRenderer()->destinationSrs(),mySrs);
-  QgsPoint myGeoPoint = myTransform.transform(thePoint);
-  mpGeoEdit->setText(QString::number( myGeoPoint.x(),'f',3) + "," +
-      QString::number( myGeoPoint.y(),'f',3));
+  QgsPoint myUserCrsPoint = myTransform.transform(thePoint);
+  mpUserCrsEdit->setText(QString::number( myUserCrsPoint.x(),'f',3) + "," +
+      QString::number( myUserCrsPoint.y(),'f',3));
   // This is the coordinate space of the map canvas
-  mpTransformedEdit->setText(QString::number( thePoint.x(),'f',3) + "," +
+  mpCanvasEdit->setText(QString::number( thePoint.x(),'f',3) + "," +
       QString::number( thePoint.y(),'f',3));
 }
 void CoordinateCapture::copy()
@@ -185,14 +198,14 @@ void CoordinateCapture::copy()
   //if we are on x11 system put text into selection ready for middle button pasting 
   if (myClipboard->supportsSelection()) 
   { 
-    myClipboard->setText(mpGeoEdit->text() + "," + mpTransformedEdit->text(),QClipboard::Selection); 
+    myClipboard->setText(mpUserCrsEdit->text() + "," + mpCanvasEdit->text(),QClipboard::Selection); 
     //QString myMessage = tr("Clipboard contents set to: "); 
     //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Selection)); 
   } 
   else 
   { 
     //user has an inferior operating system.... 
-    myClipboard->setText(mpGeoEdit->text() + "," + mpTransformedEdit->text(),QClipboard::Clipboard ); 
+    myClipboard->setText(mpUserCrsEdit->text() + "," + mpCanvasEdit->text(),QClipboard::Clipboard ); 
     //QString myMessage = tr("Clipboard contents set to: "); 
     //statusBar()->showMessage(myMessage + myClipboard->text(QClipboard::Clipboard)); 
   } 
