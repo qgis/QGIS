@@ -460,15 +460,12 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
       QPixmap myPixmap(32,32);
       rlayer->drawThumbnail(&myPixmap);
       return myPixmap;
-      
-    }
-    else // undefined - should never reach this
-    {
-      return QgisApp::getThemePixmap("/mIconLayer.png");
     }
   }
-}
 
+  // undefined - should never reach this
+  return QgisApp::getThemePixmap("/mIconLayer.png");
+}			
 
 void QgsLegendLayer::addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction)
 {
