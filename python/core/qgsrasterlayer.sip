@@ -508,7 +508,7 @@ public slots:
         Called by QgsMapLayer::readXML().
 
     */
-    /* virtual */ bool readXML_( QDomNode & layer_node );
+    /* virtual */ bool readXml( QDomNode & layer_node );
 
 
 
@@ -519,7 +519,7 @@ public slots:
       Called by QgsMapLayer::writeXML().
 
   */
-  /* virtual */ bool writeXML_( QDomNode & layer_node, QDomDocument & doc );
+  /* virtual */ bool writeXml( QDomNode & layer_node, QDomDocument & doc );
     
 
 /*

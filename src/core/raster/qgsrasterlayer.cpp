@@ -4031,7 +4031,7 @@ double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
   </rasterproperties>
   </maplayer>
   */
-bool QgsRasterLayer::readXML_( QDomNode & layer_node )
+bool QgsRasterLayer::readXml( QDomNode & layer_node )
 {
   //! @NOTE Make sure to read the file first so stats etc are initialised properly!
 
@@ -4281,11 +4281,11 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
 
   return true;
 
-} // QgsRasterLayer::readXML_( QDomNode & layer_node )
+} // QgsRasterLayer::readXml( QDomNode & layer_node )
 
 
 
-/* virtual */ bool QgsRasterLayer::writeXML_( QDomNode & layer_node,
+/* virtual */ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     QDomDocument & document )
 {
   // first get the layer element so that we can append the type attribute
@@ -4647,7 +4647,7 @@ bool QgsRasterLayer::readXML_( QDomNode & layer_node )
   }
 
   return true;
-} // bool QgsRasterLayer::writeXML_
+} // bool QgsRasterLayer::writeXml
 
 
 

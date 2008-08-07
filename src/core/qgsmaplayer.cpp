@@ -157,7 +157,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   mSRS->readXML(srsNode);
 
   // now let the children grab what they need from the DOM node.
-  if (!readXML_( layer_node ))
+  if (!readXml( layer_node ))
   {
     return false;
   }
@@ -213,12 +213,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 } // void QgsMapLayer::readXML
 
 
-bool QgsMapLayer::readXML_( QDomNode & layer_node )
+bool QgsMapLayer::readXml( QDomNode & layer_node )
 {
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
-} // void QgsMapLayer::readXML_
+} // void QgsMapLayer::readXml
 
 
 
@@ -279,18 +279,18 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   layer_node.appendChild( maplayer );
 
-  return writeXML_( maplayer, document );
+  return writeXml( maplayer, document );
 
 } // bool QgsMapLayer::writeXML
 
 
 
-bool QgsMapLayer::writeXML_( QDomNode & layer_node, QDomDocument & document )
+bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document )
 {
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
-} // void QgsMapLayer::writeXML_
+} // void QgsMapLayer::writeXml
 
 
 
