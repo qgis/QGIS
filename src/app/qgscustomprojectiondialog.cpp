@@ -105,14 +105,13 @@ void QgsCustomProjectionDialog::getProjList ()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
-
   // Set up the query to retrieve the projection information needed to populate the PROJECTION list
   QString mySql = "select * from tbl_projection order by name";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
@@ -140,14 +139,13 @@ void QgsCustomProjectionDialog::getEllipsoidList()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
-
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select * from tbl_ellipsoid order by name";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
@@ -184,12 +182,12 @@ void QgsCustomProjectionDialog::on_pbnDelete_clicked()
   QString       myName;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "delete from tbl_srs where srs_id='" + mCurrentRecordId + "'";
@@ -244,12 +242,12 @@ long QgsCustomProjectionDialog::getRecordCount()
   long          myRecordCount=0;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select count(*) from tbl_srs";
@@ -279,12 +277,12 @@ QString QgsCustomProjectionDialog::getProjectionFamilyName(QString theProjection
   QString       myName;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_projection where acronym='" + theProjectionFamilyAcronym + "'";
@@ -310,12 +308,12 @@ QString QgsCustomProjectionDialog::getEllipsoidName(QString theEllipsoidAcronym)
   QString       myName;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
@@ -341,12 +339,12 @@ QString QgsCustomProjectionDialog::getProjectionFamilyAcronym(QString theProject
   QString       myName;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_projection where name='" + theProjectionFamilyName + "'";
@@ -372,12 +370,12 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym(QString theEllipsoidName)
   QString       myName;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
@@ -406,12 +404,12 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
 
   QString mySql = "select * from tbl_srs order by srs_id limit 1";
@@ -484,12 +482,12 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
 
   QString mySql = "select * from tbl_srs where srs_id < " + mCurrentRecordId + " order by srs_id desc limit 1";
@@ -563,14 +561,13 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
-
 
   QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
 #ifdef QGISDEBUG
@@ -639,12 +636,12 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
   int           myResult;
   //check the db is available
   myResult = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase);
-  if(myResult) 
+  if(myResult!=SQLITE_OK) 
   {
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
 
   QString mySql = "select * from tbl_srs order by srs_id desc limit 1";
@@ -868,7 +865,7 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
         << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
 #ifdef QGISDEBUG
   std::cout << "Update or insert sql \n" << mySql.toLocal8Bit().data() << std::endl;
@@ -993,9 +990,8 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
     std::cout <<  "Can't open database: " <<  sqlite3_errmsg(myDatabase) << std::endl; 
     // XXX This will likely never happen since on open, sqlite creates the 
     //     database if it does not exist.
-    assert(myResult == 0);
+    assert(myResult == SQLITE_OK);
   }
-
   // Set up the query to retrieve the projection information needed to populate the PROJECTION list
   QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
 #ifdef QGISDEBUG
