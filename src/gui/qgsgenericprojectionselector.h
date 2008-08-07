@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgslayerprojectionselector.h
-                        Set user layerprojectionselector and preferences
+                          qgsgenericprojectionselector.h
+                Set user defined projection using projection selector widget 
                              -------------------
     begin                : May 28, 2004
     copyright            : (C) 2004 by Gary E.Sherman
@@ -16,38 +16,43 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSLAYERPROJECTIONSELECTOR_H
-#define QGSLAYERPROJECTIONSELECTOR_H
-#include "ui_qgslayerprojectionselectorbase.h"
+#ifndef QGSGENERICPROJECTIONSELECTOR_H
+#define QGSGENERICPROJECTIONSELECTOR_H
+#include "ui_qgsgenericprojectionselectorbase.h"
 #include "qgisgui.h"
 
 #include <QSet>
 
 /**
- * \class QgsLayerProjectionSelector
- * \brief Set Projection system for a layer
+ * \class QgsGenericProjectionSelector 
+ * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
 
-class GUI_EXPORT QgsLayerProjectionSelector : public QDialog, private Ui::QgsLayerProjectionSelectorBase
+class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsGenericProjectionSelectorBase
 {
   Q_OBJECT;
   public:
     /**
      * Constructor
      */
-    QgsLayerProjectionSelector(QWidget *parent = 0, 
+    QgsGenericProjectionSelector(QWidget *parent = 0, 
                                Qt::WFlags fl = QgisGui::ModalDialogFlags);
 
     //! Destructor
-    ~QgsLayerProjectionSelector();
+    ~QgsGenericProjectionSelector();
 
  public slots:
-      QString getCurrentProj4String();
-      long getCurrentSRSID();
-      long getCurrentEpsg();
+      /** If no paramter is passed, the message will be a generic
+       * 'define the CRS for this layer'.
+       */
+      void setMessage(QString theMessage="");
+      QString getSelectedProj4String();
+      long getSelectedSRSID();
+      long getSelectedEpsg();
 
       void setSelectedSRSName(QString theName);
       void setSelectedSRSID(long theID);
+      void setSelectedEpsg(long theID);
 
       /**
        * \brief filters this dialog by the given CRSs

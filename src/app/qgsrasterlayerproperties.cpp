@@ -20,7 +20,7 @@
 #include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayerproperties.h"
-#include "qgslayerprojectionselector.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
@@ -1704,11 +1704,11 @@ void QgsRasterLayerProperties::on_pbnAddValuesManually_clicked()
 void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
 
-  QgsLayerProjectionSelector * mySelector = new QgsLayerProjectionSelector(this);
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
   mySelector->setSelectedSRSID(mRasterLayer->srs().srsid());
   if(mySelector->exec())
   {
-    QgsSpatialRefSys srs(mySelector->getCurrentSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    QgsSpatialRefSys srs(mySelector->getSelectedSRSID(), QgsSpatialRefSys::QGIS_SRSID);
     mRasterLayer->setSrs(srs);
   }
   else
