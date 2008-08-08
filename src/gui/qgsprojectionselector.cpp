@@ -643,7 +643,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
     while(sqlite3_step(ppStmt) == SQLITE_ROW)
     {
       // check to see if the srs is geographic
-      int isGeo = sqlite3_column_int(ppStmt, 2);
+      int isGeo = sqlite3_column_int(ppStmt, 3);
       if(isGeo)
       {
         // this is a geographic coordinate system
@@ -659,16 +659,11 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
       else
       {
         // This is a projected srs
-
-        if (previousSrsTypeNode == NULL)
-        {
-          previousSrsTypeNode = mProjList;
-        }
         QTreeWidgetItem *node;
-        QString srsType = QString::fromUtf8((char*)sqlite3_column_text(ppStmt, 3));
+        QString srsType = QString::fromUtf8((char*)sqlite3_column_text(ppStmt, 4));
         // Find the node for this type and add the projection to it
         // If the node doesn't exist, create it
-        if (srsType == previousSrsType)
+        if (srsType == previousSrsType )
         {
           node = previousSrsTypeNode;
         }
@@ -701,6 +696,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
         newItem->setText(QGIS_SRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
     }
+    mProjList->setExpanded(true);
   }
   // close the sqlite3 statement
   sqlite3_finalize(ppStmt);
