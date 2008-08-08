@@ -783,9 +783,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabProjection" >
+     <widget class="QWidget" name="tabCRS" >
       <attribute name="title" >
-       <string>Pro&amp;jection</string>
+       <string>CRS</string>
       </attribute>
       <layout class="QGridLayout" >
        <property name="leftMargin" >
@@ -826,7 +826,7 @@
        <item row="0" column="0" >
         <widget class="QGroupBox" name="grpProjectionBehaviour" >
          <property name="title" >
-          <string>When layer is loaded that has no projection information</string>
+          <string>When layer is loaded that has no coordinate reference system (CRS)</string>
          </property>
          <layout class="QVBoxLayout" >
           <property name="leftMargin" >
@@ -844,21 +844,21 @@
           <item>
            <widget class="QRadioButton" name="radPromptForProjection" >
             <property name="text" >
-             <string>Prompt for projection</string>
+             <string>Prompt for CRS</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QRadioButton" name="radUseProjectProjection" >
             <property name="text" >
-             <string>Project wide default projection will be used</string>
+             <string>Project wide default CRS will be used</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QRadioButton" name="radUseGlobalProjection" >
             <property name="text" >
-             <string>Global default projection displa&amp;yed below will be used</string>
+             <string>Global default CRS displa&amp;yed below will be used</string>
             </property>
            </widget>
           </item>
