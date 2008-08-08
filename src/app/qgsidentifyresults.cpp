@@ -332,24 +332,39 @@ void QgsIdentifyResults::extractAllItemData(QTreeWidgetItem* item)
   // to pick up which child that actually is (the parent in the
   // identify results dialog box is just one of the children
   // that has been chosen by some method).
-  
+
+  int valuesIndex = 0;
+
   for (int j = 0; j < parent->childCount(); ++j)
   {
-    if ( parent->child(j)->text(0) != "action" ) {
-      // For derived attributes, build up a virtual name
-      if (parent->child(j)->text(0) == mDerivedLabel ) {
-	for (int k = 0; k < parent->child(j)->childCount(); ++k)
-	  mValues.push_back(
-	    std::make_pair(mDerivedLabel + "." 
-			   + parent->child(j)->child(k)->text(0), 
-			   parent->child(j)->child(k)->text(1)));
-      }
-      else // do the actual feature attributes
-	mValues.push_back(std::make_pair(parent->child(j)->text(0), 
-					 parent->child(j)->text(1)));
+    // For derived attributes, build up a virtual name
+    if (parent->child(j)->text(0) == mDerivedLabel ) {
+      for (int k = 0; k < parent->child(j)->childCount(); ++k)
+      {
+	mValues.push_back(
+	  std::make_pair(mDerivedLabel + "." 
+			 + parent->child(j)->child(k)->text(0), 
+			 parent->child(j)->child(k)->text(1)));
 
-    if (parent->child(j)->text(0) == item->text(0))
-      mClickedOnValue = j;
+	if (item == parent->child(j)->child(k))
+	{
+	  mClickedOnValue = valuesIndex;
+	}
+
+	valuesIndex++;
+      }
+    }
+    else // do the actual feature attributes
+    {
+      mValues.push_back(std::make_pair(parent->child(j)->text(0), 
+				       parent->child(j)->text(1)));
+
+      if (item == parent->child(j))
+      {
+	mClickedOnValue = valuesIndex;
+      }
+
+      valuesIndex++;
     }
   }
 }
