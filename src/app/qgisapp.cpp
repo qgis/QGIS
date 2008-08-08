@@ -633,7 +633,7 @@ void QgisApp::createActions()
   mActionHelpContents->setStatusTip(tr("Help Documentation"));
   connect(mActionHelpContents, SIGNAL(triggered()), this, SLOT(helpContents()));
   //
-  mActionQgisHomePage= new QAction(getThemeIcon("mActionQgisHomePage.png"), tr("Qgis Home Page"), this);
+  mActionQgisHomePage= new QAction(getThemeIcon("mActionQgisHomePage.png"), tr("QGIS Home Page"), this);
 #ifndef Q_WS_MAC
   mActionQgisHomePage->setShortcut(tr("Ctrl+H","QGIS Home Page"));
 #endif
@@ -1326,10 +1326,6 @@ void QgisApp::createCanvas()
   mMapCanvas->setWhatsThis(tr("Map canvas. This is where raster and vector "
         "layers are displayed when added to the map"));
   
-//  mMapCanvas->setMinimumWidth(10);
-//  QVBoxLayout *myCanvasLayout = new QVBoxLayout;
-//  myCanvasLayout->addWidget(mMapCanvas);
-//  tabWidget->widget(0)->setLayout(myCanvasLayout);
   setCentralWidget(mMapCanvas);
   // set the focus to the map canvas
   mMapCanvas->setFocus();
@@ -1427,13 +1423,9 @@ void QgisApp::createLegend()
   mMapLegend->setToggleEditingAction(mActionToggleEditing);
 
   mMapLegend->setWhatsThis(tr("Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties."));
-//  QVBoxLayout *myLegendLayout = new QVBoxLayout;
-//  myLegendLayout->addWidget(mMapLegend);
-//  toolBox->widget(0)->setLayout(myLegendLayout);
   mLegendDock = new QDockWidget(tr("Legend"), this);
   mLegendDock->setObjectName("Legend");
   mLegendDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-//  mLegendDock->setFeatures(mLegendDock->features() & ~QDockWidget::DockWidgetClosable);
   mLegendDock->setWidget(mMapLegend);
   addDockWidget(Qt::LeftDockWidgetArea, mLegendDock);
   return;
