@@ -116,6 +116,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   std::vector<std::pair<QString, QString> > mValues;
   static const int context_id = 689216579;
   int mCurrentFeatureId;
+  QString mDerivedLabel;
 
   /**
    Keeps track of what derived-attribute (e.g. Length, Area)
@@ -125,6 +126,10 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
    Second item: Derived-attribute root node for that feature
    */
   std::map<QTreeWidgetItem *, QTreeWidgetItem *> mDerivedAttributeRootNodes;
+
+  // Convenience function to populate mValues with all of the item names and
+  // values for a item, including the derived ones.
+  void extractAllItemData(QTreeWidgetItem* item);
 };
 
 #endif

@@ -314,12 +314,30 @@ void QgsMapToolIdentify::identifyVectorLayer(QgsVectorLayer* layer, const QgsPoi
       double dist = calc.measure(f_it->geometry());
       QString str = calc.textUnit(dist, 3, mCanvas->mapUnits(), false);
       mResults->addDerivedAttribute(featureNode, QObject::tr("Length"), str);
+      // Add the start and end points in as derived attributes
+      str.setNum(f_it->geometry()->asPolyline().first().x(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "startX", str);
+      str.setNum(f_it->geometry()->asPolyline().first().y(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "startY", str);
+      str.setNum(f_it->geometry()->asPolyline().last().x(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "endX", str);
+      str.setNum(f_it->geometry()->asPolyline().last().y(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "endY", str);
     }
     else if (layer->vectorType() == QGis::Polygon)
     {
       double area = calc.measure(f_it->geometry());
       QString str = calc.textUnit(area, 3, mCanvas->mapUnits(), true);
       mResults->addDerivedAttribute(featureNode, QObject::tr("Area"), str);
+    }
+    else if (layer->vectorType() == QGis::Point)
+    {
+      // Include the x and y coordinates of the point as a derived attribute
+      QString str;
+      str.setNum(f_it->geometry()->asPoint().x(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "X", str);
+      str.setNum(f_it->geometry()->asPoint().y(), 'g', 10);
+      mResults->addDerivedAttribute(featureNode, "Y", str);
     }
 
     // Add actions 
