@@ -10,134 +10,40 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>QGIS</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset>../../images/icons/qgis-icon-16x16.png</iconset>
+  </property>
+  <property name="dockNestingEnabled" >
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget" >
    <property name="sizePolicy" >
-    <sizepolicy>
-     <hsizetype>7</hsizetype>
-     <vsizetype>7</vsizetype>
+    <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
    <layout class="QGridLayout" >
-    <property name="margin" >
+    <property name="leftMargin" >
      <number>9</number>
     </property>
-    <property name="spacing" >
+    <property name="topMargin" >
+     <number>9</number>
+    </property>
+    <property name="rightMargin" >
+     <number>9</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>9</number>
+    </property>
+    <property name="horizontalSpacing" >
      <number>6</number>
     </property>
-    <item row="0" column="0" >
-     <widget class="QSplitter" name="canvasLegendSplit" >
-      <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape" >
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow" >
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="lineWidth" >
-       <number>1</number>
-      </property>
-      <property name="orientation" >
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QSplitter" name="legendOverviewSplit" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>0</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize" >
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
-       </property>
-       <widget class="QToolBox" name="toolBox" >
-        <property name="font" >
-         <font>
-          <family>Lucida Grande</family>
-          <pointsize>10</pointsize>
-          <weight>50</weight>
-          <italic>false</italic>
-          <bold>false</bold>
-          <underline>false</underline>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="frameShape" >
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Raised</enum>
-        </property>
-        <property name="currentIndex" >
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="legendPage" >
-         <property name="geometry" >
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>386</width>
-           <height>244</height>
-          </rect>
-         </property>
-         <attribute name="label" >
-          <string>Legend</string>
-         </attribute>
-        </widget>
-       </widget>
-       <widget class="QFrame" name="overviewFrame" >
-        <property name="frameShape" >
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow" >
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QTabWidget" name="tabWidget" >
-       <property name="font" >
-        <font>
-         <family>Arial</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-         <underline>false</underline>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="tabPosition" >
-        <enum>QTabWidget::East</enum>
-       </property>
-       <property name="tabShape" >
-        <enum>QTabWidget::Rounded</enum>
-       </property>
-       <widget class="QWidget" name="Map View" >
-        <attribute name="title" >
-         <string>Map View</string>
-        </attribute>
-       </widget>
-      </widget>
-     </widget>
-    </item>
+    <property name="verticalSpacing" >
+     <number>6</number>
+    </property>
    </layout>
   </widget>
  </widget>

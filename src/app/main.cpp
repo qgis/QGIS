@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName("QuantumGIS");
   QCoreApplication::setOrganizationDomain("qgis.org");
-  QCoreApplication::setApplicationName("qgis");
+  QCoreApplication::setApplicationName("QGIS");
 #ifdef Q_OS_MACX
   // Install OpenDocuments AppleEvent handler after application object is initialized
   // but before any other event handling (including dialogs or splash screens) occurs.
