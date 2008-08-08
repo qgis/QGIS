@@ -54,6 +54,9 @@ QgsIdentifyResults::QgsIdentifyResults(const QgsAttributeAction& actions,
 
   connect( lstResults, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
            this, SLOT(handleCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+
+  // The label to use for the Derived node in the identify results 
+  mDerivedLabel = tr("(Derived)");
 }
 
 QgsIdentifyResults::~QgsIdentifyResults()
@@ -121,30 +124,7 @@ void QgsIdentifyResults::contextMenuEvent(QContextMenuEvent* event)
   }
   // Save the attribute values as these are needed for substituting into
   // the action. 
-  // A little bit complicated because the user could of right-clicked
-  // on a parent or a child in the dialog box. We also want to keep
-  // track of which row in the identify results table was actually
-  // clicked on. This is stored as an index into the mValues vector.
-
-  QTreeWidgetItem* parent = item->parent();
-  if (parent == 0)
-    parent = item;
-
-  mValues.clear();
-  for (int j = 0; j < parent->childCount(); ++j)
-  {
-    if ( parent->child(j)->text(0) != "action" ) {
-      mValues.push_back(std::make_pair(parent->child(j)->text(0), 
-                                       parent->child(j)->text(1)));
-      // Need to do the comparison on the text strings rather than the
-      // pointers because if the user clicked on the parent, we need
-      // to pick up which child that actually is (the parent in the
-      // identify results dialog box is just one of the children
-      // that has been chosen by some method).
-      if (parent->child(j)->text(0) == item->text(0))
-        mClickedOnValue = j;
-    }
-  }
+  extractAllItemData(item);
 
   if (mActions.size() > 0)
     mActionPopup->popup(event->globalPos());
@@ -194,7 +174,7 @@ void QgsIdentifyResults::addDerivedAttribute(QTreeWidgetItem * fnode, QString fi
   else
   {
     // Create new derived-attribute root node
-    daRootNode = new QTreeWidgetItem(fnode, QStringList(tr("(Derived)")));
+    daRootNode = new QTreeWidgetItem(fnode, QStringList(mDerivedLabel));
     QFont font = daRootNode->font(0);
     font.setItalic(true);
     daRootNode->setFont(0, font);
@@ -277,21 +257,7 @@ void QgsIdentifyResults::clicked ( QTreeWidgetItem *item )
 
   int id = item->text(3).toInt();
 
-  QTreeWidgetItem* parent = item->parent();
-  if (parent == 0)
-    parent = item;
-
-  mValues.clear();
-
-  for (int j = 0; j < parent->childCount(); ++j)
-  {
-    if ( parent->child(j)->text(0) != "action" ) {
-      mValues.push_back(std::make_pair(parent->child(j)->text(0), 
-                                       parent->child(j)->text(1)));
-      if (parent->child(j)->text(0) == item->text(0))
-        mClickedOnValue = j;
-    }
-  }
+  extractAllItemData(item);
 
   mActions.doAction(id, mValues, mClickedOnValue);
 }
@@ -336,4 +302,54 @@ void QgsIdentifyResults::handleCurrentItemChanged(QTreeWidgetItem* current, QTre
       
   mCurrentFeatureId = fid2;
   emit selectedFeatureChanged(mCurrentFeatureId);
+}
+
+void QgsIdentifyResults::extractAllItemData(QTreeWidgetItem* item)
+{
+  // Extracts the name/value pairs from the given item. This includes data
+  // under the (Derived) item.
+
+  // A little bit complicated because the user could of right-clicked
+  // on any item in the dialog box. We want a toplevel item, so walk upwards
+  // as far as possible.
+  // We also want to keep track of which row in the identify results table was
+  // actually clicked on. This is stored as an index into the mValues vector. 
+
+  QTreeWidgetItem* child = item;
+  QTreeWidgetItem* parent = child->parent();
+  while (parent != 0)
+  {
+    child = parent;
+    parent = parent->parent();
+  }
+  parent = child;
+
+  mValues.clear();
+  
+  // For the code below we 
+  // need to do the comparison on the text strings rather than the
+  // pointers because if the user clicked on the parent, we need
+  // to pick up which child that actually is (the parent in the
+  // identify results dialog box is just one of the children
+  // that has been chosen by some method).
+  
+  for (int j = 0; j < parent->childCount(); ++j)
+  {
+    if ( parent->child(j)->text(0) != "action" ) {
+      // For derived attributes, build up a virtual name
+      if (parent->child(j)->text(0) == mDerivedLabel ) {
+	for (int k = 0; k < parent->child(j)->childCount(); ++k)
+	  mValues.push_back(
+	    std::make_pair(mDerivedLabel + "." 
+			   + parent->child(j)->child(k)->text(0), 
+			   parent->child(j)->child(k)->text(1)));
+      }
+      else // do the actual feature attributes
+	mValues.push_back(std::make_pair(parent->child(j)->text(0), 
+					 parent->child(j)->text(1)));
+
+    if (parent->child(j)->text(0) == item->text(0))
+      mClickedOnValue = j;
+    }
+  }
 }
