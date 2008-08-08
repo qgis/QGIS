@@ -1,8 +1,11 @@
+SET(TARGET_NAME "qgispython")
+
 IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS("-DPYTHON_EXPORT=__declspec(dllexport)")
   ELSE (MSVC)
     ADD_DEFINITIONS("\"-DPYTHON_EXPORT=__declspec(dllexport)\"")
+    SET(TARGET_NAME "libqgispython")
   ENDIF (MSVC)
 ELSE (WIN32)
   # other compilers don't use that MSVC construct
@@ -13,24 +16,26 @@ SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 INCLUDE_DIRECTORIES(
   ../core
-  ../core/raster ../core/renderer ../core/symbology
+  ../core/raster
+  ../core/renderer
+  ../core/symbology
   ../gui
   ${PYTHON_INCLUDE_PATH})
 
-ADD_LIBRARY (qgispython SHARED ${QGISPYTHON_SRCS})
+ADD_LIBRARY (${TARGET_NAME} SHARED ${QGISPYTHON_SRCS})
 
-SET_TARGET_PROPERTIES(qgispython PROPERTIES 
+SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES 
 			VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}
 			SOVERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
 
 
-TARGET_LINK_LIBRARIES(qgispython
+TARGET_LINK_LIBRARIES(${TARGET_NAME}
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTGUI_LIBRARY} 
   ${PYTHON_LIBRARIES}
   qgis_core
 )
 
-INSTALL(TARGETS qgispython
+INSTALL(TARGETS ${TARGET_NAME}
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR})
