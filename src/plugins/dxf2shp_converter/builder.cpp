@@ -225,20 +225,22 @@ void Builder::addLine(const DL_LineData& data) {
 
       SHPObject	*psShape;
       int dim = polyVertex.size();
-      double xv[dim];
-      double yv[dim];
-      double zv[dim];
+      double *xv = new double[dim];
+      double *yv = new double[dim];
+      double *zv = new double[dim];
 
       for (int i=0; i < dim; i++) 
       {
         xv[i] = polyVertex[i].x;
         yv[i] = polyVertex[i].y;
         zv[i] = polyVertex[i].z;
-
       }
 
-      psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL,
-          dim, xv, yv, zv, NULL  );
+      psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL  );
+
+      delete [] xv;
+      delete [] yv;
+      delete [] zv;
 
       shpObjects.push_back(psShape);
 
@@ -363,9 +365,9 @@ void Builder::addArc(const DL_ArcData& data)
 
   SHPObject	*psShape;
   int dim = arcPoints.size();
-  double xv[dim];
-  double yv[dim];
-  double zv[dim];
+  double *xv = new double[dim];
+  double *yv = new double[dim];
+  double *zv = new double[dim];
 
   for (int i=0; i < dim; i++) 
   {
@@ -375,8 +377,11 @@ void Builder::addArc(const DL_ArcData& data)
 
   }
 
-  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL,
-      dim, xv, yv, zv, NULL  );
+  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL  );
+
+  delete [] xv;
+  delete [] yv;
+  delete [] zv;
 
   shpObjects.push_back(psShape);
 
@@ -427,9 +432,9 @@ void Builder::addCircle(const DL_CircleData& data)
 
   SHPObject	*psShape;
   int dim = circlePoints.size();
-  double xv[dim];
-  double yv[dim];
-  double zv[dim];
+  double *xv = new double[dim];
+  double *yv = new double[dim];
+  double *zv = new double[dim];
 
   for (int i=0; i < dim; i++) 
   {
@@ -439,8 +444,11 @@ void Builder::addCircle(const DL_CircleData& data)
 
   }
 
-  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL,
-      dim, xv, yv, zv, NULL  );
+  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL  );
+
+  delete [] xv;
+  delete [] yv;
+  delete [] zv;
 
   shpObjects.push_back(psShape);
 
@@ -502,9 +510,9 @@ void Builder::FinalizeAnyPolyline()
 
     SHPObject	*psObject;
     int dim = polyVertex.size();
-    double xv[dim];
-    double yv[dim];
-    double zv[dim];
+    double *xv = new double[dim];
+    double *yv = new double[dim];
+    double *zv = new double[dim];
 
     for (int i=0; i < dim; i++) 
     {
@@ -514,8 +522,11 @@ void Builder::FinalizeAnyPolyline()
 
     }
 
-    psObject = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL,
-        dim, xv, yv, zv, NULL  );
+    psObject = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL  );
+
+    delete [] xv;
+    delete [] yv;
+    delete [] zv;
 
     shpObjects.push_back(psObject);
 

@@ -16,10 +16,6 @@ SET (dxf2shpconverter_UIS dxf2shpconvertergui.ui)
 SET (dxf2shpconverter_MOC_HDRS
      dxf2shpconverter.h
      dxf2shpconvertergui.h
-     builder.h
-     getInsertions.h
-     dxflib/src/dl_dxf.h
-     dxflib/src/dl_writer_ascii.h
      )
 
 SET (dxf2shpconverter_RCCS  dxf2shpconverter.qrc)
