@@ -3834,6 +3834,9 @@ void QgisApp::loadPythonSupport()
 #ifdef Q_WS_MAC
   pythonlibName.prepend(QgsApplication::prefixPath() + "/lib/");
 #endif
+#ifdef __MINGW32__
+  pythonlibName.prepend("lib");
+#endif
   QLibrary pythonlib(pythonlibName);
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
