@@ -1607,8 +1607,6 @@ void QgsWmsProvider::parseServiceException(QDomElement const & e)
   mError += "\n" + tr("The WMS vendor also reported: ");
   mError += seText;
 
-  mError += "\n" + tr("This is probably due to a bug in the QGIS program.  Please report this error.");
-
   // TODO = e.attribute("locator");
 
   QgsDebugMsg("composed error message '"  + mError  + "'.");
