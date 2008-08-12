@@ -180,9 +180,9 @@ void QgsGeorefPluginGui::on_mArrangeWindowsButton_clicked()
       
       int newPluginDialogHeight = qMax(int(myScreenHeight * 0.2), minimumHeight());
       int newPluginDialogWidth = qMax(int(myScreenWidth * 0.33), minimumWidth());
-      int newPointDialogHeight = qMax(int(myScreenHeight * 0.70), mPointDialog->minimumHeight());
+      int newPointDialogHeight = qMax(int(myScreenHeight * 0.60), mPointDialog->minimumHeight());
       int newPointDialogWidth = qMax(int(myScreenWidth * 0.33), mPointDialog->minimumWidth());
-      int newMainWindowHeight = qMax(int(myScreenHeight * 0.95), mainWindow->minimumHeight());
+      int newMainWindowHeight = qMax(int(myScreenHeight * 0.90), mainWindow->minimumHeight());
       int newMainWindowWidth = qMax(int(myScreenWidth * 0.65), mainWindow->minimumHeight());
       
       //place main window
@@ -190,18 +190,18 @@ void QgsGeorefPluginGui::on_mArrangeWindowsButton_clicked()
       mainWindow->resize(newMainWindowWidth, newMainWindowHeight);
       //Resize again to account for frame border width -- Probably a better way to do this.
       mainWindow->resize(newMainWindowWidth - (mainWindow->width() - newMainWindowWidth), newMainWindowHeight - (mainWindow->height() - newMainWindowHeight));
-      mainWindow->move(myScreenWidth - newMainWindowWidth, 0);
+      mainWindow->move(myScreenWidth - newMainWindowWidth, int(myScreenHeight * 0.05));
       mainWindow->setEnabled(true);
 
       //place this dialog
       resize(newPluginDialogWidth, newPluginDialogHeight);
       resize(newPluginDialogWidth - (width() - newPluginDialogWidth), newPluginDialogHeight - (height() - newPluginDialogHeight));
-      move(0, 0);
+      move(0, int(myScreenHeight * 0.05));
 
       //place point dialog
       mPointDialog->resize(newPointDialogWidth, newPointDialogHeight);
       mPointDialog->resize(newPointDialogWidth - (mPointDialog->width() - newPointDialogWidth), newPointDialogHeight - (mPointDialog->height() - newPointDialogHeight));
-      mPointDialog->move(0, int(myScreenHeight * 0.3));
+      mPointDialog->move(0, int(myScreenHeight * 0.35));
       
       
     }
