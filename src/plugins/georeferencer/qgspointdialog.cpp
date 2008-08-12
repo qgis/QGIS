@@ -313,7 +313,14 @@ bool QgsPointDialog::generateWorldFile()
     QgsImageWarper::ResamplingMethod resampling;
     QgsImageWarper warper(-rotation);
     d.getWarpOptions(resampling, useZeroForTrans, compressionMethod);
-    warper.warp(mLayer->source(), outputFileName, 
+    //Closing the dialog by pressing the X button rather than clicking the OK button causes GDAL to barf and QGIS
+    //to crash because reasampling is not a valid option
+    //**not sure exactly what is going on in the case as the other two options are still correct but that could be coincidence
+    if(resampling != QgsImageWarper::NearestNeighbour && resampling != QgsImageWarper::Bilinear && resampling != QgsImageWarper::Cubic)
+    {
+      return false;
+    }
+    warper.warp(mLayer->source(), outputFileName,
 		xOffset, yOffset, resampling, useZeroForTrans, compressionMethod);
   }
 

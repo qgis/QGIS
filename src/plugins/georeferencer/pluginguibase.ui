@@ -6,35 +6,37 @@
     <x>0</x>
     <y>0</y>
     <width>424</width>
-    <height>155</height>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Georeferencer</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="georeferencer.qrc" >:/icon.png</iconset>
+   <iconset/>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item row="1" column="1" colspan="2" >
-    <widget class="QPushButton" name="mArrangeWindowsButton" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="textLabel1" >
      <property name="text" >
-      <string>Arrange plugin windows</string>
+      <string>Raster file:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" >
+    <widget class="QLineEdit" name="leSelectRaster" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
    <item row="0" column="2" >
     <widget class="QPushButton" name="pbnSelectRaster" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>0</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -44,37 +46,34 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <widget class="QLineEdit" name="leSelectRaster" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>0</hsizetype>
-       <vsizetype>0</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="textLabel1" >
-     <property name="text" >
-      <string>Raster file:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3" >
+   <item row="1" column="0" colspan="3" >
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="pbnDescription" >
        <property name="text" >
         <string>Description...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mArrangeWindowsButton" >
+       <property name="text" >
+        <string>Arrange plugin windows</string>
        </property>
       </widget>
      </item>
