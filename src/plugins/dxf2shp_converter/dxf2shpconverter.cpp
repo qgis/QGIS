@@ -32,14 +32,6 @@
 #include <QAction>
 #include <QToolBar>
 
-
-
-#ifdef WIN32
-  #define QGISEXTERN extern "C" __declspec( dllexport )
-#else 
-  #define QGISEXTERN extern "C"
-#endif 
-
 static const char *const sIdent = 
   "$Id: plugin.cpp 6935 2007-05-07 14:29:51Z wonder $";
 static const QString sName = QObject::tr("Dxf2Shp Converter");
@@ -82,9 +74,6 @@ void dxf2shpConverter::initGui()
     "Converts DXF files in Shapefile format"));
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-  // Add the toolbar
-  mToolBarPointer = new QToolBar(mQGisIface->getMainWindow());
-  //mToolBarPointer->setLabel("Dxf2Shp Converter");
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
   mQGisIface->addPluginMenu("&Dxf2Shp", mQActionPointer);

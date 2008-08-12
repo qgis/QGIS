@@ -25,7 +25,6 @@
 
 //forward declarations
 class QAction;
-class QToolBar;
 
 class QgisInterface;
 
@@ -74,8 +73,6 @@ class dxf2shpConverter: public QObject, public QgisPlugin
   ////////////////////////////////////////////////////////////////////
 
   int mPluginType;
-  //! Pointer to our toolbar
-  QToolBar *mToolBarPointer;
   //! Pointer to the QGIS interface object
   QgisInterface *mQGisIface;
   //!pointer to the qaction for this plugin
