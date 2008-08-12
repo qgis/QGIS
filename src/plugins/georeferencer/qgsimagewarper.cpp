@@ -85,10 +85,11 @@ void QgsImageWarper::warp(const QString& input, const QString& output,
   {
     GDALRasterBandH hSrcBand = GDALGetRasterBand(hSrcDS,i+1);
     GDALRasterBandH hDstBand = GDALGetRasterBand(hDstDS,i+1);
-    GDALColorTableH cTable = GDALGetRasterColorTable(hSrcDS);
+    GDALColorTableH cTable = GDALGetRasterColorTable(hSrcBand);
+    GDALSetRasterColorInterpretation (hDstBand, GDALGetRasterColorInterpretation(hSrcBand));
     if (cTable)
     {
-      GDALSetRasterColorTable(hDstDS,cTable);
+      GDALSetRasterColorTable(hDstBand,cTable);
     }
 
     double noData = GDALGetRasterNoDataValue(hSrcBand,NULL);

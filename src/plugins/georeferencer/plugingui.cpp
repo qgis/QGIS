@@ -165,85 +165,45 @@ void QgsGeorefPluginGui::on_mArrangeWindowsButton_clicked()
 	  return;
 	}
       
-      int width, height; //width and height of screen
+      int myScreenWidth, myScreenHeight; //width and height of screen
       
       //store initial size and position of qgis window
       mPluginWindowsArranged = true;
       origSize = mainWindow->size();
       origPos = mainWindow->pos();
       
-      
-      //qt distinguishes between geometry with and without window frame
-      int widthIncrMainWindow, heightIncrMainWindow;
-      int widthIncrPointDialog, heightIncrPointDialog;
-      int widthIncrThis, heightIncrThis;
-      
       //read the desktop geometry
       QDesktopWidget* desktop = QApplication::desktop();
       QRect screenGeometry = desktop->availableGeometry();
-      width = screenGeometry.width();
-      height = screenGeometry.height();
+      myScreenWidth = screenGeometry.width();
+      myScreenHeight = screenGeometry.height();
       
-      int leftRightBorder; //border between plugin/point dialogs on the left and qgis main window on the right
-      int pluginPointDialogBorder; //border on y-axis between plugin dialog and point dialog
-      
-      
-      leftRightBorder = width/3;
-      pluginPointDialogBorder = height/5;
-      
-      //consider minimum heights of plugin dialog and mPointDialog
-      int minPluginDialogHeight = minimumHeight() + (frameSize().height() - this->height()); 
-      int minPointDialogHeight = mPointDialog->minimumHeight() +	\
-	(mPointDialog->frameSize().height() - mPointDialog->height());
-      
-      if((height - pluginPointDialogBorder) < minPointDialogHeight)
-	{
-	  pluginPointDialogBorder = (height - minPointDialogHeight);
-	} 
-      if(pluginPointDialogBorder < minPluginDialogHeight)
-	{
-	  pluginPointDialogBorder = minPluginDialogHeight;
-	}
-      
-      //consider minimum widths of plugin/point dialogs and qgis main window
-      int minPluginDialogWidth = minimumWidth() + (frameSize().width() - this->width());
-      int minPointDialogWidth = mPointDialog->minimumWidth() +		\
-	(mPointDialog->frameSize().width() - mPointDialog->width());
-      int minMainWindowWidth = mainWindow->minimumWidth() +		\
-	(mainWindow->frameSize().width() - mainWindow->width());
-      
-      if(leftRightBorder < minPointDialogWidth)
-	{
-	  leftRightBorder = minPointDialogWidth;
-	}
-      if(leftRightBorder < minPluginDialogWidth)
-	{
-	  leftRightBorder = minPluginDialogWidth;
-	}
-      if((width - leftRightBorder) < minMainWindowWidth)
-	{
-	  leftRightBorder = width - minMainWindowWidth;
-	}
+      int newPluginDialogHeight = qMax(int(myScreenHeight * 0.2), minimumHeight());
+      int newPluginDialogWidth = qMax(int(myScreenWidth * 0.33), minimumWidth());
+      int newPointDialogHeight = qMax(int(myScreenHeight * 0.70), mPointDialog->minimumHeight());
+      int newPointDialogWidth = qMax(int(myScreenWidth * 0.33), mPointDialog->minimumWidth());
+      int newMainWindowHeight = qMax(int(myScreenHeight * 0.95), mainWindow->minimumHeight());
+      int newMainWindowWidth = qMax(int(myScreenWidth * 0.65), mainWindow->minimumHeight());
       
       //place main window
-      widthIncrMainWindow = (width -leftRightBorder) - mainWindow->frameSize().width();
-      heightIncrMainWindow = height - mainWindow->frameSize().height();
       mainWindow->setEnabled(false); //avoid getting two resize events for the main canvas
-      mainWindow->resize(mainWindow->width() + widthIncrMainWindow, mainWindow->height() + heightIncrMainWindow);
-      mainWindow->move(leftRightBorder, 0);
+      mainWindow->resize(newMainWindowWidth, newMainWindowHeight);
+      //Resize again to account for frame border width -- Probably a better way to do this.
+      mainWindow->resize(newMainWindowWidth - (mainWindow->width() - newMainWindowWidth), newMainWindowHeight - (mainWindow->height() - newMainWindowHeight));
+      mainWindow->move(myScreenWidth - newMainWindowWidth, 0);
       mainWindow->setEnabled(true);
-      
-      //place point dialog
-      widthIncrPointDialog = leftRightBorder - mPointDialog->frameSize().width();
-      heightIncrPointDialog = height - pluginPointDialogBorder - mPointDialog->frameSize().height();
-      mPointDialog->resize(mPointDialog->width() + widthIncrPointDialog, mPointDialog->height() + heightIncrPointDialog);
-      mPointDialog->move(0, pluginPointDialogBorder);
-      
+
       //place this dialog
-      widthIncrThis = leftRightBorder - frameSize().width();
-      heightIncrThis = pluginPointDialogBorder - frameSize().height();
-      resize(this->width() + widthIncrThis, this->height() + heightIncrThis);
+      resize(newPluginDialogWidth, newPluginDialogHeight);
+      resize(newPluginDialogWidth - (width() - newPluginDialogWidth), newPluginDialogHeight - (height() - newPluginDialogHeight));
       move(0, 0);
+
+      //place point dialog
+      mPointDialog->resize(newPointDialogWidth, newPointDialogHeight);
+      mPointDialog->resize(newPointDialogWidth - (mPointDialog->width() - newPointDialogWidth), newPointDialogHeight - (mPointDialog->height() - newPointDialogHeight));
+      mPointDialog->move(0, int(myScreenHeight * 0.3));
+      
+      
     }
 }
 
