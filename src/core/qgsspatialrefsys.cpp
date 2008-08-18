@@ -24,6 +24,7 @@
 #include <QDomElement>
 #include <QFileInfo>
 #include <QRegExp>
+#include <QTextStream>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -226,12 +227,8 @@ bool QgsSpatialRefSys::loadFromDb(QString db, QString field, long id)
     mEpsg = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,6)).toLong();
     int geo = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,7)).toInt();
     mGeoFlag = (geo == 0 ? false : true);
+    setProj4String( proj4String );
     setMapUnits();
-    mIsValidFlag = true;
-    const char *oldlocale = setlocale(LC_NUMERIC, NULL);
-    setlocale(LC_NUMERIC, "C");
-    OSRImportFromProj4( mSRS, proj4String.toLatin1().constData() );
-    setlocale(LC_NUMERIC, oldlocale);
   }
   else
   {
@@ -278,7 +275,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 
   //now that we have the proj4string, delegate to createFromProj4String so
   // that we can try to fill in the remaining class members...
-  //create from Proj wil set the isValidFalg
+  //create from Proj will set the isValidFlag
   createFromProj4(QString(proj4src));
   CPLFree(proj4src);
 
@@ -288,11 +285,7 @@ bool QgsSpatialRefSys::createFromWkt(QString theWkt)
 
 bool QgsSpatialRefSys::isValid() const
 {
-  if (mIsValidFlag)
-  {
-    return true;
-  }
-  return false;
+  return mIsValidFlag;
 }
 
 bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
@@ -410,10 +403,7 @@ bool QgsSpatialRefSys::createFromProj4 (const QString theProj4String)
       if (!myRecord.empty())
       {
         // Success!  We have found the proj string by swapping the lat_1 and lat_2
-        const char *oldlocale = setlocale(LC_NUMERIC, NULL);
-        setlocale(LC_NUMERIC, "C");
-        OSRImportFromProj4(mSRS, theProj4StringModified.toLatin1().constData() );
-        setlocale(LC_NUMERIC, oldlocale); 
+        setProj4String( theProj4StringModified );
         mySrsId=myRecord["srs_id"].toLong();
         QgsDebugMsg("QgsSpatialRefSys::createFromProj4 proj4string match search for srsid returned srsid: " + QString::number(mySrsId));
         if (mySrsId > 0)
@@ -664,8 +654,12 @@ void QgsSpatialRefSys::setDescription (QString theDescription)
 void QgsSpatialRefSys::setProj4String (QString theProj4String)
 {
   const char *oldlocale = setlocale(LC_NUMERIC, NULL);
+
   setlocale(LC_NUMERIC, "C");
+  OSRDestroySpatialReference( mSRS );
+  mSRS = OSRNewSpatialReference(NULL);
   mIsValidFlag = OSRImportFromProj4(mSRS, theProj4String.toLatin1().constData() )==OGRERR_NONE;
+
   setlocale(LC_NUMERIC, oldlocale);
 }
 void QgsSpatialRefSys::setGeographicFlag (bool theGeoFlag)
@@ -691,7 +685,6 @@ void QgsSpatialRefSys::setMapUnits()
 {
   if (!mIsValidFlag)
   {
-    QgsLogger::warning("No valid projection. Unable to set map units.");
     mMapUnits = QGis::UNKNOWN;
     return;
   }
@@ -944,6 +937,7 @@ bool QgsSpatialRefSys::readXML( QDomNode & theNode )
      {
        setGeographicFlag(false);
      }
+
      //make sure the map units have been set
      setMapUnits();
 
