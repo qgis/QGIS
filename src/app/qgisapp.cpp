@@ -1135,7 +1135,6 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setWhatsThis(tr("Shows the map coordinates at the "
         "current cursor position. The display is continuously updated "
         "as the mouse is moved."));
-  mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
   statusBar()->addPermanentWidget(mCoordsLabel, 0);
   // add a label to show current scale
   mScaleLabel = new QLabel(QString(),statusBar());
@@ -4491,12 +4490,14 @@ void QgisApp::extentsViewToggled(bool theFlag)
   {
     //extents view mode!
     mToggleExtentsViewButton->setIcon(getThemeIcon("extents.png"));
+    mCoordsLabel->setToolTip(tr("Map coordinates for the current view extents"));
     showExtents();
   }
   else
   {
     //mouse cursor pos view mode!
     mToggleExtentsViewButton->setIcon(getThemeIcon("tracking.png"));
+    mCoordsLabel->setToolTip(tr("Map coordinates at mouse cursor position"));
   }
 }
 
