@@ -169,7 +169,6 @@ OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon
 	QString fileName = *myIterator;
 	qgis->openLayer(fileName);
       }
-      break;
     }
   }
   return noErr;
