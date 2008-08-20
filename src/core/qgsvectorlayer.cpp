@@ -714,13 +714,12 @@ bool QgsVectorLayer::draw(QgsRenderContext& renderContext)
     updateFeatureCount();
     int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
+    QgsFeature fet;
+    QgsAttributeList attributes = mRenderer->classificationAttributes();
+    select(attributes, renderContext.extent());
 
     try
     {
-      QgsFeature fet;
-      QgsAttributeList attributes = mRenderer->classificationAttributes();
-      select(attributes, renderContext.extent());
-
       while( getNextFeature(fet) )
       {
 
