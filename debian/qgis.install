@@ -22,7 +22,6 @@ usr/lib/qgis/libgpxprovider.so
 usr/lib/qgis/libgridmakerplugin.so
 usr/lib/qgis/libnortharrowplugin.so
 usr/lib/qgis/libogrprovider.so
-usr/lib/qgis/libpggeoprocessingplugin.so
 usr/lib/qgis/libpostgresprovider.so
 usr/lib/qgis/libquickprintplugin.so
 usr/lib/qgis/libscalebarplugin.so
@@ -31,3 +30,4 @@ usr/lib/qgis/libwfsplugin.so
 usr/lib/qgis/libwfsprovider.so
 usr/lib/qgis/libwmsprovider.so
 usr/lib/qgis/libmemoryprovider.so
+usr/lib/qgis/libdxf2shpconverterplugin.so
