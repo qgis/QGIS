@@ -156,7 +156,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       long getSelectedLongAttribute(QString attributeName);
 
       /** Show the user a warning if the srs database could not be found */
-      const void showDBMissingWarning(const QString theFileName);
+      void showDBMissingWarning(const QString theFileName);
       // List view nodes for the tree view of projections
       //! User defined projections node
       QTreeWidgetItem *mUserProjList;

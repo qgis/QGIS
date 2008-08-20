@@ -936,7 +936,7 @@ const QString QgsProjectionSelector::stringSQLSafe(const QString theSQL)
 	return myRetval;
  }
 
-const void QgsProjectionSelector::showDBMissingWarning(const QString theFileName)
+void QgsProjectionSelector::showDBMissingWarning(const QString theFileName)
 {
 
     QMessageBox::critical(this, tr("Resource Location Error"), 
