@@ -156,25 +156,20 @@ OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon
       }
     }
 
-    // Open files now if application has been initialized
-    QWidgetList wl = QApplication::topLevelWidgets();
-    for (QWidgetList::iterator it = wl.begin(); it != wl.end(); ++it)
+    QgisApp *qgis = QgisApp::instance();
+    if(qgis)
     {
-      QgisApp *qgis = dynamic_cast<QgisApp *>(*it);
-      if (qgis && qgis->objectName() == "QgisApp")
+      if (!myProjectFileName.isEmpty())
       {
-        if (!myProjectFileName.isEmpty())
-        {
-          qgis->openProject(myProjectFileName);
-        }
-        for (QStringList::Iterator myIterator = myFileList.begin();
-             myIterator != myFileList.end(); ++myIterator ) 
-        {
-          QString fileName = *myIterator;
-          qgis->openLayer(fileName);
-        }
-        break;
+	qgis->openProject(myProjectFileName);
       }
+      for (QStringList::Iterator myIterator = myFileList.begin();
+	  myIterator != myFileList.end(); ++myIterator ) 
+      {
+	QString fileName = *myIterator;
+	qgis->openLayer(fileName);
+      }
+      break;
     }
   }
   return noErr;

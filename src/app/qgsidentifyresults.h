@@ -57,6 +57,9 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   /** Add an action to the feature display node */
   void addAction(QTreeWidgetItem *parent, int id, QString field, QString value);
 
+  /** Add an edit action to the feature display node */
+  void addEdit(QTreeWidgetItem *parent, int id);
+
   /** Add a feature node to the feature display */
   QTreeWidgetItem * addNode(QString label);
   /** Set the title for the identify results dialog */
@@ -85,6 +88,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
   
   signals:
     void selectedFeatureChanged(int featureId);
+    void editFeature(int featureId);
 
   public slots:
 
@@ -110,26 +114,27 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     
   private:
   
-  QgsAttributeAction mActions;
-  int mClickedOnValue;
-  QMenu* mActionPopup;
-  std::vector<std::pair<QString, QString> > mValues;
-  static const int context_id = 689216579;
-  int mCurrentFeatureId;
-  QString mDerivedLabel;
+    bool mEditable;
+    QgsAttributeAction mActions;
+    int mClickedOnValue;
+    QMenu* mActionPopup;
+    std::vector<std::pair<QString, QString> > mValues;
+    static const int context_id = 689216579;
+    int mCurrentFeatureId;
+    QString mDerivedLabel;
 
-  /**
-   Keeps track of what derived-attribute (e.g. Length, Area)
-   root nodes have been generated for each feature in this widget.
+    /**
+     Keeps track of what derived-attribute (e.g. Length, Area)
+     root nodes have been generated for each feature in this widget.
 
-   First item:  Feature root node
-   Second item: Derived-attribute root node for that feature
-   */
-  std::map<QTreeWidgetItem *, QTreeWidgetItem *> mDerivedAttributeRootNodes;
+     First item:  Feature root node
+     Second item: Derived-attribute root node for that feature
+     */
+    std::map<QTreeWidgetItem *, QTreeWidgetItem *> mDerivedAttributeRootNodes;
 
-  // Convenience function to populate mValues with all of the item names and
-  // values for a item, including the derived ones.
-  void extractAllItemData(QTreeWidgetItem* item);
+    // Convenience function to populate mValues with all of the item names and
+    // values for a item, including the derived ones.
+    void extractAllItemData(QTreeWidgetItem* item);
 };
 
 #endif

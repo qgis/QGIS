@@ -49,7 +49,6 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   connect(this, SIGNAL(accepted()), this, SLOT(saveOptions()));
 
-  qparent = parent;
   // read the current browser and set it
   QSettings settings;
 #ifdef QGISDEBUG
@@ -116,6 +115,7 @@ QgsOptions::QgsOptions(QWidget *parent, Qt::WFlags fl) :
   chkAddedVisibility->setChecked(settings.value("/qgis/new_layers_visible",true).toBool());
   cbxLegendClassifiers->setChecked(settings.value("/qgis/showLegendClassifiers",false).toBool());
   cbxHideSplash->setChecked(settings.value("/qgis/hideSplash",false).toBool());
+  cbxAttributeTableDocked->setChecked(settings.value("/qgis/dockAttributeTable",false).toBool());
 
   //set the colour for selections
   int myRed = settings.value("/qgis/default_selection_color_red",255).toInt();
@@ -239,7 +239,7 @@ void QgsOptions::themeChanged(const QString &newThemeName)
 {
   // Slot to change the theme as user scrolls through the choices
   QString newt = newThemeName;
-  ((QgisApp*)qparent)->setTheme(newt);
+  QgisApp::instance()->setTheme(newt);
 }
 QString QgsOptions::theme()
 {
@@ -260,6 +260,7 @@ void QgsOptions::saveOptions()
   settings.setValue("/Map/identifyRadius", spinBoxIdentifyValue->value());
   settings.setValue("/qgis/showLegendClassifiers",cbxLegendClassifiers->isChecked());
   settings.setValue("/qgis/hideSplash",cbxHideSplash->isChecked());
+  settings.setValue("/qgis/dockAttributeTable",cbxAttributeTableDocked->isChecked());
   settings.setValue("/qgis/new_layers_visible",chkAddedVisibility->isChecked());
   settings.setValue("/qgis/enable_anti_aliasing",chkAntiAliasing->isChecked());
   settings.setValue("/qgis/use_qimage_to_render", !(chkUseQPixmap->isChecked()));

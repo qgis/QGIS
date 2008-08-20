@@ -44,6 +44,8 @@ class QValidator;
 
 // Must be here, so that it is included to moc file
 #include "qgsvectorlayer.h"
+#include "qgsfield.h"
+
 class QgisInterface;
 class QgsMapCanvas;
 
@@ -490,9 +492,9 @@ public:
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleInput ( QgsGrassModule *module, 
-	        	  QgsGrassModuleStandardOptions *options, QString key,
-	                  QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
+    QgsGrassModuleInput ( QgsGrassModule *module,
+                          QgsGrassModuleStandardOptions *options, QString key,
+                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                           QWidget * parent = 0 );
 
     //! Destructor

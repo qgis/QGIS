@@ -165,7 +165,7 @@ void QgsUniqueValueRenderer::renderFeature(QPainter* p, QgsFeature& f,QImage* im
     }
 }
 
-QgsSymbol* QgsUniqueValueRenderer::symbolForFeature(const QgsFeature* f)
+QgsSymbol *QgsUniqueValueRenderer::symbolForFeature(const QgsFeature *f)
 {
   //first find out the value
   const QgsAttributeMap& attrs = f->attributeMap();

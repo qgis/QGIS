@@ -19,6 +19,7 @@
 
 #include <memory>
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgscontexthelp.h"
@@ -32,7 +33,6 @@
 #include "qgsproject.h"
 #include "qgssinglesymboldialog.h"
 #include "qgsuniquevaluedialog.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
@@ -48,15 +48,18 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QSettings>
+#include <QComboBox>
+#include <QCheckBox>
 
 #if QT_VERSION < 0x040300
 #define toPlainText() text()
 #endif
 
 
-QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr, 
-    QWidget * parent, 
-    Qt::WFlags fl)
+QgsVectorLayerProperties::QgsVectorLayerProperties(
+  QgsVectorLayer *lyr, 
+  QWidget * parent, 
+  Qt::WFlags fl)
 : QDialog(parent, fl),
   layer(lyr), 
   mRendererDialog(0)
@@ -66,6 +69,21 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
   connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
   connect(this, SIGNAL(accepted()), this, SLOT(apply()));
+  connect(mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
+  connect(mDeleteAttributeButton, SIGNAL(clicked()), this, SLOT(deleteAttribute()));
+ 
+  connect(mToggleEditingButton, SIGNAL(clicked()), this, SLOT(toggleEditing()));
+  connect(this, SIGNAL(toggleEditing(QgsMapLayer*)),
+          QgisApp::instance(), SLOT(toggleEditing(QgsMapLayer*)));
+
+  connect(layer, SIGNAL(editingStarted()), this, SLOT(editingToggled()));
+  connect(layer, SIGNAL(editingStopped()), this, SLOT(editingToggled()));
+  connect(layer, SIGNAL(attributeAdded(int)), this, SLOT(attributeAdded(int)));
+  connect(layer, SIGNAL(attributeDeleted(int)), this, SLOT(attributeDeleted(int)));
+
+  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
+  mDeleteAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
+  mToggleEditingButton->setIcon(QgisApp::getThemeIcon("/mActionToggleEditing.png"));
 
   // Create the Label dialog tab
   QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
@@ -73,17 +91,30 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
   labelDialog = new QgsLabelDialog ( layer->label(), labelOptionsFrame);
   layout->addWidget( labelDialog );
   labelOptionsFrame->setLayout(layout);
-  connect(labelDialog, SIGNAL(labelSourceSet()), 
-      this, SLOT(setLabelCheckBox()));
+  connect(labelDialog, SIGNAL(labelSourceSet()), this, SLOT(setLabelCheckBox()));
 
   // Create the Actions dialog tab
-  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin(0);
-  QgsFieldMap fields = dp->fields();
-  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, 
-      actionOptionsFrame );
+  const QgsFieldMap &fields = layer->pendingFields();
+  actionDialog = new QgsAttributeActionDialog ( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
+
+  tblAttributes->setColumnCount(8);
+  tblAttributes->setRowCount( fields.size() );
+  tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr("id") ) );
+  tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr("name") ) );
+  tblAttributes->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr("type") ) );
+  tblAttributes->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr("length") ) );
+  tblAttributes->setHorizontalHeaderItem( 4, new QTableWidgetItem( tr("precision") ) );
+  tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr("comment") ) );
+  tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr("edit widget") ) );
+  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr("values") ) );
+
+  tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
+  tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
+  
+  loadRows();
 
   reset();
   if(layer->getDataProvider())//enable spatial index button group if supported by provider
@@ -95,18 +126,169 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(QgsVectorLayer * lyr,
     }
   }
 
+  updateButtons();
+  
   leSpatialRefSys->setText(layer->srs().proj4String());
   leSpatialRefSys->setCursorPosition(0);
 
   connect(sliderTransparency, SIGNAL(valueChanged(int)), this, SLOT(sliderTransparency_valueChanged(int)));
 
+  tabWidget->setCurrentIndex(0);
 } // QgsVectorLayerProperties ctor
+
+void QgsVectorLayerProperties::loadRows()
+{
+  const QgsFieldMap &fields = layer->pendingFields();
+
+  int row=0;
+  for(QgsFieldMap::const_iterator it=fields.begin(); it!=fields.end(); it++, row++)
+    setRow( row, it.key(), it.value() );
+
+  tblAttributes->resizeColumnsToContents();
+} 
+
+void QgsVectorLayerProperties::setRow(int row, int idx, const QgsField &field)
+{
+  tblAttributes->setItem(row, 0, new QTableWidgetItem( QString::number(idx) ) );
+  tblAttributes->setItem(row, 1, new QTableWidgetItem( field.name() ) );
+  tblAttributes->setItem(row, 2, new QTableWidgetItem( field.typeName() ) );
+  tblAttributes->setItem(row, 3, new QTableWidgetItem( QString::number( field.length() ) ) );
+  tblAttributes->setItem(row, 4, new QTableWidgetItem( QString::number( field.precision() ) ) );
+  tblAttributes->setItem(row, 5, new QTableWidgetItem( field.comment() ) );
+
+  for(int i=0; i<6; i++)
+    tblAttributes->item(row, i)->setFlags( tblAttributes->item(row, i)->flags() & ~Qt::ItemIsEditable );
+
+  QComboBox *cb = new QComboBox();
+  cb->addItem( tr("line edit"), QgsVectorLayer::LineEdit);
+  cb->addItem( tr("unique values"), QgsVectorLayer::UniqueValues);
+  cb->addItem( tr("unique values (editable)"), QgsVectorLayer::UniqueValuesEditable);
+  cb->addItem( tr("value map"), QgsVectorLayer::ValueMap);
+  cb->addItem( tr("classification"), QgsVectorLayer::Classification);
+  cb->addItem( tr("range"), QgsVectorLayer::Range);
+  cb->setSizeAdjustPolicy(QComboBox::AdjustToContentsOnFirstShow);
+  cb->setCurrentIndex( layer->editType( idx ) );
+
+  tblAttributes->setCellWidget(row, 6, cb );
+
+  if( layer->editType(idx)==QgsVectorLayer::ValueMap )
+  {
+    // TODO: create a gui for value maps
+    QStringList mapList;
+    QMap<QString, QVariant> &map = layer->valueMap( idx );
+    for(QMap<QString, QVariant>::iterator mit=map.begin(); mit!=map.end(); mit++)
+    {
+      QgsDebugMsg( QString("idx:%1 key:%2 value:%3").arg( idx ).arg( mit.key() ).arg( mit.value().toString() ) );
+      if( mit.value().isNull() )
+        mapList << mit.key();
+      else
+        mapList << QString( "%1=%2" ).arg( mit.key() ).arg( mit.value().toString() );
+    }
+
+    tblAttributes->setItem(row, 7, new QTableWidgetItem( mapList.join(";") ) );
+  } else if( layer->editType(idx)==QgsVectorLayer::Range ) {
+    tblAttributes->setItem(
+        row, 7,
+        new QTableWidgetItem( QString("%1;%2;%3")
+                                .arg( layer->range(idx).mMin.toString() )
+                                .arg( layer->range(idx).mMax.toString() )
+                                .arg( layer->range(idx).mStep.toString() )
+                            )
+      );
+  }
+}
+
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
-  disconnect(labelDialog, SIGNAL(labelSourceSet()), 
-      this, SLOT(setLabelCheckBox()));  
+  disconnect(labelDialog, SIGNAL(labelSourceSet()), this, SLOT(setLabelCheckBox()));  
 }
+
+void QgsVectorLayerProperties::toggleEditing()
+{
+  emit toggleEditing(layer);
+}
+
+void QgsVectorLayerProperties::attributeAdded(int idx)
+{
+  const QgsFieldMap &fields = layer->pendingFields();
+  int row = tblAttributes->rowCount();
+  tblAttributes->insertRow(row);
+  setRow(row, idx, fields[idx]);
+  tblAttributes->setCurrentCell(row, idx, QItemSelectionModel::NoUpdate);
+}
+
+
+void QgsVectorLayerProperties::attributeDeleted(int idx)
+{
+  for(int i=0; i<tblAttributes->rowCount(); i++)
+  {
+    if( tblAttributes->item(i, 0)->text().toInt()==idx )
+    {
+      tblAttributes->removeRow(i);
+      break;
+    }
+  }
+}
+
+void QgsVectorLayerProperties::addAttribute()
+{
+  QgsAddAttrDialog dialog(layer->getDataProvider(), this);
+  if(dialog.exec()==QDialog::Accepted)
+  {
+    if(!addAttribute(dialog.name(),dialog.type()))
+    {
+      QMessageBox::information(this,tr("Name conflict"),tr("The attribute could not be inserted. The name already exists in the table."));
+    }
+  }
+}
+
+bool QgsVectorLayerProperties::addAttribute(QString name, QString type)
+{
+  QgsDebugMsg("inserting attribute " + name + " of type " + type );
+  return layer->addAttribute( name, type );
+}
+
+void QgsVectorLayerProperties::deleteAttribute()
+{
+  QList<QTableWidgetItem*> items = tblAttributes->selectedItems();
+  QList<int> idxs;
+
+  for(QList<QTableWidgetItem*>::const_iterator it=items.begin(); it!=items.end(); it++)
+  {
+    if( (*it)->column()==0 )
+      idxs << (*it)->text().toInt();
+  }
+
+  for(QList<int>::const_iterator it=idxs.begin(); it!=idxs.end(); it++)
+    layer->deleteAttribute(*it);
+}
+
+void QgsVectorLayerProperties::editingToggled()
+{
+  if( layer->isEditable() )
+    loadRows();
+
+  updateButtons();
+}
+
+void QgsVectorLayerProperties::updateButtons()
+{
+  if ( layer->isEditable() )
+  {
+    int cap = layer->getDataProvider()->capabilities();
+    mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
+    mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
+    mToggleEditingButton->setChecked( true );
+  }
+  else
+  {
+    mAddAttributeButton->setEnabled( false );
+    mDeleteAttributeButton->setEnabled( false );
+    mToggleEditingButton->setChecked( false );
+  }
+}
+
 void QgsVectorLayerProperties::sliderTransparency_valueChanged(int theValue)
 {
   //set the transparency percentage label to a suitable value
@@ -167,8 +349,6 @@ void QgsVectorLayerProperties::reset( void )
         "layer is shown here. This is currently only supported for PostgreSQL "
         "layers. To enter or modify the query, click on the Query Builder button"));
 
-  //we are dealing with a pg layer here so that we can enable the sql box
-  QgsVectorDataProvider *dp = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
   //see if we are dealing with a pg layer here
   if(layer->providerType() == "postgres")
   {
@@ -188,7 +368,7 @@ void QgsVectorLayerProperties::reset( void )
   }
 
   //get field list for display field combo
-  const QgsFieldMap& myFields = dp->fields();
+  const QgsFieldMap& myFields = layer->pendingFields();
   for (QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it)
   {
     displayFieldComboBox->addItem( it->name() );
@@ -249,7 +429,7 @@ void QgsVectorLayerProperties::reset( void )
       SLOT(alterLayerDialog(const QString &)));
 
   // reset fields in label dialog
-  layer->label()->setFields ( layer->getDataProvider()->fields() );
+  layer->label()->setFields ( layer->pendingFields() );
 
   //set the metadata contents
   QString myStyle = QgsApplication::reportStyleSheet(); 
@@ -311,6 +491,69 @@ void QgsVectorLayerProperties::apply()
   layer->setLabelOn(labelCheckBox->isChecked());
   layer->setLayerName(displayName());
 
+  for(int i=0; i<tblAttributes->rowCount(); i++)
+  {
+    int idx = tblAttributes->item(i, 0)->text().toInt();
+    const QgsField &field = layer->pendingFields()[idx];
+    QgsVectorLayer::EditType editType = layer->editType(idx);
+
+    QComboBox *cb = dynamic_cast<QComboBox*>( tblAttributes->cellWidget(i, 6) );
+    if(!cb)
+      continue;
+    layer->setEditType( idx, (QgsVectorLayer::EditType) cb->itemData( cb->currentIndex() ).toInt() );
+
+    if( editType==QgsVectorLayer::ValueMap )
+    {
+      QMap<QString, QVariant> &map = layer->valueMap(idx);
+      map.clear();
+
+      QString value = tblAttributes->item(i, 7)->text();
+      if( !value.isEmpty() )
+      {
+        QStringList values = tblAttributes->item(i, 7)->text().split(";");
+        for(int j=0; j<values.size(); j++)
+        {
+          QStringList args = values[j].split("=");
+          QVariant value;
+
+          if(args.size()==1 || (args.size()==2 && args[0]==args[1]))
+          {
+            QgsDebugMsg( QString("idx:%1 key:%2 value:%2").arg(idx).arg(args[0]) );
+            value = args[0];
+          }
+          else if(args.size()==2) 
+          {
+            QgsDebugMsg( QString("idx:%1 key:%2 value:%3").arg( idx ).arg( args[0] ).arg( args[1] ) );
+            value = args[1];
+            
+          }
+
+          if( value.canConvert( field.type() ) )
+          {
+            map.insert( args[0], value );
+          }
+        }
+      }
+    } else if( editType==QgsVectorLayer::Range ) {
+      QStringList values = tblAttributes->item(i, 7)->text().split(";");
+      
+      if( values.size()==3 ) {
+        QVariant min  = values[0];
+        QVariant max  = values[1];
+        QVariant step = values[2];
+
+        if( min.canConvert(field.type()) &&
+            max.canConvert(field.type()) &&
+            step.canConvert(field.type()) )
+        {
+          min.convert( field.type() );
+          max.convert( field.type() );
+          step.convert( field.type() );
+          layer->range(idx) = QgsVectorLayer::RangeData(min,max,step);
+        }
+      }
+    }
+  }
 
   QgsSingleSymbolDialog *sdialog = 
     dynamic_cast < QgsSingleSymbolDialog * >(widgetStackRenderers->currentWidget());
@@ -354,11 +597,8 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
   // launch the query builder using the PostgreSQL connection
   // from the provider
 
-  // get the data provider
-  QgsVectorDataProvider *dp =
-    dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  // cast to postgres provider type
-  QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) dp;
+  // cast to postgres provider type 
+  QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) layer->getDataProvider() ; // FIXME use dynamic cast
   // create the query builder object using the table name
   // and postgres connection from the provider
   QgsDataSourceURI uri(myPGProvider->dataSourceUri());
@@ -541,7 +781,7 @@ QString QgsVectorLayerProperties::getMetadata()
 
   }
 
-
+#if 0
   //
   // Add the info about each field in the attribute table
   //
@@ -569,8 +809,7 @@ QString QgsVectorLayerProperties::getMetadata()
   myMetadata += "</th>";
 
   //get info for each field by looping through them
-  QgsVectorDataProvider *myDataProvider = dynamic_cast<QgsVectorDataProvider *>(layer->getDataProvider());
-  const QgsFieldMap& myFields = myDataProvider->fields();
+  const QgsFieldMap& myFields = layer->pendingFields();
   for (QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it)
   {
     const QgsField& myField = *it;
@@ -594,15 +833,17 @@ QString QgsVectorLayerProperties::getMetadata()
 
   //close field list
   myMetadata += "</table>"; //end of nested table
+#endif
+
   myMetadata += "</td></tr>"; //end of stats container table row
   //
   // Close the table
   //
 
   myMetadata += "</table>";
+
   myMetadata += "</body></html>";
   return myMetadata;
-
 }
 
 

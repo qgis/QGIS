@@ -88,7 +88,6 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual QGis::WKBTYPE geometryType() const = 0;
 
-
       /**
        * Number of features in the layer
        * @return long containing number of features
@@ -230,7 +229,7 @@ class QgsVectorDataProvider : QgsDataProvider
       QList<int> allAttributesList();
 
       /**Returns the names of the numerical types*/
-      const QSet<QString>& supportedNativeTypes() const;
+      const QMap<QString,QVariant::Type> &supportedNativeTypes() const;
       
       /**
        * Set whether provider should return also features that don't have

@@ -20,7 +20,6 @@
 #include <QValidator>
 
 #include "qgsattributetable.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
@@ -33,31 +32,44 @@
 #include <QMenu>
 
 
-QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate(const QgsFieldMap & fields, QObject *parent)
-  : QItemDelegate(parent), mFields(fields)
-{}
+QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate(QgsAttributeTable *table, QObject *parent)
+  : mTable(table), QItemDelegate(parent)
+{
+}
 
-QWidget * QgsAttributeTableItemDelegate::createEditor( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QWidget *QgsAttributeTableItemDelegate::createEditor(
+  QWidget *parent,
+  const QStyleOptionViewItem &option,
+  const QModelIndex &index ) const
 {
   QWidget *editor = QItemDelegate::createEditor(parent, option, index);
   QLineEdit *le = dynamic_cast<QLineEdit*>(editor);
-  if (le)
+  if (!le)
+    return editor;
+
+  int col = index.column();
+  QTableWidgetItem *twi = mTable->horizontalHeaderItem(col);
+  if(!twi)
   {
-    int col = index.column();
-    if( mFields[col-1].type()==QVariant::Int )
-    {
-      le->setValidator( new QIntValidator(le) );
-    }
-    else if( mFields[col-1].type()==QVariant::Double )
-    {
-      le->setValidator( new QDoubleValidator(le) );
-    }
+    QgsDebugMsg( QString("horizontalHeaderItem %1 not found").arg(col) );
+    return editor;
   }
+
+  int type = twi->data(QgsAttributeTable::AttributeType).toInt();
+  if( type==QVariant::Int )
+  {
+    le->setValidator( new QIntValidator(le) );
+  }
+  else if( type==QVariant::Double )
+  {
+    le->setValidator( new QDoubleValidator(le) );
+  }
+
   return editor;
 }
 
 
-QgsAttributeTable::QgsAttributeTable(QWidget * parent):
+QgsAttributeTable::QgsAttributeTable(QWidget * parent) :
         QTableWidget(parent),
         lockKeyPressed(false),
         mEditable(false),
@@ -69,14 +81,12 @@ QgsAttributeTable::QgsAttributeTable(QWidget * parent):
   f.setFamily("Helvetica");
   f.setPointSize(9);
   setFont(f);
-  mDelegate = new QgsAttributeTableItemDelegate(mFields, this);
+  mDelegate = new QgsAttributeTableItemDelegate(this);
   setItemDelegate(mDelegate);
   setSelectionBehavior(QAbstractItemView::SelectRows);
   connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
-  connect(this, SIGNAL(cellChanged(int, int)), this, SLOT(storeChangedValue(int,int)));
   connect(horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(columnClicked(int)));
   connect(verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(rowClicked(int)));
-  setReadOnly(true);
   setFocus();
 }
 
@@ -90,14 +100,17 @@ void QgsAttributeTable::setReadOnly(bool b)
 {
   setEditTriggers(b ? QAbstractItemView::NoEditTriggers :
     QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
+  if(!b) {
+    setColumnReadOnly(0, true);
+  }
 }
 
 void QgsAttributeTable::setColumnReadOnly(int col, bool ro)
 {
   for (int i = 0; i < rowCount(); ++i)
   {
-  	QTableWidgetItem *item = this->item(i, col);
-    item->setFlags(ro ? item->flags() & ~Qt::ItemIsEditable : item->flags() | Qt::ItemIsEditable);
+    QTableWidgetItem *twi = item(i, col);
+    twi->setFlags(ro ? twi->flags() & ~Qt::ItemIsEditable : twi->flags() | Qt::ItemIsEditable);
   }
 }
 
@@ -173,16 +186,16 @@ void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
 
 void QgsAttributeTable::handleChangedSelections()
 {
-    emit selectionRemoved(false);
+  emit selectionRemoved(false);
 
   QList<QTableWidgetSelectionRange> selectedItemRanges = selectedRanges();
   QList<QTableWidgetSelectionRange>::const_iterator range_it = selectedItemRanges.constBegin();
   for (; range_it != selectedItemRanges.constEnd(); ++range_it)
   { 
     for (int index = range_it->topRow(); index <= range_it->bottomRow(); index++)
-	{
-	  emit selected(item(index, 0)->text().toInt(), false);
-	}
+    {
+      emit selected(item(index, 0)->text().toInt(), false);
+    }
   }
 
   //don't send the signal repaintRequested() from here
@@ -203,19 +216,8 @@ void QgsAttributeTable::selectRowWithId(int id)
 
 void QgsAttributeTable::sortColumn(int col, bool ascending)
 {
-  //if the first entry contains a letter, sort alphanumerically, otherwise numerically
-  QString firstentry = item(0, col)->text();
-  bool containsletter = false;
-  for (int i = 0; i < firstentry.length(); i++)
-  {
-    if (firstentry[i].isLetter())
-    {
-      containsletter = true;
-      break;
-    }
-  }
-
-  qsort(0, rowCount() - 1, col, ascending, containsletter);
+  int type = horizontalHeaderItem(col)->data(QgsAttributeTable::AttributeType).toInt();
+  qsort(0, rowCount() - 1, col, ascending, type!=QVariant::Int && type==QVariant::Double);
 }
 
 
@@ -302,7 +304,8 @@ void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, boo
     j = upper;
     for (;;)
     {
-      while (compareItems(item(++i, col)->text(), v, ascending, alphanumeric) == -1);
+      while (compareItems(item(++i, col)->text(), v, ascending, alphanumeric) == -1)
+        ;
       while (compareItems(item(--j, col)->text(), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
       if (i >= j)
       {
@@ -381,45 +384,6 @@ void QgsAttributeTable::popupItemSelected(QAction* menuAction)
   mActions.doAction(id, mActionValues, mClickedOnValue);
 }
 
-bool QgsAttributeTable::addAttribute(const QString& name, const QString& type)
-{
-  //first test if an attribute with the same name is already in the table
-  for(int i=0;i<columnCount();++i)
-  {
-    if(horizontalHeaderItem(i)->text()==name)
-    {
-      //name conflict
-      return false;
-    }
-  }
-  mAddedAttributes.insert(name,type);
-
-  QgsDebugMsg("inserting attribute " + name + " of type " + type + ", numCols: " + QString::number(columnCount()) );
-  //add a new column at the end of the table
-  insertColumn(columnCount());
-  setHorizontalHeaderItem(columnCount()-1, new QTableWidgetItem(name));
-  mEdited=true;
-  return true;
-}
-
-void QgsAttributeTable::deleteAttribute(const QString& name)
-{
-  //check, if there is already an attribute with this name in mAddedAttributes
-  QgsNewAttributesMap::iterator iter = mAddedAttributes.find(name);
-  if(iter!=mAddedAttributes.end())
-  {
-    mAddedAttributes.erase(iter);
-    removeAttrColumn(name);
-  }
-  else
-  {
-    mDeletedAttributes.insert(name); 
-    removeAttrColumn(name);
-  }
-  mEdited=true;
-}
-
-
 /* Deprecated: See QgisApp::editCopy() instead */
 void QgsAttributeTable::copySelectedRows()
 {
@@ -463,157 +427,60 @@ void QgsAttributeTable::copySelectedRows()
   clipboard->setText(toClipboard, QClipboard::Clipboard);
 }
 
-bool QgsAttributeTable::commitChanges(QgsVectorLayer* layer)
+void QgsAttributeTable::fillTable(QgsVectorLayer *layer)
 {
-  bool isSuccessful = false;
+  int row = 0;
 
-  if(layer)
+  const QgsFieldMap &fields = layer->pendingFields();
+
+	// set up the column headers
+  setColumnCount(fields.size()+1);
+
+  setHorizontalHeaderItem(0, new QTableWidgetItem("id")); //label for the id-column
+
+  int h = 1;
+  for (QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt!=fields.end(); fldIt++, h++)
   {
-    //convert strings of deleted attributes to ids
+    QgsDebugMsg( QString("%1: field %2: %3 | %4")
+                   .arg(h).arg(fldIt.key()).arg(fldIt->name()).arg( QVariant::typeToName(fldIt->type()) ) );
 
-    QgsVectorDataProvider* provider = layer->getDataProvider();
+    QTableWidgetItem *twi = new QTableWidgetItem(fldIt->name());
+    twi->setData( AttributeIndex, fldIt.key() );
+    twi->setData( AttributeName, fldIt->name() );
+    twi->setData( AttributeType, fldIt->type() );
+    setHorizontalHeaderItem(h, twi);
 
-    if(provider)
-    {
-
-      QgsAttributeIds deletedIds;
-      QSet<QString>::const_iterator it = mDeletedAttributes.constBegin();
-
-      for(; it != mDeletedAttributes.constEnd(); ++it)
-      {
-        deletedIds.insert(provider->indexFromFieldName(*it));
-      }
-
-      isSuccessful = true;
-      if( !mAddedAttributes.empty() )
-      {
-        // add new attributes beforehand, so attribute changes can be applied
-        isSuccessful = layer->commitAttributeChanges(QgsAttributeIds(), mAddedAttributes, QgsChangedAttributesMap());
-
-        if(isSuccessful)
-          // forget added attributes on successful addition
-          mAddedAttributes.clear();
-      }
-
-      if(isSuccessful)
-      {
-        QgsChangedAttributesMap attributeChanges; //convert mChangedValues to QgsChangedAttributesMap
-        int fieldIndex;
-
-        QMap<int, QMap<QString, QString> >::const_iterator att_it = mChangedValues.constBegin();
-        for(; att_it != mChangedValues.constEnd(); ++att_it)
-        {
-          QgsAttributeMap newAttMap;
-          QMap<QString, QString>::const_iterator record_it = att_it->constBegin();
-          for(; record_it != att_it->constEnd(); ++record_it)
-          {
-            fieldIndex = provider->indexFromFieldName(record_it.key());
-            if(fieldIndex != -1)
-            {
-              if( record_it.value()=="NULL" ||
-                  ( record_it.value().isEmpty() &&
-                    (provider->fields()[fieldIndex].type()==QVariant::Int ||
-                     provider->fields()[fieldIndex].type()==QVariant::Double) ) )
-                newAttMap.insert(fieldIndex, QVariant(QString::null) );
-              else
-                newAttMap.insert(fieldIndex, record_it.value());
-            }
-            else
-            {
-              QgsDebugMsg("Changed attribute " + record_it.key() + " not found");
-            }
-          }
-          attributeChanges.insert(att_it.key(), newAttMap);
-        } 
-
-        isSuccessful = layer->commitAttributeChanges(deletedIds,
-          QgsNewAttributesMap(),
-          attributeChanges);
-      }
-    }
+    mAttrIdxMap.insert(fldIt.key(), h);
   }
 
-  if (isSuccessful)
+  QgsFeatureList features;
+  if( layer->selectedFeatureCount()==0 )
   {
-    mEdited=false;
-    clearEditingStructures();
+    layer->select(layer->pendingAllAttributesList(), QgsRect(), false);
+
+    QgsFeature f;
+    while( layer->getNextFeature(f) )
+      features << f;
+  }
+  else
+  {
+    features = layer->selectedFeatures();
   }
 
-  return isSuccessful;
-}
-
-bool QgsAttributeTable::rollBack(QgsVectorLayer* layer)
-{
-  if(layer)
-  {
-    fillTable(layer);
-  }
-  mEdited=false;
-  clearEditingStructures();
-  return true;
-}
-
-
-void QgsAttributeTable::fillTable(QgsVectorLayer* layer)
-{
-  QgsVectorDataProvider* provider=layer->getDataProvider();
-  if(provider)
-  {
-    QgsFeature fet;
-    int row = 0;
-    
-    QgsFeatureList& addedFeatures = layer->addedFeatures();
-    QgsFeatureIds& deletedFeatures = layer->deletedFeatureIds();
-
-    // set up the column headers
-    mFields = provider->fields();
-    int fieldcount=provider->fieldCount();
+  setRowCount( features.size() );
   
-    setRowCount(provider->featureCount() + addedFeatures.size() - deletedFeatures.size());
-    setColumnCount(fieldcount+1);
-    setHorizontalHeaderItem(0, new QTableWidgetItem("id")); //label for the id-column
+  for(int i=0; i<features.size(); i++)
+    putFeatureInTable(i, features[i]);
 
-    int h = 1;
-    QgsFieldMap::const_iterator fldIt;
-    for (fldIt = mFields.begin(); fldIt != mFields.end(); ++fldIt)
-    {
-      QgsDebugMsg("field " + QString::number(fldIt.key()) + ": " + fldIt->name() +
-                  " | " + QString(QVariant::typeToName(fldIt->type())) );
+  // Default row height is too tall
+  resizeRowsToContents();
 
-      setHorizontalHeaderItem(h++, new QTableWidgetItem(fldIt->name()));
-    }
-
-    //go through the features and fill the values into the table
-    QgsAttributeList all = provider->allAttributesList();
-    provider->select(all, QgsRect(), false);
-    
-    while (provider->getNextFeature(fet))
-    {
-      if (!deletedFeatures.contains(fet.featureId()))
-      {
-        putFeatureInTable(row, fet);
-        row++;
-      }
-    }
-
-    //also consider the not commited features
-    for(QgsFeatureList::iterator it = addedFeatures.begin(); it != addedFeatures.end(); it++)
-    {
-      putFeatureInTable(row, *it);
-      row++;
-    }
-
-    // Default row height is too tall
-    resizeRowsToContents();
-    // Make each column wide enough to show all the contents
-    for (int i = 0; i < columnCount(); ++i)
-    {
-      resizeColumnToContents(i);
-    }
-  }
+  // Make each column wide enough to show all the contents
+  for (int i=0; i<columnCount(); i++)
+    resizeColumnToContents(i);
 }
 
-void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
+void QgsAttributeTable::putFeatureInTable(int row, const QgsFeature& fet)
 {
   // Prevent a crash if a provider doesn't update the feature count properly
   if(row >= rowCount())
@@ -623,21 +490,35 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
 
   //id-field
   int id = fet.featureId();
-  QTableWidgetItem *item = new QTableWidgetItem(QString::number(id));
-  item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  setItem(row, 0, item);
+  QTableWidgetItem *twi = new QTableWidgetItem(QString::number(id));
+  twi->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+  setItem(row, 0, twi);
   insertFeatureId(id, row);  //insert the id into the search tree of qgsattributetable
-  const QgsAttributeMap& attr = fet.attributeMap();
-  QgsAttributeMap::const_iterator it;
-  int h = 1;
-  for (it = attr.begin(); it != attr.end(); ++it)
-  { 
-    QString value;
 
+  const QgsAttributeMap& attr = fet.attributeMap();
+
+  for (QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it)
+  { 
+    if( !mAttrIdxMap.contains( it.key() ) )
+      continue;
+
+    int h = mAttrIdxMap[ it.key() ];
+
+    twi = horizontalHeaderItem(h);
+    if(!twi)
+    {
+      QgsDebugMsg("header item not found.");
+      continue;
+    }
+
+    int type = twi->data(AttributeType).toInt();
+    bool isNum = (type == QVariant::Double || type == QVariant::Int);
+
+    QString value;
     // get the field values
     if( it->isNull() )
     {
-      if( mFields[h-1].type()==QVariant::Int || mFields[h-1].type()==QVariant::Double )
+      if( isNum )
         value="";
       else
         value="NULL";
@@ -645,58 +526,10 @@ void QgsAttributeTable::putFeatureInTable(int row, QgsFeature& fet)
       value = it->toString();
     }
 
-    bool isNum;
-    value.toFloat(&isNum);
-    item = new QTableWidgetItem(value);
-  	if (isNum) item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    setItem(row, h++, item);
-  }
-}
-
-void QgsAttributeTable::storeChangedValue(int row, int column)
-{
-  //id column is not editable
-  if(column>0)
-  {
-    //find feature id
-    int id=item(row,0)->text().toInt();
-    QString field = horizontalHeaderItem(column)->text();
-
-    if(id>=0)
-    {
-      // add empty map for feature if doesn't exist
-      if (!mChangedValues.contains(id))
-      {
-        mChangedValues.insert(id, QMap<QString, QString>());
-      }
-
-      mChangedValues[id].insert(field, item(row,column)->text());
-      mEdited=true;
-    }
-    else
-    {
-      // added feature attribute changed
-      emit featureAttributeChanged(row,column);
-    }
-  }
-}
-
-void QgsAttributeTable::clearEditingStructures()
-{
-  mDeletedAttributes.clear();
-  mAddedAttributes.clear();
-  mChangedValues.clear();
-}
-
-void QgsAttributeTable::removeAttrColumn(const QString& name)
-{
-  for(int i=0;i<columnCount();++i)
-  {
-    if(horizontalHeaderItem(i)->text()==name)
-    {
-      removeColumn(i);
-      break;
-    }
+    twi = new QTableWidgetItem(value);
+    if (isNum)
+      twi->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    setItem(row, h, twi);
   }
 }
 
@@ -850,5 +683,56 @@ bool QgsAttributeTable::checkSelectionChanges()
   {
     mLastSelectedRows = theCurrentSelection;
     return true;
+  }
+}
+
+void QgsAttributeTable::attributeValueChanged(int fid, int idx, const QVariant &value)
+{
+  if( !rowIdMap.contains(fid) )
+    return;
+
+  if( !mAttrIdxMap.contains(idx) )
+    return;
+
+  item( rowIdMap[fid], mAttrIdxMap[idx] )->setText( value.toString() );
+}
+
+void QgsAttributeTable::featureDeleted(int fid)
+{
+  if( !rowIdMap.contains(fid) )
+    return;
+
+  int row = rowIdMap[fid];
+
+  removeRow(row);
+
+  for(QMap<int,int>::iterator it=rowIdMap.begin(); it!=rowIdMap.end(); it++)
+    if( it.value() > row )
+      rowIdMap[ it.key() ]--;
+}
+
+void QgsAttributeTable::addAttribute(int attr, const QgsField &fld)
+{
+  QTableWidgetItem *twi = new QTableWidgetItem( fld.name() );
+  twi->setData( AttributeIndex, attr );
+  twi->setData( AttributeName, fld.name() );
+  twi->setData( AttributeType, fld.type() );
+
+  insertColumn( columnCount() );
+  setHorizontalHeaderItem(columnCount()-1, twi);
+
+  mAttrIdxMap.insert(attr, columnCount()-1);
+}
+
+void QgsAttributeTable::deleteAttribute(int attr)
+{
+  int column = mAttrIdxMap[attr];
+
+  removeColumn( column );
+  mAttrIdxMap.remove(attr);
+  for(QMap<int, int>::iterator it=mAttrIdxMap.begin(); it!=mAttrIdxMap.end(); it++)
+  {
+    if( it.value()>column )
+      mAttrIdxMap[ it.key() ]--;
   }
 }

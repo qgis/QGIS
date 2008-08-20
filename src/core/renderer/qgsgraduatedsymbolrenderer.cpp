@@ -156,7 +156,7 @@ void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QIm
     }
 }
 
-QgsSymbol* QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
 {
   //first find out the value for the classification attribute
   const QgsAttributeMap& attrs = f->attributeMap();

@@ -40,7 +40,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     void removeSymbols();
     /** Determines if a feature will be rendered or not 
 	@param f a pointer to the feature to determine if rendering will happen*/
-    bool willRenderFeature(QgsFeature *f);
+    virtual bool willRenderFeature(QgsFeature *f);
     /**Renders an OGRFeature
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     int mClassificationField;
     /**List holding the symbols for the individual classes*/
     QList<QgsSymbol*> mSymbols;
-    QgsSymbol* symbolForFeature(const QgsFeature* f);
+    QgsSymbol *symbolForFeature(const QgsFeature* f);
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
     

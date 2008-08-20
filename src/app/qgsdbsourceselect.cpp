@@ -38,8 +38,8 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <iostream>
 
-QgsDbSourceSelect::QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl)
-  : QDialog(app, fl), mColumnTypeThread(NULL), qgisApp(app), pd(0)
+QgsDbSourceSelect::QgsDbSourceSelect(QWidget *parent, Qt::WFlags fl)
+  : QDialog(parent, fl), mColumnTypeThread(NULL), pd(0)
 {
   setupUi(this);
   btnAdd->setEnabled(false);

@@ -44,7 +44,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
 public:
 
     //! Constructor
-    QgsServerSourceSelect(QgisApp *app, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsServerSourceSelect(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsServerSourceSelect();
     //! Populate the connection list combo box
@@ -172,9 +172,6 @@ private:
 
     //! The mime type, the text to use in the button and a unique number
     QMap<QString, QPair<QString, int> > m_PotentialFormats;
-
-    //! Pointer to the qgis application mainwindow
-    QgisApp *qgisApp;
 
     //! The widget that controls the image format radio buttons
     QButtonGroup* m_imageFormatGroup;

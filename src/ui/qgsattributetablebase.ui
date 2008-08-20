@@ -13,26 +13,19 @@
    <string>Attribute Table</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
-   </property>
    <property name="horizontalSpacing" >
     <number>6</number>
    </property>
    <property name="verticalSpacing" >
     <number>2</number>
+   </property>
+   <property name="margin" >
+    <number>0</number>
    </property>
    <item row="0" column="0" >
     <widget class="QToolButton" name="mRemoveSelectionButton" >
@@ -43,7 +36,8 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset>../xpm/remove_selection.xpm</iconset>
+      <iconset>
+       <normaloff>../xpm/remove_selection.xpm</normaloff>../xpm/remove_selection.xpm</iconset>
      </property>
      <property name="shortcut" >
       <string/>
@@ -59,7 +53,8 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset>../xpm/selected_to_top.png</iconset>
+      <iconset>
+       <normaloff>../xpm/selected_to_top.png</normaloff>../xpm/selected_to_top.png</iconset>
      </property>
      <property name="shortcut" >
       <string>Ctrl+T</string>
@@ -75,7 +70,8 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset>../xpm/switch_selection.png</iconset>
+      <iconset>
+       <normaloff>../xpm/switch_selection.png</normaloff>../xpm/switch_selection.png</iconset>
      </property>
      <property name="shortcut" >
       <string>Ctrl+S</string>
@@ -94,7 +90,8 @@
       <string/>
      </property>
      <property name="icon" >
-      <iconset>../xpm/copy_selection.png</iconset>
+      <iconset>
+       <normaloff>../xpm/copy_selection.png</normaloff>../xpm/copy_selection.png</iconset>
      </property>
      <property name="shortcut" >
       <string>Ctrl+C</string>
@@ -117,66 +114,12 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="5" >
-    <widget class="QToolButton" name="mAddAttributeButton" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip" >
-      <string>New column</string>
-     </property>
-     <property name="text" >
-      <string/>
-     </property>
-     <property name="icon" >
-      <iconset>../xpm/new_attribute.png</iconset>
-     </property>
-     <property name="shortcut" >
-      <string>Ctrl+N</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="6" >
-    <widget class="QToolButton" name="mDeleteAttributeButton" >
-     <property name="toolTip" >
-      <string>Delete column</string>
-     </property>
-     <property name="text" >
-      <string/>
-     </property>
-     <property name="icon" >
-      <iconset>../xpm/delete_attribute.png</iconset>
-     </property>
-     <property name="shortcut" >
-      <string>Ctrl+X</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="7" >
-    <widget class="QToolButton" name="btnEdit" >
-     <property name="toolTip" >
-      <string>Toggle editing mode</string>
-     </property>
-     <property name="whatsThis" >
-      <string>Click to toggle table editing</string>
-     </property>
-     <property name="text" >
-      <string/>
-     </property>
-     <property name="checkable" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="8" >
     <spacer>
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="sizeHint" >
+     <property name="sizeHint" stdset="0" >
       <size>
        <width>421</width>
        <height>20</height>
@@ -184,17 +127,7 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" colspan="9" >
-    <widget class="QgsAttributeTable" native="1" name="tblAttributes" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="9" >
+   <item row="2" column="0" colspan="7" >
     <layout class="QHBoxLayout" >
      <item>
       <widget class="QLabel" name="textLabel1" >
@@ -251,10 +184,36 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="9" >
+   <item row="3" column="0" colspan="7" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::NoButton</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="7" >
+    <widget class="QgsAttributeTable" native="1" name="tblAttributes" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5" >
+    <widget class="QToolButton" name="mToggleEditingButton" >
+     <property name="toolTip" >
+      <string>Toggle editing mode</string>
+     </property>
+     <property name="whatsThis" >
+      <string>Click to toggle table editing</string>
+     </property>
+     <property name="text" >
+      <string/>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -274,9 +233,6 @@
   <tabstop>mInvertSelectionButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>
   <tabstop>mZoomMapToSelectedRowsButton</tabstop>
-  <tabstop>mAddAttributeButton</tabstop>
-  <tabstop>mDeleteAttributeButton</tabstop>
-  <tabstop>btnEdit</tabstop>
   <tabstop>mSearchText</tabstop>
   <tabstop>mSearchColumns</tabstop>
   <tabstop>mSearchButton</tabstop>

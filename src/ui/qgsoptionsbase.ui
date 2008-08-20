@@ -213,6 +213,13 @@
             </property>
            </widget>
           </item>
+          <item row="5" column="0" colspan="2" >
+           <widget class="QCheckBox" name="cbxAttributeTableDocked" >
+            <property name="text" >
+             <string>Open attribute table in a dock window</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -223,8 +230,8 @@
          </property>
          <property name="sizeHint" >
           <size>
-           <width>547</width>
-           <height>51</height>
+           <width>577</width>
+           <height>21</height>
           </size>
          </property>
         </spacer>

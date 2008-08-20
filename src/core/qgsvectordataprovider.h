@@ -26,9 +26,11 @@ class QTextCodec;
 //QGIS Includes
 #include "qgis.h"
 #include "qgsdataprovider.h"
-
 #include "qgsvectorlayer.h"
+#include "qgsfield.h"
 
+typedef QMap<QString, QString> QgsNewAttributesMap;
+typedef QMap<QString, QVariant::Type> QgsNativeTypeMap;
 
 /** Base class for vector data providers
  */
@@ -137,7 +139,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * Return a map of indexes with field names for this layer
        * @return map of fields
        */
-      virtual const QgsFieldMap & fields() const = 0;
+      virtual const QgsFieldMap &fields() const = 0;
 
       /**
        * Return a short comment for the data that this provider is
@@ -181,14 +183,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * Adds a list of features
        * @return true in case of success and false in case of failure
        */
-      virtual bool addFeatures(QgsFeatureList & flist);
+      virtual bool addFeatures(QgsFeatureList &flist);
 
       /** 
        * Deletes a feature
        * @param id list containing feature ids to delete
        * @return true in case of success and false in case of failure
        */
-      virtual bool deleteFeatures(const QgsFeatureIds & id);
+      virtual bool deleteFeatures(const QgsFeatureIds &id);
 
       /**
        * Adds new attributes
@@ -246,24 +248,24 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * Set encoding used for accessing data from layer
        */
       virtual void setEncoding(const QString& e);
-      
+
       /**
        * Get encoding which is used for accessing data
        */
       QString encoding() const;
-      
+
       /**
        * Returns the index of a field name or -1 if the field does not exist
        */
       int indexFromFieldName(const QString& fieldName) const;
-      
+
       /**
        * Return list of indexes to fetch all attributes in getNextFeature()
        */
       virtual QgsAttributeList allAttributesList();
 
       /**Returns the names of the numerical types*/
-      const QSet<QString>& supportedNativeTypes() const;
+      const QgsNativeTypeMap &supportedNativeTypes() const;
 
       /**
        * Set whether provider should return also features that don't have
@@ -272,12 +274,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       void setFetchFeaturesWithoutGeom(bool fetch);
 
     protected:
-      
+
       void fillMinMaxCache();
-      
+
       bool mCacheMinMaxDirty;
       QMap<int, QVariant> mCacheMinValues, mCacheMaxValues;
-
 
       /** Encoding */
       QTextCodec* mEncoding;
@@ -292,7 +293,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       QgsAttributeList mAttributesToFetch;
 
       /**The names of the providers native types*/
-      QSet<QString> mSupportedNativeTypes;
+      QgsNativeTypeMap mSupportedNativeTypes;
 };
 
 #endif

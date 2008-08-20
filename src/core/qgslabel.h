@@ -83,7 +83,7 @@ public:
     void renderLabel ( QPainter* painter, const QgsRect& viewExtent, 
                        const QgsCoordinateTransform* coordTransform,
                        const QgsMapToPixel *transform,
-		       QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
+                       QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
 
     /** Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
@@ -132,7 +132,7 @@ private:
                      int width, int height, int alignment);
 
     /** Get label point for simple feature in map units */
-    void labelPoint ( std::vector<QgsPoint>&, QgsFeature & feature );
+    void labelPoint ( std::vector<QgsPoint>&, QgsFeature &feature );
 
     /** Get label point for the given feature in wkb format. */
     unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb, size_t wkblen);

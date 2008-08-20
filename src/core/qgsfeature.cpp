@@ -18,20 +18,12 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgsrect.h"
 
-#include <iostream>
-#include <cfloat>
-#ifdef WIN32
-#include <limits>
-#endif
-#include <cstring>
-#include <assert.h>
-
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
  */
 
 QgsFeature::QgsFeature(int id, QString typeName)
-    : mFid(id), 
+    : mFid(id),
       mGeometry(0),
       mOwnsGeometry(0),
       mValid(false),
@@ -41,101 +33,40 @@ QgsFeature::QgsFeature(int id, QString typeName)
   // NOOP
 }
 
-QgsFeature::QgsFeature( QgsFeature const & rhs,
-                        const QgsChangedAttributesMap & changedAttributes,
-                        const QgsGeometryMap & changedGeometries )
-  : mFid( rhs.mFid ), 
-    mValid( rhs.mValid ),
-    mDirty( rhs.mDirty ),
-    mTypeName( rhs.mTypeName )
-
-{
-  // copy attributes from rhs feature
-  mAttributes = rhs.mAttributes;
-  
-  if (changedAttributes.contains(mFid))
-  {
-    // get map of changed attributes
-    const QgsAttributeMap& changed = changedAttributes[mFid];
-  
-    // changet the attributes which were provided in the attribute map
-    for (QgsAttributeMap::const_iterator it = changed.begin(); it != changed.end(); ++it)
-    {
-      changeAttribute(it.key(), it.value());
-    }
-  }
-  
-  if (changedGeometries.contains(mFid))
-  {
-    // deep-copy geometry purely from changedGeometries
-    mGeometry     = new QgsGeometry(changedGeometries[mFid]);
-    mOwnsGeometry = TRUE;
-  }
-  else
-  {
-    // copy geometry purely from rhs feature
-    if ( rhs.mGeometry )
-    {
-      mGeometry = new QgsGeometry( *(rhs.mGeometry) );
-      mOwnsGeometry = TRUE;
-    }
-    else
-    {
-      mGeometry = 0;
-      mOwnsGeometry = FALSE;
-    }
-  }
-
-}                        
-
-
 QgsFeature::QgsFeature( QgsFeature const & rhs )
-    : mFid( rhs.mFid ), 
+    : mFid( rhs.mFid ),
       mAttributes( rhs.mAttributes ),
       mValid( rhs.mValid ),
       mDirty( rhs.mDirty ),
-      mTypeName( rhs.mTypeName )
+      mTypeName( rhs.mTypeName ),
+      mGeometry( 0 ),
+      mOwnsGeometry( false )
 {
 
   // copy embedded geometry
   if ( rhs.mGeometry )
   {
-    mGeometry = new QgsGeometry( *(rhs.mGeometry) );
-    mOwnsGeometry = TRUE;
+    setGeometry( *rhs.mGeometry );
   }
-  else
-  {
-    mGeometry = 0;
-    mOwnsGeometry = FALSE;
-  }
-
 }
 
 
 QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
 {
   if ( &rhs == this )
-  { return *this; }
+    return *this;
 
-  mFid =  rhs.mFid ; 
-  mDirty =  rhs.mDirty ; 
-  mAttributes =  rhs.mAttributes ;
-  mValid =  rhs.mValid ;
+  mFid =  rhs.mFid;
+  mDirty =  rhs.mDirty;
+  mAttributes =  rhs.mAttributes;
+  mValid =  rhs.mValid;
   mTypeName = rhs.mTypeName;
+  mGeometry = 0;
+  mOwnsGeometry = false;
 
-  // copy embedded geometry
-  delete mGeometry;
   if ( rhs.mGeometry )
-  {
-    mGeometry = new QgsGeometry( *(rhs.mGeometry) );
-    mOwnsGeometry = TRUE;
-  }
-  else
-  {
-    mGeometry = 0;
-    mOwnsGeometry = FALSE;
-  }
-    
+    setGeometry( *rhs.mGeometry );
+
   return *this;
 } // QgsFeature::operator=( QgsFeature const & rhs )
 
@@ -144,13 +75,9 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
 //! Destructor
 QgsFeature::~QgsFeature()
 {
-
   // Destruct the attached geometry only if we still own it.
-  if ( (mOwnsGeometry) && (mGeometry) )
-  {
+  if ( mOwnsGeometry && mGeometry )
     delete mGeometry;
-  }
-
 }
 
 /**
@@ -197,17 +124,15 @@ void QgsFeature::changeAttribute(int field, QVariant attr)
   mAttributes[field] = attr;
 }
 
-
-QgsGeometry * QgsFeature::geometry()
+QgsGeometry *QgsFeature::geometry()
 {
   return mGeometry;
 }
 
-
-QgsGeometry * QgsFeature::geometryAndOwnership()
+QgsGeometry *QgsFeature::geometryAndOwnership()
 {
-  mOwnsGeometry = FALSE;
-  
+  mOwnsGeometry = false;
+
   return mGeometry;
 }
 
@@ -218,7 +143,6 @@ QgsGeometry * QgsFeature::geometryAndOwnership()
 void QgsFeature::setFeatureId(int id)
 {
   mFid = id;
-
 }
 
 
@@ -239,45 +163,29 @@ void QgsFeature::setTypeName(QString typeName)
 
 void QgsFeature::setGeometry(const QgsGeometry& geom)
 {
-  // Destruct the attached geometry only if we still own it, before assigning new one.
-  if ( (mOwnsGeometry) && (mGeometry) )
-  {
-    delete mGeometry;
-    mGeometry = 0;
-  }
-  
-  mGeometry = new QgsGeometry(geom);
-  mOwnsGeometry = TRUE;
+  setGeometry( new QgsGeometry(geom) );
 }
 
 void QgsFeature::setGeometry(QgsGeometry* geom)
 {
   // Destruct the attached geometry only if we still own it, before assigning new one.
-  if ( (mOwnsGeometry) && (mGeometry) )
+  if ( mOwnsGeometry && mGeometry )
   {
     delete mGeometry;
     mGeometry = 0;
   }
-  
+
   mGeometry = geom;
-  mOwnsGeometry = TRUE;
+  mOwnsGeometry = true;
 }
 
 /** Set the pointer to the feature geometry
 */
 void QgsFeature::setGeometryAndOwnership(unsigned char *geom, size_t length)
 {
-  // Destruct the attached geometry only if we still own it, before assigning new one.
-  if ( (mOwnsGeometry) && (mGeometry) )
-  {
-    delete mGeometry;
-    mGeometry = 0;
-  }
-  
-  mGeometry = new QgsGeometry();
-  mGeometry->setWkbAndOwnership(geom, length);
-  mOwnsGeometry = TRUE;
-
+  QgsGeometry *g = new QgsGeometry();
+  g->setWkbAndOwnership(geom, length);
+  setGeometry(g);
 }
 
 
@@ -298,5 +206,5 @@ bool QgsFeature::isDirty() const
 
 void QgsFeature::resetDirty()
 {
-  mDirty = FALSE;
+  mDirty = false;
 }

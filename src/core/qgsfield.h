@@ -145,4 +145,7 @@ private:
 
 }; // class QgsField
 
+// key = field index, value=field data
+typedef QMap<int, QgsField> QgsFieldMap;
+
 #endif

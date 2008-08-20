@@ -24,7 +24,7 @@
 #include <cmath>
 
 
-QgsSnapper::QgsSnapper(QgsMapRenderer* mapRender): mMapRenderer(mapRender)
+QgsSnapper::QgsSnapper(QgsMapRenderer* mapRenderer): mMapRenderer(mapRenderer)
 {
 
 }

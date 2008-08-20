@@ -22,47 +22,41 @@
 
 #include "ui_qgsattributetablebase.h"
 
-
+class QDockWidget;
 class QgsAttributeTable;
 class QgsVectorLayer;
 class QgisApp;
+class QgsAttributeActions;
 
 /**
   *@author Gary E.Sherman
   */
 
-class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
+class QgsAttributeTableDisplay : public QDialog, private Ui::QgsAttributeTableBase
 {
   Q_OBJECT
   public:
-    /**
-     \param qgisApp   This should be the QgisApp that spawned this table.
-                      Otherwise the Copy button on this QgsAttributeTableDisplay
-                      will not work.
-     */
-    QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp);
+    static QgsAttributeTableDisplay *attributeTable(QgsVectorLayer *layer);
+
     ~QgsAttributeTableDisplay();
 
-    QgsAttributeTable *table();
-    void setTitle(QString title);
+    void fillTable();
+
   protected:
+    QgsAttributeTableDisplay(QgsVectorLayer* layer);
+
     QgsVectorLayer* mLayer;
 
-    QgisApp * mQgisApp;
+    void doSearch(QString searchString);
+    void setAttributeActions(const QgsAttributeAction &actions);
+    void selectRowsWithId(const QgsFeatureIds &ids);
 
-    void doSearch(const QString& searchString);
-
-    virtual void closeEvent(QCloseEvent* ev);
+    virtual void closeEvent(QCloseEvent *ev);
 
     /** array of feature IDs that match last searched condition */
     QgsFeatureIds mSearchIds;
 
   protected slots:
-    void deleteAttributes();
-    void addAttribute();
-    void on_btnEdit_toggled(bool theFlag);
-    void startEditing();
-    void stopEditing();
     void selectedToTop();
     void invertSelection();
     void removeSelection();
@@ -72,12 +66,18 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
     void advancedSearch();
     void searchShowResultsChanged(int item);
     void showHelp();
+    void toggleEditing();
+
+    void attributeAdded(int idx);
+    void attributeDeleted(int idx);
 
   public slots:
     void changeFeatureAttribute(int row, int column);
-
+    void editingToggled();
+    void selectionChanged();
+ 
   signals:
-    void deleted();
+    void editingToggled(QgsMapLayer *);
 
   private:
     /** Set the icon theme for this dialog */
@@ -88,7 +88,11 @@ class QgsAttributeTableDisplay:public QDialog, private Ui::QgsAttributeTableBase
 
     QString mSearchString;
 
+    QDockWidget *mDock;
+
     static const int context_id = 831088384;
+
+    static QMap<QgsVectorLayer *, QgsAttributeTableDisplay *> smTables;
 };
 
 #endif

@@ -21,8 +21,6 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsaddattrdialog.h"
-#include "qgsdelattrdialog.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
@@ -39,249 +37,174 @@
 #include <QPixmap>
 #include <QSettings>
 #include <QToolButton>
+#include <QDockWidget>
 
-QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer, QgisApp * qgisApp)
+QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
 : QDialog(0, Qt::Window),
   mLayer(layer),
-  mQgisApp(qgisApp)
+  mDock(NULL)
 {
   setupUi(this);
   restorePosition();
   setTheme();
+
+  mToggleEditingButton->setEnabled( layer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mToggleEditingButton->setChecked( layer->isEditable() );
+
   connect(mRemoveSelectionButton, SIGNAL(clicked()), this, SLOT(removeSelection()));
   connect(mSelectedToTopButton, SIGNAL(clicked()), this, SLOT(selectedToTop()));
   connect(mInvertSelectionButton, SIGNAL(clicked()), this, SLOT(invertSelection()));
   connect(mCopySelectedRowsButton, SIGNAL(clicked()), this, SLOT(copySelectedRowsToClipboard()));
   connect(mZoomMapToSelectedRowsButton, SIGNAL(clicked()), this, SLOT(zoomMapToSelectedRows()));
-  connect(mAddAttributeButton, SIGNAL(clicked()), this, SLOT(addAttribute()));
-  connect(mDeleteAttributeButton, SIGNAL(clicked()), this, SLOT(deleteAttributes()));
   connect(mSearchButton, SIGNAL(clicked()), this, SLOT(search()));
   connect(mSearchShowResults, SIGNAL(activated(int)), this, SLOT(searchShowResultsChanged(int)));
   connect(btnAdvancedSearch, SIGNAL(clicked()), this, SLOT(advancedSearch()));
   connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(showHelp()));
-  connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()), 
-      this, SLOT(close()));
-  connect(tblAttributes, SIGNAL(featureAttributeChanged(int,int)), this, SLOT(changeFeatureAttribute(int,int)));
-  
-  //disable those buttons until start editing has been pressed and provider supports it
-  mAddAttributeButton->setEnabled(false);
-  mDeleteAttributeButton->setEnabled(false);
+  connect(buttonBox->button(QDialogButtonBox::Close), SIGNAL(clicked()), this, SLOT(close()));
 
-  int cap=layer->getDataProvider()->capabilities();
-  if((cap&QgsVectorDataProvider::ChangeAttributeValues)
-      ||(cap&QgsVectorDataProvider::AddAttributes)
-      ||(cap&QgsVectorDataProvider::DeleteAttributes))
-  {
-    btnEdit->setEnabled(true);
-  }
-  else
-  {
-    btnEdit->setEnabled(false);
-  }
+  connect(mToggleEditingButton, SIGNAL(clicked()), this, SLOT(toggleEditing()));
+  connect(this, SIGNAL(editingToggled(QgsMapLayer *)), QgisApp::instance(), SLOT(toggleEditing(QgsMapLayer *)));
+  
+  // etablish connection to table
+  connect(tblAttributes, SIGNAL(cellChanged(int, int)), this, SLOT(changeFeatureAttribute(int,int)));
+
+  // etablish connections to layer
+  connect(mLayer, SIGNAL(layerDeleted()), this, SLOT(close()));
+
+  connect(mLayer, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+
+  connect(mLayer, SIGNAL(editingStarted()), this, SLOT(editingToggled()));
+  connect(mLayer, SIGNAL(editingStopped()), this, SLOT(editingToggled()));
+
+  connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT(attributeAdded(int)));
+  connect(mLayer, SIGNAL(attributeDeleted(int)), this, SLOT(attributeDeleted(int)));
+
+  connect(mLayer, SIGNAL(attributeValueChanged(int,int,const QVariant &)),
+          tblAttributes, SLOT(attributeValueChanged(int,int,const QVariant &)) );
+
+  connect(mLayer, SIGNAL(featureDeleted(int)),
+          tblAttributes, SLOT(featureDeleted(int)));
+
+  // etablish connections between table and vector layer
+  connect(tblAttributes, SIGNAL(selected(int, bool)), mLayer, SLOT(select(int, bool)));
+  connect(tblAttributes, SIGNAL(selectionRemoved(bool)), mLayer, SLOT(removeSelection(bool)));
+  connect(tblAttributes, SIGNAL(repaintRequested()), mLayer, SLOT(triggerRepaint()));
 
   // fill in mSearchColumns with available columns
-  QgsVectorDataProvider* provider = mLayer->getDataProvider();
-  if (provider)
+  const QgsFieldMap& xfields = mLayer->pendingFields();
+  QgsFieldMap::const_iterator fldIt;
+  for (fldIt = xfields.constBegin(); fldIt != xfields.constEnd(); ++fldIt)
   {
-    const QgsFieldMap& xfields = provider->fields();
-    QgsFieldMap::const_iterator fldIt;
-    for (fldIt = xfields.constBegin(); fldIt != xfields.constEnd(); ++fldIt)
-    {
-      mSearchColumns->addItem(fldIt->name());
-    }
+    mSearchColumns->addItem(fldIt->name());
   }
   
   // TODO: create better labels
   mSearchShowResults->addItem(tr("select"));
   mSearchShowResults->addItem(tr("select and bring to top"));
   mSearchShowResults->addItem(tr("show only matching"));
+
+  QSettings mySettings;
+  bool myDockFlag = mySettings.value("/qgis/dockAttributeTable",false).toBool();
+  if (myDockFlag )
+  {
+    mDock = new QDockWidget(tr("Attribute table - ") + layer->name(), QgisApp::instance());
+    mDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
+    mDock->setWidget(this);
+    QgisApp::instance()->addDockWidget(Qt::BottomDockWidgetArea, mDock);
+    buttonBox->setVisible(false);
+  }
+
+  setWindowTitle(tr("Attribute table - ") + layer->name());
 }
 
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
 {
+  smTables.remove(mLayer);
 }
-QgsAttributeTable *QgsAttributeTableDisplay::table()
+
+void QgsAttributeTableDisplay::closeEvent(QCloseEvent *ev)
 {
-  return tblAttributes;
+  saveWindowLocation();
+  ev->ignore();
+  delete this;
 }
+
+void QgsAttributeTableDisplay::fillTable()
+{
+  tblAttributes->fillTable( mLayer );
+  tblAttributes->setReadOnly( !mLayer->isEditable() );
+  
+  selectionChanged();
+
+  // Give the table the most recent copy of the actions for this layer.
+  setAttributeActions(*mLayer->actions());
+}
+
+void QgsAttributeTableDisplay::toggleEditing()
+{
+  emit editingToggled(mLayer);
+}
+
+void QgsAttributeTableDisplay::setAttributeActions(const QgsAttributeAction &action) 
+{
+  tblAttributes->setAttributeActions(action);
+}
+
+void QgsAttributeTableDisplay::selectRowsWithId(const QgsFeatureIds &ids)
+{
+  tblAttributes->selectRowsWithId(ids);
+}
+
 void QgsAttributeTableDisplay::setTheme()
 {
-  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
   mRemoveSelectionButton->setIcon(QgisApp::getThemeIcon("/mActionUnselectAttributes.png"));
   mSelectedToTopButton->setIcon(QgisApp::getThemeIcon("/mActionSelectedToTop.png"));
   mInvertSelectionButton->setIcon(QgisApp::getThemeIcon("/mActionInvertSelection.png"));
   mCopySelectedRowsButton->setIcon(QgisApp::getThemeIcon("/mActionCopySelected.png"));
   mZoomMapToSelectedRowsButton->setIcon(QgisApp::getThemeIcon("/mActionZoomToSelected.png"));
-  mAddAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionNewAttribute.png"));
-  mDeleteAttributeButton->setIcon(QgisApp::getThemeIcon("/mActionDeleteAttribute.png"));
-  btnEdit->setIcon(QgisApp::getThemeIcon("/mActionToggleEditing.png"));
+  mToggleEditingButton->setIcon(QgisApp::getThemeIcon("/mActionToggleEditing.png"));
 }
 
-void QgsAttributeTableDisplay::setTitle(QString title)
+void QgsAttributeTableDisplay::editingToggled()
 {
-  setWindowTitle(title);
-}
-
-void QgsAttributeTableDisplay::deleteAttributes()
-{
-  QgsDelAttrDialog dialog(table()->horizontalHeader());
-  if(dialog.exec()==QDialog::Accepted)
-  {
-    const std::list<QString>* attlist=dialog.selectedAttributes();
-    for(std::list<QString>::const_iterator iter=attlist->begin();iter!=attlist->end();++iter)
-    {
-      table()->deleteAttribute(*iter);
-    }
-  }
-}
-
-void QgsAttributeTableDisplay::addAttribute()
-{
-  QgsAddAttrDialog dialog(mLayer->getDataProvider(), this);
-  if(dialog.exec()==QDialog::Accepted)
-  {
-    if(!table()->addAttribute(dialog.name(),dialog.type()))
-    {
-      QMessageBox::information(this,tr("Name conflict"),tr("The attribute could not be inserted. The name already exists in the table."));
-    }
-  }
-}
-
-void QgsAttributeTableDisplay::startEditing()
-{
-  QgsVectorDataProvider* provider=mLayer->getDataProvider();
-  bool editing=false; 
-
-  if(provider)
-  {
-    if(provider->capabilities()&QgsVectorDataProvider::AddAttributes)
-    {
-      mAddAttributeButton->setEnabled(true);
-      editing=true;
-    }
-    if(provider->capabilities()&QgsVectorDataProvider::DeleteAttributes)
-    {
-      
-      mDeleteAttributeButton->setEnabled(true);
-      editing=true;
-    }
-    if(provider->capabilities()&QgsVectorDataProvider::ChangeAttributeValues)
-    {
-      table()->setReadOnly(false);
-      table()->setColumnReadOnly(0,true);//id column is not editable
-      editing=true;
-    }
-    if(editing)
-    {
-      btnEdit->setText(tr("Stop editing"));
-      buttonBox->button(QDialogButtonBox::Close)->setEnabled(false);
-      //make the dialog modal when in editable
-      //otherwise map editing and table editing
-      //may disturb each other
-      //hide();
-      //setModal(true);
-      //show();
-    }
-    else
-    {
-      //revert button
-      QMessageBox::information(this,tr("Editing not permitted"),tr("The data provider is read only, editing is not allowed."));
-      btnEdit->setChecked(false);
-    }
-  }
-}
-
-void QgsAttributeTableDisplay::on_btnEdit_toggled(bool theFlag)
-{
-  if (theFlag)
-  {
-    startEditing();
-  }
-  else
-  {
-    stopEditing();
-  }
-}
-
-void QgsAttributeTableDisplay::stopEditing()
-{
-  if(table()->edited())
-  {
-    //commit or roll back?
-    QMessageBox::StandardButton commit=QMessageBox::information(this,tr("Stop editing"),
-      tr("Do you want to save the changes?"),
-      QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-    if(commit==QMessageBox::Save)
-    {
-      if(!table()->commitChanges(mLayer))
-      {
-        QMessageBox::information(this,tr("Error"),tr("Could not commit changes - changes are still pending"));
-        return;
-      }
-    }
-    else if(commit == QMessageBox::Discard)
-    {
-      table()->rollBack(mLayer);
-    }
-    else //cancel
-    {
-      return;
-    }
-  }
-  btnEdit->setText(tr("Start editing"));
-  buttonBox->button(QDialogButtonBox::Close)->setEnabled(true);
-  mAddAttributeButton->setEnabled(false);
-  mDeleteAttributeButton->setEnabled(false);
-  table()->setReadOnly(true);
-  //make this dialog modeless again
-  hide();
-  setModal(false);
-  show();
+  mToggleEditingButton->setChecked( mLayer->isEditable() );
+  tblAttributes->setReadOnly( !mLayer->isEditable() );
 }
 
 void QgsAttributeTableDisplay::selectedToTop()
 {
-  table()->bringSelectedToTop();
+  tblAttributes->bringSelectedToTop();
 }
 
 void QgsAttributeTableDisplay::invertSelection()
 {
-  if(mLayer)
-  {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    mLayer->invertSelection();
-    QApplication::restoreOverrideCursor();
-  }
+  if(!mLayer)
+    return;
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  mLayer->invertSelection();
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsAttributeTableDisplay::removeSelection()
 {
-    table()->clearSelection();
-    mLayer->triggerRepaint();
+  tblAttributes->clearSelection();
+  mLayer->triggerRepaint();
 }
 
 void QgsAttributeTableDisplay::copySelectedRowsToClipboard()
 {
-  // Deprecated
-  // table()->copySelectedRows();
-
-  // Use the Application's copy method instead
-  mQgisApp->editCopy(mLayer);
+  QgisApp::instance()->editCopy(mLayer);
 }
 
 void QgsAttributeTableDisplay::zoomMapToSelectedRows()
 {
-  mQgisApp->zoomToSelected();
+  QgisApp::instance()->zoomToSelected();
 }
 
 void QgsAttributeTableDisplay::search()
 {
-  // if selected field is numeric, numeric comparison will be used
-  // else attributes containing entered text will be matched
-
-  QgsVectorDataProvider* provider = mLayer->getDataProvider();
-  int item = mSearchColumns->currentIndex();
-  QVariant::Type type = provider->fields()[item].type();
+  int type = tblAttributes->item(0, mSearchColumns->currentIndex())->data(QgsAttributeTable::AttributeType).toInt();
   bool numeric = (type == QVariant::Int || type == QVariant::Double);
   
   QString str;
@@ -314,25 +237,25 @@ void QgsAttributeTableDisplay::searchShowResultsChanged(int item)
 
   if (item == 2) // show only matching
   {
-    table()->showRowsWithId(mSearchIds);
+    tblAttributes->showRowsWithId(mSearchIds);
   }
   else
   {    
     // make sure that all rows are shown
-    table()->showAllRows();
+    tblAttributes->showAllRows();
     
     // select matching
     mLayer->setSelectedFeatures(mSearchIds);
   
     if (item == 1) // select matching and bring to top
-      table()->bringSelectedToTop();
+      tblAttributes->bringSelectedToTop();
   }
 
   QApplication::restoreOverrideCursor();
 }
 
 
-void QgsAttributeTableDisplay::doSearch(const QString& searchString)
+void QgsAttributeTableDisplay::doSearch(QString searchString)
 {
   mSearchString = searchString;
 
@@ -343,6 +266,7 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
     QMessageBox::critical(this, tr("Search string parsing error"), search.parserErrorMsg());
     return;
   }
+
   QgsSearchTreeNode* searchTree = search.tree();
   if (searchTree == NULL)
   {
@@ -354,24 +278,19 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
 
   QApplication::setOverrideCursor(Qt::WaitCursor);
 
-  // TODO: need optimized getNextFeature which won't extract geometry
-  // or search by traversing table ... which one is quicker?
-  QgsFeature fet;
-  QgsVectorDataProvider* provider = mLayer->getDataProvider();
   mSearchIds.clear();
-  const QgsFieldMap& fields = provider->fields();
-  QgsAttributeList all = provider->allAttributesList();
-  
-  provider->select(all, QgsRect(), false);
 
-  while (provider->getNextFeature(fet))
+  mLayer->select(mLayer->pendingAllAttributesList(), true, false);
+
+  QgsFeature f;
+  while( mLayer->getNextFeature(f) )
   {
-    if (searchTree->checkAgainst(fields, fet.attributeMap()))
+    if (searchTree->checkAgainst(mLayer->pendingFields(), f.attributeMap()))
     {
-      mSearchIds.insert(fet.featureId());
+      mSearchIds << f.featureId();
     }
-    
-    // check if there were errors during evaulating
+
+    // check if there were errors during evaluating
     if (searchTree->hasError())
       break;
   }
@@ -386,22 +305,13 @@ void QgsAttributeTableDisplay::doSearch(const QString& searchString)
 
   // update table
   searchShowResultsChanged(mSearchShowResults->currentIndex());
-   
+
   QString str;
   if (mSearchIds.size())
     str.sprintf(tr("Found %d matching features.","", mSearchIds.size()).toUtf8(), mSearchIds.size());
   else
     str = tr("No matching features found.");
   QMessageBox::information(this, tr("Search results"), str);
-
-}
-
-void QgsAttributeTableDisplay::closeEvent(QCloseEvent* ev)
-{
-  saveWindowLocation();
-  ev->ignore();
-  emit deleted();
-  delete this;
 }
 
 void QgsAttributeTableDisplay::restorePosition()
@@ -423,16 +333,77 @@ void QgsAttributeTableDisplay::showHelp()
 
 void QgsAttributeTableDisplay::changeFeatureAttribute(int row, int column)
 {
-  QgsFeatureList &flist = mLayer->addedFeatures();
-
-  int id = table()->item(row,0)->text().toInt();
-
-  int i;
-  for(i=0; i<flist.size() && flist[i].featureId()!=id; i++)
-    ;
-
-  if(i==flist.size())
+  if(column==0)
     return;
 
-  flist[i].changeAttribute(column-1, table()->item(row,column)->text());
+  if( !mLayer->isEditable() )
+    return;
+
+  mLayer->changeAttributeValue(
+    tblAttributes->item(row,0)->text().toInt(),
+    tblAttributes->horizontalHeaderItem(column)->data(QgsAttributeTable::AttributeIndex).toInt(),
+    tblAttributes->item(row, column)->text(),
+    false
+    );
+}
+
+QMap<QgsVectorLayer *, QgsAttributeTableDisplay *> QgsAttributeTableDisplay::smTables;
+
+QgsAttributeTableDisplay *QgsAttributeTableDisplay::attributeTable(QgsVectorLayer *layer)
+{
+  if(!layer)
+    return NULL;
+
+  if( smTables.contains(layer) ) {
+    QgsAttributeTableDisplay *td = smTables[layer];
+    td->setAttributeActions(*layer->actions());
+    td->raise();
+
+    return td;
+  }
+
+  QgsAttributeTableDisplay *td = new QgsAttributeTableDisplay(layer);
+  if(!td)
+    return NULL;
+
+  // display the attribute table
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  try
+  {
+    td->fillTable();
+  }
+  catch(std::bad_alloc& ba)
+  {
+    Q_UNUSED(ba);
+    QMessageBox::critical(0, tr("bad_alloc exception"), tr("Filling the attribute table has been stopped because there was no more virtual memory left"));
+    delete td;
+    td=NULL;
+  }
+
+  QApplication::restoreOverrideCursor();
+
+  if(!td)
+    return NULL;
+
+  smTables[layer] = td;
+  td->show();
+
+  return td;
+}
+
+void QgsAttributeTableDisplay::selectionChanged()
+{
+  // select rows which should be selected
+  selectRowsWithId( mLayer->selectedFeaturesIds() );
+}
+
+void QgsAttributeTableDisplay::attributeAdded(int attr)
+{
+  tblAttributes->addAttribute(attr, mLayer->pendingFields()[attr]);
+}
+
+void QgsAttributeTableDisplay::attributeDeleted(int attr)
+{
+  tblAttributes->deleteAttribute(attr);
 }

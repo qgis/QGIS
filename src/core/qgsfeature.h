@@ -20,10 +20,11 @@ email                : sherman at mrcc.com
 #include <QMap>
 #include <QString>
 #include <QVariant>
+#include <QList>
 
 class QgsGeometry;
 class QgsRect;
-
+class QgsFeature;
 
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
@@ -37,6 +38,7 @@ typedef QMap<int, QgsGeometry> QgsGeometryMap;
 // key = field index, value = field name
 typedef QMap<int, QString> QgsFieldNameMap;
 
+typedef QList<QgsFeature> QgsFeatureList;
 
 /**
  * @class QgsFeature - Feature attribute class.
@@ -44,24 +46,11 @@ typedef QMap<int, QString> QgsFieldNameMap;
  *
  * @author Gary E.Sherman
  */
-class CORE_EXPORT QgsFeature {
-
+class CORE_EXPORT QgsFeature
+{
   public:
-
     //! Constructor
     QgsFeature(int id = 0, QString typeName = "" );
-
-    /** create a copy of this feature in its uncommitted state.
-        To do this, you also pass in a reference to the feature's
-        layer's uncommitted attribute and geometry changes.
-        The resulting feature will have those changes applied.
-        
-        This is useful in the cut/copy routine, where you'd
-        want a copy of the "current" feature, not the on-disk feature.
-     */
-    QgsFeature( const QgsFeature & rhs,
-                const QgsChangedAttributesMap & changedAttributes,
-                const QgsGeometryMap & changedGeometries );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature( QgsFeature const & rhs );
@@ -140,17 +129,17 @@ class CORE_EXPORT QgsFeature {
      * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
      */
     void resetDirty();
-    
+
     /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry * geometry();
+    QgsGeometry *geometry();
     
     /**
      * Get the geometry object associated with this feature
      * The caller assumes responsibility for the QgsGeometry*'s destruction.
      */
-    QgsGeometry * geometryAndOwnership();
+    QgsGeometry *geometryAndOwnership();
     
     /** Set this feature's geometry from another QgsGeometry object (deep copy)
      */
@@ -174,17 +163,17 @@ class CORE_EXPORT QgsFeature {
 
     /** map of attributes accessed by field index */
     QgsAttributeMap mAttributes;
-
+		
     /** pointer to geometry in binary WKB format
 
        This is usually set by a call to OGRGeometry::exportToWkb()
      */
     QgsGeometry* mGeometry;
-    
+
     /** Indicator if the mGeometry is owned by this QgsFeature.
         If so, this QgsFeature takes responsibility for the mGeometry's destruction.
-     */ 
-    bool mOwnsGeometry;   
+     */
+    bool mOwnsGeometry;
 
     //! Flag to indicate if this feature is valid
     // TODO: still applies? [MD]
@@ -199,5 +188,6 @@ class CORE_EXPORT QgsFeature {
 
 
 }; // class QgsFeature
+
 
 #endif

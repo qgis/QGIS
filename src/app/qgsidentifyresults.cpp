@@ -186,6 +186,15 @@ void QgsIdentifyResults::addDerivedAttribute(QTreeWidgetItem * fnode, QString fi
   new QTreeWidgetItem(daRootNode, labels);
 }
 
+void QgsIdentifyResults::addEdit(QTreeWidgetItem * fnode, int id)
+{
+  QStringList labels;
+  labels << "edit" << QString::number(id);
+  QTreeWidgetItem *item = new QTreeWidgetItem(fnode, labels );
+
+  item->setIcon ( 0, QgisApp::getThemeIcon("/mIconEditable.png") ); 
+}
+
 void QgsIdentifyResults::addAction(QTreeWidgetItem * fnode, int id, QString field, QString value)
 {
   QStringList labels;
@@ -198,7 +207,7 @@ void QgsIdentifyResults::addAction(QTreeWidgetItem * fnode, int id, QString fiel
 /** Add a feature node to the list */
 QTreeWidgetItem *QgsIdentifyResults::addNode(QString label)
 {
-  return (new QTreeWidgetItem(lstResults, QStringList(label)));
+  return new QTreeWidgetItem(lstResults, QStringList(label));
 }
 
 void QgsIdentifyResults::setTitle(QString title)
@@ -251,15 +260,21 @@ void QgsIdentifyResults::setActions( const QgsAttributeAction& actions  )
 
 void QgsIdentifyResults::clicked ( QTreeWidgetItem *item )
 {
-  if ( !item ) return;
+  if ( !item )
+    return;
 
-  if ( item->text(2) != "action" ) return;
+  if ( item->text(2) == "action" ) 
+  {
+    int id = item->text(3).toInt();
 
-  int id = item->text(3).toInt();
+    extractAllItemData(item);
 
-  extractAllItemData(item);
-
-  mActions.doAction(id, mValues, mClickedOnValue);
+    mActions.doAction(id, mValues, mClickedOnValue);
+  }
+  else if( item->text(0) == "edit" )
+  {
+    emit editFeature( item->text(1).toInt() );
+  }
 }
 void QgsIdentifyResults::on_buttonHelp_clicked()
 {
@@ -325,7 +340,7 @@ void QgsIdentifyResults::extractAllItemData(QTreeWidgetItem* item)
   parent = child;
 
   mValues.clear();
-  
+
   // For the code below we 
   // need to do the comparison on the text strings rather than the
   // pointers because if the user clicked on the parent, we need
@@ -341,27 +356,27 @@ void QgsIdentifyResults::extractAllItemData(QTreeWidgetItem* item)
     if (parent->child(j)->text(0) == mDerivedLabel ) {
       for (int k = 0; k < parent->child(j)->childCount(); ++k)
       {
-	mValues.push_back(
-	  std::make_pair(mDerivedLabel + "." 
-			 + parent->child(j)->child(k)->text(0), 
-			 parent->child(j)->child(k)->text(1)));
+        mValues.push_back(
+          std::make_pair(mDerivedLabel + "." 
+          + parent->child(j)->child(k)->text(0), 
+          parent->child(j)->child(k)->text(1)));
 
-	if (item == parent->child(j)->child(k))
-	{
-	  mClickedOnValue = valuesIndex;
-	}
+        if (item == parent->child(j)->child(k))
+        {
+          mClickedOnValue = valuesIndex;
+        }
 
-	valuesIndex++;
+        valuesIndex++;
       }
     }
     else // do the actual feature attributes
     {
       mValues.push_back(std::make_pair(parent->child(j)->text(0), 
-				       parent->child(j)->text(1)));
+        parent->child(j)->text(1)));
 
       if (item == parent->child(j))
       {
-	mClickedOnValue = valuesIndex;
+        mClickedOnValue = valuesIndex;
       }
 
       valuesIndex++;

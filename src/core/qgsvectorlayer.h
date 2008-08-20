@@ -22,20 +22,20 @@
 #include <QMap>
 #include <QSet>
 #include <QList>
-#include <QPair>
+#include <QStringList>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
 #include "qgssnapper.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
 
 class QPainter;
 class QImage;
 
 class QgsAttributeAction;
 class QgsCoordinateTransform;
-class QgsField;
-class QgsFeature;
 class QgsGeometry;
 class QgsGeometryVertexIndex;
 class QgsMapToPixel;
@@ -44,34 +44,39 @@ class QgsRect;
 class QgsRenderer;
 class QgsVectorDataProvider;
 
-
 class QgsGeometry;
 class QgsRect;
-class QgsFeature;
 
-//typedef QList<QgsField>   QgsFieldList;
-typedef QList<QgsFeature> QgsFeatureList;
-typedef QList<int>       QgsAttributeList;
-
+typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
-
-// key = attribute name, value = attribute type
-typedef QMap<QString, QString> QgsNewAttributesMap;
-
-typedef QMap<int, QgsField> QgsFieldMap;
-
-
 
 /*! \class QgsVectorLayer
  * \brief Vector layer backed by a data source provider
  */
-
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 {
   Q_OBJECT
 
 public:
+  enum EditType {
+    LineEdit,
+    UniqueValues,
+    UniqueValuesEditable,
+    ValueMap,
+    Classification,
+    Range,
+  };
+
+  struct RangeData {
+    RangeData() {}
+    RangeData(QVariant theMin, QVariant theMax, QVariant theStep)
+      : mMin(theMin), mMax(theMax), mStep(theStep) {}
+
+    QVariant mMin;
+    QVariant mMax;
+    QVariant mStep;
+  };
 
   /** Constructor */
   QgsVectorLayer(QString path = 0, QString baseName = 0, 
@@ -113,35 +118,31 @@ public:
 
   /** The number of features that are selected in this layer */
   int selectedFeatureCount();
-  
+
   /** Select features found within the search rectangle (in layer's coordinates) */
   void select(QgsRect & rect, bool lock);
-  
+
   /** Select not selected features and deselect selected ones */
   void invertSelection();
 
-  /** Get a copy of the user-selected features */  
+  /** Get a copy of the user-selected features */
   QgsFeatureList selectedFeatures();
-  
+
   /** Return reference to identifiers of selected features */
   const QgsFeatureIds& selectedFeaturesIds() const;
-  
+
   /** Change selection to the new set of features */
   void setSelectedFeatures(const QgsFeatureIds& ids);
 
   /** Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned */
   QgsRect boundingBoxOfSelected();
 
-  
-  /** Insert a copy of the given features into the layer */
-  bool addFeatures(QgsFeatureList features, bool makeSelected = TRUE);
-
   /** Copies the symbology settings from another layer. Returns true in case of success */
   bool copySymbologySettings(const QgsMapLayer& other);
 
   /** Returns true if this layer can be in the same symbology group with another layer */
   bool isSymbologyCompatible(const QgsMapLayer& other) const;
-  
+
   /** Returns a pointer to the renderer */
   const QgsRenderer* renderer() const;
 
@@ -196,13 +197,15 @@ public:
    */
   virtual QString subsetString();
 
-  /**Returns the features contained in the rectangle. Considers the changed, added, deleted and permanent features
-   @return 0 in case of success*/
-  int featuresInRectangle(const QgsRect& searchRect, QList<QgsFeature>& features, bool fetchGeometries = true, bool fetchAttributes = true);
+  void select(QgsAttributeList fetchAttributes,
+              QgsRect rect = QgsRect(),
+              bool fetchGeometry = true);
+
+  bool getNextFeature(QgsFeature& feature);
 
   /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
    @return 0 in case of success*/
-  int getFeatureAtId(int featureId, QgsFeature& f, bool fetchGeometries = true, bool fetchAttributes = true);
+  int getFeatureAtId(int featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true);
 
   /** Adds a feature
       @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
@@ -233,14 +236,24 @@ public:
   bool deleteSelectedFeatures();
 
   /**Adds a ring to polygon/multipolygon features
-   @return 0 in case of success, 1 problem with feature type, 2 ring not closed, 3 ring not valid, 4 ring crosses \
-existing rings, 5 no feature found where ring can be inserted*/
+   @return
+     0 in case of success,
+     1 problem with feature type,
+     2 ring not closed,
+     3 ring not valid,
+     4 ring crosses existing rings,
+     5 no feature found where ring can be inserted*/
   int addRing(const QList<QgsPoint>& ring);
 
   /**Adds a new island polygon to a multipolygon feature
-   @return 0 in case of success, 1 if selected feature is not multipolygon, 2 if ring is not a valid geometry, \
-3if new polygon ring not disjoint with existing rings, 4 if no feature was selected, 5 if several features are selected, \
-6 if selected geometry not found*/
+   @return
+     0 in case of success,
+     1 if selected feature is not multipolygon,
+     2 if ring is not a valid geometry,
+     3 if new polygon ring not disjoint with existing rings,
+     4 if no feature was selected,
+     5 if several features are selected,
+     6 if selected geometry not found*/
   int addIsland(const QList<QgsPoint>& ring);
 
   /**Translates feature by dx, dy
@@ -256,7 +269,7 @@ existing rings, 5 no feature found where ring can be inserted*/
      @return 0 in case of success*/
   int splitFeatures(const QList<QgsPoint>& splitLine, bool topologicalEditing = false);
 
-  /**Changes the specified geometry such that it has no intersections with other \
+  /**Changes the specified geometry such that it has no intersections with other 
      polygon (or multipolygon) geometries in this vector layer
   @param geom geometry to modify
   @return 0 in case of success*/
@@ -309,30 +322,8 @@ existing rings, 5 no feature found where ring can be inserted*/
      @param snap_to to segment / to vertex
      @return 0 in case of success
   */
-  int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults, \
-		      QgsSnapper::SNAP_TO snap_to);
-
-  /**
-    Commits edited attributes. Depending on the feature id,
-    the changes are written to not commited features or redirected to
-    the data provider
-
-    The commits (in this version) occur in three distinct stages,
-    (delete attributes, add attributes, change attribute values)
-    so if a stage fails, it's difficult to roll back cleanly.
-
-    \todo Need to indicate at which stage the failed commit occurred,
-          for better cleanup and recovery from the error.
-
-    \param deleted  Set of attribute indices (i.e. columns) to delete
-    \param added    Map (name, type) of attribute names (i.e. columns) to add
-    \param changed  Map (feature ID, Map (attribute name, new value) )
-                      of attribute values to change
-
-   */
-  bool commitAttributeChanges(const QgsAttributeIds& deleted,
-                              const QgsNewAttributesMap& added,
-                              const QgsChangedAttributesMap& changed);
+  int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults,
+	      QgsSnapper::SNAP_TO snap_to);
 
   /** Draws the layer
    *  @return FALSE if an error occurred during drawing
@@ -347,21 +338,37 @@ existing rings, 5 no feature found where ring can be inserted*/
    */
   void drawLabels(QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* cXf, const QgsCoordinateTransform* ct, double scale);
 
-  /** returns array of added features */
-  QgsFeatureList& addedFeatures();
+  /** returns fields list which are not commited */
+  const QgsFieldMap &pendingFields();
 
-  /** returns array of deleted feature IDs */
-  QgsFeatureIds& deletedFeatureIds();
- 
-  /** returns array of features with changed attributes */
-  QgsChangedAttributesMap& changedAttributes();
+  /** returns list of attributes */
+  QgsAttributeList pendingAllAttributesList();
+
+  /** returns feature count after commit */
+  int pendingFeatureCount();
 
   /** Sets whether some features are modified or not */
   void setModified(bool modified = TRUE, bool onlyGeometryWasModified = FALSE);
-  
+
   /** Make layer editable */
   bool startEditing();
-  
+
+  /** changed an attribute value (but does not commit it */
+  bool changeAttributeValue(int fid, int field, QVariant value, bool emitSignal = true);
+
+  /** add an attribute field (but does not commit it) 
+      returns the field index or -1 in case of failure */
+  bool addAttribute(QString name, QString type);
+
+  /** delete an attribute field (but does not commit it) */
+  bool deleteAttribute(int attr);
+
+  /** Insert a copy of the given features into the layer  (but does not commit it) */
+  bool addFeatures(QgsFeatureList features, bool makeSelected = TRUE);
+
+  /** delete a feature from the layer (but does not commit it) */
+  bool deleteFeature(int fid);
+
   /**
     Attempts to commit any changes to disk.  Returns the result of the attempt.
     If a commit fails, the in-memory changes are left alone.
@@ -370,20 +377,31 @@ existing rings, 5 no feature found where ring can be inserted*/
     disallowed value in a Postgres database - the user can re-edit and try
     again.
 
-    The commits (in this version) occur in four distinct stages,
-    (add features, change attributes, change geometries, delete features)
+    The commits occur in distinct stages,
+    (add attributes, add features, change attribute values, change geometries, delete features, delete attributes)
     so if a stage fails, it's difficult to roll back cleanly.
     Therefore any error message also includes which stage failed so 
     that the user has some chance of repairing the damage cleanly.
-
    */
   bool commitChanges();
+  const QStringList &commitErrors();
 
   /** Stop editing and discard the edits */
   bool rollBack();
 
-public slots:
+  /**get edit type*/ 
+  EditType editType(int idx);
 
+  /**set edit type*/
+  void setEditType(int idx, EditType edit);
+
+  /**access value map*/
+  QMap<QString, QVariant> &valueMap(int idx);
+
+  /**access range */
+  RangeData &range(int idx);
+
+public slots:
   /** Select feature by its ID, optionally emit signal selectionChanged() */
   void select(int featureId, bool emitSignal = TRUE);
   
@@ -405,6 +423,15 @@ signals:
   /** This signal is emitted when modifications has been done on layer */
   void wasModified(bool onlyGeometry);
 
+  void editingStarted();
+  void editingStopped();
+  void attributeAdded(int idx);
+  void attributeDeleted(int idx);
+  void featureDeleted(int fid);
+  void layerDeleted();
+
+  void attributeValueChanged(int fid, int idx, const QVariant &);
+
 private:                       // Private methods
 
   enum VertexMarkerType
@@ -424,7 +451,7 @@ private:                       // Private methods
      @todo XXX should this return bool?  Throw exceptions?
   */
   bool setDataProvider( QString const & provider );
-  
+
   /** Draws features. May cause projections exceptions to be generated
    *  (i.e., code that calls this function needs to catch them
    */
@@ -433,7 +460,7 @@ private:                       // Private methods
                    const QgsMapToPixel* cXf,
                    const QgsCoordinateTransform* ct,
                    QImage* marker,
-		   double widthScale,
+                   double widthScale,
                    double markerScaleFactor,
                    bool drawingToEditingCanvas);
 
@@ -447,19 +474,19 @@ private:                       // Private methods
   /** Draw the linestring as given in the WKB format. Returns a pointer
    * to the byte after the end of the line string binary data stream (WKB).
    */
-  unsigned char* drawLineString(unsigned char* WKBlinestring,
-                                QPainter* p,
-                                const QgsMapToPixel* mtp,
-                                const QgsCoordinateTransform* ct,
+  unsigned char *drawLineString(unsigned char *WKBlinestring,
+                                QPainter *p,
+                                const QgsMapToPixel *mtp,
+                                const QgsCoordinateTransform *ct,
                                 bool drawingToEditingCanvas);
 
   /** Draw the polygon as given in the WKB format. Returns a pointer to
    *  the byte after the end of the polygon binary data stream (WKB).
    */
-  unsigned char* drawPolygon(unsigned char* WKBpolygon,
-                             QPainter* p,
-                             const QgsMapToPixel* mtp,
-                             const QgsCoordinateTransform* ct,
+  unsigned char *drawPolygon(unsigned char *WKBpolygon,
+                             QPainter *p,
+                             const QgsMapToPixel *mtp,
+                             const QgsCoordinateTransform *ct,
                              bool drawingToEditingCanvas);
 
   /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
@@ -478,7 +505,7 @@ private:                       // Private methods
    @param snappingResult list to which the result is appended
    @param snap_to snap to vertex or to segment
   */
-  void snapToGeometry(const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance, \
+  void snapToGeometry(const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,
 		      QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SNAP_TO snap_to) const;
 
    /**Little helper function that gives bounding box from a list of points.
@@ -488,6 +515,11 @@ private:                       // Private methods
   /**Reads vertex marker type from settings*/
   QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
 
+  /**Update feature with uncommited attribute updates*/
+  void updateFeatureAttributes(QgsFeature &f);
+
+  /**Update feature with uncommited geometry updates*/
+  void updateFeatureGeometry(QgsFeature &f);
 
 private:                       // Private attributes
 
@@ -513,36 +545,48 @@ private:                       // Private attributes
   
   /** Flag indicating whether the layer has been modified since the last commit */
   bool mModified;
-  
+
   /** cache of the committed geometries retrieved *for the current display* */
   QgsGeometryMap mCachedGeometries;
-  
+
   /** Set holding the feature IDs that are activated.  Note that if a feature 
       subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds), 
       it always needs to be removed from mSelectedFeatureIds as well. 
-   */ 
+   */
   QgsFeatureIds mSelectedFeatureIds;
-  
+
   /** Deleted feature IDs which are not commited.  Note a feature can be added and then deleted 
       again before the change is committed - in that case the added feature would be removed 
       from mAddedFeatures only and *not* entered here.
-   */ 
+   */
   QgsFeatureIds mDeletedFeatureIds;
-  
+
   /** New features which are not commited.  Note a feature can be added and then changed, 
-      therefore the details here can be overridden by mChangedAttributes and mChangedGeometries.
-   */  
+      therefore the details here can be overridden by mChangedAttributeValues and mChangedGeometries.
+   */
   QgsFeatureList mAddedFeatures;
-  
-  /** Changed attributes which are not commited */
-  QgsChangedAttributesMap mChangedAttributes;
-  
+
+  /** Changed attributes values which are not commited */
+  QgsChangedAttributesMap mChangedAttributeValues;
+
+  /** deleted attributes fields which are not commited */
+  QgsAttributeIds mDeletedAttributeIds;
+
+  /** added attributes fields which are not commited */
+  QgsAttributeIds mAddedAttributeIds;
+
   /** Changed geometries which are not commited. */
   QgsGeometryMap mChangedGeometries;
-  
+
+  /** field map to commit */
+  QgsFieldMap mUpdatedFields;
+
+  /** max field index */
+  int mMaxUpdatedIndex;
+
   /** Geometry type as defined in enum WKBTYPE (qgis.h) */
   int mGeometryType;
-  
+
   /** Renderer object which holds the information about how to display the features */
   QgsRenderer *mRenderer;
 
@@ -552,6 +596,20 @@ private:                       // Private attributes
   /** Display labels */
   bool mLabelOn;
 
+  QStringList mCommitErrors;
+
+  QMap< QString, EditType > mEditTypes;
+  QMap< QString, QMap<QString, QVariant> > mValueMaps;
+  QMap< QString, RangeData > mRanges;
+
+  bool mFetching;
+  QgsRect mFetchRect;
+  QgsAttributeList mFetchAttributes;
+  bool mFetchGeometry;
+
+  QSet<int> mFetchConsidered;
+  QgsGeometryMap::iterator mFetchChangedGeomIt;
+  QgsFeatureList::iterator mFetchAddedFeaturesIt;
 };
 
 #endif

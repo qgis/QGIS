@@ -31,8 +31,11 @@
 #include <QLabel>
 #include <QFrame>
 #include <QScrollArea>
+#include <QCompleter>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
 
-QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeature)
+QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeature)
   : QDialog(),
     mSettingsPath("/Windows/AttributeDialog/"),
     mpFeature(thepFeature),
@@ -67,7 +70,7 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeat
 
 
   int classificationField = -1;
-  QStringList values;
+  QMap<QString,QString> classes;
 
   const QgsUniqueValueRenderer *uvr = dynamic_cast<const QgsUniqueValueRenderer *>( mLayer->renderer() );
   if( uvr )
@@ -78,7 +81,13 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeat
 
     for(int i=0; i<symbols.size(); i++)
     {
-      values.append( symbols[i]->lowerValue() );
+      QString label = symbols[i]->label();
+      QString name = symbols[i]->lowerValue();
+
+      if(label=="")
+        label=name;
+
+      classes.insert(name, label);
     }
   }
 
@@ -87,49 +96,135 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeat
       it != myAttributes.end(); 
       ++it)
   {
-    QString myFieldName = theFieldMap[it.key()].name();
-    int myFieldType = theFieldMap[it.key()].type();
+    const QgsField &field = theFieldMap[it.key()];
+    QString myFieldName = field.name();
+    int myFieldType = field.type();
     QLabel * mypLabel = new QLabel();
     mypInnerLayout->addWidget(mypLabel,index,0);
     QVariant myFieldValue = it.value();
-
+   
     QWidget *myWidget;
-    if(classificationField!=it.key())
+
+    QgsVectorLayer::EditType editType = vl->editType( it.key() );
+
+    switch( editType )
     {
-      QLineEdit *le = new QLineEdit();
-
-      //the provider may have provided a default value so use it
-      le->setText(myFieldValue.toString());
-
-      if( myFieldType==QVariant::Int )
+    case QgsVectorLayer::Range:
       {
-        le->setValidator( new QIntValidator(le) );
+        if( myFieldType==QVariant::Int )
+        {
+          int min = vl->range( it.key() ).mMin.toInt();
+          int max = vl->range( it.key() ).mMax.toInt();
+          int step = vl->range( it.key() ).mStep.toInt();
+
+          QSpinBox *sb = new QSpinBox();
+          sb->setMinimum(min);
+          sb->setMaximum(max);
+          sb->setSingleStep(step);
+          sb->setValue( it.value().toInt() );
+
+          myWidget = sb;
+          break;
+        } else if( myFieldType==QVariant::Double ) {
+          double min = vl->range( it.key() ).mMin.toDouble();
+          double max = vl->range( it.key() ).mMax.toDouble();
+          double step = vl->range( it.key() ).mStep.toDouble();
+          QDoubleSpinBox *dsb = new QDoubleSpinBox();
+          
+          dsb->setMinimum(min);
+          dsb->setMaximum(max);
+          dsb->setSingleStep(step);
+          dsb->setValue( it.value().toDouble() );
+
+          myWidget = dsb;
+
+          break;
+        }
+        
       }
-      else if( myFieldType==QVariant::Double )
+
+      // fall-through
+
+
+    case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::UniqueValuesEditable:
       {
-        le->setValidator( new QIntValidator(le) );
+        QLineEdit *le = new QLineEdit( myFieldValue.toString() );
+
+        if( editType == QgsVectorLayer::UniqueValuesEditable )
+        {
+          QStringList values;
+          mLayer->getDataProvider()->getUniqueValues(it.key(), values);
+
+          QCompleter *c = new QCompleter(values);
+          c->setCompletionMode(QCompleter::PopupCompletion);
+          le->setCompleter(c);
+        }
+
+        if( myFieldType==QVariant::Int )
+        {
+          le->setValidator( new QIntValidator(le) );
+        }
+        else if( myFieldType==QVariant::Double )
+        {
+          le->setValidator( new QIntValidator(le) );
+        }
+
+        myWidget = le;
       }
+      break;
 
-      myWidget = le;
-    }
-    else
-    {
-      QComboBox *cb = new QComboBox();
-      cb->addItems(values);
-      cb->setEditable(true);
-
-      //the provider may have provided a default value so use it
-      cb->setEditText(myFieldValue.toString());
-
-      if( myFieldType==QVariant::Int ) {
-        cb->setValidator( new QIntValidator(cb) );
-      }
-      else if( myFieldType==QVariant::Double )
+    case QgsVectorLayer::UniqueValues:
       {
-        cb->setValidator( new QIntValidator(cb) );
-      }
+        QStringList values;
+        mLayer->getDataProvider()->getUniqueValues(it.key(), values);
 
-      myWidget = cb;
+        QComboBox *cb = new QComboBox();
+        cb->setEditable(true);
+        cb->addItems(values);
+
+        int idx = cb->findText( myFieldValue.toString() );
+        if( idx>= 0 )
+          cb->setCurrentIndex( idx );
+
+        myWidget = cb;
+      }
+      break;
+
+    case QgsVectorLayer::ValueMap:
+      {
+        const QMap<QString,QVariant> &map = vl->valueMap( it.key() );
+
+        QComboBox *cb = new QComboBox();
+
+        for(QMap<QString,QVariant>::const_iterator it=map.begin(); it!=map.end(); it++)
+        {
+          cb->addItem( it.key(), it.value() );
+        }
+
+        int idx = cb->findData( myFieldValue );
+        if( idx>= 0 )
+          cb->setCurrentIndex( idx );
+
+        myWidget = cb;
+      }
+      break;
+
+    case QgsVectorLayer::Classification:
+      {
+        QComboBox *cb = new QComboBox();
+        for(QMap<QString,QString>::const_iterator it=classes.begin(); it!=classes.end(); it++)
+        {
+          cb->addItem( it.value(), it.key() );
+        }
+
+        int idx = cb->findData( myFieldValue );
+        if( idx>=0 )
+          cb->setCurrentIndex( idx );
+
+        myWidget = cb;
+      }
+      break;
     }
 
     if( myFieldType==QVariant::Int )
@@ -168,10 +263,9 @@ void QgsAttributeDialog::accept()
       it != myAttributes.end(); 
       ++it)
   {
-    const QgsFieldMap &theFieldMap = mLayer->getDataProvider()->fields();
-
-    //Q_ASSERT(myIndex <= mpWidgets.size());
-    QString myFieldName = theFieldMap[it.key()].name();
+    const QgsField &theField = mLayer->pendingFields()[it.key()];
+    QgsVectorLayer::EditType editType = mLayer->editType( it.key() );
+    QString myFieldName = theField.name();
     bool myFlag=false;
     QString myFieldValue;
 
@@ -184,40 +278,62 @@ void QgsAttributeDialog::accept()
     QComboBox *cb = dynamic_cast<QComboBox *>(mpWidgets.value(myIndex));
     if(cb)
     {
-      myFieldValue = cb->currentText();
+      if( editType==QgsVectorLayer::UniqueValues ||
+          editType==QgsVectorLayer::ValueMap ||
+          editType==QgsVectorLayer::Classification)
+      {
+        myFieldValue = cb->itemData( cb->currentIndex() ).toString();
+      }
+      else
+      {
+        myFieldValue = cb->currentText();
+      }
     }
 
-    switch( theFieldMap[it.key()].type() )
+
+    QSpinBox *sb = dynamic_cast<QSpinBox *>(mpWidgets.value(myIndex));
+    if(sb)
     {
-      case QVariant::Int:
+      myFieldValue = QString::number(sb->value());
+    }
+
+    QDoubleSpinBox *dsb = dynamic_cast<QDoubleSpinBox *>(mpWidgets.value(myIndex));
+    if(dsb)
+    {
+      myFieldValue = QString::number(dsb->value());
+    }
+
+    switch( theField.type() )
+    {
+    case QVariant::Int:
+      {
+        int myIntValue = myFieldValue.toInt(&myFlag);
+        if (myFlag && ! myFieldValue.isEmpty())
         {
-          int myIntValue = myFieldValue.toInt(&myFlag);
-          if (myFlag && ! myFieldValue.isEmpty())
-          {
-            mpFeature->changeAttribute( it.key(), QVariant(myIntValue) );
-          }
-          else
-          {
-            mpFeature->changeAttribute( it.key(), QVariant(QString::null) );
-          }
+          mpFeature->changeAttribute( it.key(), QVariant(myIntValue) );
         }
-        break;
-      case QVariant::Double:
+        else
         {
-          double myDblValue = myFieldValue.toDouble(&myFlag);
-          if (myFlag && ! myFieldValue.isEmpty())
-          {
-            mpFeature->changeAttribute( it.key(), QVariant(myDblValue) );
-          }
-          else
-          {
-            mpFeature->changeAttribute( it.key(), QVariant(QString::null) );
-          }
+          mpFeature->changeAttribute( it.key(), QVariant(QString::null) );
         }
-        break;
-      default: //string
-        mpFeature->changeAttribute(it.key(),QVariant( myFieldValue ) );
-        break;
+      }
+      break;
+    case QVariant::Double:
+      {
+        double myDblValue = myFieldValue.toDouble(&myFlag);
+        if (myFlag && ! myFieldValue.isEmpty())
+        {
+          mpFeature->changeAttribute( it.key(), QVariant(myDblValue) );
+        }
+        else
+        {
+          mpFeature->changeAttribute( it.key(), QVariant(QString::null) );
+        }
+      }
+      break;
+    default: //string
+      mpFeature->changeAttribute(it.key(),QVariant( myFieldValue ) );
+      break;
     }
     ++myIndex;
   }
@@ -235,4 +351,3 @@ void QgsAttributeDialog::restoreGeometry()
   QSettings settings;
   QDialog::restoreGeometry(settings.value(mSettingsPath+"geometry").toByteArray());
 }
-
