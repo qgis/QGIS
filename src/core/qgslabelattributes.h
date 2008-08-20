@@ -24,7 +24,8 @@
 class QString;
 class QColor;
 
-/** This class can be used to store attributes needed for label rendering. 
+/** \ingroup core
+ * A class to store attributes needed for label rendering. 
  *
  *  Label attributes:
  *                         border (color, width, style)
@@ -70,7 +71,7 @@ class QColor;
  *   - border color
  *   - border style
  *
- *   Each attribute is either se or unset.
+ *   Each attribute is either set or unset.
  */
 
 class  CORE_EXPORT QgsLabelAttributes

@@ -23,9 +23,8 @@
 #include <iostream>
 
 #include "qgspoint.h"
-
-/*! \class QgsLine
- * \brief A simple line object composed of a begin and end point.
+/** \ingroup core
+ * A simple line object composed of a begin and end point.
  * 
  * Comparisons (==, !=) honor the direction of the line. This means that 
  * flipped lines with the same coordinates are not considered to be equal.

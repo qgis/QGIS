@@ -34,10 +34,8 @@ class QgsScaleCalculator;
 class QgsSpatialRefSys;
 class QgsDistanceArea;
 
-/**
- * \class QgsMapRenderer
- * \brief Class for rendering map layer set
- *
+/** \ingroup core
+ * A non GUI class for rendering a map layer set onto a QPainter.
  */
 
 class CORE_EXPORT QgsMapRenderer : public QObject

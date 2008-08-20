@@ -34,9 +34,9 @@ class QDomDocument;
 class QKeyEvent;
 class QPainter;
 
-/** \class QgsMapLayer
- *  \brief Base class for all map layer types.
- * This class is the base class for all map layer types (vector, raster).
+/** \ingroup core
+ * Base class for all map layer types.
+ * This is the base class for all map layer types (vector, raster).
  */
 class CORE_EXPORT QgsMapLayer : public QObject
 {

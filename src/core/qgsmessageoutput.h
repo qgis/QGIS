@@ -25,17 +25,16 @@ class QgsMessageOutput;
 typedef QgsMessageOutput* (*MESSAGE_OUTPUT_CREATOR)();
 
 
-/**
-\brief Interface for showing messages from QGIS in GUI independent way
+/** \ingroup core 
+ * Interface for showing messages from QGIS in GUI independent way.
+ * This class provides abstraction of a dialog for showing output to the user.
+ * By default QgsMessageConsoleOutput will be used if not overridden with other
+ * message output creator function.
 
-This class provides abstraction of a dialog for showing output to the user.
-By default QgsMessageConsoleOutput will be used if not overridden
-with other message output creator function.
+ * QGIS application uses QgsMessageView class for displaying a dialog to the user.
 
-QGIS application uses QgsMessageView class for displaying a dialog to the user.
-
-Object deletes itself when it's not needed anymore. Children should use
-signal destroyed() to notify the deletion
+ * Object deletes itself when it's not needed anymore. Children should use
+ * signal destroyed() to notify the deletion
 */
 class CORE_EXPORT QgsMessageOutput
 {

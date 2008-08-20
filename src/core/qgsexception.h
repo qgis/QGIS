@@ -24,8 +24,8 @@
 
 #include <QDomNode> 
 
-/**
-   Defines a qgis exception class
+/** \ingroup core
+  * Defines a qgis exception class.
  */
 class CORE_EXPORT QgsException : public std::exception
 {

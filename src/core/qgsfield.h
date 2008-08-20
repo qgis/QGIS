@@ -20,12 +20,10 @@
 #include <QString>
 #include <QVariant>
 
-/**
-  \class QgsField
-  \brief Class to encapsulate a field in an attribute table or data source.
-
-  QgsField stores metadata about an attribute field, including name, type
-  length, and if applicable, precision.
+/** \ingroup core
+  * Encapsulate a field in an attribute table or data source.
+  * QgsField stores metadata about an attribute field, including name, type
+  * length, and if applicable, precision.
  */
 
 class CORE_EXPORT QgsField
