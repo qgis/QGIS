@@ -268,7 +268,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature& feature)
     feature.setTypeName(featureTypeName);
 
     /* fetch geometry */
-    if (mFetchGeom)
+    if (mFetchGeom || mUseIntersect)
     {
       OGRGeometryH geom = OGR_F_GetGeometryRef(fet);
 
@@ -324,8 +324,7 @@ bool QgsOgrProvider::getNextFeature(QgsFeature& feature)
   }
 }
 
-void QgsOgrProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool fetchGeometry, \
-			    bool useIntersect)
+void QgsOgrProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool fetchGeometry, bool useIntersect)
 {
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
@@ -339,8 +338,9 @@ void QgsOgrProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool
   else
   {
     OGRGeometryH filter = 0;
-    QString wktExtent = QString("POLYGON ((%1))").arg(rect.asPolygon());
-    const char *wktText = wktExtent.toAscii();
+    QString wktExtent = QString("POLYGON((%1))").arg(rect.asPolygon());
+    QByteArray ba = wktExtent.toAscii();
+    const char *wktText= ba;
 
     if(useIntersect)
     {
@@ -349,11 +349,10 @@ void QgsOgrProvider::select(QgsAttributeList fetchAttributes, QgsRect rect, bool
       if( mSelectionRectangle )
         OGR_G_DestroyGeometry( mSelectionRectangle );
 
-      OGR_G_CreateFromWkt( (char **)&wktText,
-        NULL, &mSelectionRectangle);
+      OGR_G_CreateFromWkt( (char **)&wktText, NULL, &mSelectionRectangle);
+      wktText= ba;
     }
-
-    wktText = wktExtent.toAscii();
+    
     OGR_G_CreateFromWkt( (char **)&wktText, NULL, &filter );
     QgsDebugMsg("Setting spatial filter using " + wktExtent);
     OGR_L_SetSpatialFilter( ogrLayer, filter );
