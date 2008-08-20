@@ -83,7 +83,7 @@ public:
 
     void  setBufferColor ( const QColor &color );
     bool  bufferColorIsSet ( ) const;
-    const QColor & bufferColor ( ) const;
+    QColor bufferColor ( ) const;
 
     void  setBufferStyle ( Qt::BrushStyle style );
     bool  bufferStyleIsSet ( ) const;
