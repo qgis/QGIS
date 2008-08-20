@@ -26,11 +26,11 @@
 class QgsPoint;
 class QPoint;
 
-/*! \class QgsMapToPixel
-* \brief Class for doing transforms between map coordinates and device coordinates.
-*
-* This class can convert device coordinates to map coordinates and vice versa.
-*/
+/** \ingroup core
+  * Perform transforms between map coordinates and device coordinates.
+  *
+  * This class can convert device coordinates to map coordinates and vice versa.
+  */
 class CORE_EXPORT QgsMapToPixel{
  public:
  /* Constructor

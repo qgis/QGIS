@@ -40,9 +40,9 @@ typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
-/**
- * @class QgsFeature - Feature attribute class.
- * Encapsulates a single feature including id and field/value.
+/** \ingroup core
+ * The feature class encapsulates a single feature including its id,
+ * geometry and a list of field/values attributes.
  *
  * @author Gary E.Sherman
  */

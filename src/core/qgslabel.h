@@ -42,7 +42,11 @@ typedef QList<int> QgsAttributeList;
 
 typedef QMap<int, QgsField> QgsFieldMap;
 
-/** Render class to display labels */
+/** \ingroup core
+  * A class to render labels.
+  * Label rendering properties can be either specified directly or 
+  * in most cases determined dynamically based on the value of an attribute. 
+  **/
 class CORE_EXPORT QgsLabel
 {
 public:

@@ -48,7 +48,8 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 class QgsRect;
 
-/** 
+/** \ingroup core
+ * A geometry is the spatial representation of a feature.
  * Represents a geometry with input and output in formats specified by 
  * (at least) the Open Geospatial Consortium (WKB / WKT), and containing
  * various functions for geoprocessing of the geometry.
