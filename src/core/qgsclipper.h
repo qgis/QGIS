@@ -27,13 +27,15 @@
 #include <cmath>
 #include <iostream>
 
-// The functions in this class are likely to be called from within a
-// render loop and hence need to as CPU efficient as possible. 
-
-// The main purpose of the functions in this class are to trim lines
-// and polygons to lie within a rectangular region. This is necessary
-// for drawing items to an X11 display which have a limit on the
-// magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
+/** \ingroup core
+ * A class to trim lines and polygons to within a rectangular region.
+ * The functions in this class are likely to be called from within a
+ * render loop and hence need to as CPU efficient as possible. 
+ * The main purpose of the functions in this class are to trim lines
+ *  and polygons to lie within a rectangular region. This is necessary
+ *  for drawing items to an X11 display which have a limit on the
+ *   magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
+ */
 
 class CORE_EXPORT QgsClipper
 {

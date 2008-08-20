@@ -36,8 +36,8 @@ class QDomNode;
 class QDomDocument;
 
 
-/*! \class QgsAction
- * \brief Utility class that encapsulates an action and associated information
+/** \ingroup core
+ * Utility class that encapsulates an action based on vector attributes.
  */
 class CORE_EXPORT QgsAction
 {

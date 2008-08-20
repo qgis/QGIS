@@ -36,10 +36,10 @@ class QDomDocument;
 typedef void* projPJ;
 class QString;
 
-/*! \class QgsCoordinateTransform
-* \brief Class for doing transforms between two map coordinate systems.
+/** \ingroup core
+* Class for doing transforms between two map coordinate systems.
 *
-* This class can convert map coordinates to a different spatial reference system.
+* This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the
 * layer's coordinate system and the coordinate system of the map canvas, although
 * it can be used in a more general sense to transform coordinates.

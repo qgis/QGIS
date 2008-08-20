@@ -22,12 +22,10 @@
 
 #include <QString> 
 
-/** 
-\struct QgsDataSourceURI 
-\brief Structure for storing the component parts of a PostgreSQL/RDBMS datasource URI.
-           
- This structure stores the database connection information, including host, database,
-  user name, password, schema, password, and sql where clause
+/** \ingroup core
+ * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
+ * This structure stores the database connection information, including host, database,
+ * user name, password, schema, password, and sql where clause
  */
 class CORE_EXPORT QgsDataSourceURI
 {

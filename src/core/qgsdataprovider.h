@@ -26,8 +26,8 @@ class QgsRect;
 class QgsSpatialRefSys;
 
 
-/** \class QgsDataProvider
- * \brief Abstract base class for spatial data provider implementations
+/** \ingroup core
+ * Abstract base class for spatial data provider implementations.
  * @author Gary E.Sherman
  * 
  * This object needs to inherit from QObject to enable event 
