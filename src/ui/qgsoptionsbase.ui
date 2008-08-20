@@ -968,7 +968,7 @@
              <string>Host</string>
             </property>
             <property name="buddy" >
-             <cstring>cboModellerPluginName</cstring>
+             <cstring>leProxyHost</cstring>
             </property>
            </widget>
           </item>
@@ -981,7 +981,7 @@
              <string>Port</string>
             </property>
             <property name="buddy" >
-             <cstring>cboModellerPluginName</cstring>
+             <cstring>leProxyPort</cstring>
             </property>
            </widget>
           </item>
@@ -994,7 +994,7 @@
              <string>User</string>
             </property>
             <property name="buddy" >
-             <cstring>cboModellerPluginName</cstring>
+             <cstring>leProxyUser</cstring>
             </property>
            </widget>
           </item>
@@ -1011,7 +1011,7 @@
              <string>Password</string>
             </property>
             <property name="buddy" >
-             <cstring>cboModellerPluginName</cstring>
+             <cstring>leProxyPassword</cstring>
             </property>
            </widget>
           </item>
