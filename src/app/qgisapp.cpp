@@ -72,6 +72,11 @@
 //
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
+
+// check macro breaks QItemDelegate
+#ifdef check
+#undef check
+#endif
 #endif
 
 //
