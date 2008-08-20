@@ -199,7 +199,8 @@ public:
 
   void select(QgsAttributeList fetchAttributes,
               QgsRect rect = QgsRect(),
-              bool fetchGeometry = true);
+              bool fetchGeometry = true,
+              bool useIntersect = false);
 
   bool getNextFeature(QgsFeature& feature);
 
