@@ -1,3 +1,4 @@
 usr/lib/qgis/libgrassplugin.so
 usr/lib/qgis/libgrassprovider.so
+usr/lib/libqgisgrass.so*
 usr/share/qgis/grass/*
