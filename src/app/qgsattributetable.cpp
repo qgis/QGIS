@@ -217,7 +217,7 @@ void QgsAttributeTable::selectRowWithId(int id)
 void QgsAttributeTable::sortColumn(int col, bool ascending)
 {
   int type = horizontalHeaderItem(col)->data(QgsAttributeTable::AttributeType).toInt();
-  qsort(0, rowCount() - 1, col, ascending, type!=QVariant::Int && type==QVariant::Double);
+  qsort(0, rowCount() - 1, col, ascending, type!=QVariant::Int && type!=QVariant::Double);
 }
 
 
