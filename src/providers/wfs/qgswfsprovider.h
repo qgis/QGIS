@@ -23,20 +23,9 @@
 #include "qgsrect.h"
 #include "qgsspatialrefsys.h"
 #include "qgsvectordataprovider.h"
-#include <geos/version.h>
-#if GEOS_VERSION_MAJOR < 3 
-#include <geos/geom.h>
-#include <geos/indexStrtree.h>
-#define GEOS_GEOM geos
-#define GEOS_INDEX_STRTREE geos 
-#else 
-#include <geos/geom/Envelope.h>
-#include <geos/index/strtree/STRtree.h>
-#define GEOS_GEOM geos::geom
-#define GEOS_INDEX_STRTREE geos::index::strtree 
-#endif 
 
 class QgsRect;
+class QgsSpatialIndex;
 
 /**A provider reading features from a WFS server*/
 class QgsWFSProvider: public QgsVectorDataProvider
@@ -122,13 +111,13 @@ class QgsWFSProvider: public QgsVectorDataProvider
   /**Flag if precise intersection test is needed. Otherwise, every feature is returned (even if a filter is set)*/
   bool mUseIntersect;
   /**A spatial index for fast access to a feature subset*/
-  GEOS_INDEX_STRTREE::STRtree mSpatialIndex;
-  /**Stores all the inserted rectangles and features. This is used to clean up the memory in the destructor*/
-  std::list< std::pair<GEOS_GEOM::Envelope*, QgsFeature*> > mEnvelopesAndFeatures;
-  /**Vector where the QgsFeature* of a query are inserted*/
-  std::vector<void*>* mSelectedFeatures;
+  QgsSpatialIndex *mSpatialIndex;
+  /**Vector where the ids of the selected features are inserted*/
+  QList<int> mSelectedFeatures;
   /**Iterator on the feature vector for use in reset(), getNextFeature(), etc...*/
-  std::vector<void*>::iterator mFeatureIterator;
+  QList<int>::iterator mFeatureIterator;
+  /**Vector where the features are inserted*/
+  QList<QgsFeature*> mFeatures;
   /**Geometry type of the features in this layer*/
   mutable QGis::WKBTYPE mWKBType;
   /**Source SRS*/

@@ -34,7 +34,14 @@ class QgsWFSData: public QObject
 {
   Q_OBJECT
  public:
-  QgsWFSData(const QString& uri, QgsRect* extent, QgsSpatialRefSys* srs, std::list<QgsFeature*>* features, const QString& geometryAttribute, const std::set<QString>& thematicAttributes, QGis::WKBTYPE* wkbType);
+  QgsWFSData(
+  	const QString& uri,
+	QgsRect* extent,
+	QgsSpatialRefSys* srs,
+	QList<QgsFeature*> &features,
+	const QString& geometryAttribute,
+	const QSet<QString>& thematicAttributes,
+	QGis::WKBTYPE* wkbType);
   ~QgsWFSData();
 
   /**Does the Http GET request to the wfs server
@@ -74,17 +81,17 @@ class QgsWFSData: public QObject
   void endElement(const XML_Char* el);
   void characters(const XML_Char* chars, int len);
   static void start(void* data, const XML_Char* el, const XML_Char** attr)
-    {
-      static_cast<QgsWFSData*>(data)->startElement(el, attr);
-    }
+  {
+    static_cast<QgsWFSData*>(data)->startElement(el, attr);
+  }
   static void end(void* data, const XML_Char* el)
-    {
-      static_cast<QgsWFSData*>(data)->endElement(el);
-    }
+  {
+    static_cast<QgsWFSData*>(data)->endElement(el);
+  }
   static void chars(void* data, const XML_Char* chars, int len) 
-    {
-      static_cast<QgsWFSData*>(data)->characters(chars, len);
-    }
+  {
+    static_cast<QgsWFSData*>(data)->characters(chars, len);
+  }
 
   //helper routines
   /**Reads attribute srsName="EPSG:..."
@@ -126,10 +133,10 @@ class QgsWFSData: public QObject
   /**Source srs of the layer*/
   QgsSpatialRefSys* mSrs;
   /**The features of the layer*/
-  std::list<QgsFeature*>* mFeatures;
+  QList<QgsFeature*> &mFeatures;
   /**Name of geometry attribute*/
   QString mGeometryAttribute;
-  std::set<QString> mThematicAttributes;
+  const QSet<QString> &mThematicAttributes;
   QGis::WKBTYPE* mWkbType;
   /**True if the request is finished*/
   bool mFinished;
