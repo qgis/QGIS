@@ -13,21 +13,21 @@
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
 # searching for the same item do nothing. 
-FIND_PATH(GEOS_INCLUDE_DIR geos.h
+FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
   "$ENV{LIB_DIR}/include"
   #mingw
   c:/msys/local/include
   NO_DEFAULT_PATH
   )
-FIND_PATH(GEOS_INCLUDE_DIR geos.h)
+FIND_PATH(GEOS_INCLUDE_DIR geos_c.h)
 
-FIND_LIBRARY(GEOS_LIBRARY NAMES geos PATHS 
+FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS 
   "$ENV{LIB_DIR}/lib"
   #mingw
   c:/msys/local/lib
   NO_DEFAULT_PATH
   )
-FIND_LIBRARY(GEOS_LIBRARY NAMES geos)
+FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c)
 
 IF (GEOS_INCLUDE_DIR AND GEOS_LIBRARY)
    SET(GEOS_FOUND TRUE)

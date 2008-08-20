@@ -22,15 +22,11 @@ email                : morb at ozemail dot com dot au
 
 #include "qgis.h"
 
-#include <geos/version.h>
-#if GEOS_VERSION_MAJOR < 3
-#include <geos/geom.h>
-#define GEOS_GEOM geos
-#else
-#include <geos/geom/CoordinateSequence.h>
-#include <geos/geom/Geometry.h>
-#include <geos/geom/LineString.h>
-#define GEOS_GEOM geos::geom
+#include <geos_c.h>
+
+#if GEOS_VERSION_MAJOR<3
+#define GEOSGeometry struct GEOSGeom_t
+#define GEOSCoordSequence struct GEOSCoordSeq_t
 #endif
 
 #include "qgspoint.h"
@@ -66,11 +62,9 @@ class QgsRect;
  * @author Brendan Morley
  */
 
-class CORE_EXPORT QgsGeometry {
-
+class CORE_EXPORT QgsGeometry
+{
   public:
-  
-
     //! Constructor
     QgsGeometry();
     
@@ -125,7 +119,7 @@ class CORE_EXPORT QgsGeometry {
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
      */
-    void setGeos(GEOS_GEOM::Geometry* geos);
+    void setGeos(GEOSGeometry* geos);
     
     /** 
       Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
@@ -230,8 +224,8 @@ and the indices of the vertices before/after. The vertices before/after are -1 i
     int addRing(const QList<QgsPoint>& ring);
 
     /**Adds a new island polygon to a multipolygon feature
-     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring \
-not disjoint with existing polygons of the feature*/
+     @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring 
+     not disjoint with existing polygons of the feature*/
     int addIsland(const QList<QgsPoint>& ring);
 
     /**Translate this geometry by dx, dy
@@ -285,7 +279,6 @@ not disjoint with existing polygons of the feature*/
      */
     QString exportToWkt();
 
-
     /* Accessor functions for getting geometry data */
     
     /** return contents of the geometry as a point
@@ -312,9 +305,7 @@ not disjoint with existing polygons of the feature*/
         if wkbType is WKBPolygon, otherwise an empty list */
     QgsMultiPolygon asMultiPolygon();
 
-  private:
-
-
+private:
     // Private variables
 
     // All of these are mutable since there may be on-the-fly
@@ -331,7 +322,7 @@ not disjoint with existing polygons of the feature*/
     size_t mGeometrySize;
 
     /** cached GEOS version of this geometry */
-    GEOS_GEOM::Geometry* mGeos;
+    GEOSGeometry* mGeos;
 
     /** If the geometry has been set since the last conversion to WKB **/
     bool mDirtyWkb;
@@ -360,8 +351,6 @@ not disjoint with existing polygons of the feature*/
      */
     bool exportGeosToWkb();
 
-
-
     /** Insert a new vertex before the given vertex index (first number is index 0)
      *  in the given GEOS Coordinate Sequence.
      *  If the requested vertex number is greater
@@ -374,8 +363,8 @@ not disjoint with existing polygons of the feature*/
      */
     bool insertVertexBefore(double x, double y,
                             int beforeVertex,
-                            const GEOS_GEOM::CoordinateSequence*  old_sequence,
-                                  GEOS_GEOM::CoordinateSequence** new_sequence);
+                            const GEOSCoordSequence*  old_sequence,
+                                  GEOSCoordSequence** new_sequence);
 
     /**Converts single type geometry into multitype geometry
      e.g. a polygon into a multipolygon geometry with one polygon
@@ -396,18 +385,18 @@ not disjoint with existing polygons of the feature*/
      @splitLine the line that splits the feature
      @newGeometry new geometry if splitting was successful
      @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitLinearGeometry(GEOS_GEOM::LineString* splitLine, QList<QgsGeometry*>& newGeometries);
+    int splitLinearGeometry(GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries);
     /**Splits polygon/multipolygon geometries
        @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitPolygonGeometry(GEOS_GEOM::LineString* splitLine, QList<QgsGeometry*>& newGeometries);
+    int splitPolygonGeometry(GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries);
     /**Finds the vertices next to point where the line is split. If it is split at a vertex, beforeVertex 
      and afterVertex are the same*/
 
     /**Nodes together a split line and a (multi-) polygon geometry in a multilinestring
      @return the noded multiline geometry or 0 in case of error. The calling function takes ownership of the node geometry*/
-    GEOS_GEOM::Geometry* nodeGeometries(const GEOS_GEOM::LineString* splitLine, const GEOS_GEOM::Geometry* poly) const;
+    GEOSGeometry* nodeGeometries(const GEOSGeometry *splitLine, GEOSGeometry *poly) const;
 
-    int mergeGeometriesMultiTypeSplit(QList<GEOS_GEOM::Geometry*>& splitResult);
+    int mergeGeometriesMultiTypeSplit(QVector<GEOSGeometry*>& splitResult);
 
     /** return point from wkb */
     QgsPoint asPoint(unsigned char*& ptr, bool hasZValue);
@@ -418,6 +407,7 @@ not disjoint with existing polygons of the feature*/
     /** return polygon from wkb */
     QgsPolygon asPolygon(unsigned char*& ptr, bool hasZValue);
 
+    static int refcount;
 }; // class QgsGeometry
 
 #endif
