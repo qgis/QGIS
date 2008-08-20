@@ -18,20 +18,11 @@
 
 #ifndef QGIS_H
 #define QGIS_H
-/*!  \mainpage Quantum GIS
-*
-*  \section about  About QGIS
-* Quantum GIS (QGIS) is a user friendly Open Source Geographic Information
-* System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports
-* vector, raster, and database formats. QGIS is licensed under the GNU Public
-* License.
-*
-* This API documentation provides information about all classes that make up QGIS.
-*/
-
 #include <QEvent>
 #include <QString>
-
+/** \ingroup core
+ * The QGis class provides global constants for use throughout the application.
+ */
 class CORE_EXPORT QGis
 { 
 public:
