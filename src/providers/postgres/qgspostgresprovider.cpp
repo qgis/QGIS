@@ -383,7 +383,7 @@ bool QgsPostgresProvider::declareCursor(const QString &cursorName,
 {
   try
   {
-    QString declare = QString("declare %1 binary cursor with hold for select %2")
+    QString declare = QString("declare %1 binary cursor for select %2")
       .arg(cursorName).arg(quotedIdentifier(primaryKey));
 
     if(fetchGeometry)
@@ -2434,7 +2434,7 @@ bool QgsPostgresProvider::deduceEndian()
 
   // get the same value using a binary cursor
 
-  QString oidDeclare = QString("declare oidcursor binary cursor with hold for select regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
+  QString oidDeclare = QString("declare oidcursor binary cursor for select regclass(%1)::oid").arg( quotedValue(mSchemaTableName) );
   // set up the cursor
   PQexecNR(connectionRO, oidDeclare.toUtf8());
   QString fetch = "fetch forward 1 from oidcursor";
