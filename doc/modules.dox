@@ -1,4 +1,5 @@
 /** @defgroup library */
 /** @defgroup gui */
 /** @defgroup core*/
+/** @defgroup MapComposer*/
 /** @defgroup UnitTests*/
