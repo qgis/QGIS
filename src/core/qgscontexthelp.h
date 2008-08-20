@@ -27,9 +27,8 @@ class QTcpSocket;
 #ifdef Q_OS_MACX
 #define QGSCONTEXTHELP_REUSE 1
 #endif
-/*!
- * \class QgsContextHelp
- * \brief Provides a context based help browser for a dialog.
+/** \ingroup core
+ * Provides a context based help browser for a dialog.
  *
  * The help text is stored in SQLite and accessed by a context identifier
  * unique to each dialog. This is a singleton class which invokes the help

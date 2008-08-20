@@ -18,6 +18,10 @@
 
 #include <QApplication>
 
+/** \ingroup core
+ * Extends QApplication to provide access to QGIS specific resources such
+ * as theme paths, database paths etc.
+ */
 class CORE_EXPORT QgsApplication: public QApplication
 {
   public:
