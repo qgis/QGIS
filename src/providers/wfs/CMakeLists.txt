@@ -22,6 +22,7 @@ QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core
+  ../../core/spatialindex
   ${GEOS_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}/geos
   ${EXPAT_INCLUDE_DIR}

@@ -17,6 +17,8 @@
 #include "qgsspatialrefsys.h"
 #include <QBuffer>
 #include <QUrl>
+#include <QList>
+#include <QSet>
 
 //just for a test
 //#include <QProgressDialog>
@@ -24,7 +26,23 @@
 const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
-QgsWFSData::QgsWFSData(const QString& uri, QgsRect* extent, QgsSpatialRefSys* srs, std::list<QgsFeature*>* features, const QString& geometryAttribute, const std::set<QString>& thematicAttributes, QGis::WKBTYPE* wkbType): QObject(), mUri(uri), mExtent(extent), mSrs(srs), mFeatures(features), mGeometryAttribute(geometryAttribute), mThematicAttributes(thematicAttributes), mWkbType(wkbType), mFinished(false), mFeatureCount(0)
+QgsWFSData::QgsWFSData(
+  const QString& uri, QgsRect* extent,
+  QgsSpatialRefSys* srs,
+  QList<QgsFeature*> &features,
+  const QString& geometryAttribute,
+  const QSet<QString>& thematicAttributes,
+  QGis::WKBTYPE* wkbType)
+: QObject(),
+  mUri(uri),
+  mExtent(extent),
+  mSrs(srs),
+  mFeatures(features),
+  mGeometryAttribute(geometryAttribute),
+  mThematicAttributes(thematicAttributes),
+  mWkbType(wkbType),
+  mFinished(false),
+  mFeatureCount(0)
 {
   //qWarning("Name of the geometry attribute is:");
   //qWarning(mGeometryAttribute.toLocal8Bit().data());
@@ -47,11 +65,6 @@ QgsWFSData::QgsWFSData(const QString& uri, QgsRect* extent, QgsSpatialRefSys* sr
 }
 
 QgsWFSData::~QgsWFSData()
-{
-
-}
-
-QgsWFSData::QgsWFSData()
 {
 
 }
@@ -237,7 +250,7 @@ void QgsWFSData::endElement(const XML_Char* el)
   else if(elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember")
     {
       mCurrentFeature->setGeometryAndOwnership(mCurrentWKB, mCurrentWKBSize);
-      mFeatures->push_back(mCurrentFeature);
+      mFeatures << mCurrentFeature;
       ++mFeatureCount;
       //qWarning("Removing featureMember from stack");
       mParseModeStack.pop();
