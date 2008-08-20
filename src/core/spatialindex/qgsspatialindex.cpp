@@ -19,6 +19,7 @@
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgsrect.h"
+#include "qgslogger.h"
     
 #include "SpatialIndex.h"
 
@@ -89,7 +90,7 @@ Tools::Geometry::Region QgsSpatialIndex::rectToRegion(QgsRect rect)
 
 bool QgsSpatialIndex::featureInfo(QgsFeature& f, Tools::Geometry::Region& r, long& id)
 {
-  QgsGeometry* g = f.geometry();
+  QgsGeometry *g = f.geometry();
   if (!g)
     return false;
 
@@ -105,8 +106,16 @@ bool QgsSpatialIndex::insertFeature(QgsFeature& f)
   if (!featureInfo(f, r, id))
     return false;
 
-  // TODO: handle possible exceptions
-  mRTree->insertData(0,0, r, id);
+  // TODO: handle possible exceptions correctly
+  try {
+    mRTree->insertData(0,0, r, id);
+  } catch(Tools::Exception &e) {
+    QgsDebugMsg( QString("Tools::Exception caught: ").arg(e.what().c_str()) );
+  } catch(const std::exception &e) {
+    QgsDebugMsg( QString("std::exception caught: ").arg(e.what()) );
+  } catch(...) {
+    QgsDebugMsg( "unknown spatial index exception caught" );
+  }
 
   return true;
 }
