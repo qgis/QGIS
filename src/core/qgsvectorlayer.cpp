@@ -283,9 +283,9 @@ void QgsVectorLayer::drawLabels(QgsRenderContext& renderContext)
 {
   QPainter* thePainter = renderContext.painter();
   if(!thePainter)
-    {
-      return;
-    }
+  {
+    return;
+  }
   drawLabels(thePainter, renderContext.extent(), &(renderContext.mapToPixel()), renderContext.coordTransform(), 1.0 / renderContext.rasterScaleFactor());
 }
 
@@ -311,7 +311,7 @@ void QgsVectorLayer::drawLabels(QPainter * p, const QgsRect& viewExtent, const Q
     {
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
-      select(attributes, viewExtent, true);
+      select(attributes, viewExtent);
 
       QgsFeature fet;
       while( getNextFeature(fet) )
@@ -715,12 +715,12 @@ bool QgsVectorLayer::draw(QgsRenderContext& renderContext)
     int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
 
-    QgsFeature fet;
-    QgsAttributeList attributes = mRenderer->classificationAttributes();
-    select(attributes, renderContext.extent(), true);
-
     try
     {
+      QgsFeature fet;
+      QgsAttributeList attributes = mRenderer->classificationAttributes();
+      select(attributes, renderContext.extent());
+
       while( getNextFeature(fet) )
       {
 
@@ -840,8 +840,7 @@ void QgsVectorLayer::select(QgsRect & rect, bool lock)
   }
 
   //select all the elements
-
-  select(QgsAttributeList(), rect, false);
+  select(QgsAttributeList(), rect, false, true);
 
   QgsFeature f;
   while( getNextFeature(f) )
@@ -859,7 +858,7 @@ void QgsVectorLayer::invertSelection()
 
   removeSelection(FALSE); // don't emit signal
 
-  select(QgsAttributeList(), QgsRect(), true);
+  select(QgsAttributeList(), QgsRect(), false);
 
   QgsFeature fet;
   while ( getNextFeature(fet) )
@@ -1081,8 +1080,6 @@ void QgsVectorLayer::updateExtents()
       QgsRect r = it->geometry()->boundingBox();
       mLayerExtent.combineExtentWith(&r);
     }
-
-    return;
   }
   else
   {
@@ -1149,7 +1146,7 @@ void QgsVectorLayer::updateFeatureGeometry(QgsFeature &f)
 }
 
 
-void QgsVectorLayer::select(QgsAttributeList attributes, QgsRect rect, bool fetchGeometries)
+void QgsVectorLayer::select(QgsAttributeList attributes, QgsRect rect, bool fetchGeometries, bool useIntersect)
 {
   if(!mDataProvider)
     return;
@@ -1171,11 +1168,11 @@ void QgsVectorLayer::select(QgsAttributeList attributes, QgsRect rect, bool fetc
   //look in the normal features of the provider
   if( mFetchAttributes.size()>0 )
   {
-    mDataProvider->select(mFetchAttributes, rect, fetchGeometries, true);
+    mDataProvider->select(mFetchAttributes, rect, fetchGeometries, useIntersect);
   }
   else
   {
-    mDataProvider->select(QgsAttributeList(), rect, fetchGeometries, true);
+    mDataProvider->select(QgsAttributeList(), rect, fetchGeometries, useIntersect);
   }
 }
 
@@ -1311,29 +1308,29 @@ int QgsVectorLayer::getFeatureAtId(int featureId, QgsFeature& f, bool fetchGeome
     {
       if( featureId<0 )
       {
-	// featureId<0 => in mAddedFeatures
-	bool found = false;
+        // featureId<0 => in mAddedFeatures
+        bool found = false;
 
-	for (QgsFeatureList::iterator it=mAddedFeatures.begin(); it!=mAddedFeatures.end(); it++)
-	{
-	  if( featureId!=it->featureId() )
-	  {
-	    found = true;
-	    f.setAttributeMap( it->attributeMap() );
-	    break;
-	  }
-	}
+        for (QgsFeatureList::iterator it=mAddedFeatures.begin(); it!=mAddedFeatures.end(); it++)
+        {
+          if( featureId!=it->featureId() )
+          {
+            found = true;
+            f.setAttributeMap( it->attributeMap() );
+            break;
+          }
+        }
 
-	if(!found)
-	  QgsLogger::warning( QString("No attributes for the added feature %1 found").arg(f.featureId()) );
+        if(!found)
+          QgsLogger::warning( QString("No attributes for the added feature %1 found").arg(f.featureId()) );
       }
       else
       {
-	// retrieve attributes from provider
-	QgsFeature tmp;
-	mDataProvider->getFeatureAtId(featureId, tmp, false, mDataProvider->allAttributesList());
-	updateFeatureAttributes(tmp);
-	f.setAttributeMap( tmp.attributeMap() );
+        // retrieve attributes from provider
+        QgsFeature tmp;
+        mDataProvider->getFeatureAtId(featureId, tmp, false, mDataProvider->allAttributesList());
+        updateFeatureAttributes(tmp);
+        f.setAttributeMap( tmp.attributeMap() );
       }
       updateFeatureAttributes(f);
     }
@@ -1548,7 +1545,7 @@ int QgsVectorLayer::addRing(const QList<QgsPoint>& ring)
     return 3; //ring not valid
   }
 
-  select(QgsAttributeList(), bBox, true);
+  select(QgsAttributeList(), bBox, true, true);
 
   QgsFeature f;
   while( getNextFeature(f) )
@@ -1693,7 +1690,7 @@ int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topolog
       }
     }
 
-    select(QgsAttributeList(), bBox, true);
+    select(QgsAttributeList(), bBox, true, true);
 
     QgsFeature f;
     while( getNextFeature(f) )
@@ -1758,7 +1755,7 @@ int QgsVectorLayer::removePolygonIntersections(QgsGeometry* geom)
   QgsRect geomBBox = geom->boundingBox();
 
   //get list of features that intersect this bounding box
-  select(QgsAttributeList(), geomBBox, true);
+  select(QgsAttributeList(), geomBBox, true, true);
 
   QgsFeature f;
   while( getNextFeature(f) )
@@ -1794,7 +1791,7 @@ int QgsVectorLayer::addTopologicalPoints(QgsGeometry* geom)
     case QGis::WKBLineString:
       {
         QgsPolyline theLine = geom->asPolyline();
-	QgsPolyline::const_iterator line_it = theLine.constBegin();
+        QgsPolyline::const_iterator line_it = theLine.constBegin();
         for(; line_it != theLine.constEnd(); ++line_it)
         {
           if(addTopologicalPoints(*line_it) != 0)
@@ -1836,7 +1833,7 @@ int QgsVectorLayer::addTopologicalPoints(QgsGeometry* geom)
         for(int i = 0; i < thePolygon.size(); ++i)
         {
           currentRing = thePolygon.at(i);
-	  QgsPolyline::const_iterator line_it = currentRing.constBegin();
+          QgsPolyline::const_iterator line_it = currentRing.constBegin();
           for(; line_it != currentRing.constEnd(); ++line_it)
           {
             if(addTopologicalPoints(*line_it) != 0)
@@ -1862,7 +1859,7 @@ int QgsVectorLayer::addTopologicalPoints(QgsGeometry* geom)
           for(int j = 0; j < currentPolygon.size(); ++j)
           {
             currentRing = currentPolygon.at(j);
-	    QgsPolyline::const_iterator line_it = currentRing.constBegin();
+            QgsPolyline::const_iterator line_it = currentRing.constBegin();
             for(; line_it != currentRing.constEnd(); ++line_it)
             {
               if(addTopologicalPoints(*line_it) != 0)
@@ -3057,7 +3054,7 @@ int QgsVectorLayer::snapWithContext(const QgsPoint& startPoint, double snappingT
     startPoint.x()+snappingTolerance, startPoint.y()+snappingTolerance);
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
 
-  select(QgsAttributeList(), searchRect, true);
+  select(QgsAttributeList(), searchRect, true, true);
 
   int n=0;
   QgsFeature f;

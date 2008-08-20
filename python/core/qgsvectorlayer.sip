@@ -143,7 +143,8 @@ public:
 
   void select(QList<int> fetchAttributes = QList<int>(),
               QgsRect rect = QgsRect(),
-              bool fetchGeometry = true);
+              bool fetchGeometry = true,
+              bool useIntersect = false);
 
   bool getNextFeature(QgsFeature& feature);
 
