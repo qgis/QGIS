@@ -57,32 +57,32 @@ class CORE_EXPORT QgsLogger
   static void debug(const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
 
   /**Prints out a variable/value pair for types with overloaded operator<<*/
-  template <typename T> static void debug(const QString& var, T val, const char* file = 0, const char* function = 0, \
+  template <typename T> static void debug(const QString& var, T val, const char* file = 0, const char* function = 0,
 					  int line = -1, int debuglevel = 1)
+  {
+    const char* dfile = debugFile();
+    if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
     {
-      const char* dfile = debugFile();
-      if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
-	{
-	  if(!file || strcmp(dfile, file) != 0)
-	    {
-	      return;
-	    }
-	}
-      std::ostringstream os;
-      os << var.toLocal8Bit().data() << " = " << val;
-      if(line == -1)
-	{
-	  qDebug("%s: (%s) %s", file, function, os.str().c_str());
-	}
-      else
-	{
-#if defined(_MSC_VER)
-	  qDebug("%s(%d): (%s) %s", file, line, function, os.str().c_str());
-#else
-	  qDebug("%s: %d: (%s) %s", file, line, function, os.str().c_str());
-#endif
-	}
+      if(!file || strcmp(dfile, file) != 0)
+      {
+        return;
+      }
     }
+    std::ostringstream os;
+    os << var.toLocal8Bit().data() << " = " << val;
+    if(line == -1)
+    {
+      qDebug("%s: (%s) %s", file, function, os.str().c_str());
+    }
+    else
+    {
+#if defined(_MSC_VER)
+      qDebug("%s(%d): (%s) %s", file, line, function, os.str().c_str());
+#else
+      qDebug("%s: %d: (%s) %s", file, line, function, os.str().c_str());
+#endif
+    }
+  }
 
   /**Goes to qWarning*/
   static void warning(const QString& msg); 

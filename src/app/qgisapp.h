@@ -163,6 +163,9 @@ class QgisApp : public QMainWindow
     *  (as documented in Qt documentation.
   */
   void setupProxy();
+
+  static QgisApp *instance() { return smInstance; }
+
   //! Helper to get a theme icon. It will fall back to the 
   //default theme if the active theme does not have the required
   //icon.
@@ -320,6 +323,7 @@ public slots:
   void refreshMapCanvas();
   //! returns pointer to map legend
   QgsLegend *legend() { return mMapLegend; }
+
   //! starts/stops editing mode of the current layer
   void toggleEditing();
 
@@ -329,7 +333,6 @@ public slots:
   /** Activates or deactivates actions depending on the current maplayer type.
   Is called from the legend when the current legend item has changed*/
   void activateDeactivateLayerRelatedActions(QgsMapLayer* layer);
-
 
 public slots:
   /** Add a dock widget to the main window. Overloaded from QMainWindow.
@@ -368,9 +371,13 @@ public slots:
   void measure();
   //! Measure area
   void measureArea();
+
   //! show the attribute table for the currently selected layer
   void attributeTable();
-  
+
+  //! starts/stops editing mode of a layer
+  void toggleEditing(QgsMapLayer *layer);
+
   //! show python console
   void showPythonDialog();
 
@@ -644,8 +651,6 @@ class Tools
   QString mStartupPath;
   //! full path name of the current map file (if it has been saved or loaded)
   QString mFullPathName;
-  //! A dock to show the attribute table (user optional)
-  QPointer<QDockWidget> mpTableDockWidget;
 
   //! interface to QgisApp for plugins
   QgisAppInterface *mQgisInterface;
@@ -697,6 +702,8 @@ class Tools
   bool mFullScreenMode;
   QgsPythonDialog* mPythonConsole;
   QgsPythonUtils* mPythonUtils;
+
+  static QgisApp *smInstance;
 };
 
 #endif

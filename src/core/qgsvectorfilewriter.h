@@ -21,8 +21,7 @@
 #define _QGSVECTORFILEWRITER_H_
 
 #include "qgsvectorlayer.h"
-
-#include <QString>
+#include "qgsfield.h"
 
 typedef void *OGRDataSourceH;
 typedef void *OGRLayerH;
@@ -41,7 +40,7 @@ class QTextCodec;
 class CORE_EXPORT QgsVectorFileWriter
 {
   public:
-      
+
     enum WriterError
     {
       NoError = 0,
@@ -64,36 +63,36 @@ class CORE_EXPORT QgsVectorFileWriter
                         const QgsFieldMap& fields,
                         QGis::WKBTYPE geometryType,
                         const QgsSpatialRefSys* srs);
-    
+
     /** checks whether there were any errors in constructor */
     WriterError hasError();
-    
+
     /** add feature to the currently opened shapefile */
     bool addFeature(QgsFeature& feature);
-    
+
     /** close opened shapefile for writing */
     ~QgsVectorFileWriter();
-    
+
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
      * @param QString theFileName - /path/to/file.shp
      * @return bool true if the file was deleted successfully
      */ 
     static bool deleteShapeFile(QString theFileName);
   protected:
-    
+
     OGRGeometryH createEmptyGeometry(QGis::WKBTYPE wkbType);
-    
+
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
     OGRGeometryH mGeom;
-    
+
     QgsFieldMap mFields;
-    
+
     /** contains error value if construction was not successfull */
     WriterError mError;
 
     QTextCodec* mCodec;
-    
+
     /** geometry type which is being used */
     QGis::WKBTYPE mWkbType;
 };

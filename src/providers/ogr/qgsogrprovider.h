@@ -19,23 +19,10 @@ email                : sherman at mrcc.com
 #include "qgsrect.h"
 #include "qgsvectordataprovider.h"
 
-#include <geos/version.h>
-#if GEOS_VERSION_MAJOR < 3
-#include <geos/geom.h>
-#define GEOS_GEOM geos
-#else
-#include <geos/geom/GeometryFactory.h>
-#define GEOS_GEOM geos::geom
-#endif
-
 class QgsFeature;
 class QgsField;
 
-typedef void *OGRDataSourceH;
-typedef void *OGRSFDriverH;
-typedef void *OGRLayerH;
-typedef void *OGRFeatureH;
-typedef void *OGRGeometryH;
+#include <ogr_api.h>
 
 /**
   \class QgsOgrProvider
@@ -264,6 +251,4 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool addFeature(QgsFeature& f);
     /**Deletes one feature*/
     bool deleteFeature(int id);
-    //! The geometry factory
-    GEOS_GEOM::GeometryFactory *geometryFactory;
 };

@@ -47,10 +47,9 @@ class QgsGeometry;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a PostgreSQL/PostGIS enabled database.
   */
-class QgsPostgresProvider:public QgsVectorDataProvider
+class QgsPostgresProvider : public QgsVectorDataProvider
 {
-
-  Q_OBJECT
+  Q_OBJECT;
 
   public:
     /**
@@ -405,7 +404,18 @@ class QgsPostgresProvider:public QgsVectorDataProvider
     /**
      * Connection pointer
      */
-    PGconn *connection;
+    PGconn *connectionRO;
+    PGconn *connectionRW;
+
+    bool connectRW() {
+      if(connectionRW)
+        return connectionRW;
+
+      connectionRW = connectDb(mUri.connInfo(), false);
+
+      return connectionRW;
+    }
+
     /**
      * Spatial reference id of the layer
      */
@@ -584,7 +594,7 @@ class QgsPostgresProvider:public QgsVectorDataProvider
      */
     void customEvent ( QEvent *e );
 
-    PGconn *connectDb(const QString &conninfo);
+    PGconn *connectDb(const QString &conninfo, bool readonly=true);
     void disconnectDb();
 
     bool useWkbHex;
@@ -605,7 +615,8 @@ class QgsPostgresProvider:public QgsVectorDataProvider
       int ref;
       PGconn *conn;
     };
-    static QMap<QString, Conn *> connections;
+    static QMap<QString, Conn *> connectionsRW;
+    static QMap<QString, Conn *> connectionsRO;
     static int providerIds;
 };
 

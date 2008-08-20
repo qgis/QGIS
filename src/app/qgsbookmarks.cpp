@@ -227,14 +227,12 @@ void QgsBookmarks::zoomToBookmark()
         QString xmax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2));
         QString ymax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 3));
         // set the extent to the bookmark
-        dynamic_cast<QgisApp*>(mParent)->setExtent(QgsRect(xmin.toDouble(),
+        QgisApp::instance()->setExtent(QgsRect(xmin.toDouble(),
               ymin.toDouble(),
               xmax.toDouble(),
               ymax.toDouble()));
         // redraw the map
-        dynamic_cast<QgisApp*>(mParent)->getMapCanvas()->refresh();
-
-
+        QgisApp::instance()->getMapCanvas()->refresh();
       }
     }
 

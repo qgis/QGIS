@@ -30,7 +30,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     virtual ~QgsUniqueValueRenderer();
     /** Determines if a feature will be rendered or not 
 	@param f a pointer to the feature to determine if rendering will happen*/
-    bool willRenderFeature(QgsFeature *f);
+    virtual bool willRenderFeature(QgsFeature *f);
     void renderFeature(QPainter* p, QgsFeature& f,QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
     /**Symbols for the unique values*/
     QMap<QString, QgsSymbol*> mSymbols;
     /**Returns the symbol for a feature or 0 if there isn't any*/
-    QgsSymbol* symbolForFeature(const QgsFeature* f);
+    QgsSymbol *symbolForFeature(const QgsFeature* f);
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
     bool mSymbolAttributesDirty;  // insertValue was called

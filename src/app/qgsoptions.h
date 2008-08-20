@@ -93,9 +93,6 @@ class QgsOptions :public QDialog, private Ui::QgsOptionsBase
     //
     QStringList i18nList();
 
-    //! Pointer to our parent
-    QWidget *qparent;
-
     //!Global default projection used for new layers added that have no projection
     long mGlobalSRSID;
 

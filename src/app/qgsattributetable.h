@@ -21,6 +21,7 @@
 
 #include "qgsattributeaction.h"
 #include "qgsvectorlayer.h"
+#include "qgsfield.h"
 
 #include <QItemDelegate>
 #include <QTableWidget>
@@ -31,18 +32,21 @@
  *@author Gary E.Sherman
  */
 
+class QgsAttributeTable;
+
 class QgsAttributeTableItemDelegate: public QItemDelegate
 {
   Q_OBJECT
 
   public:
-    QgsAttributeTableItemDelegate(const QgsFieldMap & fields, QObject * parent = 0);
+    QgsAttributeTableItemDelegate(QgsAttributeTable *table, QObject * parent = 0);
     QWidget * createEditor(QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
   private:
-    const QgsFieldMap & mFields;
+    QgsAttributeTable *mTable;
 };
 
-class QgsAttributeTable:public QTableWidget
+class QgsAttributeTable : public QTableWidget
 {
   Q_OBJECT
 
@@ -50,9 +54,17 @@ class QgsAttributeTable:public QTableWidget
     QgsAttributeTable(QWidget * parent = 0);
     ~QgsAttributeTable();
 
+    enum {
+      AttributeIndex = Qt::UserRole,
+      AttributeName = Qt::UserRole+1,
+      AttributeType = Qt::UserRole+2,
+    };
+
     void setReadOnly(bool b);
     void setColumnReadOnly(int col, bool ro);
-    /**Inserts the feature with the specified id into rowIdMap. This function has to be called (e.g. from QgsShapeFileLayer) when a row is inserted into the table*/
+
+    /* Inserts the feature with the specified id into rowIdMap. This function has to be called
+       (e.g. from QgsShapeFileLayer) when a row is inserted into the table */
     void insertFeatureId(int id, int row);
     /**Selects the row which belongs to the feature with the specified id*/
     void selectRowWithId(int id);
@@ -66,38 +78,11 @@ class QgsAttributeTable:public QTableWidget
     bool edited() const {return mEdited;}
     /**Switches editing mode on and off*/
     void setEditable(bool enabled){mEditable=enabled;}
-    /**Adds an attribute to the table (but does not commit it yet)
-      @param name attribute name
-      @param type attribute type
-      @return false in case of a name conflict, true in case of success*/
-    bool addAttribute(const QString& name, const QString& type);
-    /**Deletes an attribute (but does not commit it)
-      @param name attribute name*/
-    void deleteAttribute(const QString& name);
 
     /** Copies the selected rows to the clipboard 
         Deprecated: See QgisApp::editCopy() instead */
     void copySelectedRows();
 
-    /**
-      Attempts to commit any changes to disk.  Returns the result of the attempt.
-      If a commit fails, the in-memory changes are left alone.
-
-      This allows editing to continue if the commit failed on e.g. a
-      disallowed value in a Postgres database - the user can re-edit and try
-      again.
-
-      Delegates to QgsVectorLayer to decide, which changes
-      belong to not commited features or to commited ones.
-
-     */
-    bool commitChanges(QgsVectorLayer* layer);
-
-    /**Discard all changes and restore
-      the state before editing was started*/
-    bool rollBack(QgsVectorLayer* layer);
-    /**Fills the contents of a provider into this table*/
-    void fillTable(QgsVectorLayer* layer);
     /**Swaps the selected rows such that the selected ones are on the top of the table*/
     void bringSelectedToTop();
     /** Selects rows with chosen feature IDs */
@@ -107,38 +92,42 @@ class QgsAttributeTable:public QTableWidget
     /** Shows all rows */
     void showAllRows();
 
+    /**Fills the contents of a provider into this table*/
+    void fillTable(QgsVectorLayer *layer);
+    void addAttribute(int idx, const QgsField &fld);
+    void deleteAttribute(int idx);
+		
   public slots:
     void columnClicked(int col);
     void rowClicked(int row);
+
     // Called when the user chooses an item on the popup menu
     void popupItemSelected(QAction * menuAction);
 
+    void attributeValueChanged(int fid, int idx, const QVariant &value);
+    void featureDeleted(int fid);
+
   protected slots:
     void handleChangedSelections();
-    /**Writes changed values to 'mChangedValues'*/
-    void storeChangedValue(int row, int column);
 
   protected:
     /**Flag telling if the ctrl-button or the shift-button is pressed*/
     bool lockKeyPressed;
     /**Search tree to find a row corresponding to a feature id*/
     QMap<int,int> rowIdMap;
+    /**Map attribute index to columns*/
+    QMap<int,int> mAttrIdxMap;
     bool mEditable;
     /**True if table has been edited and contains uncommited changes*/
     bool mEdited;
-    /**Map containing the added attributes. The key is the attribute name
-      and the value the attribute type*/
-    QgsNewAttributesMap mAddedAttributes;
-    /**Set containing the attribute names of deleted attributes*/
-    QSet<QString> mDeletedAttributes;
-    /**Nested map containing the changed attribute values. The int is the feature id, 
-      the first QString the attribute name and the second QString the new value*/
-    QMap<int, QMap<QString, QString> > mChangedValues;
 
     /**Stors the numbers of the last selected rows. This is used to check for selection changes before emit repaintRequested()*/
     std::set<int> mLastSelectedRows;
 
-    /**Compares the content of two cells either alphanumeric or numeric. If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater. If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater. This method is used mainly to sort a column*/
+    /* Compares the content of two cells either alphanumeric or numeric.
+       If 'ascending' is true, -1 means s1 is less, 0 equal, 1 greater.
+       If 'ascending' is false, -1 means s1 is more, 0 equal, 1 greater.
+       This method is used mainly to sort a column*/
     int compareItems(QString s1, QString s2, bool ascending, bool alphanumeric);
     void keyPressEvent(QKeyEvent* ev);
     void keyReleaseEvent(QKeyEvent* ev);
@@ -146,16 +135,15 @@ class QgsAttributeTable:public QTableWidget
     void qsort(int lower, int upper, int col, bool ascending, bool alphanumeric);
     /**Called when the user requests a popup menu*/
     void contextMenuEvent(QContextMenuEvent* event);
-    /**Clears mAddedAttributes, mDeletedAttributes and mChangedValues*/
-    void clearEditingStructures();
     /**Removes the column belonging to an attribute from the table
       @name attribut name*/
     void removeAttrColumn(const QString& name);
     /** puts attributes of feature to the chosen table row */
-    void putFeatureInTable(int row, QgsFeature& fet);
+    void putFeatureInTable(int row, const QgsFeature& fet);
     void mouseReleaseEvent(QMouseEvent* e);
-    /**This function compares the current selection and the selection of the last repaint. Returns true if there are differences in the selection.
-     Also, mLastSelectedRows is updated*/
+    /**This function compares the current selection and the selection of the last repaint.
+       Returns true if there are differences in the selection.
+       Also, mLastSelectedRows is updated*/
     bool checkSelectionChanges();
 
   signals:
@@ -165,8 +153,6 @@ class QgsAttributeTable:public QTableWidget
     void selectionRemoved(bool);
     /**Is emitted when a set of related selection and deselection signals have been emitted*/
     void repaintRequested();
-    /**Is emitted when a attribute of a added feature is changed*/
-    void featureAttributeChanged(int row, int column);
 
   private:
     void swapRows(int row1, int row2);
@@ -179,10 +165,10 @@ class QgsAttributeTable:public QTableWidget
 
     QgsAttributeTableItemDelegate *mDelegate;
 
-    QgsFieldMap mFields;
-
     // Track previous columm for QTableView sortIndicator wrong direction workaround
     int mPreviousSortIndicatorColumn;
+
+    QgsVectorLayer *mLayer;
 };
 
 #endif

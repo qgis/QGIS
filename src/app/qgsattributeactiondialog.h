@@ -30,8 +30,6 @@ back to QgsVectorLayer.
 
 class QgsAttributeAction;
 
-typedef QMap<int, QgsField> QgsFieldMap;
-
 class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
   Q_OBJECT;

@@ -34,7 +34,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     void addSymbol(QgsSymbol* sy);
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
-    /**Renders an OGRFeature*/
+    /**Renders a feature*/
     void renderFeature(QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
     /**Reads the renderer configuration from an XML file
      @param rnode the DOM node to read 

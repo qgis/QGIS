@@ -36,9 +36,8 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsvectordataprovider.h"
+#include "qgsattributetabledisplay.h"
 
 #include <cfloat>
 #include <iostream>
@@ -1811,29 +1810,39 @@ void QgsLegend::legendLayerZoomNative()
 void QgsLegend::legendLayerAttributeTable()
 {
   if(!mMapCanvas || mMapCanvas->isDrawing())
-    {
-      return;
-    }
+  {
+    return;
+  }
+
+  QgsVectorLayer *vlayer = 0;
 
   // try whether it's a legend layer
   QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(currentItem());
   if (ll)
   {
-    ll->table();
-    return;
+    vlayer = dynamic_cast<QgsVectorLayer*>(ll->firstMapLayer());
   }
   
-  // try whether it's a legend layer file
-  QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(currentItem());
-  if (llf)
-  {
-    llf->table();
-    return;
+  if(!vlayer) {
+    // try whether it's a legend layer file
+    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(currentItem());
+    if (llf)
+    {
+      vlayer = dynamic_cast<QgsVectorLayer*>(llf->layer());
+    }
   }
 
-  // nothing selected
-  QMessageBox::information(this, tr("No Layer Selected"),
-                           tr("To open an attribute table, you must select a vector layer in the legend"));
+  if(vlayer)
+  {
+    QgsAttributeTableDisplay::attributeTable( vlayer );
+  }
+  else
+  {
+    // nothing selected
+    QMessageBox::information(this,
+                             tr("No Layer Selected"),
+                             tr("To open an attribute table, you must select a vector layer in the legend"));
+  }
 }
 
 void QgsLegend::readProject(const QDomDocument & doc)

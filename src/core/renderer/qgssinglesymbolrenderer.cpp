@@ -103,13 +103,13 @@ void QgsSingleSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
       fieldScale = sqrt(fabs(attrs[mSymbol->scaleClassificationField()].toDouble()));
-      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+      QgsDebugMsgLevel(QString("Feature has field scale factor %1").arg(fieldScale), 3);
     }
     if ( mSymbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[mSymbol->rotationClassificationField()].toDouble();
-      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+      QgsDebugMsgLevel(QString("Feature has rotation factor %1").arg(rotation), 3);
     }
 
     *img = mSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor);

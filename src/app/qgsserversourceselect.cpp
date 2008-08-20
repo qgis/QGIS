@@ -43,10 +43,9 @@
 static long DEFAULT_WMS_EPSG = 4326;  // WGS 84
 
 
-QgsServerSourceSelect::QgsServerSourceSelect(QgisApp * app, QWidget * parent, Qt::WFlags fl)
+QgsServerSourceSelect::QgsServerSourceSelect(QWidget * parent, Qt::WFlags fl)
   : QDialog(parent, fl),
     m_Epsg(DEFAULT_WMS_EPSG),
-    qgisApp(app),
     mWmsProvider(0)
 {
   setupUi(this);

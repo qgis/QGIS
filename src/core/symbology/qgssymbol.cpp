@@ -324,7 +324,7 @@ QImage QgsSymbol::getCachedPointSymbolAsImage(  double widthScale,
   }
 }
 
-QImage QgsSymbol::getPointSymbolAsImage(  double widthScale, bool selected, QColor selectionColor, double scale, \
+QImage QgsSymbol::getPointSymbolAsImage(  double widthScale, bool selected, QColor selectionColor, double scale,
 					  double rotation, double rasterScaleFactor)
 {
   //QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));

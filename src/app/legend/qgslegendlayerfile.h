@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Tim Sutton   *
- *   aps02ts@macbuntu   *
+ *   Copyright (C) 2005 by Tim Sutton                                      *
+ *   aps02ts@macbuntu                                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -26,7 +26,6 @@
 #include "qgsmapcanvas.h"
 
 class QgsMapLayer;
-class QgsAttributeTableDisplay;
 
 /**
 @author Tim Sutton
@@ -37,7 +36,7 @@ class QgsLegendLayerFile : public QgsLegendItem
   
 public:
     QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer);
-    ~QgsLegendLayerFile();
+
     bool isLeafNode() {return true;}
     DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
     QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
@@ -47,15 +46,11 @@ public:
     
     QPixmap getOriginalPixmap() const;
 
-    /** updates item to the current state of the layer */
-    void updateLegendItem();
-    
     void setIconAppearance(bool inOverview, bool editable);
 
     /**Returns a label for a layer. Is static such that
      the name can be passed to the constructor of QgsLegendLayerFile*/
     static QString nameFromLayer(QgsMapLayer* layer);
-    
     
     void setVisible(bool visible = TRUE);
     bool isVisible();
@@ -67,27 +62,17 @@ public:
     void addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction);
     
   public slots:
+    /** updates item to the current state of the layer */
+    void updateLegendItem();
     
     /**Open attribute table*/
     void table();
-    
-    /**Connected to deleted() signal of attribute table*/
-    void invalidateTableDisplay();
-
-    /**Connected to layer's selectionChanged() */
-    void selectionChanged();
-    
-    /**Connected to layer's wasModified() */
-    void closeTable(bool onlyGeometryWasChanged);
     
     /**Save as shapefile*/
     void saveAsShapefile();
     
     /**Save selection as shapefile*/
     void saveSelectionAsShapefile();
-    
-    /**Toggle editing for layer*/
-    void toggleEditing();
     
     /**Return editing status for layer*/
     bool isEditing();
@@ -97,7 +82,7 @@ public:
     
     /**Layer name has changed - set it also in legend*/
     void layerNameChanged();
-    
+
  protected:
 
     /**Save as shapefile (called from saveAsShapefile and saveSelectionAsShapefile)*/
@@ -105,10 +90,6 @@ public:
 
     /** layer identified by its layer id */
     QgsMapCanvasLayer mLyr;
-   
-    /** Pointer to the table display object if there is one, otherwise NULL */
-    QgsAttributeTableDisplay* mTableDisplay;
-
 };
 
 #endif

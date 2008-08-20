@@ -56,65 +56,65 @@ void QgsMapToolMoveFeature::canvasPressEvent(QMouseEvent * e)
 
   QgsVectorLayer* vlayer = currentVectorLayer();
   if(!vlayer)
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   if(!vlayer->isEditable())
-    {
-      QMessageBox::information(0, QObject::tr("Layer not editable"), \
-			       QObject::tr("Cannot edit the vector layer. To make it editable, go to the file item " \
-					   "of the layer, right click and check 'Allow Editing'."));
-      return;
-    }
+  {
+    QMessageBox::information(0, QObject::tr("Layer not editable"),
+      QObject::tr("Cannot edit the vector layer. To make it editable, go to the file item "
+      "of the layer, right click and check 'Allow Editing'."));
+    return;
+  }
 
   //find first geometry under mouse cursor and store iterator to it
   QgsPoint layerCoords = toLayerCoords((QgsMapLayer*)vlayer, e->pos());
   QSettings settings;
   double searchRadius = settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble();
-  QgsRect selectRect(layerCoords.x()-searchRadius, layerCoords.y()-searchRadius, \
-		     layerCoords.x()+searchRadius, layerCoords.y()+searchRadius);
+  QgsRect selectRect(layerCoords.x()-searchRadius, layerCoords.y()-searchRadius,
+    layerCoords.x()+searchRadius, layerCoords.y()+searchRadius);
 
-  QList<QgsFeature> featureList;
-  vlayer->featuresInRectangle(selectRect, featureList, true, false);
-  
-  if(featureList.size() > 0)
+  vlayer->select(QgsAttributeList(), selectRect, true);
+
+  //find the closest feature
+  QgsGeometry* pointGeometry = QgsGeometry::fromPoint(layerCoords);
+  if(!pointGeometry)
+  {
+    return;
+  }
+
+  double minDistance = std::numeric_limits<double>::max();
+
+  QgsFeature cf;
+  QgsFeature f;
+  while( vlayer->getNextFeature(f) )
+  {
+    if(f.geometry())
     {
-      //find the closest feature
-      QgsGeometry* pointGeometry = QgsGeometry::fromPoint(layerCoords);
-      if(!pointGeometry)
-	{
-	  return;
-	}
-
-      QList<QgsFeature>::iterator closestFeatureIt;
-      double minDistance = std::numeric_limits<double>::max();
-      double currentDistance;
-      
-      QList<QgsFeature>::iterator it = featureList.begin();
-      for(; it != featureList.end(); ++it)
-	{
-	  if(it->geometry())
-	    {
-	      currentDistance = pointGeometry->distance(*(it->geometry()));
-	      if(currentDistance < minDistance)
-		{
-		  minDistance = currentDistance;
-		  closestFeatureIt = it;
-		}
-	    }
-	}
-      
-      mStartPointMapCoords = toMapCoords(e->pos());
-      mMovedFeature = closestFeatureIt->featureId(); //todo: take the closest feature, not the first one...
-      mRubberBand = createRubberBand();
-      mRubberBand->setToGeometry(closestFeatureIt->geometry(), *vlayer);
-      mRubberBand->setColor(Qt::red);
-      mRubberBand->setWidth(2);
-      mRubberBand->show();
-
-      delete pointGeometry;
+      double currentDistance = pointGeometry->distance(*f.geometry());
+      if(currentDistance < minDistance)
+      {
+        minDistance = currentDistance;
+        cf = f;
+      }
     }
+  }
+
+  if( minDistance==std::numeric_limits<double>::max() )
+  {
+    return;
+  }
+
+  mStartPointMapCoords = toMapCoords(e->pos());
+  mMovedFeature = cf.featureId(); //todo: take the closest feature, not the first one...
+  mRubberBand = createRubberBand();
+  mRubberBand->setToGeometry( cf.geometry(), *vlayer);
+  mRubberBand->setColor(Qt::red);
+  mRubberBand->setWidth(2);
+  mRubberBand->show();
+
+  delete pointGeometry;
 }
 
 void QgsMapToolMoveFeature::canvasReleaseEvent(QMouseEvent * e)

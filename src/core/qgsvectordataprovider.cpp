@@ -68,7 +68,7 @@ QString QgsVectorDataProvider::dataComment() const
     return QString();
 }
 
-bool QgsVectorDataProvider::addFeatures(QgsFeatureList & flist)
+bool QgsVectorDataProvider::addFeatures(QgsFeatureList &flist)
 {
   return false;
 }
@@ -220,7 +220,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
 {
-  const QgsFieldMap& theFields = fields();
+  const QgsFieldMap &theFields = fields();
 
   for (QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
   {
@@ -248,7 +248,7 @@ void QgsVectorDataProvider::setFetchFeaturesWithoutGeom(bool fetch)
   mFetchFeaturesWithoutGeom = fetch;
 }
 
-const QSet<QString>& QgsVectorDataProvider::supportedNativeTypes() const
+const QgsNativeTypeMap &QgsVectorDataProvider::supportedNativeTypes() const
 {
   return mSupportedNativeTypes;
 }
@@ -261,15 +261,15 @@ QVariant QgsVectorDataProvider::minValue(int index)
     QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
     return QVariant();
   }
-  
+
   if (mCacheMinMaxDirty)
   {
     fillMinMaxCache();
   }
-  
+
   if (!mCacheMinValues.contains(index))
     return QVariant();
-  
+
   return mCacheMinValues[index];
 }
 
@@ -280,7 +280,7 @@ QVariant QgsVectorDataProvider::maxValue(int index)
     QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
     return QVariant();
   }
-  
+
   if (mCacheMinMaxDirty)
   {
     fillMinMaxCache();

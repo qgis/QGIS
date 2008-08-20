@@ -23,11 +23,9 @@
 #include <QList>
 #include <QMap>
 
-class QgsFeature;
-class QgsField;
+#include "qgsfield.h"
+#include "qgsfeature.h"
 
-typedef QList<QgsFeature> QgsFeatureList;
-typedef QMap<int, QgsField> QgsFieldMap;
 
 /**
 
@@ -74,18 +72,18 @@ public:
    *  when it's done with it.
    */
   QgsFeatureList copyOf();
-  
+
   /*
    *  Clears the internal clipboard.
    */
   void clear();
-  
+
   /*
    *  Inserts a copy of the feature on the internal clipboard.
    */
   void insert( QgsFeature& feature );
- 
-    
+
+
 private:
 
     /** QGIS-internal vector feature clipboard.

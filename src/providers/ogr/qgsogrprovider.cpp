@@ -36,16 +36,6 @@ email                : sherman at mrcc.com
 #include <QString>
 #include <QTextCodec>
 
-//TODO Following ifndef can be removed once WIN32 GEOS support
-//    is fixed
-#ifndef NOWIN32GEOSXXX
-//XXX GEOS support on windows is broken until we can get VC++ to
-//    tolerate geos.h without throwing a bunch of type errors. It
-//    appears that the windows version of GEOS may be compiled with 
-//    MINGW rather than VC++.
-#endif 
-
-
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -134,13 +124,9 @@ QgsOgrProvider::QgsOgrProvider(QString const & uri)
     valid = false;
   }
 
-  // create the geos objects
-  geometryFactory = new GEOS_GEOM::GeometryFactory();
-  assert(geometryFactory!=0);
-
-  mSupportedNativeTypes.insert("Integer");
-  mSupportedNativeTypes.insert("Real");
-  mSupportedNativeTypes.insert("String");
+  mSupportedNativeTypes.insert("Integer", QVariant::Int);
+  mSupportedNativeTypes.insert("Real", QVariant::Double);
+  mSupportedNativeTypes.insert("String", QVariant::String);
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -149,7 +135,6 @@ QgsOgrProvider::~QgsOgrProvider()
   ogrDataSource = 0;
   free(extent_);
   extent_ = 0;
-  delete geometryFactory;
   if( mSelectionRectangle )
   {
     OGR_G_DestroyGeometry( mSelectionRectangle );

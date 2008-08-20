@@ -54,7 +54,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
  public:
 
     //! Constructor
-    QgsDbSourceSelect(QgisApp *app, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsDbSourceSelect(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection
@@ -136,8 +136,6 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
-    //! Pointer to the qgis application mainwindow
-    QgisApp *qgisApp;
     PGconn *pd;
     static const int context_id = 939347163;
     //! Model that acts as datasource for mTableTreeWidget

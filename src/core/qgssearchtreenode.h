@@ -24,11 +24,10 @@
 #include <QString>
 #include <QVariant>
 
-class QgsSearchTreeValue;
-class QgsField;
+#include <qgsfield.h>
+#include <qgsfeature.h>
 
-typedef QMap<int, QgsField> QgsFieldMap;
-typedef QMap<int, QVariant> QgsAttributeMap;
+class QgsSearchTreeValue;
 
 /**
  * QgsSearchTreeNode

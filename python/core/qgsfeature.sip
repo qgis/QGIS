@@ -13,18 +13,6 @@ class QgsFeature
     //! Constructor
     QgsFeature(int id = 0, QString typeName = "" );
 
-    /** create a copy of this feature in its uncommitted state.
-        To do this, you also pass in a reference to the feature's
-        layer's uncommitted attribute and geometry changes.
-        The resulting feature will have those changes applied.
-        
-        This is useful in the cut/copy routine, where you'd
-        want a copy of the "current" feature, not the on-disk feature.
-     */
-     QgsFeature( const QgsFeature & rhs,
-                 const QMap<int, QMap<int, QVariant> >& changedAttributes,
-                 const QMap<int, QgsGeometry> & changedGeometries );
-
     /** copy ctor needed due to internal pointer */
     QgsFeature(const QgsFeature & rhs );
 

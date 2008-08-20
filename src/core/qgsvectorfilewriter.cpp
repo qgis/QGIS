@@ -219,7 +219,7 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
   }
   
   // build geometry from WKB
-  QgsGeometry* geom = feature.geometry();
+  QgsGeometry *geom = feature.geometry();
   
   if (geom->wkbType() != mWkbType)
   {
@@ -234,7 +234,7 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
     
     OGRGeometryH mGeom2 = createEmptyGeometry(geom->wkbType());
     
-    OGRErr err = OGR_G_ImportFromWkb(mGeom2,geom->wkbBuffer(), geom->wkbSize());
+    OGRErr err = OGR_G_ImportFromWkb(mGeom2, geom->wkbBuffer(), geom->wkbSize());
     if (err != OGRERR_NONE)
     {
       QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
@@ -247,7 +247,7 @@ bool QgsVectorFileWriter::addFeature(QgsFeature& feature)
   }
   else
   {
-    OGRErr err = OGR_G_ImportFromWkb(mGeom,geom->wkbBuffer(), geom->wkbSize());
+    OGRErr err = OGR_G_ImportFromWkb(mGeom, geom->wkbBuffer(), geom->wkbSize());
     if (err != OGRERR_NONE)
     {
       QgsDebugMsg("Failed to import geometry from WKB: " + QString::number(err));
