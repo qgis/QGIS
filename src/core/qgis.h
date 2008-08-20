@@ -138,9 +138,9 @@ public:
 //
 
   /** Magic number that determines the minimum allowable point size for point symbols */
-  const float MINIMUM_POINT_SIZE=0.1;
+  const double MINIMUM_POINT_SIZE=0.1;
   /** Magic number that determines the minimum allowable point size for point symbols */
-  const float DEFAULT_POINT_SIZE=2.0;
+  const double DEFAULT_POINT_SIZE=2.0;
 
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
