@@ -68,11 +68,11 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       long getSelectedEpsg();
 
     public slots:
-      void setSelectedSRSName(QString theSRSName);
+      void setSelectedCRSName(QString theCRSName);
 
       QString getSelectedName();
 
-      void setSelectedSRSID(long theSRSID);
+      void setSelectedCRSID(long theCRSID);
 
       void setSelectedEpsg(long epsg);
 
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       long getSelectedSRID();
 
       //! Gets the current QGIS projection identfier
-      long getSelectedSRSID();
+      long getSelectedCRSID();
 
       /**
        * \brief filters this widget by the given CRSs
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
        * \brief converts the CRS group to a SQL expression fragment
        *
        * Converts the given Coordinate Reference Systems to a format suitable
-       * for use in SQL for querying against the QGIS SRS database.
+       * for use in SQL for querying against the QGIS CRS database.
        *
        * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
        *                  list of projections by.  This is useful in (e.g.) WMS situations
@@ -125,7 +125,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       QString ogcWmsCrsFilterAsSqlExpression(QSet<QString> * crsFilter);
 
       /**
-       * \brief does the legwork of applying the SRS Name Selection
+       * \brief does the legwork of applying the CRS Name Selection
        *
        * \warning This function does nothing unless getUserList() and getUserProjList()
        *          Have already been called
@@ -134,10 +134,10 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
        *          does not scroll the list to the selection if the widget is not visible.
        *          Therefore you will typically want to use this in a showEvent().
        */
-      void applySRSNameSelection();
+      void applyCRSNameSelection();
 
       /**
-       * \brief does the legwork of applying the SRS ID Selection
+       * \brief does the legwork of applying the CRS ID Selection
        *
        * \warning This function does nothing unless getUserList() and getUserProjList()
        *          Have already been called
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
        *          does not scroll the list to the selection if the widget is not visible.
        *          Therefore you will typically want to use this in a showEvent().
        */
-      void applySRSIDSelection();
+      void applyCRSIDSelection();
 
       /**
        * \brief gets an arbitrary sqlite3 attribute of type "long" from the selection
@@ -173,7 +173,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       /** 
        * Utility method used in conjunction with name based searching tool 
        */
-      long getLargestSRSIDMatch(QString theSql);
+      long getLargestCRSIDMatch(QString theSql);
 
       //! Has the Projection List been populated?
       bool mProjListDone;
@@ -181,17 +181,17 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
       //! Has the User Projection List been populated?
       bool mUserProjListDone;
 
-      //! Is there a pending selection to be made by SRS Name?
-      bool mSRSNameSelectionPending;
+      //! Is there a pending selection to be made by CRS Name?
+      bool mCRSNameSelectionPending;
 
-      //! Is there a pending selection to be made by SRS ID?
-      bool mSRSIDSelectionPending;
+      //! Is there a pending selection to be made by CRS ID?
+      bool mCRSIDSelectionPending;
 
-      //! The SRS Name that wants to be selected on this widget
-      QString mSRSNameSelection;
+      //! The CRS Name that wants to be selected on this widget
+      QString mCRSNameSelection;
 
-      //! The SRS ID that wants to be selected on this widget
-      long mSRSIDSelection;
+      //! The CRS ID that wants to be selected on this widget
+      long mCRSIDSelection;
 
       //! The set of OGC WMS CRSs that want to be applied to this widget
       QSet<QString> mCrsFilter;

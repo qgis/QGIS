@@ -29,8 +29,8 @@
 
 class QgsSearchTreeValue;
 
-/**
- * QgsSearchTreeNode
+/** \ingroup core
+ * A representation of a node in a search tree.
  *
  * node in tree of parsed search string
  * node is terminal (has no children) if it's a number, column ref or string

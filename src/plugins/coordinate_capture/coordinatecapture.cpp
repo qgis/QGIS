@@ -26,7 +26,7 @@
 #include <qgsmapcanvas.h>
 #include <qgsmaprenderer.h>
 #include <qgis.h>
-#include <qgsspatialrefsys.h>
+#include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
 #include <qgsgenericprojectionselector.h>
 
@@ -184,7 +184,7 @@ void CoordinateCapture::mouseMoved(QgsPoint thePoint)
 void CoordinateCapture::update(QgsPoint thePoint)
 {
   //this is the coordinate resolved back to lat / lon
-  QgsSpatialRefSys mySrs;
+  QgsCoordinateReferenceSystem mySrs;
   mySrs.createFromEpsg(mEpsgId); //geo lat lon
   QgsCoordinateTransform myTransform(mQGisIface->getMapCanvas()->mapRenderer()->destinationSrs(),mySrs);
   QgsPoint myUserCrsPoint = myTransform.transform(thePoint);

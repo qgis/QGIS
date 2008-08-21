@@ -31,7 +31,7 @@ class QPainter;
 class QgsMapToPixel;
 class QgsMapLayer;
 class QgsScaleCalculator;
-class QgsSpatialRefSys;
+class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
 
 /** \ingroup core
@@ -85,16 +85,16 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //!accessor for output size
     QSize outputSize();
     
-    //! transform extent in layer's SRS to extent in output SRS
+    //! transform extent in layer's CRS to extent in output CRS
     QgsRect layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent);
     
-    //! transform coordinates from layer's SRS to output SRS
+    //! transform coordinates from layer's CRS to output CRS
     QgsPoint layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point);
     
-    //! transform coordinates from output SRS to layer's SRS
+    //! transform coordinates from output CRS to layer's CRS
     QgsPoint outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point);
 
-    //! transform rect's coordinates from output SRS to layer's SRS
+    //! transform rect's coordinates from output CRS to layer's CRS
     QgsRect outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect);
     
     //! sets whether to use projections for this layer set
@@ -104,10 +104,10 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool projectionsEnabled();
     
     //! sets destination spatial reference system
-    void setDestinationSrs(const QgsSpatialRefSys& srs);
+    void setDestinationSrs(const QgsCoordinateReferenceSystem& srs);
     
-    //! returns SRS ID of destination spatial reference system
-    const QgsSpatialRefSys& destinationSrs();
+    //! returns CRS ID of destination spatial reference system
+    const QgsCoordinateReferenceSystem& destinationSrs();
 
     //! returns current extent of layer set
     QgsRect fullExtent();
@@ -156,9 +156,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void adjustExtentToSize();
     
     /** Convenience function to project an extent into the layer source
-     * SRS, but also split it into two extents if it crosses
+     * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
-     * source SRS coordinates, and if it was split, returns true, and
+     * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
     bool splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRect& r2);
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool mProjectionsEnabled;
     
     //! destination spatial reference system of the projection
-    QgsSpatialRefSys* mDestSRS;
+    QgsCoordinateReferenceSystem* mDestCRS;
 
     //! stores array of layers to be rendered (identified by string)
     QStringList mLayerSet;

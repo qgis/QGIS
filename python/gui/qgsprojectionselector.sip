@@ -57,11 +57,11 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
       long getSelectedEpsg();
 
     public slots:
-      void setSelectedSRSName(QString theSRSName);
+      void setSelectedCRSName(QString theCRSName);
 
       QString getSelectedName();
 
-      void setSelectedSRSID(long theSRSID);
+      void setSelectedCRSID(long theCRSID);
       
       void setSelectedEpsg(long epsg);
 
@@ -71,7 +71,7 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
       long getSelectedSRID();
 
       //! Gets the current QGIS projection identfier
-      long getSelectedSRSID();
+      long getSelectedCRSID();
 
       /**
        * \brief filters this widget by the given CRSs

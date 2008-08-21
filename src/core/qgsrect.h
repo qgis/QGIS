@@ -26,8 +26,8 @@ class QString;
 #include "qgspoint.h"
 
 
-/*! \class QgsRect
- * \brief A rectangle specified with double values.
+/** \ingroup core
+ * A rectangle specified with double values.
  *
  * QgsRect is used to store a rectangle when double values are required. 
  * Examples are storing a layer extent or the current view extent of a map

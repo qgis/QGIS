@@ -25,9 +25,8 @@
 class QString;
 class QgsRect;
 
-/**
- * \class QgsScaleCalculator
- * \brief Calculates scale for a given combination of canvas size, map extent,
+/** \ingroup core
+ * Calculates scale for a given combination of canvas size, map extent,
  * and monitor dpi.
  */
 class CORE_EXPORT QgsScaleCalculator

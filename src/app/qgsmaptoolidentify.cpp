@@ -28,7 +28,7 @@
 #include "qgsmaptoolidentify.h"
 #include "qgsrasterlayer.h"
 #include "qgsrubberband.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
@@ -260,7 +260,7 @@ void QgsMapToolIdentify::identifyVectorLayer(const QgsPoint& point)
   QgsDistanceArea calc;
   calc.setProjectionsEnabled(mCanvas->projectionsEnabled()); // project?
   calc.setEllipsoid(ellipsoid);
-  calc.setSourceSRS(layer->srs().srsid());
+  calc.setSourceCRS(layer->srs().srsid());
 
   mFeatureList.clear();
   QApplication::setOverrideCursor(Qt::WaitCursor);

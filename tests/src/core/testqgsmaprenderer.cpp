@@ -31,7 +31,7 @@
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
 #include <qgsgeometry.h> //each feature needs a geometry
 #include <qgspoint.h> //we will use point geometry
-#include <qgsspatialrefsys.h> //needed for creating a srs
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWKT
@@ -65,7 +65,7 @@ class TestQgsMapRenderer: public QObject
   private:
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
-    QgsSpatialRefSys mSRS;
+    QgsCoordinateReferenceSystem mCRS;
     QgsFieldMap mFields;
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPolysLayer;
@@ -89,7 +89,7 @@ void TestQgsMapRenderer::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1("Value",QVariant::Int,"int",10,0,"Value on lon");
   mFields.insert(0, myField1);
-  mSRS = QgsSpatialRefSys(GEOWKT);
+  mCRS = QgsCoordinateReferenceSystem(GEOWKT);
   //
   // Create the test dataset if it doesnt exist
   //
@@ -110,7 +110,7 @@ void TestQgsMapRenderer::initTestCase()
         mEncoding,
         mFields,
         QGis::WKBPolygon,
-        &mSRS);
+        &mCRS);
     double myInterval=0.5;
     for (double i=-180.0;i<=180.0;i+=myInterval)
     {

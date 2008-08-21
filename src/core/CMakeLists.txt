@@ -43,7 +43,7 @@ SET(QGIS_CORE_SRCS
   qgssearchstring.cpp
   qgssearchtreenode.cpp
   qgssnapper.cpp
-  qgsspatialrefsys.cpp
+  qgscoordinatereferencesystem.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
@@ -242,7 +242,7 @@ qgsscalecalculator.h
 qgssearchstring.h
 qgssearchtreenode.h
 qgssnapper.h
-qgsspatialrefsys.h
+qgscoordinatereferencesystem.h
 qgsvectordataprovider.h
 qgsvectorfilewriter.h
 qgsvectorlayer.h

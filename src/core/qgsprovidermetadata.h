@@ -23,8 +23,8 @@
 
 #include <QString>
 
-
-/** holds data provider key, description, and associated shared library file information
+/** \ingroup core
+ * Holds data provider key, description, and associated shared library file information.
 
    The metadata class is used in a lazy load implementation in
    QgsProviderRegistry.  To save memory, data providers are only actually

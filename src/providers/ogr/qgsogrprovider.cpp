@@ -42,7 +42,7 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION = 
@@ -1129,7 +1129,7 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
 
   //consider spatial reference system
   OGRSpatialReferenceH reference = NULL;
-  QgsSpatialRefSys mySpatialRefSys;
+  QgsCoordinateReferenceSystem mySpatialRefSys;
   mySpatialRefSys.validate();
   QString myWKT = mySpatialRefSys.toWkt();
 
@@ -1223,11 +1223,11 @@ QGISEXTERN bool createEmptyDataSource(const QString& uri,
   return true;
 }
 
-QgsSpatialRefSys QgsOgrProvider::getSRS()
+QgsCoordinateReferenceSystem QgsOgrProvider::getCRS()
 {
-  QgsDebugMsg("QgsOgrProvider::getSRS()");
+  QgsDebugMsg("QgsOgrProvider::getCRS()");
 
-  QgsSpatialRefSys srs;
+  QgsCoordinateReferenceSystem srs;
 
   OGRSpatialReferenceH mySpatialRefSys = OGR_L_GetSpatialRef(ogrLayer);
   if (mySpatialRefSys == NULL)
@@ -1245,7 +1245,7 @@ QgsSpatialRefSys QgsOgrProvider::getSRS()
     QString myWKTString = QString(pszWKT);
     OGRFree(pszWKT);  
 
-    // create SRS from WKT
+    // create CRS from WKT
     srs.createFromWkt( myWKTString );
   }
 

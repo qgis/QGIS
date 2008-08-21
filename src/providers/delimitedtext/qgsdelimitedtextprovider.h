@@ -152,7 +152,7 @@ public:
    */
   bool isValid();
 
-  virtual QgsSpatialRefSys getSRS();
+  virtual QgsCoordinateReferenceSystem getCRS();
 
   /* new functions */
  

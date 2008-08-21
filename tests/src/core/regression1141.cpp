@@ -31,7 +31,7 @@
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
 #include <qgsgeometry.h> //each feature needs a geometry
 #include <qgspoint.h> //we will use point geometry
-#include <qgsspatialrefsys.h> //needed for creating a srs
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWKT
@@ -60,7 +60,7 @@ class Regression1141: public QObject
   private:
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
-    QgsSpatialRefSys mSRS;
+    QgsCoordinateReferenceSystem mCRS;
     QgsFieldMap mFields;
     QString mFileName;
 };
@@ -97,7 +97,7 @@ void Regression1141::diacriticalTest()
   mEncoding = "UTF-8";
   QgsField myField( "ąęćń", QVariant::Int, "int", 10, 0, "Value on lon" );
   mFields.insert( 0, myField );
-  mSRS = QgsSpatialRefSys( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
 
   qDebug( "Checking test dataset exists..." );
   qDebug( mFileName.toLocal8Bit() );
@@ -110,7 +110,7 @@ void Regression1141::diacriticalTest()
                                   mEncoding,
                                   mFields,
                                   QGis::WKBPoint,
-                                  &mSRS );
+                                  &mCRS );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
     // NOTE: dont delete this pointer again -

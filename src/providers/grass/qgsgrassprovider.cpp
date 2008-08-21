@@ -34,7 +34,7 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsrect.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 
 #ifdef _MSC_VER
 // enable grass prototypes
@@ -1244,7 +1244,7 @@ struct Map_info *QgsGrassProvider::layerMap ( int layerId )
 }
 
 
-QgsSpatialRefSys QgsGrassProvider::getSRS()
+QgsCoordinateReferenceSystem QgsGrassProvider::getCRS()
 {
   QString WKT;
 
@@ -1265,7 +1265,7 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
   if ( QgsGrass::getError() == QgsGrass::FATAL ) {
     setlocale(LC_NUMERIC, oldlocale);
     QgsDebugMsg(QString("Cannot get default window: %1").arg(QgsGrass::getErrorMessage()));
-    return QgsSpatialRefSys();
+    return QgsCoordinateReferenceSystem();
   }
 
   if (cellhd.proj != PROJECTION_XY) {
@@ -1278,7 +1278,7 @@ QgsSpatialRefSys QgsGrassProvider::getSRS()
 
   setlocale(LC_NUMERIC, oldlocale);
 
-  QgsSpatialRefSys srs;
+  QgsCoordinateReferenceSystem srs;
   srs.createFromWkt(WKT);
 
   return srs;

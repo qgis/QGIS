@@ -27,7 +27,7 @@ class QCloseEvent;
 
 // Must be here, so that it is included to moc file
 #include "qgspoint.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsprojectionselector.h"
 class QgisInterface;
 
@@ -229,7 +229,7 @@ private:
     //std::vector<double> mRegionsPoints;
 
     //! Last projection used for region
-    QgsSpatialRefSys mSrs;
+    QgsCoordinateReferenceSystem mSrs;
     //bool mSrsSet; 
 };
 

@@ -47,11 +47,11 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
        */
       void setMessage(QString theMessage="");
       QString getSelectedProj4String();
-      long getSelectedSRSID();
+      long getSelectedCRSID();
       long getSelectedEpsg();
 
-      void setSelectedSRSName(QString theName);
-      void setSelectedSRSID(long theID);
+      void setSelectedCRSName(QString theName);
+      void setSelectedCRSID(long theID);
       void setSelectedEpsg(long theID);
 
       /**

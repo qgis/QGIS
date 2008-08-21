@@ -1705,10 +1705,10 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
 
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
-  mySelector->setSelectedSRSID(mRasterLayer->srs().srsid());
+  mySelector->setSelectedCRSID(mRasterLayer->srs().srsid());
   if(mySelector->exec())
   {
-    QgsSpatialRefSys srs(mySelector->getSelectedSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    QgsCoordinateReferenceSystem srs(mySelector->getSelectedCRSID(), QgsCoordinateReferenceSystem::QGIS_CRSID);
     mRasterLayer->setSrs(srs);
   }
   else

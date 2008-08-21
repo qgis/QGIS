@@ -20,7 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 
 
 static const QString TEXT_PROVIDER_KEY = "memory";
@@ -218,10 +218,10 @@ bool QgsMemoryProvider::isValid()
   return (mWkbType != QGis::WKBUnknown);
 }
 
-QgsSpatialRefSys QgsMemoryProvider::getSRS()
+QgsCoordinateReferenceSystem QgsMemoryProvider::getCRS()
 {
   // TODO: make provider projection-aware
-  return QgsSpatialRefSys(); // return default SRS
+  return QgsCoordinateReferenceSystem(); // return default CRS
 }
 
 

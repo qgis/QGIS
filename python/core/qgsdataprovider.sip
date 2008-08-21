@@ -15,12 +15,12 @@ class QgsDataProvider : QObject
       */
       virtual ~QgsDataProvider();
 
-      /*! Get the QgsSpatialRefSys for this layer
+      /*! Get the QgsCoordinateReferenceSystem for this layer
        * @note Must be reimplemented by each provider. 
        * If the provider isn't capable of returning
        * its projection an empty srs will be return, ti will return 0
       */
-      virtual QgsSpatialRefSys getSRS() = 0;
+      virtual QgsCoordinateReferenceSystem getCRS() = 0;
 
       
       /** 

@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include "qgswfsdata.h"
 #include "qgsrect.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QBuffer>
 #include <QUrl>
 #include <QList>
@@ -28,7 +28,7 @@ const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSData::QgsWFSData(
   const QString& uri, QgsRect* extent,
-  QgsSpatialRefSys* srs,
+  QgsCoordinateReferenceSystem* srs,
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,
   const QSet<QString>& thematicAttributes,

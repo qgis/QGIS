@@ -39,7 +39,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsrect.h"
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
@@ -759,9 +759,9 @@ QString QgsGPXProvider::description() const
     return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
 
-QgsSpatialRefSys QgsGPXProvider::getSRS()
+QgsCoordinateReferenceSystem QgsGPXProvider::getCRS()
 {
-  return QgsSpatialRefSys(); // use default SRS - it's WGS84
+  return QgsCoordinateReferenceSystem(); // use default CRS - it's WGS84
 }
 
 

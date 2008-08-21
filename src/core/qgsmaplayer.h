@@ -27,7 +27,7 @@
 #include "qgsrect.h"
 
 class QgsRenderContext;
-class QgsSpatialRefSys;
+class QgsCoordinateReferenceSystem;
 
 class QDomNode;
 class QDomDocument;
@@ -183,10 +183,10 @@ public:
     virtual QString errorString();
 
     /** Returns layer's spatial reference system */
-    const QgsSpatialRefSys& srs();
+    const QgsCoordinateReferenceSystem& srs();
     
     /** Sets layer's spatial reference system */
-    void setSrs(const QgsSpatialRefSys& srs);
+    void setSrs(const QgsCoordinateReferenceSystem& srs);
     
     
     /** A convenience function to capitalise the layer name */
@@ -315,7 +315,7 @@ protected:
     QString mLayerName;
 
     /** layer's Spatial reference system */
-    QgsSpatialRefSys* mSRS;
+    QgsCoordinateReferenceSystem* mCRS;
 
 private:
 

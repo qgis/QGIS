@@ -123,20 +123,20 @@ void QgsProjectFileTransform::transform081to090()
       // Find the coordinatetransform
       QDomNode coordinateTransform = mapLayer.namedItem("coordinatetransform");
       // Find the sourcesrs
-      QDomNode sourceSRS = coordinateTransform.namedItem("sourcesrs");
+      QDomNode sourceCRS = coordinateTransform.namedItem("sourcesrs");
       // Rename to srs
-      sourceSRS.toElement().setTagName("srs");
+      sourceCRS.toElement().setTagName("srs");
       // Re-parent to maplayer
-      mapLayer.appendChild(sourceSRS);
+      mapLayer.appendChild(sourceCRS);
       // Re-move coordinatetransform
-      // Take the destination SRS of the first layer and use for mapcanvas projection
+      // Take the destination CRS of the first layer and use for mapcanvas projection
       if (! doneDestination)
       {
-        // Use destination SRS from the last layer
-        QDomNode destinationSRS = coordinateTransform.namedItem("destinationsrs");
-        // Re-parent the destination SRS to the mapcanvas
+        // Use destination CRS from the last layer
+        QDomNode destinationCRS = coordinateTransform.namedItem("destinationsrs");
+        // Re-parent the destination CRS to the mapcanvas
         // If mapcanvas wasn't set, nothing will happen.
-        mapCanvas.appendChild(destinationSRS);
+        mapCanvas.appendChild(destinationCRS);
         // Only do this once
         doneDestination = true;
       }

@@ -22,7 +22,7 @@
 
 #include <QEvent>
 
-/*!
+/** \ingroup core
  * \brief   A custom event that is designed to be fired when a layer count has been fully calculated.
    \author  Brendan Morley
    \date    March 2005

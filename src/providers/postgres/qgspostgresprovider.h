@@ -68,12 +68,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const;
 
-    /*! Get the QgsSpatialRefSys for this layer
+    /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider. 
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsSpatialRefSys getSRS();
+    virtual QgsCoordinateReferenceSystem getCRS();
 
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
      *  @param fetchAttributes list of attributes which should be fetched

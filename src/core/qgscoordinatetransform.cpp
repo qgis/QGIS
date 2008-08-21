@@ -34,34 +34,34 @@ extern "C" {
 
 
 
-QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceSRS(), mDestSRS()
+QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceCRS(), mDestCRS()
 
 {
     setFinder();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform(const QgsSpatialRefSys& source, 
-                                               const QgsSpatialRefSys& dest)
+QgsCoordinateTransform::QgsCoordinateTransform(const QgsCoordinateReferenceSystem& source, 
+                                               const QgsCoordinateReferenceSystem& dest)
 {
     setFinder();
-  mSourceSRS = source;
-  mDestSRS = dest;
+  mSourceCRS = source;
+  mDestCRS = dest;
   initialise();
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrsId, long theDestSrsId)
-  : mSourceSRS(theSourceSrsId, QgsSpatialRefSys::QGIS_SRSID),
-    mDestSRS(theDestSrsId, QgsSpatialRefSys::QGIS_SRSID)
+  : mSourceCRS(theSourceSrsId, QgsCoordinateReferenceSystem::QGIS_CRSID),
+    mDestCRS(theDestSrsId, QgsCoordinateReferenceSystem::QGIS_CRSID)
 {
   initialise();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString theDestSRS ) : QObject()
+QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString theDestCRS ) : QObject()
 
 {
     setFinder();
-  mSourceSRS.createFromWkt(theSourceSRS);
-  mDestSRS.createFromWkt(theDestSRS);
+  mSourceCRS.createFromWkt(theSourceCRS);
+  mDestCRS.createFromWkt(theDestCRS);
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....
@@ -71,12 +71,12 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceSRS, QString th
 
 QgsCoordinateTransform::QgsCoordinateTransform(long theSourceSrid,
     QString theDestWKT,
-    QgsSpatialRefSys::SRS_TYPE theSourceSRSType): QObject()
+    QgsCoordinateReferenceSystem::CRS_TYPE theSourceCRSType): QObject()
 {
     setFinder();
 
-  mSourceSRS.createFromId(theSourceSrid, theSourceSRSType);
-  mDestSRS.createFromWkt(theDestWKT);
+  mSourceCRS.createFromId(theSourceSrid, theSourceCRSType);
+  mDestCRS.createFromWkt(theDestWKT);
   // initialize the coordinate system data structures
   //XXX Who spells initialize initialise?
   //XXX A: Its the queen's english....
@@ -97,24 +97,24 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   }
 }
 
-void QgsCoordinateTransform::setSourceSRS(const QgsSpatialRefSys& theSRS)
+void QgsCoordinateTransform::setSourceCRS(const QgsCoordinateReferenceSystem& theCRS)
 {
-  mSourceSRS = theSRS;
+  mSourceCRS = theCRS;
   initialise();
 }
-void QgsCoordinateTransform::setDestSRS(const QgsSpatialRefSys& theSRS)
+void QgsCoordinateTransform::setDestCRS(const QgsCoordinateReferenceSystem& theCRS)
 {
-  QgsDebugMsg("QgsCoordinateTransform::setDestSRS called");
-  mDestSRS = theSRS;
+  QgsDebugMsg("QgsCoordinateTransform::setDestCRS called");
+  mDestCRS = theCRS;
   initialise();
 }
 
 
-void QgsCoordinateTransform::setDestSRSID (long theSRSID)
+void QgsCoordinateTransform::setDestCRSID (long theCRSID)
 {
   //!todo Add some logic here to determine if the srsid is a system or user one
-  QgsDebugMsg("QgsCoordinateTransform::setDestSRSID slot called");
-  mDestSRS.createFromSrsId(theSRSID);
+  QgsDebugMsg("QgsCoordinateTransform::setDestCRSID slot called");
+  mDestCRS.createFromSrsId(theCRSID);
   initialise();
 }
 
@@ -128,27 +128,27 @@ void QgsCoordinateTransform::initialise()
   mDestinationProjection = NULL;
 
   // XXX Warning - multiple return paths in this block!!
-  if (!mSourceSRS.isValid())
+  if (!mSourceCRS.isValid())
   {
-    //mSourceSRS = defaultWkt;
+    //mSourceCRS = defaultWkt;
     // Pass through with no projection since we have no idea what the layer
     // coordinates are and projecting them may not be appropriate
     mShortCircuit = true;
-    QgsDebugMsg("SourceSRS seemed invalid!");
+    QgsDebugMsg("SourceCRS seemed invalid!");
     return;
   }
 
-  if (!mDestSRS.isValid())
+  if (!mDestCRS.isValid())
   {
     //No destination projection is set so we set the default output projection to
     //be the same as input proj. This only happens on the first layer loaded
     //whatever that may be...
-    mDestSRS.createFromProj4(mSourceSRS.proj4String());
+    mDestCRS.createFromProj4(mSourceCRS.proj4String());
   }
 
   // init the projections (destination and source)
-  mDestinationProjection = pj_init_plus(mDestSRS.proj4String().toUtf8());
-  mSourceProjection = pj_init_plus(mSourceSRS.proj4String().toUtf8());
+  mDestinationProjection = pj_init_plus(mDestCRS.proj4String().toUtf8());
+  mSourceProjection = pj_init_plus(mSourceCRS.proj4String().toUtf8());
 
   mInitialisedFlag = true;
   if ( mDestinationProjection == NULL )
@@ -165,8 +165,8 @@ void QgsCoordinateTransform::initialise()
     QgsDebugMsg("------------------------------------------------------------");
     QgsDebugMsg("QgsCoordinateTransform::initialise()");
     QgsDebugMsg("The OGR Coordinate transformation for this layer was set to");
-    QgsLogger::debug<QgsSpatialRefSys>("Input", mSourceSRS, __FILE__, __FUNCTION__, __LINE__);
-    QgsLogger::debug<QgsSpatialRefSys>("Output", mDestSRS, __FILE__, __FUNCTION__, __LINE__);
+    QgsLogger::debug<QgsCoordinateReferenceSystem>("Input", mSourceCRS, __FILE__, __FUNCTION__, __LINE__);
+    QgsLogger::debug<QgsCoordinateReferenceSystem>("Output", mDestCRS, __FILE__, __FUNCTION__, __LINE__);
     QgsDebugMsg("------------------------------------------------------------");
   }
   else
@@ -182,15 +182,15 @@ void QgsCoordinateTransform::initialise()
   }
 #endif
 
-  //XXX todo overload == operator for QgsSpatialRefSys
+  //XXX todo overload == operator for QgsCoordinateReferenceSystem
   //at the moment srs.parameters contains the whole proj def...soon it wont...
-  //if (mSourceSRS->proj4String() == mDestSRS->proj4String())
-  if (mSourceSRS == mDestSRS)
+  //if (mSourceCRS->proj4String() == mDestCRS->proj4String())
+  if (mSourceCRS == mDestCRS)
   {
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
     mShortCircuit=true;
-    QgsDebugMsg("Source/Dest SRS equal, shortcircuit is set.");
+    QgsDebugMsg("Source/Dest CRS equal, shortcircuit is set.");
   }
   else
   {
@@ -336,8 +336,8 @@ void QgsCoordinateTransform::transformInPlace(std::vector<double>& x,
 
 QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, TransformDirection direction) const
 {
-  // Calculate the bounding box of a QgsRect in the source SRS
-  // when projected to the destination SRS (or the inverse).
+  // Calculate the bounding box of a QgsRect in the source CRS
+  // when projected to the destination CRS (or the inverse).
   // This is done by looking at a number of points spread evenly
   // across the rectangle
 
@@ -412,18 +412,18 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
 void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, double *y, double *z,TransformDirection direction) const
 {
   // Refuse to transform the points if the srs's are invalid
-  if (!mSourceSRS.isValid())
+  if (!mSourceCRS.isValid())
   {
-    QgsLogger::critical( tr("The source spatial reference system (SRS) is not valid. ") +
-			 tr("The coordinates can not be reprojected. The SRS is: ") +
-			    mSourceSRS.proj4String() );
+    QgsLogger::critical( tr("The source spatial reference system (CRS) is not valid. ") +
+			 tr("The coordinates can not be reprojected. The CRS is: ") +
+			    mSourceCRS.proj4String() );
     return;
   }
-  if (!mDestSRS.isValid())
+  if (!mDestCRS.isValid())
   {
-    QgsLogger::critical( tr("The destination spatial reference system (SRS) is not valid. ") +
-			 tr("The coordinates can not be reprojected. The SRS is: ") +
-			    mDestSRS.proj4String() );
+    QgsLogger::critical( tr("The destination spatial reference system (CRS) is not valid. ") +
+			 tr("The coordinates can not be reprojected. The CRS is: ") +
+			    mDestCRS.proj4String() );
     return;
   }
 
@@ -525,10 +525,10 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
   QgsDebugMsg("Reading Coordinate Transform from xml ------------------------!");
   
   QDomNode mySrcNode = theNode.namedItem("sourcesrs");
-  mSourceSRS.readXML(mySrcNode);
+  mSourceCRS.readXML(mySrcNode);
 
   QDomNode myDestNode = theNode.namedItem("destinationsrs");
-  mDestSRS.readXML(myDestNode);
+  mDestCRS.readXML(myDestNode);
 
   initialise();
 
@@ -542,11 +542,11 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
   QDomElement myTransformElement  = theDoc.createElement( "coordinatetransform" );
   
   QDomElement mySourceElement  = theDoc.createElement( "sourcesrs" );
-  mSourceSRS.writeXML(mySourceElement, theDoc);
+  mSourceCRS.writeXML(mySourceElement, theDoc);
   myTransformElement.appendChild(mySourceElement);
   
   QDomElement myDestElement  = theDoc.createElement( "destinationsrs" );
-  mDestSRS.writeXML(myDestElement, theDoc);
+  mDestCRS.writeXML(myDestElement, theDoc);
   myTransformElement.appendChild(myDestElement);
   
   myNodeElement.appendChild(myTransformElement);

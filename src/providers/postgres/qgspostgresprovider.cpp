@@ -33,7 +33,7 @@
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
 #include <qgsrect.h>
-#include <qgsspatialrefsys.h>
+#include <qgscoordinatereferencesystem.h>
 
 #include "qgsprovidercountcalcevent.h"
 #include "qgsproviderextentcalcevent.h"
@@ -2686,9 +2686,9 @@ void QgsPostgresProvider::showMessageBox(const QString& title,
 }
 
 
-QgsSpatialRefSys QgsPostgresProvider::getSRS()
+QgsCoordinateReferenceSystem QgsPostgresProvider::getCRS()
 {
-  QgsSpatialRefSys srs;
+  QgsCoordinateReferenceSystem srs;
   srs.createFromSrid(srid.toInt());
   return srs;
 }

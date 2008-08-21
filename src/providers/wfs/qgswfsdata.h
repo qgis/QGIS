@@ -26,7 +26,7 @@
 #include <set>
 #include <stack>
 class QgsRect;
-class QgsSpatialRefSys;
+class QgsCoordinateReferenceSystem;
 
 
 /**This class reads data from a WFS server or alternatively from a GML file. It uses the expat XML parser and an event based model to keep performance high. The parsing starts when the first data arrives, it does not wait until the request is finished*/
@@ -37,7 +37,7 @@ class QgsWFSData: public QObject
   QgsWFSData(
   	const QString& uri,
 	QgsRect* extent,
-	QgsSpatialRefSys* srs,
+	QgsCoordinateReferenceSystem* srs,
 	QList<QgsFeature*> &features,
 	const QString& geometryAttribute,
 	const QSet<QString>& thematicAttributes,
@@ -131,7 +131,7 @@ class QgsWFSData: public QObject
   /**Bounding box of the layer*/
   QgsRect* mExtent;
   /**Source srs of the layer*/
-  QgsSpatialRefSys* mSrs;
+  QgsCoordinateReferenceSystem* mSrs;
   /**The features of the layer*/
   QList<QgsFeature*> &mFeatures;
   /**Name of geometry attribute*/

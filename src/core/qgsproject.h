@@ -33,7 +33,8 @@ class QDomDocument;
 class QDomNode;
 
 
-/** Reads and writes project states.
+/** \ingroup core
+ * Reads and writes project states.
    
 
   @note

@@ -297,16 +297,16 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
   if (mapCanvas.layerCount() > 0)
   {
-    QgsSpatialRefSys outputSRS = mapCanvas.mapRenderer()->destinationSrs();
+    QgsCoordinateReferenceSystem outputCRS = mapCanvas.mapRenderer()->destinationSrs();
 
-    if (outputSRS.isValid() && !outputSRS.geographicFlag())
+    if (outputCRS.isValid() && !outputCRS.geographicFlag())
     {
-      // Use a geographic SRS to get lat/long to work out direction
-      QgsSpatialRefSys ourSRS;
-      ourSRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
-      assert(ourSRS.isValid());
+      // Use a geographic CRS to get lat/long to work out direction
+      QgsCoordinateReferenceSystem ourCRS;
+      ourCRS.createFromProj4("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+      assert(ourCRS.isValid());
 
-      QgsCoordinateTransform transform(outputSRS, ourSRS);
+      QgsCoordinateTransform transform(outputCRS, ourCRS);
 
       QgsRect extent = mapCanvas.extent();
       QgsPoint p1(extent.center());
@@ -383,7 +383,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
     }
     else
     {
-      // For geographic SRS and for when there are no layers, set the
+      // For geographic CRS and for when there are no layers, set the
       // direction back to the default
       mRotationInt = 0;
     }

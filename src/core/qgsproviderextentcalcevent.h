@@ -23,8 +23,8 @@
 #include <QEvent>
 class QgsRect;
 
-/*!
- * \brief   A custom event that is designed to be fired when a layer extent has been fully calculated.
+/** \ingroup core
+ * A custom event that is designed to be fired when a layer extent has been fully calculated.
    \author  Brendan Morley
    \date    March 2005
 

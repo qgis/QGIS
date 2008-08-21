@@ -139,7 +139,7 @@ public:
   /** return description */
   virtual QString description() const;
 
-  virtual QgsSpatialRefSys getSRS();
+  virtual QgsCoordinateReferenceSystem getCRS();
   
   
   /* new functions */

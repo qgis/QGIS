@@ -1,49 +1,49 @@
 
 /*!
- * \class QgsSpatialRefSys
- * \brief Class for storing a spatial reference system (SRS)
+ * \class QgsCoordinateReferenceSystem
+ * \brief Class for storing a spatial reference system (CRS)
  */ 
-class QgsSpatialRefSys
+class QgsCoordinateReferenceSystem
 {
 %TypeHeaderCode
-#include <qgsspatialrefsys.h>
+#include <qgscoordinatereferencesystem.h>
 %End
     public:
 
-//      typedef void (*CUSTOM_SRS_VALIDATION)(QgsSpatialRefSys*);
+//      typedef void (*CUSTOM_CRS_VALIDATION)(QgsCoordinateReferenceSystem*);
       
-        enum SRS_TYPE {
-          QGIS_SRSID,
+        enum CRS_TYPE {
+          QGIS_CRSID,
           POSTGIS_SRID,
           EPSG
         };
         
         //! Default constructor
-        QgsSpatialRefSys();
+        QgsCoordinateReferenceSystem();
 
-        ~QgsSpatialRefSys();
+        ~QgsCoordinateReferenceSystem();
         
         /*! 
-         * Constructs a SRS object from a WKT string
+         * Constructs a CRS object from a WKT string
          * @param theWkt A String containing a valid Wkt def
          */
-        explicit QgsSpatialRefSys(QString theWkt);
+        explicit QgsCoordinateReferenceSystem(QString theWkt);
 
-        /*! Use this constructor when you want to create a SRS object using 
-         *  a postgis SRID, an EPSG id or a QGIS SRS_ID.
+        /*! Use this constructor when you want to create a CRS object using 
+         *  a postgis SRID, an EPSG id or a QGIS CRS_ID.
          * @param theId The ID no valid for the chosen coordinate system id type
-         * @param theType One of the types described in QgsSpatialRefSys::SRS_TYPE
+         * @param theType One of the types described in QgsCoordinateReferenceSystem::CRS_TYPE
          */
-        QgsSpatialRefSys(const long theId, SRS_TYPE theType=POSTGIS_SRID);
+        QgsCoordinateReferenceSystem(const long theId, CRS_TYPE theType=POSTGIS_SRID);
 
         // Misc helper functions -----------------------
 
-        void createFromId(const long theId, SRS_TYPE theType=POSTGIS_SRID);
+        void createFromId(const long theId, CRS_TYPE theType=POSTGIS_SRID);
 
         /**
-         * \brief Set up this SRS from the given OGC CRS
+         * \brief Set up this CRS from the given OGC CRS
          *
-         * Sets this SRS to the given OGC WMS-format Coordinate Reference Systems.
+         * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
          *
          * \note This function only deals with EPSG labels only at this time.
          *
@@ -104,7 +104,7 @@ class QgsSpatialRefSys
          * - perform a whole text search on srs name (if not null). The srs name will 
          *   have been set if this method has been delegated to from createFromWkt.
          * - if the above does not match perform a whole text search on proj4 string (if not null)
-         * - if none of the above match convert the proj4 string to an OGR SRS
+         * - if none of the above match convert the proj4 string to an OGR CRS
          *   then check if its a geocs or a proj cs (using ogr isGeographic)
          *   then sequentially walk through the database (first users qgis.db srs tbl then
          *   system srs.db tbl), converting each entry into an ogr srs and using isSame
@@ -121,12 +121,12 @@ class QgsSpatialRefSys
          */
         bool createFromProj4 (const QString theProjString);
 
-        /*! Find out whether this SRS is correctly initialised and useable */
+        /*! Find out whether this CRS is correctly initialised and useable */
         bool isValid() const;
-        /*! Perform some validation on this SRS. If the sts doesnt validate the
-         *  default behaviour settings for layers with unknown SRS will be 
+        /*! Perform some validation on this CRS. If the sts doesnt validate the
+         *  default behaviour settings for layers with unknown CRS will be 
          * consulted and acted on accordingly. By hell or high water this
-         * method will do its best to make sure that this SRS is valid - even
+         * method will do its best to make sure that this CRS is valid - even
          * if that involves resorting to a hard coded default of geocs:wgs84.
          *
          * @note It is not usually neccessary to use this function, unless you
@@ -135,15 +135,15 @@ class QgsSpatialRefSys
         void validate();
 
         /*! This is a globbing function to try to find a record in the database
-         *  that matches a SRS defined only by a proj4string. The goal is to 
-         *  learn what the tbl_srs.srs_id value is for the SRS. Internally 
-         *  the source SRS is converted to and OGR srs object using the proj4string
+         *  that matches a CRS defined only by a proj4string. The goal is to 
+         *  learn what the tbl_srs.srs_id value is for the CRS. Internally 
+         *  the source CRS is converted to and OGR srs object using the proj4string
          *  and then every record in the database that matches projection and ellipsoid
-         *  will be converted to an OGR srs in turn and compared to the source SRS.
+         *  will be converted to an OGR srs in turn and compared to the source CRS.
          *  There are some gotchas with using ogr isSame() srs comparison, but
          *  its more effective than using straight string comparison of proj4params.
          *  @note The ellipsoid and projection acronyms must be set as well as the proj4string!
-         *  @return lomg the SrsId of the matched SRS
+         *  @return lomg the SrsId of the matched CRS
          */
         long findMatchingProj();
          
@@ -156,16 +156,16 @@ class QgsSpatialRefSys
          * @return QMap An associative array of field name <-> value pairs
          */
          RecordMap getRecord(QString theSql);
-        /*! Overloaded == operator used to compare to SRS's.
+        /*! Overloaded == operator used to compare to CRS's.
          *  Internally it will delegate to the equals method described below
          */
-         bool operator==(const QgsSpatialRefSys &theSrs);
-        /*! Overloaded != operator used to compare to SRS's.
+         bool operator==(const QgsCoordinateReferenceSystem &theSrs);
+        /*! Overloaded != operator used to compare to CRS's.
           *  Returns opposite bool value to operator ==
          */
-         bool operator!=(const QgsSpatialRefSys &theSrs);
-        /*! Overloaded == operator used to compare to SRS's.
-         *  Internally it will use OGR isSameSRS() or isSameGeoSRS() methods as appropriate.
+         bool operator!=(const QgsCoordinateReferenceSystem &theSrs);
+        /*! Overloaded == operator used to compare to CRS's.
+         *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
          *  Additionally logic may also be applied if the result from the OGR methods
          *  is inconclusive.
          */
@@ -203,11 +203,11 @@ class QgsSpatialRefSys
          */
          static QString getProj4FromSrsId(const int theSrsId);
 
-         /** Sets custom function to force valid SRS
+         /** Sets custom function to force valid CRS
           *  QGIS uses implementation in QgisGui::customSrsValidation
           */
          // TODO: disabled for now, needs usage of %Method directive to pass the function
-         //static void setCustomSrsValidation(CUSTOM_SRS_VALIDATION f);
+         //static void setCustomSrsValidation(CUSTOM_CRS_VALIDATION f);
          
         // Accessors -----------------------------------
 
@@ -216,7 +216,7 @@ class QgsSpatialRefSys
          */
         long srsid() const;
         /*! Get the Postgis SRID - if possible.
-        *  @return  long theSRID The internal postgis SRID for this SRS
+        *  @return  long theSRID The internal postgis SRID for this CRS
         */
         long srid() const;
         /*! Get the Description

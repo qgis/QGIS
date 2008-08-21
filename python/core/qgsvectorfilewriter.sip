@@ -36,7 +36,7 @@ public:
                         const QString& fileEncoding,
                         const QMap<int, QgsField>& fields,
                         QGis::WKBTYPE geometryType,
-                        const QgsSpatialRefSys* srs);
+                        const QgsCoordinateReferenceSystem* srs);
     
     /** checks whether there were any errors in constructor */
     WriterError hasError();

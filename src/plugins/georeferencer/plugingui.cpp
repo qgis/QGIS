@@ -137,16 +137,16 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
     QSettings settings;
     QgsProject* prj = QgsProject::instance();
     mProjBehaviour = settings.value("/Projections/defaultBehaviour").toString();
-    mProjectSRS = prj->readEntry("SpatialRefSys", "/ProjectSRSProj4String");
-    mProjectSRSID = prj->readNumEntry("SpatialRefSys", "/ProjectSRSID");
+    mProjectCRS = prj->readEntry("SpatialRefSys", "/ProjectCRSProj4String");
+    mProjectCRSID = prj->readNumEntry("SpatialRefSys", "/ProjectCRSID");
     
     settings.setValue("/Projections/defaultBehaviour", "useProject");
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", int(GEOSRS_ID));
+    prj->writeEntry("SpatialRefSys", "/ProjectCRSProj4String", GEOPROJ4);
+    prj->writeEntry("SpatialRefSys", "/ProjectCRSID", int(GEOCRS_ID));
     
     settings.setValue("/Projections/defaultBehaviour", mProjBehaviour);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSProj4String", mProjectSRS);
-    prj->writeEntry("SpatialRefSys", "/ProjectSRSID", mProjectSRSID);
+    prj->writeEntry("SpatialRefSys", "/ProjectCRSProj4String", mProjectCRS);
+    prj->writeEntry("SpatialRefSys", "/ProjectCRSID", mProjectCRSID);
   }
 
   mPointDialog->openImageFile(filename);

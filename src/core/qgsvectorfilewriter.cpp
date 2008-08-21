@@ -21,7 +21,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectordataprovider.h"
 
@@ -39,7 +39,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(const QString& shapefileName,
                                          const QString& fileEncoding,
                                          const QgsFieldMap& fields,
                                          QGis::WKBTYPE geometryType,
-                                         const QgsSpatialRefSys* srs)
+                                         const QgsCoordinateReferenceSystem* srs)
   : mDS(NULL), mLayer(NULL), mGeom(NULL), mError(NoError)
 {
   // save the layer as a shapefile

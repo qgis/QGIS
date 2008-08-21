@@ -41,7 +41,7 @@ GraticuleCreator::GraticuleCreator(QString theOutputFileName)
   mFields.insert(5, myField6);
   mFields.insert(6, myField7);
   mFields.insert(7, myField8);
-  mSRS = QgsSpatialRefSys(GEOWKT);
+  mCRS = QgsCoordinateReferenceSystem(GEOWKT);
   mFileName = theOutputFileName;
 
 }
@@ -66,7 +66,7 @@ void GraticuleCreator::generatePointGraticule(
       mEncoding,
       mFields,
       QGis::WKBPoint,
-      &mSRS);
+      &mCRS);
   // 
   // Order our loop so that it goes from smallest to biggest
   //
@@ -222,7 +222,7 @@ void GraticuleCreator::generatePolygonGraticule(
       mEncoding,
       mFields,
       QGis::WKBPolygon,
-      &mSRS);
+      &mCRS);
   // 
   // Order our loop so that it goes from smallest to biggest
   //

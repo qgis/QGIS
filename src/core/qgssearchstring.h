@@ -24,9 +24,8 @@
 
 class QgsSearchTreeNode;
 
-/**
- * QgsSearchString
- *
+/** \ingroup core
+ * A class to represent a search string.
  * - interface for 'search string' parser 
  * - when a string is set, it parses it and creates parsed tree of it
  * - owns node tree and coresponding search string

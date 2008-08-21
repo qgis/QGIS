@@ -765,7 +765,7 @@ QString QgsVectorLayerProperties::getMetadata()
     myMetadata += tr("Project (Output) Spatial Reference System:");
     myMetadata += "</td></tr>";  
     myMetadata += "<tr><td>";
-    myMetadata += coordinateTransform->destSRS().proj4String().replace(QRegExp("\"")," \"");                       
+    myMetadata += coordinateTransform->destCRS().proj4String().replace(QRegExp("\"")," \"");                       
     myMetadata += "</td></tr>";
     */
 
@@ -853,10 +853,10 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
   mySelector->setMessage();
-  mySelector->setSelectedSRSID(layer->srs().srsid());
+  mySelector->setSelectedCRSID(layer->srs().srsid());
   if(mySelector->exec())
   {
-    QgsSpatialRefSys srs(mySelector->getSelectedSRSID(), QgsSpatialRefSys::QGIS_SRSID);
+    QgsCoordinateReferenceSystem srs(mySelector->getSelectedCRSID(), QgsCoordinateReferenceSystem::QGIS_CRSID);
     layer->setSrs(srs);
   }
   else
