@@ -156,18 +156,21 @@ OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon
       }
     }
 
+    // Open files now if application has been fully initialized (has objectName).
+    // Otherwise (if this routine is called by processEvents inside the QgisApp constructor 
+    // at startup) wait for the command line file loader to notice these files.
     QgisApp *qgis = QgisApp::instance();
-    if(qgis)
+    if (qgis && qgis->objectName() == "QgisApp")
     {
       if (!myProjectFileName.isEmpty())
       {
-	qgis->openProject(myProjectFileName);
+        qgis->openProject(myProjectFileName);
       }
       for (QStringList::Iterator myIterator = myFileList.begin();
 	  myIterator != myFileList.end(); ++myIterator ) 
       {
-	QString fileName = *myIterator;
-	qgis->openLayer(fileName);
+        QString fileName = *myIterator;
+        qgis->openLayer(fileName);
       }
     }
   }
