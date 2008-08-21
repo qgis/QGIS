@@ -101,7 +101,7 @@ long QgsWFSSourceSelect::getPreferredCrs(const QSet<long>& crsSet) const
   int ProjectCRS = -1;
   if(projectRefSys.isValid())
     {
-      long ProjectCRS = projectRefSys.epsg();
+      ProjectCRS = projectRefSys.epsg();
     }
 
   if(ProjectCRS != -1)
