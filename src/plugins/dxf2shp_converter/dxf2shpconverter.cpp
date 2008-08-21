@@ -92,12 +92,11 @@ void dxf2shpConverter::help()
 // not be enough
 void dxf2shpConverter::run()
 {
-  dxf2shpConverterGui *myPluginGui = new dxf2shpConverterGui(mQGisIface
-    ->getMainWindow(), QgisGui::ModalDialogFlags);
+  dxf2shpConverterGui *myPluginGui =
+    new dxf2shpConverterGui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
   myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
 
-  connect(myPluginGui, SIGNAL(createLayer(QString)), this, SLOT(addMyLayer
-    (QString)));
+  connect(myPluginGui, SIGNAL(createLayer(QString)), this, SLOT(addMyLayer(QString)));
 
   myPluginGui->show();
 }
@@ -113,14 +112,7 @@ void dxf2shpConverter::unload()
 
 void dxf2shpConverter::addMyLayer(QString myfname)
 {
-  // need to get a pointer to the current layer
-  mQString = myfname;
-
-  QgsMapLayer *layer = mQGisIface->activeLayer();
-  if (layer)
-    QgsVectorLayer *lyr = (QgsVectorLayer*)layer;
-
-  mQGisIface->addVectorLayer(mQString, "Converted_Layer", "ogr");
+  mQGisIface->addVectorLayer(myfname, "Converted_Layer", "ogr");
 }
 
 //////////////////////////////////////////////////////////////////////////

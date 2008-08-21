@@ -126,15 +126,15 @@ void dxf2shpConverterGui::on_buttonBox_rejected()
 void dxf2shpConverterGui::on_buttonBox_helpRequested()
 {
   QString s = "Fields description:\n"
-  "* Input DXF file: path to the DXF file to be converted\n"; 
-  "* Output Shp file: desired filename of the ShapeFile to be created\n";
-  "* Shp output file type: specifies the type of the output shapefile\n";
-  "* Export text labels checkbox: if checked, an additional shp points layer will be created, ";
-  "  and the associated dbf table will contain informations about the \"TEXT\" fields found";
-   " in the dxf file, and the text strings themselves\n\n";
-  "---\n";
-  "Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula\n";
-  "CNR, Milan Unit (Information Technology), Construction Technologies Institute.\n";
+  "* Input DXF file: path to the DXF file to be converted\n" 
+  "* Output Shp file: desired filename of the ShapeFile to be created\n"
+  "* Shp output file type: specifies the type of the output shapefile\n"
+  "* Export text labels checkbox: if checked, an additional shp points layer will be created, "
+  "  and the associated dbf table will contain informations about the \"TEXT\" fields found"
+   " in the dxf file, and the text strings themselves\n\n"
+  "---\n"
+  "Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula\n"
+  "CNR, Milan Unit (Information Technology), Construction Technologies Institute.\n"
   "For support send a mail to scala@itc.cnr.it\n";
 
   QMessageBox::information(this, "Help", s);
