@@ -80,7 +80,7 @@ bool QgsShapeFile::scanGeometries()
   QProgressDialog *sg = new QProgressDialog();
   sg->setMinimum(0);
   sg->setMaximum(0);
-  QString label = "Scanning ";
+  QString label = tr("Scanning ");
   label += filename;
   sg->setLabel(new QLabel(label));
   sg->show();
