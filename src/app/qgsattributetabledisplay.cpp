@@ -39,6 +39,20 @@
 #include <QToolButton>
 #include <QDockWidget>
 
+class QAttributeTableDock : public QDockWidget
+{
+public:
+  QAttributeTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+   : QDockWidget( title, parent, flags )
+  {
+  }
+
+  virtual void closeEvent ( QCloseEvent * ev )
+  {
+    deleteLater();
+  }
+};
+
 QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
 : QDialog(0, Qt::Window),
   mLayer(layer),
@@ -107,7 +121,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
   bool myDockFlag = mySettings.value("/qgis/dockAttributeTable",false).toBool();
   if (myDockFlag )
   {
-    mDock = new QDockWidget(tr("Attribute table - ") + layer->name(), QgisApp::instance());
+    mDock = new QAttributeTableDock(tr("Attribute table - ") + layer->name(), QgisApp::instance());
     mDock->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea);
     mDock->setWidget(this);
     QgisApp::instance()->addDockWidget(Qt::BottomDockWidgetArea, mDock);
@@ -124,9 +138,11 @@ QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
 
 void QgsAttributeTableDisplay::closeEvent(QCloseEvent *ev)
 {
-  saveWindowLocation();
+  if(mDock==NULL)
+    saveWindowLocation();
+
   ev->ignore();
-  delete this;
+  deleteLater();
 }
 
 void QgsAttributeTableDisplay::fillTable()
@@ -280,7 +296,7 @@ void QgsAttributeTableDisplay::doSearch(QString searchString)
 
   mSearchIds.clear();
 
-  mLayer->select(mLayer->pendingAllAttributesList(), true, false);
+  mLayer->select(mLayer->pendingAllAttributesList(), QgsRect(), false);
 
   QgsFeature f;
   while( mLayer->getNextFeature(f) )
