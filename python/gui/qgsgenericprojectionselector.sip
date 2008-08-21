@@ -26,11 +26,11 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
       void setMessage(QString theMessage="");
       
       QString getSelectedProj4String();
-      long getSelectedSRSID();
+      long getSelectedCRSID();
       long getSelectedEpsg();
 
-      void setSelectedSRSName(QString theName);
-      void setSelectedSRSID(long theID);
+      void setSelectedCRSName(QString theName);
+      void setSelectedCRSID(long theID);
       void setSelectedEpsg(long theID);
 
       /**

@@ -97,7 +97,7 @@ public:
   /** Magic number for a geographic coord sys in POSTGIS SRID */
   const long GEOSRID;
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
-  const long GEOSRS_ID;
+  const long GEOCRS_ID;
   /**  Magic number for a geographic coord sys in EPSG ID format */
   const long GEOEPSG_ID;
   /** The length of teh string "+proj=" */

@@ -37,7 +37,7 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsrect.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgis.h"
 
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
@@ -510,10 +510,10 @@ int QgsDelimitedTextProvider::capabilities() const
 }
 
 
-QgsSpatialRefSys QgsDelimitedTextProvider::getSRS()
+QgsCoordinateReferenceSystem QgsDelimitedTextProvider::getCRS()
 {
   // TODO: make provider projection-aware
-  return QgsSpatialRefSys(); // return default SRS
+  return QgsCoordinateReferenceSystem(); // return default CRS
 }
 
 

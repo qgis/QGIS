@@ -26,7 +26,7 @@
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
 #include <qgsgeometry.h> //each feature needs a geometry
 #include <qgspoint.h> //we will use point geometry
-#include <qgsspatialrefsys.h> //needed for creating a srs
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
 #include <qgis.h> //defines GEOWKT
@@ -68,7 +68,7 @@ class TestQgsVectorFileWriter: public QObject
     void createPolygon();
     /** This method test writing multiple features to a shapefile */
     void polygonGridTest();
-    /** As above but using a projected SRS*/
+    /** As above but using a projected CRS*/
     void projectedPlygonGridTest();
     
   private:
@@ -76,7 +76,7 @@ class TestQgsVectorFileWriter: public QObject
     bool cleanupFile(QString theFileBase);
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
-    QgsSpatialRefSys mSRS;
+    QgsCoordinateReferenceSystem mCRS;
     QgsFieldMap mFields;
     QgsPoint mPoint1;
     QgsPoint mPoint2;
@@ -100,7 +100,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1("Field1",QVariant::String,"String",10,0,"Field 1 comment");
   mFields.insert(0, myField1);
-  mSRS = QgsSpatialRefSys(GEOWKT);
+  mCRS = QgsCoordinateReferenceSystem(GEOWKT);
   mPoint1 = QgsPoint(10.0,10.0);
   mPoint2 = QgsPoint(15.0,10.0);
   mPoint3 = QgsPoint(15.0,12.0);
@@ -120,7 +120,7 @@ void TestQgsVectorFileWriter::createPoint()
       mEncoding,
       mFields,
       QGis::WKBPoint,
-      &mSRS);
+      &mCRS);
   //
   // Create a feature
   //
@@ -165,7 +165,7 @@ void TestQgsVectorFileWriter::createLine()
       mEncoding,
       mFields,
       QGis::WKBLineString,
-      &mSRS);
+      &mCRS);
   //
   // Create a feature
   //
@@ -214,7 +214,7 @@ void TestQgsVectorFileWriter::createPolygon()
       mEncoding,
       mFields,
       QGis::WKBPolygon,
-      &mSRS);
+      &mCRS);
   //
   // Create a polygon feature
   //
@@ -265,7 +265,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       mEncoding,
       mFields,
       QGis::WKBPolygon,
-      &mSRS);
+      &mCRS);
   double myInterval=5.0;
   for (double i=-180.0;i<=180.0;i+=myInterval)
   {
@@ -328,17 +328,17 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   // We are testing projected coordinate 
   // system vector writing to lets use something fun...
   // Jamaica National Grid
-  // QGIS SRSID: 1286
+  // QGIS CRSID: 1286
   // PostGIS SRID: 24200
   // +proj=lcc +lat_1=18 +lat_0=18 +lon_0=-77 +k_0=1 +x_0=250000 
   // +y_0=150000 +ellps=clrk66 +units=m +no_defs
   //
-  mSRS = QgsSpatialRefSys(1286,QgsSpatialRefSys::QGIS_SRSID);
+  mCRS = QgsCoordinateReferenceSystem(1286,QgsCoordinateReferenceSystem::QGIS_CRSID);
   QgsVectorFileWriter myWriter (myFileName,
       mEncoding,
       mFields,
       QGis::WKBPolygon,
-      &mSRS);
+      &mCRS);
   double myInterval=1000.0; //1km2
   for (double i=0.0;i<=10000.0;i+=myInterval) //10km
   {

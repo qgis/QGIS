@@ -22,7 +22,7 @@
 #include "qgsdistancearea.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QCloseEvent>
 #include <QLocale>

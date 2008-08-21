@@ -22,7 +22,7 @@
 #include "qgshttptransaction.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -95,20 +95,20 @@ long QgsWFSSourceSelect::getPreferredCrs(const QSet<long>& crsSet) const
     }
 
   //first: project CRS
-  long ProjectSRSID = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectSRSID", -1);
+  long ProjectCRSID = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectCRSID", -1);
   //convert to EPSG
-  QgsSpatialRefSys projectRefSys(ProjectSRSID, QgsSpatialRefSys::QGIS_SRSID);
-  int ProjectSRS = -1;
+  QgsCoordinateReferenceSystem projectRefSys(ProjectCRSID, QgsCoordinateReferenceSystem::QGIS_CRSID);
+  int ProjectCRS = -1;
   if(projectRefSys.isValid())
     {
-      long ProjectSRS = projectRefSys.epsg();
+      long ProjectCRS = projectRefSys.epsg();
     }
 
-  if(ProjectSRS != -1)
+  if(ProjectCRS != -1)
     {
-      if(crsSet.contains(ProjectSRS))
+      if(crsSet.contains(ProjectCRS))
 	{
-	  return ProjectSRS;
+	  return ProjectCRS;
 	}
     }
   
@@ -158,7 +158,7 @@ int QgsWFSSourceSelect::getCapabilitiesGET(QString uri, std::list<QString>& type
     {
       QString tname, title, abstract;
       QDomElement featureTypeElem = featureTypeList.at(i).toElement();
-      std::list<QString> featureSRSList; //SRS list for this feature
+      std::list<QString> featureCRSList; //CRS list for this feature
 
       //Name
       QDomNodeList nameList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "Name");
@@ -184,28 +184,28 @@ int QgsWFSSourceSelect::getCapabilitiesGET(QString uri, std::list<QString>& type
 	  abstract = abstractList.at(0).toElement().text();
 	}
 
-      //DefaultSRS is always the first entry in the feature crs list
-      QDomNodeList defaultSRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "DefaultSRS");
-      if(defaultSRSList.length() > 0)
+      //DefaultCRS is always the first entry in the feature crs list
+      QDomNodeList defaultCRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "DefaultCRS");
+      if(defaultCRSList.length() > 0)
 	{
-	  featureSRSList.push_back(defaultSRSList.at(0).toElement().text());
+	  featureCRSList.push_back(defaultCRSList.at(0).toElement().text());
 	}
 
-      //OtherSRS
-      QDomNodeList otherSRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "OtherSRS");
-      for(unsigned int i = 0; i < otherSRSList.length(); ++i)
+      //OtherCRS
+      QDomNodeList otherCRSList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "OtherCRS");
+      for(unsigned int i = 0; i < otherCRSList.length(); ++i)
 	{
-	  featureSRSList.push_back(otherSRSList.at(i).toElement().text());
+	  featureCRSList.push_back(otherCRSList.at(i).toElement().text());
 	}
 
-      //Support <SRS> for compatibility with older versions
-      QDomNodeList srsList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "SRS");
+      //Support <CRS> for compatibility with older versions
+      QDomNodeList srsList = featureTypeElem.elementsByTagNameNS(WFS_NAMESPACE, "CRS");
       for(unsigned int i = 0; i < srsList.length(); ++i)
 	{
-	  featureSRSList.push_back(srsList.at(i).toElement().text());
+	  featureCRSList.push_back(srsList.at(i).toElement().text());
 	}
 
-      crs.push_back(featureSRSList);
+      crs.push_back(featureCRSList);
       typenames.push_back(tname);
       titles.push_back(title);
       abstracts.push_back(abstract);
@@ -358,7 +358,7 @@ void QgsWFSSourceSelect::addLayer()
       long epsgNr = mProjectionSelector->getSelectedEpsg();
       if(epsgNr != 0)
 	{
-	  crsString = "&SRSNAME=EPSG:"+QString::number(epsgNr);
+	  crsString = "&CRSNAME=EPSG:"+QString::number(epsgNr);
 	}
     }
   //add a wfs layer to the map
@@ -403,13 +403,13 @@ void QgsWFSSourceSelect::changeCRSFilter()
 	  if(mProjectionSelector)
 	    {
 	      mProjectionSelector->setOgcWmsCrsFilter(crsNames);
-	      long preferredSRS = getPreferredCrs(crsSet); //get preferred EPSG system
-	      if(preferredSRS != -1)
+	      long preferredCRS = getPreferredCrs(crsSet); //get preferred EPSG system
+	      if(preferredCRS != -1)
 		{
-		  QgsSpatialRefSys refSys(preferredSRS);
-		  mProjectionSelector->setSelectedSRSID(refSys.srsid());
+		  QgsCoordinateReferenceSystem refSys(preferredCRS);
+		  mProjectionSelector->setSelectedCRSID(refSys.srsid());
 		  
-		  labelCoordRefSys->setText("EPSG: " + QString::number(preferredSRS));
+		  labelCoordRefSys->setText("EPSG: " + QString::number(preferredCRS));
 		}
 	    }
 	}

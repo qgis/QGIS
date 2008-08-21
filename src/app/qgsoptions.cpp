@@ -21,7 +21,7 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsgenericprojectionselector.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -369,10 +369,10 @@ void QgsOptions::on_pbnSelectProjection_clicked()
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector(this);
 
   //find out srs id of current proj4 string
-  QgsSpatialRefSys refSys;
+  QgsCoordinateReferenceSystem refSys;
   if(refSys.createFromProj4(txtGlobalWKT->toPlainText()))
     {
-      mySelector->setSelectedSRSID(refSys.srsid());
+      mySelector->setSelectedCRSID(refSys.srsid());
     }
 
   if(mySelector->exec())
@@ -383,7 +383,7 @@ void QgsOptions::on_pbnSelectProjection_clicked()
     //! @todo changes this control name in gui to txtGlobalProjString
     txtGlobalWKT->setText(mySelector->getSelectedProj4String());
 #ifdef QGISDEBUG
-    std::cout << "------ Global Default Projection now set to ----------\n" << mGlobalSRSID << std::endl;
+    std::cout << "------ Global Default Projection now set to ----------\n" << mGlobalCRSID << std::endl;
 #endif
   }
   else

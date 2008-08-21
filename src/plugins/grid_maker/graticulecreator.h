@@ -22,7 +22,7 @@
 
 //QGIS includes
 #include <qgsvectorfilewriter.h> //logic for writing shpfiles
-#include <qgsspatialrefsys.h> //needed for creating a srs
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsfield.h> //defines fieldmap too
 
 class GraticuleCreator
@@ -50,7 +50,7 @@ class GraticuleCreator
     QString mFileName;
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
-    QgsSpatialRefSys mSRS;
+    QgsCoordinateReferenceSystem mCRS;
     QgsFieldMap mFields;
 };
 #endif

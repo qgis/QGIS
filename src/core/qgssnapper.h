@@ -26,7 +26,9 @@ class QgsMapRenderer;
 class QgsVectorLayer;
 class QPoint;
 
-/**Describes the result of a snapping operation*/
+/** \ingroup core
+ * Represents the result of a snapping operation.
+ * */
 struct CORE_EXPORT QgsSnappingResult
 {
   /**The coordinates of the snapping result*/

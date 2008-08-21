@@ -27,7 +27,8 @@
 class QImage;
 class QgsPoint;
 
-/** Base class for raster data providers
+/** \ingroup core
+ * Base class for raster data providers.
  *
  *  \note  This class has been copied and pasted from
  *         QgsVectorDataProvider, and does not yet make

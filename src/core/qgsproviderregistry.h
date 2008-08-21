@@ -31,7 +31,8 @@ class QgsProviderMetadata;
 
 
 
-/** canonical manager of data providers
+/** \ingroup core
+  * A registry / canonical manager of data providers.
 
   This is a Singleton class that manages data provider access.
 */

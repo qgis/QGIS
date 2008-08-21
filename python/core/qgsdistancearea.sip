@@ -19,14 +19,14 @@ class QgsDistanceArea
     //! returns projections enabled flag
     bool projectionsEnabled();
     
-    //! sets source spatial reference system (by QGIS SRS)
-    void setSourceSRS(long srsid);
+    //! sets source spatial reference system (by QGIS CRS)
+    void setSourceCRS(long srsid);
     
     //! sets source spatial reference system (by EPSG)
     void setSourceEPSG(long epsgId);
 
     //! returns source spatial reference system
-    long sourceSRS();
+    long sourceCRS();
     //! What sort of coordinate system is being used?
     bool geographic();
 

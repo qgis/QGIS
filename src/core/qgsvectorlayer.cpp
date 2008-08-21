@@ -66,7 +66,7 @@
 #include "qgsrect.h"
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 
 #ifdef Q_WS_X11
@@ -3349,16 +3349,16 @@ void QgsVectorLayer::setCoordinateSystem()
   // for this layer
   //
 
-  // get SRS directly from provider
-  *mSRS = mDataProvider->getSRS();
+  // get CRS directly from provider
+  *mCRS = mDataProvider->getCRS();
 
-  //QgsSpatialRefSys provides a mechanism for FORCE a srs to be valid
+  //QgsCoordinateReferenceSystem provides a mechanism for FORCE a srs to be valid
   //which is inolves falling back to system, project or user selected
   //defaults if the srs is not properly intialised.
   //we only nee to do that if the srs is not alreay valid
-  if (!mSRS->isValid())
+  if (!mCRS->isValid())
   {
-    mSRS->validate();
+    mCRS->validate();
   }
 }
 

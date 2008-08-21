@@ -36,7 +36,7 @@
 #include "qgsrect.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 
@@ -52,7 +52,7 @@ QgsMapLayer::QgsMapLayer(int type,
 {
   QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'");
 
-  mSRS = new QgsSpatialRefSys();
+  mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
   mLayerName = capitaliseLayerName(lyrname);
@@ -79,7 +79,7 @@ QgsMapLayer::QgsMapLayer(int type,
 
 QgsMapLayer::~QgsMapLayer()
 {
-  delete mSRS;
+  delete mCRS;
 }
 
 int QgsMapLayer::type() const
@@ -149,12 +149,12 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   QDomElement mne = mnl.toElement();
   mDataSource = mne.text();
 
-  // Set the SRS so that we don't ask the user.
-  // Make it the saved SRS to have WMS layer projected correctly.
+  // Set the CRS so that we don't ask the user.
+  // Make it the saved CRS to have WMS layer projected correctly.
   // We will still overwrite whatever GDAL etc picks up anyway
   // further down this function.
   QDomNode srsNode = layer_node.namedItem("srs");
-  mSRS->readXML(srsNode);
+  mCRS->readXML(srsNode);
 
   // now let the children grab what they need from the DOM node.
   if (!readXml( layer_node ))
@@ -197,7 +197,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 
   // overwrite srs
   // FIXME: is this necessary?
-  mSRS->readXML(srsNode);
+  mCRS->readXML(srsNode);
 
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
@@ -267,7 +267,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // spatial reference system id
   QDomElement mySrsElement = document.createElement( "srs" );
-  mSRS->writeXML(mySrsElement, document);
+  mCRS->writeXML(mySrsElement, document);
   maplayer.appendChild(mySrsElement);
 
   // <transparencyLevelInt>
@@ -372,14 +372,14 @@ void QgsMapLayer::setSubLayerVisibility(QString name, bool vis)
   // NOOP
 }
 
-const QgsSpatialRefSys& QgsMapLayer::srs()
+const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
 {
-  return *mSRS;
+  return *mCRS;
 }
 
-void QgsMapLayer::setSrs(const QgsSpatialRefSys& srs)
+void QgsMapLayer::setSrs(const QgsCoordinateReferenceSystem& srs)
 {
-  *mSRS = srs;
+  *mCRS = srs;
 }
 
 unsigned int QgsMapLayer::getTransparency()

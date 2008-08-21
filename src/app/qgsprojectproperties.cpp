@@ -59,9 +59,9 @@ QgsProjectProperties::QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *par
   bool myProjectionEnabled = myRender->projectionsEnabled();
   cbxProjectionEnabled->setChecked(myProjectionEnabled);
   
-  long mySRSID = myRender->destinationSrs().srsid();
-  QgsDebugMsg("Read project SRSID: " + QString::number(mySRSID));
-  projectionSelector->setSelectedSRSID(mySRSID);
+  long myCRSID = myRender->destinationSrs().srsid();
+  QgsDebugMsg("Read project CRSID: " + QString::number(myCRSID));
+  projectionSelector->setSelectedCRSID(myCRSID);
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -245,15 +245,15 @@ void QgsProjectProperties::apply()
   // selected that has an srid. This prevents error if the user
   // selects a top-level node rather than an actual coordinate
   // system
-  long mySRSID = projectionSelector->getSelectedSRSID();
-  if (mySRSID)
+  long myCRSID = projectionSelector->getSelectedCRSID();
+  if (myCRSID)
   {
-    QgsSpatialRefSys srs(mySRSID, QgsSpatialRefSys::QGIS_SRSID);
+    QgsCoordinateReferenceSystem srs(myCRSID, QgsCoordinateReferenceSystem::QGIS_CRSID);
     myRender->setDestinationSrs(srs);
     
     // write the currently selected projections _proj string_ to project settings
-    std::cout << "SpatialRefSys/ProjectSRSProj4String: " <<  projectionSelector->getSelectedProj4String().toLocal8Bit().data() << std::endl;
-    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectSRSProj4String",projectionSelector->getSelectedProj4String());
+    std::cout << "SpatialRefSys/ProjectCRSProj4String: " <<  projectionSelector->getSelectedProj4String().toLocal8Bit().data() << std::endl;
+    QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectCRSProj4String",projectionSelector->getSelectedProj4String());
 
     // Set the map units to the projected coordinates if we are projecting
     if (isProjected())

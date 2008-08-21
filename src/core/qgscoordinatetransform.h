@@ -25,7 +25,7 @@
 #include "qgspoint.h"
 #include "qgsrect.h"
 #include "qgscsexception.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 class QDomNode;
 class QDomDocument;
 
@@ -56,14 +56,14 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     /*! Default constructor. Make sure you use initialised() manually if you use this one! */
     QgsCoordinateTransform() ;
 
-    /** Constructs a QgsCoordinateTransform using QgsSpatialRefSys objects.
-    * @param theSource SRS, typically of the layer's coordinate system
-    * @param theDest SRS, typically of the map canvas coordinate system
+    /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
+    * @param theSource CRS, typically of the layer's coordinate system
+    * @param theDest CRS, typically of the map canvas coordinate system
     */
-    QgsCoordinateTransform(const QgsSpatialRefSys& theSource, 
-                          const QgsSpatialRefSys& theDest);
+    QgsCoordinateTransform(const QgsCoordinateReferenceSystem& theSource, 
+                          const QgsCoordinateReferenceSystem& theDest);
   
-    /** Constructs a QgsCoordinateTransform using SRS ID of source and destination SRS */
+    /** Constructs a QgsCoordinateTransform using CRS ID of source and destination CRS */
     QgsCoordinateTransform(long theSourceSrsId, long theDestSrsId);
 
     /*!
@@ -79,44 +79,44 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * of the layer and map canvas coordinate system as Wkt
      * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
      * @param theSourceWKT WKT of the map canvas coordinate system
-     * @param theSourceSRSType On of the enum members defined in QgsSpatialRefSys::SRS_TYPE
+     * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CRS_TYPE
      */
     QgsCoordinateTransform(long theSourceSrid,  
                            QString theDestWKT,
-                           QgsSpatialRefSys::SRS_TYPE theSourceSRSType = QgsSpatialRefSys::POSTGIS_SRID  );
+                           QgsCoordinateReferenceSystem::CRS_TYPE theSourceCRSType = QgsCoordinateReferenceSystem::POSTGIS_SRID  );
 
      //! destructor
     ~QgsCoordinateTransform();
 
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection{
-      FORWARD,     /*!< Transform from source to destination SRS. */
-      INVERSE      /*!< Transform from destination to source SRS. */
+      FORWARD,     /*!< Transform from source to destination CRS. */
+      INVERSE      /*!< Transform from destination to source CRS. */
     };
     
     /*! 
-     * Set the source (layer) QgsSpatialRefSys
-     * @param theSRS QgsSpatialRefSys representation of the layer's coordinate system
+     * Set the source (layer) QgsCoordinateReferenceSystem
+     * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
      */
-    void setSourceSRS(const QgsSpatialRefSys& theSRS);
+    void setSourceCRS(const QgsCoordinateReferenceSystem& theCRS);
 
     /*! 
-     * Mutator for dest QgsSpatialRefSys 
-     * @param theSRS of the destination coordinate system
+     * Mutator for dest QgsCoordinateReferenceSystem 
+     * @param theCRS of the destination coordinate system
      */
-    void setDestSRS(const QgsSpatialRefSys& theSRS);
+    void setDestCRS(const QgsCoordinateReferenceSystem& theCRS);
 
     /*!
-     * Get the QgsSpatialRefSys representation of the layer's coordinate system
-     * @return QgsSpatialRefSys of the layer's coordinate system
+     * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
+     * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsSpatialRefSys& sourceSRS() { return mSourceSRS; }
+    QgsCoordinateReferenceSystem& sourceCRS() { return mSourceCRS; }
 
     /*! 
-     * Get the QgsSpatialRefSys representation of the map canvas coordinate system
-     * @return QgsSpatialRefSys of the map canvas coordinate system
+     * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
+     * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
      */
-    QgsSpatialRefSys& destSRS() { return mDestSRS; }
+    QgsCoordinateReferenceSystem& destCRS() { return mDestCRS; }
 
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
     * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
@@ -195,8 +195,8 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     * selected. 
     * @note This coord transform will be reinitialised when this slot is called
     * to check if short circuiting is needed or not etc.
-    * @param theSRSID -  A long representing the srsid of the srs to be used */
-    void setDestSRSID (long theSRSID);
+    * @param theCRSID -  A long representing the srsid of the srs to be used */
+    void setDestCRSID (long theCRSID);
 
   public slots:
     //!initialise is used to actually create the Transformer instance
@@ -233,14 +233,14 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     bool mInitialisedFlag;
 
     /*! 
-     * QgsSpatialRefSys of the source (layer) coordinate system 
+     * QgsCoordinateReferenceSystem of the source (layer) coordinate system 
      */
-    QgsSpatialRefSys mSourceSRS;
+    QgsCoordinateReferenceSystem mSourceCRS;
 
     /*! 
-     * QgsSpatialRefSys of the destination (map canvas) coordinate system 
+     * QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system 
      */
-    QgsSpatialRefSys mDestSRS;
+    QgsCoordinateReferenceSystem mDestCRS;
 
     /*!
      * Proj4 data structure of the source projection (layer coordinate system)
@@ -288,9 +288,9 @@ inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform
   }
 
   mySummary += "\n\tSource Spatial Ref Sys  : "; 
-  if (r.sourceSRS()) 
+  if (r.sourceCRS()) 
   {
-    mySummary << r.sourceSRS();
+    mySummary << r.sourceCRS();
   }
   else
   {
@@ -298,9 +298,9 @@ inline std::ostream& operator << (std::ostream& os, const QgsCoordinateTransform
   }
 
   mySummary += "\n\tDest Spatial Ref Sys  : " ;
-  if (r.destSRS()) 
+  if (r.destCRS()) 
   {
-    mySummary << r.destSRS();
+    mySummary << r.destCRS();
   }
   else
   {

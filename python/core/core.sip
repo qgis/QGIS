@@ -52,7 +52,7 @@
 %Include qgssinglesymbolrenderer.sip
 %Include qgssnapper.sip
 %Include qgsspatialindex.sip
-%Include qgsspatialrefsys.sip
+%Include qgscoordinatereferencesystem.sip
 %Include qgssymbol.sip
 %Include qgssymbologyutils.sip
 %Include qgsuniquevaluerenderer.sip

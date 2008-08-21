@@ -66,7 +66,7 @@ void QgsMeasureTool::activate()
   updateProjection();
   
   // If we suspect that they have data that is projected, yet the
-  // map SRS is set to a geographic one, warn them.
+  // map CRS is set to a geographic one, warn them.
   if (mCanvas->mapRenderer()->distArea()->geographic() &&
       (mCanvas->extent().height() > 360 || 
        mCanvas->extent().width() > 720))
@@ -121,11 +121,11 @@ void QgsMeasureTool::updateProjection()
   // QString ellipsoid = settings.readEntry("/qgis/measure/ellipsoid", "WGS84");
   // mCalc->setEllipsoid(ellipsoid);
 
-  // set source SRS and projections enabled flag
+  // set source CRS and projections enabled flag
   // QgsMapRenderer* mapRender = mCanvas->mapRenderer();
   // mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
   // int srsid = mapRender->destinationSrs().srsid();
-  // mCalc->setSourceSRS(srsid);
+  // mCalc->setSourceCRS(srsid);
   
   int myRed = settings.value("/qgis/default_measure_color_red", 180).toInt();
   int myGreen = settings.value("/qgis/default_measure_color_green", 180).toInt();

@@ -25,7 +25,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsdistancearea.h"
-//#include "qgsspatialrefsys.h"
+//#include "qgscoordinatereferencesystem.h"
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -48,14 +48,14 @@ QgsMapRenderer::QgsMapRenderer()
   mSize = QSize(0,0);
   
   mProjectionsEnabled = FALSE;
-  mDestSRS = new QgsSpatialRefSys(GEOEPSG_ID, QgsSpatialRefSys::EPSG); //WGS 84
+  mDestCRS = new QgsCoordinateReferenceSystem(GEOEPSG_ID, QgsCoordinateReferenceSystem::EPSG); //WGS 84
 }
 
 QgsMapRenderer::~QgsMapRenderer()
 {
   delete mScaleCalculator;
   delete mDistArea;
-  delete mDestSRS;
+  delete mDestCRS;
 }
 
 
@@ -298,7 +298,7 @@ void QgsMapRenderer::render(QPainter* painter)
       {
         r1 = mExtent;
         split = splitLayersExtent(ml, r1, r2);
-        ct = new QgsCoordinateTransform(ml->srs(), *mDestSRS);
+        ct = new QgsCoordinateTransform(ml->srs(), *mDestCRS);
         mRenderContext.setExtent(r1);
       }
       else
@@ -392,7 +392,7 @@ void QgsMapRenderer::render(QPainter* painter)
           {
             QgsRect r1 = mExtent;
             split = splitLayersExtent(ml, r1, r2);
-            ct = new QgsCoordinateTransform(ml->srs(), *mDestSRS);
+            ct = new QgsCoordinateTransform(ml->srs(), *mDestCRS);
             mRenderContext.setExtent(r1);
           }
           else
@@ -465,26 +465,26 @@ bool QgsMapRenderer::projectionsEnabled()
   return mProjectionsEnabled;
 }
 
-void QgsMapRenderer::setDestinationSrs(const QgsSpatialRefSys& srs)
+void QgsMapRenderer::setDestinationSrs(const QgsCoordinateReferenceSystem& srs)
 {
-  QgsDebugMsg("* Setting destSRS : = " + srs.proj4String());
-  QgsDebugMsg("* DestSRS.srsid() = " + QString::number(srs.srsid()));
-  if (*mDestSRS != srs)
+  QgsDebugMsg("* Setting destCRS : = " + srs.proj4String());
+  QgsDebugMsg("* DestCRS.srsid() = " + QString::number(srs.srsid()));
+  if (*mDestCRS != srs)
   {
-    QgsDebugMsg("Setting DistArea SRS to " + QString::number(srs.srsid()));
-    mDistArea->setSourceSRS(srs.srsid());
-    *mDestSRS = srs;
+    QgsDebugMsg("Setting DistArea CRS to " + QString::number(srs.srsid()));
+    mDistArea->setSourceCRS(srs.srsid());
+    *mDestCRS = srs;
     updateFullExtent();
     emit destinationSrsChanged();
   }
 }
 
-const QgsSpatialRefSys& QgsMapRenderer::destinationSrs()
+const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationSrs()
 {
-  QgsDebugMsg("* Returning destSRS");
-  QgsDebugMsg("* DestSRS.srsid() = " + QString::number(mDestSRS->srsid()));
-  QgsDebugMsg("* DestSRS.proj4() = " + mDestSRS->proj4String());
-  return *mDestSRS;
+  QgsDebugMsg("* Returning destCRS");
+  QgsDebugMsg("* DestCRS.srsid() = " + QString::number(mDestCRS->srsid()));
+  QgsDebugMsg("* DestCRS.proj4() = " + mDestCRS->proj4String());
+  return *mDestCRS;
 }
 
 
@@ -496,20 +496,20 @@ bool QgsMapRenderer::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsR
   {
     try
     {
-      QgsCoordinateTransform tr(layer->srs(), *mDestSRS);
+      QgsCoordinateTransform tr(layer->srs(), *mDestCRS);
       
 #ifdef QGISDEBUG
      // QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__,\
      //   __FUNCTION__, __LINE__);
 #endif
-      // Split the extent into two if the source SRS is
+      // Split the extent into two if the source CRS is
       // geographic and the extent crosses the split in
       // geographic coordinates (usually +/- 180 degrees,
       // and is assumed to be so here), and draw each
       // extent separately.
       static const double splitCoord = 180.0;
 
-      if (tr.sourceSRS().geographicFlag())
+      if (tr.sourceCRS().geographicFlag())
       {
         // Note: ll = lower left point
         //   and ur = upper right point
@@ -553,7 +553,7 @@ QgsRect QgsMapRenderer::layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect
   {
     try
     {
-      QgsCoordinateTransform tr(theLayer->srs(), *mDestSRS);
+      QgsCoordinateTransform tr(theLayer->srs(), *mDestCRS);
       extent = tr.transformBoundingBox(extent);
     }
     catch (QgsCsException &cse)
@@ -575,7 +575,7 @@ QgsPoint QgsMapRenderer::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoi
   {
     try
     {
-      QgsCoordinateTransform tr(theLayer->srs(), *mDestSRS);
+      QgsCoordinateTransform tr(theLayer->srs(), *mDestCRS);
       point = tr.transform(point, QgsCoordinateTransform::FORWARD);
     }
     catch (QgsCsException &cse)
@@ -596,7 +596,7 @@ QgsPoint QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoi
   {
     try
     {
-      QgsCoordinateTransform tr(theLayer->srs(), *mDestSRS);
+      QgsCoordinateTransform tr(theLayer->srs(), *mDestCRS);
       point = tr.transform(point, QgsCoordinateTransform::INVERSE);
     }
     catch (QgsCsException &cse)
@@ -618,7 +618,7 @@ QgsRect QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect
   {
     try
     {
-      QgsCoordinateTransform tr(theLayer->srs(), *mDestSRS);
+      QgsCoordinateTransform tr(theLayer->srs(), *mDestCRS);
       rect = tr.transform(rect, QgsCoordinateTransform::INVERSE);
     }
     catch (QgsCsException &cse)
@@ -773,8 +773,8 @@ bool QgsMapRenderer::readXML(QDomNode & theNode)
   element = projNode.toElement();
   setProjectionsEnabled(element.text().toInt());
   
-  // set destination SRS
-  QgsSpatialRefSys srs;
+  // set destination CRS
+  QgsCoordinateReferenceSystem srs;
   QDomNode srsNode = theNode.namedItem("destinationsrs");
   srs.readXML(srsNode);
   setDestinationSrs(srs);
@@ -843,7 +843,7 @@ bool QgsMapRenderer::writeXML(QDomNode & theNode, QDomDocument & theDoc)
   QDomText projText = theDoc.createTextNode(QString::number(projectionsEnabled()));
   projNode.appendChild(projText);
   
-  // destination SRS
+  // destination CRS
   QDomElement srsNode = theDoc.createElement("destinationsrs");
   theNode.appendChild(srsNode);
   destinationSrs().writeXML(srsNode, theDoc);

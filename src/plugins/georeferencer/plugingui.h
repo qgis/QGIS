@@ -41,8 +41,8 @@ public slots:
     
 private:
     
-   QString mProjBehaviour, mProjectSRS;
-   int mProjectSRSID;
+   QString mProjBehaviour, mProjectCRS;
+   int mProjectCRSID;
    QgisInterface* mIface;
    /**dialog to enter reference point*/
    QgsPointDialog* mPointDialog;

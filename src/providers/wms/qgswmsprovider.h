@@ -369,12 +369,12 @@ public:
    */
   virtual QSet<QString> supportedCrsForLayers(QStringList const & layers);
 
-  /*! Get the QgsSpatialRefSys for this layer
+  /*! Get the QgsCoordinateReferenceSystem for this layer
    * @note Must be reimplemented by each provider. 
    * If the provider isn't capable of returning
    * its projection an empty srs will be return, ti will return 0
    */
-  virtual QgsSpatialRefSys getSRS();
+  virtual QgsCoordinateReferenceSystem getCRS();
   
   /**
    * Add the list of WMS layer names to be rendered by this server

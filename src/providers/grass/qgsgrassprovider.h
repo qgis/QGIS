@@ -195,7 +195,7 @@ public:
    */
   bool isValid();
 
-  QgsSpatialRefSys getSRS();
+  QgsCoordinateReferenceSystem getCRS();
   
   // ----------------------------------- Edit ----------------------------------
 	

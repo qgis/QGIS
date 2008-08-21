@@ -253,13 +253,13 @@ static QgsMessageOutput* messageOutputViewer_()
 
 
 /**
- * This function contains forced validation of SRS used in QGIS.
+ * This function contains forced validation of CRS used in QGIS.
  * There are 3 options depending on the settings:
- * - ask for SRS using projection selecter
- * - use project's SRS
- * - use predefined global SRS
+ * - ask for CRS using projection selecter
+ * - use project's CRS
+ * - use predefined global CRS
  */
-static void customSrsValidation_(QgsSpatialRefSys* srs)
+static void customSrsValidation_(QgsCoordinateReferenceSystem* srs)
 {
   QString proj4String;
   QSettings mySettings;
@@ -272,16 +272,16 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
 
     QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage(); //shows a generic message
-    proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
-    QgsSpatialRefSys defaultSRS;
-    if(defaultSRS.createFromProj4(proj4String))
+    proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectCRSProj4String",GEOPROJ4);
+    QgsCoordinateReferenceSystem defaultCRS;
+    if(defaultCRS.createFromProj4(proj4String))
     {
-      mySelector->setSelectedSRSID(defaultSRS.srsid());
+      mySelector->setSelectedCRSID(defaultCRS.srsid());
     }
 
     if(mySelector->exec())
     {
-      QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getSelectedSRSID()));
+      QgsDebugMsg("Layer srs set from dialog: " + QString::number(mySelector->getSelectedCRSID()));
       srs->createFromProj4(mySelector->getSelectedProj4String());
       srs->debugPrint();
     }
@@ -293,8 +293,8 @@ static void customSrsValidation_(QgsSpatialRefSys* srs)
   }
   else if (myDefaultProjectionOption=="useProject")
   {
-    // XXX TODO: Change project to store selected CS as 'projectSRS' not 'selectedWKT'
-    proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectSRSProj4String",GEOPROJ4);
+    // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWKT'
+    proj4String = QgsProject::instance()->readEntry("SpatialRefSys","//ProjectCRSProj4String",GEOPROJ4);
     QgsDebugMsg("Layer srs set from project: " + proj4String);
     srs->createFromProj4(proj4String);
     srs->debugPrint();
@@ -370,7 +370,7 @@ QgisApp *QgisApp::smInstance = 0;
   setWindowTitle(caption);
 
   // set QGIS specific srs validation
-  QgsSpatialRefSys::setCustomSrsValidation(customSrsValidation_);
+  QgsCoordinateReferenceSystem::setCustomSrsValidation(customSrsValidation_);
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator(messageOutputViewer_);
 
@@ -4511,7 +4511,7 @@ void QgisApp::destinationSrsChanged()
 {
   // save this information to project
   long srsid = mMapCanvas->mapRenderer()->destinationSrs().srsid();
-  QgsProject::instance()->writeEntry("SpatialRefSys", "/ProjectSRSID", (int)srsid);
+  QgsProject::instance()->writeEntry("SpatialRefSys", "/ProjectCRSID", (int)srsid);
 
 }
 
@@ -4701,16 +4701,16 @@ void QgisApp::projectProperties()
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
   bool wasProjected = myRender->projectionsEnabled();
-  long oldSRSID = myRender->destinationSrs().srsid();
+  long oldCRSID = myRender->destinationSrs().srsid();
 
   // Display the modal dialog box.
   pp->exec();
 
-  long newSRSID = myRender->destinationSrs().srsid();
+  long newCRSID = myRender->destinationSrs().srsid();
   bool isProjected = myRender->projectionsEnabled();
 
-  // projections have been turned on/off or dest SRS has changed while projections are on
-  if (wasProjected != isProjected || (isProjected && oldSRSID != newSRSID))
+  // projections have been turned on/off or dest CRS has changed while projections are on
+  if (wasProjected != isProjected || (isProjected && oldCRSID != newCRSID))
   {
     // TODO: would be better to try to reproject current extent to the new one
     mMapCanvas->updateFullExtent();

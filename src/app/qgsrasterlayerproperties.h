@@ -56,7 +56,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         void on_pbnAddValuesManually_clicked();
         /** Help button */
         void on_buttonBox_helpRequested();
-        /** Override the SRS specified when the layer was loaded */
+        /** Override the CRS specified when the layer was loaded */
         void on_pbnChangeSpatialRefSys_clicked();
         /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
         void on_pbnDefaultValues_clicked();

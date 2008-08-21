@@ -29,7 +29,7 @@ class QgsGeometry;
  * There are two options to use it
  * + use measure() takes QgsGeometry as a parameter and calculates distance or area
  * + use directly measureLine(), measurePolygon() which take list of QgsPoints
- * (both cases transform the coordinates from source SRS to the ellipse coords)
+ * (both cases transform the coordinates from source CRS to the ellipse coords)
  * Returned values are in meters resp. square meters
 */
 class CORE_EXPORT QgsDistanceArea
@@ -47,16 +47,16 @@ class CORE_EXPORT QgsDistanceArea
     //! returns projections enabled flag
     bool projectionsEnabled() { return mProjectionsEnabled; }
     
-    //! sets source spatial reference system (by QGIS SRS)
-    void setSourceSRS(long srsid);
+    //! sets source spatial reference system (by QGIS CRS)
+    void setSourceCRS(long srsid);
 
     //! sets source spatial reference system (by EPSG)
     void setSourceEPSG(long epsgId);
     
     //! returns source spatial reference system
-    long sourceSRS() { return mSourceRefSys; }
+    long sourceCRS() { return mSourceRefSys; }
     //! What sort of coordinate system is being used?
-    bool geographic() { return mCoordTransform->sourceSRS().geographicFlag(); }
+    bool geographic() { return mCoordTransform->sourceCRS().geographicFlag(); }
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid(const QString& ellipsoid);
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsDistanceArea
     
   private:
     
-    //! used for transforming coordinates from source SRS to ellipsoid's coordinates
+    //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform* mCoordTransform;
     
     //! indicates whether we will transform coordinates

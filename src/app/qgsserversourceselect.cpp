@@ -23,7 +23,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproviderregistry.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgscontexthelp.h"
 
@@ -93,11 +93,11 @@ QgsServerSourceSelect::QgsServerSourceSelect(QWidget * parent, Qt::WFlags fl)
   populateConnectionList();
 
   //set the current project CRS if available
-  long currentSRS = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectSRSID", -1);
-  if(currentSRS != -1)
+  long currentCRS = QgsProject::instance()->readNumEntry("SpatialRefSys", "/ProjectCRSID", -1);
+  if(currentCRS != -1)
     {
-      //convert SRS id to epsg
-      QgsSpatialRefSys currentRefSys(currentSRS, QgsSpatialRefSys::QGIS_SRSID);
+      //convert CRS id to epsg
+      QgsCoordinateReferenceSystem currentRefSys(currentCRS, QgsCoordinateReferenceSystem::QGIS_CRSID);
       if(currentRefSys.isValid())
 	{
 	  m_Epsg = currentRefSys.epsg();
@@ -434,11 +434,11 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
 
   mySelector->setOgcWmsCrsFilter(crsFilter);
 
-  QString myDefaultProjString = QgsProject::instance()->readEntry("SpatialRefSys", "/ProjectSRSProj4String", GEOPROJ4);
-  QgsSpatialRefSys defaultSRS;
-  if(defaultSRS.createFromProj4(myDefaultProjString))
+  QString myDefaultProjString = QgsProject::instance()->readEntry("SpatialRefSys", "/ProjectCRSProj4String", GEOPROJ4);
+  QgsCoordinateReferenceSystem defaultCRS;
+  if(defaultCRS.createFromProj4(myDefaultProjString))
     {
-      mySelector->setSelectedSRSID(defaultSRS.srsid());
+      mySelector->setSelectedCRSID(defaultCRS.srsid());
     }
 
   if (mySelector->exec())
@@ -701,7 +701,7 @@ QString QgsServerSourceSelect::descriptionForEpsg(long epsg)
   // We'll assume this function isn't called very often,
   // so please forgive the lack of caching of results
 
-  QgsSpatialRefSys qgisSrs = QgsSpatialRefSys(epsg, QgsSpatialRefSys::EPSG);
+  QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem(epsg, QgsCoordinateReferenceSystem::EPSG);
 
   return qgisSrs.description();
 }

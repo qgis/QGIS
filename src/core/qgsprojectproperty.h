@@ -32,8 +32,8 @@ class QDomDocument;
 class QStringList;
 
 
-/**
-   ABC for property hierarchies
+/** \ingroup core
+ * An Abstract Base Class for QGIS project property hierarchies.
 
    Each sub-class is either a QgsPropertyKey or QgsPropertyValue.  QgsPropertyKeys can
    contain either QgsPropertyKeys or QgsPropertyValues, thus describing an

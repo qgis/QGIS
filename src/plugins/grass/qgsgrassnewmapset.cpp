@@ -54,7 +54,7 @@
 #include "qgsproject.h"
 #include "qgsrect.h"
 #include "qgscoordinatetransform.h"
-#include "qgsspatialrefsys.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsprojectionselector.h"
 
 #include "qgsgrass.h"
@@ -470,12 +470,12 @@ void QgsGrassNewMapset::setGrassProjection()
     std::cerr << "proj4 = " << proj4.local8Bit().data() << std::endl;
 #endif
 
-    OGRSpatialReferenceH hSRS = NULL;
-    hSRS = OSRNewSpatialReference(NULL);
+    OGRSpatialReferenceH hCRS = NULL;
+    hCRS = OSRNewSpatialReference(NULL);
     int errcode;
     const char *oldlocale = setlocale(LC_NUMERIC, NULL);
     setlocale(LC_NUMERIC, "C");
-    errcode = OSRImportFromProj4(hSRS, proj4.ascii());
+    errcode = OSRImportFromProj4(hCRS, proj4.ascii());
     setlocale(LC_NUMERIC, oldlocale);
     if ( errcode!=OGRERR_NONE )
     {
@@ -490,11 +490,11 @@ void QgsGrassNewMapset::setGrassProjection()
     else
     {
 #ifdef QGISDEBUG
-      std::cerr << "OSRIsGeographic = " << OSRIsGeographic( hSRS ) << std::endl;
-      std::cerr << "OSRIsProjected = " << OSRIsProjected( hSRS ) << std::endl;
+      std::cerr << "OSRIsGeographic = " << OSRIsGeographic( hCRS ) << std::endl;
+      std::cerr << "OSRIsProjected = " << OSRIsProjected( hCRS ) << std::endl;
 
       char *wkt = NULL;	
-      if ((errcode = OSRExportToWkt(hSRS, &wkt)) != OGRERR_NONE) 
+      if ((errcode = OSRExportToWkt(hCRS, &wkt)) != OGRERR_NONE) 
       {
         std::cerr << "OGR can't get WKT-style parameter string\n"
           << "OGR Error code was " << errcode << std::endl;
@@ -512,11 +512,11 @@ void QgsGrassNewMapset::setGrassProjection()
       // There was a bug in GRASS, it is present in 6.0.x line
 #if GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 1
       ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
-        &mProjUnits, hSRS, 0);
+        &mProjUnits, hCRS, 0);
 #else
       // Buggy version:
       ret = GPJ_osr_to_grass ( &mCellHead, &mProjInfo, 
-        &mProjUnits, (void **)hSRS, 0);
+        &mProjUnits, (void **)hCRS, 0);
 #endif
 
       // Note: It seems that GPJ_osr_to_grass()returns always 1, 
@@ -564,16 +564,16 @@ void QgsGrassNewMapset::setRegionPage()
   }
 
   // Create new projection
-  QgsSpatialRefSys newSrs;
+  QgsCoordinateReferenceSystem newSrs;
   if ( mProjRadioButton->isChecked() ) 
   { 
 #ifdef QGISDEBUG
-    std::cerr << "getSelectedSRSID() = " << mProjectionSelector->getSelectedSRSID() << std::endl;
+    std::cerr << "getSelectedCRSID() = " << mProjectionSelector->getSelectedCRSID() << std::endl;
 #endif
 
-    if ( mProjectionSelector->getSelectedSRSID() > 0 )
+    if ( mProjectionSelector->getSelectedCRSID() > 0 )
     {
-      newSrs.createFromSrsId ( mProjectionSelector->getSelectedSRSID() );
+      newSrs.createFromSrsId ( mProjectionSelector->getSelectedCRSID() );
       if (  ! newSrs.isValid() )
       {
         QMessageBox::warning( 0, tr("Warning"), 
@@ -675,7 +675,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
 #endif
 
   int srsid = QgsProject::instance()->readNumEntry(
-    "SpatialRefSys","/ProjectSRSID",0);
+    "SpatialRefSys","/ProjectCRSID",0);
 
 #ifdef QGISDEBUG
   std::cerr << "current project srsid = " << srsid << std::endl;
@@ -691,7 +691,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
   if ( extSet && 
     ( mNoProjRadioButton->isChecked() ||
     ( mProjRadioButton->isChecked()  
-    && srsid == mProjectionSelector->getSelectedSRSID() ) 
+    && srsid == mProjectionSelector->getSelectedCRSID() ) 
     )
     )
   {
@@ -915,26 +915,26 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->getSelectedSRSID() != 2585 )
+  if ( mProjectionSelector->getSelectedCRSID() != 2585 )
   {
-    // Warning: QgsSpatialRefSys::EPSG is broken (using epsg_id)
-    //QgsSpatialRefSys source ( 4326, QgsSpatialRefSys::EPSG );
-    QgsSpatialRefSys source ( 2585, QgsSpatialRefSys::QGIS_SRSID );
+    // Warning: QgsCoordinateReferenceSystem::EPSG is broken (using epsg_id)
+    //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EPSG );
+    QgsCoordinateReferenceSystem source ( 2585, QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !source.isValid() ) 
     {
       QMessageBox::warning( 0, tr("Warning"), 
-        tr("Cannot create QgsSpatialRefSys" ) );
+        tr("Cannot create QgsCoordinateReferenceSystem" ) );
       return;
     }
 
-    QgsSpatialRefSys dest ( mProjectionSelector->getSelectedSRSID(), 
-      QgsSpatialRefSys::QGIS_SRSID );
+    QgsCoordinateReferenceSystem dest ( mProjectionSelector->getSelectedCRSID(), 
+      QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !dest.isValid() ) 
     {
       QMessageBox::warning( 0, tr("Warning"), 
-        tr("Cannot create QgsSpatialRefSys") );
+        tr("Cannot create QgsCoordinateReferenceSystem") );
       return;
     }
 
@@ -1016,9 +1016,9 @@ void QgsGrassNewMapset::setCurrentRegion()
   QgsRect ext = mIface->getMapCanvas()->extent();
 
   int srsid = QgsProject::instance()->readNumEntry(
-    "SpatialRefSys","/ProjectSRSID",0);
+    "SpatialRefSys","/ProjectCRSID",0);
 
-  QgsSpatialRefSys srs( srsid, QgsSpatialRefSys::QGIS_SRSID );
+  QgsCoordinateReferenceSystem srs( srsid, QgsCoordinateReferenceSystem::QGIS_CRSID );
 #ifdef QGISDEBUG
   std::cerr << "current project srsid = " << srsid << std::endl;
   std::cerr << "srs.isValid() = " << srs.isValid() << std::endl;
@@ -1141,24 +1141,24 @@ void QgsGrassNewMapset::drawRegion()
   points.push_back( QgsPoint( points[0] ) ); // close polygon
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->getSelectedSRSID() != 2585 )
+  if ( mProjectionSelector->getSelectedCRSID() != 2585 )
   {
-    QgsSpatialRefSys source ( mProjectionSelector->getSelectedSRSID(), 
-      QgsSpatialRefSys::QGIS_SRSID );
+    QgsCoordinateReferenceSystem source ( mProjectionSelector->getSelectedCRSID(), 
+      QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !source.isValid() ) 
     {
       QMessageBox::warning( 0, tr("Warning"), 
-        tr("Cannot create QgsSpatialRefSys") );
+        tr("Cannot create QgsCoordinateReferenceSystem") );
       return;
     }
 
-    QgsSpatialRefSys dest ( 2585, QgsSpatialRefSys::QGIS_SRSID );
+    QgsCoordinateReferenceSystem dest ( 2585, QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !dest.isValid() ) 
     {
       QMessageBox::warning( 0, tr("Warning"), 
-        tr("Cannot create QgsSpatialRefSys") );
+        tr("Cannot create QgsCoordinateReferenceSystem") );
       return;
     }
 
@@ -1536,16 +1536,16 @@ void QgsGrassNewMapset::pageSelected( const QString & title )
 
       // Se current QGIS projection
       int srsid = QgsProject::instance()->readNumEntry(
-        "SpatialRefSys","/ProjectSRSID",0);
+        "SpatialRefSys","/ProjectCRSID",0);
 
-      QgsSpatialRefSys srs( srsid, QgsSpatialRefSys::QGIS_SRSID );
+      QgsCoordinateReferenceSystem srs( srsid, QgsCoordinateReferenceSystem::QGIS_CRSID );
 #ifdef QGISDEBUG
       std::cerr << "current project srsid = " << srsid << std::endl;
       std::cerr << "srs.isValid() = " << srs.isValid() << std::endl;
 #endif
       if ( srs.isValid() )
       {
-        mProjectionSelector->setSelectedSRSID ( srsid );
+        mProjectionSelector->setSelectedCRSID ( srsid );
         mProjRadioButton->setChecked(true); 
         projRadioSwitched();
       } 

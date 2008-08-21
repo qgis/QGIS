@@ -20,7 +20,7 @@
 #include "qgis.h" //magick numbers here
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include <qgsspatialrefsys.h>
+#include <qgscoordinatereferencesystem.h>
 
 //qt includes
 #include <QDir>
@@ -32,7 +32,7 @@
 
 const int NAME_COLUMN=0;
 const int EPSG_COLUMN=1;
-const int QGIS_SRS_ID_COLUMN=2;
+const int QGIS_CRS_ID_COLUMN=2;
 
 QgsProjectionSelector::QgsProjectionSelector(QWidget* parent,
                                              const char * name,
@@ -40,8 +40,8 @@ QgsProjectionSelector::QgsProjectionSelector(QWidget* parent,
     : QWidget(parent, fl),
       mProjListDone(FALSE),
       mUserProjListDone(FALSE),
-      mSRSNameSelectionPending(FALSE),
-      mSRSIDSelectionPending(FALSE)
+      mCRSNameSelectionPending(FALSE),
+      mCRSIDSelectionPending(FALSE)
 
 {
   setupUi(this);
@@ -52,8 +52,8 @@ QgsProjectionSelector::QgsProjectionSelector(QWidget* parent,
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
   lstCoordinateSystems->header()->setResizeMode(EPSG_COLUMN,QHeaderView::Stretch);
-  lstCoordinateSystems->header()->resizeSection(QGIS_SRS_ID_COLUMN,0);
-  lstCoordinateSystems->header()->setResizeMode(QGIS_SRS_ID_COLUMN,QHeaderView::Fixed);
+  lstCoordinateSystems->header()->resizeSection(QGIS_CRS_ID_COLUMN,0);
+  lstCoordinateSystems->header()->setResizeMode(QGIS_CRS_ID_COLUMN,QHeaderView::Fixed);
 }
 
 
@@ -66,7 +66,7 @@ void QgsProjectionSelector::resizeEvent ( QResizeEvent * theEvent )
 
   lstCoordinateSystems->header()->resizeSection(NAME_COLUMN,(theEvent->size().width()-120));
   lstCoordinateSystems->header()->resizeSection(EPSG_COLUMN,120);
-  lstCoordinateSystems->header()->resizeSection(QGIS_SRS_ID_COLUMN,0);
+  lstCoordinateSystems->header()->resizeSection(QGIS_CRS_ID_COLUMN,0);
 }
 
 void QgsProjectionSelector::showEvent ( QShowEvent * theEvent )
@@ -86,13 +86,13 @@ void QgsProjectionSelector::showEvent ( QShowEvent * theEvent )
 
   // check if a paricular projection is waiting
   // to be pre-selected, and if so, to select it now.
-  if (mSRSNameSelectionPending)
+  if (mCRSNameSelectionPending)
   {
-    applySRSNameSelection();
+    applyCRSNameSelection();
   }
-  if (mSRSIDSelectionPending)
+  if (mCRSIDSelectionPending)
   {
-    applySRSIDSelection();
+    applyCRSIDSelection();
   }
 
   // Pass up the inheritance heirarchy
@@ -163,15 +163,15 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression(QSet<QString> * cr
 }
 
 
-void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
+void QgsProjectionSelector::setSelectedCRSName(QString theCRSName)
 {
-  mSRSNameSelection = theSRSName;
-  mSRSNameSelectionPending = TRUE;
-  mSRSIDSelectionPending = FALSE;  // only one type can be pending at a time
+  mCRSNameSelection = theCRSName;
+  mCRSNameSelectionPending = TRUE;
+  mCRSIDSelectionPending = FALSE;  // only one type can be pending at a time
 
   if (isVisible())
   {
-    applySRSNameSelection();
+    applyCRSNameSelection();
   }
   // else we will wait for the projection selector to
   // become visible (with the showEvent()) and set the
@@ -179,15 +179,15 @@ void QgsProjectionSelector::setSelectedSRSName(QString theSRSName)
 }
 
 
-void QgsProjectionSelector::setSelectedSRSID(long theSRSID)
+void QgsProjectionSelector::setSelectedCRSID(long theCRSID)
 {
-  mSRSIDSelection = theSRSID;
-  mSRSIDSelectionPending = TRUE;
-  mSRSNameSelectionPending = FALSE;  // only one type can be pending at a time
+  mCRSIDSelection = theCRSID;
+  mCRSIDSelectionPending = TRUE;
+  mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
 
   if (isVisible())
   {
-    applySRSIDSelection();
+    applyCRSIDSelection();
   }
   // else we will wait for the projection selector to
   // become visible (with the showEvent()) and set the
@@ -199,17 +199,17 @@ void QgsProjectionSelector::setSelectedEpsg(long epsg)
   //QgsSpatial
 }
 
-void QgsProjectionSelector::applySRSNameSelection()
+void QgsProjectionSelector::applyCRSNameSelection()
 {
   if (
-      (mSRSNameSelectionPending) &&
+      (mCRSNameSelectionPending) &&
       (mProjListDone) &&
       (mUserProjListDone)
      )
   {
     //get the srid given the wkt so we can pick the correct list item
-    QgsDebugMsg("called with " + mSRSNameSelection);
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mSRSNameSelection, Qt::MatchExactly|Qt::MatchRecursive, 0);
+    QgsDebugMsg("called with " + mCRSNameSelection);
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mCRSNameSelection, Qt::MatchExactly|Qt::MatchRecursive, 0);
   
     if (nodes.count() > 0)
     {
@@ -222,21 +222,21 @@ void QgsProjectionSelector::applySRSNameSelection()
       teProjection->setText("");
     }
 
-    mSRSNameSelectionPending = FALSE;
+    mCRSNameSelectionPending = FALSE;
   }
 }
 
-void QgsProjectionSelector::applySRSIDSelection()
+void QgsProjectionSelector::applyCRSIDSelection()
 {
   if (
-      (mSRSIDSelectionPending) &&
+      (mCRSIDSelectionPending) &&
       (mProjListDone) &&
       (mUserProjListDone)
      )
   {
-    QString mySRSIDString = QString::number(mSRSIDSelection);
+    QString myCRSIDString = QString::number(mCRSIDSelection);
   
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(mySRSIDString, Qt::MatchExactly|Qt::MatchRecursive, QGIS_SRS_ID_COLUMN);
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems(myCRSIDString, Qt::MatchExactly|Qt::MatchRecursive, QGIS_CRS_ID_COLUMN);
   
     if (nodes.count() > 0)
     {
@@ -249,7 +249,7 @@ void QgsProjectionSelector::applySRSIDSelection()
       teProjection->setText("");
     }
 
-    mSRSIDSelectionPending = FALSE;
+    mCRSIDSelectionPending = FALSE;
   }
 }
 
@@ -281,10 +281,10 @@ QString QgsProjectionSelector::getSelectedProj4String()
   if(myItem)
   {
 
-    if(myItem->text(QGIS_SRS_ID_COLUMN).length() > 0)
+    if(myItem->text(QGIS_CRS_ID_COLUMN).length() > 0)
     {
       QString myDatabaseFileName;
-      QString mySrsId = myItem->text(QGIS_SRS_ID_COLUMN);
+      QString mySrsId = myItem->text(QGIS_CRS_ID_COLUMN);
 
       QgsDebugMsg("mySrsId = " + mySrsId);
       QgsDebugMsg("USER_PROJECTION_START_ID = " + QString::number(USER_PROJECTION_START_ID));
@@ -373,14 +373,14 @@ long QgsProjectionSelector::getSelectedLongAttribute(QString attributeName)
   if(lvi)
   {
     // Make sure the selected node is a srs and not a top-level projection node
-    if(lvi->text(QGIS_SRS_ID_COLUMN).length() > 0)
+    if(lvi->text(QGIS_CRS_ID_COLUMN).length() > 0)
     {
       QString myDatabaseFileName;
       //
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
       //
-      if (lvi->text(QGIS_SRS_ID_COLUMN).toLong() >= USER_PROJECTION_START_ID)
+      if (lvi->text(QGIS_CRS_ID_COLUMN).toLong() >= USER_PROJECTION_START_ID)
       {
         myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;
@@ -414,7 +414,7 @@ long QgsProjectionSelector::getSelectedLongAttribute(QString attributeName)
       QString sql = "select ";
       sql += attributeName;
       sql += " from tbl_srs where srs_id = ";
-      sql += lvi->text(QGIS_SRS_ID_COLUMN);
+      sql += lvi->text(QGIS_CRS_ID_COLUMN);
 
 #ifdef QGISDEBUG
       std::cout << "Finding selected attribute using : " <<  sql.toLocal8Bit().data() << std::endl;
@@ -457,13 +457,13 @@ long QgsProjectionSelector::getSelectedEpsg()
 }
 
 
-long QgsProjectionSelector::getSelectedSRSID()
+long QgsProjectionSelector::getSelectedCRSID()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
 
-  if(item != NULL && item->text(QGIS_SRS_ID_COLUMN).length() > 0)
+  if(item != NULL && item->text(QGIS_CRS_ID_COLUMN).length() > 0)
   {
-    return lstCoordinateSystems->currentItem()->text(QGIS_SRS_ID_COLUMN).toLong();
+    return lstCoordinateSystems->currentItem()->text(QGIS_CRS_ID_COLUMN).toLong();
   }
   else
   {
@@ -550,7 +550,7 @@ void QgsProjectionSelector::applyUserProjList(QSet<QString> * crsFilter)
       // display the epsg (field 2) in the second column of the list view
       newItem->setText(EPSG_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2 )));
       // display the qgis srs_id (field 1) in the third column of the list view
-      newItem->setText(QGIS_SRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1)));
+      newItem->setText(QGIS_CRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 1)));
     }
   }
   // close the sqlite3 statement
@@ -654,7 +654,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
         newItem->setText(EPSG_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 2)));
 
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText(QGIS_SRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
+        newItem->setText(QGIS_CRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
       else
       {
@@ -693,7 +693,7 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
         // display the epsg (field 2) in the second column of the list view
         newItem->setText(EPSG_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 2)));
         // display the qgis srs_id (field 1) in the third column of the list view
-        newItem->setText(QGIS_SRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
+        newItem->setText(QGIS_CRS_ID_COLUMN,QString::fromUtf8((char *)sqlite3_column_text(ppStmt, 1)));
       }
     }
     mProjList->setExpanded(true);
@@ -711,19 +711,19 @@ void QgsProjectionSelector::applyProjList(QSet<QString> * crsFilter)
 void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem)
 {
   // If the item has children, it's not an end node in the tree, and
-  // hence is just a grouping thingy, not an actual SRS.
+  // hence is just a grouping thingy, not an actual CRS.
   if (theItem != NULL && theItem->childCount() == 0)
   {
-    // Found a real SRS
+    // Found a real CRS
     QString myDescription;
-    emit sridSelected(QString::number(getSelectedSRSID()));
+    emit sridSelected(QString::number(getSelectedCRSID()));
     QString myProjString = getSelectedProj4String();
     lstCoordinateSystems->scrollToItem(theItem);
     teProjection->setText(myProjString);
   }
   else
   {
-    // Not an SRS - remove the highlight so the user doesn't get too confused
+    // Not an CRS - remove the highlight so the user doesn't get too confused
     lstCoordinateSystems->setItemSelected(theItem, FALSE);  // TODO - make this work.
     teProjection->setText("");
   }
@@ -749,13 +749,13 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     //loop backto the beginning
     mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
            " order by srs_id desc limit 1";
-    long myLargestSrsId = getLargestSRSIDMatch(mySql);
+    long myLargestSrsId = getLargestCRSIDMatch(mySql);
 #ifdef QGISDEBUG
-    std::cout << "Largest SRSID" << myLargestSrsId << std::endl;
+    std::cout << "Largest CRSID" << myLargestSrsId << std::endl;
 #endif
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
     // each time the find button is pressed. This means we can loop through all matches.
-    if (myLargestSrsId <= getSelectedSRSID())
+    if (myLargestSrsId <= getSelectedCRSID())
     {
       //roll search around to the beginning
       mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
@@ -765,7 +765,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     {
       // search ahead of the current postion
       mySql= "select srs_id from tbl_srs where description like '%" + mySearchString +"%'" +
-             " and srs_id > " + QString::number(getSelectedSRSID()) + " order by srs_id limit 1";
+             " and srs_id > " + QString::number(getSelectedCRSID()) + " order by srs_id limit 1";
     }
   }
 #ifdef QGISDEBUG
@@ -800,7 +800,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if (myResult == SQLITE_ROW)
     {  
       QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
-      setSelectedSRSID(mySrsId.toLong());
+      setSelectedCRSID(mySrsId.toLong());
       // close the sqlite3 statement
       sqlite3_finalize(myPreparedStatement);
       sqlite3_close(myDatabase);
@@ -833,7 +833,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if (myResult == SQLITE_ROW)
     {  
       QString mySrsId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement, 0));
-      setSelectedSRSID(mySrsId.toLong());
+      setSelectedCRSID(mySrsId.toLong());
       // close the sqlite3 statement
       sqlite3_finalize(myPreparedStatement);
       sqlite3_close(myDatabase);
@@ -841,7 +841,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   }
 }
 
-long QgsProjectionSelector::getLargestSRSIDMatch(QString theSql)
+long QgsProjectionSelector::getLargestCRSIDMatch(QString theSql)
 {
   long mySrsId =0;
   //
