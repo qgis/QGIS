@@ -561,7 +561,7 @@ void QgsSpit::import()
 
       for ( std::vector<QString>::size_type k = 1; k < names_copy.size(); k++ )
       {
-        QgsDebugMsg( tr("Checking to see if ") + names_copy[ k ] + " == " + names_copy[ k - 1 ] );
+        QgsDebugMsg( QString("Checking to see if %1 == %2").arg(names_copy[ k ]).arg( names_copy[ k - 1 ] ) );
         if ( names_copy[ k ] == names_copy[ k - 1 ] )
           dupl += names_copy[ k ] + "\n";
       }
@@ -645,7 +645,8 @@ void QgsSpit::import()
       }
 
       query = "SET SEARCH_PATH TO ";
-      if ( tblShapefiles->item( i, ColDBSCHEMA )->text() != "public" )
+      if ( !tblShapefiles->item( i, ColDBSCHEMA )->text().isEmpty() &&
+           tblShapefiles->item( i, ColDBSCHEMA )->text() != "public")
         query += QgsPgUtil::quotedValue( tblShapefiles->item( i, ColDBSCHEMA )->text() ) + ",";
       query += QgsPgUtil::quotedValue( "public" );
       res = PQexec( conn, query.toUtf8() );
