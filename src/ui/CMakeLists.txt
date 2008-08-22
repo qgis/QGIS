@@ -1,48 +1,4 @@
-SET(QGIS_UIS
-  qgisappbase.ui
-  qgsabout.ui
-  qgsaddattrdialogbase.ui
-  qgsattributeactiondialogbase.ui
-  qgsattributedialogbase.ui
-  qgsattributetablebase.ui
-  qgsbookmarksbase.ui
-  qgscomposerbase.ui
-  qgscomposerlabelbase.ui
-  qgscomposermapbase.ui
-  qgscomposerpicturebase.ui
-  qgscomposerscalebarbase.ui
-  qgscomposervectorlegendbase.ui
-  qgscompositionbase.ui
-  qgscontinuouscolordialogbase.ui
-  qgscustomprojectiondialogbase.ui
-  qgsdbsourceselectbase.ui
-  qgsdelattrdialogbase.ui
-  qgsdetaileditemwidgetbase.ui
-  qgsgeomtypedialogbase.ui
-  qgsgraduatedsymboldialogbase.ui
-  qgshelpviewerbase.ui
-  qgsidentifyresultsbase.ui
-  qgslabeldialogbase.ui
-  qgsgenericprojectionselectorbase.ui
-  qgsludialogbase.ui
-  qgsmeasurebase.ui
-  qgsmessageviewer.ui
-  qgsnewconnectionbase.ui
-  qgsnewhttpconnectionbase.ui
-  qgsoptionsbase.ui
-  qgspastetransformationsbase.ui
-  qgspgquerybuilderbase.ui
-  qgspluginmanagerbase.ui
-  qgsprojectionselectorbase.ui
-  qgsprojectpropertiesbase.ui
-  qgsrasterlayerpropertiesbase.ui
-  qgsserversourceselectbase.ui
-  qgssinglesymboldialogbase.ui
-  qgssnappingdialogbase.ui
-  qgsuniquevaluedialogbase.ui
-  qgsvectorlayerpropertiesbase.ui
-  qgspythondialog.ui
-)
+FILE(GLOB QGIS_UIS "${CMAKE_CURRENT_SOURCE_DIR}/*.ui")
 
 QT4_WRAP_UI(QGIS_UIS_H ${QGIS_UIS})
 
