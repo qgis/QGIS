@@ -13,8 +13,7 @@ include /usr/share/dpatch/dpatch.make
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-
-CFLAGS = -Wall -g
+CMAKE_OPTS = -Wno-dev -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_SKIP_RPATH=TRUE -D BINDINGS_GLOBAL_INSTALL=TRUE -D PEDANTIC=TRUE
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -25,18 +24,17 @@ ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TESTS=TRUE
+endif
+
 debian/build/CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	uudecode -o $(CURDIR)/src/plugins/georeferencer/pencil.png $(CURDIR)/debian/pencil.uu
 	[ -d debian/build ] || mkdir debian/build
 	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
-	cd debian/build; cmake \
-	  -Wno-dev \
-		-D CMAKE_INSTALL_PREFIX=/usr \
-		-D CMAKE_SKIP_RPATH=TRUE \
-		-D BINDINGS_GLOBAL_INSTALL=TRUE \
-	        ../..
+	cd debian/build; cmake $(CMAKE_OPTS) ../..
 
 build: patch build-stamp
 
