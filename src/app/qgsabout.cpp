@@ -25,17 +25,17 @@
 #include <QTextStream>
 #include <QImageReader>
 #include <QSqlDatabase>
-#include <iostream>
 
 /* Uncomment this block to use preloaded images
 #include <map>
+#include "qgslogger.h"
 std::map<QString, QPixmap> mugs;
 */
 
 QgsAbout::QgsAbout()
-: QDialog(NULL, Qt::WindowSystemMenuHint)  // Modeless dialog with close button only
+    : QDialog( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 {
-  setupUi(this);
+  setupUi( this );
   init();
 }
 
@@ -48,35 +48,36 @@ void QgsAbout::init()
   setPluginInfo();
 
   // set the 60x60 icon pixmap
-  QPixmap icon(QgsApplication::iconsPath() + "qgis-icon-60x60.png");
-  qgisIcon->setPixmap(icon);
-  
+  QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
+  qgisIcon->setPixmap( icon );
+
   //read the authors file to populate the contributors list
   QStringList lines;
 
-  QFile file(QgsApplication::authorsFilePath());
+  QFile file( QgsApplication::authorsFilePath() );
 #ifdef QGISDEBUG
-  printf (("Reading authors file " + file.fileName() +
-      ".............................................\n").toLocal8Bit().constData());
+  printf(( "Reading authors file " + file.fileName() +
+           ".............................................\n" ).toLocal8Bit().constData() );
 #endif
-  if ( file.open( QIODevice::ReadOnly ) ) {
+  if ( file.open( QIODevice::ReadOnly ) )
+  {
     QTextStream stream( &file );
     // Always use UTF-8
-    stream.setCodec("UTF-8");
+    stream.setCodec( "UTF-8" );
     QString line;
-#ifdef QGISDEBUG 
-    int i = 1; 
-#endif 
+#ifdef QGISDEBUG
+    int i = 1;
+#endif
 
-    while ( !stream.atEnd() ) 
+    while ( !stream.atEnd() )
     {
       line = stream.readLine(); // line of text excluding '\n'
       //ignore the line if it starts with a hash....
-      if (line.left(1)=="#") continue;
-#ifdef QGISDEBUG 
+      if ( line.left( 1 ) == "#" ) continue;
+#ifdef QGISDEBUG
       printf( "Contributor: %3d: %s\n", i++, line.toLocal8Bit().constData() );
-#endif 
-      QStringList myTokens = line.split("\t", QString::SkipEmptyParts);
+#endif
+      QStringList myTokens = line.split( "\t", QString::SkipEmptyParts );
       //printf ("Added contributor name to listbox: %s ",myTokens[0]);
       lines += myTokens[0];
 
@@ -85,113 +86,112 @@ void QgsAbout::init()
       QString authorName = myTokens[0].replace(" ","_");
 
       QString myString =QString(appPath + "/images/developers/") + authorName + QString(".jpg");
-      printf ("Loading mug: %s\n", myString.toLocal8Bit().constData()); 
+      printf ("Loading mug: %s\n", myString.toLocal8Bit().constData());
       QPixmap *pixmap = new QPixmap(myString);
       mugs[myTokens[0]] = *pixmap;
       */
     }
     file.close();
     listBox1->clear();
-    listBox1->insertItems(0, lines);
+    listBox1->insertItems( 0, lines );
 
     // Load in the image for the first author
-    if (listBox1->count() > 0)
-      listBox1->setCurrentRow(0);
+    if ( listBox1->count() > 0 )
+      listBox1->setCurrentRow( 0 );
   }
 
   // read the SPONSORS file and populate the text widget
-    QFile sponsorFile(QgsApplication::sponsorsFilePath());
-  #ifdef QGISDEBUG
-    printf (("Reading sponsors file " + sponsorFile.fileName() +
-        ".............................................\n").toLocal8Bit().constData());
-  #endif
-    if ( sponsorFile.open( QIODevice::ReadOnly ) ) {
-      QString sponsorHTML = ""
-        + tr("<p>The following have sponsored QGIS by contributing "
-            "money to fund development and other project costs</p>")
-        + "<hr>"
-        "<table width='100%'>"
-        "<tr><th>" + tr("Name") + "</th>"
-        "<th>" + tr("Website") + "</th></tr>";
-      QString website;
-      QTextStream sponsorStream( &sponsorFile );
-      // Always use UTF-8
-      sponsorStream.setCodec("UTF-8");
-      QString sline;
-      while ( !sponsorStream.atEnd() ) 
+  QFile sponsorFile( QgsApplication::sponsorsFilePath() );
+#ifdef QGISDEBUG
+  printf(( "Reading sponsors file " + sponsorFile.fileName() +
+           ".............................................\n" ).toLocal8Bit().constData() );
+#endif
+  if ( sponsorFile.open( QIODevice::ReadOnly ) )
+  {
+    QString sponsorHTML = ""
+                          + tr( "<p>The following have sponsored QGIS by contributing "
+                                "money to fund development and other project costs</p>" )
+                          + "<hr>"
+                          "<table width='100%'>"
+                          "<tr><th>" + tr( "Name" ) + "</th>"
+                          "<th>" + tr( "Website" ) + "</th></tr>";
+    QString website;
+    QTextStream sponsorStream( &sponsorFile );
+    // Always use UTF-8
+    sponsorStream.setCodec( "UTF-8" );
+    QString sline;
+    while ( !sponsorStream.atEnd() )
+    {
+      sline = sponsorStream.readLine(); // line of text excluding '\n'
+      //ignore the line if it starts with a hash....
+      if ( sline.left( 1 ) == "#" ) continue;
+      QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
+      if ( myTokens.size() > 1 )
       {
-        sline = sponsorStream.readLine(); // line of text excluding '\n'
-        //ignore the line if it starts with a hash....
-        if (sline.left(1)=="#") continue;
-        QStringList myTokens = sline.split("|", QString::SkipEmptyParts);
-        if(myTokens.size() > 1)
-        {
-          website = myTokens[1];
-        }
-        else
-        { 
-          website = "&nbsp;";
-        }
-        sponsorHTML += "<tr>";
-        sponsorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
-        // close the row 
-        sponsorHTML += "</tr>";
+        website = myTokens[1];
       }
-      sponsorHTML += "</table>";
-
-      QString myStyle = QgsApplication::reportStyleSheet(); 
-      txtSponsors->clear();
-      txtSponsors->document()->setDefaultStyleSheet(myStyle);
-      txtSponsors->setHtml(sponsorHTML);
-      #ifdef QGISDEBUG
-       std::cout << "sponsorHTML:" << sponsorHTML.toAscii().constData() << std::endl;
-       std::cout << "txtSponsors:" << txtSponsors->toHtml().toAscii().constData() << std::endl;
-      #endif
+      else
+      {
+        website = "&nbsp;";
+      }
+      sponsorHTML += "<tr>";
+      sponsorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
+      // close the row
+      sponsorHTML += "</tr>";
     }
+    sponsorHTML += "</table>";
+
+    QString myStyle = QgsApplication::reportStyleSheet();
+    txtSponsors->clear();
+    txtSponsors->document()->setDefaultStyleSheet( myStyle );
+    txtSponsors->setHtml( sponsorHTML );
+    QgsDebugMsg( QString( "sponsorHTML:%1" ).arg( sponsorHTML.toAscii().constData() ) );
+    QgsDebugMsg( QString( "txtSponsors:%1" ).arg( txtSponsors->toHtml().toAscii().constData() ) );
+  }
 }
 
-void QgsAbout::setVersion(QString v)
+void QgsAbout::setVersion( QString v )
 {
-  lblVersion->setText(v);
+  lblVersion->setText( v );
 }
 
-void QgsAbout::setWhatsNew(QString txt)
+void QgsAbout::setWhatsNew( QString txt )
 {
-  QString myStyle = QgsApplication::reportStyleSheet(); 
+  QString myStyle = QgsApplication::reportStyleSheet();
   txtWhatsNew->clear();
-  txtWhatsNew->document()->setDefaultStyleSheet(myStyle);
-  txtWhatsNew->setHtml(txt);
+  txtWhatsNew->document()->setDefaultStyleSheet( myStyle );
+  txtWhatsNew->setHtml( txt );
 }
 
 void QgsAbout::setPluginInfo()
 {
   QString myString;
   //provide info about the plugins available
-  myString += "<b>" + tr("Available QGIS Data Provider Plugins") + "</b><br>";
-  myString += QgsProviderRegistry::instance()->pluginList(true);
+  myString += "<b>" + tr( "Available QGIS Data Provider Plugins" ) + "</b><br>";
+  myString += QgsProviderRegistry::instance()->pluginList( true );
   //qt database plugins
-  myString += "<b>" + tr("Available Qt Database Plugins") + "</b><br>";
+  myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
   myString += "<ol>\n<li>\n";
-  QStringList myDbDriverList = QSqlDatabase::drivers ();
-  myString += myDbDriverList.join("</li>\n<li>");
+  QStringList myDbDriverList = QSqlDatabase::drivers();
+  myString += myDbDriverList.join( "</li>\n<li>" );
   myString += "</li>\n</ol>\n";
   //qt image plugins
-  myString += "<b>" + tr("Available Qt Image Plugins") + "</b><br>";
+  myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
   myString += "<ol>\n<li>\n";
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
   QList<QByteArray>::const_iterator myIterator = myImageFormats.begin();
-  while( myIterator != myImageFormats.end() )
+  while ( myIterator != myImageFormats.end() )
   {
-    QString myFormat = (*myIterator).data();
+    QString myFormat = ( *myIterator ).data();
     myString += myFormat + "</li>\n<li>";
     ++myIterator;
   }
   myString += "</li>\n</ol>\n";
 
-  QString myStyle = QgsApplication::reportStyleSheet(); 
+  QString myStyle = QgsApplication::reportStyleSheet();
   txtBrowserPlugins->clear();
-  txtBrowserPlugins->document()->setDefaultStyleSheet(myStyle);
-  txtBrowserPlugins->setText(myString);
+  txtBrowserPlugins->document()->setDefaultStyleSheet( myStyle );
+  txtBrowserPlugins->setText( myString );
 }
 
 void QgsAbout::on_buttonCancel_clicked()
@@ -199,23 +199,23 @@ void QgsAbout::on_buttonCancel_clicked()
   reject();
 }
 
-void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
+void QgsAbout::on_listBox1_currentItemChanged( QListWidgetItem *theItem )
 {
   //replace spaces in author name
-#ifdef QGISDEBUG 
-  printf ("Loading mug: "); 
-#endif 
+#ifdef QGISDEBUG
+  printf( "Loading mug: " );
+#endif
   QString myString = listBox1->currentItem()->text();
-  myString = myString.replace(" ","_");
-  myString = QgsAbout::fileSystemSafe(myString);
-#ifdef QGISDEBUG 
-  printf ("Loading mug: %s", myString.toLocal8Bit().constData()); 
-#endif 
-  myString = QgsApplication::developerPath() + myString + QString(".jpg");
-#ifdef QGISDEBUG 
-  printf ("Loading mug: %s\n", myString.toLocal8Bit().constData()); 
-#endif 
-  
+  myString = myString.replace( " ", "_" );
+  myString = QgsAbout::fileSystemSafe( myString );
+#ifdef QGISDEBUG
+  printf( "Loading mug: %s", myString.toLocal8Bit().constData() );
+#endif
+  myString = QgsApplication::developerPath() + myString + QString( ".jpg" );
+#ifdef QGISDEBUG
+  printf( "Loading mug: %s\n", myString.toLocal8Bit().constData() );
+#endif
+
   /* Uncomment this block to use preloaded images
   pixAuthorMug->setPixmap(mugs[myString]);
   */
@@ -225,18 +225,18 @@ void QgsAbout::on_btnQgisUser_clicked()
 {
   // find a browser
   QString url = "http://lists.osgeo.org/mailman/listinfo/qgis-user";
-  openUrl(url);
+  openUrl( url );
 }
 
 void QgsAbout::on_btnQgisHome_clicked()
 {
-  openUrl("http://qgis.org");
+  openUrl( "http://qgis.org" );
 }
 
-void QgsAbout::openUrl(QString url)
+void QgsAbout::openUrl( QString url )
 {
   //use the users default browser
-  QDesktopServices::openUrl(url);
+  QDesktopServices::openUrl( url );
 }
 
 /*
@@ -245,26 +245,26 @@ void QgsAbout::openUrl(QString url)
  * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
  * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
  */
-QString QgsAbout::fileSystemSafe(QString fileName)
+QString QgsAbout::fileSystemSafe( QString fileName )
 {
   QString result;
   QByteArray utf8 = fileName.toUtf8();
 
-  for (int i = 0; i < utf8.size(); i++)
+  for ( int i = 0; i < utf8.size(); i++ )
   {
-     uchar c = utf8[i];
+    uchar c = utf8[i];
 
-     if (c > 0x7f)
-     {
-       result = result + QString("%1").arg(c, 2, 16, QChar('0'));
-     }
-     else
-     {
-       result = result + QString(c);
-     }
-   }
-  result.replace(QRegExp("[^a-z0-9A-Z]"), "_");
-  QgsDebugMsg(result);
+    if ( c > 0x7f )
+    {
+      result = result + QString( "%1" ).arg( c, 2, 16, QChar( '0' ) );
+    }
+    else
+    {
+      result = result + QString( c );
+    }
+  }
+  result.replace( QRegExp( "[^a-z0-9A-Z]" ), "_" );
+  QgsDebugMsg( result );
 
   return result;
 }

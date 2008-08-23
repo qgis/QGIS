@@ -21,27 +21,27 @@
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
 
-/**Base class for vertex manipulation tools. 
- Inherited by QgsMapToolMoveVertex, QgsMapToolAddVertex, 
+/**Base class for vertex manipulation tools.
+ Inherited by QgsMapToolMoveVertex, QgsMapToolAddVertex,
 QgsMapToolDeleteVertex*/
 class QgsMapToolVertexEdit: public QgsMapToolEdit
 {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
+  public:
 
-  QgsMapToolVertexEdit(QgsMapCanvas* canvas);
-  
-  virtual ~QgsMapToolVertexEdit();
+    QgsMapToolVertexEdit( QgsMapCanvas* canvas );
 
- protected:
+    virtual ~QgsMapToolVertexEdit();
 
-  /**Snapping results that are collected during the mouse press event 
-   (search for vertices/segments to manipulate)*/
-  QList<QgsSnappingResult> mRecentSnappingResults;
+  protected:
 
-  //! Displays a warning about the snap tolerance settings
-  void displaySnapToleranceWarning();
+    /**Snapping results that are collected during the mouse press event
+     (search for vertices/segments to manipulate)*/
+    QList<QgsSnappingResult> mRecentSnappingResults;
+
+    //! Displays a warning about the snap tolerance settings
+    void displaySnapToleranceWarning();
 };
 
 #endif

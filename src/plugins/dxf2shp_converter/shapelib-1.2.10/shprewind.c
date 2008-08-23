@@ -14,7 +14,7 @@
  * option is discussed in more detail in shapelib.html.
  *
  * --
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
@@ -48,62 +48,62 @@
 int main( int argc, char ** argv )
 
 {
-    SHPHandle	hSHP, hSHPOut;
-    int		nShapeType, nEntities, i, nInvalidCount=0;
-    double 	adfMinBound[4], adfMaxBound[4];
+  SHPHandle hSHP, hSHPOut;
+  int  nShapeType, nEntities, i, nInvalidCount = 0;
+  double  adfMinBound[4], adfMaxBound[4];
 
-/* -------------------------------------------------------------------- */
-/*      Display a usage message.                                        */
-/* -------------------------------------------------------------------- */
-    if( argc != 3 )
-    {
-	printf( "shprewind in_shp_file out_shp_file\n" );
-	exit( 1 );
-    }
+  /* -------------------------------------------------------------------- */
+  /*      Display a usage message.                                        */
+  /* -------------------------------------------------------------------- */
+  if ( argc != 3 )
+  {
+    printf( "shprewind in_shp_file out_shp_file\n" );
+    exit( 1 );
+  }
 
-/* -------------------------------------------------------------------- */
-/*      Open the passed shapefile.                                      */
-/* -------------------------------------------------------------------- */
-    hSHP = SHPOpen( argv[1], "rb" );
+  /* -------------------------------------------------------------------- */
+  /*      Open the passed shapefile.                                      */
+  /* -------------------------------------------------------------------- */
+  hSHP = SHPOpen( argv[1], "rb" );
 
-    if( hSHP == NULL )
-    {
-	printf( "Unable to open:%s\n", argv[1] );
-	exit( 1 );
-    }
+  if ( hSHP == NULL )
+  {
+    printf( "Unable to open:%s\n", argv[1] );
+    exit( 1 );
+  }
 
-    SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
-    
-/* -------------------------------------------------------------------- */
-/*      Create output shapefile.                                        */
-/* -------------------------------------------------------------------- */
-    hSHPOut = SHPCreate( argv[2], nShapeType );
+  SHPGetInfo( hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound );
 
-    if( hSHPOut == NULL )
-    {
-	printf( "Unable to create:%s\n", argv[2] );
-	exit( 1 );
-    }
+  /* -------------------------------------------------------------------- */
+  /*      Create output shapefile.                                        */
+  /* -------------------------------------------------------------------- */
+  hSHPOut = SHPCreate( argv[2], nShapeType );
 
-/* -------------------------------------------------------------------- */
-/*	Skim over the list of shapes, printing all the vertices.	*/
-/* -------------------------------------------------------------------- */
-    for( i = 0; i < nEntities; i++ )
-    {
-	int		j;
-        SHPObject	*psShape;
+  if ( hSHPOut == NULL )
+  {
+    printf( "Unable to create:%s\n", argv[2] );
+    exit( 1 );
+  }
 
-	psShape = SHPReadObject( hSHP, i );
-        if( SHPRewindObject( hSHP, psShape ) )
-            nInvalidCount++;
-        SHPWriteObject( hSHPOut, -1, psShape );
-        SHPDestroyObject( psShape );
-    }
+  /* -------------------------------------------------------------------- */
+  /* Skim over the list of shapes, printing all the vertices. */
+  /* -------------------------------------------------------------------- */
+  for ( i = 0; i < nEntities; i++ )
+  {
+    int  j;
+    SHPObject *psShape;
 
-    SHPClose( hSHP );
-    SHPClose( hSHPOut );
+    psShape = SHPReadObject( hSHP, i );
+    if ( SHPRewindObject( hSHP, psShape ) )
+      nInvalidCount++;
+    SHPWriteObject( hSHPOut, -1, psShape );
+    SHPDestroyObject( psShape );
+  }
 
-    printf( "%d objects rewound.\n", nInvalidCount );
+  SHPClose( hSHP );
+  SHPClose( hSHPOut );
 
-    exit( 0 );
+  printf( "%d objects rewound.\n", nInvalidCount );
+
+  exit( 0 );
 }

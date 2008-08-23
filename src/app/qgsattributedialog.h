@@ -31,30 +31,30 @@ class QgsVectorLayer;
 
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-  QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeature);
-  ~QgsAttributeDialog();
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature * thepFeature );
+    ~QgsAttributeDialog();
 
-  /** Overloaded accept method which will write the feature field 
-   * values, then delegate to QDialog::accept()
-   */
-  void accept();
-  /** Saves the size and position for the next time
-   *  this dialog box was used.
-   */
-  void saveGeometry();
-  /** Restores the size and position from the last time
-   *  this dialog box was used.
-   */
-  void restoreGeometry();
+    /** Overloaded accept method which will write the feature field
+     * values, then delegate to QDialog::accept()
+     */
+    void accept();
+    /** Saves the size and position for the next time
+     *  this dialog box was used.
+     */
+    void saveGeometry();
+    /** Restores the size and position from the last time
+     *  this dialog box was used.
+     */
+    void restoreGeometry();
 
   private:
-  QString mSettingsPath;
-  QList<QWidget *> mpWidgets;
-  QgsVectorLayer *mLayer;
-  QgsFeature *  mpFeature;
+    QString mSettingsPath;
+    QList<QWidget *> mpWidgets;
+    QgsVectorLayer *mLayer;
+    QgsFeature *  mpFeature;
 };
 
 #endif

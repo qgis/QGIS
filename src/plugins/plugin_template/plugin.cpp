@@ -1,5 +1,5 @@
 /***************************************************************************
-  [pluginlcasename].cpp 
+  [pluginlcasename].cpp
   [plugindescription]
   -------------------
          begin                : [PluginDate]
@@ -35,9 +35,9 @@
 
 
 static const char * const sIdent = "$Id$";
-static const QString sName = QObject::tr("[menuitemname]");
-static const QString sDescription = QObject::tr("[plugindescription]");
-static const QString sPluginVersion = QObject::tr("Version 0.1");
+static const QString sName = QObject::tr( "[menuitemname]" );
+static const QString sDescription = QObject::tr( "[plugindescription]" );
+static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -47,13 +47,13 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 //////////////////////////////////////////////////////////////////////
 
 /**
- * Constructor for the plugin. The plugin is passed a pointer 
+ * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-[pluginname]::[pluginname](QgisInterface * theQgisInterface):
-                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType),
-                 mQGisIface(theQgisInterface)
+[pluginname]::[pluginname]( QgisInterface * theQgisInterface ):
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    mQGisIface( theQgisInterface )
 {
 }
 
@@ -63,21 +63,21 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 }
 
 /*
- * Initialize the GUI interface for the plugin - this is only called once when the plugin is 
+ * Initialize the GUI interface for the plugin - this is only called once when the plugin is
  * added to the plugin registry in the QGIS application.
  */
 void [pluginname]::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/[pluginlcasename]/[pluginlcasename].png"),tr("[menuitemname]"), this);
+  mQActionPointer = new QAction( QIcon( ":/[pluginlcasename]/[pluginlcasename].png" ), tr( "[menuitemname]" ), this );
   // Set the what's this text
-  mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
+  mQActionPointer->setWhatsThis( tr( "Replace this with a short description of the what the plugin does" ) );
   // Connect the action to the run
-  connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon(mQActionPointer);
-  mQGisIface->addPluginMenu(tr("&[menuname]"), mQActionPointer);
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginMenu( tr( "&[menuname]" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -87,14 +87,14 @@ void [pluginname]::help()
 }
 
 // Slot called when the menu item is triggered
-// If you created more menu items / toolbar buttons in initiGui, you should 
+// If you created more menu items / toolbar buttons in initiGui, you should
 // create a separate handler for each action - this single run() method will
 // not be enough
 void [pluginname]::run()
 {
-  [pluginname]Gui *myPluginGui=new [pluginname]Gui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
-  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
-  
+  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
+  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
+
   myPluginGui->show();
 }
 
@@ -102,8 +102,8 @@ void [pluginname]::run()
 void [pluginname]::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu("&[menuname]",mQActionPointer);
-  mQGisIface->removeToolBarIcon(mQActionPointer);
+  mQGisIface->removePluginMenu( "&[menuname]", mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
@@ -119,15 +119,15 @@ void [pluginname]::unload()
 //////////////////////////////////////////////////////////////////////////
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-  return new [pluginname](theQgisInterfacePointer);
+  return new [pluginname]( theQgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -155,7 +155,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
   delete thePluginPointer;
 }

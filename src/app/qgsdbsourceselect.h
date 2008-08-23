@@ -45,16 +45,16 @@ class QgisApp;
  * \brief Dialog to create connections and add tables from PostgresQL.
  *
  * This dialog allows the user to define and save connection information
- * for PostGIS enabled PostgreSQL databases. The user can then connect and add 
+ * for PostGIS enabled PostgreSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase 
+class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 {
- Q_OBJECT
- public:
+    Q_OBJECT
+  public:
 
     //! Constructor
-    QgsDbSourceSelect(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsDbSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsDbSourceSelect();
     //! Opens the create connection dialog to build a new connection
@@ -75,59 +75,60 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void dbChanged();
     // Utility function to construct the query for finding out the
     // geometry type of a column
-    static QString makeGeomQuery(QString schema, QString table, QString column);
+    static QString makeGeomQuery( QString schema, QString table, QString column );
 
- public slots:
-    /*! Connects to the database using the stored connection parameters. 
+  public slots:
+    /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.
     */
-      void on_btnConnect_clicked();
-      void on_btnAdd_clicked();
-      void on_btnNew_clicked();
-      void on_btnEdit_clicked();
-      void on_btnDelete_clicked();
-      void on_mSearchOptionsButton_clicked();
-      void on_mSearchTableEdit_textChanged(const QString & text);
-      void on_mSearchColumnComboBox_currentIndexChanged(const QString & text);
-      void on_mSearchModeComboBox_currentIndexChanged(const QString & text);
-      void setSql(const QModelIndex& index);
-      void on_btnHelp_clicked();
-      void on_cmbConnections_activated(int);
-      void setLayerType(QString schema, QString table, QString column,
-                        QString type);
-      //!Sets a new regular expression to the model
-      void setSearchExpression(const QString& regexp);
+    void on_btnConnect_clicked();
+    void on_btnAdd_clicked();
+    void on_btnNew_clicked();
+    void on_btnEdit_clicked();
+    void on_btnDelete_clicked();
+    void on_mSearchOptionsButton_clicked();
+    void on_mSearchTableEdit_textChanged( const QString & text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void setSql( const QModelIndex& index );
+    void on_btnHelp_clicked();
+    void on_cmbConnections_activated( int );
+    void setLayerType( QString schema, QString table, QString column,
+                       QString type );
+    //!Sets a new regular expression to the model
+    void setSearchExpression( const QString& regexp );
 
- private:
-    enum columns {
-	dbssType=0,
-	dbssDetail,
-	dbssSql,
-	dbssColumns
+  private:
+    enum columns
+    {
+      dbssType = 0,
+      dbssDetail,
+      dbssSql,
+      dbssColumns
     };
 
     typedef std::pair<QString, QString> geomPair;
     typedef std::list<geomPair > geomCol;
 
-    bool getGeometryColumnInfo(PGconn *pd, 
-			       geomCol& details, 
-                               bool searchGeometryColumnsOnly,
-                               bool searchPublicOnly);
+    bool getGeometryColumnInfo( PGconn *pd,
+                                geomCol& details,
+                                bool searchGeometryColumnsOnly,
+                                bool searchPublicOnly );
 
     /**Inserts information about the spatial tables into mTableModel*/
-    bool getTableInfo(PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly);
+    bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly );
 
     // queue another query for the thread
-    void addSearchGeometryColumn(const QString &schema, const QString &table, const QString &column);
+    void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );
 
     // Set the position of the database connection list to the last
-    // used one. 
+    // used one.
     void setConnectionListPosition();
     // Show the context help for the dialog
     void showHelp();
     // Combine the schema, table and column data into a single string
     // useful for display to the user
-    QString fullDescription(QString schema, QString table, QString column, QString type);
+    QString fullDescription( QString schema, QString table, QString column, QString type );
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
@@ -146,38 +147,38 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
 // Perhaps this class should be in its own file??
 //
-// A class that determines the geometry type of a given database 
+// A class that determines the geometry type of a given database
 // schema.table.column, with the option of doing so in a separate
 // thread.
 
 class QgsGeomColumnTypeThread : public QThread
 {
-  Q_OBJECT
- public:
+    Q_OBJECT
+  public:
 
-  void setConnInfo(QString s);
-  void addGeometryColumn(QString schema, QString table, QString column);
+    void setConnInfo( QString s );
+    void addGeometryColumn( QString schema, QString table, QString column );
 
-  // These functions get the layer types and pass that information out
-  // by emitting the setLayerType() signal. The getLayerTypes()
-  // function does the actual work, but use the run() function if you
-  // want the work to be done as a separate thread from the calling
-  // process. 
-  virtual void run() { getLayerTypes(); }
-  void getLayerTypes();
+    // These functions get the layer types and pass that information out
+    // by emitting the setLayerType() signal. The getLayerTypes()
+    // function does the actual work, but use the run() function if you
+    // want the work to be done as a separate thread from the calling
+    // process.
+    virtual void run() { getLayerTypes(); }
+    void getLayerTypes();
 
- signals:
-  void setLayerType(QString schema, QString table, QString column,
-                    QString type);
+  signals:
+    void setLayerType( QString schema, QString table, QString column,
+                       QString type );
 
- public slots:
-  void stop();
+  public slots:
+    void stop();
 
 
- private:
-  QString mConnInfo;
-  bool mStopped;
-  std::vector<QString> schemas, tables, columns;
+  private:
+    QString mConnInfo;
+    bool mStopped;
+    std::vector<QString> schemas, tables, columns;
 };
 
 #endif // QGSDBSOURCESELECT_H

@@ -27,50 +27,50 @@ class QgsDetailedItemData;
 class QFontMetrics;
 class QFont;
 
-class GUI_EXPORT QgsDetailedItemDelegate : 
-     public QAbstractItemDelegate 
+class GUI_EXPORT QgsDetailedItemDelegate :
+      public QAbstractItemDelegate
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsDetailedItemDelegate(QObject * parent = 0);
+    QgsDetailedItemDelegate( QObject * parent = 0 );
     ~QgsDetailedItemDelegate();
     /** reimplement for parent class */
-    void paint(QPainter * thePainter, 
-               const QStyleOptionViewItem & theOption,
-               const QModelIndex & theIndex) const;
+    void paint( QPainter * thePainter,
+                const QStyleOptionViewItem & theOption,
+                const QModelIndex & theIndex ) const;
     /** reimplement for parent class */
-    QSize sizeHint( const QStyleOptionViewItem & theOption, 
-               const QModelIndex & theIndex ) const;
+    QSize sizeHint( const QStyleOptionViewItem & theOption,
+                    const QModelIndex & theIndex ) const;
 
-	void setVerticalSpacing( int theValue );
-	
-	int verticalSpacing() const;
+    void setVerticalSpacing( int theValue );
 
-	void setHorizontalSpacing( int theValue );
-	
-	int horizontalSpacing() const;
-	
-	
-    
+    int verticalSpacing() const;
+
+    void setHorizontalSpacing( int theValue );
+
+    int horizontalSpacing() const;
+
+
+
 
   private:
-    QFont detailFont(const QStyleOptionViewItem &theOption) const;
-    QFont titleFont(const QStyleOptionViewItem &theOption) const;
-    void drawHighlight(const QStyleOptionViewItem &theOption,
-        QPainter * thepPainter,
-        int theHeight) const;
-    
-    QStringList wordWrap(QString theString, 
-                         QFontMetrics theMetrics, 
-                         int theWidth) const;
-    void paintManually(QPainter * thePainter, 
-                       const QStyleOptionViewItem & theOption,
-                       const QgsDetailedItemData theData) const;
-    void paintAsWidget(QPainter * thePainter, 
-                       const QStyleOptionViewItem & theOption,
-                       const QgsDetailedItemData theData) const;
-    int height(const QStyleOptionViewItem & theOption,
-               const QgsDetailedItemData theData) const;
+    QFont detailFont( const QStyleOptionViewItem &theOption ) const;
+    QFont titleFont( const QStyleOptionViewItem &theOption ) const;
+    void drawHighlight( const QStyleOptionViewItem &theOption,
+                        QPainter * thepPainter,
+                        int theHeight ) const;
+
+    QStringList wordWrap( QString theString,
+                          QFontMetrics theMetrics,
+                          int theWidth ) const;
+    void paintManually( QPainter * thePainter,
+                        const QStyleOptionViewItem & theOption,
+                        const QgsDetailedItemData theData ) const;
+    void paintAsWidget( QPainter * thePainter,
+                        const QStyleOptionViewItem & theOption,
+                        const QgsDetailedItemData theData ) const;
+    int height( const QStyleOptionViewItem & theOption,
+                const QgsDetailedItemData theData ) const;
     QgsDetailedItemWidget * mpWidget;
     QCheckBox * mpCheckBox;
     int mVerticalSpacing;

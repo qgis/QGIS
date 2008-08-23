@@ -34,55 +34,55 @@ class QgisInterface;
  */
 class dxf2shpConverter: public QObject, public QgisPlugin
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
 
-  //////////////////////////////////////////////////////////////////////
-  //
-  //                MANDATORY PLUGIN METHODS FOLLOW
-  //
-  //////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    //
+    //                MANDATORY PLUGIN METHODS FOLLOW
+    //
+    //////////////////////////////////////////////////////////////////////
 
-  /** 
-   * Constructor for a plugin. The QgisInterface pointer is passed by 
-   * QGIS when it attempts to instantiate the plugin.
-   * @param theInterface Pointer to the QgisInterface object. 
-   */
-  dxf2shpConverter(QgisInterface *theInterface);
-  //! Destructor
-  virtual ~dxf2shpConverter();
+    /**
+     * Constructor for a plugin. The QgisInterface pointer is passed by
+     * QGIS when it attempts to instantiate the plugin.
+     * @param theInterface Pointer to the QgisInterface object.
+     */
+    dxf2shpConverter( QgisInterface *theInterface );
+    //! Destructor
+    virtual ~dxf2shpConverter();
 
-  public slots: 
+  public slots:
     //! init the gui
     virtual void initGui();
-  //! Show the dialog box
-  void run();
-  //! unload the plugin
-  void unload();
-  //! show the help document
-  void help();
+    //! Show the dialog box
+    void run();
+    //! unload the plugin
+    void unload();
+    //! show the help document
+    void help();
 
-  void addMyLayer(QString,QString);
+    void addMyLayer( QString, QString );
 
   private:
 
-  ////////////////////////////////////////////////////////////////////
-  //
-  // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
-  //
-  ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    //
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    //
+    ////////////////////////////////////////////////////////////////////
 
-  int mPluginType;
-  //! Pointer to the QGIS interface object
-  QgisInterface *mQGisIface;
-  //!pointer to the qaction for this plugin
-  QAction *mQActionPointer;
-  ////////////////////////////////////////////////////////////////////
-  //
-  // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-  //
-  ////////////////////////////////////////////////////////////////////
-  QString mQString;
+    int mPluginType;
+    //! Pointer to the QGIS interface object
+    QgisInterface *mQGisIface;
+    //!pointer to the qaction for this plugin
+    QAction *mQActionPointer;
+    ////////////////////////////////////////////////////////////////////
+    //
+    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
+    //
+    ////////////////////////////////////////////////////////////////////
+    QString mQString;
 };
 
 #endif //dxf2shpConverter_H

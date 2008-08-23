@@ -18,31 +18,31 @@
 
 double Vector3D::getLength() const
 {
-  return sqrt(getX()*getX()+getY()*getY()+getZ()*getZ());
+  return sqrt( getX()*getX() + getY()*getY() + getZ()*getZ() );
 }
 
 void Vector3D::standardise()
 {
-  double length=getLength();
-  setX(getX()/length);
-  setY(getY()/length);
-  setZ(getZ()/length);
+  double length = getLength();
+  setX( getX() / length );
+  setY( getY() / length );
+  setZ( getZ() / length );
 }
 
-Vector3D& Vector3D::operator=(const Vector3D& v)
+Vector3D& Vector3D::operator=( const Vector3D & v )
 {
-  mX=v.mX;
-  mY=v.mY;
-  mZ=v.mZ;
-  return (*this);
+  mX = v.mX;
+  mY = v.mY;
+  mZ = v.mZ;
+  return ( *this );
 }
 
-bool Vector3D::operator==(const Vector3D& v)
+bool Vector3D::operator==( const Vector3D& v )
 {
-  return (mX==v.getX()&&mY==v.getY()&&mZ==v.getZ());
+  return ( mX == v.getX() && mY == v.getY() && mZ == v.getZ() );
 }
 
-bool Vector3D::operator!=(const Vector3D& v)
+bool Vector3D::operator!=( const Vector3D& v )
 {
-  return (!((*this)==v));
+  return ( !(( *this ) == v ) );
 }

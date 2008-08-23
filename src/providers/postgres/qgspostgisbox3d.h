@@ -29,42 +29,42 @@
    \author  Brendan Morley
    \date    March 2005
 
-   
+
    This object is designed to represent and transform the PostGIS "box3d"
    data type.
-   
+
    \note    Only 2 dimensions are handled at this time.
-     
- */ 
+
+ */
 
 class QgsPostGisBox3d : public QgsRect
 {
 
-public:
+  public:
 
-  /*!  Constructor from a string
-       \param   box3d  The box3d formed as a PostGIS SQL string,
-                       formed by functions such as PQgetvalue
-   */
-  
-  QgsPostGisBox3d( std::string box3d );
+    /*!  Constructor from a string
+         \param   box3d  The box3d formed as a PostGIS SQL string,
+                         formed by functions such as PQgetvalue
+     */
 
-  
-  ~QgsPostGisBox3d();
-  
-  
-  /*!  Returns this object as a PostGIS SQL-compatible QString
-   */
+    QgsPostGisBox3d( std::string box3d );
 
-  
-  QString toStringAsBox3d();
-  
-  
-protected:
-  
-  double zmin;
-  double zmax;
-    
+
+    ~QgsPostGisBox3d();
+
+
+    /*!  Returns this object as a PostGIS SQL-compatible QString
+     */
+
+
+    QString toStringAsBox3d();
+
+
+  protected:
+
+    double zmin;
+    double zmax;
+
 };
 
 

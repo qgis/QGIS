@@ -25,7 +25,7 @@
  *
  * All QGis plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
- * 
+ *
  * In addition, a plugin must implement the classFactory and unload
  * functions. Note that these functions must be declared as extern "C" in
  * order to be resolved properly and prevent C++ name mangling.
@@ -41,7 +41,7 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/*! \class QgisPlugin 
+/*! \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
  *
  */
@@ -69,15 +69,15 @@ class QgisPlugin
     };
 
 
-    QgisPlugin ( QString const & name = "", 
-        QString const & description = "",
-        QString const & version = "",
-        PLUGINTYPE const & type = MAPLAYER )
-      : mName(name), 
-      mDescription(description),
-      mVersion(version),
-      mType(type)
-      {}
+    QgisPlugin( QString const & name = "",
+                QString const & description = "",
+                QString const & version = "",
+                PLUGINTYPE const & type = MAPLAYER )
+        : mName( name ),
+        mDescription( description ),
+        mVersion( version ),
+        mType( type )
+    {}
 
     virtual ~QgisPlugin()
     {}
@@ -88,7 +88,7 @@ class QgisPlugin
       return mName;
     }
 
-    QString       & name() 
+    QString       & name()
     {
       return mName;
     }
@@ -100,20 +100,20 @@ class QgisPlugin
     }
 
     //! Version of the plugin
-    QString & version() 
+    QString & version()
     {
       return mVersion;
     }
 
     //! A brief description of the plugin
     QString const & description() const
-    { 
+    {
       return mDescription;
     }
 
     //! A brief description of the plugin
     QString       & description()
-    { 
+    {
       return mDescription;
     }
 
@@ -125,7 +125,7 @@ class QgisPlugin
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE       & type() 
+    QgisPlugin::PLUGINTYPE       & type()
     {
       return mType;
     }
@@ -149,7 +149,7 @@ class QgisPlugin
 
     /// UI or MAPLAYER plug-in
     /**
-      @todo Really, might be indicative that this needs to split into 
+      @todo Really, might be indicative that this needs to split into
       maplayer vs. ui plug-in vs. other kind of plug-in
       */
     PLUGINTYPE mType;
@@ -160,10 +160,10 @@ class QgisPlugin
 // Typedefs used by qgis main app
 
 //! Typedef for the function that returns a generic pointer to a plugin object
-typedef QgisPlugin *create_t(QgisInterface *);
+typedef QgisPlugin *create_t( QgisInterface * );
 
 //! Typedef for the function to unload a plugin and free its resources
-typedef void unload_t(QgisPlugin *);
+typedef void unload_t( QgisPlugin * );
 
 //! Typedef for getting the name of the plugin without instantiating it
 typedef QString name_t();

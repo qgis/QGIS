@@ -10,7 +10,7 @@ back to QgsVectorLayer.
     copyright            : (C) 2004 by Gavin Macaulay
     email                : gavin at macaulay dot co dot nz
  ***************************************************************************/
- 
+
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -32,41 +32,41 @@ class QgsAttributeAction;
 
 class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
-  Q_OBJECT
-  
- public:
-  QgsAttributeActionDialog(QgsAttributeAction* actions, 
-			   const QgsFieldMap& fields,
-			   QWidget* parent = 0);
+    Q_OBJECT
 
-  ~QgsAttributeActionDialog() {};
+  public:
+    QgsAttributeActionDialog( QgsAttributeAction* actions,
+                              const QgsFieldMap& fields,
+                              QWidget* parent = 0 );
 
-  void init();
+    ~QgsAttributeActionDialog() {};
 
- public slots:
-  void moveUp();
-  void moveDown();
-  void browse();
-  void remove();
-  void insert();
-  void insertField();
-  void apply();
-  void update();
-  void itemSelectionChanged();
+    void init();
 
- private:
+  public slots:
+    void moveUp();
+    void moveDown();
+    void browse();
+    void remove();
+    void insert();
+    void insertField();
+    void apply();
+    void update();
+    void itemSelectionChanged();
 
-  void insertRow(int row, const QString &name, const QString &action, bool capture);
-  void swapRows(int row1, int row2);
+  private:
 
-  void insert(int pos);
+    void insertRow( int row, const QString &name, const QString &action, bool capture );
+    void swapRows( int row1, int row2 );
 
-  void rowSelected(int row);
+    void insert( int pos );
 
-  QString uniqueName(QString name);
+    void rowSelected( int row );
 
-  // Pointer to the QgsAttributeAction in the class that created us.
-  QgsAttributeAction* mActions;
+    QString uniqueName( QString name );
+
+    // Pointer to the QgsAttributeAction in the class that created us.
+    QgsAttributeAction* mActions;
 };
 
 #endif

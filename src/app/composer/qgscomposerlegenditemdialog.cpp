@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposerlegenditemdialog.cpp 
+                         qgscomposerlegenditemdialog.cpp
                          -------------------------------
     begin                : July 2008
     copyright            : (C) 2008 by Marco Hugentobler
@@ -18,17 +18,17 @@
 #include "qgscomposerlegenditemdialog.h"
 #include <QStandardItem>
 
-QgsComposerLegendItemDialog::QgsComposerLegendItemDialog(const QStandardItem* item, QWidget* parent): QDialog(parent)
+QgsComposerLegendItemDialog::QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent ): QDialog( parent )
 {
-  setupUi(this);
+  setupUi( this );
 
-  if(item)
-    {
-      mItemTextLineEdit->setText(item->text());
-    }
+  if ( item )
+  {
+    mItemTextLineEdit->setText( item->text() );
+  }
 }
 
-QgsComposerLegendItemDialog::QgsComposerLegendItemDialog(): QDialog(0)
+QgsComposerLegendItemDialog::QgsComposerLegendItemDialog(): QDialog( 0 )
 {
 
 }

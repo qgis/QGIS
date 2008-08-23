@@ -27,32 +27,32 @@
    \author  Brendan Morley
    \date    March 2005
 
-   
+
    This custom QEvent is designed to be fired when the full item count of a layer has been calculated.
    It was initially included in QGIS to help the QgsPostgresProvider provide the asynchronous
    calculation of PostgreSQL layer counts.
-   
+
    Events are used instead of Qt signals/slots as events can be received asynchronously,
    which makes for better mutlithreading behaviour and less opportunity for programmer mishap.
-  
- */ 
+
+ */
 
 // TODO: Add the pg table this is a count OF.
 
 class CORE_EXPORT QgsProviderCountCalcEvent : public QEvent
 {
 
-public:
+  public:
 
-  QgsProviderCountCalcEvent( long numberFeatures );
+    QgsProviderCountCalcEvent( long numberFeatures );
 
-  long numberFeatures() const;
+    long numberFeatures() const;
 
-  
-private:
 
-  long n;
-    
+  private:
+
+    long n;
+
 };
 
 #endif

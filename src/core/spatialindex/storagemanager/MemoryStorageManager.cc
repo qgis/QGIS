@@ -30,99 +30,99 @@ using namespace SpatialIndex::StorageManager;
 using std::stack;
 using std::vector;
 
-SpatialIndex::IStorageManager* SpatialIndex::StorageManager::returnMemoryStorageManager(Tools::PropertySet& ps)
+SpatialIndex::IStorageManager* SpatialIndex::StorageManager::returnMemoryStorageManager( Tools::PropertySet& ps )
 {
-	IStorageManager* sm = new MemoryStorageManager(ps);
-	return sm;
+  IStorageManager* sm = new MemoryStorageManager( ps );
+  return sm;
 }
 
 SpatialIndex::IStorageManager* SpatialIndex::StorageManager::createNewMemoryStorageManager()
 {
-	Tools::PropertySet ps;
-	return returnMemoryStorageManager(ps);
+  Tools::PropertySet ps;
+  return returnMemoryStorageManager( ps );
 }
 
-MemoryStorageManager::MemoryStorageManager(Tools::PropertySet& ps)
+MemoryStorageManager::MemoryStorageManager( Tools::PropertySet& ps )
 {
 }
 
 MemoryStorageManager::~MemoryStorageManager()
 {
-	for (vector<Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++) delete *it;
+  for ( vector<Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++ ) delete *it;
 }
 
-void MemoryStorageManager::loadByteArray(const long id, unsigned long& len, byte** data)
+void MemoryStorageManager::loadByteArray( const long id, unsigned long& len, byte** data )
 {
-	Entry* e;
-	try
-	{
-		e = m_buffer.at(id);
-		if (e == 0) throw Tools::InvalidPageException(id);
-	}
-	catch (std::out_of_range)
-	{
-		throw Tools::InvalidPageException(id);
-	}
+  Entry* e;
+  try
+  {
+    e = m_buffer.at( id );
+    if ( e == 0 ) throw Tools::InvalidPageException( id );
+  }
+  catch ( std::out_of_range )
+  {
+    throw Tools::InvalidPageException( id );
+  }
 
-	len = e->m_length;
-	*data = new byte[len];
+  len = e->m_length;
+  *data = new byte[len];
 
-	memcpy(*data, e->m_pData, len);
+  memcpy( *data, e->m_pData, len );
 }
 
-void MemoryStorageManager::storeByteArray(long& id, const unsigned long len, const byte* const data)
+void MemoryStorageManager::storeByteArray( long& id, const unsigned long len, const byte* const data )
 {
-	if (id == NewPage)
-	{
-		Entry* e = new Entry(len, data);
+  if ( id == NewPage )
+  {
+    Entry* e = new Entry( len, data );
 
-		if (m_emptyPages.empty())
-		{
-			m_buffer.push_back(e);
-			id = m_buffer.size() - 1;
-		}
-		else
-		{
-			id = m_emptyPages.top(); m_emptyPages.pop();
-			m_buffer[id] = e;
-		}
-	}
-	else
-	{
-		Entry* e_old;
-		try
-		{
-			e_old = m_buffer.at(id);
-			if (e_old == 0) throw Tools::InvalidPageException(id);
-		}
-		catch (std::out_of_range)
-		{
-			throw Tools::InvalidPageException(id);
-		}
+    if ( m_emptyPages.empty() )
+    {
+      m_buffer.push_back( e );
+      id = m_buffer.size() - 1;
+    }
+    else
+    {
+      id = m_emptyPages.top(); m_emptyPages.pop();
+      m_buffer[id] = e;
+    }
+  }
+  else
+  {
+    Entry* e_old;
+    try
+    {
+      e_old = m_buffer.at( id );
+      if ( e_old == 0 ) throw Tools::InvalidPageException( id );
+    }
+    catch ( std::out_of_range )
+    {
+      throw Tools::InvalidPageException( id );
+    }
 
-		Entry* e = new Entry(len, data);
+    Entry* e = new Entry( len, data );
 
-		delete e_old;
-		m_buffer[id] = e;
-	}
+    delete e_old;
+    m_buffer[id] = e;
+  }
 }
 
-void MemoryStorageManager::deleteByteArray(const long id)
+void MemoryStorageManager::deleteByteArray( const long id )
 {
-	Entry* e;
-	try
-	{
-		e = m_buffer.at(id);
-		if (e == 0) throw Tools::InvalidPageException(id);
-	}
-	catch (std::out_of_range)
-	{
-		throw Tools::InvalidPageException(id);
-	}
+  Entry* e;
+  try
+  {
+    e = m_buffer.at( id );
+    if ( e == 0 ) throw Tools::InvalidPageException( id );
+  }
+  catch ( std::out_of_range )
+  {
+    throw Tools::InvalidPageException( id );
+  }
 
-	m_buffer[id] = 0;
-	m_emptyPages.push(id);
+  m_buffer[id] = 0;
+  m_emptyPages.push( id );
 
-	delete e;
+  delete e;
 }
 

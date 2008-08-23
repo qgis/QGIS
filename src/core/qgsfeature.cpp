@@ -22,25 +22,25 @@ email                : sherman at mrcc.com
  * \brief Encapsulates a spatial feature with attributes
  */
 
-QgsFeature::QgsFeature(int id, QString typeName)
-    : mFid(id),
-      mGeometry(0),
-      mOwnsGeometry(0),
-      mValid(false),
-      mDirty(0),
-      mTypeName(typeName)
+QgsFeature::QgsFeature( int id, QString typeName )
+    : mFid( id ),
+    mGeometry( 0 ),
+    mOwnsGeometry( 0 ),
+    mValid( false ),
+    mDirty( 0 ),
+    mTypeName( typeName )
 {
   // NOOP
 }
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )
     : mFid( rhs.mFid ),
-      mAttributes( rhs.mAttributes ),
-      mGeometry( 0 ),
-      mOwnsGeometry( false ),
-      mValid( rhs.mValid ),
-      mDirty( rhs.mDirty ),
-      mTypeName( rhs.mTypeName )
+    mAttributes( rhs.mAttributes ),
+    mGeometry( 0 ),
+    mOwnsGeometry( false ),
+    mValid( rhs.mValid ),
+    mDirty( rhs.mDirty ),
+    mTypeName( rhs.mTypeName )
 {
 
   // copy embedded geometry
@@ -99,7 +99,7 @@ const QgsAttributeMap& QgsFeature::attributeMap() const
 }
 
 /**Sets the attributes for this feature*/
-void QgsFeature::setAttributeMap(const QgsAttributeMap& attributes)
+void QgsFeature::setAttributeMap( const QgsAttributeMap& attributes )
 {
   mAttributes = attributes;
 }
@@ -107,19 +107,19 @@ void QgsFeature::setAttributeMap(const QgsAttributeMap& attributes)
 /**
  * Add an attribute to the map
  */
-void QgsFeature::addAttribute(int field, QVariant attr)
+void QgsFeature::addAttribute( int field, QVariant attr )
 {
-  mAttributes.insert(field, attr);
+  mAttributes.insert( field, attr );
 }
 
 /**Deletes an attribute and its value*/
-void QgsFeature::deleteAttribute(int field)
+void QgsFeature::deleteAttribute( int field )
 {
-  mAttributes.remove(field);
+  mAttributes.remove( field );
 }
 
 
-void QgsFeature::changeAttribute(int field, QVariant attr)
+void QgsFeature::changeAttribute( int field, QVariant attr )
 {
   mAttributes[field] = attr;
 }
@@ -140,7 +140,7 @@ QgsGeometry *QgsFeature::geometryAndOwnership()
 
 /** Set the feature id
 */
-void QgsFeature::setFeatureId(int id)
+void QgsFeature::setFeatureId( int id )
 {
   mFid = id;
 }
@@ -155,18 +155,18 @@ QString QgsFeature::typeName() const
 
 /** sets the feature's type name
  */
-void QgsFeature::setTypeName(QString typeName)
+void QgsFeature::setTypeName( QString typeName )
 {
-    mTypeName = typeName;
+  mTypeName = typeName;
 } // QgsFeature::typeName
 
 
-void QgsFeature::setGeometry(const QgsGeometry& geom)
+void QgsFeature::setGeometry( const QgsGeometry& geom )
 {
-  setGeometry( new QgsGeometry(geom) );
+  setGeometry( new QgsGeometry( geom ) );
 }
 
-void QgsFeature::setGeometry(QgsGeometry* geom)
+void QgsFeature::setGeometry( QgsGeometry* geom )
 {
   // Destruct the attached geometry only if we still own it, before assigning new one.
   if ( mOwnsGeometry && mGeometry )
@@ -181,11 +181,11 @@ void QgsFeature::setGeometry(QgsGeometry* geom)
 
 /** Set the pointer to the feature geometry
 */
-void QgsFeature::setGeometryAndOwnership(unsigned char *geom, size_t length)
+void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
 {
   QgsGeometry *g = new QgsGeometry();
-  g->setWkbAndOwnership(geom, length);
-  setGeometry(g);
+  g->setWkbAndOwnership( geom, length );
+  setGeometry( g );
 }
 
 
@@ -194,7 +194,7 @@ bool QgsFeature::isValid() const
   return mValid;
 }
 
-void QgsFeature::setValid(bool validity)
+void QgsFeature::setValid( bool validity )
 {
   mValid = validity;
 }

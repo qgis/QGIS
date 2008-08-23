@@ -21,141 +21,141 @@
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
 
-QgsLegendLayerFileGroup::QgsLegendLayerFileGroup(QTreeWidgetItem* theItem, QString theString): QgsLegendItem(theItem, theString)
+QgsLegendLayerFileGroup::QgsLegendLayerFileGroup( QTreeWidgetItem* theItem, QString theString ): QgsLegendItem( theItem, theString )
 {
-    mType = LEGEND_LAYER_FILE_GROUP;
-    setText(0, theString);
+  mType = LEGEND_LAYER_FILE_GROUP;
+  setText( 0, theString );
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( LEGEND_ITEM_TYPE type )
 {
-    if ( type == LEGEND_LAYER_FILE )
-      {
-	return INSERT; //there should be a way to already test, if the layers are symbology compatible
-      }
-    else
-      {
-	return NO_ACTION;
-      }
+  if ( type == LEGEND_LAYER_FILE )
+  {
+    return INSERT; //there should be a way to already test, if the layers are symbology compatible
+  }
+  else
+  {
+    return NO_ACTION;
+  }
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( const QgsLegendItem* li ) const
 {
 #ifdef QGISDEBUG
-  qWarning("in QgsLegendLayerFileGroup::accept");
+  qWarning( "in QgsLegendLayerFileGroup::accept" );
 #endif
-  if(li)
+  if ( li )
+  {
+    LEGEND_ITEM_TYPE type = li->type();
+    if ( type == LEGEND_LAYER_FILE /*&& this != li->parent()*/ )
     {
-      LEGEND_ITEM_TYPE type = li->type();
-      if ( type == LEGEND_LAYER_FILE /*&& this != li->parent()*/)
+      if ( child( 0 ) == 0 )
       {
-	if(child(0) == 0)
-	  {
-	    return INSERT;
-	  }
-	else
-	  {
-	    QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>(child(0));
-	    if(llf)
-	      {
-		QgsMapLayer* childlayer = llf->layer();
-		const QgsMapLayer* newlayer = (dynamic_cast<const QgsLegendLayerFile*>(li))->layer();
-		if(newlayer->isSymbologyCompatible(*childlayer))
-		  {
-		    return INSERT;
-		  }
-	      }
-	  }
+        return INSERT;
+      }
+      else
+      {
+        QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( child( 0 ) );
+        if ( llf )
+        {
+          QgsMapLayer* childlayer = llf->layer();
+          const QgsMapLayer* newlayer = ( dynamic_cast<const QgsLegendLayerFile*>( li ) )->layer();
+          if ( newlayer->isSymbologyCompatible( *childlayer ) )
+          {
+            return INSERT;
+          }
+        }
       }
     }
+  }
   return NO_ACTION;
 }
 
-bool QgsLegendLayerFileGroup::insert(QgsLegendItem* newItem)
+bool QgsLegendLayerFileGroup::insert( QgsLegendItem* newItem )
 {
   if ( newItem->type() == LEGEND_LAYER_FILE )
-    {
-      QgsLegendItem* oldItem = firstChild();
+  {
+    QgsLegendItem* oldItem = firstChild();
 
-      if(!oldItem)//this item is the first child
-	{
-	  insertChild(0, newItem);
-	  return true;
-	}
-      //there are already legend layer files
-      
-      //find the lowest sibling
-      while(oldItem->nextSibling() != 0)
-	{
-	  oldItem = oldItem->nextSibling();
-	}
-      QgsLegendLayerFile* thefile = dynamic_cast<QgsLegendLayerFile*>(oldItem);
-      
-      if(!thefile)
-	{
-	  return false;
-	}
-      QgsMapLayer* thelayer = thefile->layer();
-      if(!thelayer)
-	{
-	  return false;
-	}
-      QgsMapLayer* newLayer = (dynamic_cast<QgsLegendLayerFile*>(newItem))->layer();
-      if(newLayer->isSymbologyCompatible(*thelayer))
-	{	
-	  insertChild(childCount(), newItem);
-	  return true;
-	}
-      else
-	{
-	  return false;
-	}  
+    if ( !oldItem )//this item is the first child
+    {
+      insertChild( 0, newItem );
+      return true;
     }
-  else
+    //there are already legend layer files
+
+    //find the lowest sibling
+    while ( oldItem->nextSibling() != 0 )
+    {
+      oldItem = oldItem->nextSibling();
+    }
+    QgsLegendLayerFile* thefile = dynamic_cast<QgsLegendLayerFile*>( oldItem );
+
+    if ( !thefile )
     {
       return false;
     }
+    QgsMapLayer* thelayer = thefile->layer();
+    if ( !thelayer )
+    {
+      return false;
+    }
+    QgsMapLayer* newLayer = ( dynamic_cast<QgsLegendLayerFile*>( newItem ) )->layer();
+    if ( newLayer->isSymbologyCompatible( *thelayer ) )
+    {
+      insertChild( childCount(), newItem );
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return false;
+  }
 }
 
-bool QgsLegendLayerFileGroup::containsLegendLayerFile(const QgsLegendLayerFile* llf) const
+bool QgsLegendLayerFileGroup::containsLegendLayerFile( const QgsLegendLayerFile* llf ) const
 {
   bool result = false;
-  for(int i = 0; i < childCount(); ++i)
+  for ( int i = 0; i < childCount(); ++i )
+  {
+    if ( llf == child( i ) )
     {
-      if(llf == child(i))
-	{
-	  result = true;
-	  break;
-	}
+      result = true;
+      break;
     }
+  }
   return result;
 }
 
-void QgsLegendLayerFileGroup::receive(QgsLegendItem* newChild)
+void QgsLegendLayerFileGroup::receive( QgsLegendItem* newChild )
 {
-  if(newChild->type() == LEGEND_LAYER_FILE)
+  if ( newChild->type() == LEGEND_LAYER_FILE )
+  {
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( parent() );
+    if ( ll )
     {
-      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(parent());
-      if(ll)
-	{
-	  ll->updateIcon();
-	  ll->updateCheckState();
-	}
+      ll->updateIcon();
+      ll->updateCheckState();
     }
+  }
 }
 
-void QgsLegendLayerFileGroup::release(QgsLegendItem* formerChild)
+void QgsLegendLayerFileGroup::release( QgsLegendItem* formerChild )
 {
 #ifdef QGISDEBUG
-  qWarning("In QgsLegendLayerFileGroup::release");
+  qWarning( "In QgsLegendLayerFileGroup::release" );
 #endif
-  if(formerChild->type() == LEGEND_LAYER_FILE)
+  if ( formerChild->type() == LEGEND_LAYER_FILE )
+  {
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( parent() );
+    if ( ll )
     {
-      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>(parent());
-      if(ll)
-	{
-	  ll->updateIcon();
-	  ll->updateCheckState();
-	}
+      ll->updateIcon();
+      ll->updateCheckState();
     }
+  }
 }

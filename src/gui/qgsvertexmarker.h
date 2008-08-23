@@ -25,7 +25,7 @@ class QPainter;
 class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
   public:
-    
+
     //! Icons
     enum IconType
     {
@@ -35,38 +35,38 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_BOX
     };
 
-    QgsVertexMarker(QgsMapCanvas* mapCanvas);
-    
-    void setCenter(const QgsPoint& point);
-    
-    void setIconType(int iconType);
-    
-    void setIconSize(int iconSize);
-    
-    void setColor(const QColor& color);
-    
-    void setPenWidth(int width);
-    
-    void paint(QPainter* p);
-    
+    QgsVertexMarker( QgsMapCanvas* mapCanvas );
+
+    void setCenter( const QgsPoint& point );
+
+    void setIconType( int iconType );
+
+    void setIconSize( int iconSize );
+
+    void setColor( const QColor& color );
+
+    void setPenWidth( int width );
+
+    void paint( QPainter* p );
+
     QRectF boundingRect() const;
 
     virtual void updatePosition();
 
   protected:
-    
+
     //! icon to be shown
     int mIconType;
-    
+
     //! size
     int mIconSize;
 
     //! coordinates of the point in the center
     QgsPoint mCenter;
-    
+
     //! color of the marker
     QColor mColor;
-    
+
     //! pen width
     int mPenWidth;
 };

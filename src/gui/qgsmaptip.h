@@ -30,10 +30,10 @@ class GUI_EXPORT QgsMapTip
   public:
     /** Default constructor
      */
-    QgsMapTip ();
+    QgsMapTip();
     /** Destructor
      */
-    virtual ~QgsMapTip ();
+    virtual ~QgsMapTip();
     /** Show a maptip at a given point on the map canvas
      * @param QgsMapLayer thepLayer - a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.
@@ -43,21 +43,21 @@ class GUI_EXPORT QgsMapTip
      *        in pixel coordinates.
      * @param QgsMapCanvas thepMapCanvas - a map canvas on which the tip is drawn
      */
-    void showMapTip ( QgsMapLayer * thepLayer,
-                      QgsPoint & theMapPosition,
-                      QPoint & thePixelPosition,
-                      QgsMapCanvas *mpMapCanvas );
+    void showMapTip( QgsMapLayer * thepLayer,
+                     QgsPoint & theMapPosition,
+                     QPoint & thePixelPosition,
+                     QgsMapCanvas *mpMapCanvas );
     /** Clear the current maptip if it exists
      * @param QgsMapCanvas mpMapCanvas - the canvas from which the tip should
      *        be cleared.
      */
-    void clear ( QgsMapCanvas *mpMapCanvas );
+    void clear( QgsMapCanvas *mpMapCanvas );
   private:
     // Fetch the feature to use for the maptip text. Only the first feature in the
     // search radius is used
-    QString fetchFeature ( QgsMapLayer * thepLayer,
-                           QgsPoint & theMapPosition,
-                           QgsMapCanvas *thepMapCanvas );
+    QString fetchFeature( QgsMapLayer * thepLayer,
+                          QgsPoint & theMapPosition,
+                          QgsMapCanvas *thepMapCanvas );
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
     // Last point on the map canvas when the maptip timer fired. This point is in widget pixel

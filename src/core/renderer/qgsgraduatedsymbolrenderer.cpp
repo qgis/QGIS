@@ -30,34 +30,34 @@
 #include <QPainter>
 
 
-QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer(QGis::VectorType type)
+QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( QGis::VectorType type )
 {
-  mVectorType=type;
+  mVectorType = type;
 }
 
-QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer(const QgsGraduatedSymbolRenderer& other)
+QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer& other )
 {
   mVectorType = other.mVectorType;
   mClassificationField = other.mClassificationField;
   const QList<QgsSymbol*> s = other.symbols();
-  for(QList<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+  for ( QList<QgsSymbol*>::const_iterator it = s.begin(); it != s.end(); ++it )
   {
-    addSymbol(new QgsSymbol(**it));
+    addSymbol( new QgsSymbol( **it ) );
   }
   updateSymbolAttributes();
 }
 
-QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=(const QgsGraduatedSymbolRenderer& other)
+QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=( const QgsGraduatedSymbolRenderer & other )
 {
-  if(this != &other)
+  if ( this != &other )
   {
-    mVectorType = other.mVectorType; 
+    mVectorType = other.mVectorType;
     mClassificationField = other.mClassificationField;
     removeSymbols();
     const QList<QgsSymbol*> s = other.symbols();
-    for(QList<QgsSymbol*>::const_iterator it=s.begin(); it!=s.end(); ++it)
+    for ( QList<QgsSymbol*>::const_iterator it = s.begin(); it != s.end(); ++it )
     {
-      addSymbol(new QgsSymbol(**it));
+      addSymbol( new QgsSymbol( **it ) );
     }
     updateSymbolAttributes();
   }
@@ -78,7 +78,7 @@ const QList<QgsSymbol*> QgsGraduatedSymbolRenderer::symbols() const
 void QgsGraduatedSymbolRenderer::removeSymbols()
 {
   //free the memory first
-  for (QList<QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  for ( QList<QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
     delete *it;
   }
@@ -88,75 +88,75 @@ void QgsGraduatedSymbolRenderer::removeSymbols()
   updateSymbolAttributes();
 }
 
-bool QgsGraduatedSymbolRenderer::willRenderFeature(QgsFeature *f)
+bool QgsGraduatedSymbolRenderer::willRenderFeature( QgsFeature *f )
 {
-  return (symbolForFeature(f) != 0);
+  return ( symbolForFeature( f ) != 0 );
 }
 
-void QgsGraduatedSymbolRenderer::renderFeature(QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor)
+void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImage* img, bool selected, double widthScale, double rasterScaleFactor )
 {
-  QgsSymbol* theSymbol = symbolForFeature(&f);
-  if(!theSymbol)
+  QgsSymbol* theSymbol = symbolForFeature( &f );
+  if ( !theSymbol )
+  {
+    if ( img && mVectorType == QGis::Point )
     {
-      if ( img && mVectorType == QGis::Point )
-	{
-	  img->fill(0);
-	}
-      else if ( mVectorType != QGis::Point )
-	{
-	  p->setPen(Qt::NoPen);
-	  p->setBrush(Qt::NoBrush);
-	}
-      return;
+      img->fill( 0 );
     }
+    else if ( mVectorType != QGis::Point )
+    {
+      p->setPen( Qt::NoPen );
+      p->setBrush( Qt::NoBrush );
+    }
+    return;
+  }
 
   //set the qpen and qpainter to the right values
-  // Point 
-  if ( img && mVectorType == QGis::Point ) 
+  // Point
+  if ( img && mVectorType == QGis::Point )
   {
     double fieldScale = 1.0;
     double rotation = 0.0;
 
-    if ( theSymbol->scaleClassificationField() >= 0)
+    if ( theSymbol->scaleClassificationField() >= 0 )
     {
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
-      fieldScale = sqrt(fabs(attrs[theSymbol->scaleClassificationField()].toDouble()));
-      QgsDebugMsg(QString("Feature has field scale factor %1").arg(fieldScale));
+      fieldScale = sqrt( fabs( attrs[theSymbol->scaleClassificationField()].toDouble() ) );
+      QgsDebugMsg( QString( "Feature has field scale factor %1" ).arg( fieldScale ) );
     }
     if ( theSymbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[theSymbol->rotationClassificationField()].toDouble();
-      QgsDebugMsg(QString("Feature has rotation factor %1").arg(rotation));
+      QgsDebugMsg( QString( "Feature has rotation factor %1" ).arg( rotation ) );
     }
-    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor);
-  } 
+    *img = theSymbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor, fieldScale, rotation, rasterScaleFactor );
+  }
 
   // Line, polygon
   if ( mVectorType != QGis::Point )
+  {
+    if ( !selected )
     {
-      if( !selected ) 
-	{
-	  QPen pen=theSymbol->pen();
-	  pen.setWidthF ( widthScale * pen.widthF() );
-	  p->setPen(pen);
-	  p->setBrush(theSymbol->brush());
-	}
-      else
-	{
-	  QPen pen=theSymbol->pen();
-	  pen.setColor(mSelectionColor);
-	  pen.setWidthF ( widthScale * pen.widthF() );
-	  QBrush brush=theSymbol->brush();
-	  brush.setColor(mSelectionColor);
-	  p->setPen(pen);
-	  p->setBrush(brush);
-	}
+      QPen pen = theSymbol->pen();
+      pen.setWidthF( widthScale * pen.widthF() );
+      p->setPen( pen );
+      p->setBrush( theSymbol->brush() );
     }
+    else
+    {
+      QPen pen = theSymbol->pen();
+      pen.setColor( mSelectionColor );
+      pen.setWidthF( widthScale * pen.widthF() );
+      QBrush brush = theSymbol->brush();
+      brush.setColor( mSelectionColor );
+      p->setPen( pen );
+      p->setBrush( brush );
+    }
+  }
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature* f )
 {
   //first find out the value for the classification attribute
   const QgsAttributeMap& attrs = f->attributeMap();
@@ -164,48 +164,48 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature(const QgsFeature* f)
 
   QList<QgsSymbol*>::iterator it;
   //find the first render item which contains the feature
-  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  for ( it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
-    if (value >= (*it)->lowerValue().toDouble() && value <= (*it)->upperValue().toDouble())
+    if ( value >= ( *it )->lowerValue().toDouble() && value <= ( *it )->upperValue().toDouble() )
     {
       break;
     }
   }
 
-  if (it == mSymbols.end())      //only draw features which are covered by a render item
+  if ( it == mSymbols.end() )    //only draw features which are covered by a render item
   {
     return 0;
   }
-  return (*it);
+  return ( *it );
 }
 
-void QgsGraduatedSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
+void QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mVectorType = vl.vectorType();
-  QDomNode classnode = rnode.namedItem("classificationfield");
+  QDomNode classnode = rnode.namedItem( "classificationfield" );
   int classificationfield = classnode.toElement().text().toInt();
 
-  this->setClassificationField(classificationfield);
+  this->setClassificationField( classificationfield );
 
-  QDomNode symbolnode = rnode.namedItem("symbol");
-  while (!symbolnode.isNull())
+  QDomNode symbolnode = rnode.namedItem( "symbol" );
+  while ( !symbolnode.isNull() )
   {
-    QgsSymbol* sy = new QgsSymbol(mVectorType);
-    sy->readXML ( symbolnode );
-    this->addSymbol(sy);
+    QgsSymbol* sy = new QgsSymbol( mVectorType );
+    sy->readXML( symbolnode );
+    this->addSymbol( sy );
 
     symbolnode = symbolnode.nextSibling();
   }
   updateSymbolAttributes();
-  vl.setRenderer(this);
+  vl.setRenderer( this );
 }
 
 QgsAttributeList QgsGraduatedSymbolRenderer::classificationAttributes() const
 {
-  QgsAttributeList list(mSymbolAttributes);
-  if ( ! list.contains(mClassificationField) )
+  QgsAttributeList list( mSymbolAttributes );
+  if ( ! list.contains( mClassificationField ) )
   {
-    list.append(mClassificationField);
+    list.append( mClassificationField );
   }
   return list;
 }
@@ -218,17 +218,17 @@ void QgsGraduatedSymbolRenderer::updateSymbolAttributes()
   mSymbolAttributes.clear();
 
   QList<QgsSymbol*>::iterator it;
-  for (it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  for ( it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
-    int rotationField = (*it)->rotationClassificationField();
-    if ( rotationField >= 0 && !(mSymbolAttributes.contains(rotationField)) )
+    int rotationField = ( *it )->rotationClassificationField();
+    if ( rotationField >= 0 && !( mSymbolAttributes.contains( rotationField ) ) )
     {
-      mSymbolAttributes.append(rotationField);
+      mSymbolAttributes.append( rotationField );
     }
-    int scaleField = (*it)->scaleClassificationField(); 
-    if ( scaleField >= 0 && !(mSymbolAttributes.contains(scaleField)) )
+    int scaleField = ( *it )->scaleClassificationField();
+    if ( scaleField >= 0 && !( mSymbolAttributes.contains( scaleField ) ) )
     {
-      mSymbolAttributes.append(scaleField);
+      mSymbolAttributes.append( scaleField );
     }
   }
 }
@@ -240,18 +240,18 @@ QString QgsGraduatedSymbolRenderer::name() const
 
 bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
-  bool returnval=true;
-  QDomElement graduatedsymbol=document.createElement("graduatedsymbol");
-  layer_node.appendChild(graduatedsymbol);
-  QDomElement classificationfield=document.createElement("classificationfield");
-  QDomText classificationfieldtxt=document.createTextNode(QString::number(mClassificationField));
-  classificationfield.appendChild(classificationfieldtxt);
-  graduatedsymbol.appendChild(classificationfield);
-  for (QList<QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it)
+  bool returnval = true;
+  QDomElement graduatedsymbol = document.createElement( "graduatedsymbol" );
+  layer_node.appendChild( graduatedsymbol );
+  QDomElement classificationfield = document.createElement( "classificationfield" );
+  QDomText classificationfieldtxt = document.createTextNode( QString::number( mClassificationField ) );
+  classificationfield.appendChild( classificationfieldtxt );
+  graduatedsymbol.appendChild( classificationfield );
+  for ( QList<QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
-    if(!(*it)->writeXML(graduatedsymbol,document))
+    if ( !( *it )->writeXML( graduatedsymbol, document ) )
     {
-      returnval=false;
+      returnval = false;
     }
   }
   return returnval;
@@ -259,6 +259,6 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
 
 QgsRenderer* QgsGraduatedSymbolRenderer::clone() const
 {
-  QgsGraduatedSymbolRenderer* r = new QgsGraduatedSymbolRenderer(*this);
+  QgsGraduatedSymbolRenderer* r = new QgsGraduatedSymbolRenderer( *this );
   return r;
 }

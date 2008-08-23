@@ -29,61 +29,62 @@ class QDomDocument;
 
 /**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
   (lower value, upper value)*/
-class CORE_EXPORT QgsSymbol{
+class CORE_EXPORT QgsSymbol
+{
 
   public:
     /**Constructor*/
-    QgsSymbol(QGis::VectorType t, QString lvalue="", QString uvalue="", QString label="");
+    QgsSymbol( QGis::VectorType t, QString lvalue = "", QString uvalue = "", QString label = "" );
     /**Constructor*/
-    QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c);
-    QgsSymbol(const QgsSymbol&);
+    QgsSymbol( QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c );
+    QgsSymbol( const QgsSymbol& );
     /**old constructors*/
     QgsSymbol();
-    QgsSymbol(QColor c);
+    QgsSymbol( QColor c );
     /**Sets the brush*/
-    virtual void setBrush(QBrush b);
+    virtual void setBrush( QBrush b );
     /**Gets a reference to m_brush, Don't use the brush to change color/style */
     virtual const QBrush& brush() const;
     /**Set the color*/
-    virtual void setColor(QColor c);
+    virtual void setColor( QColor c );
     /**Get the current color*/
     virtual QColor color() const;
     /**Get the fill color*/
     virtual QColor fillColor() const;
     /**Sets the fill color*/
-    virtual void setFillColor(QColor c);
+    virtual void setFillColor( QColor c );
     /**Get the line width*/
     virtual double lineWidth() const;
     /**Sets the line width*/
-    virtual void setLineWidth(double w);
+    virtual void setLineWidth( double w );
     /**Sets the pen*/
-    virtual void setPen(QPen p);
+    virtual void setPen( QPen p );
     /**Gets a reference to m_pen. Don't use the pen to change color/style  */
     virtual const QPen& pen() const;
 
     /**Set the line (pen) style*/
-    virtual void setLineStyle(Qt::PenStyle s);
+    virtual void setLineStyle( Qt::PenStyle s );
     /**Set the fill (brush) style*/
-    virtual void setFillStyle(Qt::BrushStyle s);
+    virtual void setFillStyle( Qt::BrushStyle s );
 
     /**Gets the path to the customs texture image*/
     virtual QString customTexture() const;
     /**Sets the path to the custom texture, and sets the brush to use TexturePattern */
-    virtual void setCustomTexture(QString path);
+    virtual void setCustomTexture( QString path );
 
-    virtual void setLowerValue(QString value);
+    virtual void setLowerValue( QString value );
     virtual QString lowerValue() const;
-    virtual void setUpperValue(QString value);
+    virtual void setUpperValue( QString value );
     virtual QString upperValue() const;
-    virtual void setLabel(QString label);
+    virtual void setLabel( QString label );
     virtual QString label() const;
 
     /**Set point symbol from name*/
-    virtual void setNamedPointSymbol(QString name);
+    virtual void setNamedPointSymbol( QString name );
     /**Get point symbol*/
     virtual QString pointSymbolName() const;
     /**Set size*/
-    virtual void setPointSize(double s);
+    virtual void setPointSize( double s );
     /**Get size*/
     virtual double pointSize() const;
     //! Destructor
@@ -97,18 +98,18 @@ class CORE_EXPORT QgsSymbol{
 
     /** Get QImage representation of point symbol with current settings
     */
-    virtual QImage getCachedPointSymbolAsImage( double widthScale = 1., 
+    virtual QImage getCachedPointSymbolAsImage( double widthScale = 1.,
         bool selected = false, QColor selectionColor = Qt::yellow );
 
     /* Get QImage representation of point symbol with current settings
      * and scaled (can be slow when scale != 1.0)
      */
-    virtual QImage getPointSymbolAsImage( double widthScale = 1., 
-        bool selected = false,
-        QColor selectionColor = Qt::yellow,				  
-        double scale = 1.0,
-	double rotation = 0.0,
-	double rasterScaleFactor = 1.0);
+    virtual QImage getPointSymbolAsImage( double widthScale = 1.,
+                                          bool selected = false,
+                                          QColor selectionColor = Qt::yellow,
+                                          double scale = 1.0,
+                                          double rotation = 0.0,
+                                          double rasterScaleFactor = 1.0 );
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/
@@ -123,12 +124,12 @@ class CORE_EXPORT QgsSymbol{
     int rotationClassificationField() const;
     /**Sets the number of the rotation classicifation field
     \param field the number of the field to classify for rotation*/
-    void setRotationClassificationField(int field);
+    void setRotationClassificationField( int field );
     /**Returns the number of the scale classification field*/
     int scaleClassificationField() const;
     /**Sets the number of the scale classicifation field
     \param field the number of the field to classify for scale*/
-    void setScaleClassificationField(int field);
+    void setScaleClassificationField( int field );
   protected:
 
     /**Lower value for classification*/
@@ -145,9 +146,9 @@ class CORE_EXPORT QgsSymbol{
     /* Point symbol name */
     QString mPointSymbolName;
     /* Point size */
-    double mPointSize; 
+    double mPointSize;
 
-    /* TODO Because for printing we always need a symbol without oversampling but with line width scale, 
+    /* TODO Because for printing we always need a symbol without oversampling but with line width scale,
      *      we keep also separate picture with line width scale */
 
     //
@@ -173,7 +174,7 @@ class CORE_EXPORT QgsSymbol{
     QImage mPointSymbolImageSelected2;
 
     /* Create point symbol mPointSymbolImage/mPointSymbolImage cache */
-    void cache(  QColor selectionColor );
+    void cache( QColor selectionColor );
 
     /* Create point symbol mPointSymbolImage2 cache */
     void cache2( double widthScale, QColor selectionColor );
@@ -193,9 +194,9 @@ class CORE_EXPORT QgsSymbol{
     int mScaleClassificationField;
 };
 
-inline void QgsSymbol::setBrush(QBrush b)
+inline void QgsSymbol::setBrush( QBrush b )
 {
-  mBrush=b;
+  mBrush = b;
 }
 
 inline const QBrush& QgsSymbol::brush() const
@@ -203,9 +204,9 @@ inline const QBrush& QgsSymbol::brush() const
   return mBrush;
 }
 
-inline void QgsSymbol::setPen(QPen p)
+inline void QgsSymbol::setPen( QPen p )
 {
-  mPen=p;
+  mPen = p;
 }
 
 inline const QPen& QgsSymbol::pen() const
@@ -213,9 +214,9 @@ inline const QPen& QgsSymbol::pen() const
   return mPen;
 }
 
-inline void QgsSymbol::setLowerValue(QString value)
+inline void QgsSymbol::setLowerValue( QString value )
 {
-  mLowerValue=value;
+  mLowerValue = value;
 }
 
 inline QString QgsSymbol::lowerValue() const
@@ -223,9 +224,9 @@ inline QString QgsSymbol::lowerValue() const
   return mLowerValue;
 }
 
-inline void QgsSymbol::setUpperValue(QString value)
+inline void QgsSymbol::setUpperValue( QString value )
 {
-  mUpperValue=value;
+  mUpperValue = value;
 }
 
 inline QString QgsSymbol::upperValue() const
@@ -233,9 +234,9 @@ inline QString QgsSymbol::upperValue() const
   return mUpperValue;
 }
 
-inline void QgsSymbol::setLabel(QString label)
+inline void QgsSymbol::setLabel( QString label )
 {
-  mLabel=label;
+  mLabel = label;
 }
 
 inline QString QgsSymbol::label() const

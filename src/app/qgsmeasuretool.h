@@ -29,65 +29,65 @@ class QgsRubberBand;
 
 class QgsMeasureTool : public QgsMapTool
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  
-  QgsMeasureTool(QgsMapCanvas* canvas, bool measureArea);
+  public:
 
-  ~QgsMeasureTool();
+    QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea );
 
-  //! returns whether measuring distance or area
-  bool measureArea() { return mMeasureArea; }
+    ~QgsMeasureTool();
 
-  //! Reset and start new
-  void restart ();
+    //! returns whether measuring distance or area
+    bool measureArea() { return mMeasureArea; }
 
-  //! Add new point
-  void addPoint(QgsPoint &point);
+    //! Reset and start new
+    void restart();
 
-  //! Returns reference to array of the points
-  const QList<QgsPoint>& points();
-  
-  // Inherited from QgsMapTool
-  
-  //! Mouse move event for overriding
-  virtual void canvasMoveEvent(QMouseEvent * e);
+    //! Add new point
+    void addPoint( QgsPoint &point );
 
-  //! Mouse press event for overriding
-  virtual void canvasPressEvent(QMouseEvent * e);
+    //! Returns reference to array of the points
+    const QList<QgsPoint>& points();
 
-  //! Mouse release event for overriding
-  virtual void canvasReleaseEvent(QMouseEvent * e);
+    // Inherited from QgsMapTool
 
-  //! called when set as currently active map tool
-  virtual void activate();
-    
-  //! called when map tool is being deactivated
-  virtual void deactivate();
-  
-protected:
-  
-  //! updates the projections we're using 
-  void updateProjection();
+    //! Mouse move event for overriding
+    virtual void canvasMoveEvent( QMouseEvent * e );
 
-  QList<QgsPoint> mPoints;
+    //! Mouse press event for overriding
+    virtual void canvasPressEvent( QMouseEvent * e );
 
-  QgsMeasureDialog* mDialog;
+    //! Mouse release event for overriding
+    virtual void canvasReleaseEvent( QMouseEvent * e );
 
-  //! Rubberband widget tracking the lines being drawn
-  QgsRubberBand *mRubberBand;
+    //! called when set as currently active map tool
+    virtual void activate();
 
-  //! indicates whether we're measuring distances or areas
-  bool mMeasureArea;
+    //! called when map tool is being deactivated
+    virtual void deactivate();
 
-  //! indicates whether we've just done a right mouse click
-  bool mRightMouseClicked;
+  protected:
 
-  //! indicates whether we've recently warned the user about having the wrong 
-  // project projection
-  bool mWrongProjectProjection;
-  
+    //! updates the projections we're using
+    void updateProjection();
+
+    QList<QgsPoint> mPoints;
+
+    QgsMeasureDialog* mDialog;
+
+    //! Rubberband widget tracking the lines being drawn
+    QgsRubberBand *mRubberBand;
+
+    //! indicates whether we're measuring distances or areas
+    bool mMeasureArea;
+
+    //! indicates whether we've just done a right mouse click
+    bool mRightMouseClicked;
+
+    //! indicates whether we've recently warned the user about having the wrong
+    // project projection
+    bool mWrongProjectProjection;
+
 };
 
 #endif

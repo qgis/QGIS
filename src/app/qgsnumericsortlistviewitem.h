@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 /* $Id$ */
 
 #ifndef QGSNUMERICSORTLISTVIEWITEM_H
@@ -27,7 +27,7 @@
 
   \brief  QTreeWidgetItem that can sort numerically (as opposed to just lexigraphically)
 
-  This class extends the Qt QTreeWidgetItem concept by 
+  This class extends the Qt QTreeWidgetItem concept by
   reimplementing QTreeWidgetItem::operator< to allow numeric comparisons
 
   TODO: Make it work
@@ -39,17 +39,17 @@ class QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
 
 //  Q_OBJECT
 
-public:
-  /**
-  * Constructor.
-  */
-  QgsNumericSortTreeWidgetItem ( QTreeWidget * parent );
-  QgsNumericSortTreeWidgetItem ( QTreeWidgetItem * parent );
+  public:
+    /**
+    * Constructor.
+    */
+    QgsNumericSortTreeWidgetItem( QTreeWidget * parent );
+    QgsNumericSortTreeWidgetItem( QTreeWidgetItem * parent );
 
-  //! Destructor
-  virtual ~QgsNumericSortTreeWidgetItem ();
+    //! Destructor
+    virtual ~QgsNumericSortTreeWidgetItem();
 
-  virtual bool operator<(const QTreeWidgetItem &other) const;
+    virtual bool operator<( const QTreeWidgetItem &other ) const;
 
 };
 

@@ -11,7 +11,7 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use 
+** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -47,8 +47,9 @@ class DL_NullStrExc : public DL_Exception {}
 /**
  * Used for exception handling.
  */
-class DL_GroupCodeExc : public DL_Exception {
-    DL_GroupCodeExc(int gc=0) : groupCode(gc) {}
+class DL_GroupCodeExc : public DL_Exception
+{
+    DL_GroupCodeExc( int gc = 0 ) : groupCode( gc ) {}
     int groupCode;
 };
 #endif

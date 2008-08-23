@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #ifndef QGSBOOKMARKITEM_H
 #define QGSBOOKMARKITEM_H
 
@@ -26,28 +26,28 @@
  * \class QgsBookmarkItem
  * \brief A spatial bookmark record that is stored in a sqlite3
  * database.
- */ 
+ */
 class QgsBookmarkItem
 {
-public:
-  //! Constructs a bookmark item
-  QgsBookmarkItem(QString name, QString projectTitle, 
-      QgsRect viewExtent, int srid, QString databasePath);
-  //! Default destructor
-  ~QgsBookmarkItem();
-  //! Store the bookmark in the database
-  void store();
-private:
-  //! Name of the bookmark
-  QString mName;
-  //! Project that this bookmark was created from
-  QString mProjectTitle;
-  //! Extent of the view for the bookmark
-  QgsRect mViewExtent;
-  //! SRID of the canvas coordinate system when the bookmark was created
-  int mSrid;
-  //! Full path to the user database
-  QString mUserDbPath;
+  public:
+    //! Constructs a bookmark item
+    QgsBookmarkItem( QString name, QString projectTitle,
+                     QgsRect viewExtent, int srid, QString databasePath );
+    //! Default destructor
+    ~QgsBookmarkItem();
+    //! Store the bookmark in the database
+    void store();
+  private:
+    //! Name of the bookmark
+    QString mName;
+    //! Project that this bookmark was created from
+    QString mProjectTitle;
+    //! Extent of the view for the bookmark
+    QgsRect mViewExtent;
+    //! SRID of the canvas coordinate system when the bookmark was created
+    int mSrid;
+    //! Full path to the user database
+    QString mUserDbPath;
 
 };
 

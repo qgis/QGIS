@@ -22,28 +22,28 @@
 /**Map tool for translating feature position by mouse drag*/
 class QgsMapToolMoveFeature: public QgsMapToolEdit
 {
- public:
-  QgsMapToolMoveFeature(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolMoveFeature();
+  public:
+    QgsMapToolMoveFeature( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolMoveFeature();
 
-  virtual void canvasMoveEvent(QMouseEvent * e);
+    virtual void canvasMoveEvent( QMouseEvent * e );
 
-  virtual void canvasPressEvent(QMouseEvent * e);
+    virtual void canvasPressEvent( QMouseEvent * e );
 
-  virtual void canvasReleaseEvent(QMouseEvent * e);
+    virtual void canvasReleaseEvent( QMouseEvent * e );
 
-  //! called when map tool is being deactivated
-  void deactivate();
+    //! called when map tool is being deactivated
+    void deactivate();
 
- private:
-  /**Start point of the move in map coordinates*/
-  QgsPoint mStartPointMapCoords;
+  private:
+    /**Start point of the move in map coordinates*/
+    QgsPoint mStartPointMapCoords;
 
-  /**Rubberband that shows the feature being moved*/
-  QgsRubberBand* mRubberBand;
+    /**Rubberband that shows the feature being moved*/
+    QgsRubberBand* mRubberBand;
 
-  /**Id of moved feature*/
-  int mMovedFeature;
+    /**Id of moved feature*/
+    int mMovedFeature;
 };
 
 #endif

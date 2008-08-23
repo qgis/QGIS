@@ -22,9 +22,9 @@
 QgsLine::QgsLine()
 {
 }
-    
+
 // Create a line from two points
-QgsLine::QgsLine(QgsPoint &p1, QgsPoint &p2) : mBegin(p1), mEnd(p2)
+QgsLine::QgsLine( QgsPoint &p1, QgsPoint &p2 ) : mBegin( p1 ), mEnd( p2 )
 {
 
 }
@@ -35,12 +35,12 @@ QgsLine::~QgsLine()
 }
 
 /// Sets the begin point of the line
-void QgsLine::setBegin(QgsPoint &p1)
+void QgsLine::setBegin( QgsPoint &p1 )
 {
   mBegin = p1;
 }
 /// Sets the end point of the line
-void QgsLine::setEnd(QgsPoint &p2)
+void QgsLine::setEnd( QgsPoint &p2 )
 {
   mEnd = p2;
 }
@@ -60,13 +60,13 @@ QgsPoint QgsLine::end() const
 //! String representation of the line
 QString QgsLine::toString() const
 {
-  return QString("Not implemented");
+  return QString( "Not implemented" );
 }
 
 //! As above but with precision for string representaton of a line
-QString QgsLine::toString(int thePrecision) const
+QString QgsLine::toString( int thePrecision ) const
 {
-  return QString("Not implemented");
+  return QString( "Not implemented" );
 }
 
 /*! Return the well known text representation for the line.
@@ -75,33 +75,33 @@ QString QgsLine::toString(int thePrecision) const
  */
 QString QgsLine::wellKnownText()
 {
-  return QString("Not implemented");
+  return QString( "Not implemented" );
 }
 
 
 //! Inequality operator
-bool QgsLine::operator!=(const QgsLine &other)
+bool QgsLine::operator!=( const QgsLine &other )
 {
   // Note this function assumes that "flipped" lines are not equal,
   // thus preserving the concept of direction
-  if((mBegin != other.begin()) || (mEnd != other.end()))
-  { 
-    return true; 
+  if (( mBegin != other.begin() ) || ( mEnd != other.end() ) )
+  {
+    return true;
   }
   else
-  { 
-    return false; 
+  {
+    return false;
   }
 }
 
 /// Assignment
-QgsLine & QgsLine::operator=(const QgsLine &other)
+QgsLine & QgsLine::operator=( const QgsLine & other )
 {
-  if (&other != this)
-    {
-      mBegin = other.begin();
-      mEnd = other.end();
-    }
+  if ( &other != this )
+  {
+    mBegin = other.begin();
+    mEnd = other.end();
+  }
 
   return *this;
 }

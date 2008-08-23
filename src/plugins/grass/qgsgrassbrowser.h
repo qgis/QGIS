@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsgrasstree.h 
+                              qgsgrasstree.h
                              -------------------
     begin                : February, 2006
     copyright            : (C) 2006 by Radim Blazek
@@ -34,14 +34,14 @@ class QgsGrassBrowser: public QMainWindow
 {
     Q_OBJECT
 
-public:
+  public:
     //! Constructor
-    QgsGrassBrowser ( QgisInterface *iface, QWidget * parent = 0, Qt::WFlags f = 0  );
+    QgsGrassBrowser( QgisInterface *iface, QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassBrowser();
 
-public slots:
+  public slots:
     // Add selected map to canvas
     void addMap();
 
@@ -58,31 +58,31 @@ public slots:
     void setRegion();
 
     // Get item's region
-    bool getItemRegion(QModelIndex index, struct Cell_head *window);
+    bool getItemRegion( QModelIndex index, struct Cell_head *window );
 
-    // Write region 
-    void writeRegion ( struct Cell_head *window );
+    // Write region
+    void writeRegion( struct Cell_head *window );
 
     // Set Location
-    void setLocation ( const QString &gisbase, const QString &location );
+    void setLocation( const QString &gisbase, const QString &location );
 
     // Refresh model
     void refresh();
 
     // Called when tree selection changes
-    void selectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
-    void currentChanged(const QModelIndex & current, const QModelIndex & previous);
+    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void currentChanged( const QModelIndex & current, const QModelIndex & previous );
 
     // Double click
-    void doubleClicked(const QModelIndex & index);
+    void doubleClicked( const QModelIndex & index );
 
-signals:
+  signals:
     // emited when something in GRASS Tools changed region
     void regionChanged();
 
-private:
+  private:
     QgisInterface *mIface;
-    
+
     //! Current GISBASE
     QString mGisbase;
 
@@ -106,8 +106,8 @@ private:
     QAction *mActionSetRegion;
     QAction *mActionRefresh;
 
-    //! Escape HTML tags and convert \n to <br> 
-    QString formatMessage ( QString msg );
+    //! Escape HTML tags and convert \n to <br>
+    QString formatMessage( QString msg );
 };
 
 #endif // QGSGRASSBROWSER_H

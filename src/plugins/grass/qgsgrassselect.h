@@ -25,24 +25,24 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
 {
     Q_OBJECT
 
-public:
+  public:
     //! Constructor
     //QgsGrassSelect(QWidget *parent = 0, int type = VECTOR );
-    QgsGrassSelect(int type = VECTOR );
+    QgsGrassSelect( int type = VECTOR );
     //! Destructor
     ~QgsGrassSelect();
 
-    enum TYPE 
-    { 
-	MAPSET,
-	VECTOR, 
-	RASTER, 
-	GROUP, // group of rasters, used in selectedType
-	MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
+    enum TYPE
+    {
+      MAPSET,
+      VECTOR,
+      RASTER,
+      GROUP, // group of rasters, used in selectedType
+      MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
     };
 
     //! Get list of vector layer
-    static QStringList vectorLayers ( QString, QString, QString, QString );
+    static QStringList vectorLayers( QString, QString, QString, QString );
 
     QString  gisdbase;
     QString  location;
@@ -51,20 +51,20 @@ public:
     QString  layer;
     int      selectedType;  // RASTER or GROUP
 
-public slots:
-    //! OK 
+  public slots:
+    //! OK
     void on_ok_clicked();
 
     //! Cancel
     void on_cancel_clicked();
-    
+
     //! Open dialog for Gisdbase
     void on_GisdbaseBrowse_clicked();
- 
+
     //! Reset combobox of locations for current Gisdbase
     void on_egisdbase_textChanged() { setLocations(); }
     void setLocations();
-    
+
     //! Reset combobox of mapsets for current Location
     void on_elocation_activated() { setMapsets(); }
     void setMapsets();
@@ -78,7 +78,7 @@ public slots:
     void setLayers();
 
 
-private:
+  private:
     int type; // map type (mapset element)
     static bool first; // called first time
     static QString lastGisdbase; // Last selected values
@@ -89,8 +89,8 @@ private:
     static QString lastLayer; // vector layer
     static QString lastMapcalc;
 
-    void restorePosition(void);
-    void saveWindowLocation(void);
+    void restorePosition( void );
+    void saveWindowLocation( void );
 };
 
 

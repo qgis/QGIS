@@ -19,7 +19,7 @@
 #include <QStringList>
 extern "C"
 {
-  #include <libpq-fe.h>
+#include <libpq-fe.h>
 }
 
 /*!
@@ -33,26 +33,26 @@ class QgsPgUtil
     //! Instance function to return a pointer to the one and
     //only QgsPgUtil object (QgsPgUtil is a Singleton)
     static QgsPgUtil* instance();
-    
+
     /*!
      * Set the connection to be used in database operations
      * @param con Pointer to an active PostgreSQL connection
      */
-    void setConnection(PGconn *con);
+    void setConnection( PGconn *con );
     /*!
      * Get the connection currently in use for database operations
      * @return Pointer to the PostgreSQL connection object
      */
     PGconn *connection();
 
-        /** Double quote a PostgreSQL identifier for placement in a SQL string.
-     */
+    /** Double quote a PostgreSQL identifier for placement in a SQL string.
+    */
     static QString quotedIdentifier( QString ident );
 
     /** Quote a value for placement in a SQL string.
      */
     static QString quotedValue( QString value );
-    
+
   protected:
     //! Protected constructor
     QgsPgUtil();

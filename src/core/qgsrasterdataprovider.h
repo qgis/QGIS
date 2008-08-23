@@ -34,13 +34,13 @@ class QgsPoint;
  *         QgsVectorDataProvider, and does not yet make
  *         sense for Raster layers.
  */
- 
+
 class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 {
- 
-  Q_OBJECT
 
-public:
+    Q_OBJECT
+
+  public:
 
     //! If you add to this, please also add to capabilitiesString()
     enum Capability
@@ -61,8 +61,8 @@ public:
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
-    virtual void addLayers(QStringList const & layers,
-                           QStringList  const & styles = QStringList()) = 0;
+    virtual void addLayers( QStringList const & layers,
+                            QStringList  const & styles = QStringList() ) = 0;
 
     //! get raster image encodings supported by (e.g.) the WMS Server, expressed as MIME types
     virtual QStringList supportedImageEncodings() = 0;
@@ -75,25 +75,25 @@ public:
     /**
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageEncoding(QString  const & mimeType) = 0;
+    virtual void setImageEncoding( QString  const & mimeType ) = 0;
 
     /**
      * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageCrs(QString const & crs) = 0;
+    virtual void setImageCrs( QString const & crs ) = 0;
 
 
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      */
-    virtual QImage* draw(QgsRect  const & viewExtent, int pixelWidth, int pixelHeight) = 0;
+    virtual QImage* draw( QgsRect  const & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
       */
-    virtual int capabilities() const 
+    virtual int capabilities() const
     {
       return QgsRasterDataProvider::NoCapabilities;
     }
@@ -105,9 +105,9 @@ public:
 
 
     // TODO: Get the supported formats by this provider
-    
+
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
-    
+
 
     /**
      * Get metadata in a format suitable for feeding directly
@@ -128,7 +128,7 @@ public:
      * \note  The arbitraryness of the returned document is enforced by WMS standards
      *        up to at least v1.3.0
      */
-    virtual QString identifyAsText(const QgsPoint& point) = 0;
+    virtual QString identifyAsText( const QgsPoint& point ) = 0;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -153,7 +153,7 @@ public:
     virtual QString errorString() = 0;
 
 
-protected:
+  protected:
 
 };
 

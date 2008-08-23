@@ -1,7 +1,7 @@
 //Added by qt3to4:
 #include <QCloseEvent>
 /***************************************************************************
-                              qgsgrasstools.h 
+                              qgsgrasstools.h
                              -------------------
     begin                : March, 2005
     copyright            : (C) 2005 by Radim Blazek
@@ -55,39 +55,39 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 
-public:
+  public:
     //! Constructor
-    QgsGrassTools ( QgisInterface *iface, 
-	           QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
+    QgsGrassTools( QgisInterface *iface,
+                   QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassTools();
 
     //! Recursively add sections and modules to the list view
     //  If parent is 0, the modules are added to mModulesListView root
-    void addModules ( QTreeWidgetItem *parent, QDomElement &element );
+    void addModules( QTreeWidgetItem *parent, QDomElement &element );
 
     //! Returns application directory
     QString appDir();
 
-public slots:
+  public slots:
     //! Load configuration from file
-    bool loadConfig(QString filePath);
-    
+    bool loadConfig( QString filePath );
+
     //! Close
-    void close ( void);
+    void close( void );
 
     //! Close event
-    void closeEvent(QCloseEvent *e);
+    void closeEvent( QCloseEvent *e );
 
-    //! Restore window position 
+    //! Restore window position
     void restorePosition();
 
-    //! Save window position 
+    //! Save window position
     void saveWindowLocation();
 
     //! Module in list clicked
-    void moduleClicked ( QTreeWidgetItem * item, int column );
+    void moduleClicked( QTreeWidgetItem * item, int column );
 
     //! Current mapset changed
     void mapsetChanged();
@@ -99,15 +99,15 @@ public slots:
     void closeTools();
 
     //! Update the regex used to filter the modules list (autoconnect to ui)
-    void on_mFilterInput_textChanged(QString theText);
+    void on_mFilterInput_textChanged( QString theText );
     //! Run a module when its entry is clicked in the list view
-    void listItemClicked(const QModelIndex &theIndex );
+    void listItemClicked( const QModelIndex &theIndex );
     //! Run a module given its module name e.g. r.in.gdal
-    void runModule(QString name);
-signals:
+    void runModule( QString name );
+  signals:
     void regionChanged();
 
-private:
+  private:
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 

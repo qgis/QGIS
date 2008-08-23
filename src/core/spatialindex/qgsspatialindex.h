@@ -45,58 +45,58 @@ class QgsPoint;
 class CORE_EXPORT QgsSpatialIndex
 {
 
-public:
+  public:
 
-  /* creation of spatial index */
+    /* creation of spatial index */
 
-  /** create new spatial index that will be stored in memory */
-  //static QgsSpatialIndex* createMemoryIndex();
+    /** create new spatial index that will be stored in memory */
+    //static QgsSpatialIndex* createMemoryIndex();
 
-  /** create new spatial index that stores its data on disk */
-  //static QgsSpatialIndex* createDiskIndex(QString fileName);
+    /** create new spatial index that stores its data on disk */
+    //static QgsSpatialIndex* createDiskIndex(QString fileName);
 
-  /** constructor - creates R-tree */
-  QgsSpatialIndex();
-  
-  /** destructor finalizes work with spatial index */
-  ~QgsSpatialIndex();
+    /** constructor - creates R-tree */
+    QgsSpatialIndex();
 
-
-  /* operations */
-
-  /** add feature to index */
-  bool insertFeature(QgsFeature& f);
-
-  /** remove feature from index */
-  bool deleteFeature(QgsFeature& f);
+    /** destructor finalizes work with spatial index */
+    ~QgsSpatialIndex();
 
 
-  /* queries */
+    /* operations */
 
-  /** returns features that intersect the specified rectangle */
-  QList<int> intersects(QgsRect rect);
+    /** add feature to index */
+    bool insertFeature( QgsFeature& f );
 
-  /** returns nearest neighbors (their count is specified by second parameter) */
-  QList<int> nearestNeighbor(QgsPoint point, int neighbors);
-
-
-protected:
-
-  Tools::Geometry::Region rectToRegion(QgsRect rect);
-  
-  bool featureInfo(QgsFeature& f, Tools::Geometry::Region& r, long& id);
+    /** remove feature from index */
+    bool deleteFeature( QgsFeature& f );
 
 
-private:
+    /* queries */
 
-  /** storage manager */
-  SpatialIndex::IStorageManager* mStorageManager;
+    /** returns features that intersect the specified rectangle */
+    QList<int> intersects( QgsRect rect );
 
-  /** buffer for index data */
-  SpatialIndex::StorageManager::IBuffer* mStorage;
+    /** returns nearest neighbors (their count is specified by second parameter) */
+    QList<int> nearestNeighbor( QgsPoint point, int neighbors );
 
-  /** R-tree containing spatial index */
-  SpatialIndex::ISpatialIndex* mRTree;
+
+  protected:
+
+    Tools::Geometry::Region rectToRegion( QgsRect rect );
+
+    bool featureInfo( QgsFeature& f, Tools::Geometry::Region& r, long& id );
+
+
+  private:
+
+    /** storage manager */
+    SpatialIndex::IStorageManager* mStorageManager;
+
+    /** buffer for index data */
+    SpatialIndex::StorageManager::IBuffer* mStorage;
+
+    /** R-tree containing spatial index */
+    SpatialIndex::ISpatialIndex* mRTree;
 
 };
 

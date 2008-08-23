@@ -25,13 +25,14 @@
 #include "qgsrect.h"
 
 #include "qgspostgisbox3d.h"
+#include "qgslogger.h"
 
 
 QgsPostGisBox3d::QgsPostGisBox3d( std::string box3d )
 {
 
   // If given a nil box3d, give back a nominal QgsPostGisBox3d
-  if ("" == box3d)
+  if ( "" == box3d )
   {
     xmin = xmax = ymin = ymax = 0;
     return;
@@ -39,23 +40,23 @@ QgsPostGisBox3d::QgsPostGisBox3d( std::string box3d )
 
   std::string s;
 
-  box3d = box3d.substr(box3d.find_first_of("(")+1);
-  box3d = box3d.substr(box3d.find_first_not_of(" "));
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  xmin = strtod(s.c_str(), NULL);
+  box3d = box3d.substr( box3d.find_first_of( "(" ) + 1 );
+  box3d = box3d.substr( box3d.find_first_not_of( " " ) );
+  s = box3d.substr( 0, box3d.find_first_of( " " ) );
+  xmin = strtod( s.c_str(), NULL );
 
-  box3d = box3d.substr(box3d.find_first_of(" ")+1);
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  ymin = strtod(s.c_str(), NULL);
+  box3d = box3d.substr( box3d.find_first_of( " " ) + 1 );
+  s = box3d.substr( 0, box3d.find_first_of( " " ) );
+  ymin = strtod( s.c_str(), NULL );
 
-  box3d = box3d.substr(box3d.find_first_of(",")+1);
-  box3d = box3d.substr(box3d.find_first_not_of(" "));
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  xmax = strtod(s.c_str(), NULL);
+  box3d = box3d.substr( box3d.find_first_of( "," ) + 1 );
+  box3d = box3d.substr( box3d.find_first_not_of( " " ) );
+  s = box3d.substr( 0, box3d.find_first_of( " " ) );
+  xmax = strtod( s.c_str(), NULL );
 
-  box3d = box3d.substr(box3d.find_first_of(" ")+1);
-  s = box3d.substr(0, box3d.find_first_of(" "));
-  ymax = strtod(s.c_str(), NULL);
+  box3d = box3d.substr( box3d.find_first_of( " " ) + 1 );
+  s = box3d.substr( 0, box3d.find_first_of( " " ) );
+  ymax = strtod( s.c_str(), NULL );
 
 }
 
@@ -70,15 +71,15 @@ QString QgsPostGisBox3d::toStringAsBox3d()
 {
 
   QString s;
-  
-  s = QString( "BOX3D(%f %f,%f %f)" )
-        .arg( xmin )
-        .arg( ymin )
-        .arg( xmax )
-        .arg( ymax );
-  
-  std::cerr << "QgsPostGisBox3d: toStringAsBox3d is returning '" << s.toLocal8Bit().data() << "'" << std::endl;
 
-  return s;        
+  s = QString( "BOX3D(%f %f,%f %f)" )
+      .arg( xmin )
+      .arg( ymin )
+      .arg( xmax )
+      .arg( ymax );
+
+  QgsDebugMsg( QString( "QgsPostGisBox3d: toStringAsBox3d is returning '%1'" ).arg( s ) );
+
+  return s;
 }
 

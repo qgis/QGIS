@@ -20,7 +20,7 @@
 #ifndef QGSDATASOURCEURI_H
 #define QGSDATASOURCEURI_H
 
-#include <QString> 
+#include <QString>
 
 /** \ingroup core
  * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
@@ -30,69 +30,69 @@
 class CORE_EXPORT QgsDataSourceURI
 {
 
-public:
-  
-  //! default constructor
-  QgsDataSourceURI();
-   
-  //! constructor which parses input URI
-  QgsDataSourceURI(QString uri);
+  public:
 
-  //! return connection part of URI
-  QString connInfo() const;
+    //! default constructor
+    QgsDataSourceURI();
 
-  //! return complete uri
-  QString uri() const;
+    //! constructor which parses input URI
+    QgsDataSourceURI( QString uri );
 
-  //! quoted table name
-  QString quotedTablename() const;
+    //! return connection part of URI
+    QString connInfo() const;
 
-  //! Set all connection related members at once
-  void setConnection(const QString& aHost,
-                     const QString& aPort,
-                     const QString& aDatabase,
-                     const QString& aUsername,
-                     const QString& aPassword);
-  
-  //! Set all data source related members at once
-  void setDataSource(const QString& aSchema,
-                     const QString& aTable,
-                     const QString& aGeometryColumn,
-                     const QString& aSql = QString());
+    //! return complete uri
+    QString uri() const;
 
-  QString username() const;
-  QString schema() const;
-  QString table() const;
-  QString sql() const;
-  QString geometryColumn() const;
+    //! quoted table name
+    QString quotedTablename() const;
 
-  void clearSchema();
-  void setSql(QString sql);
+    //! Set all connection related members at once
+    void setConnection( const QString& aHost,
+                        const QString& aPort,
+                        const QString& aDatabase,
+                        const QString& aUsername,
+                        const QString& aPassword );
 
-private:
-  void skipBlanks(const QString &uri, int &i);
-  QString getValue(const QString &uri, int &i);
+    //! Set all data source related members at once
+    void setDataSource( const QString& aSchema,
+                        const QString& aTable,
+                        const QString& aGeometryColumn,
+                        const QString& aSql = QString() );
 
-  /* data */
+    QString username() const;
+    QString schema() const;
+    QString table() const;
+    QString sql() const;
+    QString geometryColumn() const;
 
-  //! host name
-  QString mHost;
-  //! database name
-  QString mDatabase;
-  //! port the database server listens on
-  QString mPort;
-  //! schema
-  QString mSchema;
-  //! spatial table
-  QString mTable;
-  //! geometry column
-  QString mGeometryColumn;
-  //! SQL where clause used to limit features returned from the layer
-  QString mSql;
-  //! username 
-  QString mUsername;
-  //! password
-  QString mPassword;
+    void clearSchema();
+    void setSql( QString sql );
+
+  private:
+    void skipBlanks( const QString &uri, int &i );
+    QString getValue( const QString &uri, int &i );
+
+    /* data */
+
+    //! host name
+    QString mHost;
+    //! database name
+    QString mDatabase;
+    //! port the database server listens on
+    QString mPort;
+    //! schema
+    QString mSchema;
+    //! spatial table
+    QString mTable;
+    //! geometry column
+    QString mGeometryColumn;
+    //! SQL where clause used to limit features returned from the layer
+    QString mSql;
+    //! username
+    QString mUsername;
+    //! password
+    QString mPassword;
 };
 
 #endif //QGSDATASOURCEURI_H

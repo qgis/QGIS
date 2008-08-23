@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsgrasstree.h 
+                              qgsgrasstree.h
                              -------------------
     begin                : February, 2006
     copyright            : (C) 2006 by Radim Blazek
@@ -37,69 +37,70 @@ class QgsGrassModel: public QAbstractItemModel
 {
     Q_OBJECT
 
-public:
+  public:
     //! Constructor
-    QgsGrassModel ( QObject * parent = 0 );
+    QgsGrassModel( QObject * parent = 0 );
     //! Destructor
     ~QgsGrassModel();
 
     //! Item types
     enum ItemType { None, Gisbase, Location, Mapset, Rasters, Vectors, Raster,
-                Vector, VectorLayer, Regions, Region };
+                    Vector, VectorLayer, Regions, Region
+                };
 
     //! Set GISBASE and LOCATION_NAME
-    void setLocation ( const QString &gisbase, const QString &location );
+    void setLocation( const QString &gisbase, const QString &location );
 
     // Refresh populated node
     void refresh();
-    
+
     // Refresh item
-    void refreshItem(QgsGrassModelItem *item) ;
+    void refreshItem( QgsGrassModelItem *item ) ;
 
     // Remove items missing in the list
-    void removeItems ( QgsGrassModelItem *item, QStringList list ) ;
-    
+    void removeItems( QgsGrassModelItem *item, QStringList list ) ;
+
     // Add items missing in children
-    void addItems ( QgsGrassModelItem *item, QStringList list, int type ) ;
+    void addItems( QgsGrassModelItem *item, QStringList list, int type ) ;
 
     //! Item type
-    int itemType(const QModelIndex &index) const;
-    
-    //! Item URI if it is a map 
-    QString uri(const QModelIndex &index) const;
+    int itemType( const QModelIndex &index ) const;
 
-    // Index 
-    QModelIndex index ( QgsGrassModelItem *item ) ;
+    //! Item URI if it is a map
+    QString uri( const QModelIndex &index ) const;
+
+    // Index
+    QModelIndex index( QgsGrassModelItem *item ) ;
 
     // Name
-    QString itemName(const QModelIndex &index);
+    QString itemName( const QModelIndex &index );
 
     // Item mapset (raster and vector)
-    QString itemMapset(const QModelIndex &index);
+    QString itemMapset( const QModelIndex &index );
 
     // Item map (raster and vector)
-    QString itemMap(const QModelIndex &index);
+    QString itemMap( const QModelIndex &index );
 
     // Get info in HTML format
-    QString itemInfo(const QModelIndex &index);
+    QString itemInfo( const QModelIndex &index );
 
-    // Reimplemented QAbstractItemModel methods 
-    QModelIndex index ( int row, int column, 
-	       const QModelIndex & parent = QModelIndex() ) const;
+    // Reimplemented QAbstractItemModel methods
+    QModelIndex index( int row, int column,
+                       const QModelIndex & parent = QModelIndex() ) const;
 
-    QModelIndex parent ( const QModelIndex & index ) const;
+    QModelIndex parent( const QModelIndex & index ) const;
 
-    int rowCount ( const QModelIndex & parent ) const;
+    int rowCount( const QModelIndex & parent ) const;
 
-    int columnCount ( const QModelIndex & parent ) const;
+    int columnCount( const QModelIndex & parent ) const;
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
 
-    QVariant headerData(int section, Qt::Orientation orientation,
-                           int role = Qt::DisplayRole) const;
-    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-private:
+  private:
     //! Current GISBASE
     QString mGisbase;
 
@@ -107,7 +108,7 @@ private:
     QString mLocation;
 
     //! Root node for current location
-    QgsGrassModelItem *mRoot; 
+    QgsGrassModelItem *mRoot;
 
     //! Icons
     QIcon mIconDirectory;

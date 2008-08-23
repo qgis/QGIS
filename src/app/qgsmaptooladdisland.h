@@ -19,8 +19,8 @@
 /**A map tool that adds new polygons to multipolygon features*/
 class QgsMapToolAddIsland: public QgsMapToolCapture
 {
- public:
-  QgsMapToolAddIsland(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolAddIsland();
-  void canvasReleaseEvent(QMouseEvent * e);
+  public:
+    QgsMapToolAddIsland( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolAddIsland();
+    void canvasReleaseEvent( QMouseEvent * e );
 };

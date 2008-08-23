@@ -24,16 +24,16 @@
   */
 class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
 {
- public:
-  QgsDoubleBoxScaleBarStyle(const QgsComposerScaleBar* bar);
-  ~QgsDoubleBoxScaleBarStyle();
+  public:
+    QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
+    ~QgsDoubleBoxScaleBarStyle();
 
-  QString name() const;
+    QString name() const;
 
-  void draw(QPainter* p, double xOffset = 0) const;
+    void draw( QPainter* p, double xOffset = 0 ) const;
 
- private:
-  QgsDoubleBoxScaleBarStyle(); //forbidden
+  private:
+    QgsDoubleBoxScaleBarStyle(); //forbidden
 };
 
-#endif 
+#endif

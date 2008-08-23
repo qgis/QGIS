@@ -21,27 +21,27 @@
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 {
   public:
-    QgsFileDropEdit(QWidget *parent = 0);
+    QgsFileDropEdit( QWidget *parent = 0 );
     virtual ~QgsFileDropEdit();
 
     bool dirOnly() const { return mDirOnly; }
-    void setDirOnly(bool dirOnly);
+    void setDirOnly( bool dirOnly );
 
     bool fileOnly() const { return mFileOnly; }
-    void setFileOnly(bool fileOnly);
+    void setFileOnly( bool fileOnly );
 
-	const QString& suffixFilter() const { return mSuffix; }
-    void setSuffixFilter( const QString& suffix);
+    const QString& suffixFilter() const { return mSuffix; }
+    void setSuffixFilter( const QString& suffix );
 
   protected:
 
-    virtual void dragEnterEvent(QDragEnterEvent *event);
-    virtual void dragLeaveEvent(QDragLeaveEvent *event);
-    virtual void dropEvent(QDropEvent *event);
-    virtual void paintEvent(QPaintEvent *e);
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+    virtual void dropEvent( QDropEvent *event );
+    virtual void paintEvent( QPaintEvent *e );
 
   private:
-    QString acceptableFilePath(QDropEvent *event) const;
+    QString acceptableFilePath( QDropEvent *event ) const;
 
     QString mSuffix;
     bool mDirOnly;

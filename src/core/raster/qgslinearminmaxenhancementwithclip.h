@@ -25,9 +25,9 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
 {
 
   public:
-    QgsLinearMinMaxEnhancementWithClip(QgsContrastEnhancement::QgsRasterDataType, double, double);
-    int enhanceValue(double);
-    bool isValueInDisplayableRange(double);
+    QgsLinearMinMaxEnhancementWithClip( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    int enhanceValue( double );
+    bool isValueInDisplayableRange( double );
 };
 
 #endif

@@ -15,15 +15,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgssearchstring.h"
 #include "qgssearchtreenode.h"
 
 
 //! global function from parser.y that interfaces parser
-extern QgsSearchTreeNode* parseSearchString(const QString& str, QString& parserErrorMsg);
- 
+extern QgsSearchTreeNode* parseSearchString( const QString& str, QString& parserErrorMsg );
+
 
 QgsSearchString::QgsSearchString()
 {
@@ -31,25 +31,25 @@ QgsSearchString::QgsSearchString()
 }
 
 
-QgsSearchString::QgsSearchString(const QgsSearchString& str)
+QgsSearchString::QgsSearchString( const QgsSearchString& str )
 {
-  if (str.mTree)
-    mTree = new QgsSearchTreeNode(*str.mTree);
+  if ( str.mTree )
+    mTree = new QgsSearchTreeNode( *str.mTree );
   else
     mTree = NULL;
   mString = str.mString;
 }
 
-QgsSearchString& QgsSearchString::operator=(const QgsSearchString& str)
+QgsSearchString& QgsSearchString::operator=( const QgsSearchString & str )
 {
   setEmpty();
 
-  if (str.mTree)
-    mTree = new QgsSearchTreeNode(*str.mTree);
+  if ( str.mTree )
+    mTree = new QgsSearchTreeNode( *str.mTree );
   else
     mTree = NULL;
   mString = str.mString;
-  
+
   return *this;
 }
 
@@ -60,18 +60,18 @@ QgsSearchString::~QgsSearchString()
 }
 
 
-bool QgsSearchString::setString(QString str)
+bool QgsSearchString::setString( QString str )
 {
   // empty string
-  if (str == "")
+  if ( str == "" )
   {
     setEmpty();
     return true;
   }
-  
+
   // calls external C function that does all parsing
-  QgsSearchTreeNode* tree = parseSearchString(str, mParserErrorMsg);
-  if (tree)
+  QgsSearchTreeNode* tree = parseSearchString( str, mParserErrorMsg );
+  if ( tree )
   {
     delete mTree;
     mTree = tree;
@@ -83,16 +83,16 @@ bool QgsSearchString::setString(QString str)
 }
 
 
-bool QgsSearchString::setTree(QgsSearchTreeNode* tree)
+bool QgsSearchString::setTree( QgsSearchTreeNode* tree )
 {
-  if (tree == NULL)
+  if ( tree == NULL )
   {
     setEmpty();
   }
   else
   {
     delete mTree;
-    mTree = new QgsSearchTreeNode(*tree);
+    mTree = new QgsSearchTreeNode( *tree );
     mString = mTree->makeSearchString();
   }
   return true;
@@ -100,7 +100,7 @@ bool QgsSearchString::setTree(QgsSearchTreeNode* tree)
 
 bool QgsSearchString::isEmpty()
 {
-  return (mTree == NULL);
+  return ( mTree == NULL );
 }
 
 void QgsSearchString::setEmpty()

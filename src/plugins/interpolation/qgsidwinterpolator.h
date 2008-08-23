@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsidwinterpolator.h    
+                              qgsidwinterpolator.h
                               --------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -22,27 +22,27 @@
 
 class QgsIDWInterpolator: public QgsInterpolator
 {
- public:
-  QgsIDWInterpolator(const QList<QgsVectorLayer*>& vlayers);
-  ~QgsIDWInterpolator();
+  public:
+    QgsIDWInterpolator( const QList<QgsVectorLayer*>& vlayers );
+    ~QgsIDWInterpolator();
 
-  /**Calculates interpolation value for map coordinates x, y
-     @param x x-coordinate (in map units)
-     @param y y-coordinate (in map units)
-     @param result out: interpolation result
-     @return 0 in case of success*/
-  int interpolatePoint(double x, double y, double& result);
+    /**Calculates interpolation value for map coordinates x, y
+       @param x x-coordinate (in map units)
+       @param y y-coordinate (in map units)
+       @param result out: interpolation result
+       @return 0 in case of success*/
+    int interpolatePoint( double x, double y, double& result );
 
-  void setDistanceCoefficient(double p){mDistanceCoefficient = p;}
+    void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
 
- private:
+  private:
 
-  QgsIDWInterpolator(); //forbidden
+    QgsIDWInterpolator(); //forbidden
 
-  /**The parameter that sets how the values are weighted with distance.
-     Smaller values mean sharper peaks at the data points. The default is a 
-     value of 2*/
-  double mDistanceCoefficient; 
+    /**The parameter that sets how the values are weighted with distance.
+       Smaller values mean sharper peaks at the data points. The default is a
+       value of 2*/
+    double mDistanceCoefficient;
 };
 
-#endif 
+#endif

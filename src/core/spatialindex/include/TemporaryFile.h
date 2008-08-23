@@ -24,27 +24,27 @@
 
 namespace Tools
 {
-	class TemporaryFile
-	{
-	public:
-		TemporaryFile();
-		virtual ~TemporaryFile();
+  class TemporaryFile
+  {
+    public:
+      TemporaryFile();
+      virtual ~TemporaryFile();
 
-		void storeNextObject(ISerializable* r);
-		void storeNextObject(unsigned long len, const byte* const data);
-		void loadNextObject(ISerializable* r);
-		void loadNextObject(byte** data, unsigned long& len);
+      void storeNextObject( ISerializable* r );
+      void storeNextObject( unsigned long len, const byte* const data );
+      void loadNextObject( ISerializable* r );
+      void loadNextObject( byte** data, unsigned long& len );
 
-		void rewindForReading();
-		void rewindForWriting();
+      void rewindForReading();
+      void rewindForWriting();
 
-	private:
-		std::fstream m_file;
-		std::vector<std::string> m_strFileName;
-		unsigned long m_currentFile;
-		unsigned long m_fileSize;
-		bool m_bEOF;
-	}; // TemporaryFile
+    private:
+      std::fstream m_file;
+      std::vector<std::string> m_strFileName;
+      unsigned long m_currentFile;
+      unsigned long m_fileSize;
+      bool m_bEOF;
+  }; // TemporaryFile
 }
 
 #endif /* __tools_temporary_file_h */

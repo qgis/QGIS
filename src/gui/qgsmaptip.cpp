@@ -25,7 +25,7 @@
 
 #include "qgsmaptip.h"
 
-QgsMapTip::QgsMapTip ()
+QgsMapTip::QgsMapTip()
 {
   // init the visible flag
   mMapTipVisible = false;
@@ -36,10 +36,10 @@ QgsMapTip::~QgsMapTip()
 
 }
 
-void QgsMapTip::showMapTip ( QgsMapLayer * thepLayer,
-                               QgsPoint & theMapPosition,
-                               QPoint & thePixelPosition,
-                               QgsMapCanvas *thepMapCanvas )
+void QgsMapTip::showMapTip( QgsMapLayer * thepLayer,
+                            QgsPoint & theMapPosition,
+                            QPoint & thePixelPosition,
+                            QgsMapCanvas *thepMapCanvas )
 {
   // Do the search using the active layer and the preferred label
   // field for the layer. The label field must be defined in the layer configuration
@@ -50,11 +50,11 @@ void QgsMapTip::showMapTip ( QgsMapLayer * thepLayer,
   // TODO: Define the label (display) field for each map layer in the map configuration file/database
 
   // Show the maptip on the canvas
-  QString myTipText = fetchFeature ( thepLayer, theMapPosition, thepMapCanvas );
+  QString myTipText = fetchFeature( thepLayer, theMapPosition, thepMapCanvas );
   if ( myTipText.length() > 0 )
   {
     mMapTipVisible = true;
-    QToolTip::showText ( thepMapCanvas->mapToGlobal ( thePixelPosition ), myTipText, thepMapCanvas );
+    QToolTip::showText( thepMapCanvas->mapToGlobal( thePixelPosition ), myTipText, thepMapCanvas );
     // store the point so we can use it to clear the maptip later
     mLastPosition = thePixelPosition;
   }
@@ -65,56 +65,56 @@ void QgsMapTip::showMapTip ( QgsMapLayer * thepLayer,
 
 }
 
-void QgsMapTip::clear ( QgsMapCanvas *mpMapCanvas )
+void QgsMapTip::clear( QgsMapCanvas *mpMapCanvas )
 {
   if ( mMapTipVisible )
   {
     // set the maptip to blank
-    QToolTip::showText ( mpMapCanvas->mapToGlobal ( mLastPosition ), "", mpMapCanvas );
+    QToolTip::showText( mpMapCanvas->mapToGlobal( mLastPosition ), "", mpMapCanvas );
     // reset the visible flag
     mMapTipVisible = false;
   }
 }
 
-QString QgsMapTip::fetchFeature ( QgsMapLayer *layer, QgsPoint & mapPosition, QgsMapCanvas *mpMapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, QgsMapCanvas *mpMapCanvas )
 {
   // Default return value
   QString maptipText = "";
   // Protection just in case we get passed a null layer
-  if(layer)
+  if ( layer )
   {
     // Get the setting for the search radius from user preferences, if it exists
     QSettings settings;
-    double identifyValue = settings.value ( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
+    double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
 
     // create the search rectangle
     double searchRadius = mpMapCanvas->extent().width() * ( identifyValue / 100.0 );
     QgsRect r;
-    r.setXMinimum ( mapPosition.x() - searchRadius );
-    r.setXMaximum ( mapPosition.x() + searchRadius );
-    r.setYmin ( mapPosition.y() - searchRadius );
-    r.setYmax ( mapPosition.y() + searchRadius );
+    r.setXMinimum( mapPosition.x() - searchRadius );
+    r.setXMaximum( mapPosition.x() + searchRadius );
+    r.setYmin( mapPosition.y() - searchRadius );
+    r.setYmax( mapPosition.y() + searchRadius );
 
     // Get the data provider
-    QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*> ( layer )->dataProvider();
+    QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*>( layer )->dataProvider();
     // Fetch the attribute list for the layer
     QgsAttributeList allAttributes = dataProvider->allAttributesList();
     // Select all attributes within the search radius
-    dataProvider->select ( allAttributes, r, true, true );
+    dataProvider->select( allAttributes, r, true, true );
     // Feature to hold the results of the fetch
     QgsFeature feature;
     // Get the field list for the layer
     const QgsFieldMap& fields = dataProvider->fields();
     // Get the label (display) field for the layer
-    QString fieldIndex = dynamic_cast<QgsVectorLayer*> ( layer )->displayField();
-    if ( dataProvider->getNextFeature ( feature ) )
+    QString fieldIndex = dynamic_cast<QgsVectorLayer*>( layer )->displayField();
+    if ( dataProvider->getNextFeature( feature ) )
     {
       // if we get a feature, pull out the display field and set the maptip text to its value
       QgsAttributeMap attributes = feature.attributeMap();
       for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
       {
 
-        if ( fields[it.key() ].name() == fieldIndex )
+        if ( fields[it.key()].name() == fieldIndex )
         {
           maptipText = it->toString();
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmaptoolmovevertex.h    
+                              qgsmaptoolmovevertex.h
                               ---------------------
   begin                : June 28, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -18,7 +18,7 @@
 
 #ifndef QGSMAPTOOLMOVEVERTEX_H
 #define QGSMAPTOOLMOVEVERTEX_H
- 
+
 #include "qgsmaptoolvertexedit.h"
 
 class QgsRubberBand;
@@ -26,32 +26,32 @@ class QgsRubberBand;
 /**A maptool to move vertices of line or polygon fetures*/
 class QgsMapToolMoveVertex: public QgsMapToolVertexEdit
 {
- public:
-  QgsMapToolMoveVertex(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolMoveVertex();
+  public:
+    QgsMapToolMoveVertex( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolMoveVertex();
 
-  void canvasMoveEvent(QMouseEvent * e);
+    void canvasMoveEvent( QMouseEvent * e );
 
-  void canvasPressEvent(QMouseEvent * e);
+    void canvasPressEvent( QMouseEvent * e );
 
-  void canvasReleaseEvent(QMouseEvent * e);
+    void canvasReleaseEvent( QMouseEvent * e );
 
-  //! called when map tool is being deactivated
-  void deactivate();
+    //! called when map tool is being deactivated
+    void deactivate();
 
- private:
-  QList<QgsRubberBand*> mRubberBands;
-  /**Stores indices of rubber band points
-   to move in the canvasMoveEvent. -1 means 
-  that no point should be moved*/
-  QList<int> mRubberBandMovingPoints;
+  private:
+    QList<QgsRubberBand*> mRubberBands;
+    /**Stores indices of rubber band points
+     to move in the canvasMoveEvent. -1 means
+    that no point should be moved*/
+    QList<int> mRubberBandMovingPoints;
 
-  /**The position of the vertex to move (in map coordinates) to exclude later from snapping*/
-  QList<QgsPoint> mExcludePoint;
+    /**The position of the vertex to move (in map coordinates) to exclude later from snapping*/
+    QList<QgsPoint> mExcludePoint;
 
-  /**Deletes the rubber band pointers
-   and clears mRubberBands*/
-  void removeRubberBands();
+    /**Deletes the rubber band pointers
+     and clears mRubberBands*/
+    void removeRubberBands();
 };
 
-#endif 
+#endif

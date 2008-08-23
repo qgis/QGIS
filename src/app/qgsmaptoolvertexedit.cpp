@@ -29,11 +29,11 @@
 #include <QSettings>
 #include <QPixmap>
 
-QgsMapToolVertexEdit::QgsMapToolVertexEdit(QgsMapCanvas* canvas): QgsMapToolEdit(canvas)
+QgsMapToolVertexEdit::QgsMapToolVertexEdit( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas )
 {
 
 }
-  
+
 QgsMapToolVertexEdit::~QgsMapToolVertexEdit()
 {
 
@@ -43,21 +43,21 @@ void QgsMapToolVertexEdit::displaySnapToleranceWarning()
 {
   QSettings myQSettings;
   QString myQSettingsLabel = "/UI/displaySnapWarning";
-  bool displaySnapWarning = myQSettings.value(myQSettingsLabel, true).toBool();
+  bool displaySnapWarning = myQSettings.value( myQSettingsLabel, true ).toBool();
 
-  if (displaySnapWarning)
+  if ( displaySnapWarning )
   {
-    QgsMessageViewer* m = new QgsMessageViewer(0);
-    m->setWindowTitle(tr("Snap tolerance"));
-    m->setCheckBoxText(tr("Don't show this message again"));
-    m->setCheckBoxVisible(true);
-    m->setCheckBoxQSettingsLabel(myQSettingsLabel);
-    m->setMessageAsHtml("<p>" + 
-                        tr("Could not snap segment.") +
-                        "</p><p>" +
-                        tr("Have you set the tolerance in "
-                           "Settings > Project Properties > General?") +
-                        "</p>");
+    QgsMessageViewer* m = new QgsMessageViewer( 0 );
+    m->setWindowTitle( tr( "Snap tolerance" ) );
+    m->setCheckBoxText( tr( "Don't show this message again" ) );
+    m->setCheckBoxVisible( true );
+    m->setCheckBoxQSettingsLabel( myQSettingsLabel );
+    m->setMessageAsHtml( "<p>" +
+                         tr( "Could not snap segment." ) +
+                         "</p><p>" +
+                         tr( "Have you set the tolerance in "
+                             "Settings > Project Properties > General?" ) +
+                         "</p>" );
     m->exec();
   }
 }

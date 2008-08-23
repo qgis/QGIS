@@ -26,121 +26,121 @@
 using namespace SpatialIndex::StorageManager;
 using std::map;
 
-Buffer::Buffer(IStorageManager& sm, Tools::PropertySet& ps) :
-	m_capacity(10),
-	m_bWriteThrough(false),
-	m_pStorageManager(&sm),
-	m_hits(0)
+Buffer::Buffer( IStorageManager& sm, Tools::PropertySet& ps ) :
+    m_capacity( 10 ),
+    m_bWriteThrough( false ),
+    m_pStorageManager( &sm ),
+    m_hits( 0 )
 {
-	Tools::Variant var = ps.getProperty("Capacity");
-	if (var.m_varType != Tools::VT_EMPTY)
-	{
-		if (var.m_varType != Tools::VT_ULONG) throw Tools::IllegalArgumentException("Property Capacity must be Tools::VT_ULONG");
-		m_capacity = var.m_val.ulVal;
-	}
+  Tools::Variant var = ps.getProperty( "Capacity" );
+  if ( var.m_varType != Tools::VT_EMPTY )
+  {
+    if ( var.m_varType != Tools::VT_ULONG ) throw Tools::IllegalArgumentException( "Property Capacity must be Tools::VT_ULONG" );
+    m_capacity = var.m_val.ulVal;
+  }
 
-	var = ps.getProperty("WriteThrough");
-	if (var.m_varType != Tools::VT_EMPTY)
-	{
-		if (var.m_varType != Tools::VT_BOOL) throw Tools::IllegalArgumentException("Property WriteThrough must be Tools::VT_BOOL");
-		m_bWriteThrough = var.m_val.blVal;
-	}
+  var = ps.getProperty( "WriteThrough" );
+  if ( var.m_varType != Tools::VT_EMPTY )
+  {
+    if ( var.m_varType != Tools::VT_BOOL ) throw Tools::IllegalArgumentException( "Property WriteThrough must be Tools::VT_BOOL" );
+    m_bWriteThrough = var.m_val.blVal;
+  }
 }
 
 Buffer::~Buffer()
 {
-	for (map<long, Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++)
-	{
-		Entry* e = (*it).second;
-		long id = (*it).first;
-		if (e->m_bDirty) m_pStorageManager->storeByteArray(id, e->m_length, e->m_pData);
-		delete e;
-	}
+  for ( map<long, Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++ )
+  {
+    Entry* e = ( *it ).second;
+    long id = ( *it ).first;
+    if ( e->m_bDirty ) m_pStorageManager->storeByteArray( id, e->m_length, e->m_pData );
+    delete e;
+  }
 }
 
-void Buffer::loadByteArray(const long id, unsigned long& len, byte** data)
+void Buffer::loadByteArray( const long id, unsigned long& len, byte** data )
 {
-	map<long, Entry*>::iterator it = m_buffer.find(id);
+  map<long, Entry*>::iterator it = m_buffer.find( id );
 
-	if (it != m_buffer.end())
-	{
-		m_hits++;
-		Entry* e = (*it).second;
-		len = e->m_length;
-		*data = new byte[len];
-		memcpy(*data, e->m_pData, len);
-	}
-	else
-	{
-		m_pStorageManager->loadByteArray(id, len, data);
-		Entry* e = new Entry(len, (const byte *) *data);
-		addEntry(id, e);
-	}
+  if ( it != m_buffer.end() )
+  {
+    m_hits++;
+    Entry* e = ( *it ).second;
+    len = e->m_length;
+    *data = new byte[len];
+    memcpy( *data, e->m_pData, len );
+  }
+  else
+  {
+    m_pStorageManager->loadByteArray( id, len, data );
+    Entry* e = new Entry( len, ( const byte * ) *data );
+    addEntry( id, e );
+  }
 }
 
-void Buffer::storeByteArray(long& id, const unsigned long len, const byte* const data)
+void Buffer::storeByteArray( long& id, const unsigned long len, const byte* const data )
 {
-	if (id == NewPage)
-	{
-		m_pStorageManager->storeByteArray(id, len, data);
-		assert(m_buffer.find(id) == m_buffer.end());
-		Entry* e = new Entry(len, data);
-		addEntry(id, e);
-	}
-	else
-	{
-		if (m_bWriteThrough)
-		{
-			m_pStorageManager->storeByteArray(id, len, data);
-		}
+  if ( id == NewPage )
+  {
+    m_pStorageManager->storeByteArray( id, len, data );
+    assert( m_buffer.find( id ) == m_buffer.end() );
+    Entry* e = new Entry( len, data );
+    addEntry( id, e );
+  }
+  else
+  {
+    if ( m_bWriteThrough )
+    {
+      m_pStorageManager->storeByteArray( id, len, data );
+    }
 
-		Entry* e = new Entry(len, data);
-		if (m_bWriteThrough == false) e->m_bDirty = true;
+    Entry* e = new Entry( len, data );
+    if ( m_bWriteThrough == false ) e->m_bDirty = true;
 
-		map<long, Entry*>::iterator it = m_buffer.find(id);
-		if (it != m_buffer.end())
-		{
-			delete (*it).second;
-			(*it).second = e;
-			if (m_bWriteThrough == false) m_hits++;
-		}
-		else
-		{
-			addEntry(id, e);
-		}
-	}
+    map<long, Entry*>::iterator it = m_buffer.find( id );
+    if ( it != m_buffer.end() )
+    {
+      delete( *it ).second;
+      ( *it ).second = e;
+      if ( m_bWriteThrough == false ) m_hits++;
+    }
+    else
+    {
+      addEntry( id, e );
+    }
+  }
 }
 
-void Buffer::deleteByteArray(const long id)
+void Buffer::deleteByteArray( const long id )
 {
-	map<long, Entry*>::iterator it = m_buffer.find(id);
-	if (it != m_buffer.end())
-	{
-		delete (*it).second;
-		m_buffer.erase(it);
-	}
+  map<long, Entry*>::iterator it = m_buffer.find( id );
+  if ( it != m_buffer.end() )
+  {
+    delete( *it ).second;
+    m_buffer.erase( it );
+  }
 
-	m_pStorageManager->deleteByteArray(id);
+  m_pStorageManager->deleteByteArray( id );
 }
 
 void Buffer::clear()
 {
-	for (map<long, Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++)
-	{
-		if ((*it).second->m_bDirty)
-		{
-			long id = (*it).first;
-			m_pStorageManager->storeByteArray(id, ((*it).second)->m_length, (const byte *) ((*it).second)->m_pData);
-		}
+  for ( map<long, Entry*>::iterator it = m_buffer.begin(); it != m_buffer.end(); it++ )
+  {
+    if (( *it ).second->m_bDirty )
+    {
+      long id = ( *it ).first;
+      m_pStorageManager->storeByteArray( id, (( *it ).second )->m_length, ( const byte * )(( *it ).second )->m_pData );
+    }
 
-		delete (*it).second;
-	}
+    delete( *it ).second;
+  }
 
-	m_buffer.clear();
-	m_hits = 0;
+  m_buffer.clear();
+  m_hits = 0;
 }
 
 unsigned long Buffer::getHits()
 {
-	return m_hits;
+  return m_hits;
 }

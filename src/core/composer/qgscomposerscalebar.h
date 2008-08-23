@@ -29,134 +29,134 @@ class QgsScaleBarStyle;
 class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
 {
 
- Q_OBJECT
- 
-public:
+    Q_OBJECT
 
-  QgsComposerScaleBar(QgsComposition* composition);
-  ~QgsComposerScaleBar();
+  public:
 
-  /** \brief Reimplementation of QCanvasItem::paint*/
-  void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
+    QgsComposerScaleBar( QgsComposition* composition );
+    ~QgsComposerScaleBar();
 
-  //getters and setters
-  int numSegments() const {return mNumSegments;}
-  void setNumSegments(int nSegments){mNumSegments = nSegments;}
-  
-  int numSegmentsLeft() const {return mNumSegmentsLeft;}
-  void setNumSegmentsLeft(int nSegmentsLeft) {mNumSegmentsLeft = nSegmentsLeft;}
+    /** \brief Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
-  void setNumUnitsPerSegment(double units);
+    //getters and setters
+    int numSegments() const {return mNumSegments;}
+    void setNumSegments( int nSegments ) {mNumSegments = nSegments;}
 
-  double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
-  void setNumMapUnitsPerScaleBarUnit(double d) {mNumMapUnitsPerScaleBarUnit = d;}
+    int numSegmentsLeft() const {return mNumSegmentsLeft;}
+    void setNumSegmentsLeft( int nSegmentsLeft ) {mNumSegmentsLeft = nSegmentsLeft;}
 
-  QString unitLabeling() const {return mUnitLabeling;}
-  void setUnitLabeling(const QString& label){mUnitLabeling = label;}
+    double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
+    void setNumUnitsPerSegment( double units );
 
-  QFont font() const;
-  void setFont(const QFont& font);
+    double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
+    void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
 
-  QPen pen() const {return mPen;}
-  void setPen(const QPen& pen){mPen = pen;}
+    QString unitLabeling() const {return mUnitLabeling;}
+    void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
 
-  QBrush brush() const {return mBrush;}
-  void setBrush(const QBrush& brush){mBrush = brush;}
+    QFont font() const;
+    void setFont( const QFont& font );
 
-  double height() const {return mHeight;}
-  void setHeight(double h) {mHeight = h;}
+    QPen pen() const {return mPen;}
+    void setPen( const QPen& pen ) {mPen = pen;}
 
-  void setComposerMap(const QgsComposerMap* map);
-  const QgsComposerMap* composerMap() const {return mComposerMap;}
+    QBrush brush() const {return mBrush;}
+    void setBrush( const QBrush& brush ) {mBrush = brush;}
 
-  double labelBarSpace() const {return mLabelBarSpace;}
-  void setLabelBarSpace(double space){mLabelBarSpace = space;}
+    double height() const {return mHeight;}
+    void setHeight( double h ) {mHeight = h;}
 
-  double boxContentSpace() const {return mBoxContentSpace;}
-  void setBoxContentSpace(double space){mBoxContentSpace = space;}
+    void setComposerMap( const QgsComposerMap* map );
+    const QgsComposerMap* composerMap() const {return mComposerMap;}
 
-  double segmentMM() const {return mSegmentMM;}
+    double labelBarSpace() const {return mLabelBarSpace;}
+    void setLabelBarSpace( double space ) {mLabelBarSpace = space;}
 
-  /**Apply default settings (scale bar 1/5 of map item width)*/
-  void applyDefaultSettings();
+    double boxContentSpace() const {return mBoxContentSpace;}
+    void setBoxContentSpace( double space ) {mBoxContentSpace = space;}
 
-  /**Sets style by name
-   possibilities are: */
-  void setStyle(const QString& styleName);
+    double segmentMM() const {return mSegmentMM;}
 
-  /**Returns style name*/
-  QString style() const;
+    /**Apply default settings (scale bar 1/5 of map item width)*/
+    void applyDefaultSettings();
 
-  /**Returns the x - positions of the segment borders (in item coordinates) and the width 
-   of the segment*/
-  void segmentPositions(QList<QPair<double, double> >& posWidthList) const; 
+    /**Sets style by name
+     possibilities are: */
+    void setStyle( const QString& styleName );
 
-  /**Returns height of mFont in points*/
-  double fontHeight() const;
+    /**Returns style name*/
+    QString style() const;
 
-  /**Sets box size suitable to content*/
-  void adjustBoxSize();
+    /**Returns the x - positions of the segment borders (in item coordinates) and the width
+     of the segment*/
+    void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
 
-  /**Adjusts box size and calls QgsComposerItem::update()*/
-  void update();
+    /**Returns height of mFont in points*/
+    double fontHeight() const;
 
-   /**Returns string of first label (important for drawing, labeling, size calculation*/
-  QString firstLabelString() const;
+    /**Sets box size suitable to content*/
+    void adjustBoxSize();
 
-  /** stores state in Dom node
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param temp write template file
-     */
-  bool writeXML(QDomElement& elem, QDomDocument & doc);
+    /**Adjusts box size and calls QgsComposerItem::update()*/
+    void update();
 
-  /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     */
-  bool readXML(const QDomElement& itemElem, const QDomDocument& doc);
+    /**Returns string of first label (important for drawing, labeling, size calculation*/
+    QString firstLabelString() const;
 
- public slots:
-  void updateSegmentSize();
-  /**Sets mCompositionMap to 0 if the map is deleted*/
-  void invalidateCurrentMap();
+    /** stores state in Dom node
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param temp write template file
+       */
+    bool writeXML( QDomElement& elem, QDomDocument & doc );
 
- protected:
+    /** sets state from Dom document
+       * @param itemElem is Dom node corresponding to item tag
+       */
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-  /**Reference to composer map object*/
-  const QgsComposerMap* mComposerMap;
-  /**Number of segments on right side*/
-  int mNumSegments;
-  /**Number of segments on left side*/
-  int mNumSegmentsLeft;
-  /**Size of a segment (in map units)*/
-  double mNumUnitsPerSegment;
-  /**Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
-  double mNumMapUnitsPerScaleBarUnit;
+  public slots:
+    void updateSegmentSize();
+    /**Sets mCompositionMap to 0 if the map is deleted*/
+    void invalidateCurrentMap();
 
-  /**Labeling of map units*/
-  QString mUnitLabeling;
-  /**Font*/
-  QFont mFont;
-  /**Outline*/
-  QPen mPen;
-  /**Fill*/
-  QBrush mBrush;
-  /**Height of bars/lines*/
-  double mHeight;
-  /**Scalebar style*/
-  QgsScaleBarStyle* mStyle;
-  
-  /**Space between bar and Text labels*/
-  double mLabelBarSpace;
+  protected:
 
-  /**Space between content and item box*/
-  double mBoxContentSpace;
+    /**Reference to composer map object*/
+    const QgsComposerMap* mComposerMap;
+    /**Number of segments on right side*/
+    int mNumSegments;
+    /**Number of segments on left side*/
+    int mNumSegmentsLeft;
+    /**Size of a segment (in map units)*/
+    double mNumUnitsPerSegment;
+    /**Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
+    double mNumMapUnitsPerScaleBarUnit;
 
-  /**Width of a segment (in mm)*/
-  double mSegmentMM;
+    /**Labeling of map units*/
+    QString mUnitLabeling;
+    /**Font*/
+    QFont mFont;
+    /**Outline*/
+    QPen mPen;
+    /**Fill*/
+    QBrush mBrush;
+    /**Height of bars/lines*/
+    double mHeight;
+    /**Scalebar style*/
+    QgsScaleBarStyle* mStyle;
 
-  /**Calculates with of a segment in mm and stores it in mSegmentMM*/
-  void refreshSegmentMM();
+    /**Space between bar and Text labels*/
+    double mLabelBarSpace;
+
+    /**Space between content and item box*/
+    double mBoxContentSpace;
+
+    /**Width of a segment (in mm)*/
+    double mSegmentMM;
+
+    /**Calculates with of a segment in mm and stores it in mSegmentMM*/
+    void refreshSegmentMM();
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H

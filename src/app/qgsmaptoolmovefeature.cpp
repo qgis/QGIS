@@ -25,9 +25,9 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
-QgsMapToolMoveFeature::QgsMapToolMoveFeature(QgsMapCanvas* canvas): QgsMapToolEdit(canvas), mRubberBand(0)
+QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 )
 {
-  
+
 }
 
 QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
@@ -35,51 +35,51 @@ QgsMapToolMoveFeature::~QgsMapToolMoveFeature()
   delete mRubberBand;
 }
 
-void QgsMapToolMoveFeature::canvasMoveEvent(QMouseEvent * e)
+void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
 {
-  if(mRubberBand)
-    {
-      QgsPoint pointCanvasCoords = toMapCoords(e->pos());
-      double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
-      double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
-      mRubberBand->setTranslationOffset(offsetX, offsetY);
-      //QgsDebugMsg("move Rubber band by: " + QString::number(e->x() - mLastPointPixelCoords.x()) + " // " + QString::number(e->y() - mLastPointPixelCoords.y()));
-      mRubberBand->updatePosition();
-      mRubberBand->update();
-    }
+  if ( mRubberBand )
+  {
+    QgsPoint pointCanvasCoords = toMapCoords( e->pos() );
+    double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
+    double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
+    mRubberBand->setTranslationOffset( offsetX, offsetY );
+    //QgsDebugMsg("move Rubber band by: " + QString::number(e->x() - mLastPointPixelCoords.x()) + " // " + QString::number(e->y() - mLastPointPixelCoords.y()));
+    mRubberBand->updatePosition();
+    mRubberBand->update();
+  }
 }
 
-void QgsMapToolMoveFeature::canvasPressEvent(QMouseEvent * e)
+void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 {
   delete mRubberBand;
   mRubberBand = 0;
 
   QgsVectorLayer* vlayer = currentVectorLayer();
-  if(!vlayer)
+  if ( !vlayer )
   {
     return;
   }
 
-  if(!vlayer->isEditable())
+  if ( !vlayer->isEditable() )
   {
-    QMessageBox::information(0, QObject::tr("Layer not editable"),
-      QObject::tr("Cannot edit the vector layer. To make it editable, go to the file item "
-      "of the layer, right click and check 'Allow Editing'."));
+    QMessageBox::information( 0, QObject::tr( "Layer not editable" ),
+                              QObject::tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                           "of the layer, right click and check 'Allow Editing'." ) );
     return;
   }
 
   //find first geometry under mouse cursor and store iterator to it
-  QgsPoint layerCoords = toLayerCoords((QgsMapLayer*)vlayer, e->pos());
+  QgsPoint layerCoords = toLayerCoords(( QgsMapLayer* )vlayer, e->pos() );
   QSettings settings;
-  double searchRadius = settings.value("/qgis/digitizing/search_radius_vertex_edit", 10).toDouble();
-  QgsRect selectRect(layerCoords.x()-searchRadius, layerCoords.y()-searchRadius,
-    layerCoords.x()+searchRadius, layerCoords.y()+searchRadius);
+  double searchRadius = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
+  QgsRect selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+                      layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
-  vlayer->select(QgsAttributeList(), selectRect, true);
+  vlayer->select( QgsAttributeList(), selectRect, true );
 
   //find the closest feature
-  QgsGeometry* pointGeometry = QgsGeometry::fromPoint(layerCoords);
-  if(!pointGeometry)
+  QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
+  if ( !pointGeometry )
   {
     return;
   }
@@ -88,12 +88,12 @@ void QgsMapToolMoveFeature::canvasPressEvent(QMouseEvent * e)
 
   QgsFeature cf;
   QgsFeature f;
-  while( vlayer->getNextFeature(f) )
+  while ( vlayer->getNextFeature( f ) )
   {
-    if(f.geometry())
+    if ( f.geometry() )
     {
-      double currentDistance = pointGeometry->distance(*f.geometry());
-      if(currentDistance < minDistance)
+      double currentDistance = pointGeometry->distance( *f.geometry() );
+      if ( currentDistance < minDistance )
       {
         minDistance = currentDistance;
         cf = f;
@@ -101,43 +101,43 @@ void QgsMapToolMoveFeature::canvasPressEvent(QMouseEvent * e)
     }
   }
 
-  if( minDistance==std::numeric_limits<double>::max() )
+  if ( minDistance == std::numeric_limits<double>::max() )
   {
     return;
   }
 
-  mStartPointMapCoords = toMapCoords(e->pos());
+  mStartPointMapCoords = toMapCoords( e->pos() );
   mMovedFeature = cf.featureId(); //todo: take the closest feature, not the first one...
   mRubberBand = createRubberBand();
-  mRubberBand->setToGeometry( cf.geometry(), *vlayer);
-  mRubberBand->setColor(Qt::red);
-  mRubberBand->setWidth(2);
+  mRubberBand->setToGeometry( cf.geometry(), *vlayer );
+  mRubberBand->setColor( Qt::red );
+  mRubberBand->setWidth( 2 );
   mRubberBand->show();
 
   delete pointGeometry;
 }
 
-void QgsMapToolMoveFeature::canvasReleaseEvent(QMouseEvent * e)
+void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
 {
   //QgsDebugMsg("QgsMapToolMoveFeature::canvasReleaseEvent");
-  if(!mRubberBand)
-    {
-      return;
-    }
+  if ( !mRubberBand )
+  {
+    return;
+  }
 
   QgsVectorLayer* vlayer = currentVectorLayer();
-  if(!vlayer)
-    {
-      return;
-    }
+  if ( !vlayer )
+  {
+    return;
+  }
 
-  QgsPoint startPointLayerCoords = toLayerCoords((QgsMapLayer*)vlayer, mStartPointMapCoords);
-  QgsPoint stopPointLayerCoords = toLayerCoords((QgsMapLayer*)vlayer, e->pos());
+  QgsPoint startPointLayerCoords = toLayerCoords(( QgsMapLayer* )vlayer, mStartPointMapCoords );
+  QgsPoint stopPointLayerCoords = toLayerCoords(( QgsMapLayer* )vlayer, e->pos() );
 
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
 
-  vlayer->translateFeature(mMovedFeature, dx, dy);
+  vlayer->translateFeature( mMovedFeature, dx, dy );
 
   delete mRubberBand;
   mRubberBand = 0;

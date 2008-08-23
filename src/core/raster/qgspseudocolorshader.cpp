@@ -5,7 +5,7 @@ begin                : Fri Dec 28 2007
 copyright            : (C) 2007 by Peter J. Ersts
 email                : ersts@amnh.org
 
-This class contains code that was originally part of the larger QgsRasterLayer 
+This class contains code that was originally part of the larger QgsRasterLayer
 class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 ****************************************************************************/
 
@@ -22,58 +22,58 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgspseudocolorshader.h"
 
-QgsPseudoColorShader::QgsPseudoColorShader(double theMinimumValue, double theMaximumValue) : QgsRasterShaderFunction(theMinimumValue, theMaximumValue)
+QgsPseudoColorShader::QgsPseudoColorShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
   setClassBreaks();
 }
 
 
-bool QgsPseudoColorShader::generateShadedValue(double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue)
+bool QgsPseudoColorShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   double myPixelValue = theValue;
-  
+
   //double check that myInt >= min and <= max
   //this is relevant if we are plotting within stddevs
   if ( myPixelValue < mMinimumValue )
   {
     myPixelValue = mMinimumValue;
   }
-  if ( myPixelValue > mMaximumValue)
+  if ( myPixelValue > mMaximumValue )
   {
     myPixelValue = mMaximumValue;
   }
-        
+
   //check if we are in the first class break
-  if ((myPixelValue >= mClassBreakMin1) && (myPixelValue < mClassBreakMax1))
+  if (( myPixelValue >= mClassBreakMin1 ) && ( myPixelValue < mClassBreakMax1 ) )
   {
     *theReturnRedValue = 0;
-    *theReturnGreenValue = static_cast < int >( ( (255 / mMinimumMaximumRange) * (myPixelValue - mClassBreakMin1) ) * 3 );
+    *theReturnGreenValue = static_cast < int >((( 255 / mMinimumMaximumRange ) * ( myPixelValue - mClassBreakMin1 ) ) * 3 );
     *theReturnBlueValue = 255;
   }
   //check if we are in the second class break
-  else if ( (myPixelValue >= mClassBreakMin2) && (myPixelValue < mClassBreakMax2) )
+  else if (( myPixelValue >= mClassBreakMin2 ) && ( myPixelValue < mClassBreakMax2 ) )
   {
-    *theReturnRedValue = static_cast < int >( ( (255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin2) / 1)) * 3);
+    *theReturnRedValue = static_cast < int >((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin2 ) / 1 ) ) * 3 );
     *theReturnGreenValue = 255;
-    *theReturnBlueValue = static_cast < int >(255 - ( ( (255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin2) / 1)) * 3));
+    *theReturnBlueValue = static_cast < int >( 255 - ((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin2 ) / 1 ) ) * 3 ) );
   }
   //otherwise we must be in the third classbreak
   else
   {
     *theReturnRedValue = 255;
-    *theReturnGreenValue = static_cast < int >(255 - ( ( (255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin3) / 1) * 3)));
+    *theReturnGreenValue = static_cast < int >( 255 - ((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin3 ) / 1 ) * 3 ) ) );
     *theReturnBlueValue = 0;
   }
-  
+
   return true;
 }
 
-bool QgsPseudoColorShader::generateShadedValue(double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue)
+bool QgsPseudoColorShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
-  
+
   return false;
 }
 
@@ -89,11 +89,11 @@ void QgsPseudoColorShader::setClassBreaks()
 }
 
 /**
-    Set the maximum value for the raster shader. 
-    
+    Set the maximum value for the raster shader.
+
     @param theValue The new maximum value
 */
-void QgsPseudoColorShader::setMaximumValue(double theValue)
+void QgsPseudoColorShader::setMaximumValue( double theValue )
 {
   mMaximumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
@@ -102,10 +102,10 @@ void QgsPseudoColorShader::setMaximumValue(double theValue)
 
 /**
     Set the maximum value for the raster shader
-    
+
     @param theValue The new minimum value
 */
-void QgsPseudoColorShader::setMinimumValue(double theValue)
+void QgsPseudoColorShader::setMinimumValue( double theValue )
 {
   mMinimumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;

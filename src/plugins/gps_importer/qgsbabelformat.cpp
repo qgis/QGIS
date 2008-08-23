@@ -23,66 +23,75 @@
 #include <QString>
 
 
-QgsBabelFormat::QgsBabelFormat(const QString& name) : 
-    mName(name),
-    mSupportsImport(false), mSupportsExport(false),
-    mSupportsWaypoints(false), mSupportsRoutes(false), mSupportsTracks(false)
+QgsBabelFormat::QgsBabelFormat( const QString& name ) :
+    mName( name ),
+    mSupportsImport( false ), mSupportsExport( false ),
+    mSupportsWaypoints( false ), mSupportsRoutes( false ), mSupportsTracks( false )
 {
 }
 
 
-const QString& QgsBabelFormat::name() const {
+const QString& QgsBabelFormat::name() const
+{
   return mName;
 }
 
 
-QStringList QgsBabelFormat::importCommand(const QString& babel, 
-					  const QString& featuretype,
-					  const QString& input, 
-					  const QString& output) const {
+QStringList QgsBabelFormat::importCommand( const QString& babel,
+    const QString& featuretype,
+    const QString& input,
+    const QString& output ) const
+{
   QStringList empty;
   return empty;
 }
 
 
-QStringList QgsBabelFormat::exportCommand(const QString& babel,
-					  const QString& featuretype,
-					  const QString& input,
-					  const QString& output) const {
+QStringList QgsBabelFormat::exportCommand( const QString& babel,
+    const QString& featuretype,
+    const QString& input,
+    const QString& output ) const
+{
   QStringList empty;
   return empty;
 }
 
 
-bool QgsBabelFormat::supportsImport() const {
+bool QgsBabelFormat::supportsImport() const
+{
   return mSupportsImport;
 }
 
 
-bool QgsBabelFormat::supportsExport() const {
+bool QgsBabelFormat::supportsExport() const
+{
   return mSupportsExport;
 }
 
 
-bool QgsBabelFormat::supportsWaypoints() const {
+bool QgsBabelFormat::supportsWaypoints() const
+{
   return mSupportsWaypoints;
 }
 
 
-bool QgsBabelFormat::supportsRoutes() const {
+bool QgsBabelFormat::supportsRoutes() const
+{
   return mSupportsRoutes;
 }
 
 
-bool QgsBabelFormat::supportsTracks() const {
+bool QgsBabelFormat::supportsTracks() const
+{
   return mSupportsTracks;
 }
 
 
 
-QgsSimpleBabelFormat::QgsSimpleBabelFormat(const QString& format, 
-					   bool hasWaypoints, bool hasRoutes, 
-					   bool hasTracks) : mFormat(format) {
+QgsSimpleBabelFormat::QgsSimpleBabelFormat( const QString& format,
+    bool hasWaypoints, bool hasRoutes,
+    bool hasTracks ) : mFormat( format )
+{
   mSupportsWaypoints = hasWaypoints;
   mSupportsRoutes = hasRoutes;
   mSupportsTracks = hasTracks;
@@ -91,74 +100,82 @@ QgsSimpleBabelFormat::QgsSimpleBabelFormat(const QString& format,
 }
 
 
-QStringList QgsSimpleBabelFormat::importCommand(const QString& babel, 
-						const QString& featuretype,
-						const QString& input,
-						const QString& output)const{
+QStringList QgsSimpleBabelFormat::importCommand( const QString& babel,
+    const QString& featuretype,
+    const QString& input,
+    const QString& output )const
+{
   QStringList args;
-  args<<babel<<featuretype<<"-i"<<mFormat<<"-o"<<"gpx"<<input<<output;
+  args << babel << featuretype << "-i" << mFormat << "-o" << "gpx" << input << output;
   return args;
 }
 
 
 
-QgsBabelCommand::QgsBabelCommand(const QString& importCmd, 
-				 const QString& exportCmd) {
+QgsBabelCommand::QgsBabelCommand( const QString& importCmd,
+                                  const QString& exportCmd )
+{
   mSupportsWaypoints = true;
   mSupportsRoutes = true;
   mSupportsTracks = true;
   mSupportsImport = false;
   mSupportsExport = false;
-  if (!importCmd.isEmpty()) {
-    mImportCmd = importCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
+  if ( !importCmd.isEmpty() )
+  {
+    mImportCmd = importCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
     mSupportsImport = true;
   }
-  if (!exportCmd.isEmpty()) {
-    mExportCmd = exportCmd.split(QRegExp("\\s"), QString::SkipEmptyParts);
+  if ( !exportCmd.isEmpty() )
+  {
+    mExportCmd = exportCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
     mSupportsExport = true;
   }
 }
 
 
-QStringList QgsBabelCommand::importCommand(const QString& babel, 
-					   const QString& featuretype,
-					   const QString& input,
-					   const QString& output) const {
+QStringList QgsBabelCommand::importCommand( const QString& babel,
+    const QString& featuretype,
+    const QString& input,
+    const QString& output ) const
+{
   QStringList copy;
   QStringList::const_iterator iter;
-  for (iter = mImportCmd.begin(); iter != mImportCmd.end(); ++iter) {
-    if (*iter == "%babel")
-      copy.append(babel);
-    else if (*iter == "%type")
-      copy.append(featuretype);
-    else if (*iter == "%in")
-      copy.append(input);
-    else if (*iter == "%out")
-      copy.append(output);
+  for ( iter = mImportCmd.begin(); iter != mImportCmd.end(); ++iter )
+  {
+    if ( *iter == "%babel" )
+      copy.append( babel );
+    else if ( *iter == "%type" )
+      copy.append( featuretype );
+    else if ( *iter == "%in" )
+      copy.append( input );
+    else if ( *iter == "%out" )
+      copy.append( output );
     else
-      copy.append(*iter);
+      copy.append( *iter );
   }
   return copy;
 }
 
 
-QStringList QgsBabelCommand::exportCommand(const QString& babel, 
-					   const QString& featuretype,
-					   const QString& input,
-					   const QString& output) const {
+QStringList QgsBabelCommand::exportCommand( const QString& babel,
+    const QString& featuretype,
+    const QString& input,
+    const QString& output ) const
+{
   QStringList copy;
   QStringList::const_iterator iter;
-  for (iter = mExportCmd.begin(); iter != mExportCmd.end(); ++iter) {
-    if (*iter == "%babel")
-      copy.append(babel);
-    else if (*iter == "%type")
-      copy.append(featuretype);
-    else if (*iter == "%in")
-      copy.append(input);
-    else if (*iter == "%out")
-      copy.append(output);
+  for ( iter = mExportCmd.begin(); iter != mExportCmd.end(); ++iter )
+  {
+    if ( *iter == "%babel" )
+      copy.append( babel );
+    else if ( *iter == "%type" )
+      copy.append( featuretype );
+    else if ( *iter == "%in" )
+      copy.append( input );
+    else if ( *iter == "%out" )
+      copy.append( output );
     else
-      copy.append(*iter);
+      copy.append( *iter );
   }
   return copy;
 }

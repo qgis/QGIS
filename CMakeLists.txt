@@ -64,7 +64,7 @@ ENDIF (WITH_BINDINGS)
 # recommended by sqlite developer
 SET (WITH_INTERNAL_SQLITE3 FALSE CACHE BOOL "Compile sqlite3 support directly into the binary")
 # Compile flag. Make it posible to turn it off.
-SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile with -Wall -Werror.")
+SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
 SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
@@ -178,7 +178,7 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Werror -Wno-long-long )
+    ADD_DEFINITIONS( -Wall -Wno-long-long )
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 )
   ENDIF (MSVC)

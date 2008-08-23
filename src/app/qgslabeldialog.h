@@ -28,61 +28,62 @@ class QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
 {
     Q_OBJECT
 
-public:
+  public:
     QgsLabelDialog( QgsLabel *label,  QWidget * parent = 0 );
     ~QgsLabelDialog();
-    int itemNoForField(QString theFieldName, QStringList theFieldList);
-    
+    int itemNoForField( QString theFieldName, QStringList theFieldList );
+
     /* Attributes in order used in the table */
-    enum Attribute {
-	Text = 0,
-	Family,
-	Size,
-	Bold,
-	Italic,
-	Underline,
-	Color,
-	XCoordinate,
-	YCoordinate,
-	XOffset,
-	YOffset,
-	Angle,
-	Alignment,
-	BufferSize,
-	BufferColor,
-	BufferBrush,
-	BorderWidth,
-	BorderColor,
-	BorderStyle,
-	AttributeCount
+    enum Attribute
+    {
+      Text = 0,
+      Family,
+      Size,
+      Bold,
+      Italic,
+      Underline,
+      Color,
+      XCoordinate,
+      YCoordinate,
+      XOffset,
+      YOffset,
+      Angle,
+      Alignment,
+      BufferSize,
+      BufferColor,
+      BufferBrush,
+      BorderWidth,
+      BorderColor,
+      BorderStyle,
+      AttributeCount
     };
 
-public slots:
+  public slots:
     /** applies the changes to the label class */
-    void apply ( void );
+    void apply( void );
 
     /** Change font - reimplements method from base class*/
-    void changeFont ( );
+    void changeFont( );
 
     /** Change color - reimplements method from base class */
-    void changeBufferColor ( );
-    void changeFontColor ( );
+    void changeBufferColor( );
+    void changeFontColor( );
 
     /** Initialise dialog to vector layer values */
-    void init ( void );
+    void init( void );
 
-    void on_cboLabelField_activated(int) {emit labelSourceSet(); }
+    void on_cboLabelField_activated( int ) {emit labelSourceSet(); }
 
- signals:
+  signals:
     /* emitted when anitem in label source list is chosen */
     void labelSourceSet();
 
-protected:
+  protected:
 
     /** return field index based on field's name, -1 if not found */
-    int fieldIndexFromName(QString name);
+    int fieldIndexFromName( QString name );
 
-private:
+  private:
     QgsLabel *mLabel;
     QColor    mFontColor;
     QColor    mBufferColor;

@@ -1,3 +1,4 @@
+#include "qgslogger.h"
 // Spatial Index Library
 //
 // Copyright (C) 2002 Navel Ltd.
@@ -30,113 +31,113 @@ using namespace SpatialIndex;
 
 namespace Tools
 {
-	template<> class PointerPool<RTree::Node>
-	{
-	public:
-		explicit PointerPool(unsigned long capacity) : m_capacity(capacity)
-		{
-			#ifndef NDEBUG
-			m_hits = 0;
-			m_misses = 0;
-			m_pointerCount = 0;
-			#endif
-		}
+  template<> class PointerPool<RTree::Node>
+  {
+    public:
+      explicit PointerPool( unsigned long capacity ) : m_capacity( capacity )
+      {
+#ifndef NDEBUG
+        m_hits = 0;
+        m_misses = 0;
+        m_pointerCount = 0;
+#endif
+      }
 
-		~PointerPool()
-		{
-			assert(m_pool.size() <= m_capacity);
+      ~PointerPool()
+      {
+        assert( m_pool.size() <= m_capacity );
 
-			while (! m_pool.empty())
-			{
-				RTree::Node* x = m_pool.top(); m_pool.pop();
-				#ifndef NDEBUG
-				m_pointerCount--;
-				#endif
-				delete x;
-			}
+        while ( ! m_pool.empty() )
+        {
+          RTree::Node* x = m_pool.top(); m_pool.pop();
+#ifndef NDEBUG
+          m_pointerCount--;
+#endif
+          delete x;
+        }
 
-			#ifndef NDEBUG
-			std::cerr << "Lost pointers: " << m_pointerCount << std::endl;
-			#endif
-		}
+#ifndef NDEBUG
+        QgsDebugMsg( QString( "Lost pointers: %1" ).arg( m_pointerCount ) );
+#endif
+      }
 
-		PoolPointer<RTree::Node> acquire()
-		{
-			if (! m_pool.empty())
-			{
-				RTree::Node* p = m_pool.top(); m_pool.pop();
-				#ifndef NDEBUG
-				m_hits++;
-				#endif
+      PoolPointer<RTree::Node> acquire()
+      {
+        if ( ! m_pool.empty() )
+        {
+          RTree::Node* p = m_pool.top(); m_pool.pop();
+#ifndef NDEBUG
+          m_hits++;
+#endif
 
-				return PoolPointer<RTree::Node>(p, this);
-			}
-			#ifndef NDEBUG
-			else
-			{
-				// fixme: well sort of...
-				m_pointerCount++;
-				m_misses++;
-			}
-			#endif
+          return PoolPointer<RTree::Node>( p, this );
+        }
+#ifndef NDEBUG
+        else
+        {
+          // fixme: well sort of...
+          m_pointerCount++;
+          m_misses++;
+        }
+#endif
 
-			return PoolPointer<RTree::Node>();
-		}
+        return PoolPointer<RTree::Node>();
+      }
 
-		void release(RTree::Node* p)
-		{
-			if (p != 0)
-			{
-				if (m_pool.size() < m_capacity)
-				{
-					if (p->m_pData != 0)
-					{
-						for (unsigned long cChild = 0; cChild < p->m_children; cChild++)
-						{
-							// there is no need to set the pointer to zero, after deleting it,
-							// since it will be redeleted only if it is actually initialized again,
-							// a fact that will be depicted by variable m_children.
-							if (p->m_pData[cChild] != 0) delete[] p->m_pData[cChild];
-						}
-					}
+      void release( RTree::Node* p )
+      {
+        if ( p != 0 )
+        {
+          if ( m_pool.size() < m_capacity )
+          {
+            if ( p->m_pData != 0 )
+            {
+              for ( unsigned long cChild = 0; cChild < p->m_children; cChild++ )
+              {
+                // there is no need to set the pointer to zero, after deleting it,
+                // since it will be redeleted only if it is actually initialized again,
+                // a fact that will be depicted by variable m_children.
+                if ( p->m_pData[cChild] != 0 ) delete[] p->m_pData[cChild];
+              }
+            }
 
-					p->m_level = 0;
-					p->m_identifier = -1;
-					p->m_children = 0;
-					p->m_totalDataLength = 0;
+            p->m_level = 0;
+            p->m_identifier = -1;
+            p->m_children = 0;
+            p->m_totalDataLength = 0;
 
-					m_pool.push(p);
-				}
-				else
-				{
-					#ifndef NDEBUG
-					m_pointerCount--;
-					#endif
-					delete p;
-				}
+            m_pool.push( p );
+          }
+          else
+          {
+#ifndef NDEBUG
+            m_pointerCount--;
+#endif
+            delete p;
+          }
 
-				assert(m_pool.size() <= m_capacity);
-			}
-		}
+          assert( m_pool.size() <= m_capacity );
+        }
+      }
 
-		unsigned long getCapacity() const { return m_capacity; }
-		void setCapacity(unsigned long c)
-		{
-			assert (c >= 0);
-			m_capacity = c;
-		}
+      unsigned long getCapacity() const { return m_capacity; }
+      void setCapacity( unsigned long c )
+      {
+        assert( c >= 0 );
+        m_capacity = c;
+      }
 
-	protected:
-		unsigned long m_capacity;
-		std::stack<RTree::Node*> m_pool;
+    protected:
+      unsigned long m_capacity;
+      std::stack<RTree::Node*> m_pool;
 
-	#ifndef NDEBUG
-	public:
-		unsigned long m_hits;
-		unsigned long m_misses;
-		long m_pointerCount;
-	#endif
-	};
+#ifndef NDEBUG
+    public:
+      unsigned long m_hits;
+      unsigned long m_misses;
+      long m_pointerCount;
+#endif
+  };
 }
 
 #endif /* __spatialindex_rtree_pointer_pool_node_h */

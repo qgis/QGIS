@@ -1,6 +1,6 @@
 /***************************************************************************
-                          qgscustomprojectiondialog.h 
-                       
+                          qgscustomprojectiondialog.h
+
                              -------------------
     begin                : 2005
     copyright            : (C) 2005 by Tim Sutton
@@ -28,12 +28,12 @@ The custom projection widget is used to define the projection family, ellipsoid 
 */
 class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectionDialogBase
 {
-Q_OBJECT
-public:
-    QgsCustomProjectionDialog(QWidget *parent = 0, Qt::WFlags fl = 0);
+    Q_OBJECT
+  public:
+    QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
     ~QgsCustomProjectionDialog();
     //a recursive function to make a directory and its ancestors
-public slots:    
+  public slots:
     void on_pbnCalculate_clicked();
     void on_pbnClose_clicked();
     void on_pbnDelete_clicked();
@@ -55,22 +55,22 @@ public slots:
     void getProjList();
     void getEllipsoidList();
     */
-    QString getProjectionFamilyName(QString theProjectionFamilyAcronym);
-    QString getEllipsoidName(QString theEllipsoidAcronym);
-    QString getProjectionFamilyAcronym(QString theProjectionFamilyName);
-    QString getEllipsoidAcronym(QString theEllipsoidName);
-private: 
+    QString getProjectionFamilyName( QString theProjectionFamilyAcronym );
+    QString getEllipsoidName( QString theEllipsoidAcronym );
+    QString getProjectionFamilyAcronym( QString theProjectionFamilyName );
+    QString getEllipsoidAcronym( QString theEllipsoidName );
+  private:
     QString getProjFromParameters();
     QString getEllipseFromParameters();
-    
-        
+
+
     QString mCurrentRecordId;
     long mCurrentRecordLong;
     //the record previous to starting an insert operation
     //so that we can return to it if the record insert is aborted
     long mLastRecordLong;
     long mRecordCountLong;
-    const QString stringSQLSafe(const QString theSQL);
+    const QString stringSQLSafe( const QString theSQL );
 
 };
 

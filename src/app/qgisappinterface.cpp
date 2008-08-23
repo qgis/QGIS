@@ -29,12 +29,12 @@
 #include "qgsmapcanvas.h"
 #include "qgslegend.h"
 
-QgisAppInterface::QgisAppInterface(QgisApp * _qgis)
-  : qgis(_qgis)
+QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
+    : qgis( _qgis )
 {
-    // connect signals
-    connect ( qgis->legend(), SIGNAL(currentLayerChanged(QgsMapLayer *)),
-              this, SIGNAL(currentLayerChanged(QgsMapLayer *)) );
+  // connect signals
+  connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+           this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
 
 }
 
@@ -57,41 +57,41 @@ void QgisAppInterface::zoomActiveLayer()
   qgis->zoomToLayerExtent();
 }
 
-QgsVectorLayer* QgisAppInterface::addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)
+QgsVectorLayer* QgisAppInterface::addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey )
 {
-  if (baseName.isEmpty())
+  if ( baseName.isEmpty() )
   {
-    QFileInfo fi(vectorLayerPath);
+    QFileInfo fi( vectorLayerPath );
     baseName = fi.completeBaseName();
   }
-  return qgis->addVectorLayer(vectorLayerPath, baseName, providerKey);
+  return qgis->addVectorLayer( vectorLayerPath, baseName, providerKey );
 }
 
-QgsRasterLayer* QgisAppInterface::addRasterLayer(QString rasterLayerPath, QString baseName)
+QgsRasterLayer* QgisAppInterface::addRasterLayer( QString rasterLayerPath, QString baseName )
 {
-  if (baseName.isEmpty())
+  if ( baseName.isEmpty() )
   {
-    QFileInfo fi(rasterLayerPath);
+    QFileInfo fi( rasterLayerPath );
     baseName = fi.completeBaseName();
   }
-  return qgis->addRasterLayer(rasterLayerPath, baseName);
+  return qgis->addRasterLayer( rasterLayerPath, baseName );
 }
 
-QgsRasterLayer* QgisAppInterface::addRasterLayer(const QString& url, const QString& baseName, const QString& providerKey, \
-						 const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs)
+QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey, \
+    const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs )
 {
-  return qgis->addRasterLayer(url, baseName, providerKey, layers, styles, format, crs);
+  return qgis->addRasterLayer( url, baseName, providerKey, layers, styles, format, crs );
 }
 
 
-bool QgisAppInterface::addProject(QString theProjectName)
+bool QgisAppInterface::addProject( QString theProjectName )
 {
-  return qgis->addProject(theProjectName);
+  return qgis->addProject( theProjectName );
 }
 
-void QgisAppInterface::newProject(bool thePromptToSaveFlag)
+void QgisAppInterface::newProject( bool thePromptToSaveFlag )
 {
-  qgis->fileNew(thePromptToSaveFlag);
+  qgis->fileNew( thePromptToSaveFlag );
 }
 
 QgsMapLayer *QgisAppInterface::activeLayer()
@@ -99,36 +99,36 @@ QgsMapLayer *QgisAppInterface::activeLayer()
   return qgis->activeLayer();
 }
 
-void QgisAppInterface::addPluginMenu(QString name, QAction* action)
+void QgisAppInterface::addPluginMenu( QString name, QAction* action )
 {
-  qgis->addPluginMenu(name, action);
+  qgis->addPluginMenu( name, action );
 }
 
-void QgisAppInterface::removePluginMenu(QString name, QAction* action)
+void QgisAppInterface::removePluginMenu( QString name, QAction* action )
 {
-  qgis->removePluginMenu(name, action);
+  qgis->removePluginMenu( name, action );
 }
 
-int QgisAppInterface::addToolBarIcon(QAction * qAction)
+int QgisAppInterface::addToolBarIcon( QAction * qAction )
 {
   // add the menu to the master Plugins menu
-  return qgis->addPluginToolBarIcon(qAction);
+  return qgis->addPluginToolBarIcon( qAction );
 }
-void QgisAppInterface::removeToolBarIcon(QAction *qAction)
+void QgisAppInterface::removeToolBarIcon( QAction *qAction )
 {
-  qgis->removePluginToolBarIcon(qAction);
+  qgis->removePluginToolBarIcon( qAction );
 }
-QToolBar* QgisAppInterface::addToolBar(QString name)
+QToolBar* QgisAppInterface::addToolBar( QString name )
 {
-  return qgis->addToolBar(name);
+  return qgis->addToolBar( name );
 }
 QToolBar * QgisAppInterface::fileToolBar()
 {
   return qgis->fileToolBar();
 }
-void QgisAppInterface::openURL(QString url, bool useQgisDocDirectory)
+void QgisAppInterface::openURL( QString url, bool useQgisDocDirectory )
 {
-  qgis->openURL(url, useQgisDocDirectory);
+  qgis->openURL( url, useQgisDocDirectory );
 }
 
 QgsMapCanvas * QgisAppInterface::getMapCanvas()
@@ -141,15 +141,15 @@ QWidget * QgisAppInterface::getMainWindow()
   return qgis;
 }
 
-void QgisAppInterface::addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )
+void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget )
 {
-  qgis->addDockWidget (  area, dockwidget );
+  qgis->addDockWidget( area, dockwidget );
 }
 
-void QgisAppInterface::refreshLegend(QgsMapLayer *l)
+void QgisAppInterface::refreshLegend( QgsMapLayer *l )
 {
-  if(l && qgis && qgis->legend())
-    {
-      qgis->legend()->refreshLayerSymbology( l->getLayerID() );
-    }
+  if ( l && qgis && qgis->legend() )
+  {
+    qgis->legend()->refreshLayerSymbology( l->getLayerID() );
+  }
 }

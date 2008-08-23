@@ -37,18 +37,18 @@ email                : tim@linfiniti.com
 #include <QMatrix>
 
 //non qt includes
-#include <iostream>
 #include <cmath>
 
 //the gui subclass
 #include "plugingui.h"
+#include "qgslogger.h"
 
 
 static const char * const ident_ = "$Id$";
 
-static const QString name_ = QObject::tr("CopyrightLabel");
-static const QString description_ = QObject::tr("Draws copyright information");
-static const QString version_ = QObject::tr("Version 0.1");
+static const QString name_ = QObject::tr( "CopyrightLabel" );
+static const QString description_ = QObject::tr( "Draws copyright information" );
+static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
 
@@ -57,12 +57,12 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  * and an interface object that provides access to exposed functions in QGIS.
  * @param _qI Pointer to the QGIS interface object
  */
-QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin(QgisInterface * theQgisInterFace):
-        QgisPlugin(name_,description_,version_,type_),
-        qGisInterface(theQgisInterFace)
+QgsCopyrightLabelPlugin::QgsCopyrightLabelPlugin( QgisInterface * theQgisInterFace ):
+    QgisPlugin( name_, description_, version_, type_ ),
+    qGisInterface( theQgisInterFace )
 {
-  mPlacementLabels << tr("Bottom Left") << tr("Top Left") 
-                   << tr("Top Right") << tr("Bottom Right");
+  mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
+  << tr( "Top Right" ) << tr( "Bottom Right" );
 }
 
 QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
@@ -73,182 +73,182 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
  */
 void QgsCopyrightLabelPlugin::initGui()
 {
-    // Create the action for tool
-    myQActionPointer = new QAction(QIcon(":/copyright_label.png"), tr("&Copyright Label"), this);
-    myQActionPointer->setWhatsThis(tr("Creates a copyright label that is displayed on the map canvas."));
-    // Connect the action to the run
-    connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
-    // This calls the renderer everytime the cnavas has drawn itself
-    connect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)), this, SLOT(renderLabel(QPainter *)));
-    //this resets this plugin up if a project is loaded
-    connect(qGisInterface->getMainWindow(), SIGNAL(projectRead()), this, SLOT(projectRead()));
+  // Create the action for tool
+  myQActionPointer = new QAction( QIcon( ":/copyright_label.png" ), tr( "&Copyright Label" ), this );
+  myQActionPointer->setWhatsThis( tr( "Creates a copyright label that is displayed on the map canvas." ) );
+  // Connect the action to the run
+  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
+  // This calls the renderer everytime the cnavas has drawn itself
+  connect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderLabel( QPainter * ) ) );
+  //this resets this plugin up if a project is loaded
+  connect( qGisInterface->getMainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
 
-    // Add the icon to the toolbar
-    qGisInterface->addToolBarIcon(myQActionPointer);
-    qGisInterface->addPluginMenu(tr("&Decorations"), myQActionPointer);
-    //initialise default values in the gui
-    projectRead();
+  // Add the icon to the toolbar
+  qGisInterface->addToolBarIcon( myQActionPointer );
+  qGisInterface->addPluginMenu( tr( "&Decorations" ), myQActionPointer );
+  //initialise default values in the gui
+  projectRead();
 }
 
 void QgsCopyrightLabelPlugin::projectRead()
 {
 #ifdef QGISDEBUG
-    //std::cout << "+++++++++ Copyright plugin - project read slot called...." << std::endl;
+// QgsDebugMsg("+++++++++ Copyright plugin - project read slot called....");
 #endif    //default text to start with - try to fetch it from qgsproject
 
-    QDate now;
-    QString defString;
+  QDate now;
+  QString defString;
 
-    now = QDate::currentDate();
-    defString = "&copy; QGIS " + now.toString("yyyy");
+  now = QDate::currentDate();
+  defString = "&copy; QGIS " + now.toString( "yyyy" );
 
-    mQFont.setFamily(QgsProject::instance()->readEntry("CopyrightLabel","/FontName","Sans Serif"));
-    mQFont.setPointSize(QgsProject::instance()->readNumEntry("CopyrightLabel","/FontSize",9));
-    mLabelQString = QgsProject::instance()->readEntry("CopyrightLabel","/Label", defString);
-    mPlacementIndex = QgsProject::instance()->readNumEntry("CopyrightLabel","/Placement",3);
-    mEnable = QgsProject::instance()->readBoolEntry("CopyrightLabel","/Enabled",true);
-    mLabelQColor.setNamedColor(QgsProject::instance()->readEntry("CopyrightLabel", "/Color", "#000000")); // default color is black
+  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
+  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
+  mLabelQString = QgsProject::instance()->readEntry( "CopyrightLabel", "/Label", defString );
+  mPlacementIndex = QgsProject::instance()->readNumEntry( "CopyrightLabel", "/Placement", 3 );
+  mEnable = QgsProject::instance()->readBoolEntry( "CopyrightLabel", "/Enabled", true );
+  mLabelQColor.setNamedColor( QgsProject::instance()->readEntry( "CopyrightLabel", "/Color", "#000000" ) ); // default color is black
 }
 //method defined in interface
 void QgsCopyrightLabelPlugin::help()
 {
-    //implement me!
+  //implement me!
 }
 
 // Slot called when the buffer menu item is activated
 void QgsCopyrightLabelPlugin::run()
 {
-    QgsCopyrightLabelPluginGui *myPluginGui=new QgsCopyrightLabelPluginGui(qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
-    myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
-    //listen for when the layer has been made so we can draw it
-    //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
-    //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
-    //refresh the canvas when the user presses ok
-    connect(myPluginGui, SIGNAL(changeFont(QFont )), this, SLOT(setFont(QFont )));
-    connect(myPluginGui, SIGNAL(changeLabel(QString )), this, SLOT(setLabel(QString )));
-    connect(myPluginGui, SIGNAL(changeColor(QColor)), this, SLOT(setColor(QColor)));
-    connect(myPluginGui, SIGNAL(changePlacement(int)), this, SLOT(setPlacement(int)));
-    connect(myPluginGui, SIGNAL(enableCopyrightLabel(bool)), this, SLOT(setEnable(bool)));
-    myPluginGui->setText(mLabelQString);
-    myPluginGui->setPlacementLabels(mPlacementLabels);
-    myPluginGui->setPlacement(mPlacementIndex);
-    myPluginGui->setColor(mLabelQColor);
-    myPluginGui->setEnabled(mEnable);
-    myPluginGui->show();
+  QgsCopyrightLabelPluginGui *myPluginGui = new QgsCopyrightLabelPluginGui( qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
+  //listen for when the layer has been made so we can draw it
+  //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
+  //connect(myPluginGui, SIGNAL(drawVectorLayer(QString,QString,QString)), this, SLOT(drawVectorLayer(QString,QString,QString)));
+  //refresh the canvas when the user presses ok
+  connect( myPluginGui, SIGNAL( changeFont( QFont ) ), this, SLOT( setFont( QFont ) ) );
+  connect( myPluginGui, SIGNAL( changeLabel( QString ) ), this, SLOT( setLabel( QString ) ) );
+  connect( myPluginGui, SIGNAL( changeColor( QColor ) ), this, SLOT( setColor( QColor ) ) );
+  connect( myPluginGui, SIGNAL( changePlacement( int ) ), this, SLOT( setPlacement( int ) ) );
+  connect( myPluginGui, SIGNAL( enableCopyrightLabel( bool ) ), this, SLOT( setEnable( bool ) ) );
+  myPluginGui->setText( mLabelQString );
+  myPluginGui->setPlacementLabels( mPlacementLabels );
+  myPluginGui->setPlacement( mPlacementIndex );
+  myPluginGui->setColor( mLabelQColor );
+  myPluginGui->setEnabled( mEnable );
+  myPluginGui->show();
 }
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void QgsCopyrightLabelPlugin::refreshCanvas()
 {
-    qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->getMapCanvas()->refresh();
 }
 
-void QgsCopyrightLabelPlugin::renderLabel(QPainter * theQPainter)
+void QgsCopyrightLabelPlugin::renderLabel( QPainter * theQPainter )
 {
-    //Large IF statement to enable/disable copyright label
-    if (mEnable)
+  //Large IF statement to enable/disable copyright label
+  if ( mEnable )
+  {
+    // need width/height of paint device
+    int myHeight = theQPainter->device()->height();
+    int myWidth = theQPainter->device()->width();
+
+    QTextDocument text;
+    text.setDefaultFont( mQFont );
+    // To set the text colour in a QTextDocument we use a CSS style
+    QString style = "<style type=\"text/css\"> p {color: " +
+                    mLabelQColor.name() + "}</style>";
+    text.setHtml( style + "<p>" + mLabelQString + "</p>" );
+    QSizeF size = text.size();
+
+    float myXOffset( 0 ), myYOffset( 0 );
+    //Determine placement of label from form combo box
+    switch ( mPlacementIndex )
     {
-        // need width/height of paint device
-        int myHeight = theQPainter->device()->height();
-        int myWidth = theQPainter->device()->width();
-
-        QTextDocument text;
-        text.setDefaultFont(mQFont);
-        // To set the text colour in a QTextDocument we use a CSS style
-        QString style = "<style type=\"text/css\"> p {color: " + 
-            mLabelQColor.name() + "}</style>";
-        text.setHtml(style + "<p>" + mLabelQString + "</p>");
-        QSizeF size = text.size();
-
-        float myXOffset(0), myYOffset(0);
-        //Determine placement of label from form combo box
-        switch (mPlacementIndex)
-        {
-        case 0: // Bottom Left
-          //Define bottom left hand corner start point
-          myYOffset = myHeight - size.height() + 5;
-          myXOffset = 5;
-          break;
-        case 1: // Top left
-          //Define top left hand corner start point
-          myYOffset = 0;;
-          myXOffset = 5;
-          break;
-        case 2: // Top Right
-          //Define top right hand corner start point
-          myYOffset = 0;
-          myXOffset = myWidth - (size.width() + 5);
-          break;
-        case 3: // Bottom Right
-          //Define bottom right hand corner start point
-          myYOffset = myHeight - size.height() + 5;
-          myXOffset = myWidth - (size.width() + 5);
-          break;
-        default:
-          std::cerr << "Unknown placement index of " << mPlacementIndex << '\n';
-        }
-
-        //Paint label to canvas
-        QMatrix worldMatrix = theQPainter->worldMatrix();
-        theQPainter->translate(myXOffset, myYOffset);
-        text.drawContents(theQPainter);
-        // Put things back how they were
-        theQPainter->setWorldMatrix(worldMatrix);
+      case 0: // Bottom Left
+        //Define bottom left hand corner start point
+        myYOffset = myHeight - size.height() + 5;
+        myXOffset = 5;
+        break;
+      case 1: // Top left
+        //Define top left hand corner start point
+        myYOffset = 0;;
+        myXOffset = 5;
+        break;
+      case 2: // Top Right
+        //Define top right hand corner start point
+        myYOffset = 0;
+        myXOffset = myWidth - ( size.width() + 5 );
+        break;
+      case 3: // Bottom Right
+        //Define bottom right hand corner start point
+        myYOffset = myHeight - size.height() + 5;
+        myXOffset = myWidth - ( size.width() + 5 );
+        break;
+      default:
+        QgsDebugMsg( QString( "Unknown placement index of %1" ).arg( mPlacementIndex ) );
     }
+
+    //Paint label to canvas
+    QMatrix worldMatrix = theQPainter->worldMatrix();
+    theQPainter->translate( myXOffset, myYOffset );
+    text.drawContents( theQPainter );
+    // Put things back how they were
+    theQPainter->setWorldMatrix( worldMatrix );
+  }
 }
 // Unload the plugin by cleaning up the GUI
 void QgsCopyrightLabelPlugin::unload()
 {
-    // remove the GUI
-    qGisInterface->removePluginMenu(tr("&Decorations"),myQActionPointer); 
-    qGisInterface->removeToolBarIcon(myQActionPointer);
-    // remove the copyright from the canvas
-    disconnect(qGisInterface->getMapCanvas(), SIGNAL(renderComplete(QPainter *)),
-	       this, SLOT(renderLabel(QPainter *)));
-    refreshCanvas();
+  // remove the GUI
+  qGisInterface->removePluginMenu( tr( "&Decorations" ), myQActionPointer );
+  qGisInterface->removeToolBarIcon( myQActionPointer );
+  // remove the copyright from the canvas
+  disconnect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
+              this, SLOT( renderLabel( QPainter * ) ) );
+  refreshCanvas();
 
-    delete myQActionPointer;
+  delete myQActionPointer;
 }
 
 
 //! change the copyright font
-void QgsCopyrightLabelPlugin::setFont(QFont theQFont)
+void QgsCopyrightLabelPlugin::setFont( QFont theQFont )
 {
-    mQFont = theQFont;
-    //save state to the project file.....
-    QgsProject::instance()->writeEntry("CopyrightLabel","/FontName",theQFont.family());
-    //save state to the project file.....
-    QgsProject::instance()->writeEntry("CopyrightLabel","/FontSize", theQFont.pointSize()  );
-    refreshCanvas();
+  mQFont = theQFont;
+  //save state to the project file.....
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/FontName", theQFont.family() );
+  //save state to the project file.....
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/FontSize", theQFont.pointSize() );
+  refreshCanvas();
 }
 //! change the copyright text
-void QgsCopyrightLabelPlugin::setLabel(QString theLabelQString)
+void QgsCopyrightLabelPlugin::setLabel( QString theLabelQString )
 {
-    mLabelQString = theLabelQString;
-    QgsProject::instance()->writeEntry("CopyrightLabel","/Label", mLabelQString  );
-    refreshCanvas();
+  mLabelQString = theLabelQString;
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/Label", mLabelQString );
+  refreshCanvas();
 }
 //! change the copyright text colour
-void QgsCopyrightLabelPlugin::setColor(QColor theQColor)
+void QgsCopyrightLabelPlugin::setColor( QColor theQColor )
 {
-    mLabelQColor = theQColor;
-    QgsProject::instance()->writeEntry("CopyrightLabel", "/Color", mLabelQColor.name());
-    refreshCanvas();
+  mLabelQColor = theQColor;
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/Color", mLabelQColor.name() );
+  refreshCanvas();
 }
 
 //! set placement of copyright label
-void QgsCopyrightLabelPlugin::setPlacement(int placementIndex)
+void QgsCopyrightLabelPlugin::setPlacement( int placementIndex )
 {
-    mPlacementIndex = placementIndex;
-    QgsProject::instance()->writeEntry("CopyrightLabel","/Placement", mPlacementIndex);
-    refreshCanvas();
+  mPlacementIndex = placementIndex;
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/Placement", mPlacementIndex );
+  refreshCanvas();
 }
 
 //! set whether copyright label is enabled
-void QgsCopyrightLabelPlugin::setEnable(bool theBool)
+void QgsCopyrightLabelPlugin::setEnable( bool theBool )
 {
-    mEnable = theBool;
-    QgsProject::instance()->writeEntry("CopyrightLabel","/Enabled", mEnable );
-    refreshCanvas();
+  mEnable = theBool;
+  QgsProject::instance()->writeEntry( "CopyrightLabel", "/Enabled", mEnable );
+  refreshCanvas();
 }
 
 
@@ -261,38 +261,38 @@ void QgsCopyrightLabelPlugin::setEnable(bool theBool)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-    return new QgsCopyrightLabelPlugin(theQgisInterfacePointer);
+  return new QgsCopyrightLabelPlugin( theQgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-    return name_;
+  return name_;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-    return description_;
+  return description_;
 }
 
 // Return the type (either UI or MapLayer plugin)
 QGISEXTERN int type()
 {
-    return type_;
+  return type_;
 }
 
 // Return the version number for the plugin
 QGISEXTERN QString version()
 {
-    return version_;
+  return version_;
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
-    delete thePluginPointer;
+  delete thePluginPointer;
 }

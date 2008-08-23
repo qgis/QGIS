@@ -27,16 +27,16 @@
  */
 class QgsHelpContextServer : public QTcpServer
 {
-  Q_OBJECT
-public:
-  QgsHelpContextServer(QObject *parent = 0);
-  ~QgsHelpContextServer();
+    Q_OBJECT
+  public:
+    QgsHelpContextServer( QObject *parent = 0 );
+    ~QgsHelpContextServer();
 
-public slots:
-  void incomingConnection(int socket);
+  public slots:
+    void incomingConnection( int socket );
 
-signals:
-  void setContext(const QString&);
+  signals:
+    void setContext( const QString& );
 };
 
 /*!
@@ -45,16 +45,16 @@ signals:
  */
 class QgsHelpContextSocket : public QTcpSocket
 {
-  Q_OBJECT
-public:
-  QgsHelpContextSocket(int socket, QObject *parent = 0);
-  ~QgsHelpContextSocket();
+    Q_OBJECT
+  public:
+    QgsHelpContextSocket( int socket, QObject *parent = 0 );
+    ~QgsHelpContextSocket();
 
-signals:
-  void setContext(const QString&);
+  signals:
+    void setContext( const QString& );
 
-private slots:
-  void readClient();
+  private slots:
+    void readClient();
 };
 
 #endif // QGSHELPSERVER_H

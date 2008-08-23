@@ -28,33 +28,32 @@
 #include <QSettings>
 #include <QSplashScreen>
 #include <QString>
-#include <QStringList> 
+#include <QStringList>
 #include <QStyle>
 #include <QPlastiqueStyle>
 #include <QTranslator>
 #include <QImageReader>
 
-#include <iostream>
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
 
 #ifdef WIN32
- // Open files in binary mode
- #include <fcntl.h> /*  _O_BINARY */
- #ifdef MSVC
- #undef _fmode
-  int _fmode = _O_BINARY;
- #endif
- #ifndef _MSC_VER
-  // Only do this if we are not building on windows with msvc.
-  // Recommended method for doing this with msvc is with a call to _set_fmode
-  // which is the first thing we do in main().
-  #undef _fmode
-  int _fmode = _O_BINARY;
- #endif//_MSC_VER
+// Open files in binary mode
+#include <fcntl.h> /*  _O_BINARY */
+#ifdef MSVC
+#undef _fmode
+int _fmode = _O_BINARY;
+#endif
+#ifndef _MSC_VER
+// Only do this if we are not building on windows with msvc.
+// Recommended method for doing this with msvc is with a call to _set_fmode
+// which is the first thing we do in main().
+#undef _fmode
+int _fmode = _O_BINARY;
+#endif//_MSC_VER
 #else
- #include <getopt.h>
+#include <getopt.h>
 #endif
 
 #ifdef Q_OS_MACX
@@ -71,6 +70,7 @@ typedef SInt32 SRefCon;
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsrect.h"
+#include "qgslogger.h"
 
 static const char * const ident_ = "$Id$";
 
@@ -78,25 +78,26 @@ static const char * const ident_ = "$Id$";
  */
 void usage( std::string const & appName )
 {
-  std::cerr << "Quantum GIS - " << VERSION << " '" << RELEASE_NAME << "' (" 
-            << QGSSVNVERSION << ")\n" 
-      << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n" 
-      << "raster and vector data.\n"  
-      << "Usage: " << appName <<  " [options] [FILES]\n"  
-      << "  options:\n"
-      << "\t[--snapshot fileName]\temit snapshot of loaded datasets to given file\n"
-      << "\t[--lang language]\tuse language for interface text\n"
-      << "\t[--project projectfile]\tload the given QGIS project\n"
-      << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
-      << "\t[--help]\t\tthis text\n\n"
-      << "  FILES:\n"  
-      << "    Files specified on the command line can include rasters,\n"  
-      << "    vectors, and QGIS project files (.qgs): \n"  
-      << "     1. Rasters - Supported formats include GeoTiff, DEM \n"  
-      << "        and others supported by GDAL\n"  
-      << "     2. Vectors - Supported formats include ESRI Shapefiles\n"  
-      << "        and others supported by OGR and PostgreSQL layers using\n"  
-            << "        the PostGIS extension\n"  ;
+  std::cerr << "Quantum GIS - " << VERSION << " '" << RELEASE_NAME << "' ("
+            << QGSSVNVERSION << ")\n"
+            << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n"
+            << "raster and vector data.\n"
+            << "Usage: " << appName <<  " [options] [FILES]\n"
+            << "  options:\n"
+            << "\t[--snapshot fileName]\temit snapshot of loaded datasets to given file\n"
+            << "\t[--lang language]\tuse language for interface text\n"
+            << "\t[--project projectfile]\tload the given QGIS project\n"
+            << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
+            << "\t[--help]\t\tthis text\n\n"
+            << "  FILES:\n"
+            << "    Files specified on the command line can include rasters,\n"
+            << "    vectors, and QGIS project files (.qgs): \n"
+            << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
+            << "        and others supported by GDAL\n"
+            << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
+            << "        and others supported by OGR and PostgreSQL layers using\n"
+            << "        the PostGIS extension\n"  ; // OK
+
 
 } // usage()
 
@@ -109,7 +110,7 @@ void usage( std::string const & appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behaviour will cause QGIS to autoload a project
-static QString myProjectFileName="";
+static QString myProjectFileName = "";
 
 // This is the 'leftover' arguments collection
 static QStringList myFileList;
@@ -120,57 +121,57 @@ static QStringList myFileList;
  * May be called at startup before application is initialized as well as
  * at any time while the application is running.
  */
-OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon refCon)
+OSErr openDocumentsAEHandler( const AppleEvent *event, AppleEvent *reply, SRefCon refCon )
 {
   AEDescList docs;
-  if (AEGetParamDesc(event, keyDirectObject, typeAEList, &docs) == noErr)
+  if ( AEGetParamDesc( event, keyDirectObject, typeAEList, &docs ) == noErr )
   {
     // Get count of files to open
     long count = 0;
-    AECountItems(&docs, &count);
+    AECountItems( &docs, &count );
 
     // Examine files and load first project file followed by all other non-project files
-    myProjectFileName.truncate(0);
+    myProjectFileName.truncate( 0 );
     myFileList.clear();
-    for (int i = 0; i < count; i++)
+    for ( int i = 0; i < count; i++ )
     {
       FSRef ref;
       UInt8 strBuffer[256];
-      if (AEGetNthPtr(&docs, i + 1, typeFSRef, 0, 0, &ref, sizeof(ref), 0) == noErr &&
-          FSRefMakePath(&ref, strBuffer, 256) == noErr)
+      if ( AEGetNthPtr( &docs, i + 1, typeFSRef, 0, 0, &ref, sizeof( ref ), 0 ) == noErr &&
+           FSRefMakePath( &ref, strBuffer, 256 ) == noErr )
       {
-        QString fileName(QString::fromUtf8(reinterpret_cast<char *>(strBuffer)));
-        if (fileName.endsWith(".qgs"))
+        QString fileName( QString::fromUtf8( reinterpret_cast<char *>( strBuffer ) ) );
+        if ( fileName.endsWith( ".qgs" ) )
         {
           // Load first project file and ignore all other project files
-          if (myProjectFileName.isEmpty())
+          if ( myProjectFileName.isEmpty() )
           {
             myProjectFileName = fileName;
           }
         }
         else
         {
-           // Load all non-project files
-           myFileList.append(fileName);
+          // Load all non-project files
+          myFileList.append( fileName );
         }
       }
     }
 
     // Open files now if application has been fully initialized (has objectName).
-    // Otherwise (if this routine is called by processEvents inside the QgisApp constructor 
+    // Otherwise (if this routine is called by processEvents inside the QgisApp constructor
     // at startup) wait for the command line file loader to notice these files.
     QgisApp *qgis = QgisApp::instance();
-    if (qgis && qgis->objectName() == "QgisApp")
+    if ( qgis && qgis->objectName() == "QgisApp" )
     {
-      if (!myProjectFileName.isEmpty())
+      if ( !myProjectFileName.isEmpty() )
       {
-        qgis->openProject(myProjectFileName);
+        qgis->openProject( myProjectFileName );
       }
-      for (QStringList::Iterator myIterator = myFileList.begin();
-	  myIterator != myFileList.end(); ++myIterator ) 
+      for ( QStringList::Iterator myIterator = myFileList.begin();
+            myIterator != myFileList.end(); ++myIterator )
       {
         QString fileName = *myIterator;
-        qgis->openLayer(fileName);
+        qgis->openLayer( fileName );
       }
     }
   }
@@ -184,13 +185,13 @@ OSErr openDocumentsAEHandler(const AppleEvent *event, AppleEvent *reply, SRefCon
  * contains a process serial number in the form -psn_0_1234567. Don't process
  * the command line arguments in this case because argv[1] confuses the processing.
  */
-bool bundleclicked(int argc, char *argv[])
+bool bundleclicked( int argc, char *argv[] )
 {
-  return ( argc > 1 && memcmp(argv[1], "-psn_", 5) == 0 );
+  return ( argc > 1 && memcmp( argv[1], "-psn_", 5 ) == 0 );
 }
 
 
-/* 
+/*
  * Hook into the qWarning/qFatal mechanism so that we can channel messages
  * from libpng to the user.
  *
@@ -203,7 +204,8 @@ bool bundleclicked(int argc, char *argv[])
  */
 void myMessageOutput( QtMsgType type, const char *msg )
 {
-  switch ( type ) {
+  switch ( type )
+  {
     case QtDebugMsg:
       fprintf( stderr, "Debug: %s\n", msg );
       break;
@@ -212,14 +214,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
       break;
     case QtWarningMsg:
       fprintf( stderr, "Warning: %s\n", msg );
-      
+
       // TODO: Verify this code in action.
-      if ( 0 == strncmp(msg, "libpng error:", 13) )
+      if ( 0 == strncmp( msg, "libpng error:", 13 ) )
       {
         // Let the user know
         QMessageBox::warning( 0, "libpng Error", msg );
       }
-      
+
       break;
     case QtFatalMsg:
       fprintf( stderr, "Fatal: %s\n", msg );
@@ -228,11 +230,11 @@ void myMessageOutput( QtMsgType type, const char *msg )
 }
 
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
- #ifdef _MSC_VER
-    _set_fmode(_O_BINARY);
- #endif 
+#ifdef _MSC_VER
+  _set_fmode( _O_BINARY );
+#endif
 
 #ifndef _MSC_VER
   // Set up the custom qWarning/qDebug custom handler
@@ -244,117 +246,115 @@ int main(int argc, char *argv[])
   ////////////////////////////////////////////////////////////////
 
   //
-  // Parse the command line arguments, looking to see if the user has asked for any 
+  // Parse the command line arguments, looking to see if the user has asked for any
   // special behaviours. Any remaining non command arguments will be kept aside to
   // be passed as a list of layers and / or a project that should be loaded.
   //
 
   // This behaviour is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName="";
+  QString mySnapshotFileName = "";
 
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent="";
-  if (argc == 1)
-    myInitialExtent="-1,-1,1,1";
+  QString myInitialExtent = "";
+  if ( argc == 1 )
+    myInitialExtent = "-1,-1,1,1";
 
   // This behaviour will allow you to force the use of a translation file
   // which is useful for testing
   QString myTranslationCode;
 
 #ifndef WIN32
-  if ( !bundleclicked(argc, argv) )
+  if ( !bundleclicked( argc, argv ) )
   {
 
-  //////////////////////////////////////////////////////////////// 
-  // USe the GNU Getopts utility to parse cli arguments
-  // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
-  ///////////////////////////////////////////////////////////////
-  int optionChar;
-  while (1)
-  {
-    static struct option long_options[] =
+    ////////////////////////////////////////////////////////////////
+    // USe the GNU Getopts utility to parse cli arguments
+    // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
+    ///////////////////////////////////////////////////////////////
+    int optionChar;
+    while ( 1 )
     {
-    /* These options set a flag. */
-    {"help", no_argument, 0, 'h'},
-    /* These options don't set a flag.
-     *  We distinguish them by their indices. */
-    {"snapshot", required_argument, 0, 's'},
-    {"lang",     required_argument, 0, 'l'},
-    {"project",  required_argument, 0, 'p'},
-    {"extent",   required_argument, 0, 'e'},
-    {0, 0, 0, 0}
-    };
+      static struct option long_options[] =
+      {
+        /* These options set a flag. */
+        {"help", no_argument, 0, 'h'},
+        /* These options don't set a flag.
+         *  We distinguish them by their indices. */
+        {"snapshot", required_argument, 0, 's'},
+        {"lang",     required_argument, 0, 'l'},
+        {"project",  required_argument, 0, 'p'},
+        {"extent",   required_argument, 0, 'e'},
+        {0, 0, 0, 0}
+      };
 
-    /* getopt_long stores the option index here. */
-    int option_index = 0;
+      /* getopt_long stores the option index here. */
+      int option_index = 0;
 
-    optionChar = getopt_long (argc, argv, "slpe",
-        long_options, &option_index);
+      optionChar = getopt_long( argc, argv, "slpe",
+                                long_options, &option_index );
 
-    /* Detect the end of the options. */
-    if (optionChar == -1)
-    break;
+      /* Detect the end of the options. */
+      if ( optionChar == -1 )
+        break;
 
-    switch (optionChar)
-    {
-    case 0:
-      /* If this option set a flag, do nothing else now. */
-      if (long_options[option_index].flag != 0)
-      break;
-      printf ("option %s", long_options[option_index].name);
-      if (optarg)
-      printf (" with arg %s", optarg);
-      printf ("\n");
-      break;
+      switch ( optionChar )
+      {
+        case 0:
+          /* If this option set a flag, do nothing else now. */
+          if ( long_options[option_index].flag != 0 )
+            break;
+          printf( "option %s", long_options[option_index].name );
+          if ( optarg )
+            printf( " with arg %s", optarg );
+          printf( "\n" );
+          break;
 
-    case 's':
-      mySnapshotFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absoluteFilePath());
-      break;
+        case 's':
+          mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+          break;
 
-    case 'l':
-      myTranslationCode = optarg;
-      break;
+        case 'l':
+          myTranslationCode = optarg;
+          break;
 
-    case 'p':
-      myProjectFileName = QDir::convertSeparators(QFileInfo(QFile::decodeName(optarg)).absoluteFilePath());
-      break;
+        case 'p':
+          myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+          break;
 
-    case 'e':
-      myInitialExtent = optarg;
-      break;
-      
-    case 'h':
-    case '?':
-      usage( argv[0] );
-      return 2;   // XXX need standard exit codes
-      break;
+        case 'e':
+          myInitialExtent = optarg;
+          break;
 
-    default:
-      std::cerr << argv[0] << ": getopt returned character code " << optionChar << "\n";
-      return 1;   // XXX need standard exit codes
+        case 'h':
+        case '?':
+          usage( argv[0] );
+          return 2;   // XXX need standard exit codes
+          break;
+
+        default:
+          QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+          return 1;   // XXX need standard exit codes
+      }
     }
-  }
 
-  // Add any remaining args to the file list - we will attempt to load them 
-  // as layers in the map view further down....
-#ifdef QGISDEBUG
-  std::cout << "Files specified on command line: " << optind << std::endl;
-#endif
-  if (optind < argc)
-  {
-    while (optind < argc)
+    // Add any remaining args to the file list - we will attempt to load them
+    // as layers in the map view further down....
+    QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
+    if ( optind < argc )
     {
+      while ( optind < argc )
+      {
 #ifdef QGISDEBUG
-    int idx = optind;
-    std::cout << idx << ": " << argv[idx] << std::endl;
+        int idx = optind;
+        QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
-    myFileList.append(QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[optind++])).absoluteFilePath()));
+        myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+      }
     }
-  }
   }
 #endif //WIN32
 
@@ -371,57 +371,57 @@ int main(int argc, char *argv[])
 #else
   bool myUseGuiFlag = TRUE;
 #endif
-  if (!myUseGuiFlag) 
+  if ( !myUseGuiFlag )
   {
-    std::cerr << "QGIS starting in non-interactive mode not supported.\n You "
-      "are seeing this message most likely because you have no DISPLAY "
-      "environment variable set." << std::endl;
-    exit(1); //exit for now until a version of qgis is capabable of running non interactive
+    QgsDebugMsg( "QGIS starting in non-interactive mode not supported.\n You "
+                 "are seeing this message most likely because you have no DISPLAY "
+                 "environment variable set." );
+    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
-  QgsApplication myApp(argc, argv, myUseGuiFlag );
-  //  
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+  //
   // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName("QuantumGIS");
-  QCoreApplication::setOrganizationDomain("qgis.org");
-  QCoreApplication::setApplicationName("QGIS");
+  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "QGIS" );
 #ifdef Q_OS_MACX
   // Install OpenDocuments AppleEvent handler after application object is initialized
   // but before any other event handling (including dialogs or splash screens) occurs.
   // If an OpenDocuments event has been created before the application was launched,
   // it must be handled before some other event handler runs and dismisses it as unknown.
   // If run at startup, the handler will set either or both of myProjectFileName and myFileList.
-  AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false);
+  AEInstallEventHandler( kCoreEventClass, kAEOpenDocuments, openDocumentsAEHandler, 0, false );
 
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
   // is not already defined, use the GDAL plugins in the application bundle.
-  QString gdalPlugins(QCoreApplication::applicationDirPath().append("/lib/gdalplugins"));
-  if (QFile::exists(gdalPlugins) && !getenv("GDAL_DRIVER_PATH"))
+  QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
+  if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
   {
-    setenv("GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1);
+    setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
   }
 #endif
 
 #ifdef Q_WS_WIN
   //for windows lets use plastique style!
-  QApplication::setStyle(new QPlastiqueStyle);
+  QApplication::setStyle( new QPlastiqueStyle );
 #endif
 
-  // Check to see if qgis was started from the source directory. 
+  // Check to see if qgis was started from the source directory.
   // This is done by checking whether qgis binary is in 'src/app'
   // directory. If running from there, exit gracefully.
   // (QGIS might work incorrectly when run from the sources)
   QString appDir = qApp->applicationDirPath();
 
-  if(appDir.endsWith("/src/app"))
+  if ( appDir.endsWith( "/src/app" ) )
   {
-    QMessageBox::critical(0,"QGIS Not Installed",
-          "You appear to be running QGIS from the source directory.\n"
-          "You must install QGIS using make install and run it from the "
-          "installed directory.");
-    exit(1);
+    QMessageBox::critical( 0, "QGIS Not Installed",
+                           "You appear to be running QGIS from the source directory.\n"
+                           "You must install QGIS using make install and run it from the "
+                           "installed directory." );
+    exit( 1 );
   }
 
-  
+
   // myApp.setFont(QFont("helvetica", 11));
 
   QString i18nPath = QgsApplication::i18nPath();
@@ -430,8 +430,8 @@ int main(int argc, char *argv[])
   /* Translation file for QGIS.
    */
   QSettings mySettings;
-  QString myUserLocale = mySettings.value("locale/userLocale", "").toString();
-  bool myLocaleOverrideFlag = mySettings.value("locale/overrideFlag",false).toBool();
+  QString myUserLocale = mySettings.value( "locale/userLocale", "" ).toString();
+  bool myLocaleOverrideFlag = mySettings.value( "locale/overrideFlag", false ).toBool();
   QString myLocale;
   //
   // Priority of translation is:
@@ -442,18 +442,18 @@ int main(int argc, char *argv[])
   //  When specifying from the command line it will change the user
   //  specified user locale
   //
-  if (!myTranslationCode.isNull() && !myTranslationCode.isEmpty())
+  if ( !myTranslationCode.isNull() && !myTranslationCode.isEmpty() )
   {
-    mySettings.setValue("locale/userLocale", myTranslationCode);
+    mySettings.setValue( "locale/userLocale", myTranslationCode );
   }
   else
   {
-    if (!myLocaleOverrideFlag || myUserLocale.isEmpty())
+    if ( !myLocaleOverrideFlag || myUserLocale.isEmpty() )
     {
       myTranslationCode = QLocale::system().name();
-      //setting the locale/userLocale when the --lang= option is not set will allow third party 
+      //setting the locale/userLocale when the --lang= option is not set will allow third party
       //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
-      mySettings.setValue("locale/userLocale", myTranslationCode);
+      mySettings.setValue( "locale/userLocale", myTranslationCode );
     }
     else
     {
@@ -462,30 +462,29 @@ int main(int argc, char *argv[])
   }
 
 #ifdef QGISDEBUG
-  //std::cout << "Setting translation to "
-  //  << i18nPath.toLocal8Bit().data() << "/qgis_" << myTranslationCode.toLocal8Bit().data() << std::endl;
+// QgsDebugMsg(QString("Setting translation to %1/qgis_%2").arg(i18nPath).arg(myTranslationCode));
 #endif
-  QTranslator qgistor(0);
-  if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
+  QTranslator qgistor( 0 );
+  if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
-    myApp.installTranslator(&qgistor);
+    myApp.installTranslator( &qgistor );
   }
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
-  QTranslator qttor(0);
-  if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
+  QTranslator qttor( 0 );
+  if ( qttor.load( QString( "qt_" ) + myTranslationCode, i18nPath ) )
   {
-    myApp.installTranslator(&qttor);
+    myApp.installTranslator( &qttor );
   }
 
-  //set up splash screen 
-  QString mySplashPath(QgsApplication::splashPath());
-  QPixmap myPixmap(mySplashPath+QString("splash.png"));
-  QSplashScreen *mypSplash = new QSplashScreen(myPixmap);
-  if (mySettings.value("/qgis/hideSplash").toBool())
+  //set up splash screen
+  QString mySplashPath( QgsApplication::splashPath() );
+  QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
+  QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
+  if ( mySettings.value( "/qgis/hideSplash" ).toBool() )
   {
     //splash screen hidden
   }
@@ -494,8 +493,8 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_MACX) && QT_VERSION < 0x040300
     //on mac automasking as done below does not work (as of qt 4.2.1)
     //so we do it the old way see bug #387
-    QPixmap myMaskPixmap(mySplashPath+QString("splash_mask.png"), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither ); 
-    mypSplash->setMask( myMaskPixmap.createHeuristicMask() ); 
+    QPixmap myMaskPixmap( mySplashPath + QString( "splash_mask.png" ), 0, Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::AvoidDither );
+    mypSplash->setMask( myMaskPixmap.createHeuristicMask() );
 #else
     //for win and linux we can just automask and png transparency areas will be used
     mypSplash->setMask( myPixmap.mask() );
@@ -508,28 +507,28 @@ int main(int argc, char *argv[])
   // plugins. In mac be sure to look in the
   // application bundle...
 #ifdef Q_WS_WIN
-  QCoreApplication::addLibraryPath( QApplication::applicationDirPath() 
-      + QDir::separator() + "plugins" );
+  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
+                                    + QDir::separator() + "plugins" );
 #endif
 #ifdef Q_OS_MACX
   //qDebug("Adding qt image plugins to plugin search path...");
-  CFURLRef myBundleRef = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-  CFStringRef myMacPath = CFURLCopyFileSystemPath(myBundleRef, kCFURLPOSIXPathStyle);
-  const char *mypPathPtr = CFStringGetCStringPtr(myMacPath,CFStringGetSystemEncoding());
-  CFRelease(myBundleRef);
-  CFRelease(myMacPath);
-  QString myPath(mypPathPtr);
+  CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
+  CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );
+  const char *mypPathPtr = CFStringGetCStringPtr( myMacPath, CFStringGetSystemEncoding() );
+  CFRelease( myBundleRef );
+  CFRelease( myMacPath );
+  QString myPath( mypPathPtr );
   // if we are not in a bundle assume that the app is built
   // as a non bundle app and that image plugins will be
   // in system Qt frameworks. If the app is a bundle
   // lets try to set the qt plugin search path...
-  QFileInfo myInfo(myPath);
-  if (myInfo.isBundle())
+  QFileInfo myInfo( myPath );
+  if ( myInfo.isBundle() )
   {
     // First clear the plugin search paths so we can be sure
     // only plugins from the bundle are being used
     QStringList myPathList;
-    QCoreApplication::setLibraryPaths(myPathList);
+    QCoreApplication::setLibraryPaths( myPathList );
     // Now set the paths inside the bundle
     myPath += "/Contents/plugins";
     QCoreApplication::addLibraryPath( myPath );
@@ -538,21 +537,21 @@ int main(int argc, char *argv[])
     //QCoreApplication::addLibraryPath( myPath + "/sqldrivers" );
     //foreach (myPath, myApp.libraryPaths())
     //{
-      //qDebug("Path:" + myPath.toLocal8Bit());
+    //qDebug("Path:" + myPath.toLocal8Bit());
     //}
     //qDebug( "Added %s to plugin search path", qPrintable( myPath ) );
     //QList<QByteArray> myFormats = QImageReader::supportedImageFormats();
     //for ( int x = 0; x < myFormats.count(); ++x ) {
     //  qDebug("Format: " + myFormats[x]);
-    //} 
+    //}
   }
 #endif
 
 
 
-  QgisApp *qgis = new QgisApp(mypSplash); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
-  
+
 
   /////////////////////////////////////////////////////////////////////
   // If no --project was specified, parse the args to look for a     //
@@ -560,13 +559,13 @@ int main(int argc, char *argv[])
   // of a project file by clicking on it in various desktop managers //
   // where an appropriate mime-type has been set up.                 //
   /////////////////////////////////////////////////////////////////////
-  if(myProjectFileName.isEmpty())
+  if ( myProjectFileName.isEmpty() )
   {
     // check for a .qgs
-    for(int i = 0; i < argc; i++)
+    for ( int i = 0; i < argc; i++ )
     {
-      QString arg = QDir::convertSeparators(QFileInfo(QFile::decodeName(argv[i])).absoluteFilePath());
-      if(arg.contains(".qgs"))
+      QString arg = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
+      if ( arg.contains( ".qgs" ) )
       {
         myProjectFileName = arg;
         break;
@@ -577,30 +576,26 @@ int main(int argc, char *argv[])
   /////////////////////////////////////////////////////////////////////
   // Load a project file if one was specified
   /////////////////////////////////////////////////////////////////////
-  if( ! myProjectFileName.isEmpty() )
+  if ( ! myProjectFileName.isEmpty() )
   {
-    qgis->openProject(myProjectFileName);
+    qgis->openProject( myProjectFileName );
   }
 
 
   /////////////////////////////////////////////////////////////////////
   // autoload any fileNames that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-#ifdef QGISDEBUG
-  std::cout << "Number of files in myFileList: " << myFileList.count() << std::endl;
-#endif
-  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator ) 
+  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
+  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )
   {
 
 
-#ifdef QGISDEBUG
-    std::cout << "Trying to load file : " << (*myIterator).toLocal8Bit().data() << std::endl;
-#endif
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if(!myLayerName.contains(".qgs"))
+    if ( !myLayerName.contains( ".qgs" ) )
     {
-      qgis->openLayer(myLayerName);
+      qgis->openLayer( myLayerName );
     }
   }
 
@@ -615,43 +610,46 @@ int main(int argc, char *argv[])
     bool ok = true;
 
     // XXX is it necessary to switch to "C" locale?
-    
+
     // parse values from string
     // extent is defined by string "xmin,ymin,xmax,ymax"
-    for (int i = 0; i < 3; i++)
+    for ( int i = 0; i < 3; i++ )
     {
       // find comma and get coordinate
-      pos = myInitialExtent.indexOf(',', posOld);
-      if (pos == -1) {
+      pos = myInitialExtent.indexOf( ',', posOld );
+      if ( pos == -1 )
+      {
         ok = false;
         break;
       }
 
-      coords[i] = QString( myInitialExtent.mid(posOld, pos - posOld) ).toDouble(&ok);
-      if (!ok)
+      coords[i] = QString( myInitialExtent.mid( posOld, pos - posOld ) ).toDouble( &ok );
+      if ( !ok )
         break;
-      
-      posOld = pos+1;
+
+      posOld = pos + 1;
     }
-  
+
     // parse last coordinate
-    if (ok)
-      coords[3] = QString( myInitialExtent.mid(posOld) ).toDouble(&ok);
-    
-    if (!ok)
-       std::cout << "Error while parsing initial extent!" << std::endl;
+    if ( ok )
+      coords[3] = QString( myInitialExtent.mid( posOld ) ).toDouble( &ok );
+
+    if ( !ok )
+    {
+      QgsDebugMsg( "Error while parsing initial extent!" );
+    }
     else
     {
-       // set extent from parsed values
-       QgsRect rect(coords[0],coords[1],coords[2],coords[3]);
-       qgis->setExtent(rect);
+      // set extent from parsed values
+      QgsRect rect( coords[0], coords[1], coords[2], coords[3] );
+      qgis->setExtent( rect );
     }
   }
- 
+
   /////////////////////////////////////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
-  if(mySnapshotFileName!="")
+  if ( mySnapshotFileName != "" )
   {
 
     /*You must have at least one paintEvent() delivered for the window to be
@@ -665,9 +663,9 @@ int main(int argc, char *argv[])
       */
     //qgis->show();
     myApp.processEvents();
-    QPixmap * myQPixmap = new QPixmap(800,600);
+    QPixmap * myQPixmap = new QPixmap( 800, 600 );
     myQPixmap->fill();
-    qgis->saveMapAsImage(mySnapshotFileName,myQPixmap);
+    qgis->saveMapAsImage( mySnapshotFileName, myQPixmap );
     myApp.processEvents();
     qgis->hide();
     return 1;
@@ -678,9 +676,9 @@ int main(int argc, char *argv[])
   // Continue on to interactive gui...
   /////////////////////////////////////////////////////////////////////
   qgis->show();
-  myApp.connect(&myApp, SIGNAL(lastWindowClosed()), &myApp, SLOT(quit()));
+  myApp.connect( &myApp, SIGNAL( lastWindowClosed() ), &myApp, SLOT( quit() ) );
 
-  mypSplash->finish(qgis);
+  mypSplash->finish( qgis );
   delete mypSplash;
   return myApp.exec();
 

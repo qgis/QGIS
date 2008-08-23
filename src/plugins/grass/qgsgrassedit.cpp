@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
 
 //#include <qnamespace.h>
 #include <QtGlobal>
@@ -61,7 +60,8 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-extern "C" {
+extern "C"
+{
 #include <grass/gis.h>
 #include <grass/Vect.h>
 }
@@ -73,6 +73,7 @@ extern "C" {
 #include "qgsgrassedittools.h"
 #include "qgsgrassutils.h"
 #include "qgsgrassplugin.h"
+#include "qgslogger.h"
 
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
@@ -81,48 +82,46 @@ extern "C" {
 
 class QgsGrassEditLayer : public QgsMapCanvasItem
 {
-public:
+  public:
 
-  QgsGrassEditLayer(QgsMapCanvas* mapCanvas):QgsMapCanvasItem(mapCanvas)
-  {
-  }
+    QgsGrassEditLayer( QgsMapCanvas* mapCanvas ): QgsMapCanvasItem( mapCanvas )
+    {
+    }
 
-  virtual void paint(QPainter* p)
-  {
-    p->drawPixmap(0,0, mPixmap);
-  }
+    virtual void paint( QPainter* p )
+    {
+      p->drawPixmap( 0, 0, mPixmap );
+    }
 
-  virtual QRectF boundingRect() const
-  {
-    return QRectF(0,0, mMapCanvas->width(), mMapCanvas->height());
-  }
+    virtual QRectF boundingRect() const
+    {
+      return QRectF( 0, 0, mMapCanvas->width(), mMapCanvas->height() );
+    }
 
-  virtual void updatePosition()
-  {
-    setPos(QPointF(mPanningOffset));
-  }
+    virtual void updatePosition()
+    {
+      setPos( QPointF( mPanningOffset ) );
+    }
 
-  QPixmap& pixmap() { return mPixmap; }
+    QPixmap& pixmap() { return mPixmap; }
 
-private:
+  private:
 
-  QPixmap mPixmap;
+    QPixmap mPixmap;
 };
 
 
 
 bool QgsGrassEdit::mRunning = false;
 
-QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, QgsMapLayer* layer, bool newMap,
-    QWidget * parent, Qt::WFlags f )
-    : QMainWindow(parent,f), QgsGrassEditBase (), mInited(false), 
-      mMapTool(0), mCanvasEdit(0), mRubberBandLine(0), mRubberBandIcon(0)
+QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMap,
+                            QWidget * parent, Qt::WFlags f )
+    : QMainWindow( parent, f ), QgsGrassEditBase(), mInited( false ),
+    mMapTool( 0 ), mCanvasEdit( 0 ), mRubberBandLine( 0 ), mRubberBandIcon( 0 )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit()" );
 
-  setupUi(this);
+  setupUi( this );
 
   mRunning = true;
   mValid = false;
@@ -131,226 +130,232 @@ QgsGrassEdit::QgsGrassEdit ( QgisInterface *iface, QgsMapLayer* layer, bool newM
   mIface = iface;
   mNewMap = newMap;
 
-  mProjectionEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
+  mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
 
   mCanvas = mIface->getMapCanvas();
 
-  if ( !isEditable(layer) ) return;
+  if ( !isEditable( layer ) ) return;
 
   //TODO dynamic_cast ?
-  mLayer = (QgsVectorLayer*)layer;
+  mLayer = ( QgsVectorLayer* )layer;
 
   //TODO dynamic_cast ?
-  mProvider = (QgsGrassProvider *) mLayer->dataProvider();
+  mProvider = ( QgsGrassProvider * ) mLayer->dataProvider();
 
 
   init();
 
 }
 
-bool QgsGrassEdit::isEditable ( QgsMapLayer *layer )
+bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
 {
   if ( !layer ) return false;
 
-  QgsDebugMsg("layer name: " + layer->name());
+  QgsDebugMsg( "layer name: " + layer->name() );
 
-  if ( layer->type() != QgsMapLayer::VECTOR ) {
-    QgsDebugMsg("The selected layer is not vector.");
+  if ( layer->type() != QgsMapLayer::VECTOR )
+  {
+    QgsDebugMsg( "The selected layer is not vector." );
     return false;
   }
 
   //TODO dynamic_cast ?
-  QgsVectorLayer *vector = (QgsVectorLayer*)layer;
+  QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
 
-  QgsDebugMsg("Vector layer type: " + vector->providerType());
+  QgsDebugMsg( "Vector layer type: " + vector->providerType() );
 
-  if ( vector->providerType() != "grass" ) {
-    QgsDebugMsg("The selected layer is not GRASS.");
+  if ( vector->providerType() != "grass" )
+  {
+    QgsDebugMsg( "The selected layer is not GRASS." );
     return false;
   }
 
   return true;
 }
 
-void QgsGrassEdit::keyPress(QKeyEvent *e) 
+void QgsGrassEdit::keyPress( QKeyEvent *e )
 {
-  std::cerr << "QgsGrassEdit::keyPress" << std::endl;
+  QgsDebugMsg( "QgsGrassEdit::keyPress" );
   // This does not work:
-  //keyPressEvent(e); 
+  //keyPressEvent(e);
 
   // TODO: this is not optimal
   switch ( e->key() )
   {
-  case Qt::Key_F1: newPoint(); break;  
-  case Qt::Key_F2: newLine(); break;  
-  case Qt::Key_F3: newBoundary(); break;  
-  case Qt::Key_F4: newCentroid(); break;  
-  case Qt::Key_F5: moveVertex(); break;  
-  case Qt::Key_F6: addVertex(); break;  
-  case Qt::Key_F7: deleteVertex(); break;  
-  case Qt::Key_F9: moveLine(); break;  
-  case Qt::Key_F10: splitLine(); break;  
-  case Qt::Key_F11: deleteLine(); break;  
-  default: break;
+    case Qt::Key_F1: newPoint(); break;
+    case Qt::Key_F2: newLine(); break;
+    case Qt::Key_F3: newBoundary(); break;
+    case Qt::Key_F4: newCentroid(); break;
+    case Qt::Key_F5: moveVertex(); break;
+    case Qt::Key_F6: addVertex(); break;
+    case Qt::Key_F7: deleteVertex(); break;
+    case Qt::Key_F9: moveLine(); break;
+    case Qt::Key_F10: splitLine(); break;
+    case Qt::Key_F11: deleteLine(); break;
+    default: break;
   }
 }
 
 
 void QgsGrassEdit::init()
 {
-  if ( !(mProvider->isGrassEditable()) ) {
-    QMessageBox::warning( 0, tr("Warning"), tr("You are not owner of the mapset, "
-      "cannot open the vector for editing.") );
+  if ( !( mProvider->isGrassEditable() ) )
+  {
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "You are not owner of the mapset, "
+                          "cannot open the vector for editing." ) );
     return;
   }
 
-  if ( !(mProvider->startEdit()) ) {
-    QMessageBox::warning( 0, tr("Warning"), tr("Cannot open vector for update." ));
+  if ( !( mProvider->startEdit() ) )
+  {
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector for update." ) );
     return;
   }
 
-  
-  mRubberBandLine = new QgsRubberBand(mCanvas);
-  mRubberBandIcon = new QgsVertexMarker(mCanvas);
-  mRubberBandLine->setZValue(20);
-  mRubberBandIcon->setZValue(20);
-  
-  connect ( mCanvas, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(keyPress(QKeyEvent *)) );
+
+  mRubberBandLine = new QgsRubberBand( mCanvas );
+  mRubberBandIcon = new QgsVertexMarker( mCanvas );
+  mRubberBandLine->setZValue( 20 );
+  mRubberBandIcon->setZValue( 20 );
+
+  connect( mCanvas, SIGNAL( keyPressed( QKeyEvent * ) ), this, SLOT( keyPress( QKeyEvent * ) ) );
 
 
-  mToolBar = addToolBar(tr("Edit tools"));
+  mToolBar = addToolBar( tr( "Edit tools" ) );
 
   mNewPointAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_new_point.png"), tr("New point"), this);
-  mNewPointAction->setShortcut ( QKeySequence(Qt::Key_F1) ); 
-  mToolBar->addAction ( mNewPointAction );
-  connect ( mNewPointAction, SIGNAL(triggered()), this, SLOT(newPoint()) );
+    QgsGrassPlugin::getThemeIcon( "grass_new_point.png" ), tr( "New point" ), this );
+  mNewPointAction->setShortcut( QKeySequence( Qt::Key_F1 ) );
+  mToolBar->addAction( mNewPointAction );
+  connect( mNewPointAction, SIGNAL( triggered() ), this, SLOT( newPoint() ) );
 
   mNewLineAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_new_line.png"), tr("New line"), this);
-  mNewLineAction->setShortcut ( QKeySequence(Qt::Key_F2) ); 
-  mToolBar->addAction ( mNewLineAction );
-  connect ( mNewLineAction, SIGNAL(triggered()), this, SLOT(newLine()) );
+    QgsGrassPlugin::getThemeIcon( "grass_new_line.png" ), tr( "New line" ), this );
+  mNewLineAction->setShortcut( QKeySequence( Qt::Key_F2 ) );
+  mToolBar->addAction( mNewLineAction );
+  connect( mNewLineAction, SIGNAL( triggered() ), this, SLOT( newLine() ) );
 
   mNewBoundaryAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_new_boundary.png"), tr("New boundary"), this);
-  mNewBoundaryAction->setShortcut ( QKeySequence(Qt::Key_F3) ); 
-  mToolBar->addAction ( mNewBoundaryAction );
-  connect ( mNewBoundaryAction, SIGNAL(triggered()), this, SLOT(newBoundary()) );
+    QgsGrassPlugin::getThemeIcon( "grass_new_boundary.png" ), tr( "New boundary" ), this );
+  mNewBoundaryAction->setShortcut( QKeySequence( Qt::Key_F3 ) );
+  mToolBar->addAction( mNewBoundaryAction );
+  connect( mNewBoundaryAction, SIGNAL( triggered() ), this, SLOT( newBoundary() ) );
 
   mNewCentroidAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_new_centroid.png"), tr("New centroid"), this);
-  mNewCentroidAction->setShortcut ( QKeySequence(Qt::Key_F4) ); 
-  mToolBar->addAction ( mNewCentroidAction );
-  connect ( mNewCentroidAction, SIGNAL(triggered()), this, SLOT(newCentroid()) );
+    QgsGrassPlugin::getThemeIcon( "grass_new_centroid.png" ), tr( "New centroid" ), this );
+  mNewCentroidAction->setShortcut( QKeySequence( Qt::Key_F4 ) );
+  mToolBar->addAction( mNewCentroidAction );
+  connect( mNewCentroidAction, SIGNAL( triggered() ), this, SLOT( newCentroid() ) );
 
   mMoveVertexAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_move_vertex.png"), tr("Move vertex"), this);
-  mMoveVertexAction->setShortcut ( QKeySequence(Qt::Key_F5) ); 
-  mToolBar->addAction ( mMoveVertexAction );
-  connect ( mMoveVertexAction, SIGNAL(triggered()), this, SLOT(moveVertex()) );
+    QgsGrassPlugin::getThemeIcon( "grass_move_vertex.png" ), tr( "Move vertex" ), this );
+  mMoveVertexAction->setShortcut( QKeySequence( Qt::Key_F5 ) );
+  mToolBar->addAction( mMoveVertexAction );
+  connect( mMoveVertexAction, SIGNAL( triggered() ), this, SLOT( moveVertex() ) );
 
   mAddVertexAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_add_vertex.png"), tr("Add vertex"), this);
-  mAddVertexAction->setShortcut ( QKeySequence(Qt::Key_F6) ); 
-  mToolBar->addAction ( mAddVertexAction );
-  connect ( mAddVertexAction, SIGNAL(triggered()), this, SLOT(addVertex()) );
+    QgsGrassPlugin::getThemeIcon( "grass_add_vertex.png" ), tr( "Add vertex" ), this );
+  mAddVertexAction->setShortcut( QKeySequence( Qt::Key_F6 ) );
+  mToolBar->addAction( mAddVertexAction );
+  connect( mAddVertexAction, SIGNAL( triggered() ), this, SLOT( addVertex() ) );
 
   mDeleteVertexAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_delete_vertex.png"), tr("Delete vertex"), this);
-  mDeleteVertexAction->setShortcut ( QKeySequence(Qt::Key_F7) ); 
-  mToolBar->addAction ( mDeleteVertexAction );
-  connect ( mDeleteVertexAction, SIGNAL(triggered()), this, SLOT(deleteVertex()) );
+    QgsGrassPlugin::getThemeIcon( "grass_delete_vertex.png" ), tr( "Delete vertex" ), this );
+  mDeleteVertexAction->setShortcut( QKeySequence( Qt::Key_F7 ) );
+  mToolBar->addAction( mDeleteVertexAction );
+  connect( mDeleteVertexAction, SIGNAL( triggered() ), this, SLOT( deleteVertex() ) );
 
   mMoveLineAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_move_line.png"), tr("Move element"), this);
-  mMoveLineAction->setShortcut ( QKeySequence(Qt::Key_F9) ); 
-  mToolBar->addAction ( mMoveLineAction );
-  connect ( mMoveLineAction, SIGNAL(triggered()), this, SLOT(moveLine()) );
+    QgsGrassPlugin::getThemeIcon( "grass_move_line.png" ), tr( "Move element" ), this );
+  mMoveLineAction->setShortcut( QKeySequence( Qt::Key_F9 ) );
+  mToolBar->addAction( mMoveLineAction );
+  connect( mMoveLineAction, SIGNAL( triggered() ), this, SLOT( moveLine() ) );
 
   mSplitLineAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_split_line.png"), tr("Split line"), this);
-  mSplitLineAction->setShortcut ( QKeySequence(Qt::Key_F10) ); 
-  mToolBar->addAction ( mSplitLineAction );
-  connect ( mSplitLineAction, SIGNAL(triggered()), this, SLOT(splitLine()) );
+    QgsGrassPlugin::getThemeIcon( "grass_split_line.png" ), tr( "Split line" ), this );
+  mSplitLineAction->setShortcut( QKeySequence( Qt::Key_F10 ) );
+  mToolBar->addAction( mSplitLineAction );
+  connect( mSplitLineAction, SIGNAL( triggered() ), this, SLOT( splitLine() ) );
 
   mDeleteLineAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_delete_line.png"), tr("Delete element"), this);
-  mDeleteLineAction->setShortcut ( QKeySequence(Qt::Key_F11) ); 
-  mToolBar->addAction ( mDeleteLineAction );
-  connect ( mDeleteLineAction, SIGNAL(triggered()), this, SLOT(deleteLine()) );
+    QgsGrassPlugin::getThemeIcon( "grass_delete_line.png" ), tr( "Delete element" ), this );
+  mDeleteLineAction->setShortcut( QKeySequence( Qt::Key_F11 ) );
+  mToolBar->addAction( mDeleteLineAction );
+  connect( mDeleteLineAction, SIGNAL( triggered() ), this, SLOT( deleteLine() ) );
 
   mEditAttributesAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_edit_attributes.png"), tr("Edit attributes"), this);
-  mToolBar->addAction ( mEditAttributesAction );
-  connect ( mEditAttributesAction, SIGNAL(triggered()), this, SLOT(editAttributes()) );
+    QgsGrassPlugin::getThemeIcon( "grass_edit_attributes.png" ), tr( "Edit attributes" ), this );
+  mToolBar->addAction( mEditAttributesAction );
+  connect( mEditAttributesAction, SIGNAL( triggered() ), this, SLOT( editAttributes() ) );
 
   mCloseEditAction = new QAction(
-    QgsGrassPlugin::getThemeIcon("grass_close_edit.png"), tr("Close"), this);
-  mToolBar->addAction ( mCloseEditAction );
-  connect ( mCloseEditAction, SIGNAL(triggered()), this, SLOT(closeEdit()) );
+    QgsGrassPlugin::getThemeIcon( "grass_close_edit.png" ), tr( "Close" ), this );
+  mToolBar->addAction( mCloseEditAction );
+  connect( mCloseEditAction, SIGNAL( triggered() ), this, SLOT( closeEdit() ) );
 
-  mNewPointAction->setCheckable ( true );
-  mNewLineAction->setCheckable ( true );
-  mNewBoundaryAction->setCheckable ( true );
-  mNewCentroidAction->setCheckable ( true );
-  mMoveVertexAction->setCheckable ( true );
-  mAddVertexAction->setCheckable ( true );
-  mDeleteVertexAction->setCheckable ( true );
-  mMoveLineAction->setCheckable ( true );
-  mSplitLineAction->setCheckable ( true );
-  mDeleteLineAction->setCheckable ( true );
-  mEditAttributesAction->setCheckable ( true );
+  mNewPointAction->setCheckable( true );
+  mNewLineAction->setCheckable( true );
+  mNewBoundaryAction->setCheckable( true );
+  mNewCentroidAction->setCheckable( true );
+  mMoveVertexAction->setCheckable( true );
+  mAddVertexAction->setCheckable( true );
+  mDeleteVertexAction->setCheckable( true );
+  mMoveLineAction->setCheckable( true );
+  mSplitLineAction->setCheckable( true );
+  mDeleteLineAction->setCheckable( true );
+  mEditAttributesAction->setCheckable( true );
 
-  QActionGroup *ag = new QActionGroup ( this );
-  ag->addAction ( mNewPointAction );
-  ag->addAction ( mNewLineAction );
-  ag->addAction ( mNewBoundaryAction );
-  ag->addAction ( mNewCentroidAction );
-  ag->addAction ( mMoveVertexAction );
-  ag->addAction ( mAddVertexAction );
-  ag->addAction ( mDeleteVertexAction );
-  ag->addAction ( mMoveLineAction );
-  ag->addAction ( mSplitLineAction );
-  ag->addAction ( mDeleteLineAction );
-  ag->addAction ( mEditAttributesAction );
+  QActionGroup *ag = new QActionGroup( this );
+  ag->addAction( mNewPointAction );
+  ag->addAction( mNewLineAction );
+  ag->addAction( mNewBoundaryAction );
+  ag->addAction( mNewCentroidAction );
+  ag->addAction( mMoveVertexAction );
+  ag->addAction( mAddVertexAction );
+  ag->addAction( mDeleteVertexAction );
+  ag->addAction( mMoveLineAction );
+  ag->addAction( mSplitLineAction );
+  ag->addAction( mDeleteLineAction );
+  ag->addAction( mEditAttributesAction );
 
-  mEditPoints = Vect_new_line_struct ();
-  mPoints = Vect_new_line_struct ();
-  mCats = Vect_new_cats_struct ();
+  mEditPoints = Vect_new_line_struct();
+  mPoints = Vect_new_line_struct();
+  mCats = Vect_new_cats_struct();
 
   // Set lines symbology from map
-  int nlines = mProvider->numLines(); 
-  mLineSymb.resize(nlines+1000);
-  for ( int line = 1; line <= nlines; line++ ) {
-    mLineSymb[line] = lineSymbFromMap ( line );
+  int nlines = mProvider->numLines();
+  mLineSymb.resize( nlines + 1000 );
+  for ( int line = 1; line <= nlines; line++ )
+  {
+    mLineSymb[line] = lineSymbFromMap( line );
   }
 
   // Set nodes symbology from map
-  int nnodes = mProvider->numNodes(); 
-  mNodeSymb.resize(nnodes+1000); 
-  for ( int node = 1; node <= nnodes; node++ ) {
-    mNodeSymb[node] = nodeSymbFromMap ( node );
+  int nnodes = mProvider->numNodes();
+  mNodeSymb.resize( nnodes + 1000 );
+  for ( int node = 1; node <= nnodes; node++ )
+  {
+    mNodeSymb[node] = nodeSymbFromMap( node );
   }
 
   // Set default colors
-  mSymb.resize(SYMB_COUNT);
-  mSymb[SYMB_BACKGROUND].setColor    ( QColor ( 255, 255, 255 ) );  // white
-  mSymb[SYMB_HIGHLIGHT].setColor     ( QColor ( 255, 255,   0 ) );  // yellow
-  mSymb[SYMB_DYNAMIC].setColor       ( QColor ( 125, 125, 125 ) );  // grey
-  mSymb[SYMB_POINT].setColor         ( QColor (   0,   0,   0 ) );  // black
-  mSymb[SYMB_LINE].setColor          ( QColor (   0,   0,   0 ) );  // black
-  mSymb[SYMB_BOUNDARY_0].setColor    ( QColor ( 255,   0,   0 ) );  // red
-  mSymb[SYMB_BOUNDARY_1].setColor    ( QColor ( 255, 125,   0 ) );  // orange
-  mSymb[SYMB_BOUNDARY_2].setColor    ( QColor (   0, 255,   0 ) );  // green
-  mSymb[SYMB_CENTROID_IN].setColor   ( QColor (   0, 255,   0 ) );  // green
-  mSymb[SYMB_CENTROID_OUT].setColor  ( QColor ( 255,   0,   0 ) );  // red
-  mSymb[SYMB_CENTROID_DUPL].setColor ( QColor ( 255,   0, 255 ) );  // magenta
-  mSymb[SYMB_NODE_1].setColor        ( QColor ( 255,   0,   0 ) );  // red
-  mSymb[SYMB_NODE_2].setColor        ( QColor (   0, 255,   0 ) );  // green
+  mSymb.resize( SYMB_COUNT );
+  mSymb[SYMB_BACKGROUND].setColor( QColor( 255, 255, 255 ) );       // white
+  mSymb[SYMB_HIGHLIGHT].setColor( QColor( 255, 255,   0 ) );        // yellow
+  mSymb[SYMB_DYNAMIC].setColor( QColor( 125, 125, 125 ) );          // grey
+  mSymb[SYMB_POINT].setColor( QColor( 0,   0,   0 ) );              // black
+  mSymb[SYMB_LINE].setColor( QColor( 0,   0,   0 ) );               // black
+  mSymb[SYMB_BOUNDARY_0].setColor( QColor( 255,   0,   0 ) );       // red
+  mSymb[SYMB_BOUNDARY_1].setColor( QColor( 255, 125,   0 ) );       // orange
+  mSymb[SYMB_BOUNDARY_2].setColor( QColor( 0, 255,   0 ) );         // green
+  mSymb[SYMB_CENTROID_IN].setColor( QColor( 0, 255,   0 ) );        // green
+  mSymb[SYMB_CENTROID_OUT].setColor( QColor( 255,   0,   0 ) );     // red
+  mSymb[SYMB_CENTROID_DUPL].setColor( QColor( 255,   0, 255 ) );    // magenta
+  mSymb[SYMB_NODE_1].setColor( QColor( 255,   0,   0 ) );           // red
+  mSymb[SYMB_NODE_2].setColor( QColor( 0, 255,   0 ) );             // green
 
   // Set mSymbDisplay
-  mSymbDisplay.resize(SYMB_COUNT);
+  mSymbDisplay.resize( SYMB_COUNT );
   mSymbDisplay[SYMB_BACKGROUND] = true;
   mSymbDisplay[SYMB_HIGHLIGHT] = true;
   mSymbDisplay[SYMB_DYNAMIC] = true;
@@ -366,480 +371,497 @@ void QgsGrassEdit::init()
   mSymbDisplay[SYMB_NODE_2] = true;
 
   // Set symbology names
-  mSymbName.resize(SYMB_COUNT);
-  mSymbName[SYMB_BACKGROUND]    = tr("Background");
-  mSymbName[SYMB_HIGHLIGHT]     = tr("Highlight");
-  mSymbName[SYMB_DYNAMIC]       = tr("Dynamic");
-  mSymbName[SYMB_POINT]         = tr("Point");
-  mSymbName[SYMB_LINE]          = tr("Line");
-  mSymbName[SYMB_BOUNDARY_0]    = tr("Boundary (no area)");
-  mSymbName[SYMB_BOUNDARY_1]    = tr("Boundary (1 area)");
-  mSymbName[SYMB_BOUNDARY_2]    = tr("Boundary (2 areas)");
-  mSymbName[SYMB_CENTROID_IN]   = tr("Centroid (in area)");
-  mSymbName[SYMB_CENTROID_OUT]  = tr("Centroid (outside area)");
-  mSymbName[SYMB_CENTROID_DUPL] = tr("Centroid (duplicate in area)");
-  mSymbName[SYMB_NODE_1]        = tr("Node (1 line)");
-  mSymbName[SYMB_NODE_2]        = tr("Node (2 lines)");
+  mSymbName.resize( SYMB_COUNT );
+  mSymbName[SYMB_BACKGROUND]    = tr( "Background" );
+  mSymbName[SYMB_HIGHLIGHT]     = tr( "Highlight" );
+  mSymbName[SYMB_DYNAMIC]       = tr( "Dynamic" );
+  mSymbName[SYMB_POINT]         = tr( "Point" );
+  mSymbName[SYMB_LINE]          = tr( "Line" );
+  mSymbName[SYMB_BOUNDARY_0]    = tr( "Boundary (no area)" );
+  mSymbName[SYMB_BOUNDARY_1]    = tr( "Boundary (1 area)" );
+  mSymbName[SYMB_BOUNDARY_2]    = tr( "Boundary (2 areas)" );
+  mSymbName[SYMB_CENTROID_IN]   = tr( "Centroid (in area)" );
+  mSymbName[SYMB_CENTROID_OUT]  = tr( "Centroid (outside area)" );
+  mSymbName[SYMB_CENTROID_DUPL] = tr( "Centroid (duplicate in area)" );
+  mSymbName[SYMB_NODE_1]        = tr( "Node (1 line)" );
+  mSymbName[SYMB_NODE_2]        = tr( "Node (2 lines)" );
 
   // Restore symbology
   QString spath = "/GRASS/edit/symb/";
   QSettings settings;
 
-  mLineWidth = settings.readNumEntry (
-    spath + "lineWidth", 1 );
-  mSize = settings.readNumEntry (
-    spath + "markerSize", 9 );
-  mLineWidthSpinBox->setValue(mLineWidth);
-  mMarkerSizeSpinBox->setValue(mSize);
+  mLineWidth = settings.readNumEntry(
+                 spath + "lineWidth", 1 );
+  mSize = settings.readNumEntry(
+            spath + "markerSize", 9 );
+  mLineWidthSpinBox->setValue( mLineWidth );
+  mMarkerSizeSpinBox->setValue( mSize );
 
-  for ( int i = 0; i < SYMB_COUNT; i++ ) {
+  for ( int i = 0; i < SYMB_COUNT; i++ )
+  {
     bool ok;
 
 
-    bool displ = settings.readBoolEntry ( 
-      spath + "display/" + QString::number(i), 
-      true, &ok );
-    if ( ok ) {
+    bool displ = settings.readBoolEntry(
+                   spath + "display/" + QString::number( i ),
+                   true, &ok );
+    if ( ok )
+    {
       mSymbDisplay[i] = displ;
     }
 
-    QString colorName = settings.readEntry (
-      spath + "color/" + QString::number(i), 
-      "", &ok );
-    if ( ok ) {
+    QString colorName = settings.readEntry(
+                          spath + "color/" + QString::number( i ),
+                          "", &ok );
+    if ( ok )
+    {
       QColor color( colorName );
       mSymb[i].setColor( color );
-       // Use the 'dynamic' color for mRubberBand
+      // Use the 'dynamic' color for mRubberBand
       if ( i == SYMB_DYNAMIC )
       {
-        mRubberBandLine->setColor(QColor(colorName));
+        mRubberBandLine->setColor( QColor( colorName ) );
       }
     }
     mSymb[i].setWidth( mLineWidth );
   }
 
   // Set Symbology in dialog
-  symbologyList->setColumnText(0,tr("Disp","Column title") );
-  symbologyList->setColumnWidth(0,20);
-  symbologyList->addColumn( tr("Color","Column title") );
-  symbologyList->setColumnWidth(0,50);
-  symbologyList->addColumn( tr("Type","Column title") );
-  symbologyList->setColumnWidthMode(2,Q3ListView::Maximum);
-  symbologyList->addColumn(tr("Index","Column title") , 0);
+  symbologyList->setColumnText( 0, tr( "Disp", "Column title" ) );
+  symbologyList->setColumnWidth( 0, 20 );
+  symbologyList->addColumn( tr( "Color", "Column title" ) );
+  symbologyList->setColumnWidth( 0, 50 );
+  symbologyList->addColumn( tr( "Type", "Column title" ) );
+  symbologyList->setColumnWidthMode( 2, Q3ListView::Maximum );
+  symbologyList->addColumn( tr( "Index", "Column title" ) , 0 );
   symbologyList->clear();
-  symbologyList->setSorting(-1);
+  symbologyList->setSorting( -1 );
 
-  
-  for ( int i = SYMB_COUNT-1; i >= 0; i-- ) {
+
+  for ( int i = SYMB_COUNT - 1; i >= 0; i-- )
+  {
     if ( i == SYMB_NODE_0 ) continue;
 
-    QPixmap pm ( 40, 15 );
+    QPixmap pm( 40, 15 );
     pm.fill( mSymb[i].color() );
     QString index;
-    index.sprintf ("%d", i );
+    index.sprintf( "%d", i );
 
-    if ( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC ) { 
-      Q3ListViewItem *lvi = new Q3ListViewItem ( symbologyList , "", "", mSymbName[i] );
-      lvi->setPixmap ( 1, pm );
-      lvi->setText ( 3, index );
-    } else {
-      Q3CheckListItem *clvi = new Q3CheckListItem ( symbologyList , "", Q3CheckListItem::CheckBox );
-      clvi->setText ( 2, mSymbName[i] );
-      clvi->setPixmap ( 1, pm );
-      clvi->setOn ( mSymbDisplay[i] );
-      clvi->setText ( 3, index );
+    if ( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC )
+    {
+      Q3ListViewItem *lvi = new Q3ListViewItem( symbologyList , "", "", mSymbName[i] );
+      lvi->setPixmap( 1, pm );
+      lvi->setText( 3, index );
+    }
+    else
+    {
+      Q3CheckListItem *clvi = new Q3CheckListItem( symbologyList , "", Q3CheckListItem::CheckBox );
+      clvi->setText( 2, mSymbName[i] );
+      clvi->setPixmap( 1, pm );
+      clvi->setOn( mSymbDisplay[i] );
+      clvi->setText( 3, index );
     }
   }
 
-  connect( symbologyList, SIGNAL(pressed(Q3ListViewItem *, const QPoint &, int)), 
-    this, SLOT(changeSymbology(Q3ListViewItem *, const QPoint &, int)));
+  connect( symbologyList, SIGNAL( pressed( Q3ListViewItem *, const QPoint &, int ) ),
+           this, SLOT( changeSymbology( Q3ListViewItem *, const QPoint &, int ) ) );
 
   // Init table tab
-  mAttributeTable->setLeftMargin(0); // hide row labels
-  mAttributeTable->horizontalHeader()->setLabel( 0, tr("Column") );
-  mAttributeTable->horizontalHeader()->setLabel( 1, tr("Type") );
-  mAttributeTable->horizontalHeader()->setLabel( 2, tr("Length") );
+  mAttributeTable->setLeftMargin( 0 ); // hide row labels
+  mAttributeTable->horizontalHeader()->setLabel( 0, tr( "Column" ) );
+  mAttributeTable->horizontalHeader()->setLabel( 1, tr( "Type" ) );
+  mAttributeTable->horizontalHeader()->setLabel( 2, tr( "Length" ) );
 
   int ndblinks = mProvider->numDbLinks();
 
-  if ( ndblinks > 0 ) {
-    for ( int i = 0; i < ndblinks; i++ ) {
-      int f = mProvider->dbLinkField ( i ); 
+  if ( ndblinks > 0 )
+  {
+    for ( int i = 0; i < ndblinks; i++ )
+    {
+      int f = mProvider->dbLinkField( i );
 
       QString str;
-      str.sprintf ( "%d", f );  
-      mTableField->insertItem ( str );
+      str.sprintf( "%d", f );
+      mTableField->insertItem( str );
       mFieldBox->insertItem( str );
-      if ( i == 0 ) {
+      if ( i == 0 )
+      {
         setAttributeTable( f );
       }
     }
-    mTableField->setCurrentItem ( 0 ); 
-    mFieldBox->setCurrentItem ( 0 );
-  } else { 
-    mTableField->insertItem ( "1" );
-    setAttributeTable ( 1 );
+    mTableField->setCurrentItem( 0 );
+    mFieldBox->setCurrentItem( 0 );
+  }
+  else
+  {
+    mTableField->insertItem( "1" );
+    setAttributeTable( 1 );
 
-    mFieldBox->insertItem("1");
+    mFieldBox->insertItem( "1" );
   }
 
-  connect( mAttributeTable, SIGNAL(valueChanged(int,int)), this, SLOT(columnTypeChanged(int,int)) );
+  connect( mAttributeTable, SIGNAL( valueChanged( int, int ) ), this, SLOT( columnTypeChanged( int, int ) ) );
 
   // Set variables
   mSelectedLine = 0;
   mAttributes = 0;
 
   // Read max cats
-  for (int i = 0; i < mProvider->cidxGetNumFields(); i++ ) {
-    int field = mProvider->cidxGetFieldNumber(i);
-    if ( field > 0 ) {
-      int cat = mProvider->cidxGetMaxCat(i);
+  for ( int i = 0; i < mProvider->cidxGetNumFields(); i++ )
+  {
+    int field = mProvider->cidxGetFieldNumber( i );
+    if ( field > 0 )
+    {
+      int cat = mProvider->cidxGetMaxCat( i );
       MaxCat mc;
       mc.field = field;
       mc.maxCat = cat;
-      mMaxCats.push_back(mc);
+      mMaxCats.push_back( mc );
     }
   }
 
-  connect( mCanvas, SIGNAL(renderComplete(QPainter *)), this, SLOT(postRender(QPainter *)));
+  connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
 
-  mCanvasEdit = new QgsGrassEditLayer(mCanvas);
+  mCanvasEdit = new QgsGrassEditLayer( mCanvas );
 
   mPixmap = &mCanvasEdit->pixmap();
 
 
 
   // Init GUI values
-  mCatModeBox->insertItem( tr("Next not used"), CAT_MODE_NEXT );
-  mCatModeBox->insertItem( tr("Manual entry"), CAT_MODE_MANUAL );
-  mCatModeBox->insertItem( tr("No category"), CAT_MODE_NOCAT );
-  catModeChanged ( );
+  mCatModeBox->insertItem( tr( "Next not used" ), CAT_MODE_NEXT );
+  mCatModeBox->insertItem( tr( "Manual entry" ), CAT_MODE_MANUAL );
+  mCatModeBox->insertItem( tr( "No category" ), CAT_MODE_NOCAT );
+  catModeChanged( );
 
   // TODO: how to get keyboard events from canvas (shortcuts)
 
   restorePosition();
 
-  mValid = true; 
-  mInited = true; 
+  mValid = true;
+  mInited = true;
 }
 
-void QgsGrassEdit::attributeTableFieldChanged ( void )
+void QgsGrassEdit::attributeTableFieldChanged( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::attributeTableFieldChanged" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::attributeTableFieldChanged" );
   int field = mTableField->currentText().toInt();
 
-  setAttributeTable ( field );
+  setAttributeTable( field );
 }
 
-void QgsGrassEdit::setAttributeTable ( int field )
+void QgsGrassEdit::setAttributeTable( int field )
 {
-  mAttributeTable->setNumRows ( 0 );
+  mAttributeTable->setNumRows( 0 );
 
-  QString *key = mProvider->key ( field );
+  QString *key = mProvider->key( field );
 
-  if ( !key->isEmpty() ) { // Database link defined
-    std::vector<QgsField> *cols = mProvider->columns ( field );
+  if ( !key->isEmpty() )   // Database link defined
+  {
+    std::vector<QgsField> *cols = mProvider->columns( field );
 
-    mAttributeTable->setNumRows ( cols->size() );
+    mAttributeTable->setNumRows( cols->size() );
 
 
-    for ( unsigned int c = 0; c < cols->size(); c++ ) {
-      QgsField col = (*cols)[c];
+    for ( unsigned int c = 0; c < cols->size(); c++ )
+    {
+      QgsField col = ( *cols )[c];
 
       Q3TableItem *ti;
 
       ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.name() );
       ti->setEnabled( false );
-      mAttributeTable->setItem ( c, 0, ti );
+      mAttributeTable->setItem( c, 0, ti );
 
       ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.typeName() );
       ti->setEnabled( false );
-      mAttributeTable->setItem ( c, 1, ti );
+      mAttributeTable->setItem( c, 1, ti );
 
       QString str;
-      str.sprintf("%d", col.length() );
+      str.sprintf( "%d", col.length() );
       ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, str );
       ti->setEnabled( false );
-      mAttributeTable->setItem ( c, 2, ti );
+      mAttributeTable->setItem( c, 2, ti );
     }
-  } else {
-    mAttributeTable->setNumRows ( 1 );
+  }
+  else
+  {
+    mAttributeTable->setNumRows( 1 );
 
     Q3TableItem *ti;
 
     ti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, "cat" );
-    mAttributeTable->setItem ( 0, 0, ti );
+    mAttributeTable->setItem( 0, 0, ti );
 
     ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "integer" );
     ti->setEnabled( false );
-    mAttributeTable->setItem ( 0, 1, ti );
+    mAttributeTable->setItem( 0, 1, ti );
 
     ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "" );
     ti->setEnabled( false );
-    mAttributeTable->setItem ( 0, 2, ti );
+    mAttributeTable->setItem( 0, 2, ti );
   }
 }
 
-void QgsGrassEdit::addColumn ( void )
+void QgsGrassEdit::addColumn( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::addColumn()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::addColumn()" );
   int r = mAttributeTable->numRows();
-  mAttributeTable->setNumRows( r+1 );
-  mAttributeTable->setRowReadOnly ( r, false );
+  mAttributeTable->setNumRows( r + 1 );
+  mAttributeTable->setRowReadOnly( r, false );
 
   QString cn;
-  cn.sprintf ( "column%d", r+1 );
+  cn.sprintf( "column%d", r + 1 );
 
   Q3TableItem *ti;
 
   ti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, cn );
-  mAttributeTable->setItem ( r, 0, ti );
+  mAttributeTable->setItem( r, 0, ti );
 
   QStringList types;
-  types.push_back ( "integer" );
-  types.push_back ( "double precision" );
-  types.push_back ( "varchar" );
+  types.push_back( "integer" );
+  types.push_back( "double precision" );
+  types.push_back( "varchar" );
 
-  Q3ComboTableItem *cti = new Q3ComboTableItem ( mAttributeTable, types ); 
-  cti->setCurrentItem(0);
-  mAttributeTable->setItem ( r, 1, cti );
+  Q3ComboTableItem *cti = new Q3ComboTableItem( mAttributeTable, types );
+  cti->setCurrentItem( 0 );
+  mAttributeTable->setItem( r, 1, cti );
 
   ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "20" );
-  ti->setEnabled(false);
-  mAttributeTable->setItem ( r, 2, ti );
+  ti->setEnabled( false );
+  mAttributeTable->setItem( r, 2, ti );
 }
 
-void QgsGrassEdit::columnTypeChanged ( int row, int col )
+void QgsGrassEdit::columnTypeChanged( int row, int col )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::columnChanged() row = " << row << " col = " << col << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::columnChanged() row = %1 col = %2" ).arg( row ).arg( col ) );
 
   if ( col != 1 ) return;
 
-  Q3ComboTableItem *cti = (Q3ComboTableItem *) mAttributeTable->item ( row, 1 ); 
+  Q3ComboTableItem *cti = ( Q3ComboTableItem * ) mAttributeTable->item( row, 1 );
 
-  Q3TableItem *ti = mAttributeTable->item ( row, 2 );
+  Q3TableItem *ti = mAttributeTable->item( row, 2 );
 
-  if ( cti->currentText().compare( "varchar" ) != 0 ) {
+  if ( cti->currentText().compare( "varchar" ) != 0 )
+  {
     Q3TableItem *nti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, ti->text() );
-    nti->setEnabled(false);
-    mAttributeTable->setItem ( row, 2, nti );
-    //delete ti;
-  } else {
-    Q3TableItem *nti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, ti->text() );
-    nti->setEnabled(true);
-    mAttributeTable->setItem ( row, 2, nti );
+    nti->setEnabled( false );
+    mAttributeTable->setItem( row, 2, nti );
     //delete ti;
   }
-  mAttributeTable->updateCell ( row, 2 );
+  else
+  {
+    Q3TableItem *nti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, ti->text() );
+    nti->setEnabled( true );
+    mAttributeTable->setItem( row, 2, nti );
+    //delete ti;
+  }
+  mAttributeTable->updateCell( row, 2 );
 }
 
-void QgsGrassEdit::alterTable ( void )
+void QgsGrassEdit::alterTable( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::alterTable()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::alterTable()" );
 
   // Create new table if first column name is editable otherwise alter table
   int field = mTableField->currentText().toInt();
 
   Q3TableItem *ti;
-  ti = mAttributeTable->item ( 0, 0 );
+  ti = mAttributeTable->item( 0, 0 );
 
   QString sql;
 
-  if ( mAttributeTable->item(0,0)->isEnabled() ) {
-#ifdef QGISDEBUG
-    std::cerr << "Create new table" << std::endl;
-#endif
+  if ( mAttributeTable->item( 0, 0 )->isEnabled() )
+  {
+    QgsDebugMsg( "Create new table" );
 
-    for ( int i = 0; i < mAttributeTable->numRows(); i++ ) {
-      if ( i > 0 ) sql.append(", " );
+    for ( int i = 0; i < mAttributeTable->numRows(); i++ )
+    {
+      if ( i > 0 ) sql.append( ", " );
 
 
-      sql.append ( mAttributeTable->item(i,0)->text() + " " + mAttributeTable->item(i,1)->text() );
+      sql.append( mAttributeTable->item( i, 0 )->text() + " " + mAttributeTable->item( i, 1 )->text() );
 
-      if ( mAttributeTable->item(i,1)->text().compare("varchar") == 0 ) {
-        sql.append ( " (" + mAttributeTable->item(i,2)->text() + ")" );
+      if ( mAttributeTable->item( i, 1 )->text().compare( "varchar" ) == 0 )
+      {
+        sql.append( " (" + mAttributeTable->item( i, 2 )->text() + ")" );
       }
     }
 
-    QString *error = mProvider->createTable ( field, mAttributeTable->item(0,0)->text(), sql );  
+    QString *error = mProvider->createTable( field, mAttributeTable->item( 0, 0 )->text(), sql );
 
-    if ( !error->isEmpty() ) {
-      QMessageBox::warning( 0, tr("Warning"), *error );
-    } else {
-      QMessageBox::information( 0, tr("Info"), tr("The table was created") );
+    if ( !error->isEmpty() )
+    {
+      QMessageBox::warning( 0, tr( "Warning" ), *error );
+    }
+    else
+    {
+      QMessageBox::information( 0, tr( "Info" ), tr( "The table was created" ) );
       QString str;
-      str.sprintf ( "%d", field );
+      str.sprintf( "%d", field );
       mFieldBox->insertItem( str );
     }
     delete error;
-  } else { 
-#ifdef QGISDEBUG
-    std::cerr << "Alter table" << std::endl;
-#endif
+  }
+  else
+  {
+    QgsDebugMsg( "Alter table" );
 
-    for ( int i = 0; i < mAttributeTable->numRows(); i++ ) {
-      if ( !(mAttributeTable->item(i,0)->isEnabled()) ) continue;
+    for ( int i = 0; i < mAttributeTable->numRows(); i++ )
+    {
+      if ( !( mAttributeTable->item( i, 0 )->isEnabled() ) ) continue;
 
-      sql = mAttributeTable->item(i,0)->text() + " " + mAttributeTable->item(i,1)->text();
+      sql = mAttributeTable->item( i, 0 )->text() + " " + mAttributeTable->item( i, 1 )->text();
 
-      if ( mAttributeTable->item(i,1)->text().compare("varchar") == 0 ) {
-        sql.append ( " (" + mAttributeTable->item(i,2)->text() + ")" );
+      if ( mAttributeTable->item( i, 1 )->text().compare( "varchar" ) == 0 )
+      {
+        sql.append( " (" + mAttributeTable->item( i, 2 )->text() + ")" );
       }
 
-      QString *error = mProvider->addColumn ( field, sql );  
+      QString *error = mProvider->addColumn( field, sql );
 
-      if ( !error->isEmpty() ) {
-        QMessageBox::warning( 0, tr("Warning"), *error );
+      if ( !error->isEmpty() )
+      {
+        QMessageBox::warning( 0, tr( "Warning" ), *error );
       }
       delete error;
     }
   }
 
-  setAttributeTable ( field );
+  setAttributeTable( field );
 }
 
-void QgsGrassEdit::changeSymbology(Q3ListViewItem * item, const QPoint & pnt, int col)
+void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::changeSymbology() col = " << col << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::changeSymbology() col = %1" ).arg( col ) );
 
   QSettings settings;
 
   if ( !item ) return;
 
-  int index = item->text(3).toInt();
+  int index = item->text( 3 ).toInt();
 
-  if ( col == 0 ) { 
-    if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC ) return; 
+  if ( col == 0 )
+  {
+    if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC ) return;
 
-    Q3CheckListItem *clvi = (Q3CheckListItem *) item;
+    Q3CheckListItem *clvi = ( Q3CheckListItem * ) item;
     mSymbDisplay[index] = clvi->isOn();
 
     //int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
     QString sn;
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/display/%d", index );
-    settings.writeEntry ( sn, mSymbDisplay[index] );
-  } else if ( col == 1 ) {
-    QColor color = QColorDialog::getColor ( mSymb[index].color(), this );
+    settings.writeEntry( sn, mSymbDisplay[index] );
+  }
+  else if ( col == 1 )
+  {
+    QColor color = QColorDialog::getColor( mSymb[index].color(), this );
     mSymb[index].setColor( color );
 
-    QPixmap pm ( 40, 15 );
+    QPixmap pm( 40, 15 );
     pm.fill( mSymb[index].color() );
-    item->setPixmap ( 1, pm );
+    item->setPixmap( 1, pm );
 
     QString sn;
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/color/%d", index );
-    settings.writeEntry ( sn, mSymb[index].color().name() );
-     // Use the 'dynamic' color for mRubberBand
+    settings.writeEntry( sn, mSymb[index].color().name() );
+    // Use the 'dynamic' color for mRubberBand
     if ( index == SYMB_DYNAMIC )
     {
-      mRubberBandLine->setColor(color);
+      mRubberBandLine->setColor( color );
     }
   }
 }
 
 void QgsGrassEdit::lineWidthChanged()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::lineWidthChanged()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::lineWidthChanged()" );
   QSettings settings;
   mLineWidth = mLineWidthSpinBox->value();
 
-  for ( int i = 0; i < SYMB_COUNT; i++ ) {
+  for ( int i = 0; i < SYMB_COUNT; i++ )
+  {
     mSymb[i].setWidth( mLineWidth );
   }
 
   QString spath = "/GRASS/edit/symb/";
-  settings.writeEntry ( spath + "lineWidth", mLineWidth );
+  settings.writeEntry( spath + "lineWidth", mLineWidth );
 }
 
 void QgsGrassEdit::markerSizeChanged()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::markerSizeChanged()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::markerSizeChanged()" );
   QSettings settings;
   mSize = mMarkerSizeSpinBox->value();
   QString spath = "/GRASS/edit/symb/";
-  settings.writeEntry ( spath + "markerSize", mSize );
+  settings.writeEntry( spath + "markerSize", mSize );
 }
 
 void QgsGrassEdit::restorePosition()
 {
   QSettings settings;
-  restoreGeometry(settings.value("/GRASS/windows/edit/geometry").toByteArray());
+  restoreGeometry( settings.value( "/GRASS/windows/edit/geometry" ).toByteArray() );
 }
 
 void QgsGrassEdit::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue("/GRASS/windows/edit/geometry", saveGeometry());
-} 
+  settings.setValue( "/GRASS/windows/edit/geometry", saveGeometry() );
+}
 
-void QgsGrassEdit::updateSymb ( void )
+void QgsGrassEdit::updateSymb( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::updateSymb" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::updateSymb" );
 
   // Set lines symbology from map
-  unsigned int nlines = mProvider->numLines(); 
-  if ( nlines+1 >= mLineSymb.size() )
-    mLineSymb.resize(nlines+1000); 
+  unsigned int nlines = mProvider->numLines();
+  if ( nlines + 1 >= mLineSymb.size() )
+    mLineSymb.resize( nlines + 1000 );
 
   nlines = mProvider->numUpdatedLines();
-  for ( unsigned int i = 0; i < nlines; i++ ) {
-    int line = mProvider->updatedLine(i);
-    std::cerr << "updated line = " << line << std::endl;
-    if ( !(mProvider->lineAlive(line)) ) continue;
-    mLineSymb[line] = lineSymbFromMap ( line );
+  for ( unsigned int i = 0; i < nlines; i++ )
+  {
+    int line = mProvider->updatedLine( i );
+    QgsDebugMsg( QString( "updated line = %1" ).arg( line ) );
+    if ( !( mProvider->lineAlive( line ) ) ) continue;
+    mLineSymb[line] = lineSymbFromMap( line );
   }
 
   // Set nodes symbology from map
-  unsigned int nnodes = mProvider->numNodes(); 
-  if ( nnodes+1 >= mNodeSymb.size() )
-    mNodeSymb.resize(nnodes+1000); 
+  unsigned int nnodes = mProvider->numNodes();
+  if ( nnodes + 1 >= mNodeSymb.size() )
+    mNodeSymb.resize( nnodes + 1000 );
 
-  nnodes = mProvider->numUpdatedNodes(); 
-  for ( unsigned int i = 0; i < nnodes; i++ ) {
-    int node = mProvider->updatedNode(i);
-    if ( !(mProvider->nodeAlive(node)) ) continue;
-    mNodeSymb[node] = nodeSymbFromMap ( node );
-    std::cerr << "node = " << node << " mNodeSymb = " << mNodeSymb[node] << std::endl;
+  nnodes = mProvider->numUpdatedNodes();
+  for ( unsigned int i = 0; i < nnodes; i++ )
+  {
+    int node = mProvider->updatedNode( i );
+    if ( !( mProvider->nodeAlive( node ) ) ) continue;
+    mNodeSymb[node] = nodeSymbFromMap( node );
+    QgsDebugMsg( QString( "node = %1 mNodeSymb = %2" ).arg( node ).arg( mNodeSymb[node] ) );
   }
 }
 
-int QgsGrassEdit::nodeSymbFromMap ( int node )
+int QgsGrassEdit::nodeSymbFromMap( int node )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::nodeSymbFromMap() node = " <<  node << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::nodeSymbFromMap() node = %1" ).arg( node ) );
 
-  int nlines = mProvider->nodeNLines ( node );
+  int nlines = mProvider->nodeNLines( node );
 
   int count = 0;
 
-  for ( int i = 0; i < nlines; i++ ) {
-    int line = abs (  mProvider->nodeLine(node,i) );
-    int type = mProvider->readLine ( NULL, NULL, line );
+  for ( int i = 0; i < nlines; i++ )
+  {
+    int line = abs( mProvider->nodeLine( node, i ) );
+    int type = mProvider->readLine( NULL, NULL, line );
 
     if ( type & GV_LINES )
       count++;
   }
 
-  if ( count == 0 ) 
+  if ( count == 0 )
     return SYMB_NODE_0;
   else if ( count == 1 )
     return SYMB_NODE_1;
@@ -847,17 +869,16 @@ int QgsGrassEdit::nodeSymbFromMap ( int node )
   return SYMB_NODE_2;
 }
 
-int QgsGrassEdit::lineSymbFromMap ( int line )
+int QgsGrassEdit::lineSymbFromMap( int line )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::lineSymbFromMap() line = " << line << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::lineSymbFromMap() line = %1" ).arg( line ) );
 
-  int type = mProvider->readLine ( NULL, NULL, line );
+  int type = mProvider->readLine( NULL, NULL, line );
 
   if ( type < 0 ) return 0;
 
-  switch ( type ) {
+  switch ( type )
+  {
     case GV_POINT:
       return SYMB_POINT;
       break;
@@ -869,7 +890,7 @@ int QgsGrassEdit::lineSymbFromMap ( int line )
     case GV_BOUNDARY:
       int left, right, nareas;
 
-      if ( !(mProvider->lineAreas(line, &left, &right)) ) return 0;
+      if ( !( mProvider->lineAreas( line, &left, &right ) ) ) return 0;
 
       /* Count areas/isles on both sides */
       nareas = 0;
@@ -881,10 +902,10 @@ int QgsGrassEdit::lineSymbFromMap ( int line )
       break;
 
     case GV_CENTROID:
-      int area = mProvider->centroidArea ( line );
+      int area = mProvider->centroidArea( line );
       if ( area == 0 ) return SYMB_CENTROID_OUT;
-      else if ( area > 0 ) return SYMB_CENTROID_IN;  
-      else return SYMB_CENTROID_DUPL; /* area < 0 */ 
+      else if ( area > 0 ) return SYMB_CENTROID_IN;
+      else return SYMB_CENTROID_DUPL; /* area < 0 */
       break;
   }
 
@@ -893,14 +914,12 @@ int QgsGrassEdit::lineSymbFromMap ( int line )
 
 QgsGrassEdit::~QgsGrassEdit()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::~QgsGrassEdit()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::~QgsGrassEdit()" );
 
   // we can only call some methods if init was complete,
   // note that we cannot use mValid because it is disabled before
   // destructor is called
-  if (mInited) 
+  if ( mInited )
   {
     // delete tool if exists
     delete mMapTool;
@@ -921,142 +940,149 @@ QgsGrassEdit::~QgsGrassEdit()
   mRunning = false;
 }
 
-bool QgsGrassEdit::isRunning(void)
+bool QgsGrassEdit::isRunning( void )
 {
   return mRunning;
 }
 
-bool QgsGrassEdit::isValid(void)
+bool QgsGrassEdit::isValid( void )
 {
   return mValid;
 }
 
-void QgsGrassEdit::closeEdit(void)
+void QgsGrassEdit::closeEdit( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::close()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::close()" );
 
   // Disconnect signals
-  // Warning: it seems that slots (postRender) can be called even 
-  //          after disconnect (is it a queue?) 
-  disconnect( this, SLOT(postRender(QPainter *)));
+  // Warning: it seems that slots (postRender) can be called even
+  //          after disconnect (is it a queue?)
+  disconnect( this, SLOT( postRender( QPainter * ) ) );
 
   mValid = false; // important for postRender
 
-  if ( mAttributes ) {
+  if ( mAttributes )
+  {
     delete mAttributes;
   }
 
-  mProvider->closeEdit(mNewMap);
+  mProvider->closeEdit( mNewMap );
 
   hide();
 
   // Add new layers
   if ( mNewMap )
   {
-    QString uri = QDir::cleanDirPath ( mProvider->dataSourceUri() );
-    std::cerr << "uri = " << uri.ascii() << std::endl;
+    QString uri = QDir::cleanDirPath( mProvider->dataSourceUri() );
+    QgsDebugMsg( QString( "uri = %1" ).arg( uri ) );
     // Note: QDir::cleanPath is using '/' also on Windows
     //QChar sep = QDir::separator();
     QChar sep = '/';
 
-    QStringList split = QStringList::split ( sep, uri );
+    QStringList split = QStringList::split( sep, uri );
     split.pop_back(); // layer
     QString map = split.last();
     split.pop_back(); // map
     QString mapset = split.last();
 
-    QgsGrassUtils::addVectorLayers ( mIface, QgsGrass::getDefaultGisdbase(), 
-      QgsGrass::getDefaultLocation(),
-      mapset, map );
+    QgsGrassUtils::addVectorLayers( mIface, QgsGrass::getDefaultGisdbase(),
+                                    QgsGrass::getDefaultLocation(),
+                                    mapset, map );
   }
   emit finished();
-  delete this; 
+  delete this;
 }
 
-void QgsGrassEdit::closeEvent(QCloseEvent *e)
+void QgsGrassEdit::closeEvent( QCloseEvent *e )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::closeEvent()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::closeEvent()" );
 
   e->accept();
 
   closeEdit();
 }
 
-void QgsGrassEdit::catModeChanged ( void )
+void QgsGrassEdit::catModeChanged( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::catModeChanged()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::catModeChanged()" );
   int mode = mCatModeBox->currentItem();
 
   int field = mFieldBox->currentText().toInt();
 
-  if ( mode == CAT_MODE_NEXT ) { // Find next not used
+  if ( mode == CAT_MODE_NEXT )   // Find next not used
+  {
     QString c = "1"; // Default for new field
-    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
-      if ( mMaxCats[i].field == field ) {
-        c.sprintf("%d", mMaxCats[i].maxCat+1);
+    for ( unsigned int i = 0; i < mMaxCats.size(); i++ )
+    {
+      if ( mMaxCats[i].field == field )
+      {
+        c.sprintf( "%d", mMaxCats[i].maxCat + 1 );
         break;
       }
     }
-    mCatEntry->setText ( c );
-    mCatEntry->setEnabled(false);
-    mFieldBox->setDisabled(false);
-  } else if ( mode == CAT_MODE_MANUAL ) {
-    mCatEntry->setEnabled(true);
-    mFieldBox->setDisabled(false);
-  } else { // CAT_MODE_NOCAT
-    mCatEntry->clear ();
-    mCatEntry->setEnabled(false);
-    mFieldBox->setDisabled(true);
+    mCatEntry->setText( c );
+    mCatEntry->setEnabled( false );
+    mFieldBox->setDisabled( false );
+  }
+  else if ( mode == CAT_MODE_MANUAL )
+  {
+    mCatEntry->setEnabled( true );
+    mFieldBox->setDisabled( false );
+  }
+  else   // CAT_MODE_NOCAT
+  {
+    mCatEntry->clear();
+    mCatEntry->setEnabled( false );
+    mFieldBox->setDisabled( true );
   }
 }
 
-void QgsGrassEdit::fieldChanged ( void )
+void QgsGrassEdit::fieldChanged( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::fieldChanged()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::fieldChanged()" );
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
 
-  if ( mode == CAT_MODE_NEXT ) { // Find next not used
+  if ( mode == CAT_MODE_NEXT )   // Find next not used
+  {
     QString c = "1"; // Default for new field
-    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
-      if ( mMaxCats[i].field == field ) {
-        c.sprintf("%d", mMaxCats[i].maxCat+1);
+    for ( unsigned int i = 0; i < mMaxCats.size(); i++ )
+    {
+      if ( mMaxCats[i].field == field )
+      {
+        c.sprintf( "%d", mMaxCats[i].maxCat + 1 );
         break;
       }
     }
-    mCatEntry->setText ( c );
+    mCatEntry->setText( c );
   }
 }
 
-int QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
+int QgsGrassEdit::writeLine( int type, struct line_pnts *Points )
 {
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
-  Vect_reset_cats ( mCats );
-  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
-    Vect_cat_set ( mCats, field, cat );
+  Vect_reset_cats( mCats );
+  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL )
+  {
+    Vect_cat_set( mCats, field, cat );
 
     // Insert new DB record if link is defined and the record for this cat does not exist
-    QString *key = mProvider->key ( field );
+    QString *key = mProvider->key( field );
 
-    if ( !key->isEmpty() ) { // Database link defined 
-      QgsAttributeMap *atts = mProvider->attributes ( field, cat );
+    if ( !key->isEmpty() )   // Database link defined
+    {
+      QgsAttributeMap *atts = mProvider->attributes( field, cat );
 
-      if ( atts->count() == 0 ) { // Nothing selected
-        QString *error = mProvider->insertAttributes ( field, cat );
+      if ( atts->count() == 0 )   // Nothing selected
+      {
+        QString *error = mProvider->insertAttributes( field, cat );
 
-        if ( !error->isEmpty() ) {
-          QMessageBox::warning( 0, tr("Warning"), *error );
+        if ( !error->isEmpty() )
+        {
+          QMessageBox::warning( 0, tr( "Warning" ), *error );
         }
         delete error;
       }
@@ -1064,98 +1090,105 @@ int QgsGrassEdit::writeLine ( int type, struct line_pnts *Points )
       delete atts;
     }
   }
-  Vect_line_prune ( Points );
-  int line = mProvider->writeLine ( type, Points, mCats );
+  Vect_line_prune( Points );
+  int line = mProvider->writeLine( type, Points, mCats );
 
   increaseMaxCat();
   return line;
 }
 
-void QgsGrassEdit::increaseMaxCat ( void )
+void QgsGrassEdit::increaseMaxCat( void )
 {
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
-  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
+  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL )
+  {
     int found = 0;
-    for (unsigned int i = 0; i < mMaxCats.size(); i++ ) {
-      if ( mMaxCats[i].field == field ) {
-        if ( cat > mMaxCats[i].maxCat ) {
+    for ( unsigned int i = 0; i < mMaxCats.size(); i++ )
+    {
+      if ( mMaxCats[i].field == field )
+      {
+        if ( cat > mMaxCats[i].maxCat )
+        {
           mMaxCats[i].maxCat = cat;
         }
         found = 1;
         break;
       }
     }
-    if ( !found ) { 
+    if ( !found )
+    {
       MaxCat mc;
       mc.field = field;
       mc.maxCat = cat;
-      mMaxCats.push_back(mc);
+      mMaxCats.push_back( mc );
     }
 
-    if ( mode == CAT_MODE_NEXT ) { 
-      QString c; 
-      c.sprintf("%d", cat+1);
-      mCatEntry->setText ( c );
+    if ( mode == CAT_MODE_NEXT )
+    {
+      QString c;
+      c.sprintf( "%d", cat + 1 );
+      mCatEntry->setText( c );
     }
   }
 
 }
 
-double QgsGrassEdit::threshold ( void )
+double QgsGrassEdit::threshold( void )
 {
   int snapPixels = mSnapPixels->text().toInt();
 
   // Convert to map units (not nice)
   QgsPoint p1, p2;
-  p1 = mTransform->toMapCoordinates(0, 0 ); 
-  p2 = mTransform->toMapCoordinates(snapPixels, 0); 
+  p1 = mTransform->toMapCoordinates( 0, 0 );
+  p2 = mTransform->toMapCoordinates( snapPixels, 0 );
 
-  if ( mProjectionEnabled ) 
+  if ( mProjectionEnabled )
   {
     try
     {
-      p1 = mCanvas->mapRenderer()->mapToLayerCoordinates(mLayer, p1);
-      p2 = mCanvas->mapRenderer()->mapToLayerCoordinates(mLayer, p2);
+      p1 = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, p1 );
+      p2 = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, p2 );
     }
-    catch(QgsCsException& cse)
+    catch ( QgsCsException& cse )
     {
-      Q_UNUSED(cse);
+      Q_UNUSED( cse );
       //error
     }
   }
 
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();
-  double thresh = sqrt ( dx*dx + dy*dy );
+  double thresh = sqrt( dx * dx + dy * dy );
   return thresh;
 }
 
-void QgsGrassEdit::snap (  double *x, double *y )
+void QgsGrassEdit::snap( double *x, double *y )
 {
   double thresh = threshold();
 
-  int node = mProvider->findNode ( *x, *y, thresh );
+  int node = mProvider->findNode( *x, *y, thresh );
 
-  if ( node > 0 ) {
-    mProvider->nodeCoor ( node, x, y );
+  if ( node > 0 )
+  {
+    mProvider->nodeCoor( node, x, y );
   }
 }
 
-void QgsGrassEdit::snap (  QgsPoint & point )
+void QgsGrassEdit::snap( QgsPoint & point )
 {
   double x = point.x();
   double y = point.y();
 
-  snap ( &x, &y );
+  snap( &x, &y );
 
-  point.setX(x);
-  point.setY(y);
+  point.setX( x );
+  point.setY( y );
 }
 
-void QgsGrassEdit::snap (  QgsPoint & point, double startX, double startY )
+void QgsGrassEdit::snap( QgsPoint & point, double startX, double startY )
 {
   double x = point.x();
   double y = point.y();
@@ -1163,124 +1196,123 @@ void QgsGrassEdit::snap (  QgsPoint & point, double startX, double startY )
   double thresh = threshold();
 
   // Start
-  double startDist = hypot ( x-startX, y-startY);
+  double startDist = hypot( x - startX, y - startY );
   bool startIn = false;
   if ( startDist <= thresh ) startIn = true;
 
   // Nearest node
   double nodeX = 0;
-  double  nodeY = 0;     
+  double  nodeY = 0;
   double nodeDist = 0;
   bool nodeIn = false;
-  int node = mProvider->findNode ( x, y, thresh );
+  int node = mProvider->findNode( x, y, thresh );
 
-  if ( node > 0 ) 
+  if ( node > 0 )
   {
-    mProvider->nodeCoor ( node, &nodeX, &nodeY );
-    nodeDist = hypot ( x-nodeX, y-nodeY);
+    mProvider->nodeCoor( node, &nodeX, &nodeY );
+    nodeDist = hypot( x - nodeX, y - nodeY );
     nodeIn = true;
   }
 
   // Choose
-  if ( (startIn && !nodeIn) || (startIn && nodeIn && startDist < nodeDist)  ) 
+  if (( startIn && !nodeIn ) || ( startIn && nodeIn && startDist < nodeDist ) )
   {
     x = startX; y = startY;
   }
-  else if ( (!startIn && nodeIn) || (startIn && nodeIn && startDist > nodeDist) ) 
+  else if (( !startIn && nodeIn ) || ( startIn && nodeIn && startDist > nodeDist ) )
   {
     x = nodeX; y = nodeY;
-  } 
+  }
 
-  point.setX(x);
-  point.setY(y);
+  point.setX( x );
+  point.setY( y );
 }
 
-void QgsGrassEdit::newPoint(void)
+void QgsGrassEdit::newPoint( void )
 {
-  startTool(QgsGrassEdit::NEW_POINT);
+  startTool( QgsGrassEdit::NEW_POINT );
 }
 
-void QgsGrassEdit::newLine(void)
-{ 
-  std::cerr << "QgsGrassEdit::newLine" << std::endl;
-  startTool(QgsGrassEdit::NEW_LINE); 
-}
-
-void QgsGrassEdit::newBoundary(void)
-{ 
-  std::cerr << "QgsGrassEdit::newBoundary" << std::endl;
-  startTool(QgsGrassEdit::NEW_BOUNDARY); 
-}
-
-void QgsGrassEdit::newCentroid(void)
+void QgsGrassEdit::newLine( void )
 {
-  startTool(QgsGrassEdit::NEW_CENTROID);
+  QgsDebugMsg( "QgsGrassEdit::newLine" );
+  startTool( QgsGrassEdit::NEW_LINE );
 }
 
-void QgsGrassEdit::moveVertex(void)
+void QgsGrassEdit::newBoundary( void )
 {
-  startTool(QgsGrassEdit::MOVE_VERTEX);
+  QgsDebugMsg( "QgsGrassEdit::newBoundary" );
+  startTool( QgsGrassEdit::NEW_BOUNDARY );
 }
 
-void QgsGrassEdit::addVertex(void)
+void QgsGrassEdit::newCentroid( void )
 {
-  startTool(QgsGrassEdit::ADD_VERTEX);
+  startTool( QgsGrassEdit::NEW_CENTROID );
 }
 
-void QgsGrassEdit::deleteVertex(void)
+void QgsGrassEdit::moveVertex( void )
 {
-  startTool(QgsGrassEdit::DELETE_VERTEX);
+  startTool( QgsGrassEdit::MOVE_VERTEX );
 }
 
-void QgsGrassEdit::splitLine(void)
+void QgsGrassEdit::addVertex( void )
 {
-  startTool(QgsGrassEdit::SPLIT_LINE);
+  startTool( QgsGrassEdit::ADD_VERTEX );
 }
 
-void QgsGrassEdit::moveLine(void)
+void QgsGrassEdit::deleteVertex( void )
 {
-  startTool(QgsGrassEdit::MOVE_LINE);
+  startTool( QgsGrassEdit::DELETE_VERTEX );
 }
 
-void QgsGrassEdit::deleteLine(void)
+void QgsGrassEdit::splitLine( void )
 {
-  startTool(QgsGrassEdit::DELETE_LINE);
+  startTool( QgsGrassEdit::SPLIT_LINE );
 }
 
-void QgsGrassEdit::editCats(void)
+void QgsGrassEdit::moveLine( void )
 {
-  startTool(QgsGrassEdit::EDIT_CATS);
+  startTool( QgsGrassEdit::MOVE_LINE );
 }
 
-void QgsGrassEdit::editAttributes(void)
+void QgsGrassEdit::deleteLine( void )
 {
-  startTool(QgsGrassEdit::EDIT_ATTRIBUTES);
+  startTool( QgsGrassEdit::DELETE_LINE );
 }
 
-void QgsGrassEdit::startTool(int tool)
+void QgsGrassEdit::editCats( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::startTool() tool = " << tool << std::endl;
-#endif
+  startTool( QgsGrassEdit::EDIT_CATS );
+}
+
+void QgsGrassEdit::editAttributes( void )
+{
+  startTool( QgsGrassEdit::EDIT_ATTRIBUTES );
+}
+
+void QgsGrassEdit::startTool( int tool )
+{
+  QgsDebugMsg( QString( "QgsGrassEdit::startTool() tool = %1" ).arg( tool ) );
 
   // Delete last dynamic drawing from canvas
   eraseDynamic();
   if ( mSelectedLine > 0 )
-    displayElement ( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
+    displayElement( mSelectedLine, mSymb[mLineSymb[mSelectedLine]], mSize );
 
   // close old tool
-  if (mMapTool)
+  if ( mMapTool )
   {
     delete mMapTool;
     mMapTool = NULL;
   }
 
   // All necessary data were written -> reset mEditPoints etc.
-  Vect_reset_line ( mEditPoints );
+  Vect_reset_line( mEditPoints );
   mSelectedLine = 0;
 
   // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be recieved
-  if ( mAttributes && mTool != QgsGrassEdit::NEW_LINE && mTool != QgsGrassEdit::NEW_BOUNDARY ) {
+  if ( mAttributes && mTool != QgsGrassEdit::NEW_LINE && mTool != QgsGrassEdit::NEW_BOUNDARY )
+  {
     delete mAttributes;
     mAttributes = 0;
   }
@@ -1288,154 +1320,165 @@ void QgsGrassEdit::startTool(int tool)
   // Start new tool
   mTool = tool;
 
-  switch (mTool)
+  switch ( mTool )
   {
-  case NEW_POINT:
-    mMapTool = new QgsGrassEditNewPoint(this, false);
-    mMapTool->setAction(mNewPointAction);
-    break;
+    case NEW_POINT:
+      mMapTool = new QgsGrassEditNewPoint( this, false );
+      mMapTool->setAction( mNewPointAction );
+      break;
 
-  case NEW_CENTROID:
-    mMapTool = new QgsGrassEditNewPoint(this, true);
-    mMapTool->setAction(mNewCentroidAction);
-    break;
+    case NEW_CENTROID:
+      mMapTool = new QgsGrassEditNewPoint( this, true );
+      mMapTool->setAction( mNewCentroidAction );
+      break;
 
-  case NEW_LINE:
-    mMapTool = new QgsGrassEditNewLine(this, false);
-    mMapTool->setAction(mNewLineAction);
-    break;
+    case NEW_LINE:
+      mMapTool = new QgsGrassEditNewLine( this, false );
+      mMapTool->setAction( mNewLineAction );
+      break;
 
-  case NEW_BOUNDARY:
-    mMapTool = new QgsGrassEditNewLine(this, true);
-    mMapTool->setAction(mNewBoundaryAction);
-    break;
+    case NEW_BOUNDARY:
+      mMapTool = new QgsGrassEditNewLine( this, true );
+      mMapTool->setAction( mNewBoundaryAction );
+      break;
 
-  case MOVE_VERTEX:
-    mMapTool = new QgsGrassEditMoveVertex(this);
-    mMapTool->setAction(mMoveVertexAction);
-    break;
+    case MOVE_VERTEX:
+      mMapTool = new QgsGrassEditMoveVertex( this );
+      mMapTool->setAction( mMoveVertexAction );
+      break;
 
-  case ADD_VERTEX:
-    mMapTool = new QgsGrassEditAddVertex(this);
-    mMapTool->setAction(mAddVertexAction);
-    break;
+    case ADD_VERTEX:
+      mMapTool = new QgsGrassEditAddVertex( this );
+      mMapTool->setAction( mAddVertexAction );
+      break;
 
-  case DELETE_VERTEX:
-    mMapTool = new QgsGrassEditDeleteVertex(this);
-    mMapTool->setAction(mDeleteVertexAction);
-    break;
+    case DELETE_VERTEX:
+      mMapTool = new QgsGrassEditDeleteVertex( this );
+      mMapTool->setAction( mDeleteVertexAction );
+      break;
 
-  case MOVE_LINE:
-    mMapTool = new QgsGrassEditMoveLine(this);
-    mMapTool->setAction(mMoveLineAction);
-    break;
+    case MOVE_LINE:
+      mMapTool = new QgsGrassEditMoveLine( this );
+      mMapTool->setAction( mMoveLineAction );
+      break;
 
-  case DELETE_LINE:
-    mMapTool = new QgsGrassEditDeleteLine(this);
-    mMapTool->setAction(mDeleteLineAction);
-    break;
+    case DELETE_LINE:
+      mMapTool = new QgsGrassEditDeleteLine( this );
+      mMapTool->setAction( mDeleteLineAction );
+      break;
 
-  case SPLIT_LINE:
-    mMapTool = new QgsGrassEditSplitLine(this);
-    mMapTool->setAction(mSplitLineAction);
-    break;
+    case SPLIT_LINE:
+      mMapTool = new QgsGrassEditSplitLine( this );
+      mMapTool->setAction( mSplitLineAction );
+      break;
 
-  case EDIT_ATTRIBUTES:
-    mMapTool = new QgsGrassEditAttributes(this);
-    mMapTool->setAction(mEditAttributesAction);
-    break;
+    case EDIT_ATTRIBUTES:
+      mMapTool = new QgsGrassEditAttributes( this );
+      mMapTool->setAction( mEditAttributesAction );
+      break;
 
-  case EDIT_CATS:
-    mTool = NONE;
-    QMessageBox::warning( 0, tr("Warning"), tr("Tool not yet implemented.") );
-    break;
+    case EDIT_CATS:
+      mTool = NONE;
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Tool not yet implemented." ) );
+      break;
 
-  default:
-    std::cerr << "Unknown tool" << std::endl;
-    break;
+    default:
+      QgsDebugMsg( "Unknown tool" );
+      break;
   }
 
   // assign newly created tool to map canvas
-  mCanvas->setMapTool(mMapTool);
+  mCanvas->setMapTool( mMapTool );
 }
 
-void QgsGrassEdit::checkOrphan ( int field, int cat )
+void QgsGrassEdit::checkOrphan( int field, int cat )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::checkOrphan field = " << field
-    << " cat = " << cat << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::checkOrphan field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   int orphan;
-  QString *error = mProvider->isOrphan ( field, cat, &orphan );
+  QString *error = mProvider->isOrphan( field, cat, &orphan );
 
-  if ( !error->isEmpty() ) {
-    QMessageBox::warning( 0, tr("Warning"), tr("Cannot check orphan record: ")
-      + *error );
+  if ( !error->isEmpty() )
+  {
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot check orphan record: " )
+                          + *error );
     return;
   }
   if ( !orphan ) return;
 
-  QMessageBox::StandardButton ret = QMessageBox::question ( 0, tr("Warning"), 
-    tr("Orphan record was left in attribute table. "
-    "<br>Delete the record?"),  
-    QMessageBox::Ok | QMessageBox::Cancel );
+  QMessageBox::StandardButton ret = QMessageBox::question( 0, tr( "Warning" ),
+                                    tr( "Orphan record was left in attribute table. "
+                                        "<br>Delete the record?" ),
+                                    QMessageBox::Ok | QMessageBox::Cancel );
 
   if ( ret == QMessageBox::Cancel ) return;
 
   // Delete record
-  error = mProvider->deleteAttributes ( field, cat );
-  if ( !error->isEmpty() ) {
-    QMessageBox::warning( 0, tr("Warning"), tr("Cannot delete orphan record: ")
-      + *error );
+  error = mProvider->deleteAttributes( field, cat );
+  if ( !error->isEmpty() )
+  {
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot delete orphan record: " )
+                          + *error );
     return;
   }
 }
 
-void QgsGrassEdit::addAttributes ( int field, int cat )
+void QgsGrassEdit::addAttributes( int field, int cat )
 {
-  QString *key = mProvider->key ( field );
+  QString *key = mProvider->key( field );
 
   QString lab;
-  lab.sprintf ( "%d:%d", field, cat );
+  lab.sprintf( "%d:%d", field, cat );
   int tab = mAttributes->addTab( lab );
-  mAttributes->setField ( tab, field );
+  mAttributes->setField( tab, field );
 
   QString catLabel;
-  if ( key->isEmpty() ) {
+  if ( key->isEmpty() )
+  {
     catLabel = "Category";
-  } else {
+  }
+  else
+  {
     catLabel = *key;
   }
-  mAttributes->setCat ( tab, catLabel, cat );
+  mAttributes->setCat( tab, catLabel, cat );
 
-  if ( !key->isEmpty() ) { // Database link defined 
-    std::vector<QgsField> *cols = mProvider->columns ( field );
+  if ( !key->isEmpty() )   // Database link defined
+  {
+    std::vector<QgsField> *cols = mProvider->columns( field );
 
-    if ( cols->size() == 0 ) {
+    if ( cols->size() == 0 )
+    {
       QString str;
       str.setNum( field );
-      QMessageBox::warning( 0, tr("Warning"), tr("Cannot describe table for field ") + str );
-    } else {
-      QgsAttributeMap *atts = mProvider->attributes ( field, cat );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot describe table for field " ) + str );
+    }
+    else
+    {
+      QgsAttributeMap *atts = mProvider->attributes( field, cat );
 
-      if ( atts->size() == 0 ) { // cannot select attributes
-        mAttributes->addTextRow ( tab, "WARNING: ATTRIBUTES MISSING" );
-      } else {
+      if ( atts->size() == 0 )   // cannot select attributes
+      {
+        mAttributes->addTextRow( tab, "WARNING: ATTRIBUTES MISSING" );
+      }
+      else
+      {
         int size;
-        if ( atts->size() < (int) cols->size() )
+        if ( atts->size() < ( int ) cols->size() )
           size = atts->size();
         else
           size = cols->size();
 
-        for ( unsigned int j = 0; j < cols->size(); j++ ) {
-          QgsField col = (*cols)[j];
-          QVariant att = (*atts)[j];
-          std::cerr << " name = " << col.name().toLocal8Bit().data() <<  std::endl;
+        for ( unsigned int j = 0; j < cols->size(); j++ )
+        {
+          QgsField col = ( *cols )[j];
+          QVariant att = ( *atts )[j];
+          QgsDebugMsg( QString( " name = %1" ).arg( col.name() ) );
 
-          if ( col.name() != *key ) {
-            std::cerr << " value = " << att.toString().toLocal8Bit().data() <<  std::endl;
-            mAttributes->addAttribute ( tab, col.name(), att.toString(), col.typeName() );
+          if ( col.name() != *key )
+          {
+            QgsDebugMsg( QString( " value = %1" ).arg( att.toString() ) );
+            mAttributes->addAttribute( tab, col.name(), att.toString(), col.typeName() );
           }
         }
       }
@@ -1445,34 +1488,38 @@ void QgsGrassEdit::addAttributes ( int field, int cat )
   }
 }
 
-void QgsGrassEdit::addCat ( int line )
+void QgsGrassEdit::addCat( int line )
 {
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
-  int type = mProvider->readLine ( mPoints, mCats, line );
-  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL ) {
-    Vect_cat_set ( mCats, field, cat );
+  int type = mProvider->readLine( mPoints, mCats, line );
+  if ( mode == CAT_MODE_NEXT || mode == CAT_MODE_MANUAL )
+  {
+    Vect_cat_set( mCats, field, cat );
   }
 
-  line = mProvider->rewriteLine ( line, type, mPoints, mCats );
+  line = mProvider->rewriteLine( line, type, mPoints, mCats );
   mSelectedLine = line;
-  if ( mAttributes ) mAttributes->setLine ( line );
+  if ( mAttributes ) mAttributes->setLine( line );
   updateSymb();
   increaseMaxCat();
 
   // Insert new DB record if link is defined and the record for this cat does not exist
-  QString *key = mProvider->key ( field );
+  QString *key = mProvider->key( field );
 
-  if ( !key->isEmpty() ) { // Database link defined 
-    QgsAttributeMap *atts = mProvider->attributes ( field, cat );
+  if ( !key->isEmpty() )   // Database link defined
+  {
+    QgsAttributeMap *atts = mProvider->attributes( field, cat );
 
-    if ( atts->size() == 0 ) { // Nothing selected
-      QString *error = mProvider->insertAttributes ( field, cat );
+    if ( atts->size() == 0 )   // Nothing selected
+    {
+      QString *error = mProvider->insertAttributes( field, cat );
 
-      if ( !error->isEmpty() ) {
-        QMessageBox::warning( 0, tr("Warning"), *error );
+      if ( !error->isEmpty() )
+      {
+        QMessageBox::warning( 0, tr( "Warning" ), *error );
       }
       delete error;
     }
@@ -1483,34 +1530,30 @@ void QgsGrassEdit::addCat ( int line )
   addAttributes( field, cat );
 }
 
-void QgsGrassEdit::deleteCat ( int line, int field, int cat )
+void QgsGrassEdit::deleteCat( int line, int field, int cat )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::deleteCat" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::deleteCat" );
 
-  int type = mProvider->readLine ( mPoints, mCats, line );
-  Vect_field_cat_del ( mCats, field, cat );
+  int type = mProvider->readLine( mPoints, mCats, line );
+  Vect_field_cat_del( mCats, field, cat );
 
-  line = mProvider->rewriteLine ( line, type, mPoints, mCats );
+  line = mProvider->rewriteLine( line, type, mPoints, mCats );
   mSelectedLine = line;
-  if ( mAttributes ) mAttributes->setLine ( line );
+  if ( mAttributes ) mAttributes->setLine( line );
 
   // Check orphan record
-  checkOrphan ( field, cat );
+  checkOrphan( field, cat );
 
   updateSymb();
 }
 
 
-void QgsGrassEdit::postRender(QPainter *)
+void QgsGrassEdit::postRender( QPainter * )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::postRender" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::postRender" );
 
-  // Warning: it seems that this slot can be called even 
-  //          after disconnect (is it a queue?) 
+  // Warning: it seems that this slot can be called even
+  //          after disconnect (is it a queue?)
   //          -> check mValid
 
   if ( !mValid ) return;
@@ -1518,45 +1561,47 @@ void QgsGrassEdit::postRender(QPainter *)
   displayMap();
 
   // Redisplay highlighted
-  if ( mSelectedLine ) {
-    displayElement ( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
+  if ( mSelectedLine )
+  {
+    displayElement( mSelectedLine, mSymb[SYMB_HIGHLIGHT], mSize );
   }
 }
 
-void QgsGrassEdit::displayMap ()
+void QgsGrassEdit::displayMap()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayMap" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::displayMap" );
 
   mTransform = mCanvas->getCoordinateTransform();
 
   // re-create pixmap - it's transparent by default
-  *mPixmap = QPixmap(mCanvas->size());
-  mPixmap->fill(QColor(0,0,0,0));
+  *mPixmap = QPixmap( mCanvas->size() );
+  mPixmap->fill( QColor( 0, 0, 0, 0 ) );
 
   QPainter *painter = new QPainter();
-  painter->begin(mPixmap);
+  painter->begin( mPixmap );
 
   // Display lines
-  int nlines = mProvider->numLines(); 
+  int nlines = mProvider->numLines();
 
   QPen pen;
 
   // TODO?: 2 loops, first lines, then points
-  for ( int line = 1; line <= nlines; line++ ) {
-    displayElement ( line, mSymb[mLineSymb[line]], mSize, painter );
+  for ( int line = 1; line <= nlines; line++ )
+  {
+    displayElement( line, mSymb[mLineSymb[line]], mSize, painter );
   }
 
   // Display nodes
-  int nnodes = mProvider->numNodes(); 
+  int nnodes = mProvider->numNodes();
 
-  pen.setColor(QColor(255,0,0));
+  pen.setColor( QColor( 255, 0, 0 ) );
 
-  if ( mSymbDisplay[SYMB_NODE_1] || mSymbDisplay[SYMB_NODE_2] ) {
-    for ( int node = 1; node <= nnodes; node++ ) {
+  if ( mSymbDisplay[SYMB_NODE_1] || mSymbDisplay[SYMB_NODE_2] )
+  {
+    for ( int node = 1; node <= nnodes; node++ )
+    {
       if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
-      displayNode ( node, mSymb[mNodeSymb[node]], mSize, painter ); 
+      displayNode( node, mSymb[mNodeSymb[node]], mSize, painter );
     }
   }
 
@@ -1569,35 +1614,35 @@ void QgsGrassEdit::displayMap ()
   mRubberBandLine->update();
 }
 
-void QgsGrassEdit::displayUpdated (void)
+void QgsGrassEdit::displayUpdated( void )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayUpdated" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::displayUpdated" );
 
   mTransform = mCanvas->getCoordinateTransform();
-  mProjectionEnabled = (QgsProject::instance()->readNumEntry("SpatialRefSys","/ProjectionsEnabled",0)!=0);
+  mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
 
   QPainter *painter = new QPainter();
-  painter->begin(mPixmap);
+  painter->begin( mPixmap );
 
   // Display lines
   int nlines = mProvider->numUpdatedLines();
 
-  for ( int i = 0; i < nlines; i++ ) {
-    int line = mProvider->updatedLine(i);
-    if ( !(mProvider->lineAlive(line)) ) continue;
+  for ( int i = 0; i < nlines; i++ )
+  {
+    int line = mProvider->updatedLine( i );
+    if ( !( mProvider->lineAlive( line ) ) ) continue;
 
-    displayElement ( line, mSymb[mLineSymb[line]], mSize, painter );
+    displayElement( line, mSymb[mLineSymb[line]], mSize, painter );
   }
 
   // Display nodes
-  int nnodes = mProvider->numUpdatedNodes(); 
-  for ( int i = 0; i < nnodes; i++ ) {
-    int node = mProvider->updatedNode(i);
-    if ( !(mProvider->nodeAlive(node)) ) continue;
+  int nnodes = mProvider->numUpdatedNodes();
+  for ( int i = 0; i < nnodes; i++ )
+  {
+    int node = mProvider->updatedNode( i );
+    if ( !( mProvider->nodeAlive( node ) ) ) continue;
     if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
-    displayNode ( node, mSymb[mNodeSymb[node]], mSize, painter ); 
+    displayNode( node, mSymb[mNodeSymb[node]], mSize, painter );
   }
 
   painter->end();
@@ -1609,48 +1654,54 @@ void QgsGrassEdit::displayUpdated (void)
   mRubberBandLine->update();
 }
 
-void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPainter *painter)
+void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainter *painter )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayElement() line = " << line << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::displayElement() line = %1" ).arg( line ) );
 
   // is it a valid line?
-  if (line == 0)
+  if ( line == 0 )
     return;
 
   if ( !mSymbDisplay[mLineSymb[line]] ) return;
 
-  int type = mProvider->readLine ( mPoints, NULL, line );
+  int type = mProvider->readLine( mPoints, NULL, line );
   if ( type < 0 ) return;
 
   QPainter *myPainter;
-  if ( !painter ) {
+  if ( !painter )
+  {
     myPainter = new QPainter();
-    myPainter->begin(mPixmap);
-  } else {
+    myPainter->begin( mPixmap );
+  }
+  else
+  {
     myPainter = painter;
   }
 
-  if ( type & GV_POINTS ) {
-    displayIcon ( mPoints->x[0], mPoints->y[0], pen, QgsVertexMarker::ICON_CROSS, size, myPainter );
-  } else { // line
+  if ( type & GV_POINTS )
+  {
+    displayIcon( mPoints->x[0], mPoints->y[0], pen, QgsVertexMarker::ICON_CROSS, size, myPainter );
+  }
+  else   // line
+  {
     QgsPoint point;
-    Q3PointArray pointArray(mPoints->n_points);
+    Q3PointArray pointArray( mPoints->n_points );
 
-    for ( int i = 0; i < mPoints->n_points; i++ ) {
-      point.setX(mPoints->x[i]);
-      point.setY(mPoints->y[i]);
-      point = transformLayerToCanvas ( point );
-      pointArray.setPoint( i, static_cast<int>(round(point.x())), 
-        static_cast<int>(round(point.y())) ); 
+    for ( int i = 0; i < mPoints->n_points; i++ )
+    {
+      point.setX( mPoints->x[i] );
+      point.setY( mPoints->y[i] );
+      point = transformLayerToCanvas( point );
+      pointArray.setPoint( i, static_cast<int>( round( point.x() ) ),
+                           static_cast<int>( round( point.y() ) ) );
     }
 
-    myPainter->setPen ( pen );
-    myPainter->drawPolyline ( pointArray );
+    myPainter->setPen( pen );
+    myPainter->drawPolyline( pointArray );
   }
 
-  if ( !painter ) {
+  if ( !painter )
+  {
     myPainter->end();
     // porting mCanvas->update();
     mCanvasEdit->update();
@@ -1658,172 +1709,168 @@ void QgsGrassEdit::displayElement ( int line, const QPen & pen, int size, QPaint
   }
 }
 
-void QgsGrassEdit::eraseElement ( int line )
+void QgsGrassEdit::eraseElement( int line )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::eraseElement() line = " << line << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::eraseElement() line = %1" ).arg( line ) );
 
-  int type = mProvider->readLine ( NULL, NULL, line );
+  int type = mProvider->readLine( NULL, NULL, line );
   if ( type < 0 ) return;
 
   // Erase line
-  displayElement ( line, mSymb[SYMB_BACKGROUND], mSize );
+  displayElement( line, mSymb[SYMB_BACKGROUND], mSize );
 
   // Erase nodes
-  if ( type & GV_LINES ) {
+  if ( type & GV_LINES )
+  {
     int node1, node2;
     mProvider->lineNodes( line, &node1, &node2 );
 
     double x, y;
     mProvider->nodeCoor( node1, &x, &y );
-    displayIcon ( x, y, mSymb[SYMB_BACKGROUND], QgsVertexMarker::ICON_X, mSize );
+    displayIcon( x, y, mSymb[SYMB_BACKGROUND], QgsVertexMarker::ICON_X, mSize );
 
     mProvider->nodeCoor( node2, &x, &y );
-    displayIcon ( x, y, mSymb[SYMB_BACKGROUND], QgsVertexMarker::ICON_X, mSize );
+    displayIcon( x, y, mSymb[SYMB_BACKGROUND], QgsVertexMarker::ICON_X, mSize );
   }
 }
 
-void QgsGrassEdit::eraseDynamic ( void )
+void QgsGrassEdit::eraseDynamic( void )
 {
-  displayDynamic ( 0, 0.0, 0.0, QgsVertexMarker::ICON_NONE, 0 );
+  displayDynamic( 0, 0.0, 0.0, QgsVertexMarker::ICON_NONE, 0 );
 }
 
-void QgsGrassEdit::displayDynamic ( struct line_pnts *Points )
+void QgsGrassEdit::displayDynamic( struct line_pnts *Points )
 {
-  displayDynamic ( Points, 0.0, 0.0, QgsVertexMarker::ICON_NONE, 0 );
+  displayDynamic( Points, 0.0, 0.0, QgsVertexMarker::ICON_NONE, 0 );
 }
 
-void QgsGrassEdit::displayDynamic ( double x, double y, int type, int size )
+void QgsGrassEdit::displayDynamic( double x, double y, int type, int size )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayDynamic icon" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::displayDynamic icon" );
 
-  displayDynamic ( 0, x, y, type, size );
+  displayDynamic( 0, x, y, type, size );
 }
 
-void QgsGrassEdit::displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size )
+void QgsGrassEdit::displayDynamic( struct line_pnts *Points, double x, double y, int type, int size )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayDynamic Points = " << Points << " type = " << type  << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::displayDynamic Points = %1 type = %2" ).arg( QString::number(( qulonglong )Points, 16 ).toLocal8Bit().constData() ).arg( type ) );
   QgsPoint point;
 
   //mTransform = mCanvas->getCoordinateTransform();
 
-  // Dynamic points are in layer coordinate system, we have to 
+  // Dynamic points are in layer coordinate system, we have to
   // reproject them to current coordinate system if necessary
 
   mRubberBandLine->reset();
 
   if ( Points )
   {
-    for ( int i = 0; i < Points->n_points; i++ ) 
+    for ( int i = 0; i < Points->n_points; i++ )
     {
-      point.setX(Points->x[i]);
-      point.setY(Points->y[i]);
-      point = transformLayerToMap ( point );
-      mRubberBandLine->addPoint(point, false); // false = don't update now
+      point.setX( Points->x[i] );
+      point.setY( Points->y[i] );
+      point = transformLayerToMap( point );
+      mRubberBandLine->addPoint( point, false ); // false = don't update now
     }
     // Now add the last point again and force update of rubberband.
     // This should improve the performance as canvas is updated only once
     // and not with every added point to rubberband.
-    mRubberBandLine->addPoint(point, true);
+    mRubberBandLine->addPoint( point, true );
   }
 
-  mRubberBandIcon->setIconType(type);
-  mRubberBandIcon->setIconSize(size);
-  point = transformLayerToMap (QgsPoint(x,y) );
-  mRubberBandIcon->setCenter(point);
+  mRubberBandIcon->setIconType( type );
+  mRubberBandIcon->setIconSize( size );
+  point = transformLayerToMap( QgsPoint( x, y ) );
+  mRubberBandIcon->setCenter( point );
 }
 
-void QgsGrassEdit::displayNode ( int node, const QPen & pen, int size, QPainter *painter )
+void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *painter )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayNode() node = " << node << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassEdit::displayNode() node = %1" ).arg( node ) );
 
   if ( !mSymbDisplay[mNodeSymb[node]] ) return;
 
   double x, y;
 
-  if ( !(mProvider->nodeCoor(node,&x,&y )) ) return;
+  if ( !( mProvider->nodeCoor( node, &x, &y ) ) ) return;
 
-  displayIcon ( x, y, pen, QgsVertexMarker::ICON_X, size, painter );
+  displayIcon( x, y, pen, QgsVertexMarker::ICON_X, size, painter );
 }
 
-QgsPoint QgsGrassEdit::transformLayerToCanvas ( QgsPoint point)
+QgsPoint QgsGrassEdit::transformLayerToCanvas( QgsPoint point )
 {
-  point = mCanvas->mapRenderer()->layerToMapCoordinates(mLayer, point);
-  return mTransform->transform(point);
+  point = mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, point );
+  return mTransform->transform( point );
 }
 
-QgsPoint QgsGrassEdit::transformLayerToMap ( QgsPoint point)
+QgsPoint QgsGrassEdit::transformLayerToMap( QgsPoint point )
 {
-  return mCanvas->mapRenderer()->layerToMapCoordinates(mLayer, point);
+  return mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, point );
 }
 
-void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
-                                 int type, int size, QPainter *painter )
+void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
+                                int type, int size, QPainter *painter )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassEdit::displayIcon()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassEdit::displayIcon()" );
 
   QgsPoint point;
-  Q3PointArray pointArray(2);
+  Q3PointArray pointArray( 2 );
 
-  point.setX(x);
-  point.setY(y);
+  point.setX( x );
+  point.setY( y );
 
-  point = transformLayerToCanvas ( point );
+  point = transformLayerToCanvas( point );
 
-  int px = static_cast<int>(round(point.x()));
-  int py = static_cast<int>(round(point.y()));
-  int m = (size-1)/2;
+  int px = static_cast<int>( round( point.x() ) );
+  int py = static_cast<int>( round( point.y() ) );
+  int m = ( size - 1 ) / 2;
 
   QPainter *myPainter;
-  if ( !painter ) {
+  if ( !painter )
+  {
     myPainter = new QPainter();
-    myPainter->begin(mPixmap);
-  } else {
+    myPainter->begin( mPixmap );
+  }
+  else
+  {
     myPainter = painter;
   }
 
-  myPainter->setPen ( pen );
+  myPainter->setPen( pen );
 
-  switch ( type ) {
+  switch ( type )
+  {
     case QgsVertexMarker::ICON_CROSS :
-      pointArray.setPoint( 0, px-m, py ); 
-      pointArray.setPoint( 1, px+m, py ); 
-      myPainter->drawPolyline ( pointArray );
+      pointArray.setPoint( 0, px - m, py );
+      pointArray.setPoint( 1, px + m, py );
+      myPainter->drawPolyline( pointArray );
 
-      pointArray.setPoint( 0, px, py+m ); 
-      pointArray.setPoint( 1, px, py-m ); 
-      myPainter->drawPolyline ( pointArray );
+      pointArray.setPoint( 0, px, py + m );
+      pointArray.setPoint( 1, px, py - m );
+      myPainter->drawPolyline( pointArray );
       break;
     case QgsVertexMarker::ICON_X :
-      pointArray.setPoint( 0, px-m, py+m ); 
-      pointArray.setPoint( 1, px+m, py-m ); 
-      myPainter->drawPolyline ( pointArray );
+      pointArray.setPoint( 0, px - m, py + m );
+      pointArray.setPoint( 1, px + m, py - m );
+      myPainter->drawPolyline( pointArray );
 
-      pointArray.setPoint( 0, px-m, py-m ); 
-      pointArray.setPoint( 1, px+m, py+m ); 
-      myPainter->drawPolyline ( pointArray );
+      pointArray.setPoint( 0, px - m, py - m );
+      pointArray.setPoint( 1, px + m, py + m );
+      myPainter->drawPolyline( pointArray );
       break;
     case QgsVertexMarker::ICON_BOX :
-      pointArray.resize(5);
-      pointArray.setPoint( 0, px-m, py-m ); 
-      pointArray.setPoint( 1, px+m, py-m ); 
-      pointArray.setPoint( 2, px+m, py+m ); 
-      pointArray.setPoint( 3, px-m, py+m ); 
-      pointArray.setPoint( 4, px-m, py-m ); 
-      myPainter->drawPolyline ( pointArray );
+      pointArray.resize( 5 );
+      pointArray.setPoint( 0, px - m, py - m );
+      pointArray.setPoint( 1, px + m, py - m );
+      pointArray.setPoint( 2, px + m, py + m );
+      pointArray.setPoint( 3, px - m, py + m );
+      pointArray.setPoint( 4, px - m, py - m );
+      myPainter->drawPolyline( pointArray );
       break;
   }
 
-  if ( !painter ) {
+  if ( !painter )
+  {
     myPainter->end();
     //mCanvas->update();
     mCanvasEdit->update();
@@ -1831,16 +1878,16 @@ void QgsGrassEdit::displayIcon ( double x, double y, const QPen & pen,
   }
 }
 
-void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString right)
+void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString right )
 {
-  std::cerr << "QgsGrassEdit::setCanvasPropmt" << std::endl;
+  QgsDebugMsg( "QgsGrassEdit::setCanvasPropmt" );
   mCanvasPrompt = "";
-  if ( left.length() > 0 ) mCanvasPrompt.append ( tr("Left: ") + left + "   " );
-  if ( mid.length() > 0 ) mCanvasPrompt.append ( tr("Middle: ") + mid + "   " );
-  if ( right.length() > 0 ) mCanvasPrompt.append ( tr("Right: ") + right );
+  if ( left.length() > 0 ) mCanvasPrompt.append( tr( "Left: " ) + left + "   " );
+  if ( mid.length() > 0 ) mCanvasPrompt.append( tr( "Middle: " ) + mid + "   " );
+  if ( right.length() > 0 ) mCanvasPrompt.append( tr( "Right: " ) + right );
 }
 
 void QgsGrassEdit::attributesClosed()
 {
-    mAttributes = 0;
+  mAttributes = 0;
 }

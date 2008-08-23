@@ -1,10 +1,10 @@
 /***************************************************************************
-                           qgsrenderer.cpp 
-                       
+                           qgsrenderer.cpp
+
                              -------------------
-	   begin                : Sat Jan 4 2003
-	   copyright            : (C) 2003 by Gary E.Sherman
-	   email                : sherman at mrcc.com
+    begin                : Sat Jan 4 2003
+    copyright            : (C) 2003 by Gary E.Sherman
+    email                : sherman at mrcc.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -21,7 +21,7 @@
 #include <QString>
 
 
-QColor QgsRenderer::mSelectionColor=QColor(0,0,0);
+QColor QgsRenderer::mSelectionColor = QColor( 0, 0, 0 );
 
 QgsRenderer::QgsRenderer()
 {
@@ -32,7 +32,7 @@ QgsRenderer::~QgsRenderer()
 {
 }
 
-void QgsRenderer::setSelectionColor(QColor color)
+void QgsRenderer::setSelectionColor( QColor color )
 {
   mSelectionColor = color;
 }
@@ -40,11 +40,11 @@ void QgsRenderer::setSelectionColor(QColor color)
 bool QgsRenderer::containsPixmap() const
 {
   //default implementation returns true only for points
-  switch(mVectorType)
-    {
+  switch ( mVectorType )
+  {
     case QGis::Point:
-       return true;
+      return true;
     default:
       return false;
-    }
+  }
 }

@@ -23,359 +23,359 @@
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 
-#include <iostream>
 #include <limits>
 #include "qgsrect.h" //just for debugging
+#include "qgslogger.h"
 
-QgsComposerItem::QgsComposerItem(QgsComposition* composition): QGraphicsRectItem(0), mComposition(composition), mBoundingResizeRectangle(0), mFrame(true)
+QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
 {
-    setFlag(QGraphicsItem::ItemIsSelectable, true);
-    setAcceptsHoverEvents(true);
-
-    //set default pen and brush
-    setBrush(QBrush(QColor(255, 255, 255, 255)));
-    QPen defaultPen(QColor(0, 0, 0));
-    defaultPen.setWidth(1);
-    setPen(defaultPen);
-}
-
-QgsComposerItem::QgsComposerItem(qreal x, qreal y, qreal width, qreal height, QgsComposition* composition): QGraphicsRectItem(0, 0, width, height, 0), mComposition(composition), mBoundingResizeRectangle(0), mFrame(true)
-{
-  setFlag(QGraphicsItem::ItemIsSelectable, true);
-  setAcceptsHoverEvents(true);
-
-  QTransform t;
-  t.translate(x, y);
-  setTransform(t);
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setAcceptsHoverEvents( true );
 
   //set default pen and brush
-  setBrush(QBrush(QColor(255, 255, 255, 255)));
-  QPen defaultPen(QColor(0, 0, 0));
-  defaultPen.setWidth(1);
-  setPen(defaultPen);
+  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
+  QPen defaultPen( QColor( 0, 0, 0 ) );
+  defaultPen.setWidth( 1 );
+  setPen( defaultPen );
+}
+
+QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setAcceptsHoverEvents( true );
+
+  QTransform t;
+  t.translate( x, y );
+  setTransform( t );
+
+  //set default pen and brush
+  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
+  QPen defaultPen( QColor( 0, 0, 0 ) );
+  defaultPen.setWidth( 1 );
+  setPen( defaultPen );
 }
 
 QgsComposerItem::~QgsComposerItem()
 {
 }
 
-void QgsComposerItem::setSelected( bool s ) 
+void QgsComposerItem::setSelected( bool s )
 {
-    std::cout << "QgsComposerItem::setSelected" << std::endl; 
-    QGraphicsRectItem::setSelected(s);
-    update(); //to draw selection boxes
+  QgsDebugMsg( "QgsComposerItem::setSelected" );
+  QGraphicsRectItem::setSelected( s );
+  update(); //to draw selection boxes
 }
 
-bool QgsComposerItem::writeSettings ( void )  { return true; }
+bool QgsComposerItem::writeSettings( void )  { return true; }
 
-bool QgsComposerItem::readSettings ( void )  { return true; }
+bool QgsComposerItem::readSettings( void )  { return true; }
 
-bool QgsComposerItem::removeSettings ( void )  { return true; }
+bool QgsComposerItem::removeSettings( void )  { return true; }
 
-bool QgsComposerItem::_writeXML(QDomElement& itemElem, QDomDocument& doc)
+bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc )
 {
-  if(itemElem.isNull())
-    {
-      return false;
-    }
+  if ( itemElem.isNull() )
+  {
+    return false;
+  }
 
-  QDomElement composerItemElem = doc.createElement("ComposerItem");
-  
+  QDomElement composerItemElem = doc.createElement( "ComposerItem" );
+
   //frame
-  if(mFrame)
-    {
-      composerItemElem.setAttribute("frame", "true");
-    }
+  if ( mFrame )
+  {
+    composerItemElem.setAttribute( "frame", "true" );
+  }
   else
-    {
-      composerItemElem.setAttribute("frame", "false");
-    }
+  {
+    composerItemElem.setAttribute( "frame", "false" );
+  }
 
   //scene rect
-  composerItemElem.setAttribute("x", transform().dx());
-  composerItemElem.setAttribute("y", transform().dy());
-  composerItemElem.setAttribute("width", rect().width());
-  composerItemElem.setAttribute("height", rect().height());
-  composerItemElem.setAttribute("zValue", QString::number(zValue()));
-  composerItemElem.setAttribute("outlineWidth", QString::number(pen().widthF()));
+  composerItemElem.setAttribute( "x", transform().dx() );
+  composerItemElem.setAttribute( "y", transform().dy() );
+  composerItemElem.setAttribute( "width", rect().width() );
+  composerItemElem.setAttribute( "height", rect().height() );
+  composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
+  composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
 
   //frame color
-  QDomElement frameColorElem = doc.createElement("FrameColor");
+  QDomElement frameColorElem = doc.createElement( "FrameColor" );
   QColor frameColor = pen().color();
-  frameColorElem.setAttribute("red", QString::number(frameColor.red()));
-  frameColorElem.setAttribute("green", QString::number(frameColor.green()));
-  frameColorElem.setAttribute("blue", QString::number(frameColor.blue()));
-  frameColorElem.setAttribute("alpha", QString::number(frameColor.alpha()));
-  composerItemElem.appendChild(frameColorElem);
+  frameColorElem.setAttribute( "red", QString::number( frameColor.red() ) );
+  frameColorElem.setAttribute( "green", QString::number( frameColor.green() ) );
+  frameColorElem.setAttribute( "blue", QString::number( frameColor.blue() ) );
+  frameColorElem.setAttribute( "alpha", QString::number( frameColor.alpha() ) );
+  composerItemElem.appendChild( frameColorElem );
 
   //background color
-  QDomElement bgColorElem = doc.createElement("BackgroundColor");
+  QDomElement bgColorElem = doc.createElement( "BackgroundColor" );
   QColor bgColor = brush().color();
-  bgColorElem.setAttribute("red", QString::number(bgColor.red()));
-  bgColorElem.setAttribute("green", QString::number(bgColor.green()));
-  bgColorElem.setAttribute("blue", QString::number(bgColor.blue()));
-  bgColorElem.setAttribute("alpha", QString::number(bgColor.alpha()));
-  composerItemElem.appendChild(bgColorElem);
+  bgColorElem.setAttribute( "red", QString::number( bgColor.red() ) );
+  bgColorElem.setAttribute( "green", QString::number( bgColor.green() ) );
+  bgColorElem.setAttribute( "blue", QString::number( bgColor.blue() ) );
+  bgColorElem.setAttribute( "alpha", QString::number( bgColor.alpha() ) );
+  composerItemElem.appendChild( bgColorElem );
 
-  itemElem.appendChild(composerItemElem);
+  itemElem.appendChild( composerItemElem );
 
   return true;
 }
 
-bool QgsComposerItem::_readXML(const QDomElement& itemElem, const QDomDocument& doc)
+bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  if(itemElem.isNull())
-    {
-      return false;
-    }
-  
+  if ( itemElem.isNull() )
+  {
+    return false;
+  }
+
   //frame
-  QString frame = itemElem.attribute("frame");
-  if(frame.compare("true", Qt::CaseInsensitive) == 0)
-    {
-      mFrame = true;
-    }
+  QString frame = itemElem.attribute( "frame" );
+  if ( frame.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    mFrame = true;
+  }
   else
-    {
-      mFrame = false;
-    }
+  {
+    mFrame = false;
+  }
 
   //position
   double x, y, width, height;
   bool xOk, yOk, widthOk, heightOk;
 
-  x = itemElem.attribute("x").toDouble(&xOk);
-  y = itemElem.attribute("y").toDouble(&yOk);
-  width = itemElem.attribute("width").toDouble(&widthOk);
-  height = itemElem.attribute("height").toDouble(&heightOk);
+  x = itemElem.attribute( "x" ).toDouble( &xOk );
+  y = itemElem.attribute( "y" ).toDouble( &yOk );
+  width = itemElem.attribute( "width" ).toDouble( &widthOk );
+  height = itemElem.attribute( "height" ).toDouble( &heightOk );
 
-  if(!xOk || !yOk || !widthOk || !heightOk)
-    {
-      return false;
-    }
+  if ( !xOk || !yOk || !widthOk || !heightOk )
+  {
+    return false;
+  }
 
-  setSceneRect(QRectF(x, y, width, height));
-  setZValue(itemElem.attribute("zValue").toDouble());
+  setSceneRect( QRectF( x, y, width, height ) );
+  setZValue( itemElem.attribute( "zValue" ).toDouble() );
 
   //pen
-  QDomNodeList frameColorList = itemElem.elementsByTagName("FrameColor");
-  if(frameColorList.size() > 0)
+  QDomNodeList frameColorList = itemElem.elementsByTagName( "FrameColor" );
+  if ( frameColorList.size() > 0 )
+  {
+    QDomElement frameColorElem = frameColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk, widthOk;
+    int penRed, penGreen, penBlue, penAlpha, penWidth;
+    penWidth = itemElem.attribute( "outlineWidth" ).toDouble( &widthOk );
+    penRed = frameColorElem.attribute( "red" ).toDouble( &redOk );
+    penGreen = frameColorElem.attribute( "green" ).toDouble( &greenOk );
+    penBlue = frameColorElem.attribute( "blue" ).toDouble( &blueOk );
+    penAlpha = frameColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    if ( redOk && greenOk && blueOk && alphaOk && widthOk )
     {
-      QDomElement frameColorElem = frameColorList.at(0).toElement();
-      bool redOk, greenOk, blueOk, alphaOk, widthOk;
-      int penRed, penGreen, penBlue, penAlpha, penWidth;
-      penWidth = itemElem.attribute("outlineWidth").toDouble(&widthOk);
-      penRed = frameColorElem.attribute("red").toDouble(&redOk);
-      penGreen = frameColorElem.attribute("green").toDouble(&greenOk);
-      penBlue = frameColorElem.attribute("blue").toDouble(&blueOk);
-      penAlpha = frameColorElem.attribute("alpha").toDouble(&alphaOk);
-      if(redOk && greenOk && blueOk && alphaOk && widthOk)
-	{
-	  QPen framePen(QColor(penRed, penGreen, penBlue, penAlpha));
-	  framePen.setWidth(penWidth);
-	  setPen(framePen);
-	}
+      QPen framePen( QColor( penRed, penGreen, penBlue, penAlpha ) );
+      framePen.setWidth( penWidth );
+      setPen( framePen );
     }
+  }
 
   //brush
-  QDomNodeList bgColorList = itemElem.elementsByTagName("BackgroundColor");
-  if(bgColorList.size() > 0)
+  QDomNodeList bgColorList = itemElem.elementsByTagName( "BackgroundColor" );
+  if ( bgColorList.size() > 0 )
+  {
+    QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int bgRed, bgGreen, bgBlue, bgAlpha;
+    bgRed = bgColorElem.attribute( "red" ).toDouble( &redOk );
+    bgGreen = bgColorElem.attribute( "green" ).toDouble( &greenOk );
+    bgBlue = bgColorElem.attribute( "blue" ).toDouble( &blueOk );
+    bgAlpha = bgColorElem.attribute( "alpha" ).toDouble( &alphaOk );
+    if ( redOk && greenOk && blueOk && alphaOk )
     {
-      QDomElement bgColorElem = bgColorList.at(0).toElement();
-      bool redOk, greenOk, blueOk, alphaOk;
-      int bgRed, bgGreen, bgBlue, bgAlpha;
-      bgRed = bgColorElem.attribute("red").toDouble(&redOk);
-      bgGreen = bgColorElem.attribute("green").toDouble(&greenOk);
-      bgBlue = bgColorElem.attribute("blue").toDouble(&blueOk);
-      bgAlpha = bgColorElem.attribute("alpha").toDouble(&alphaOk);
-      if(redOk && greenOk && blueOk && alphaOk)
-	{
-	  QColor brushColor(bgRed, bgGreen, bgBlue, bgAlpha);
-	  setBrush(QBrush(brushColor));
-	}
+      QColor brushColor( bgRed, bgGreen, bgBlue, bgAlpha );
+      setBrush( QBrush( brushColor ) );
     }
+  }
   return true;
 }
 
-void QgsComposerItem::mouseMoveEvent ( QGraphicsSceneMouseEvent * event )
+void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 {
-  qWarning("QgsComposerItem::mouseMoveEvent");
-  if(mBoundingResizeRectangle)
-    {
-      double diffX = event->lastPos().x() - mLastMouseEventPos.x();
-      double diffY = event->lastPos().y() - mLastMouseEventPos.y();
+  qWarning( "QgsComposerItem::mouseMoveEvent" );
+  if ( mBoundingResizeRectangle )
+  {
+    double diffX = event->lastPos().x() - mLastMouseEventPos.x();
+    double diffY = event->lastPos().y() - mLastMouseEventPos.y();
 
-      double mx, my, rx, ry;
+    double mx, my, rx, ry;
 
-      rectangleChange(diffX, diffY, mx, my, rx, ry);
-      
-      QRectF r = mBoundingResizeRectangle->rect();
-      double newWidth = r.width() + rx;
-      double newHeight = r.height() + ry;
+    rectangleChange( diffX, diffY, mx, my, rx, ry );
 
-      QTransform oldTransform = mBoundingResizeRectangle->transform();
-      QTransform transform;
-      transform.translate(oldTransform.dx() + mx, oldTransform.dy() + my);
-      
-      QRectF newBoundingRect(0, 0, newWidth, newHeight);
+    QRectF r = mBoundingResizeRectangle->rect();
+    double newWidth = r.width() + rx;
+    double newHeight = r.height() + ry;
 
-      mBoundingResizeRectangle->setRect(newBoundingRect);
-      mBoundingResizeRectangle->setTransform(transform);
-    }
+    QTransform oldTransform = mBoundingResizeRectangle->transform();
+    QTransform transform;
+    transform.translate( oldTransform.dx() + mx, oldTransform.dy() + my );
+
+    QRectF newBoundingRect( 0, 0, newWidth, newHeight );
+
+    mBoundingResizeRectangle->setRect( newBoundingRect );
+    mBoundingResizeRectangle->setTransform( transform );
+  }
   mLastMouseEventPos = event->lastPos();
 }
 
-void QgsComposerItem::mousePressEvent ( QGraphicsSceneMouseEvent * event )
+void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
   //set current position and type of mouse move action
   mMouseMoveStartPos = event->lastScenePos();
   mLastMouseEventPos = event->lastPos();
-  mCurrentMouseMoveAction = mouseMoveActionForPosition(event->pos());
+  mCurrentMouseMoveAction = mouseMoveActionForPosition( event->pos() );
 
   //create and show bounding rectangle
-  mBoundingResizeRectangle = new QGraphicsRectItem(0);
-  scene()->addItem(mBoundingResizeRectangle);
-  mBoundingResizeRectangle->setRect(QRectF(0, 0, rect().width(), rect().height()));
+  mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
+  scene()->addItem( mBoundingResizeRectangle );
+  mBoundingResizeRectangle->setRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   QTransform resizeTransform;
-  resizeTransform.translate(transform().dx(), transform().dy());
-  mBoundingResizeRectangle->setTransform(resizeTransform);
+  resizeTransform.translate( transform().dx(), transform().dy() );
+  mBoundingResizeRectangle->setTransform( resizeTransform );
 
   mBoundingResizeRectangle->setBrush( Qt::NoBrush );
-  mBoundingResizeRectangle->setPen( QPen(QColor(0,0,0), 0) );
-  mBoundingResizeRectangle->setZValue(90);
+  mBoundingResizeRectangle->setPen( QPen( QColor( 0, 0, 0 ), 0 ) );
+  mBoundingResizeRectangle->setZValue( 90 );
   mBoundingResizeRectangle->show();
 }
 
-void QgsComposerItem::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
+void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 {
   //delete frame rectangle
-  if(mBoundingResizeRectangle)
-    {
-      scene()->removeItem(mBoundingResizeRectangle);
-      delete mBoundingResizeRectangle;
-      mBoundingResizeRectangle = 0;
-    }
+  if ( mBoundingResizeRectangle )
+  {
+    scene()->removeItem( mBoundingResizeRectangle );
+    delete mBoundingResizeRectangle;
+    mBoundingResizeRectangle = 0;
+  }
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
 
   //it was only a click
-  if(abs(diffX) < std::numeric_limits<double>::min() && abs(diffY) < std::numeric_limits<double>::min())
-    {
-      return;
-    }
+  if ( abs( diffX ) < std::numeric_limits<double>::min() && abs( diffY ) < std::numeric_limits<double>::min() )
+  {
+    return;
+  }
 
   double mx, my, rx, ry;
-  rectangleChange(diffX, diffY, mx, my, rx, ry);
+  rectangleChange( diffX, diffY, mx, my, rx, ry );
 
   QRectF currentRect = rect();
-  QRectF newRect(transform().dx() + mx, transform().dy() + my, currentRect.width() + rx, currentRect.height() + ry);
-  setSceneRect(newRect);
+  QRectF newRect( transform().dx() + mx, transform().dy() + my, currentRect.width() + rx, currentRect.height() + ry );
+  setSceneRect( newRect );
 
   update();
   scene()->update();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::moveItem;
-  setCursor(Qt::ArrowCursor);
+  setCursor( Qt::ArrowCursor );
 }
 
-Qt::CursorShape QgsComposerItem::cursorForPosition(const QPointF& itemCoordPos)
+Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos )
 {
-  QgsComposerItem::mouseMoveAction mouseAction = mouseMoveActionForPosition(itemCoordPos);
-  
-  if(mouseAction == QgsComposerItem::moveItem)
-    {
-      return Qt::ClosedHandCursor;
-    }
-  else if(mouseAction == QgsComposerItem::resizeDLeftUp || mouseAction == QgsComposerItem::resizeDRightDown)
-    {
-      return Qt::SizeFDiagCursor;
-    }
-  else if(mouseAction == QgsComposerItem::resizeDLeftDown || mouseAction == QgsComposerItem::resizeDRightUp)
-    {
-      return Qt::SizeBDiagCursor;
-    }
-  else if(mouseAction == QgsComposerItem::resizeUp || mouseAction == QgsComposerItem::resizeDown)
-    {
-      return Qt::SizeVerCursor;
-    }
+  QgsComposerItem::mouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
+
+  if ( mouseAction == QgsComposerItem::moveItem )
+  {
+    return Qt::ClosedHandCursor;
+  }
+  else if ( mouseAction == QgsComposerItem::resizeDLeftUp || mouseAction == QgsComposerItem::resizeDRightDown )
+  {
+    return Qt::SizeFDiagCursor;
+  }
+  else if ( mouseAction == QgsComposerItem::resizeDLeftDown || mouseAction == QgsComposerItem::resizeDRightUp )
+  {
+    return Qt::SizeBDiagCursor;
+  }
+  else if ( mouseAction == QgsComposerItem::resizeUp || mouseAction == QgsComposerItem::resizeDown )
+  {
+    return Qt::SizeVerCursor;
+  }
   else //if(mouseAction == QgsComposerItem::resizeLeft || mouseAction == QgsComposerItem::resizeRight)
-    {
-      return Qt::SizeHorCursor;
-    }
+  {
+    return Qt::SizeHorCursor;
+  }
 }
 
-QgsComposerItem::mouseMoveAction QgsComposerItem::mouseMoveActionForPosition(const QPointF& itemCoordPos)
+QgsComposerItem::mouseMoveAction QgsComposerItem::mouseMoveActionForPosition( const QPointF& itemCoordPos )
 {
 
   //move content tool
-  
+
 
   bool nearLeftBorder = false;
   bool nearRightBorder = false;
   bool nearLowerBorder = false;
   bool nearUpperBorder = false;
 
-  if(itemCoordPos.x() < 5)
-    {
-      nearLeftBorder = true;
-    }
-  if(itemCoordPos.y() < 5)
-    {
-      nearUpperBorder = true;
-    }
-  if(itemCoordPos.x() > (rect().width() - 5))
-    {
-      nearRightBorder = true;
-    }
-  if(itemCoordPos.y() > (rect().height() - 5))
-    {
-      nearLowerBorder = true;
-    }
+  if ( itemCoordPos.x() < 5 )
+  {
+    nearLeftBorder = true;
+  }
+  if ( itemCoordPos.y() < 5 )
+  {
+    nearUpperBorder = true;
+  }
+  if ( itemCoordPos.x() > ( rect().width() - 5 ) )
+  {
+    nearRightBorder = true;
+  }
+  if ( itemCoordPos.y() > ( rect().height() - 5 ) )
+  {
+    nearLowerBorder = true;
+  }
 
-  if(nearLeftBorder && nearUpperBorder)
-    {
-      return QgsComposerItem::resizeDLeftUp;
-    }
-  else if(nearLeftBorder && nearLowerBorder)
-    {
-      return QgsComposerItem::resizeDLeftDown;
-    }
-  else if(nearRightBorder && nearUpperBorder)
-    {
-      return QgsComposerItem::resizeDRightUp;
-    }
-  else if(nearRightBorder && nearLowerBorder)
-    {
-      return QgsComposerItem::resizeDRightDown;
-    }
-  else if(nearLeftBorder)
-    {
-      return QgsComposerItem::resizeLeft;
-    }
-  else if(nearRightBorder)
-    {
-      return QgsComposerItem::resizeRight;
-    }
-  else if(nearUpperBorder)
-    {
-      return QgsComposerItem::resizeUp;
-    }
-  else if(nearLowerBorder)
-    {
-      return QgsComposerItem::resizeDown;
-    }
+  if ( nearLeftBorder && nearUpperBorder )
+  {
+    return QgsComposerItem::resizeDLeftUp;
+  }
+  else if ( nearLeftBorder && nearLowerBorder )
+  {
+    return QgsComposerItem::resizeDLeftDown;
+  }
+  else if ( nearRightBorder && nearUpperBorder )
+  {
+    return QgsComposerItem::resizeDRightUp;
+  }
+  else if ( nearRightBorder && nearLowerBorder )
+  {
+    return QgsComposerItem::resizeDRightDown;
+  }
+  else if ( nearLeftBorder )
+  {
+    return QgsComposerItem::resizeLeft;
+  }
+  else if ( nearRightBorder )
+  {
+    return QgsComposerItem::resizeRight;
+  }
+  else if ( nearUpperBorder )
+  {
+    return QgsComposerItem::resizeUp;
+  }
+  else if ( nearLowerBorder )
+  {
+    return QgsComposerItem::resizeDown;
+  }
 
   return QgsComposerItem::moveItem; //default
 }
 
 
-void QgsComposerItem::rectangleChange(double dx, double dy, double& mx, double& my, double& rx, double& ry) const
+void QgsComposerItem::rectangleChange( double dx, double dy, double& mx, double& my, double& rx, double& ry ) const
 {
-  switch(mCurrentMouseMoveAction)
-    {
+  switch ( mCurrentMouseMoveAction )
+  {
       //vertical resize
     case QgsComposerItem::resizeUp:
       mx = 0; my = dy; rx = 0; ry = -dy;
@@ -414,49 +414,49 @@ void QgsComposerItem::rectangleChange(double dx, double dy, double& mx, double& 
     case QgsComposerItem::moveItem:
       mx = dx; my = dy; rx = 0, ry = 0;
       break;
-    }
+  }
 }
 
-void QgsComposerItem::drawSelectionBoxes(QPainter* p)
+void QgsComposerItem::drawSelectionBoxes( QPainter* p )
 {
-  if(!mComposition)
-    {
-      return;
-    }
+  if ( !mComposition )
+  {
+    return;
+  }
 
-  if(mComposition->plotStyle() == QgsComposition::Preview)
-    {
-      p->setPen(QPen(QColor(0, 0, 255)));
-      p->setBrush(QBrush(QColor(0, 0, 255)));
-      
-      double s = 5;
-      
-      p->drawRect (QRectF(0, 0, s, s));
-      p->drawRect (QRectF(rect().width() -s, 0, s, s));
-      p->drawRect (QRectF(rect().width() -s, rect().height() -s, s, s));
-      p->drawRect (QRectF(0, rect().height() -s, s, s));
-    }
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
+  {
+    p->setPen( QPen( QColor( 0, 0, 255 ) ) );
+    p->setBrush( QBrush( QColor( 0, 0, 255 ) ) );
+
+    double s = 5;
+
+    p->drawRect( QRectF( 0, 0, s, s ) );
+    p->drawRect( QRectF( rect().width() - s, 0, s, s ) );
+    p->drawRect( QRectF( rect().width() - s, rect().height() - s, s, s ) );
+    p->drawRect( QRectF( 0, rect().height() - s, s, s ) );
+  }
 }
 
-void QgsComposerItem::drawFrame(QPainter* p)
+void QgsComposerItem::drawFrame( QPainter* p )
 {
-  if(mFrame && p)
-    {
-      p->setPen(pen());
-      p->setBrush(Qt::NoBrush);
-      p->setRenderHint(QPainter::Antialiasing, true);
-      p->drawRect (QRectF( 0, 0, rect().width(), rect().height()));
-    }
+  if ( mFrame && p )
+  {
+    p->setPen( pen() );
+    p->setBrush( Qt::NoBrush );
+    p->setRenderHint( QPainter::Antialiasing, true );
+    p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  }
 }
 
-void QgsComposerItem::move(double dx, double dy)
+void QgsComposerItem::move( double dx, double dy )
 {
   QTransform t = transform();
-  QRectF newSceneRect(t.dx() + dx, t.dy() + dy, rect().width(), rect().height());
-  setSceneRect(newSceneRect);
+  QRectF newSceneRect( t.dx() + dx, t.dy() + dy, rect().width(), rect().height() );
+  setSceneRect( newSceneRect );
 }
 
-void QgsComposerItem::setSceneRect(const QRectF& rectangle)
+void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 {
   //setRect in item coordinates
   double newWidth = rectangle.width();
@@ -465,42 +465,42 @@ void QgsComposerItem::setSceneRect(const QRectF& rectangle)
   double yTranslation = rectangle.y();
 
   //correction if width and/or height are negative
-  if( rectangle.width() < 0 )
-    {
-      newWidth = - rectangle.width();
-      xTranslation -= newWidth;
-    }
+  if ( rectangle.width() < 0 )
+  {
+    newWidth = - rectangle.width();
+    xTranslation -= newWidth;
+  }
 
-  if(rectangle.height() < 0)
-    {
-      newHeight = - rectangle.height();
-      yTranslation -= newHeight;
-    }
-  
-  QRectF newRect(0, 0, newWidth, newHeight);
-  QGraphicsRectItem::setRect(newRect);
+  if ( rectangle.height() < 0 )
+  {
+    newHeight = - rectangle.height();
+    yTranslation -= newHeight;
+  }
+
+  QRectF newRect( 0, 0, newWidth, newHeight );
+  QGraphicsRectItem::setRect( newRect );
 
   //set up transformation matrix for item coordinates
   QTransform t;
-  t.translate(xTranslation, yTranslation);
-  setTransform(t);
+  t.translate( xTranslation, yTranslation );
+  setTransform( t );
 }
 
-void QgsComposerItem::drawBackground(QPainter* p)
+void QgsComposerItem::drawBackground( QPainter* p )
 {
-  if(p)
-    {
-      p->setBrush(brush());
-      p->setPen(Qt::NoPen);
-      p->setRenderHint(QPainter::Antialiasing, true);
-      p->drawRect (QRectF( 0, 0, rect().width(), rect().height()));
-    }
+  if ( p )
+  {
+    p->setBrush( brush() );
+    p->setPen( Qt::NoPen );
+    p->setRenderHint( QPainter::Antialiasing, true );
+    p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+  }
 }
 
-void QgsComposerItem::hoverMoveEvent ( QGraphicsSceneHoverEvent * event )
+void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
-  if(isSelected())
-    {
-      setCursor(cursorForPosition(event->pos()));
-    }
+  if ( isSelected() )
+  {
+    setCursor( cursorForPosition( event->pos() ) );
+  }
 }

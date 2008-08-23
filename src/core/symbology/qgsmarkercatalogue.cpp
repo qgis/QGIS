@@ -43,32 +43,34 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
   // Init list
 
   // Hardcoded markers
-  mList.append ( "hard:circle" );
-  mList.append ( "hard:rectangle" );
-  mList.append ( "hard:diamond" );
-  mList.append ( "hard:cross" );
-  mList.append ( "hard:cross2" );
-  mList.append ( "hard:triangle");
-  mList.append ( "hard:star");
+  mList.append( "hard:circle" );
+  mList.append( "hard:rectangle" );
+  mList.append( "hard:diamond" );
+  mList.append( "hard:cross" );
+  mList.append( "hard:cross2" );
+  mList.append( "hard:triangle" );
+  mList.append( "hard:star" );
 
   // SVG
   QString svgPath = QgsApplication::svgPath();
 
   // TODO recursiv ?
-  QDir dir ( svgPath );
+  QDir dir( svgPath );
 
-  QStringList dl = dir.entryList(QDir::Dirs);
+  QStringList dl = dir.entryList( QDir::Dirs );
 
-  for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it ) {
+  for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
+  {
     if ( *it == "." || *it == ".." ) continue;
 
-    QDir dir2 ( svgPath + *it );
+    QDir dir2( svgPath + *it );
 
-    QStringList dl2 = dir2.entryList(QStringList("*.svg"),QDir::Files);
+    QStringList dl2 = dir2.entryList( QStringList( "*.svg" ), QDir::Files );
 
-    for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 ) {
+    for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 )
+    {
       // TODO test if it is correct SVG
-      mList.append ( "svg:" + svgPath + *it + "/" + *it2 );
+      mList.append( "svg:" + svgPath + *it + "/" + *it2 );
     }
   }
 }
@@ -84,200 +86,201 @@ QgsMarkerCatalogue::~QgsMarkerCatalogue()
 
 QgsMarkerCatalogue *QgsMarkerCatalogue::instance()
 {
-  if ( !QgsMarkerCatalogue::mMarkerCatalogue ) {
+  if ( !QgsMarkerCatalogue::mMarkerCatalogue )
+  {
     QgsMarkerCatalogue::mMarkerCatalogue = new QgsMarkerCatalogue();
   }
 
   return QgsMarkerCatalogue::mMarkerCatalogue;
 }
 
-QImage QgsMarkerCatalogue::imageMarker ( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
+QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
 {
-      
-  // 
-  // First prepare the paintdevice that the marker will be drawn onto 
-  // 
+
+  //
+  // First prepare the paintdevice that the marker will be drawn onto
+  //
   QImage myImage;
-  if ( fullName.left(5) == "hard:" )
+  if ( fullName.left( 5 ) == "hard:" )
   {
-    myImage = QImage (size + 1, size + 1, QImage::Format_ARGB32_Premultiplied);
+    myImage = QImage( size + 1, size + 1, QImage::Format_ARGB32_Premultiplied );
   }
   else
   {
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
-    if (size < 1) size=1;
+    if ( size < 1 ) size = 1;
     //QPixmap myPixmap = QPixmap(width,height);
-    myImage = QImage(size ,size , QImage::Format_ARGB32_Premultiplied);
+    myImage = QImage( size , size , QImage::Format_ARGB32_Premultiplied );
   }
 
   // starting with transparent QImage
-  myImage.fill(0);
+  myImage.fill( 0 );
 
   QPainter myPainter;
-  myPainter.begin(&myImage);
-  myPainter.setRenderHint(QPainter::Antialiasing);
+  myPainter.begin( &myImage );
+  myPainter.setRenderHint( QPainter::Antialiasing );
 
   //
   // Now pass the paintdevice along to have the marker rendered on it
   //
 
-  if ( fullName.left(5) == "hard:" )
+  if ( fullName.left( 5 ) == "hard:" )
   {
-    hardMarker ( &myPainter, fullName.mid(5), size, pen, brush, qtBug );
+    hardMarker( &myPainter, fullName.mid( 5 ), size, pen, brush, qtBug );
 #ifdef IMAGEDEBUG
-    QgsDebugMsg("*** Saving hard marker to hardMarker.png ***");
+    QgsDebugMsg( "*** Saving hard marker to hardMarker.png ***" );
 #ifdef QGISDEBUG
-    myImage.save("hardMarker.png");
+    myImage.save( "hardMarker.png" );
 #endif
 #endif
     return myImage;
   }
-  else if ( fullName.left(4) == "svg:" )
+  else if ( fullName.left( 4 ) == "svg:" )
   {
-    svgMarker ( &myPainter, fullName.mid(4), size );
+    svgMarker( &myPainter, fullName.mid( 4 ), size );
     return myImage;
   }
   return QImage(); // empty
 }
 
-QPicture QgsMarkerCatalogue::pictureMarker ( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
+QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen pen, QBrush brush, bool qtBug )
 {
 
   //
   // First prepare the paintdevice that the marker will be drawn onto
   //
   QPicture myPicture;
-  if ( fullName.left(5) == "hard:" )
+  if ( fullName.left( 5 ) == "hard:" )
   {
     //Note teh +1 offset below is required because the
     //otherwise the icons are getting clipped
-    myPicture = QPicture (size+1);
+    myPicture = QPicture( size + 1 );
   }
   else
   {
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
-    if (size < 1) size=1;
-    myPicture = QPicture(size);
+    if ( size < 1 ) size = 1;
+    myPicture = QPicture( size );
   }
 
-  QPainter myPainter(&myPicture);
-  myPainter.setRenderHint(QPainter::Antialiasing);
+  QPainter myPainter( &myPicture );
+  myPainter.setRenderHint( QPainter::Antialiasing );
 
   //
   // Now pass the paintdevice along to have the marker rndered on it
   //
 
-  if ( fullName.left(5) == "hard:" )
+  if ( fullName.left( 5 ) == "hard:" )
   {
-    hardMarker ( &myPainter, fullName.mid(5), size, pen, brush, qtBug );
+    hardMarker( &myPainter, fullName.mid( 5 ), size, pen, brush, qtBug );
     return myPicture;
   }
-  else if ( fullName.left(4) == "svg:" )
+  else if ( fullName.left( 4 ) == "svg:" )
   {
-    svgMarker ( &myPainter, fullName.mid(4), size );
+    svgMarker( &myPainter, fullName.mid( 4 ), size );
     return myPicture;
   }
   return QPicture(); // empty
 }
 
-void QgsMarkerCatalogue::svgMarker ( QPainter * thepPainter, QString fileName, double scaleFactor)
+void QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, double scaleFactor )
 {
   QSvgRenderer mySVG;
-  mySVG.load(fileName);
-  mySVG.render(thepPainter);
+  mySVG.load( fileName );
+  mySVG.render( thepPainter );
 }
 
-void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, double s, QPen pen, QBrush brush, bool qtBug )
+void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, double s, QPen pen, QBrush brush, bool qtBug )
 {
   // Size of polygon symbols is calculated so that the boundingbox is circumscribed
   // around a circle with diameter mPointSize
 
-  double half = s/2; // number of points from center
+  double half = s / 2; // number of points from center
 
-  QgsDebugMsg(QString("Hard marker size %1").arg(s));
+  QgsDebugMsg( QString( "Hard marker size %1" ).arg( s ) );
 
   // Find out center coordinates.
-  double x_c = s/2;
+  double x_c = s / 2;
   double y_c = x_c;
 
   // Also width must be odd otherwise there are discrepancies visible in canvas!
   double lw = pen.widthF();//(int)(2*floor((double)pen.widthF()/2)+1); // -> lw > 0
-  pen.setWidthF(lw);
-  thepPainter->setPen ( pen );
-  thepPainter->setBrush( brush);
+  pen.setWidthF( lw );
+  thepPainter->setPen( pen );
+  thepPainter->setBrush( brush );
   QRect box;
 
   // Circle radius, is used for other figures also, when compensating for line
   // width is necessary.
 
-  int r = (s-2*lw)/2 - 1;
-  QgsDebugMsg(QString("Hard marker radius %1").arg(r));
+  int r = ( s - 2 * lw ) / 2 - 1;
+  QgsDebugMsg( QString( "Hard marker radius %1" ).arg( r ) );
 
-  if ( name == "circle" ) 
+  if ( name == "circle" )
   {
     // "A stroked ellipse has a size of rectangle.size() plus the pen width."
     // (from Qt doc)
     // It doesn't seem like it is centered, however. Fudge...
     // Is this a Qt bug or feature?
-    x_c -= ((lw+5)/4);
-    y_c -= ((lw+5)/4);
+    x_c -= (( lw + 5 ) / 4 );
+    y_c -= (( lw + 5 ) / 4 );
 
-    thepPainter->drawEllipse(QRectF(x_c-r, y_c-r, x_c+r, y_c+r));
-  } 
-  else if ( name == "rectangle" ) 
+    thepPainter->drawEllipse( QRectF( x_c - r, y_c - r, x_c + r, y_c + r ) );
+  }
+  else if ( name == "rectangle" )
   {
     // Same fudge as for circle...
-    x_c -= ((lw+5)/4);
-    y_c -= ((lw+5)/4);
+    x_c -= (( lw + 5 ) / 4 );
+    y_c -= (( lw + 5 ) / 4 );
 
-    thepPainter->drawRect(x_c-r, y_c-r, x_c+r, y_c+r);
-  } 
-  else if ( name == "diamond" ) 
-  {
-    QPolygon pa(4);
-    pa.setPoint ( 0, x_c-r, y_c);
-    pa.setPoint ( 1, x_c, y_c+r);
-    pa.setPoint ( 2, x_c+r, y_c);
-    pa.setPoint ( 3, x_c, y_c-r);
-    thepPainter->drawPolygon ( pa );
+    thepPainter->drawRect( x_c - r, y_c - r, x_c + r, y_c + r );
   }
-  else if ( name == "cross" ) 
+  else if ( name == "diamond" )
   {
-    thepPainter->drawLine(x_c-half, y_c, x_c+half, y_c); // horizontal
-    thepPainter->drawLine(x_c, y_c-half, x_c, y_c+half); // vertical
+    QPolygon pa( 4 );
+    pa.setPoint( 0, x_c - r, y_c );
+    pa.setPoint( 1, x_c, y_c + r );
+    pa.setPoint( 2, x_c + r, y_c );
+    pa.setPoint( 3, x_c, y_c - r );
+    thepPainter->drawPolygon( pa );
   }
-  else if ( name == "cross2" ) 
+  else if ( name == "cross" )
   {
-    thepPainter->drawLine( x_c-half, y_c-half, x_c+half, y_c+half);
-    thepPainter->drawLine( x_c-half, y_c+half, x_c+half, y_c-half);
+    thepPainter->drawLine( x_c - half, y_c, x_c + half, y_c ); // horizontal
+    thepPainter->drawLine( x_c, y_c - half, x_c, y_c + half ); // vertical
   }
-  else if ( name == "triangle")
-    {
-      QPolygon pa(3);
-      
-      pa.setPoint ( 0, x_c-r, y_c+r);
-      pa.setPoint ( 1, x_c+r, y_c+r);
-      pa.setPoint ( 2, x_c, y_c-r);
-      thepPainter->drawPolygon ( pa );
-    }
-  else if (name == "star")
-    {
-      int oneSixth = 2*r/6;
+  else if ( name == "cross2" )
+  {
+    thepPainter->drawLine( x_c - half, y_c - half, x_c + half, y_c + half );
+    thepPainter->drawLine( x_c - half, y_c + half, x_c + half, y_c - half );
+  }
+  else if ( name == "triangle" )
+  {
+    QPolygon pa( 3 );
 
-      QPolygon pa(10);
-      pa.setPoint(0, x_c, y_c-half);
-      pa.setPoint(1, x_c-oneSixth, y_c-oneSixth);
-      pa.setPoint(2, x_c-half, y_c-oneSixth);
-      pa.setPoint(3, x_c-oneSixth, y_c);
-      pa.setPoint(4, x_c-half, y_c+half);
-      pa.setPoint(5, x_c, y_c+oneSixth);
-      pa.setPoint(6, x_c+half, y_c+half);
-      pa.setPoint(7, x_c+oneSixth, y_c);
-      pa.setPoint(8, x_c+half, y_c-oneSixth);
-      pa.setPoint(9, x_c+oneSixth, y_c-oneSixth);
-      thepPainter->drawPolygon ( pa );
-    }
+    pa.setPoint( 0, x_c - r, y_c + r );
+    pa.setPoint( 1, x_c + r, y_c + r );
+    pa.setPoint( 2, x_c, y_c - r );
+    thepPainter->drawPolygon( pa );
+  }
+  else if ( name == "star" )
+  {
+    int oneSixth = 2 * r / 6;
+
+    QPolygon pa( 10 );
+    pa.setPoint( 0, x_c, y_c - half );
+    pa.setPoint( 1, x_c - oneSixth, y_c - oneSixth );
+    pa.setPoint( 2, x_c - half, y_c - oneSixth );
+    pa.setPoint( 3, x_c - oneSixth, y_c );
+    pa.setPoint( 4, x_c - half, y_c + half );
+    pa.setPoint( 5, x_c, y_c + oneSixth );
+    pa.setPoint( 6, x_c + half, y_c + half );
+    pa.setPoint( 7, x_c + oneSixth, y_c );
+    pa.setPoint( 8, x_c + half, y_c - oneSixth );
+    pa.setPoint( 9, x_c + oneSixth, y_c - oneSixth );
+    thepPainter->drawPolygon( pa );
+  }
   thepPainter->end();
 }

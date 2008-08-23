@@ -1,6 +1,6 @@
 /***************************************************************************
- *  File Name:               plugin.cpp 
- * 
+ *  File Name:               plugin.cpp
+ *
  *  The georeferencer plugin is a tool for adding projection info to rasters
  *
  *--------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 
 /***************************************************************************
  *   QGIS Programming conventions:
- *   
+ *
  *   mVariableName - a class level member variable
  *   sVariableName - a static class level member variable
  *   variableName() - accessor for a class member (no 'get' in front of name)
@@ -32,7 +32,7 @@
  *
  *   theVariableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
- * 
+ *
  *   DO: Use mixed case variable names - myVariableName
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
@@ -40,7 +40,7 @@
 
 //
 // Required qgis includes
-// 
+//
 
 #include <qgisinterface.h>
 #include <qgsmaplayer.h>
@@ -54,9 +54,9 @@
 
 
 static const char * const sIdent = "$Id$";
-static const QString sName = QObject::tr("Georeferencer");
-static const QString sDescription = QObject::tr("Adding projection info to rasters");
-static const QString sPluginVersion = QObject::tr("Version 0.1");
+static const QString sName = QObject::tr( "Georeferencer" );
+static const QString sDescription = QObject::tr( "Adding projection info to rasters" );
+static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -71,9 +71,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * @param theQGisApp - Pointer to the QGIS main window
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsGeorefPlugin::QgsGeorefPlugin(QgisInterface * theQgisInterface):
-                 QgisPlugin(sName,sDescription,sPluginVersion,sPluginType), 
-                 mQGisIface(theQgisInterface)
+QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface ):
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    mQGisIface( theQgisInterface )
 {
 }
 
@@ -83,19 +83,19 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin
  */
 void QgsGeorefPlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/georeferencer.png"), tr("&Georeferencer"), this);
+  mQActionPointer = new QAction( QIcon( ":/georeferencer.png" ), tr( "&Georeferencer" ), this );
 
   // Connect the action to the run
-  connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
-  
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+
   // Add to the toolbar & menu
-  mQGisIface->addToolBarIcon(mQActionPointer);
-  mQGisIface->addPluginMenu(tr("&Georeferencer"), mQActionPointer);
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginMenu( tr( "&Georeferencer" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -107,7 +107,7 @@ void QgsGeorefPlugin::help()
 // Slot called when the buffer menu item is triggered
 void QgsGeorefPlugin::run()
 {
-  QgsGeorefPluginGui *myPluginGui=new QgsGeorefPluginGui(mQGisIface, QgsGeorefPluginGui::findMainWindow());
+  QgsGeorefPluginGui *myPluginGui = new QgsGeorefPluginGui( mQGisIface, QgsGeorefPluginGui::findMainWindow() );
   myPluginGui->show();
   myPluginGui->setFocus();
 }
@@ -116,8 +116,8 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu(tr("&Georeferencer"),mQActionPointer);
-  mQGisIface->removeToolBarIcon(mQActionPointer);
+  mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
@@ -140,15 +140,15 @@ void QgsGeorefPlugin::unload()
 //////////////////////////////////////////////////////////////////////////
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-  return new QgsGeorefPlugin(theQgisInterfacePointer);
+  return new QgsGeorefPlugin( theQgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
@@ -176,7 +176,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
   delete thePluginPointer;
 }

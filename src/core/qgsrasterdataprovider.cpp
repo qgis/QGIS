@@ -17,7 +17,7 @@
 /* $Id$ */
 
 #include "qgsrasterdataprovider.h"
-#include <iostream>
+#include "qgslogger.h"
 
 QgsRasterDataProvider::QgsRasterDataProvider()
 {
@@ -25,7 +25,7 @@ QgsRasterDataProvider::QgsRasterDataProvider()
 
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
-    : QgsDataProvider(uri)
+    : QgsDataProvider( uri )
 {
 }
 
@@ -36,17 +36,14 @@ QString QgsRasterDataProvider::capabilitiesString() const
 
   int abilities = capabilities();
 
-  if (abilities & QgsRasterDataProvider::Identify)
+  if ( abilities & QgsRasterDataProvider::Identify )
   {
     abilitiesList += "Identify";
-#ifdef QGISDEBUG
-        std::cerr << "QgsRasterDataProvider::capabilitiesString "
-          << "Identify" << std::endl;
-#endif
+    QgsDebugMsg( "QgsRasterDataProvider::capabilitiesString Identify" );
 
   }
 
-  return abilitiesList.join(", ");
+  return abilitiesList.join( ", " );
 }
 
 

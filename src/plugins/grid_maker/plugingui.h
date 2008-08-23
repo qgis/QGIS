@@ -20,25 +20,25 @@
 */
 class QgsGridMakerPluginGui : public QDialog, private Ui::QgsGridMakerPluginGuiBase
 {
-  Q_OBJECT
-public:
-  QgsGridMakerPluginGui(QWidget* parent = 0, Qt::WFlags = 0);
-  ~QgsGridMakerPluginGui();
+    Q_OBJECT
+  public:
+    QgsGridMakerPluginGui( QWidget* parent = 0, Qt::WFlags = 0 );
+    ~QgsGridMakerPluginGui();
 
-private slots:
-  
-  void on_pbnSelectOutputFile_clicked();
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
-  void on_buttonBox_helpRequested();
+  private slots:
 
-signals:
-  void drawRasterLayer(QString);
-  void drawVectorLayer(QString,QString,QString);
+    void on_pbnSelectOutputFile_clicked();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
 
-private:
-  QAbstractButton *pbnOK;
-  static const int context_id = 0;
+  signals:
+    void drawRasterLayer( QString );
+    void drawVectorLayer( QString, QString, QString );
+
+  private:
+    QAbstractButton *pbnOK;
+    static const int context_id = 0;
 };
 
 #endif

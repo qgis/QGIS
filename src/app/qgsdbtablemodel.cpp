@@ -19,15 +19,15 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 
-QgsDbTableModel::QgsDbTableModel(): QStandardItemModel(), mTableCount(0)
+QgsDbTableModel::QgsDbTableModel(): QStandardItemModel(), mTableCount( 0 )
 {
   QStringList headerLabels;
-  headerLabels << tr("Schema");
-  headerLabels << tr("Table");
-  headerLabels << tr("Type");
-  headerLabels << tr("Geometry column");
-  headerLabels << tr("Sql");
-  setHorizontalHeaderLabels(headerLabels);
+  headerLabels << tr( "Schema" );
+  headerLabels << tr( "Table" );
+  headerLabels << tr( "Type" );
+  headerLabels << tr( "Geometry column" );
+  headerLabels << tr( "Sql" );
+  setHorizontalHeaderLabels( headerLabels );
 }
 
 QgsDbTableModel::~QgsDbTableModel()
@@ -35,133 +35,133 @@ QgsDbTableModel::~QgsDbTableModel()
 
 }
 
-void QgsDbTableModel::addTableEntry(QString type, QString schemaName, QString tableName, QString geometryColName, QString sql)
+void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, QString sql )
 {
   //is there already a root item with the given scheme Name?
   QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems(schemaName, Qt::MatchExactly, 0);
+  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, 0 );
 
   //there is already an item for this schema
-  if(schemaItems.size() > 0)
+  if ( schemaItems.size() > 0 )
   {
-    schemaItem = schemaItems.at(0);
+    schemaItem = schemaItems.at( 0 );
   }
   else //create a new toplevel item for this schema
   {
-    schemaItem = new QStandardItem(schemaName);
-    schemaItem->setFlags(Qt::ItemIsEnabled);
-    invisibleRootItem()->setChild (invisibleRootItem()->rowCount(), schemaItem);
+    schemaItem = new QStandardItem( schemaName );
+    schemaItem->setFlags( Qt::ItemIsEnabled );
+    invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
   //path to icon for specified type
   QString typeName;
 
-  QGis::WKBTYPE wkbType = qgisTypeFromDbType(type);
-  QIcon iconFile = iconForType(wkbType);
+  QGis::WKBTYPE wkbType = qgisTypeFromDbType( type );
+  QIcon iconFile = iconForType( wkbType );
 
   QList<QStandardItem*> childItemList;
-  QStandardItem* schemaNameItem = new QStandardItem(schemaName);
-  schemaNameItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QStandardItem* typeItem = new QStandardItem(QIcon(iconFile), type);
-  typeItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QStandardItem* tableItem = new QStandardItem(tableName);
-  tableItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QStandardItem* geomItem = new QStandardItem(geometryColName);
-  geomItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  QStandardItem* sqlItem = new QStandardItem(sql);
-  sqlItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  QStandardItem* schemaNameItem = new QStandardItem( schemaName );
+  schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* typeItem = new QStandardItem( QIcon( iconFile ), type );
+  typeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* tableItem = new QStandardItem( tableName );
+  tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* geomItem = new QStandardItem( geometryColName );
+  geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem* sqlItem = new QStandardItem( sql );
+  sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
 
-  childItemList.push_back(schemaNameItem);
-  childItemList.push_back(tableItem);
-  childItemList.push_back(typeItem);
-  childItemList.push_back(geomItem);
-  childItemList.push_back(sqlItem);
+  childItemList.push_back( schemaNameItem );
+  childItemList.push_back( tableItem );
+  childItemList.push_back( typeItem );
+  childItemList.push_back( geomItem );
+  childItemList.push_back( sqlItem );
 
-  schemaItem->appendRow(childItemList);
+  schemaItem->appendRow( childItemList );
   ++mTableCount;
 }
 
-void QgsDbTableModel::setSql(const QModelIndex& index, const QString& sql)
+void QgsDbTableModel::setSql( const QModelIndex& index, const QString& sql )
 {
-  if(!index.isValid() || !index.parent().isValid())
+  if ( !index.isValid() || !index.parent().isValid() )
   {
     return;
   }
 
   //find out schema name and table name
-  QModelIndex schemaSibling = index.sibling(index.row(), 0);
-  QModelIndex tableSibling = index.sibling(index.row(), 1);
-  QModelIndex geomSibling = index.sibling(index.row(), 3);
+  QModelIndex schemaSibling = index.sibling( index.row(), 0 );
+  QModelIndex tableSibling = index.sibling( index.row(), 1 );
+  QModelIndex geomSibling = index.sibling( index.row(), 3 );
 
-  if(!schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid())
+  if ( !schemaSibling.isValid() || !tableSibling.isValid() || !geomSibling.isValid() )
   {
     return;
   }
 
-  QString schemaName = itemFromIndex(schemaSibling)->text();
-  QString tableName = itemFromIndex(tableSibling)->text();
-  QString geomName = itemFromIndex(geomSibling)->text();
+  QString schemaName = itemFromIndex( schemaSibling )->text();
+  QString tableName = itemFromIndex( tableSibling )->text();
+  QString geomName = itemFromIndex( geomSibling )->text();
 
-  QList<QStandardItem*> schemaItems = findItems(schemaName, Qt::MatchExactly, 0);
-  if(schemaItems.size() < 1)
+  QList<QStandardItem*> schemaItems = findItems( schemaName, Qt::MatchExactly, 0 );
+  if ( schemaItems.size() < 1 )
   {
     return;
   }
 
-  QStandardItem* schemaItem = schemaItems.at(0);
+  QStandardItem* schemaItem = schemaItems.at( 0 );
   int numChildren = schemaItem->rowCount();
 
   QModelIndex currentChildIndex;
   QModelIndex currentTableIndex;
   QModelIndex currentGeomIndex;
 
-  for(int i = 0; i < numChildren; ++i)
+  for ( int i = 0; i < numChildren; ++i )
   {
-    currentChildIndex = indexFromItem(schemaItem->child(i, 0));
-    if(!currentChildIndex.isValid())
+    currentChildIndex = indexFromItem( schemaItem->child( i, 0 ) );
+    if ( !currentChildIndex.isValid() )
     {
       continue;
     }
-    currentTableIndex = currentChildIndex.sibling(i, 1);
-    if(!currentTableIndex.isValid())
-    {
-      continue;
-    }
-
-    currentGeomIndex = currentChildIndex.sibling(i, 3);
-    if(!currentGeomIndex.isValid())
+    currentTableIndex = currentChildIndex.sibling( i, 1 );
+    if ( !currentTableIndex.isValid() )
     {
       continue;
     }
 
-    if(itemFromIndex(currentTableIndex)->text() == tableName &&
-       itemFromIndex(currentGeomIndex)->text() == geomName )
+    currentGeomIndex = currentChildIndex.sibling( i, 3 );
+    if ( !currentGeomIndex.isValid() )
     {
-      QModelIndex sqlIndex = currentChildIndex.sibling(i, 4);
-      if(sqlIndex.isValid())
+      continue;
+    }
+
+    if ( itemFromIndex( currentTableIndex )->text() == tableName &&
+         itemFromIndex( currentGeomIndex )->text() == geomName )
+    {
+      QModelIndex sqlIndex = currentChildIndex.sibling( i, 4 );
+      if ( sqlIndex.isValid() )
       {
-        itemFromIndex(sqlIndex)->setText(sql);
+        itemFromIndex( sqlIndex )->setText( sql );
         break;
       }
     }
   }
 }
 
-void QgsDbTableModel::setGeometryTypesForTable(const QString& schema, const QString& table, const QString& attribute, const QString& type)
+void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QString& table, const QString& attribute, const QString& type )
 {
   bool typeIsEmpty = type.isEmpty(); //true means the table has no valid geometry entry and the item for this table should be removed
-  QStringList typeList = type.split(",");
+  QStringList typeList = type.split( "," );
 
   //find schema item and table item
   QStandardItem* schemaItem;
-  QList<QStandardItem*> schemaItems = findItems(schema, Qt::MatchExactly, 0);
+  QList<QStandardItem*> schemaItems = findItems( schema, Qt::MatchExactly, 0 );
 
-  if(schemaItems.size() < 1)
+  if ( schemaItems.size() < 1 )
   {
     return;
   }
-  schemaItem = schemaItems.at(0);
+  schemaItem = schemaItems.at( 0 );
   int numChildren = schemaItem->rowCount();
 
   QModelIndex currentChildIndex;
@@ -169,119 +169,119 @@ void QgsDbTableModel::setGeometryTypesForTable(const QString& schema, const QStr
   QModelIndex currentTypeIndex;
   QModelIndex currentGeomColumnIndex;
 
-  for(int i = 0; i < numChildren; ++i)
+  for ( int i = 0; i < numChildren; ++i )
   {
-    currentChildIndex = indexFromItem(schemaItem->child(i, 0));
-    if(!currentChildIndex.isValid())
+    currentChildIndex = indexFromItem( schemaItem->child( i, 0 ) );
+    if ( !currentChildIndex.isValid() )
     {
       continue;
     }
-    currentTableIndex = currentChildIndex.sibling(i, 1);
-    currentTypeIndex = currentChildIndex.sibling(i, 2);
-    currentGeomColumnIndex = currentChildIndex.sibling(i, 3);
-    QString geomColText = itemFromIndex(currentGeomColumnIndex)->text();
+    currentTableIndex = currentChildIndex.sibling( i, 1 );
+    currentTypeIndex = currentChildIndex.sibling( i, 2 );
+    currentGeomColumnIndex = currentChildIndex.sibling( i, 3 );
+    QString geomColText = itemFromIndex( currentGeomColumnIndex )->text();
 
-    if(!currentTypeIndex.isValid() || !currentTableIndex.isValid() || !currentGeomColumnIndex.isValid())
+    if ( !currentTypeIndex.isValid() || !currentTableIndex.isValid() || !currentGeomColumnIndex.isValid() )
     {
       continue;
     }
 
-    if(itemFromIndex(currentTableIndex)->text() == table &&
-       (geomColText==attribute || geomColText.startsWith( attribute + " AS ") ) )
+    if ( itemFromIndex( currentTableIndex )->text() == table &&
+         ( geomColText == attribute || geomColText.startsWith( attribute + " AS " ) ) )
     {
-      if(typeIsEmpty)
+      if ( typeIsEmpty )
       {
-        removeRow(i, indexFromItem(schemaItem));
+        removeRow( i, indexFromItem( schemaItem ) );
         return;
       }
 
-      QGis::WKBTYPE wkbType = qgisTypeFromDbType(typeList.at(0));
-      QIcon myIcon = iconForType(wkbType);
-      itemFromIndex(currentTypeIndex)->setText(typeList.at(0)); //todo: add other rows
-      itemFromIndex(currentTypeIndex)->setIcon(myIcon);
-      if(!geomColText.contains(" AS "))
+      QGis::WKBTYPE wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
+      QIcon myIcon = iconForType( wkbType );
+      itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
+      itemFromIndex( currentTypeIndex )->setIcon( myIcon );
+      if ( !geomColText.contains( " AS " ) )
       {
-        itemFromIndex(currentGeomColumnIndex)->setText(geomColText + " AS " + typeList.at(0));
+        itemFromIndex( currentGeomColumnIndex )->setText( geomColText + " AS " + typeList.at( 0 ) );
       }
 
-      for(int j = 1; j < typeList.size(); ++j)
+      for ( int j = 1; j < typeList.size(); ++j )
       {
         //todo: add correct type
-        addTableEntry(typeList.at(j), schema, table, geomColText + " AS " + typeList.at(j), ""); 
+        addTableEntry( typeList.at( j ), schema, table, geomColText + " AS " + typeList.at( j ), "" );
       }
     }
   }
 }
 
-QIcon QgsDbTableModel::iconForType(QGis::WKBTYPE type) const
+QIcon QgsDbTableModel::iconForType( QGis::WKBTYPE type ) const
 {
-  if(type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D)
+  if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
   {
-    return QgisApp::getThemeIcon("/mIconPointLayer.png");
+    return QgisApp::getThemeIcon( "/mIconPointLayer.png" );
   }
-  else if(type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D)
+  else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
   {
-    return QgisApp::getThemeIcon("/mIconLineLayer.png");
+    return QgisApp::getThemeIcon( "/mIconLineLayer.png" );
   }
-  else if(type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D)
+  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
   {
-    return QgisApp::getThemeIcon("/mIconPolygonLayer.png");
+    return QgisApp::getThemeIcon( "/mIconPolygonLayer.png" );
   }
   else return QIcon();
 }
 
-QString QgsDbTableModel::displayStringForType(QGis::WKBTYPE type) const
+QString QgsDbTableModel::displayStringForType( QGis::WKBTYPE type ) const
 {
-  if(type == QGis::WKBPoint || type == QGis::WKBPoint25D)
+  if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D )
   {
-    return tr("Point");
+    return tr( "Point" );
   }
-  else if(type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D)
+  else if ( type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
   {
-    return tr("Multipoint");
+    return tr( "Multipoint" );
   }
-  else if(type == QGis::WKBLineString || type == QGis::WKBLineString25D)
+  else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D )
   {
-    return tr("Line");
+    return tr( "Line" );
   }
-  else if(type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D)
+  else if ( type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
   {
-    return tr("Multiline");
+    return tr( "Multiline" );
   }
-  else if(type == QGis::WKBPolygon || type == QGis::WKBPolygon25D)
+  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D )
   {
-    return tr("Polygon");
+    return tr( "Polygon" );
   }
-  else if(type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D)
+  else if ( type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
   {
-    return tr("Multipolygon");
+    return tr( "Multipolygon" );
   }
   return "Unknown";
 }
 
-QGis::WKBTYPE QgsDbTableModel::qgisTypeFromDbType(const QString& dbType) const
+QGis::WKBTYPE QgsDbTableModel::qgisTypeFromDbType( const QString& dbType ) const
 {
-  if(dbType == "POINT")
+  if ( dbType == "POINT" )
   {
     return QGis::WKBPoint;
   }
-  else if(dbType == "MULTIPOINT")
+  else if ( dbType == "MULTIPOINT" )
   {
     return QGis::WKBMultiPoint;
   }
-  else if(dbType == "LINESTRING")
+  else if ( dbType == "LINESTRING" )
   {
     return QGis::WKBLineString;
   }
-  else if(dbType == "MULTILINESTRING")
+  else if ( dbType == "MULTILINESTRING" )
   {
     return QGis::WKBMultiLineString;
   }
-  else if(dbType == "POLYGON")
+  else if ( dbType == "POLYGON" )
   {
     return QGis::WKBPolygon;
   }
-  else if(dbType == "MULTIPOLYGON")
+  else if ( dbType == "MULTIPOLYGON" )
   {
     return QGis::WKBMultiPolygon;
   }

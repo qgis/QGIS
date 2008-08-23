@@ -1,6 +1,6 @@
 /***************************************************************************
                             qgsrasterpyramid.h
-                       
+
                              -------------------
     begin                : 2007
     copyright            : (C) 2007 by Gary E. Sherman
@@ -21,14 +21,14 @@
 class CORE_EXPORT QgsRasterPyramid
 {
   public:
-  /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
-  int level;
-  /** \brief XDimension for this pyramid layer */
-  int xDim;
-  /** \brief YDimension for this pyramid layer */
-  int yDim;
-  /** \brief Whether the pyramid layer has been built yet */
-  bool existsFlag;
+    /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
+    int level;
+    /** \brief XDimension for this pyramid layer */
+    int xDim;
+    /** \brief YDimension for this pyramid layer */
+    int yDim;
+    /** \brief Whether the pyramid layer has been built yet */
+    bool existsFlag;
 
 };
 #endif

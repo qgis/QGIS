@@ -18,7 +18,8 @@
 #include "qgssymbologyutils.h"
 #include <QPixmap>
 
-static const char *solidLineData[] = {
+static const char *solidLineData[] =
+{
   "60 26 4 1",
   "a c None",
   "# c None",
@@ -52,7 +53,8 @@ static const char *solidLineData[] = {
   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
 };
 
-static const char *dashLineData[] = {
+static const char *dashLineData[] =
+{
   "60 26 4 1",
   "a c None",
   "# c None",
@@ -86,7 +88,8 @@ static const char *dashLineData[] = {
   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
 };
 
-static const char *dotLineData[] = {
+static const char *dotLineData[] =
+{
   "60 26 4 1",
   "a c None",
   "# c None",
@@ -120,7 +123,8 @@ static const char *dotLineData[] = {
   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
 };
 
-static const char *dashDotLineData[] = {
+static const char *dashDotLineData[] =
+{
   "60 26 4 1",
   "a c None",
   "# c None",
@@ -154,7 +158,8 @@ static const char *dashDotLineData[] = {
   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
 };
 
-static const char *dashDotDotLineData[] = {
+static const char *dashDotDotLineData[] =
+{
   "60 26 5 1",
   "a c None",
   "# c None",
@@ -189,39 +194,42 @@ static const char *dashDotDotLineData[] = {
   "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
 };
 
-static const char *noPenLineData[] = {
-"60 26 3 1",
-"a c None",
-"# c None",
-". c None",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
-".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
-"a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."};
+static const char *noPenLineData[] =
+{
+  "60 26 3 1",
+  "a c None",
+  "# c None",
+  ". c None",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.",
+  ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#",
+  "a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a.a."
+};
 
-static const char *solidData[] = {
+static const char *solidData[] =
+{
   "50 20 1 1",
   ". c #3155c5",
   "..................................................",
@@ -246,7 +254,8 @@ static const char *solidData[] = {
   ".................................................."
 };
 
-static const char *fdiagData[] = {
+static const char *fdiagData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -272,7 +281,8 @@ static const char *fdiagData[] = {
   "..#.......#.......#.......#.......#.......#......."
 };
 
-static const char *dense4Data[] = {
+static const char *dense4Data[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -298,7 +308,8 @@ static const char *dense4Data[] = {
   "#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#.#."
 };
 
-static const char *horizontalData[] = {
+static const char *horizontalData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -324,7 +335,8 @@ static const char *horizontalData[] = {
   ".................................................."
 };
 
-static const char *dense5Data[] = {
+static const char *dense5Data[] =
+{
   "50 20 2 1",
   ". c #3155c5",
   "# c #ffffff",
@@ -350,7 +362,8 @@ static const char *dense5Data[] = {
   "#.###.###.###.###.###.###.###.###.###.###.###.###."
 };
 
-static const char *diagCrossData[] = {
+static const char *diagCrossData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -376,7 +389,8 @@ static const char *diagCrossData[] = {
   ".#...#...#...#...#...#...#...#...#...#...#...#...#"
 };
 
-static const char *dense1Data[] = {
+static const char *dense1Data[] =
+{
   "50 20 2 1",
   ". c #3155c5",
   "# c #ffffff",
@@ -402,7 +416,8 @@ static const char *dense1Data[] = {
   ".................................................."
 };
 
-static const char *dense6Data[] = {
+static const char *dense6Data[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -428,7 +443,8 @@ static const char *dense6Data[] = {
   "..#...#...#...#...#...#...#...#...#...#...#...#..."
 };
 
-static const char *verticalData[] = {
+static const char *verticalData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -454,7 +470,8 @@ static const char *verticalData[] = {
   ".....#.....#.....#.....#.....#.....#.....#.....#.."
 };
 
-static const char *dense7Data[] = {
+static const char *dense7Data[] =
+{
   "50 20 2 1",
   ". c #3155c5",
   "# c #ffffff",
@@ -480,7 +497,8 @@ static const char *dense7Data[] = {
   "##################################################"
 };
 
-static const char *crossData[] = {
+static const char *crossData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -506,7 +524,8 @@ static const char *crossData[] = {
   ".....#.....#.....#.....#.....#.....#.....#.....#.."
 };
 
-static const char *dense2Data[] = {
+static const char *dense2Data[] =
+{
   "50 20 2 1",
   ". c #3155c5",
   "# c #ffffff",
@@ -532,7 +551,8 @@ static const char *dense2Data[] = {
   ".#...#...#...#...#...#...#...#...#...#...#...#...#"
 };
 
-static const char *bdiagData[] = {
+static const char *bdiagData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -558,7 +578,8 @@ static const char *bdiagData[] = {
   "......#.......#.......#.......#.......#.......#..."
 };
 
-static const char *dense3Data[] = {
+static const char *dense3Data[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -584,7 +605,8 @@ static const char *dense3Data[] = {
   "###.###.###.###.###.###.###.###.###.###.###.###.##"
 };
 
-static const char *nobrush[] = {
+static const char *nobrush[] =
+{
   "50 20 2 1",
   "# c None",
   ". c #3155c5",
@@ -611,7 +633,8 @@ static const char *nobrush[] = {
   ".................................................."
 };
 
-static const char *texturePatternData[] = {
+static const char *texturePatternData[] =
+{
   "50 20 2 1",
   "# c #3155c5",
   ". c #ffffff",
@@ -637,665 +660,743 @@ static const char *texturePatternData[] = {
   ".................................................."
 };
 
-QString QgsSymbologyUtils::penStyle2QString(Qt::PenStyle penstyle)
+QString QgsSymbologyUtils::penStyle2QString( Qt::PenStyle penstyle )
 {
-  if (penstyle == Qt::NoPen)
+  if ( penstyle == Qt::NoPen )
   {
     return "NoPen";
-  } 
-  else if (penstyle == Qt::SolidLine)
+  }
+  else if ( penstyle == Qt::SolidLine )
   {
     return "SolidLine";
-  } 
-  else if (penstyle == Qt::DashLine)
+  }
+  else if ( penstyle == Qt::DashLine )
   {
     return "DashLine";
-  } 
-  else if (penstyle == Qt::DotLine)
+  }
+  else if ( penstyle == Qt::DotLine )
   {
     return "DotLine";
-  } 
-  else if (penstyle == Qt::DashDotLine)
+  }
+  else if ( penstyle == Qt::DashDotLine )
   {
     return "DashDotLine";
-  } 
-  else if (penstyle == Qt::DashDotDotLine)
+  }
+  else if ( penstyle == Qt::DashDotDotLine )
   {
     return "DashDotDotLine";
-  } 
-  else if (penstyle == Qt::MPenStyle)
+  }
+  else if ( penstyle == Qt::MPenStyle )
   {
     return "MPenStyle";
-  } 
-  else                        //return a null string 
+  }
+  else                        //return a null string
   {
     return QString();
   }
 }
 
-Qt::PenStyle QgsSymbologyUtils::qString2PenStyle(QString penString)
+Qt::PenStyle QgsSymbologyUtils::qString2PenStyle( QString penString )
 {
-  if (penString == "NoPen")
+  if ( penString == "NoPen" )
   {
     return Qt::NoPen;
-  } 
-  else if (penString == "SolidLine")
+  }
+  else if ( penString == "SolidLine" )
   {
     return Qt::SolidLine;
-  } 
-  else if (penString == "DashLine")
+  }
+  else if ( penString == "DashLine" )
   {
     return Qt::DashLine;
-  } 
-  else if (penString == "DotLine")
+  }
+  else if ( penString == "DotLine" )
   {
     return Qt::DotLine;
-  } 
-  else if (penString == "DashDotLine")
+  }
+  else if ( penString == "DashDotLine" )
   {
     return Qt::DashDotLine;
-  } 
-  else if (penString == "DashDotDotLine")
+  }
+  else if ( penString == "DashDotDotLine" )
   {
     return Qt::DashDotDotLine;
-  } 
-  else if (penString == "MPenStyle")
+  }
+  else if ( penString == "MPenStyle" )
   {
     return Qt::MPenStyle;
-  } 
+  }
   else
   {
     return Qt::NoPen;
   }
 }
 
-QString QgsSymbologyUtils::brushStyle2QString(Qt::BrushStyle brushstyle)
+QString QgsSymbologyUtils::brushStyle2QString( Qt::BrushStyle brushstyle )
 {
-  if (brushstyle == Qt::NoBrush)
+  if ( brushstyle == Qt::NoBrush )
   {
     return "NoBrush";
-  } 
-  else if (brushstyle == Qt::SolidPattern)
+  }
+  else if ( brushstyle == Qt::SolidPattern )
   {
     return "SolidPattern";
-  } 
-  else if (brushstyle == Qt::Dense1Pattern)
+  }
+  else if ( brushstyle == Qt::Dense1Pattern )
   {
     return "Dense1Pattern";
-  } 
-  else if (brushstyle == Qt::Dense2Pattern)
+  }
+  else if ( brushstyle == Qt::Dense2Pattern )
   {
     return "Dense2Pattern";
-  } 
-  else if (brushstyle == Qt::Dense3Pattern)
+  }
+  else if ( brushstyle == Qt::Dense3Pattern )
   {
     return "Dense3Pattern";
-  } 
-  else if (brushstyle == Qt::Dense4Pattern)
+  }
+  else if ( brushstyle == Qt::Dense4Pattern )
   {
     return "Dense4Pattern";
-  } 
-  else if (brushstyle == Qt::Dense5Pattern)
+  }
+  else if ( brushstyle == Qt::Dense5Pattern )
   {
     return "Dense5Pattern";
-  } 
-  else if (brushstyle == Qt::Dense6Pattern)
+  }
+  else if ( brushstyle == Qt::Dense6Pattern )
   {
     return "Dense6Pattern";
-  } 
-  else if (brushstyle == Qt::Dense7Pattern)
+  }
+  else if ( brushstyle == Qt::Dense7Pattern )
   {
     return "Dense7Pattern";
-  } 
-  else if (brushstyle == Qt::HorPattern)
+  }
+  else if ( brushstyle == Qt::HorPattern )
   {
     return "HorPattern";
-  } 
-  else if (brushstyle == Qt::VerPattern)
+  }
+  else if ( brushstyle == Qt::VerPattern )
   {
     return "VerPattern";
-  } 
-  else if (brushstyle == Qt::CrossPattern)
+  }
+  else if ( brushstyle == Qt::CrossPattern )
   {
     return "CrossPattern";
-  } 
-  else if (brushstyle == Qt::BDiagPattern)
+  }
+  else if ( brushstyle == Qt::BDiagPattern )
   {
     return "BDiagPattern";
-  } 
-  else if (brushstyle == Qt::FDiagPattern)
+  }
+  else if ( brushstyle == Qt::FDiagPattern )
   {
     return "FDiagPattern";
-  } 
-  else if (brushstyle == Qt::DiagCrossPattern)
+  }
+  else if ( brushstyle == Qt::DiagCrossPattern )
   {
     return "DiagCrossPattern";
-  } 
-  else if (brushstyle == Qt::TexturePattern)
+  }
+  else if ( brushstyle == Qt::TexturePattern )
   {
     return "TexturePattern";
-  } 
+  }
   else                        //return a null string
   {
-    qWarning("Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2QString");
+    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2QString" );
     return " ";
   }
 }
 
-Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle(QString brushString)
+Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle( QString brushString )
 {
-  if (brushString == "NoBrush")
+  if ( brushString == "NoBrush" )
   {
     return Qt::NoBrush;
-  } 
-  else if (brushString == "SolidPattern")
+  }
+  else if ( brushString == "SolidPattern" )
   {
     return Qt::SolidPattern;
-  } 
-  else if (brushString == "Dense1Pattern")
+  }
+  else if ( brushString == "Dense1Pattern" )
   {
     return Qt::Dense1Pattern;
-  } 
-  else if (brushString == "Dense2Pattern")
+  }
+  else if ( brushString == "Dense2Pattern" )
   {
     return Qt::Dense2Pattern;
-  } 
-  else if (brushString == "Dense3Pattern")
+  }
+  else if ( brushString == "Dense3Pattern" )
   {
     return Qt::Dense3Pattern;
-  } 
-  else if (brushString == "Dense4Pattern")
+  }
+  else if ( brushString == "Dense4Pattern" )
   {
     return Qt::Dense4Pattern;
-  } 
-  else if (brushString == "Dense5Pattern")
+  }
+  else if ( brushString == "Dense5Pattern" )
   {
     return Qt::Dense5Pattern;
-  } 
-  else if (brushString == "Dense6Pattern")
+  }
+  else if ( brushString == "Dense6Pattern" )
   {
     return Qt::Dense6Pattern;
-  } 
-  else if (brushString == "Dense7Pattern")
+  }
+  else if ( brushString == "Dense7Pattern" )
   {
     return Qt::Dense7Pattern;
-  } 
-  else if (brushString == "HorPattern")
+  }
+  else if ( brushString == "HorPattern" )
   {
     return Qt::HorPattern;
-  } 
-  else if (brushString == "VerPattern")
+  }
+  else if ( brushString == "VerPattern" )
   {
     return Qt::VerPattern;
-  } 
-  else if (brushString == "CrossPattern")
+  }
+  else if ( brushString == "CrossPattern" )
   {
     return Qt::CrossPattern;
-  } 
-  else if (brushString == "BDiagPattern")
+  }
+  else if ( brushString == "BDiagPattern" )
   {
     return Qt::BDiagPattern;
-  } 
-  else if (brushString == "FDiagPattern")
+  }
+  else if ( brushString == "FDiagPattern" )
   {
     return Qt::FDiagPattern;
-  } 
-  else if (brushString == "DiagCrossPattern")
+  }
+  else if ( brushString == "DiagCrossPattern" )
   {
     return Qt::DiagCrossPattern;
-  } 
-  else if (brushString == "TexturePattern")
+  }
+  else if ( brushString == "TexturePattern" )
   {
     return Qt::TexturePattern;
-  } 
+  }
   else                        //return a null string
   {
-    qWarning("Brush style \"" + brushString.toUtf8() + "\" not found in qString2BrushStyle");
+    qWarning( "Brush style \"" + brushString.toUtf8() + "\" not found in qString2BrushStyle" );
     return Qt::NoBrush;
   }
 }
 
-QPixmap QgsSymbologyUtils::qString2LinePixmap(QString lineString)
+QPixmap QgsSymbologyUtils::qString2LinePixmap( QString lineString )
 {
-  if (lineString == "SolidLine")
+  if ( lineString == "SolidLine" )
   {
-    return QPixmap(solidLineData);
+    return QPixmap( solidLineData );
   }
 
-  if (lineString == "DashLine")
+  if ( lineString == "DashLine" )
   {
-    return QPixmap(dashLineData);
+    return QPixmap( dashLineData );
   }
 
-  if (lineString == "DotLine")
+  if ( lineString == "DotLine" )
   {
-    return QPixmap(dotLineData);
+    return QPixmap( dotLineData );
   }
 
-  if (lineString == "DashDotLine")
+  if ( lineString == "DashDotLine" )
   {
-    return QPixmap(dashDotLineData);
+    return QPixmap( dashDotLineData );
   }
 
-  if (lineString == "DashDotDotLine")
+  if ( lineString == "DashDotDotLine" )
   {
-    return QPixmap(dashDotDotLineData);
+    return QPixmap( dashDotDotLineData );
   }
-  if(lineString =="NoPen")
+  if ( lineString == "NoPen" )
   {
-    return QPixmap(noPenLineData);
+    return QPixmap( noPenLineData );
   }
 
   return QPixmap();             // XXX I hope returning a blank one is ok
 }
 
-QPixmap QgsSymbologyUtils::qString2PatternPixmap(QString patternString)
+QPixmap QgsSymbologyUtils::qString2PatternPixmap( QString patternString )
 {
-  if (patternString == "SolidPattern")
+  if ( patternString == "SolidPattern" )
   {
-    return QPixmap(solidData);
-  } else if (patternString == "Dense1Pattern")
+    return QPixmap( solidData );
+  }
+  else if ( patternString == "Dense1Pattern" )
   {
-    return QPixmap(dense1Data);
-  } else if (patternString == "Dense2Pattern")
+    return QPixmap( dense1Data );
+  }
+  else if ( patternString == "Dense2Pattern" )
   {
-    return QPixmap(dense2Data);
-  } else if (patternString == "Dense3Pattern")
+    return QPixmap( dense2Data );
+  }
+  else if ( patternString == "Dense3Pattern" )
   {
-    return QPixmap(dense3Data);
-  } else if (patternString == "Dense4Pattern")
+    return QPixmap( dense3Data );
+  }
+  else if ( patternString == "Dense4Pattern" )
   {
-    return QPixmap(dense4Data);
-  } else if (patternString == "Dense5Pattern")
+    return QPixmap( dense4Data );
+  }
+  else if ( patternString == "Dense5Pattern" )
   {
-    return QPixmap(dense5Data);
-  } else if (patternString == "Dense6Pattern")
+    return QPixmap( dense5Data );
+  }
+  else if ( patternString == "Dense6Pattern" )
   {
-    return QPixmap(dense6Data);
-  } else if (patternString == "Dense7Pattern")
+    return QPixmap( dense6Data );
+  }
+  else if ( patternString == "Dense7Pattern" )
   {
-    return QPixmap(dense7Data);
-  } else if (patternString == "HorPattern")
+    return QPixmap( dense7Data );
+  }
+  else if ( patternString == "HorPattern" )
   {
-    return QPixmap(horizontalData);
-  } else if (patternString == "VerPattern")
+    return QPixmap( horizontalData );
+  }
+  else if ( patternString == "VerPattern" )
   {
-    return QPixmap(verticalData);
-  } else if (patternString == "CrossPattern")
+    return QPixmap( verticalData );
+  }
+  else if ( patternString == "CrossPattern" )
   {
-    return QPixmap(crossData);
-  } else if (patternString == "BDiagPattern")
+    return QPixmap( crossData );
+  }
+  else if ( patternString == "BDiagPattern" )
   {
-    return QPixmap(bdiagData);
-  } else if (patternString == "FDiagPattern")
+    return QPixmap( bdiagData );
+  }
+  else if ( patternString == "FDiagPattern" )
   {
-    return QPixmap(fdiagData);
-  } else if (patternString == "DiagCrossPattern")
+    return QPixmap( fdiagData );
+  }
+  else if ( patternString == "DiagCrossPattern" )
   {
-    return QPixmap(diagCrossData);
-  } else if (patternString == "TexturePattern")
+    return QPixmap( diagCrossData );
+  }
+  else if ( patternString == "TexturePattern" )
   {
-    return QPixmap(texturePatternData);
-  } else if (patternString == "NoBrush")
+    return QPixmap( texturePatternData );
+  }
+  else if ( patternString == "NoBrush" )
   {
-    return QPixmap(nobrush);
-  } else                        //return a null patternString
+    return QPixmap( nobrush );
+  }
+  else                        //return a null patternString
   {
-    qWarning("Warning, no matching pattern found in QgsSymbologyUtils::qString2PatternPixmap");
+    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::qString2PatternPixmap" );
     return QPixmap();
   }
 }
 
-const char * QgsSymbologyUtils::penStyle2Char(Qt::PenStyle penstyle)
+const char * QgsSymbologyUtils::penStyle2Char( Qt::PenStyle penstyle )
 {
-  if (penstyle == Qt::NoPen)
+  if ( penstyle == Qt::NoPen )
   {
     return "NoPen";
-  } else if (penstyle == Qt::SolidLine)
+  }
+  else if ( penstyle == Qt::SolidLine )
   {
     return "SolidLine";
-  } else if (penstyle == Qt::DashLine)
+  }
+  else if ( penstyle == Qt::DashLine )
   {
     return "DashLine";
-  } else if (penstyle == Qt::DotLine)
+  }
+  else if ( penstyle == Qt::DotLine )
   {
     return "DotLine";
-  } else if (penstyle == Qt::DashDotLine)
+  }
+  else if ( penstyle == Qt::DashDotLine )
   {
     return "DashDotLine";
-  } else if (penstyle == Qt::DashDotDotLine)
+  }
+  else if ( penstyle == Qt::DashDotDotLine )
   {
     return "DashDotDotLine";
-  } else if (penstyle == Qt::MPenStyle)
+  }
+  else if ( penstyle == Qt::MPenStyle )
   {
     return "MPenStyle";
-  } else                        //return an empty char* 
+  }
+  else                        //return an empty char*
   {
     return " ";
   }
 }
 
-const char *QgsSymbologyUtils::brushStyle2Char(Qt::BrushStyle brushstyle)
+const char *QgsSymbologyUtils::brushStyle2Char( Qt::BrushStyle brushstyle )
 {
-  if (brushstyle == Qt::NoBrush)
+  if ( brushstyle == Qt::NoBrush )
   {
     return "NoBrush";
-  } else if (brushstyle == Qt::SolidPattern)
+  }
+  else if ( brushstyle == Qt::SolidPattern )
   {
     return "SolidPattern";
-  } else if (brushstyle == Qt::Dense1Pattern)
+  }
+  else if ( brushstyle == Qt::Dense1Pattern )
   {
     return "Dense1Pattern";
-  } else if (brushstyle == Qt::Dense2Pattern)
+  }
+  else if ( brushstyle == Qt::Dense2Pattern )
   {
     return "Dense2Pattern";
-  } else if (brushstyle == Qt::Dense3Pattern)
+  }
+  else if ( brushstyle == Qt::Dense3Pattern )
   {
     return "Dense3Pattern";
-  } else if (brushstyle == Qt::Dense4Pattern)
+  }
+  else if ( brushstyle == Qt::Dense4Pattern )
   {
     return "Dense4Pattern";
-  } else if (brushstyle == Qt::Dense5Pattern)
+  }
+  else if ( brushstyle == Qt::Dense5Pattern )
   {
     return "Dense5Pattern";
-  } else if (brushstyle == Qt::Dense6Pattern)
+  }
+  else if ( brushstyle == Qt::Dense6Pattern )
   {
     return "Dense6Pattern";
-  } else if (brushstyle == Qt::Dense7Pattern)
+  }
+  else if ( brushstyle == Qt::Dense7Pattern )
   {
     return "Dense7Pattern";
-  } else if (brushstyle == Qt::HorPattern)
+  }
+  else if ( brushstyle == Qt::HorPattern )
   {
     return "HorPattern";
-  } else if (brushstyle == Qt::VerPattern)
+  }
+  else if ( brushstyle == Qt::VerPattern )
   {
     return "VerPattern";
-  } else if (brushstyle == Qt::CrossPattern)
+  }
+  else if ( brushstyle == Qt::CrossPattern )
   {
     return "CrossPattern";
-  } else if (brushstyle == Qt::BDiagPattern)
+  }
+  else if ( brushstyle == Qt::BDiagPattern )
   {
     return "BDiagPattern";
-  } else if (brushstyle == Qt::FDiagPattern)
+  }
+  else if ( brushstyle == Qt::FDiagPattern )
   {
     return "FDiagPattern";
-  } else if (brushstyle == Qt::DiagCrossPattern)
+  }
+  else if ( brushstyle == Qt::DiagCrossPattern )
   {
     return "DiagCrossPattern";
-  } else if (brushstyle == Qt::TexturePattern)
+  }
+  else if ( brushstyle == Qt::TexturePattern )
   {
     return "TexturePattern";
-  } else                        //return an empty char*
+  }
+  else                        //return an empty char*
   {
     return " ";
   }
 }
 
-QPixmap QgsSymbologyUtils::char2LinePixmap(const char *c)
+QPixmap QgsSymbologyUtils::char2LinePixmap( const char *c )
 {
-  if (strcmp(c, "SolidLine") == 0)
+  if ( strcmp( c, "SolidLine" ) == 0 )
   {
-    return QPixmap(solidLineData);
+    return QPixmap( solidLineData );
   }
 
-  else if (strcmp(c, "DashLine") == 0)
+  else if ( strcmp( c, "DashLine" ) == 0 )
   {
-    return QPixmap(dashLineData);
+    return QPixmap( dashLineData );
   }
 
-  else if (strcmp(c, "DotLine") == 0)
+  else if ( strcmp( c, "DotLine" ) == 0 )
   {
-    return QPixmap(dotLineData);
+    return QPixmap( dotLineData );
   }
 
-  else if (strcmp(c, "DashDotLine") == 0)
+  else if ( strcmp( c, "DashDotLine" ) == 0 )
   {
-    return QPixmap(dashDotLineData);
+    return QPixmap( dashDotLineData );
   }
 
-  else if (strcmp(c, "DashDotDotLine") == 0)
+  else if ( strcmp( c, "DashDotDotLine" ) == 0 )
   {
-    return QPixmap(dashDotDotLineData);
+    return QPixmap( dashDotDotLineData );
   }
 
-  else if (strcmp(c, "NoPen") == 0)
+  else if ( strcmp( c, "NoPen" ) == 0 )
   {
-    return QPixmap(noPenLineData);
+    return QPixmap( noPenLineData );
   }
 
   else
   {
-    qWarning("Warning, no matching style found in QgsSymbologyUtils::char2LinePixmap");
+    qWarning( "Warning, no matching style found in QgsSymbologyUtils::char2LinePixmap" );
     return QPixmap();
   }
 }
 
-QPixmap QgsSymbologyUtils::char2PatternPixmap(const char *c)
+QPixmap QgsSymbologyUtils::char2PatternPixmap( const char *c )
 {
-  if (strcmp(c, "SolidPattern") == 0)
+  if ( strcmp( c, "SolidPattern" ) == 0 )
   {
-    return QPixmap(solidData);
-  } else if (strcmp(c, "Dense1Pattern") == 0)
+    return QPixmap( solidData );
+  }
+  else if ( strcmp( c, "Dense1Pattern" ) == 0 )
   {
-    return QPixmap(dense1Data);
-  } else if (strcmp(c, "Dense2Pattern") == 0)
+    return QPixmap( dense1Data );
+  }
+  else if ( strcmp( c, "Dense2Pattern" ) == 0 )
   {
-    return QPixmap(dense2Data);
-  } else if (strcmp(c, "Dense3Pattern") == 0)
+    return QPixmap( dense2Data );
+  }
+  else if ( strcmp( c, "Dense3Pattern" ) == 0 )
   {
-    return QPixmap(dense3Data);
-  } else if (strcmp(c, "Dense4Pattern") == 0)
+    return QPixmap( dense3Data );
+  }
+  else if ( strcmp( c, "Dense4Pattern" ) == 0 )
   {
-    return QPixmap(dense4Data);
-  } else if (strcmp(c, "Dense5Pattern") == 0)
+    return QPixmap( dense4Data );
+  }
+  else if ( strcmp( c, "Dense5Pattern" ) == 0 )
   {
-    return QPixmap(dense5Data);
-  } else if (strcmp(c, "Dense6Pattern") == 0)
+    return QPixmap( dense5Data );
+  }
+  else if ( strcmp( c, "Dense6Pattern" ) == 0 )
   {
-    return QPixmap(dense6Data);
-  } else if (strcmp(c, "Dense7Pattern") == 0)
+    return QPixmap( dense6Data );
+  }
+  else if ( strcmp( c, "Dense7Pattern" ) == 0 )
   {
-    return QPixmap(dense7Data);
-  } else if (strcmp(c, "HorPattern") == 0)
+    return QPixmap( dense7Data );
+  }
+  else if ( strcmp( c, "HorPattern" ) == 0 )
   {
-    return QPixmap(horizontalData);
-  } else if (strcmp(c, "VerPattern") == 0)
+    return QPixmap( horizontalData );
+  }
+  else if ( strcmp( c, "VerPattern" ) == 0 )
   {
-    return QPixmap(verticalData);
-  } else if (strcmp(c, "CrossPattern") == 0)
+    return QPixmap( verticalData );
+  }
+  else if ( strcmp( c, "CrossPattern" ) == 0 )
   {
-    return QPixmap(crossData);
-  } else if (strcmp(c, "BDiagPattern") == 0)
+    return QPixmap( crossData );
+  }
+  else if ( strcmp( c, "BDiagPattern" ) == 0 )
   {
-    return QPixmap(bdiagData);
-  } else if (strcmp(c, "FDiagPattern") == 0)
+    return QPixmap( bdiagData );
+  }
+  else if ( strcmp( c, "FDiagPattern" ) == 0 )
   {
-    return QPixmap(fdiagData);
-  } else if (strcmp(c, "DiagCrossPattern") == 0)
+    return QPixmap( fdiagData );
+  }
+  else if ( strcmp( c, "DiagCrossPattern" ) == 0 )
   {
-    return QPixmap(diagCrossData);
-  } else if (strcmp(c, "TexturePattern") == 0)
+    return QPixmap( diagCrossData );
+  }
+  else if ( strcmp( c, "TexturePattern" ) == 0 )
   {
-    return QPixmap(texturePatternData);
-  }else if (strcmp(c, "NoBrush") == 0)
+    return QPixmap( texturePatternData );
+  }
+  else if ( strcmp( c, "NoBrush" ) == 0 )
   {
-    return QPixmap(nobrush);
-  } else
+    return QPixmap( nobrush );
+  }
+  else
   {
-    qWarning("Warning, no matching pattern found in QgsSymbologyUtils::char2PatternPixmap");
+    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::char2PatternPixmap" );
     return QPixmap();
   }
 
 }
 
-Qt::PenStyle QgsSymbologyUtils::char2PenStyle(const char *c)
+Qt::PenStyle QgsSymbologyUtils::char2PenStyle( const char *c )
 {
-  if (strcmp(c, "NoPen") == 0)
+  if ( strcmp( c, "NoPen" ) == 0 )
   {
     return Qt::NoPen;
-  } else if (strcmp(c, "SolidLine") == 0)
+  }
+  else if ( strcmp( c, "SolidLine" ) == 0 )
   {
     return Qt::SolidLine;
-  } else if (strcmp(c, "DashLine") == 0)
+  }
+  else if ( strcmp( c, "DashLine" ) == 0 )
   {
     return Qt::DashLine;
-  } else if (strcmp(c, "DotLine") == 0)
+  }
+  else if ( strcmp( c, "DotLine" ) == 0 )
   {
     return Qt::DotLine;
-  } else if (strcmp(c, "DashDotLine") == 0)
+  }
+  else if ( strcmp( c, "DashDotLine" ) == 0 )
   {
     return Qt::DashDotLine;
-  } else if (strcmp(c, "DashDotDotLine") == 0)
+  }
+  else if ( strcmp( c, "DashDotDotLine" ) == 0 )
   {
     return Qt::DashDotDotLine;
-  } else if (strcmp(c, "MPenStyle") == 0)
+  }
+  else if ( strcmp( c, "MPenStyle" ) == 0 )
   {
     return Qt::MPenStyle;
-  } else
+  }
+  else
   {
-    qWarning("Warning, no matching pen style found in QgsSymbologyUtils::char2PenStyle");
+    qWarning( "Warning, no matching pen style found in QgsSymbologyUtils::char2PenStyle" );
     return Qt::NoPen;
   }
 }
 
-Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle(const char *c)
+Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle( const char *c )
 {
-  if (strcmp(c, "SolidPattern") == 0)
+  if ( strcmp( c, "SolidPattern" ) == 0 )
   {
     return Qt::SolidPattern;
-  } else if (strcmp(c, "Dense1Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense1Pattern" ) == 0 )
   {
     return Qt::Dense1Pattern;
-  } else if (strcmp(c, "Dense2Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense2Pattern" ) == 0 )
   {
     return Qt::Dense2Pattern;
-  } else if (strcmp(c, "Dense3Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense3Pattern" ) == 0 )
   {
     return Qt::Dense3Pattern;
-  } else if (strcmp(c, "Dense4Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense4Pattern" ) == 0 )
   {
     return Qt::Dense4Pattern;
-  } else if (strcmp(c, "Dense5Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense5Pattern" ) == 0 )
   {
     return Qt::Dense5Pattern;
-  } else if (strcmp(c, "Dense6Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense6Pattern" ) == 0 )
   {
     return Qt::Dense6Pattern;
-  } else if (strcmp(c, "Dense7Pattern") == 0)
+  }
+  else if ( strcmp( c, "Dense7Pattern" ) == 0 )
   {
     return Qt::Dense7Pattern;
-  } else if (strcmp(c, "HorPattern") == 0)
+  }
+  else if ( strcmp( c, "HorPattern" ) == 0 )
   {
     return Qt::HorPattern;
-  } else if (strcmp(c, "VerPattern") == 0)
+  }
+  else if ( strcmp( c, "VerPattern" ) == 0 )
   {
     return Qt::VerPattern;
-  } else if (strcmp(c, "CrossPattern") == 0)
+  }
+  else if ( strcmp( c, "CrossPattern" ) == 0 )
   {
     return Qt::CrossPattern;
-  } else if (strcmp(c, "BDiagPattern") == 0)
+  }
+  else if ( strcmp( c, "BDiagPattern" ) == 0 )
   {
     return Qt::BDiagPattern;
-  } else if (strcmp(c, "FDiagPattern") == 0)
+  }
+  else if ( strcmp( c, "FDiagPattern" ) == 0 )
   {
     return Qt::FDiagPattern;
-  } else if (strcmp(c, "DiagCrossPattern") == 0)
+  }
+  else if ( strcmp( c, "DiagCrossPattern" ) == 0 )
   {
     return Qt::DiagCrossPattern;
-  } else if (strcmp(c, "TexturePattern") == 0)
+  }
+  else if ( strcmp( c, "TexturePattern" ) == 0 )
   {
     return Qt::TexturePattern;
-  } else if (strcmp(c, "NoBrush") == 0)
+  }
+  else if ( strcmp( c, "NoBrush" ) == 0 )
   {
     return Qt::NoBrush;
-  }else                        //return a null string
+  }
+  else                        //return a null string
   {
-    qWarning("Warning, no matching brush style found in QgsSymbologyUtils::char2BrushStyle");
+    qWarning( "Warning, no matching brush style found in QgsSymbologyUtils::char2BrushStyle" );
     return Qt::NoBrush;
   }
 }
 
-QPixmap QgsSymbologyUtils::penStyle2Pixmap(Qt::PenStyle penstyle)
+QPixmap QgsSymbologyUtils::penStyle2Pixmap( Qt::PenStyle penstyle )
 {
-  switch (penstyle)
+  switch ( penstyle )
   {
-    case (Qt::SolidLine):
-      return QPixmap(solidLineData);
+    case( Qt::SolidLine ):
+      return QPixmap( solidLineData );
       break;
-    case (Qt::DashLine):
-      return QPixmap(dashLineData);
+    case( Qt::DashLine ):
+      return QPixmap( dashLineData );
       break;
-    case (Qt::DotLine):
-      return QPixmap(dotLineData);
+    case( Qt::DotLine ):
+      return QPixmap( dotLineData );
       break;
-    case (Qt::DashDotLine):
-      return QPixmap(dashDotLineData);
+    case( Qt::DashDotLine ):
+      return QPixmap( dashDotLineData );
       break;
-    case (Qt::DashDotDotLine):
-      return QPixmap(dashDotDotLineData);
+    case( Qt::DashDotDotLine ):
+      return QPixmap( dashDotDotLineData );
       break;
-    case (Qt::NoPen):
-      return QPixmap(noPenLineData);
+    case( Qt::NoPen ):
+      return QPixmap( noPenLineData );
       break;
     default:
-      qWarning("Warning, no matching pen style found in QgsSymbologyUtils::penStyle2Pixmap");
+      qWarning( "Warning, no matching pen style found in QgsSymbologyUtils::penStyle2Pixmap" );
       return QPixmap();
   }
 }
 
-QPixmap QgsSymbologyUtils::brushStyle2Pixmap(Qt::BrushStyle brushstyle)
+QPixmap QgsSymbologyUtils::brushStyle2Pixmap( Qt::BrushStyle brushstyle )
 {
-  switch (brushstyle)
+  switch ( brushstyle )
   {
-    case (Qt::SolidPattern):
-      return QPixmap(solidData);
+    case( Qt::SolidPattern ):
+      return QPixmap( solidData );
       break;
-    case (Qt::Dense1Pattern):
-      return QPixmap(dense1Data);
+    case( Qt::Dense1Pattern ):
+      return QPixmap( dense1Data );
       break;
-    case (Qt::Dense2Pattern):
-      return QPixmap(dense2Data);
+    case( Qt::Dense2Pattern ):
+      return QPixmap( dense2Data );
       break;
-    case (Qt::Dense3Pattern):
-      return QPixmap(dense3Data);
+    case( Qt::Dense3Pattern ):
+      return QPixmap( dense3Data );
       break;
-    case (Qt::Dense4Pattern):
-      return QPixmap(dense4Data);
+    case( Qt::Dense4Pattern ):
+      return QPixmap( dense4Data );
       break;
-    case (Qt::Dense5Pattern):
-      return QPixmap(dense5Data);
+    case( Qt::Dense5Pattern ):
+      return QPixmap( dense5Data );
       break;
-    case (Qt::Dense6Pattern):
-      return QPixmap(dense6Data);
+    case( Qt::Dense6Pattern ):
+      return QPixmap( dense6Data );
       break;
-    case (Qt::Dense7Pattern):
-      return QPixmap(dense7Data);
+    case( Qt::Dense7Pattern ):
+      return QPixmap( dense7Data );
       break;
-    case (Qt::HorPattern):
-      return QPixmap(horizontalData);
+    case( Qt::HorPattern ):
+      return QPixmap( horizontalData );
       break;
-    case (Qt::VerPattern):
-      return QPixmap(verticalData);
+    case( Qt::VerPattern ):
+      return QPixmap( verticalData );
       break;
-    case (Qt::CrossPattern):
-      return QPixmap(crossData);
+    case( Qt::CrossPattern ):
+      return QPixmap( crossData );
       break;
-    case (Qt::BDiagPattern):
-      return QPixmap(bdiagData);
+    case( Qt::BDiagPattern ):
+      return QPixmap( bdiagData );
       break;
-    case (Qt::FDiagPattern):
-      return QPixmap(fdiagData);
+    case( Qt::FDiagPattern ):
+      return QPixmap( fdiagData );
       break;
-    case (Qt::DiagCrossPattern):
-      return QPixmap(diagCrossData);
+    case( Qt::DiagCrossPattern ):
+      return QPixmap( diagCrossData );
       break;
-    case (Qt::TexturePattern) :
-      return QPixmap(texturePatternData);
+    case( Qt::TexturePattern ) :
+      return QPixmap( texturePatternData );
       break;
-    case (Qt::NoBrush):
-      return QPixmap(nobrush);
+    case( Qt::NoBrush ):
+      return QPixmap( nobrush );
     default:
-      qWarning("Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap");
+      qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap" );
   }
 
   return QPixmap();             // XXX I hope returning a blank one is ok

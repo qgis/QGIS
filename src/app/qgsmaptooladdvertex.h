@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmaptoolmovevertex.h    
+                              qgsmaptoolmovevertex.h
                               ---------------------
   begin                : June 30, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -25,21 +25,21 @@ class QgsRubberBand;
 /**Map tool to add vertices to line/polygon features*/
 class QgsMapToolAddVertex: public QgsMapToolVertexEdit
 {
- public:
-  QgsMapToolAddVertex(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolAddVertex();
+  public:
+    QgsMapToolAddVertex( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolAddVertex();
 
-  void canvasMoveEvent(QMouseEvent * e);
+    void canvasMoveEvent( QMouseEvent * e );
 
-  void canvasPressEvent(QMouseEvent * e);
+    void canvasPressEvent( QMouseEvent * e );
 
-  void canvasReleaseEvent(QMouseEvent * e);
+    void canvasReleaseEvent( QMouseEvent * e );
 
-  //! called when map tool is being deactivated
-  void deactivate();
+    //! called when map tool is being deactivated
+    void deactivate();
 
- private:
-  QgsRubberBand* mRubberBand;
+  private:
+    QgsRubberBand* mRubberBand;
 };
 
 #endif

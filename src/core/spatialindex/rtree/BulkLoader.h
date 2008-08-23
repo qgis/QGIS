@@ -30,88 +30,88 @@
 
 namespace SpatialIndex
 {
-	namespace RTree
-	{
-		class BulkLoadSource : public Tools::IObjectStream
-		{
-		public:
-			BulkLoadSource(
-				Tools::SmartPointer<IObjectStream> spSstream,
-				unsigned long howMany);
-			BulkLoadSource(IObjectStream* pStream, unsigned long howMany);
-			BulkLoadSource(IObjectStream* pStream);
-			virtual ~BulkLoadSource();
+  namespace RTree
+  {
+    class BulkLoadSource : public Tools::IObjectStream
+    {
+      public:
+        BulkLoadSource(
+          Tools::SmartPointer<IObjectStream> spSstream,
+          unsigned long howMany );
+        BulkLoadSource( IObjectStream* pStream, unsigned long howMany );
+        BulkLoadSource( IObjectStream* pStream );
+        virtual ~BulkLoadSource();
 
-			virtual Tools::IObject* getNext();
-			virtual bool hasNext() throw ();
-			virtual unsigned long size() throw (Tools::NotSupportedException);
-			virtual void rewind() throw (Tools::NotSupportedException);
+        virtual Tools::IObject* getNext();
+        virtual bool hasNext() throw();
+        virtual unsigned long size() throw( Tools::NotSupportedException );
+        virtual void rewind() throw( Tools::NotSupportedException );
 
-			Tools::SmartPointer<IObjectStream> m_spDataSource;
-			unsigned long m_cHowMany;
-		}; // BulkLoadSource
+        Tools::SmartPointer<IObjectStream> m_spDataSource;
+        unsigned long m_cHowMany;
+    }; // BulkLoadSource
 
-		class BulkLoadComparator : public Tools::IObjectComparator
-		{
-		public:
-			BulkLoadComparator(unsigned long d);
-			virtual ~BulkLoadComparator();
+    class BulkLoadComparator : public Tools::IObjectComparator
+    {
+      public:
+        BulkLoadComparator( unsigned long d );
+        virtual ~BulkLoadComparator();
 
-			virtual int compare(Tools::IObject* o1, Tools::IObject* o2);
+        virtual int compare( Tools::IObject* o1, Tools::IObject* o2 );
 
-			unsigned long m_compareDimension;
-		};
+        unsigned long m_compareDimension;
+    };
 
-		class BulkLoader
-		{
-		public:
-			void bulkLoadUsingSTR(
-				RTree* pTree,
-				IDataStream& stream,
-				unsigned long bindex,
-				unsigned long bleaf,
-				unsigned long bufferSize);
+    class BulkLoader
+    {
+      public:
+        void bulkLoadUsingSTR(
+          RTree* pTree,
+          IDataStream& stream,
+          unsigned long bindex,
+          unsigned long bleaf,
+          unsigned long bufferSize );
 
-		protected:
-			class TmpFile : public IDataStream
-			{
-			public:
-				TmpFile();
-				virtual ~TmpFile();
+      protected:
+        class TmpFile : public IDataStream
+        {
+          public:
+            TmpFile();
+            virtual ~TmpFile();
 
-				void storeRecord(Region& r, long id);
-				void loadRecord(Region& r, long& id);
+            void storeRecord( Region& r, long id );
+            void loadRecord( Region& r, long& id );
 
-				virtual IData* getNext();
-				virtual bool hasNext() throw ();
-				virtual unsigned long size()
-					throw (Tools::NotSupportedException);
-				virtual void rewind();
+            virtual IData* getNext();
+            virtual bool hasNext() throw();
+            virtual unsigned long size()
+            throw( Tools::NotSupportedException );
+            virtual void rewind();
 
-				Tools::TemporaryFile m_tmpFile;
-				IData* m_pNext;
-			};
+            Tools::TemporaryFile m_tmpFile;
+            IData* m_pNext;
+        };
 
-			void createLevel(
-				RTree* pTree,
-				Tools::IObjectStream& es,
-				unsigned long dimension,
-				unsigned long k,
-				unsigned long b,
-				unsigned long level,
-				unsigned long bufferSize,
-				TmpFile& tmpFile,
-				unsigned long& numberOfNodes,
-				unsigned long& totalData);
+        void createLevel(
+          RTree* pTree,
+          Tools::IObjectStream& es,
+          unsigned long dimension,
+          unsigned long k,
+          unsigned long b,
+          unsigned long level,
+          unsigned long bufferSize,
+          TmpFile& tmpFile,
+          unsigned long& numberOfNodes,
+          unsigned long& totalData );
 
-			Node* createNode(
-				RTree* pTree,
-				std::vector<Tools::SmartPointer<IData> >& e,
-				unsigned long level);
+        Node* createNode(
+          RTree* pTree,
+          std::vector<Tools::SmartPointer<IData> >& e,
+          unsigned long level );
 
-			friend class BulkLoadSource;
-		};
-	}
+        friend class BulkLoadSource;
+    };
+  }
 }
 
 #ifdef _MSC_VER

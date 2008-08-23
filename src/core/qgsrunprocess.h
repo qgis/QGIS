@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsrunprocess.h 
+                          qgsrunprocess.h
 
  A class that runs an external program
 
@@ -34,36 +34,36 @@ class QgsMessageOutput;
  */
 class CORE_EXPORT QgsRunProcess: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  // This class deletes itself, so to ensure that it is only created
-  // using new, the Named Consturctor Idiom is used, and one needs to
-  // use the create() static function to get an instance of this class.
+  public:
+    // This class deletes itself, so to ensure that it is only created
+    // using new, the Named Consturctor Idiom is used, and one needs to
+    // use the create() static function to get an instance of this class.
 
-  // The action argument contains string with the command.
-  // If capture is true, the standard output and error from the process
-  // will be sent to QgsMessageOuptut - usually a dialog box.
-  static QgsRunProcess* create(const QString& action, bool capture)
-    { return new QgsRunProcess(action, capture); }
+    // The action argument contains string with the command.
+    // If capture is true, the standard output and error from the process
+    // will be sent to QgsMessageOuptut - usually a dialog box.
+    static QgsRunProcess* create( const QString& action, bool capture )
+    { return new QgsRunProcess( action, capture ); }
 
- public slots:
-  void stdoutAvailable();
-  void stderrAvailable();
-  void processError(QProcess::ProcessError);
-  void processExit(int,QProcess::ExitStatus);
-  void dialogGone();
+  public slots:
+    void stdoutAvailable();
+    void stderrAvailable();
+    void processError( QProcess::ProcessError );
+    void processExit( int, QProcess::ExitStatus );
+    void dialogGone();
 
- private:
-  QgsRunProcess(const QString& action, bool capture);
-  ~QgsRunProcess();
+  private:
+    QgsRunProcess( const QString& action, bool capture );
+    ~QgsRunProcess();
 
-  // Deletes the instance of the class
-  void die();
+    // Deletes the instance of the class
+    void die();
 
-  QProcess* mProcess;
-  QgsMessageOutput* mOutput;
-  QString mCommand;
+    QProcess* mProcess;
+    QgsMessageOutput* mOutput;
+    QString mCommand;
 };
 
 #endif

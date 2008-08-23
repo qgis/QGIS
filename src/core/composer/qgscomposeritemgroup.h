@@ -24,43 +24,43 @@
  */
 class CORE_EXPORT QgsComposerItemGroup: public QObject, public QgsComposerItem
 {
-  Q_OBJECT
- public:
-  QgsComposerItemGroup(QgsComposition* c);
-  ~QgsComposerItemGroup();
-  /**Adds an item to the group. All the group members are deleted 
-   if the group is deleted*/
-  void addItem(QgsComposerItem* item);
-  /**Removes the items but does not delete them*/
-  void removeItems();
-  /**Draw outline and ev. selection handles*/
-  void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0);
-  /**Sets this items bound in scene coordinates such that 1 item size units
-     corresponds to 1 scene size unit*/
-  void setSceneRect(const QRectF& rectangle);
-  /** resizes an item in x- and y direction (scene coordinates)*/
-  void resize(double dx, double dy);
+    Q_OBJECT
+  public:
+    QgsComposerItemGroup( QgsComposition* c );
+    ~QgsComposerItemGroup();
+    /**Adds an item to the group. All the group members are deleted
+     if the group is deleted*/
+    void addItem( QgsComposerItem* item );
+    /**Removes the items but does not delete them*/
+    void removeItems();
+    /**Draw outline and ev. selection handles*/
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+    /**Sets this items bound in scene coordinates such that 1 item size units
+       corresponds to 1 scene size unit*/
+    void setSceneRect( const QRectF& rectangle );
+    /** resizes an item in x- and y direction (scene coordinates)*/
+    void resize( double dx, double dy );
 
-  /** stores state in Dom node
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param temp write template file
-     */
-  bool writeXML(QDomElement& elem, QDomDocument & doc);
+    /** stores state in Dom node
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param temp write template file
+       */
+    bool writeXML( QDomElement& elem, QDomDocument & doc );
 
-  /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     */
-  bool readXML(const QDomElement& itemElem, const QDomDocument& doc);
+    /** sets state from Dom document
+       * @param itemElem is Dom node corresponding to item tag
+       */
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
- signals:
-  void childItemDeleted(QgsComposerItem* item);
+  signals:
+    void childItemDeleted( QgsComposerItem* item );
 
- protected:
-  void drawFrame(QPainter* p);
+  protected:
+    void drawFrame( QPainter* p );
 
- private:
-  QSet<QgsComposerItem*> mItems;
-  QRectF mSceneBoundingRectangle;
+  private:
+    QSet<QgsComposerItem*> mItems;
+    QRectF mSceneBoundingRectangle;
 };
 
 

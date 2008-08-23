@@ -28,36 +28,36 @@
 
 #include <QMessageBox>
 
-QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVectorLayer(vl), sydialog(vl, true)
+QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVectorLayer( vl ), sydialog( vl, true )
 {
-  setupUi(this);
-  setOrientation(Qt::Vertical);
+  setupUi( this );
+  setOrientation( Qt::Vertical );
   //find out the fields of mVectorLayer
   QgsVectorDataProvider *provider;
-  if ((provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider())))
+  if (( provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() ) ) )
   {
     const QgsFieldMap & fields = provider->fields();
     QString str;
 
-    for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
+    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
     {
-      str = (*it).name();
-      mClassificationComboBox->addItem(str);
+      str = ( *it ).name();
+      mClassificationComboBox->addItem( str );
     }
   }
   else
   {
-    qWarning("Warning, data provider is null in QgsUniqueValueDialog::QgsUniqueValueDialog");
+    qWarning( "Warning, data provider is null in QgsUniqueValueDialog::QgsUniqueValueDialog" );
     return;
   }
 
-  mClassListWidget->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  mClassListWidget->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::AnyKeyPressed);
-  mClassListWidget->setSortingEnabled(true);
+  mClassListWidget->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mClassListWidget->setEditTriggers( QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed | QAbstractItemView::AnyKeyPressed );
+  mClassListWidget->setSortingEnabled( true );
 
-  const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >(mVectorLayer->renderer());
+  const QgsUniqueValueRenderer* renderer = dynamic_cast < const QgsUniqueValueRenderer * >( mVectorLayer->renderer() );
 
-  if (renderer)
+  if ( renderer )
   {
     mClassListWidget->clear();
 
@@ -66,52 +66,52 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
     //QgsAttributeList::iterator iter = attributes.begin();
     //int classattr = *iter;
     //QString field = provider->fields()[ classattr ].name();
-    QString field = provider->fields()[ renderer->classificationField() ].name();
+    QString field = provider->fields()[ renderer->classificationField()].name();
     mOldClassificationAttribute = field;
-    mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText(field) );
+    mClassificationComboBox->setCurrentIndex( mClassificationComboBox->findText( field ) );
 
     const QList<QgsSymbol*> list = renderer->symbols();
     //fill the items of the renderer into mValues
-    for(QList<QgsSymbol*>::const_iterator iter=list.begin(); iter!=list.end(); ++iter)
+    for ( QList<QgsSymbol*>::const_iterator iter = list.begin(); iter != list.end(); ++iter )
     {
-      QgsSymbol* symbol=(*iter);
-      QString symbolvalue=symbol->lowerValue();
-      QgsSymbol* sym=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
-      sym->setPen(symbol->pen());
-      sym->setCustomTexture(symbol->customTexture());
-      sym->setBrush(symbol->brush());
-      sym->setNamedPointSymbol(symbol->pointSymbolName());
-      sym->setPointSize(symbol->pointSize());
-      sym->setScaleClassificationField(symbol->scaleClassificationField());
-      sym->setRotationClassificationField(symbol->rotationClassificationField());
-      mValues.insert(symbolvalue, sym);
+      QgsSymbol* symbol = ( *iter );
+      QString symbolvalue = symbol->lowerValue();
+      QgsSymbol* sym = new QgsSymbol( mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
+      sym->setPen( symbol->pen() );
+      sym->setCustomTexture( symbol->customTexture() );
+      sym->setBrush( symbol->brush() );
+      sym->setNamedPointSymbol( symbol->pointSymbolName() );
+      sym->setPointSize( symbol->pointSize() );
+      sym->setScaleClassificationField( symbol->scaleClassificationField() );
+      sym->setRotationClassificationField( symbol->rotationClassificationField() );
+      mValues.insert( symbolvalue, sym );
 
-      QListWidgetItem *item = new QListWidgetItem(symbolvalue);
-      mClassListWidget->addItem(item);
-      updateEntryIcon(symbol,item);
-      item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsEnabled);
+      QListWidgetItem *item = new QListWidgetItem( symbolvalue );
+      mClassListWidget->addItem( item );
+      updateEntryIcon( symbol, item );
+      item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
       item->setData( Qt::UserRole, symbol->lowerValue() );
-      item->setToolTip(symbol->label());
+      item->setToolTip( symbol->label() );
     }
   }
 
-  mDeletePushButton->setEnabled(false);
+  mDeletePushButton->setEnabled( false );
 
-  QObject::connect(mClassifyButton, SIGNAL(clicked()), this, SLOT(changeClassificationAttribute()));
-  QObject::connect(mAddButton, SIGNAL(clicked()), this, SLOT(addClass()));
-  QObject::connect(mDeletePushButton, SIGNAL(clicked()), this, SLOT(deleteSelectedClasses()));
-  QObject::connect(mRandomizeColors, SIGNAL(clicked()), this, SLOT(randomizeColors()));
-  QObject::connect(mResetColors, SIGNAL(clicked()), this, SLOT(resetColors()));
-  QObject::connect(mClassListWidget, SIGNAL(itemSelectionChanged()), this, SLOT(selectionChanged()));
-  QObject::connect(mClassListWidget, SIGNAL(itemChanged(QListWidgetItem *)), this, SLOT(itemChanged(QListWidgetItem *)));
-  QObject::connect(&sydialog, SIGNAL(settingsChanged()), this, SLOT(applySymbologyChanges()));
-  mSymbolWidgetStack->addWidget(&sydialog);
-  mSymbolWidgetStack->setCurrentWidget(&sydialog);
+  QObject::connect( mClassifyButton, SIGNAL( clicked() ), this, SLOT( changeClassificationAttribute() ) );
+  QObject::connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClass() ) );
+  QObject::connect( mDeletePushButton, SIGNAL( clicked() ), this, SLOT( deleteSelectedClasses() ) );
+  QObject::connect( mRandomizeColors, SIGNAL( clicked() ), this, SLOT( randomizeColors() ) );
+  QObject::connect( mResetColors, SIGNAL( clicked() ), this, SLOT( resetColors() ) );
+  QObject::connect( mClassListWidget, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+  QObject::connect( mClassListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( itemChanged( QListWidgetItem * ) ) );
+  QObject::connect( &sydialog, SIGNAL( settingsChanged() ), this, SLOT( applySymbologyChanges() ) );
+  mSymbolWidgetStack->addWidget( &sydialog );
+  mSymbolWidgetStack->setCurrentWidget( &sydialog );
 }
 
 QgsUniqueValueDialog::~QgsUniqueValueDialog()
 {
-  QgsDebugMsg("called.");
+  QgsDebugMsg( "called." );
   QMap<QString, QgsSymbol *>::iterator myValueIterator = mValues.begin();
   while ( myValueIterator != mValues.end() )
   {
@@ -122,38 +122,38 @@ QgsUniqueValueDialog::~QgsUniqueValueDialog()
     myValueIterator = mValues.begin(); // since iterator invalidated due to
     // erase(), reset to new first element
   }
-  mClassListWidget->setCurrentItem(0);
+  mClassListWidget->setCurrentItem( 0 );
 }
 
 void QgsUniqueValueDialog::apply()
 {
-  QgsDebugMsg("called.");
-  QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer(mVectorLayer->vectorType());
+  QgsDebugMsg( "called." );
+  QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer( mVectorLayer->vectorType() );
 
   //go through mValues and add the entries to the renderer
-  for(QMap<QString,QgsSymbol*>::iterator it=mValues.begin();it!=mValues.end();++it)
+  for ( QMap<QString, QgsSymbol*>::iterator it = mValues.begin();it != mValues.end();++it )
   {
-    QgsSymbol* symbol=it.value();
-    QgsSymbol* newsymbol=new QgsSymbol(mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label());
-    newsymbol->setPen(symbol->pen());
-    newsymbol->setCustomTexture(symbol->customTexture());
-    newsymbol->setBrush(symbol->brush());
-    newsymbol->setNamedPointSymbol(symbol->pointSymbolName());
-    newsymbol->setPointSize(symbol->pointSize());
-    newsymbol->setScaleClassificationField(symbol->scaleClassificationField());
-    newsymbol->setRotationClassificationField(symbol->rotationClassificationField());
-    renderer->insertValue(it.key(), newsymbol);
+    QgsSymbol* symbol = it.value();
+    QgsSymbol* newsymbol = new QgsSymbol( mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
+    newsymbol->setPen( symbol->pen() );
+    newsymbol->setCustomTexture( symbol->customTexture() );
+    newsymbol->setBrush( symbol->brush() );
+    newsymbol->setNamedPointSymbol( symbol->pointSymbolName() );
+    newsymbol->setPointSize( symbol->pointSize() );
+    newsymbol->setScaleClassificationField( symbol->scaleClassificationField() );
+    newsymbol->setRotationClassificationField( symbol->rotationClassificationField() );
+    renderer->insertValue( it.key(), newsymbol );
   }
   renderer->updateSymbolAttributes();
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
-  if (provider)
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
+  if ( provider )
   {
-    int fieldIndex = provider->indexFromFieldName(mClassificationComboBox->currentText());
-    if(fieldIndex != -1)
+    int fieldIndex = provider->indexFromFieldName( mClassificationComboBox->currentText() );
+    if ( fieldIndex != -1 )
     {
-      renderer->setClassificationField(fieldIndex);
-      mVectorLayer->setRenderer(renderer);
+      renderer->setClassificationField( fieldIndex );
+      mVectorLayer->setRenderer( renderer );
       return;
     }
   }
@@ -167,78 +167,78 @@ QColor QgsUniqueValueDialog::randomColor()
   QColor thecolor;
 
   //insert a random color
-  int red = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-  int green = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-  int blue = 1 + (int) (255.0 * rand() / (RAND_MAX + 1.0));
-  thecolor.setRgb(red, green, blue);
+  int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  thecolor.setRgb( red, green, blue );
 
   return thecolor;
 }
 
-void QgsUniqueValueDialog::setSymbolColor(QgsSymbol *symbol, QColor thecolor)
+void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
 {
   QPen pen;
   QBrush brush;
-  if(mVectorLayer->vectorType() == QGis::Line)
+  if ( mVectorLayer->vectorType() == QGis::Line )
   {
-    pen.setColor(thecolor);
-    pen.setStyle(Qt::SolidLine);
-    pen.setWidthF(0.4);
+    pen.setColor( thecolor );
+    pen.setStyle( Qt::SolidLine );
+    pen.setWidthF( 0.4 );
   }
   else
   {
-    brush.setColor(thecolor);
-    brush.setStyle(Qt::SolidPattern);
-    pen.setColor(Qt::black);
-    pen.setStyle(Qt::SolidLine);
-    pen.setWidthF(0.4);
+    brush.setColor( thecolor );
+    brush.setStyle( Qt::SolidPattern );
+    pen.setColor( Qt::black );
+    pen.setStyle( Qt::SolidLine );
+    pen.setWidthF( 0.4 );
   }
-  symbol->setPen(pen);
-  symbol->setBrush(brush);
+  symbol->setPen( pen );
+  symbol->setBrush( brush );
 }
 
-void QgsUniqueValueDialog::addClass(QString value)
+void QgsUniqueValueDialog::addClass( QString value )
 {
-  QgsDebugMsg("called.");
-  if( value.isNull() || mValues.contains(value) )
+  QgsDebugMsg( "called." );
+  if ( value.isNull() || mValues.contains( value ) )
   {
     int i;
-    for(i=0; mValues.contains(value+QString::number(i)); i++)
+    for ( i = 0; mValues.contains( value + QString::number( i ) ); i++ )
       ;
-    value += QString::number(i);
+    value += QString::number( i );
   }
 
-  QgsSymbol *symbol=new QgsSymbol(mVectorLayer->vectorType(), value);
-  mValues.insert(value, symbol);
+  QgsSymbol *symbol = new QgsSymbol( mVectorLayer->vectorType(), value );
+  mValues.insert( value, symbol );
 
-  QListWidgetItem *item = new QListWidgetItem(value);
-  item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsEnabled);
+  QListWidgetItem *item = new QListWidgetItem( value );
+  item->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
   item->setData( Qt::UserRole, value );
-  item->setToolTip(symbol->label());
-  mClassListWidget->addItem(item);
+  item->setToolTip( symbol->label() );
+  mClassListWidget->addItem( item );
 
-  setSymbolColor(symbol, randomColor() );
-  updateEntryIcon(symbol, item);
+  setSymbolColor( symbol, randomColor() );
+  updateEntryIcon( symbol, item );
 }
 
 void QgsUniqueValueDialog::randomizeColors()
 {
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  if(selection.size()==0)
-    selection = mClassListWidget->findItems("", Qt::MatchContains);
+  if ( selection.size() == 0 )
+    selection = mClassListWidget->findItems( "", Qt::MatchContains );
 
-  for(int i=0; i<selection.size(); i++)
+  for ( int i = 0; i < selection.size(); i++ )
   {
-    QListWidgetItem *item=selection[i];
-    if(!item)
+    QListWidgetItem *item = selection[i];
+    if ( !item )
       continue;
 
-    if( !mValues.contains( item->text() ) )
+    if ( !mValues.contains( item->text() ) )
       continue;
 
-    QgsSymbol *symbol = mValues[ item->text() ];
+    QgsSymbol *symbol = mValues[ item->text()];
     setSymbolColor( symbol, randomColor() );
-    updateEntryIcon(symbol, item);
+    updateEntryIcon( symbol, item );
   }
 
   selectionChanged();
@@ -247,24 +247,24 @@ void QgsUniqueValueDialog::randomizeColors()
 void QgsUniqueValueDialog::resetColors()
 {
   QColor white;
-  white.setRgb(255.0, 255.0, 255.0);
+  white.setRgb( 255.0, 255.0, 255.0 );
 
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  if(selection.size()==0)
-    selection = mClassListWidget->findItems("", Qt::MatchContains);
+  if ( selection.size() == 0 )
+    selection = mClassListWidget->findItems( "", Qt::MatchContains );
 
-  for(int i=0; i<selection.size(); i++)
+  for ( int i = 0; i < selection.size(); i++ )
   {
-    QListWidgetItem *item=selection[i];
-    if( !item )
+    QListWidgetItem *item = selection[i];
+    if ( !item )
       continue;
 
-    if( !mValues.contains( item->text() ) )
+    if ( !mValues.contains( item->text() ) )
       continue;
 
-    QgsSymbol *symbol = mValues[ item->text() ];
-    setSymbolColor( symbol, white);
-    updateEntryIcon(symbol, item);
+    QgsSymbol *symbol = mValues[ item->text()];
+    setSymbolColor( symbol, white );
+    updateEntryIcon( symbol, item );
   }
 
   selectionChanged();
@@ -273,38 +273,38 @@ void QgsUniqueValueDialog::resetColors()
 
 void QgsUniqueValueDialog::changeClassificationAttribute()
 {
-  QgsDebugMsg("called.");
+  QgsDebugMsg( "called." );
   QString attributeName = mClassificationComboBox->currentText();
-  
-  if( !mOldClassificationAttribute.isEmpty() &&
-      attributeName!=mOldClassificationAttribute &&
-      QMessageBox::question(this,
-                            tr("Confirm Delete"),
-      			    tr("The classification field was changed from '%1' to '%2'.\n"
-			       "Should the existing classes be deleted before classification?")
-			     .arg(mOldClassificationAttribute).arg(attributeName),
-			     QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok )
+
+  if ( !mOldClassificationAttribute.isEmpty() &&
+       attributeName != mOldClassificationAttribute &&
+       QMessageBox::question( this,
+                              tr( "Confirm Delete" ),
+                              tr( "The classification field was changed from '%1' to '%2'.\n"
+                                  "Should the existing classes be deleted before classification?" )
+                              .arg( mOldClassificationAttribute ).arg( attributeName ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
     deleteSelectedClasses();
   }
-  mOldClassificationAttribute=attributeName;
+  mOldClassificationAttribute = attributeName;
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
-  if (provider)
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
+  if ( provider )
   {
-    int nr = provider->indexFromFieldName(attributeName);
-    if(nr == -1)
+    int nr = provider->indexFromFieldName( attributeName );
+    if ( nr == -1 )
     {
       return;
     }
 
     QStringList values;
-    provider->getUniqueValues(nr, values);
+    provider->getUniqueValues( nr, values );
 
-    for(int i=0; i<values.size(); i++)
+    for ( int i = 0; i < values.size(); i++ )
     {
-      if( !mValues.contains(values[i]) )
-        addClass(values[i]);
+      if ( !mValues.contains( values[i] ) )
+        addClass( values[i] );
     }
   }
 }
@@ -314,139 +314,140 @@ void QgsUniqueValueDialog::itemChanged( QListWidgetItem *item )
   QString oldValue = item->data( Qt::UserRole ).toString();
   QString newValue = item->text();
 
-  if(oldValue==newValue)
+  if ( oldValue == newValue )
     return;
-  
-  if( !mValues.contains(newValue) )
+
+  if ( !mValues.contains( newValue ) )
   {
     QgsSymbol *sy = mValues[oldValue];
-    mValues.remove(oldValue);
-    mValues.insert(newValue, sy);
-    sy->setLowerValue(newValue);
+    mValues.remove( oldValue );
+    mValues.insert( newValue, sy );
+    sy->setLowerValue( newValue );
     item->setData( Qt::UserRole, newValue );
-    updateEntryIcon(sy,item);
+    updateEntryIcon( sy, item );
   }
   else
-    item->setText(oldValue);
+    item->setText( oldValue );
 }
 
 
 void QgsUniqueValueDialog::selectionChanged()
 {
-  QgsDebugMsg("called.");
-  sydialog.blockSignals(true);//block signal to prevent sydialog from changing the current QgsRenderItem
+  QgsDebugMsg( "called." );
+  sydialog.blockSignals( true );//block signal to prevent sydialog from changing the current QgsRenderItem
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
 
-  if(selection.size()==0)
+  if ( selection.size() == 0 )
   {
-    mDeletePushButton->setEnabled(false);
+    mDeletePushButton->setEnabled( false );
     sydialog.unset();
   }
   else
   {
-    mDeletePushButton->setEnabled(true);
+    mDeletePushButton->setEnabled( true );
 
-    if(selection.size()==1)
+    if ( selection.size() == 1 )
     {
-      QListWidgetItem *item=selection[0];
-      if(!item)
+      QListWidgetItem *item = selection[0];
+      if ( !item )
         return;
 
-      if( !mValues.contains( item->text() ) )
+      if ( !mValues.contains( item->text() ) )
         return;
 
-      QgsSymbol *symbol = mValues[ item->text() ];
+      QgsSymbol *symbol = mValues[ item->text()];
       sydialog.set( symbol );
       sydialog.setLabel( symbol->label() );
     }
-    else if(selection.size()>1)
+    else if ( selection.size() > 1 )
     {
-      if( !mValues.contains( selection[0]->text() ) )
+      if ( !mValues.contains( selection[0]->text() ) )
         return;
 
-      sydialog.set( mValues[ selection[0]->text() ] );
+      sydialog.set( mValues[ selection[0]->text()] );
 
-      for(int i=1; i<selection.size(); i++)
+      for ( int i = 1; i < selection.size(); i++ )
       {
-        if( !mValues.contains( selection[i]->text() ) )
+        if ( !mValues.contains( selection[i]->text() ) )
           continue;
 
-        sydialog.updateSet( mValues[ selection[i]->text() ] );
+        sydialog.updateSet( mValues[ selection[i]->text()] );
       }
     }
   }
-  sydialog.blockSignals(false);
+  sydialog.blockSignals( false );
 }
 
 void QgsUniqueValueDialog::deleteSelectedClasses()
 {
-  QgsDebugMsg("called.");
+  QgsDebugMsg( "called." );
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  if(selection.size()==0)
-    selection = mClassListWidget->findItems("", Qt::MatchContains);
+  if ( selection.size() == 0 )
+    selection = mClassListWidget->findItems( "", Qt::MatchContains );
 
-  for(int i=0; i<selection.size(); i++) 
+  for ( int i = 0; i < selection.size(); i++ )
   {
     QListWidgetItem* currentItem = selection[i];
-    if(!currentItem)
+    if ( !currentItem )
       continue;
- 
+
     mValues.remove( currentItem->text() );
 
-    mClassListWidget->removeItemWidget(currentItem);
+    mClassListWidget->removeItemWidget( currentItem );
     delete currentItem;
   }
 
-  QgsDebugMsg( QString("numRows: %1").arg( mClassListWidget->count()) );
+  QgsDebugMsg( QString( "numRows: %1" ).arg( mClassListWidget->count() ) );
 }
 
 void QgsUniqueValueDialog::applySymbologyChanges()
 {
-  QgsDebugMsg("called.");
+  QgsDebugMsg( "called." );
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
-  for(int i=0; i<selection.size(); i++)
+  for ( int i = 0; i < selection.size(); i++ )
   {
-    QListWidgetItem* item=selection[i];
-    if(!item)
+    QListWidgetItem* item = selection[i];
+    if ( !item )
     {
-      QgsDebugMsg( QString("selected item %1 not found").arg(i) );
+      QgsDebugMsg( QString( "selected item %1 not found" ).arg( i ) );
       continue;
     }
 
-    QString value=item->text();
-    if( !mValues.contains( value ) ) {
-      QgsDebugMsg( QString("value %1 not found").arg(value) );
+    QString value = item->text();
+    if ( !mValues.contains( value ) )
+    {
+      QgsDebugMsg( QString( "value %1 not found" ).arg( value ) );
       continue;
     }
 
     QgsSymbol *symbol = mValues[ value ];
-    symbol->setLabel(sydialog.label());
-    symbol->setLowerValue(value);
-    sydialog.apply(symbol);
+    symbol->setLabel( sydialog.label() );
+    symbol->setLowerValue( value );
+    sydialog.apply( symbol );
 
-    item->setToolTip(sydialog.label());
-    item->setData( Qt::UserRole, value);
-    updateEntryIcon(symbol,item);
+    item->setToolTip( sydialog.label() );
+    item->setData( Qt::UserRole, value );
+    updateEntryIcon( symbol, item );
   }
 }
 
-void QgsUniqueValueDialog::updateEntryIcon(QgsSymbol * thepSymbol, 
-    QListWidgetItem * thepItem)
+void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol * thepSymbol,
+    QListWidgetItem * thepItem )
 {
   QGis::VectorType myType = mVectorLayer->vectorType();
-  switch (myType) 
+  switch ( myType )
   {
     case QGis::Point:
-      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getPointSymbolAsImage())));
+      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage() ) ) );
       break;
     case QGis::Line:
-      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getLineSymbolAsImage())));
+      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getLineSymbolAsImage() ) ) );
       break;
     case QGis::Polygon:
-      thepItem->setIcon(QIcon(QPixmap::fromImage(thepSymbol->getPolygonSymbolAsImage())));
+      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPolygonSymbolAsImage() ) ) );
       break;
     default: //unknown
-      QgsDebugMsg("Vector layer type unknown");
+      QgsDebugMsg( "Vector layer type unknown" );
       //do nothing
   }
 }

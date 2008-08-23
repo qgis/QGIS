@@ -15,18 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgsprovidermetadata.h"
 
 
 
-QgsProviderMetadata::QgsProviderMetadata(QString const & _key, 
-                                         QString const & _description, 
-                                         QString const & _library)
-    : key_(_key), 
-      description_(_description), 
-      library_(_library)
+QgsProviderMetadata::QgsProviderMetadata( QString const & _key,
+    QString const & _description,
+    QString const & _library )
+    : key_( _key ),
+    description_( _description ),
+    library_( _library )
 {}
 
 QString const & QgsProviderMetadata::key() const

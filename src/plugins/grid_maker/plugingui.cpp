@@ -22,12 +22,12 @@
 //standard includes
 #include <iostream>
 
-QgsGridMakerPluginGui::QgsGridMakerPluginGui(QWidget* parent, Qt::WFlags fl)
-  : QDialog(parent, fl)
+QgsGridMakerPluginGui::QgsGridMakerPluginGui( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
-  pbnOK = buttonBox->button(QDialogButtonBox::Ok);
-  pbnOK->setEnabled(false);
+  setupUi( this );
+  pbnOK = buttonBox->button( QDialogButtonBox::Ok );
+  pbnOK->setEnabled( false );
 }
 
 QgsGridMakerPluginGui::~QgsGridMakerPluginGui()
@@ -37,19 +37,19 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
 {
   //check input file exists
   //
-  QgsLogger::debug("GrativuleCreator called with: " +
-      leOutputShapeFile->text() + " " +
-      leXInterval->text() + " " +
-      leYInterval->text() + " " +
-      leXLowerLeft->text() + " " +
-      leYLowerLeft->text() + " " +
-      leXUpperRight->text() + " " +
-      leYUpperRight->text());
+  QgsLogger::debug( "GrativuleCreator called with: " +
+                    leOutputShapeFile->text() + " " +
+                    leXInterval->text() + " " +
+                    leYInterval->text() + " " +
+                    leXLowerLeft->text() + " " +
+                    leYLowerLeft->text() + " " +
+                    leXUpperRight->text() + " " +
+                    leYUpperRight->text() );
 
-  if (leOutputShapeFile->text().isEmpty())
+  if ( leOutputShapeFile->text().isEmpty() )
   {
-    QMessageBox::warning( 0, tr("QGIS - Grid Maker"),
-            QString(tr("Please enter the file name before pressing OK!") ));
+    QMessageBox::warning( 0, tr( "QGIS - Grid Maker" ),
+                          QString( tr( "Please enter the file name before pressing OK!" ) ) );
     return;
   }
 
@@ -62,29 +62,29 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   double myEndPointY = leYUpperRight->text().toDouble();
 
 
-  if (radPoint->isChecked())
+  if ( radPoint->isChecked() )
   {
-    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
+    GraticuleCreator  myGraticuleCreator( leOutputShapeFile->text() );
     myGraticuleCreator.generatePointGraticule(
-            myXInterval,
-            myYInterval,
-            myXOrigin,
-            myYOrigin,
-            myEndPointX,
-            myEndPointY
-            );
+      myXInterval,
+      myYInterval,
+      myXOrigin,
+      myYOrigin,
+      myEndPointX,
+      myEndPointY
+    );
   }
   else
   {
-    GraticuleCreator  myGraticuleCreator ( leOutputShapeFile->text());
+    GraticuleCreator  myGraticuleCreator( leOutputShapeFile->text() );
     myGraticuleCreator.generatePolygonGraticule(
-            myXInterval,
-            myYInterval,
-            myXOrigin,
-            myYOrigin,
-            myEndPointX,
-            myEndPointY
-            );
+      myXInterval,
+      myYInterval,
+      myXOrigin,
+      myYOrigin,
+      myEndPointX,
+      myEndPointY
+    );
   }
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to
@@ -94,7 +94,7 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   //emit drawVectorLayer(QString("pathname"),QString("layerName"),QString("provider name (either ogr or postgres"));
   //
 
-  emit drawVectorLayer(leOutputShapeFile->text(),QString("Graticule"),QString("ogr"));
+  emit drawVectorLayer( leOutputShapeFile->text(), QString( "Graticule" ), QString( "ogr" ) );
   //close the dialog
   accept();
 }
@@ -102,24 +102,24 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
 
 void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
 {
- QgsLogger::debug(" Gps File Importer Gui::pbnSelectOutputFile_clicked()");
+  QgsLogger::debug( " Gps File Importer Gui::pbnSelectOutputFile_clicked()" );
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
-          this,
-          tr("Choose a fileName to save under"),
-          ".",
-          tr("ESRI Shapefile (*.shp)"));
+                                      this,
+                                      tr( "Choose a fileName to save under" ),
+                                      ".",
+                                      tr( "ESRI Shapefile (*.shp)" ) );
 
-  if (myOutputFileNameQString.right(4) != ".shp")
+  if ( myOutputFileNameQString.right( 4 ) != ".shp" )
     myOutputFileNameQString += ".shp";
 
-  leOutputShapeFile->setText(myOutputFileNameQString);
-  if ( leOutputShapeFile->text()==""  )
+  leOutputShapeFile->setText( myOutputFileNameQString );
+  if ( leOutputShapeFile->text() == "" )
   {
-    pbnOK->setEnabled(false);
+    pbnOK->setEnabled( false );
   }
   else
   {
-    pbnOK->setEnabled(true);
+    pbnOK->setEnabled( true );
   }
 }
 
@@ -131,5 +131,5 @@ void QgsGridMakerPluginGui::on_buttonBox_rejected()
 
 void QgsGridMakerPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }

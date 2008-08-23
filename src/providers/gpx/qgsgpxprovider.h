@@ -33,164 +33,166 @@ class GPSData;
 \class QgsGPXProvider
 \brief Data provider for GPX (GPS eXchange) files
 * This provider adds the ability to load GPX files as vector layers.
-* 
+*
 */
 class QgsGPXProvider : public QgsVectorDataProvider
 {
-  Q_OBJECT
-  
-public:
-  
-  QgsGPXProvider(QString uri = QString());
-  virtual ~QgsGPXProvider();
-  
-  /* Functions inherited from QgsVectorDataProvider */
-  
-  /**
-   *   Returns the permanent storage type for this layer as a friendly name.
-   */
-  virtual QString storageType() const;
+    Q_OBJECT
 
-  /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
-   * @param fetchAttributes list of attributes which should be fetched
-   * @param rect spatial filter
-   * @param fetchGeometry true if the feature geometry should be fetched
-   * @param useIntersect true if an accurate intersection test should be used,
-   *                     false if a test based on bounding box is sufficient
-   */
-  virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
-                      QgsRect rect = QgsRect(),
-                      bool fetchGeometry = true,
-                      bool useIntersect = false);
+  public:
 
-  /**
-   * Get the next feature resulting from a select operation.
-   * @param feature feature which will receive data from the provider
-   * @return true when there was a feature to fetch, false when end was hit
-   */
-  virtual bool getNextFeature(QgsFeature& feature);
-  
-  /**
-   * Get feature type.
-   * @return int representing the feature type
-   */
-  virtual QGis::WKBTYPE geometryType() const;
+    QgsGPXProvider( QString uri = QString() );
+    virtual ~QgsGPXProvider();
 
-  /**
-   * Number of features in the layer
-   * @return long containing number of features
-   */
-  virtual long featureCount() const;
-    
-  /** 
-   * Get the number of fields in the layer
-   */
-  virtual uint fieldCount() const;
+    /* Functions inherited from QgsVectorDataProvider */
 
-  /**
-   * Get the field information for the layer
-   */
-  virtual const QgsFieldMap & fields() const;
-  
-  /** Restart reading features from previous select operation */
-  virtual void reset();
-    
-  /**
-   * Adds a list of features
-   * @return true in case of success and false in case of failure
-   */
-  virtual bool addFeatures(QgsFeatureList & flist);
+    /**
+     *   Returns the permanent storage type for this layer as a friendly name.
+     */
+    virtual QString storageType() const;
 
-  /** 
-   * Deletes a feature
-   * @param id list containing feature ids to delete
-   * @return true in case of success and false in case of failure
-   */
-  virtual bool deleteFeatures(const QgsFeatureIds & id);
-  
-  /**
-   * Changes attribute values of existing features.
-   * @param attr_map a map containing changed attributes
-   * @return true in case of success and false in case of failure 
-   */
-  virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
-  
-  virtual int capabilities() const;
-  
-  /**
-   * Returns the default value for field specified by @c fieldId
-   */
-  virtual QVariant getDefaultValue(int fieldId);
-  
-  
-  /* Functions inherited from QgsDataProvider */
-  
-  /** Return the extent for this data layer
-   */
-  virtual QgsRect extent();
-  
-  /**Returns true if this is a valid delimited file
-   */
-  virtual bool isValid();
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+     * @param fetchAttributes list of attributes which should be fetched
+     * @param rect spatial filter
+     * @param fetchGeometry true if the feature geometry should be fetched
+     * @param useIntersect true if an accurate intersection test should be used,
+     *                     false if a test based on bounding box is sufficient
+     */
+    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
+                         QgsRect rect = QgsRect(),
+                         bool fetchGeometry = true,
+                         bool useIntersect = false );
 
-  /** return a provider name */
-  virtual QString name() const;
+    /**
+     * Get the next feature resulting from a select operation.
+     * @param feature feature which will receive data from the provider
+     * @return true when there was a feature to fetch, false when end was hit
+     */
+    virtual bool getNextFeature( QgsFeature& feature );
 
-  /** return description */
-  virtual QString description() const;
+    /**
+     * Get feature type.
+     * @return int representing the feature type
+     */
+    virtual QGis::WKBTYPE geometryType() const;
 
-  virtual QgsCoordinateReferenceSystem getCRS();
-  
-  
-  /* new functions */
+    /**
+     * Number of features in the layer
+     * @return long containing number of features
+     */
+    virtual long featureCount() const;
 
-  void changeAttributeValues(GPSObject& obj, 
-                             const QgsAttributeMap& attrs);
-  
-  /** Adds one feature (used by addFeatures()) */
-  bool addFeature(QgsFeature& f);
-  
-  /**
-   * Check to see if the point is withn the selection
-   * rectangle
-   * @param x X value of point
-   * @param y Y value of point
-   * @return True if point is within the rectangle
-   */
-  bool boundsCheck(double x, double y);
+    /**
+     * Get the number of fields in the layer
+     */
+    virtual uint fieldCount() const;
+
+    /**
+     * Get the field information for the layer
+     */
+    virtual const QgsFieldMap & fields() const;
+
+    /** Restart reading features from previous select operation */
+    virtual void reset();
+
+    /**
+     * Adds a list of features
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool addFeatures( QgsFeatureList & flist );
+
+    /**
+     * Deletes a feature
+     * @param id list containing feature ids to delete
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool deleteFeatures( const QgsFeatureIds & id );
+
+    /**
+     * Changes attribute values of existing features.
+     * @param attr_map a map containing changed attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+
+    virtual int capabilities() const;
+
+    /**
+     * Returns the default value for field specified by @c fieldId
+     */
+    virtual QVariant getDefaultValue( int fieldId );
 
 
-private:
-  
-  GPSData* data;
-  
-  //! Fields
-  QgsFieldMap attributeFields;
-  
-  QString mFileName;
+    /* Functions inherited from QgsDataProvider */
 
-  enum { WaypointType, RouteType, TrackType } mFeatureType;
-  enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr, 
-		   CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr };
-  static const char* attr[];
-  //! Current selection rectangle
-  QgsRect *mSelectionRectangle;
-  bool mValid;
-  long mNumberFeatures;
-  
-  //! Current waypoint iterator
-  GPSData::WaypointIterator mWptIter;
-  //! Current route iterator
-  GPSData::RouteIterator mRteIter;
-  //! Current track iterator
-  GPSData::TrackIterator mTrkIter;
+    /** Return the extent for this data layer
+     */
+    virtual QgsRect extent();
 
-  struct wkbPoint{
-    char byteOrder;
-    unsigned wkbType;
-    double x;
-    double y;
-  };
-  wkbPoint mWKBpt;
-  
+    /**Returns true if this is a valid delimited file
+     */
+    virtual bool isValid();
+
+    /** return a provider name */
+    virtual QString name() const;
+
+    /** return description */
+    virtual QString description() const;
+
+    virtual QgsCoordinateReferenceSystem getCRS();
+
+
+    /* new functions */
+
+    void changeAttributeValues( GPSObject& obj,
+                                const QgsAttributeMap& attrs );
+
+    /** Adds one feature (used by addFeatures()) */
+    bool addFeature( QgsFeature& f );
+
+    /**
+     * Check to see if the point is withn the selection
+     * rectangle
+     * @param x X value of point
+     * @param y Y value of point
+     * @return True if point is within the rectangle
+     */
+    bool boundsCheck( double x, double y );
+
+
+  private:
+
+    GPSData* data;
+
+    //! Fields
+    QgsFieldMap attributeFields;
+
+    QString mFileName;
+
+    enum { WaypointType, RouteType, TrackType } mFeatureType;
+    enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
+                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
+                 };
+    static const char* attr[];
+    //! Current selection rectangle
+    QgsRect *mSelectionRectangle;
+    bool mValid;
+    long mNumberFeatures;
+
+    //! Current waypoint iterator
+    GPSData::WaypointIterator mWptIter;
+    //! Current route iterator
+    GPSData::RouteIterator mRteIter;
+    //! Current track iterator
+    GPSData::TrackIterator mTrkIter;
+
+    struct wkbPoint
+    {
+      char byteOrder;
+      unsigned wkbType;
+      double x;
+      double y;
+    };
+    wkbPoint mWKBpt;
+
 };

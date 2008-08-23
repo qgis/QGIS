@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsinterpolationdialog.h    
+                              qgsinterpolationdialog.h
                               ------------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -23,31 +23,31 @@
 #include <QFileInfo>
 
 class QgsInterpolatorDialog;
-class QgsVectorLayer; 
+class QgsVectorLayer;
 
 class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialogBase
 {
-  Q_OBJECT
- public:
-  QgsInterpolationDialog(QWidget* parent, QgisInterface* iface);
-  ~QgsInterpolationDialog();
+    Q_OBJECT
+  public:
+    QgsInterpolationDialog( QWidget* parent, QgisInterface* iface );
+    ~QgsInterpolationDialog();
 
   private slots:
-  
-  void on_buttonBox_accepted();
-  void on_mInputLayerComboBox_currentIndexChanged(const QString& text);
-  void on_mOutputFileButton_clicked();
-  void on_mConfigureInterpolationButton_clicked();
-  void on_mInterpolationMethodComboBox_currentIndexChanged(const QString &text);
 
- private:
-  QgisInterface* mIface;
-  /**Dialog to get input for the current interpolation method*/
-  QgsInterpolatorDialog* mInterpolatorDialog;
+    void on_buttonBox_accepted();
+    void on_mInputLayerComboBox_currentIndexChanged( const QString& text );
+    void on_mOutputFileButton_clicked();
+    void on_mConfigureInterpolationButton_clicked();
+    void on_mInterpolationMethodComboBox_currentIndexChanged( const QString &text );
 
-  /**Returns the vector layer that is selected in the layer combo box.
-   Returns 0 in case of error.*/
-  QgsVectorLayer* getCurrentVectorLayer();
-}; 
+  private:
+    QgisInterface* mIface;
+    /**Dialog to get input for the current interpolation method*/
+    QgsInterpolatorDialog* mInterpolatorDialog;
+
+    /**Returns the vector layer that is selected in the layer combo box.
+     Returns 0 in case of error.*/
+    QgsVectorLayer* getCurrentVectorLayer();
+};
 
 #endif

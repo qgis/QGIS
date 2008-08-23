@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposeritemwidget.h 
+                         qgscomposeritemwidget.h
                          -------------------------
     begin                : August 2008
     copyright            : (C) 2008 by Marco Hugentobler
@@ -26,23 +26,23 @@ class QgsComposerItem;
  This widget can be embedded into other item widgets*/
 class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBase
 {
-  Q_OBJECT
- public:
-  QgsComposerItemWidget(QWidget* parent, QgsComposerItem* item);
-  ~QgsComposerItemWidget();
+    Q_OBJECT
+  public:
+    QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
+    ~QgsComposerItemWidget();
 
   public slots:
-  void on_mFrameColorButton_clicked();
-  void on_mBackgroundColorButton_clicked();
-  void on_mOpacitySlider_sliderReleased(); 
-  void on_mOutlineWidthSpinBox_valueChanged(double d);
-  void on_mFrameCheckBox_stateChanged(int state);
+    void on_mFrameColorButton_clicked();
+    void on_mBackgroundColorButton_clicked();
+    void on_mOpacitySlider_sliderReleased();
+    void on_mOutlineWidthSpinBox_valueChanged( double d );
+    void on_mFrameCheckBox_stateChanged( int state );
 
- private:
-  QgsComposerItemWidget();
-  void setValuesForGuiElements();
+  private:
+    QgsComposerItemWidget();
+    void setValuesForGuiElements();
 
-  QgsComposerItem* mItem;
+    QgsComposerItem* mItem;
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

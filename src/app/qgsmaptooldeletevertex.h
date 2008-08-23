@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmaptooldeletevertex.h    
+                              qgsmaptooldeletevertex.h
                               ------------------------
   begin                : June 30, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -25,21 +25,21 @@ class QgsVertexMarker;
 
 class QgsMapToolDeleteVertex: public QgsMapToolVertexEdit
 {
- public:
-  QgsMapToolDeleteVertex(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolDeleteVertex();
+  public:
+    QgsMapToolDeleteVertex( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolDeleteVertex();
 
-  void canvasMoveEvent(QMouseEvent * e);
+    void canvasMoveEvent( QMouseEvent * e );
 
-  void canvasPressEvent(QMouseEvent * e);
+    void canvasPressEvent( QMouseEvent * e );
 
-  void canvasReleaseEvent(QMouseEvent * e);
+    void canvasReleaseEvent( QMouseEvent * e );
 
-  //! called when map tool is being deactivated
-  void deactivate();
+    //! called when map tool is being deactivated
+    void deactivate();
 
- private:
-  QgsVertexMarker* mCross;
+  private:
+    QgsVertexMarker* mCross;
 
 };
 

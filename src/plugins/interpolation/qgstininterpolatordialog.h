@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgstininterpolatordialog.h    
+                              qgstininterpolatordialog.h
                               --------------------------
   begin                : March 29, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -23,15 +23,15 @@
 
 class QgsTINInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsTINInterpolatorDialogBase
 {
-  Q_OBJECT
- public:
-  QgsTINInterpolatorDialog(QWidget* parent, QgisInterface* iface);
+    Q_OBJECT
+  public:
+    QgsTINInterpolatorDialog( QWidget* parent, QgisInterface* iface );
 
-  ~QgsTINInterpolatorDialog();
+    ~QgsTINInterpolatorDialog();
 
-  /**Method that returns an interpolator object from the settings or 0 in case of error.
-   The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
-  QgsInterpolator* createInterpolator() const;
+    /**Method that returns an interpolator object from the settings or 0 in case of error.
+     The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
+    QgsInterpolator* createInterpolator() const;
 };
 
-#endif 
+#endif

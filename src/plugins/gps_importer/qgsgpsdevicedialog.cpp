@@ -19,51 +19,54 @@
 #include <QSettings>
 
 
-QgsGPSDeviceDialog::QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& 
-				       devices) : 
-  QDialog(0, QgisGui::ModalDialogFlags), mDevices(devices)
-  
-{
-  setupUi(this);
-  setAttribute(Qt::WA_DeleteOnClose);
-  // Manually set the relative size of the two main parts of the
-  // device dialog box. 
-  QList<int> split;
-  split.append(120);
-  split.append(340);
-  splitter->setSizes(split);
+QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>&
+                                        devices ) :
+    QDialog( 0, QgisGui::ModalDialogFlags ), mDevices( devices )
 
-  QObject::connect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
-		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
+{
+  setupUi( this );
+  setAttribute( Qt::WA_DeleteOnClose );
+  // Manually set the relative size of the two main parts of the
+  // device dialog box.
+  QList<int> split;
+  split.append( 120 );
+  split.append( 340 );
+  splitter->setSizes( split );
+
+  QObject::connect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem*, QListWidgetItem* ) ),
+                    this, SLOT( slotSelectionChanged( QListWidgetItem* ) ) );
   slotUpdateDeviceList();
 }
 
 
-void QgsGPSDeviceDialog::on_pbnNewDevice_clicked() {
+void QgsGPSDeviceDialog::on_pbnNewDevice_clicked()
+{
   std::map<QString, QgsGPSDevice*>::const_iterator iter = mDevices.begin();
-  QString deviceName = tr("New device %1");
+  QString deviceName = tr( "New device %1" );
   int i = 1;
-  for (; iter != mDevices.end(); ++i)
-    iter = mDevices.find(deviceName.arg(i));
-  deviceName = deviceName.arg(i - 1);
+  for ( ; iter != mDevices.end(); ++i )
+    iter = mDevices.find( deviceName.arg( i ) );
+  deviceName = deviceName.arg( i - 1 );
   mDevices[deviceName] = new QgsGPSDevice;
   writeDeviceSettings();
-  slotUpdateDeviceList(deviceName);
+  slotUpdateDeviceList( deviceName );
   emit devicesChanged();
 }
 
 
-void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
-  if (QMessageBox::warning(this, tr("Are you sure?"), 
-		   tr("Are you sure that you want to delete this device?"),
-       QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Ok) {
+void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked()
+{
+  if ( QMessageBox::warning( this, tr( "Are you sure?" ),
+                             tr( "Are you sure that you want to delete this device?" ),
+                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+  {
 
-    std::map<QString, QgsGPSDevice*>::iterator iter = 
-      mDevices.find(lbDeviceList->currentItem()->text());
-    if (iter != mDevices.end())
+    std::map<QString, QgsGPSDevice*>::iterator iter =
+      mDevices.find( lbDeviceList->currentItem()->text() );
+    if ( iter != mDevices.end() )
     {
       delete iter->second;
-      mDevices.erase(iter);
+      mDevices.erase( iter );
       writeDeviceSettings();
       slotUpdateDeviceList();
       emit devicesChanged();
@@ -72,114 +75,123 @@ void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked() {
 }
 
 
-void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked() {
-  if (lbDeviceList->count() > 0)
+void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
+{
+  if ( lbDeviceList->count() > 0 )
   {
-    std::map<QString, QgsGPSDevice*>::iterator iter = 
-      mDevices.find(lbDeviceList->currentItem()->text());
-    if (iter != mDevices.end())
+    std::map<QString, QgsGPSDevice*>::iterator iter =
+      mDevices.find( lbDeviceList->currentItem()->text() );
+    if ( iter != mDevices.end() )
     {
       delete iter->second;
-      mDevices.erase(iter);
+      mDevices.erase( iter );
       mDevices[leDeviceName->text()] =
-	new QgsGPSDevice(leWptDown->text(), leWptUp->text(),
-			 leRteDown->text(), leRteUp->text(),
-			 leTrkDown->text(), leTrkUp->text());
+        new QgsGPSDevice( leWptDown->text(), leWptUp->text(),
+                          leRteDown->text(), leRteUp->text(),
+                          leTrkDown->text(), leTrkUp->text() );
       writeDeviceSettings();
-      slotUpdateDeviceList(leDeviceName->text());
+      slotUpdateDeviceList( leDeviceName->text() );
       emit devicesChanged();
     }
   }
 }
 
-void QgsGPSDeviceDialog::slotUpdateDeviceList(const QString& selection) {
+void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString& selection )
+{
   QString selected;
-  if (selection == "") {
+  if ( selection == "" )
+  {
     QListWidgetItem* item = lbDeviceList->currentItem();
-    selected = (item ? item->text() : "");
+    selected = ( item ? item->text() : "" );
   }
-  else {
+  else
+  {
     selected = selection;
   }
 
   // We're going to be changing the selected item, so disable our
   // notificaton of that.
-  QObject::disconnect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
-		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
+  QObject::disconnect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem*, QListWidgetItem* ) ),
+                       this, SLOT( slotSelectionChanged( QListWidgetItem* ) ) );
 
   lbDeviceList->clear();
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
-  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
-    QListWidgetItem* item = new QListWidgetItem(iter->first, lbDeviceList);
-    if (iter->first == selected) {
-      lbDeviceList->setCurrentItem(item);
+  for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
+  {
+    QListWidgetItem* item = new QListWidgetItem( iter->first, lbDeviceList );
+    if ( iter->first == selected )
+    {
+      lbDeviceList->setCurrentItem( item );
     }
   }
 
-  if (lbDeviceList->currentItem() == NULL && lbDeviceList->count() > 0)
-    lbDeviceList->setCurrentRow(0);
+  if ( lbDeviceList->currentItem() == NULL && lbDeviceList->count() > 0 )
+    lbDeviceList->setCurrentRow( 0 );
 
   // Update the display and reconnect the selection changed signal
-  slotSelectionChanged(lbDeviceList->currentItem());
-  QObject::connect(lbDeviceList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
-		   this, SLOT(slotSelectionChanged(QListWidgetItem*)));
+  slotSelectionChanged( lbDeviceList->currentItem() );
+  QObject::connect( lbDeviceList, SIGNAL( currentItemChanged( QListWidgetItem*, QListWidgetItem* ) ),
+                    this, SLOT( slotSelectionChanged( QListWidgetItem* ) ) );
 }
 
 
-void QgsGPSDeviceDialog::slotSelectionChanged(QListWidgetItem *current) {
-  if (lbDeviceList->count() > 0)
+void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
+{
+  if ( lbDeviceList->count() > 0 )
   {
     QString devName = current->text();
-    leDeviceName->setText(devName);
+    leDeviceName->setText( devName );
     QgsGPSDevice* device = mDevices[devName];
-    leWptDown->setText(device->
-		       importCommand("%babel", "-w", "%in", "%out").join(" "));
-    leWptUp->setText(device->
-		     exportCommand("%babel", "-w", "%in", "%out").join(" "));
-    leRteDown->setText(device->
-		       importCommand("%babel", "-r", "%in", "%out").join(" "));
-    leRteUp->setText(device->
-		     exportCommand("%babel", "-r", "%in", "%out").join(" "));
-    leTrkDown->setText(device->
-		       importCommand("%babel", "-t", "%in", "%out").join(" "));
-    leTrkUp->setText(device->
-		     exportCommand("%babel", "-t", "%in", "%out").join(" "));
+    leWptDown->setText( device->
+                        importCommand( "%babel", "-w", "%in", "%out" ).join( " " ) );
+    leWptUp->setText( device->
+                      exportCommand( "%babel", "-w", "%in", "%out" ).join( " " ) );
+    leRteDown->setText( device->
+                        importCommand( "%babel", "-r", "%in", "%out" ).join( " " ) );
+    leRteUp->setText( device->
+                      exportCommand( "%babel", "-r", "%in", "%out" ).join( " " ) );
+    leTrkDown->setText( device->
+                        importCommand( "%babel", "-t", "%in", "%out" ).join( " " ) );
+    leTrkUp->setText( device->
+                      exportCommand( "%babel", "-t", "%in", "%out" ).join( " " ) );
   }
 }
 
 
-void QgsGPSDeviceDialog::writeDeviceSettings() {
+void QgsGPSDeviceDialog::writeDeviceSettings()
+{
   QStringList deviceNames;
   QSettings settings;
   QString devPath = "/Plugin-GPS/devices/%1";
-  settings.remove("/Plugin-GPS/devices");
+  settings.remove( "/Plugin-GPS/devices" );
 
   std::map<QString, QgsGPSDevice*>::const_iterator iter;
-  for (iter = mDevices.begin(); iter != mDevices.end(); ++iter) {
-    deviceNames.append(iter->first);
-    QString wptDownload = 
-      iter->second->importCommand("%babel","-w","%in","%out").join(" ");
-    QString wptUpload = 
-      iter->second->exportCommand("%babel","-w","%in","%out").join(" ");
-    QString rteDownload = 
-      iter->second->importCommand("%babel","-r","%in","%out").join(" ");
-    QString rteUpload = 
-      iter->second->exportCommand("%babel","-r","%in","%out").join(" ");
-    QString trkDownload = 
-      iter->second->importCommand("%babel","-t","%in","%out").join(" ");
-    QString trkUpload = 
-      iter->second->exportCommand("%babel","-t","%in","%out").join(" ");
-    settings.setValue(devPath.arg(iter->first) + "/wptdownload", 
-			wptDownload);
-    settings.setValue(devPath.arg(iter->first) + "/wptupload", wptUpload);
-    settings.setValue(devPath.arg(iter->first) + "/rtedownload", 
-			rteDownload);
-    settings.setValue(devPath.arg(iter->first) + "/rteupload", rteUpload);
-    settings.setValue(devPath.arg(iter->first) + "/trkdownload", 
-			trkDownload);
-    settings.setValue(devPath.arg(iter->first) + "/trkupload", trkUpload);
+  for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
+  {
+    deviceNames.append( iter->first );
+    QString wptDownload =
+      iter->second->importCommand( "%babel", "-w", "%in", "%out" ).join( " " );
+    QString wptUpload =
+      iter->second->exportCommand( "%babel", "-w", "%in", "%out" ).join( " " );
+    QString rteDownload =
+      iter->second->importCommand( "%babel", "-r", "%in", "%out" ).join( " " );
+    QString rteUpload =
+      iter->second->exportCommand( "%babel", "-r", "%in", "%out" ).join( " " );
+    QString trkDownload =
+      iter->second->importCommand( "%babel", "-t", "%in", "%out" ).join( " " );
+    QString trkUpload =
+      iter->second->exportCommand( "%babel", "-t", "%in", "%out" ).join( " " );
+    settings.setValue( devPath.arg( iter->first ) + "/wptdownload",
+                       wptDownload );
+    settings.setValue( devPath.arg( iter->first ) + "/wptupload", wptUpload );
+    settings.setValue( devPath.arg( iter->first ) + "/rtedownload",
+                       rteDownload );
+    settings.setValue( devPath.arg( iter->first ) + "/rteupload", rteUpload );
+    settings.setValue( devPath.arg( iter->first ) + "/trkdownload",
+                       trkDownload );
+    settings.setValue( devPath.arg( iter->first ) + "/trkupload", trkUpload );
   }
-  settings.setValue("/Plugin-GPS/devicelist", deviceNames);
+  settings.setValue( "/Plugin-GPS/devicelist", deviceNames );
 }
 
 void QgsGPSDeviceDialog::on_pbnClose_clicked()

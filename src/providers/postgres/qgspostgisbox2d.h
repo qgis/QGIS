@@ -29,43 +29,43 @@
    \author  Brendan Morley
    \date    March 2005
 
-   
+
    This object is designed to represent and transform the PostGIS "box2d"
    data type.
-   
+
    \note    This class only has meaning with PostGIS 1.0 installations.
             pre-1.0 only understands the box3d version
-            
-   TODO     Enforce the PostGIS 1.0 prerequisite         
-     
- */ 
+
+   TODO     Enforce the PostGIS 1.0 prerequisite
+
+ */
 
 class QgsPostGisBox2d : public QgsRect
 {
 
-public:
+  public:
 
-  /*!  Constructor from a string
-       \param   box2d  The box2d formed as a PostGIS SQL string,
-                       formed by functions such as PQgetvalue
-   */
-  
-  QgsPostGisBox2d( std::string box2d );
+    /*!  Constructor from a string
+         \param   box2d  The box2d formed as a PostGIS SQL string,
+                         formed by functions such as PQgetvalue
+     */
 
-  
-  ~QgsPostGisBox2d();
-  
-  
-  /*!  Returns this object as a PostGIS SQL-compatible QString
-   */
+    QgsPostGisBox2d( std::string box2d );
 
-  
-  QString toStringAsBox2d();
-  
-  
-private:
-  
-    
+
+    ~QgsPostGisBox2d();
+
+
+    /*!  Returns this object as a PostGIS SQL-compatible QString
+     */
+
+
+    QString toStringAsBox2d();
+
+
+  private:
+
+
 };
 
 

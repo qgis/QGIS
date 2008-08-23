@@ -26,39 +26,39 @@
 
 namespace SpatialIndex
 {
-	namespace StorageManager
-	{
-		class MemoryStorageManager : public SpatialIndex::IStorageManager
-		{
-		public:
-			MemoryStorageManager(Tools::PropertySet&);
+  namespace StorageManager
+  {
+    class MemoryStorageManager : public SpatialIndex::IStorageManager
+    {
+      public:
+        MemoryStorageManager( Tools::PropertySet& );
 
-			virtual ~MemoryStorageManager();
+        virtual ~MemoryStorageManager();
 
-			virtual void loadByteArray(const long id, unsigned long& len, byte** data);
-			virtual void storeByteArray(long& id, const unsigned long len, const byte* const data);
-			virtual void deleteByteArray(const long id);
+        virtual void loadByteArray( const long id, unsigned long& len, byte** data );
+        virtual void storeByteArray( long& id, const unsigned long len, const byte* const data );
+        virtual void deleteByteArray( const long id );
 
-		private:
-			class Entry
-			{
-			public:
-				byte* m_pData;
-				unsigned long m_length;
+      private:
+        class Entry
+        {
+          public:
+            byte* m_pData;
+            unsigned long m_length;
 
-				Entry(unsigned long l, const byte* const d) : m_pData(0), m_length(l)
-				{
-					m_pData = new byte[m_length];
-					memcpy(m_pData, d, m_length);
-				}
+            Entry( unsigned long l, const byte* const d ) : m_pData( 0 ), m_length( l )
+            {
+              m_pData = new byte[m_length];
+              memcpy( m_pData, d, m_length );
+            }
 
-				~Entry() { delete[] m_pData; }
-			}; // Entry
+            ~Entry() { delete[] m_pData; }
+        }; // Entry
 
-			std::vector<Entry*> m_buffer;
-			std::stack<long> m_emptyPages;
-		}; // MemoryStorageManager
-	}
+        std::vector<Entry*> m_buffer;
+        std::stack<long> m_emptyPages;
+    }; // MemoryStorageManager
+  }
 }
 
 #endif /*__storagemanager_memorystoragemanager_h*/

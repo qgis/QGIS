@@ -18,7 +18,7 @@
 QgsPgUtil *QgsPgUtil::mInstance = 0;
 QgsPgUtil * QgsPgUtil::instance()
 {
-  if(mInstance == 0)
+  if ( mInstance == 0 )
   {
     mInstance = new QgsPgUtil();
   }
@@ -33,7 +33,7 @@ QgsPgUtil::~QgsPgUtil()
 {
 }
 
-void QgsPgUtil::setConnection(PGconn *con)
+void QgsPgUtil::setConnection( PGconn *con )
 {
   mPgConnection = con;
 }
@@ -44,16 +44,16 @@ PGconn *QgsPgUtil::connection()
 
 QString QgsPgUtil::quotedIdentifier( QString ident )
 {
-  ident.replace('"', "\"\"");
-  return ident.prepend("\"").append("\"");
+  ident.replace( '"', "\"\"" );
+  return ident.prepend( "\"" ).append( "\"" );
 }
 
 QString QgsPgUtil::quotedValue( QString value )
 {
-  if( value.isNull() )
+  if ( value.isNull() )
     return "NULL";
-  
+
   // FIXME: use PQescapeStringConn
-  value.replace("'", "''");
-  return value.prepend("'").append("'");
+  value.replace( "'", "''" );
+  return value.prepend( "'" ).append( "'" );
 }

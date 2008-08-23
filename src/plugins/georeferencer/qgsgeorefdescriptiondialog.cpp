@@ -17,7 +17,7 @@
 
 #include "qgsgeorefdescriptiondialog.h"
 
-QgsGeorefDescriptionDialog::QgsGeorefDescriptionDialog(QWidget* parent): QDialog(parent)
+QgsGeorefDescriptionDialog::QgsGeorefDescriptionDialog( QWidget* parent ): QDialog( parent )
 {
-  setupUi(this);
+  setupUi( this );
 }

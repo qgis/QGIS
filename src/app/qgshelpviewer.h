@@ -1,5 +1,5 @@
 /***************************************************************************
-                                qgshelpviewer.h 
+                                qgshelpviewer.h
                               Simple help browser
                              -------------------
     begin                : 2004-01-28
@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #ifndef QGSHELPVIEWER_H
 #define QGSHELPVIEWER_H
@@ -28,10 +28,10 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
 
-public:
+  public:
     QgsHelpViewer( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsHelpViewer();
-    void showContent(QString path, QString doc);
+    void showContent( QString path, QString doc );
 
 
 };

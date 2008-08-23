@@ -27,37 +27,37 @@ class QgsComposerMap;
  * */
 class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
-    public:
+  public:
 
-  QgsComposerMapWidget(QgsComposerMap* composerMap);
-  ~QgsComposerMapWidget();
+    QgsComposerMapWidget( QgsComposerMap* composerMap );
+    ~QgsComposerMapWidget();
 
   public slots:
-  void on_mWidthLineEdit_editingFinished();
-  void on_mHeightLineEdit_editingFinished();
-  void on_mPreviewModeComboBox_activated(int i);
-  void on_mScaleLineEdit_editingFinished();
-  void on_mSetToMapCanvasExtentButton_clicked();
-  void on_mUpdatePreviewButton_clicked();
+    void on_mWidthLineEdit_editingFinished();
+    void on_mHeightLineEdit_editingFinished();
+    void on_mPreviewModeComboBox_activated( int i );
+    void on_mScaleLineEdit_editingFinished();
+    void on_mSetToMapCanvasExtentButton_clicked();
+    void on_mUpdatePreviewButton_clicked();
 
-  void on_mXMinLineEdit_editingFinished();
-  void on_mXMaxLineEdit_editingFinished();
-  void on_mYMinLineEdit_editingFinished();
-  void on_mYMaxLineEdit_editingFinished();
+    void on_mXMinLineEdit_editingFinished();
+    void on_mXMaxLineEdit_editingFinished();
+    void on_mYMinLineEdit_editingFinished();
+    void on_mYMaxLineEdit_editingFinished();
 
-  /**Updates width and height without notify the composer map (to avoid infinite recursion)*/
-  void updateSettingsNoSignals();
+    /**Updates width and height without notify the composer map (to avoid infinite recursion)*/
+    void updateSettingsNoSignals();
 
-    private:
-  QgsComposerMap* mComposerMap;
+  private:
+    QgsComposerMap* mComposerMap;
 
-  /**Sets the current composer map values to the GUI elements*/
-  void updateGuiElements();
+    /**Sets the current composer map values to the GUI elements*/
+    void updateGuiElements();
 
-  /**Sets extent of composer map from line edits*/
-  void updateComposerExtentFromGui();
+    /**Sets extent of composer map from line edits*/
+    void updateComposerExtentFromGui();
 };
 
 #endif

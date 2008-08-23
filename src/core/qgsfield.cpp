@@ -1,10 +1,10 @@
 /***************************************************************************
-			    qgsfield.cpp - Describes a field in a layer or table
-			     --------------------------------------
-			    Date                 : 01-Jan-2004
-			    Copyright            : (C) 2004 by Gary E.Sherman
-			    email                : sherman at mrcc.com
-    
+       qgsfield.cpp - Describes a field in a layer or table
+        --------------------------------------
+       Date                 : 01-Jan-2004
+       Copyright            : (C) 2004 by Gary E.Sherman
+       email                : sherman at mrcc.com
+
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,8 @@
 
 #include "qgsfield.h"
 
-static const char * const ident_ = 
-   "$Id$";
+static const char * const ident_ =
+  "$Id$";
 
 /*
 QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
@@ -33,9 +33,9 @@ QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }*/
 
-QgsField::QgsField(QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment)
-  : mName(name), mType(type), mTypeName(typeName),
-    mLength(len), mPrecision(prec), mComment(comment)
+QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
+    : mName( name ), mType( type ), mTypeName( typeName ),
+    mLength( len ), mPrecision( prec ), mComment( comment )
 {
 }
 
@@ -44,10 +44,10 @@ QgsField::~QgsField()
 {
 }
 
-bool QgsField::operator==(const QgsField& other) const
+bool QgsField::operator==( const QgsField& other ) const
 {
-    return ((mName == other.mName) && (mType == other.mType) && (mTypeName == other.mTypeName)
-	    && (mLength == other.mLength) && (mPrecision == other.mPrecision));
+  return (( mName == other.mName ) && ( mType == other.mType ) && ( mTypeName == other.mTypeName )
+          && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
 }
 
 const QString & QgsField::name() const
@@ -80,31 +80,31 @@ const QString & QgsField::comment() const
   return mComment;
 }
 
-void QgsField::setName(const QString & nam)
+void QgsField::setName( const QString & nam )
 {
   mName = nam;
 }
 
-void QgsField::setType(QVariant::Type type)
+void QgsField::setType( QVariant::Type type )
 {
   mType = type;
 }
 
-void QgsField::setTypeName(const QString & typeName)
+void QgsField::setTypeName( const QString & typeName )
 {
   mTypeName = typeName;
 }
 
-void QgsField::setLength(int len)
+void QgsField::setLength( int len )
 {
   mLength = len;
 }
-void QgsField::setPrecision(int prec)
+void QgsField::setPrecision( int prec )
 {
   mPrecision = prec;
 }
 
-void QgsField::setComment(const QString & comment)
+void QgsField::setComment( const QString & comment )
 {
   mComment = comment;
 }

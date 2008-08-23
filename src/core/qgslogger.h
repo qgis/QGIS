@@ -25,15 +25,15 @@
 #ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__);
 #define QgsDebugMsgLevel(str, level) QgsLogger::debug(QString(str), level,\
-__FILE__, __FUNCTION__, __LINE__);
+    __FILE__, __FUNCTION__, __LINE__);
 #else
-#define QgsDebugMsg(str)  
-#define QgsDebugMsgLevel(str, level) 
+#define QgsDebugMsg(str)
+#define QgsDebugMsgLevel(str, level)
 #endif
 
-/** \ingroup core 
+/** \ingroup core
  * QgsLogger is a class to print debug/warning/error messages to the console.
- * The advantage of this class over std::cout, std::cerr & co. is that the
+ * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
  * QGIS_DEBUG is an int describing what debug messages are written to the console.
  * If the debug level of a message is <= QGIS_DEBUG, the message is written to the
@@ -46,66 +46,66 @@ __FILE__, __FUNCTION__, __LINE__);
 
 class CORE_EXPORT QgsLogger
 {
- public:
+  public:
 
-  /**Goes to qDebug. 
-  @param msg the message to be printed
-  @param debuglevel 
-  @param file fileName where the message comes from
-  @param function function where the message comes from
-  @param line place in file where the message comes from*/
-  static void debug(const QString& msg, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
+    /**Goes to qDebug.
+    @param msg the message to be printed
+    @param debuglevel
+    @param file fileName where the message comes from
+    @param function function where the message comes from
+    @param line place in file where the message comes from*/
+    static void debug( const QString& msg, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
-  /**Similar to the previous method, but prints a variable int-value pair*/
-  static void debug(const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
+    /**Similar to the previous method, but prints a variable int-value pair*/
+    static void debug( const QString& var, int val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
-  /**Similar to the previous method, but prints a variable double-value pair*/
-  static void debug(const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);
+    /**Similar to the previous method, but prints a variable double-value pair*/
+    static void debug( const QString& var, double val, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1 );
 
-  /**Prints out a variable/value pair for types with overloaded operator<<*/
-  template <typename T> static void debug(const QString& var, T val, const char* file = 0, const char* function = 0,
-					  int line = -1, int debuglevel = 1)
-  {
-    const char* dfile = debugFile();
-    if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+    /**Prints out a variable/value pair for types with overloaded operator<<*/
+    template <typename T> static void debug( const QString& var, T val, const char* file = 0, const char* function = 0,
+        int line = -1, int debuglevel = 1 )
     {
-      if(!file || strcmp(dfile, file) != 0)
+      const char* dfile = debugFile();
+      if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
       {
-        return;
+        if ( !file || strcmp( dfile, file ) != 0 )
+        {
+          return;
+        }
+      }
+      std::ostringstream os;
+      os << var.toLocal8Bit().data() << " = " << val;
+      if ( line == -1 )
+      {
+        qDebug( "%s: (%s) %s", file, function, os.str().c_str() );
+      }
+      else
+      {
+#if defined(_MSC_VER)
+        qDebug( "%s(%d): (%s) %s", file, line, function, os.str().c_str() );
+#else
+        qDebug( "%s: %d: (%s) %s", file, line, function, os.str().c_str() );
+#endif
       }
     }
-    std::ostringstream os;
-    os << var.toLocal8Bit().data() << " = " << val;
-    if(line == -1)
-    {
-      qDebug("%s: (%s) %s", file, function, os.str().c_str());
-    }
-    else
-    {
-#if defined(_MSC_VER)
-      qDebug("%s(%d): (%s) %s", file, line, function, os.str().c_str());
-#else
-      qDebug("%s: %d: (%s) %s", file, line, function, os.str().c_str());
-#endif
-    }
-  }
 
-  /**Goes to qWarning*/
-  static void warning(const QString& msg); 
-  
-  /**Goes to qCritical*/
-  static void critical(const QString& msg);
+    /**Goes to qWarning*/
+    static void warning( const QString& msg );
 
-  /**Goes to qFatal*/
-  static void fatal(const QString& msg);
+    /**Goes to qCritical*/
+    static void critical( const QString& msg );
 
- private:
-  /**Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,\
-   the function returns 1 if QGISDEBUG is defined and 0 if not*/
-  static int debugLevel();
+    /**Goes to qFatal*/
+    static void fatal( const QString& msg );
 
-  /**Reads the environment variable QGIS_DEBUG_FILE. Returns NULL if the variable is not set*/
-  static const char* debugFile();
+  private:
+    /**Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,\
+     the function returns 1 if QGISDEBUG is defined and 0 if not*/
+    static int debugLevel();
+
+    /**Reads the environment variable QGIS_DEBUG_FILE. Returns NULL if the variable is not set*/
+    static const char* debugFile();
 };
 
 #endif

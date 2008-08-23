@@ -10,7 +10,7 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use 
+** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -36,25 +36,28 @@
  *
  * @author Andrew Mustun
  */
-class DL_Extrusion {
+class DL_Extrusion
+{
 
-public:
+  public:
 
     /**
      * Default constructor.
      */
-    DL_Extrusion() {
-		direction = new double[3];
-        setDirection(0.0, 0.0, 1.0);
-        setElevation(0.0);
+    DL_Extrusion()
+    {
+      direction = new double[3];
+      setDirection( 0.0, 0.0, 1.0 );
+      setElevation( 0.0 );
     }
 
 
     /**
      * Destructor.
      */
-	~DL_Extrusion() {
-		delete direction ;
+    ~DL_Extrusion()
+    {
+      delete direction ;
     }
 
 
@@ -62,34 +65,27 @@ public:
      * Constructor for DXF extrusion.
      *
      * @param direction Vector of axis along which the entity shall be extruded
-	 *                  this is also the Z axis of the Entity coordinate system
+    *                  this is also the Z axis of the Entity coordinate system
      * @param elevation Distance of the entities XY plane from the origin of the
-	 *                  world coordinate system
+    *                  world coordinate system
      */
-    DL_Extrusion(double dx, double dy, double dz, double elevation) {
-		direction = new double[3];
-		setDirection(dx, dy, dz);
-        setElevation(elevation);
+    DL_Extrusion( double dx, double dy, double dz, double elevation )
+    {
+      direction = new double[3];
+      setDirection( dx, dy, dz );
+      setElevation( elevation );
     }
 
 
 
     /**
-     * Sets the direction vector. 
+     * Sets the direction vector.
      */
-    void setDirection(double dx, double dy, double dz) {
-		direction[0]=dx;
-        direction[1]=dy;
-        direction[2]=dz;
-    }
-
-
-
-    /**
-     * @return direction vector.
-     */
-    double* getDirection() const {
-        return direction;
+    void setDirection( double dx, double dy, double dz )
+    {
+      direction[0] = dx;
+      direction[1] = dy;
+      direction[2] = dz;
     }
 
 
@@ -97,10 +93,21 @@ public:
     /**
      * @return direction vector.
      */
-    void getDirection(double dir[]) const {
-        dir[0]=direction[0];
-        dir[1]=direction[1];
-        dir[2]=direction[2];
+    double* getDirection() const
+    {
+      return direction;
+    }
+
+
+
+    /**
+     * @return direction vector.
+     */
+    void getDirection( double dir[] ) const
+    {
+      dir[0] = direction[0];
+      dir[1] = direction[1];
+      dir[2] = direction[2];
     }
 
 
@@ -108,8 +115,9 @@ public:
     /**
      * Sets the elevation.
      */
-    void setElevation(double elevation) {
-        this->elevation = elevation;
+    void setElevation( double elevation )
+    {
+      this->elevation = elevation;
     }
 
 
@@ -117,8 +125,9 @@ public:
     /**
      * @return Elevation.
      */
-    double getElevation() const {
-        return elevation;
+    double getElevation() const
+    {
+      return elevation;
     }
 
 
@@ -126,18 +135,19 @@ public:
     /**
      * Copies extrusion (deep copies) from another extrusion object.
      */
-    DL_Extrusion operator = (const DL_Extrusion& extru) {
-        setDirection(extru.direction[0], extru.direction[1], extru.direction[2]);
-        setElevation(extru.elevation);
+    DL_Extrusion operator = ( const DL_Extrusion& extru )
+    {
+      setDirection( extru.direction[0], extru.direction[1], extru.direction[2] );
+      setElevation( extru.elevation );
 
-        return *this;
+      return *this;
     }
 
 
 
-private:
-	double *direction;
-	double elevation;
+  private:
+    double *direction;
+    double elevation;
 };
 
 #endif

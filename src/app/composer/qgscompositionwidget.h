@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgscompositionwidget.h 
+                              qgscompositionwidget.h
                              ------------------------
     begin                : June 11 2008
     copyright            : (C) 2008 by Marco Hugentobler
@@ -23,7 +23,7 @@ class QgsComposition;
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper(QString name, double width, double height){mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( QString name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;
@@ -34,32 +34,32 @@ struct QgsCompositionPaper
   */
 class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 {
-  Q_OBJECT
- public:
-  QgsCompositionWidget(QWidget* parent, QgsComposition* c);
-  ~QgsCompositionWidget();
+    Q_OBJECT
+  public:
+    QgsCompositionWidget( QWidget* parent, QgsComposition* c );
+    ~QgsCompositionWidget();
 
- public slots:
-  void on_mPaperSizeComboBox_currentIndexChanged(const QString& text);
-  void on_mPaperOrientationComboBox_currentIndexChanged(const QString& text);
-  void on_mPaperWidthLineEdit_editingFinished();
-  void on_mPaperHeightLineEdit_editingFinished();
-  void on_mResolutionLineEdit_textChanged(const QString& text);
-  
- private:
-  QgsComposition* mComposition;
-  QMap<QString, QgsCompositionPaper> mPaperMap;
+  public slots:
+    void on_mPaperSizeComboBox_currentIndexChanged( const QString& text );
+    void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
+    void on_mPaperWidthLineEdit_editingFinished();
+    void on_mPaperHeightLineEdit_editingFinished();
+    void on_mResolutionLineEdit_textChanged( const QString& text );
 
-  QgsCompositionWidget(); //default constructor is forbidden
-  /**Sets width/height to chosen paper format and updates paper item*/
-  void applyCurrentPaperSettings();
-  /**Applies the current width and height values*/
-  void applyWidthHeight();
-  /**Makes sure width/height values for custom paper matches the current orientation*/
-  void adjustOrientation();
-  /**Sets GUI elements to width/height from composition*/
-  void displayCompositionWidthHeight();
-  
-  void createPaperEntries();
-  void insertPaperEntries();
+  private:
+    QgsComposition* mComposition;
+    QMap<QString, QgsCompositionPaper> mPaperMap;
+
+    QgsCompositionWidget(); //default constructor is forbidden
+    /**Sets width/height to chosen paper format and updates paper item*/
+    void applyCurrentPaperSettings();
+    /**Applies the current width and height values*/
+    void applyWidthHeight();
+    /**Makes sure width/height values for custom paper matches the current orientation*/
+    void adjustOrientation();
+    /**Sets GUI elements to width/height from composition*/
+    void displayCompositionWidthHeight();
+
+    void createPaperEntries();
+    void insertPaperEntries();
 };

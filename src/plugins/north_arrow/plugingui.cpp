@@ -15,16 +15,16 @@
 
 #include <QPainter>
 #include <cmath>
+#include "qgslogger.h"
 
-#include <iostream>
 
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui(QWidget* parent, Qt::WFlags fl)
-: QDialog(parent, fl)
+QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
+  setupUi( this );
   //temporary hack until this is implemented
-  tabNorthArrowOptions->removeTab( tabNorthArrowOptions->indexOf( tabIcon ));
-}  
+  tabNorthArrowOptions->removeTab( tabNorthArrowOptions->indexOf( tabIcon ) );
+}
 
 QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
 {
@@ -35,10 +35,10 @@ void QgsNorthArrowPluginGui::on_buttonBox_accepted()
   // Hide the dialog
   hide();
   //close the dialog
-  emit rotationChanged(sliderRotation->value());
-  emit enableAutomatic(cboxAutomatic->isChecked());
-  emit changePlacement(cboPlacement->currentIndex());
-  emit enableNorthArrow(cboxShow->isChecked());
+  emit rotationChanged( sliderRotation->value() );
+  emit enableAutomatic( cboxAutomatic->isChecked() );
+  emit changePlacement( cboPlacement->currentIndex() );
+  emit enableNorthArrow( cboxShow->isChecked() );
   emit needToRefresh();
 
   accept();
@@ -51,72 +51,72 @@ void QgsNorthArrowPluginGui::on_buttonBox_rejected()
 
 void QgsNorthArrowPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }
 
-void QgsNorthArrowPluginGui::setRotation(int theInt)
+void QgsNorthArrowPluginGui::setRotation( int theInt )
 {
-  rotatePixmap(theInt);
+  rotatePixmap( theInt );
   //sliderRotation->setValue(theInt);
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
-  spinAngle->setValue(theInt);
+  spinAngle->setValue( theInt );
 }
 
-void QgsNorthArrowPluginGui::setPlacementLabels(QStringList& labels)
+void QgsNorthArrowPluginGui::setPlacementLabels( QStringList& labels )
 {
   cboPlacement->clear();
-  cboPlacement->addItems(labels);
+  cboPlacement->addItems( labels );
 }
 
-void QgsNorthArrowPluginGui::setPlacement(int placementIndex)
+void QgsNorthArrowPluginGui::setPlacement( int placementIndex )
 {
-  cboPlacement->setCurrentIndex(placementIndex);
+  cboPlacement->setCurrentIndex( placementIndex );
 }
 
-void QgsNorthArrowPluginGui::setEnabled(bool theBool)
+void QgsNorthArrowPluginGui::setEnabled( bool theBool )
 {
-  cboxShow->setChecked(theBool);
+  cboxShow->setChecked( theBool );
 }
 
-void QgsNorthArrowPluginGui::setAutomatic(bool theBool)
+void QgsNorthArrowPluginGui::setAutomatic( bool theBool )
 {
-  cboxAutomatic->setChecked(theBool);
+  cboxAutomatic->setChecked( theBool );
 }
 
 void QgsNorthArrowPluginGui::setAutomaticDisabled()
 {
-  cboxAutomatic->setEnabled(false);
+  cboxAutomatic->setEnabled( false );
 }
 
 
 //overides function by the same name created in .ui
-void QgsNorthArrowPluginGui::on_spinAngle_valueChanged( int theInt)
+void QgsNorthArrowPluginGui::on_spinAngle_valueChanged( int theInt )
 {
 
 }
 
-void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt)
+void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt )
 {
-  rotatePixmap(theInt);
+  rotatePixmap( theInt );
 }
 
-void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
+void QgsNorthArrowPluginGui::rotatePixmap( int theRotationInt )
 {
   QPixmap myQPixmap;
   QString myFileNameQString = QgsApplication::pkgDataPath() + "/images/north_arrows/default.png";
-  //std::cout << "Trying to load " << myFileNameQString << std::cout;
-  if (myQPixmap.load(myFileNameQString))
+// QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
+  if ( myQPixmap.load( myFileNameQString ) )
   {
-    QPixmap  myPainterPixmap(myQPixmap.height(),myQPixmap.width());
+    QPixmap  myPainterPixmap( myQPixmap.height(), myQPixmap.width() );
     myPainterPixmap.fill();
     QPainter myQPainter;
-    myQPainter.begin(&myPainterPixmap);	
+    myQPainter.begin( &myPainterPixmap );
 
-    myQPainter.setRenderHint(QPainter::SmoothPixmapTransform);
+    myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = myQPixmap.width()/2;
-    double centerYDouble = myQPixmap.height()/2;
+    double centerXDouble = myQPixmap.width() / 2;
+    double centerYDouble = myQPixmap.height() / 2;
     //save the current canvas rotation
     myQPainter.save();
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
@@ -126,45 +126,45 @@ void QgsNorthArrowPluginGui::rotatePixmap(int theRotationInt)
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double PI = 3.14159265358979323846;
-    double myRadiansDouble = (PI/180) * theRotationInt;
+    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
     int xShift = static_cast<int>((
-                (centerXDouble * cos(myRadiansDouble)) + 
-                (centerYDouble * sin(myRadiansDouble))
-                ) - centerXDouble);
+                                    ( centerXDouble * cos( myRadiansDouble ) ) +
+                                    ( centerYDouble * sin( myRadiansDouble ) )
+                                  ) - centerXDouble );
     int yShift = static_cast<int>((
-                (-centerXDouble * sin(myRadiansDouble)) + 
-                (centerYDouble * cos(myRadiansDouble))
-                ) - centerYDouble);	
+                                    ( -centerXDouble * sin( myRadiansDouble ) ) +
+                                    ( centerYDouble * cos( myRadiansDouble ) )
+                                  ) - centerYDouble );
 
     //draw the pixmap in the proper position
-    myQPainter.drawPixmap(xShift,yShift,myQPixmap);
+    myQPainter.drawPixmap( xShift, yShift, myQPixmap );
 
     //unrotate the canvas again
     myQPainter.restore();
     myQPainter.end();
 
-    pixmapLabel->setPixmap(myPainterPixmap);
+    pixmapLabel->setPixmap( myPainterPixmap );
   }
   else
   {
-    QPixmap  myPainterPixmap(200,200);
+    QPixmap  myPainterPixmap( 200, 200 );
     myPainterPixmap.fill();
     QPainter myQPainter;
-    myQPainter.begin(&myPainterPixmap);	
-    QFont myQFont("time", 12, QFont::Bold);
-    myQPainter.setFont(myQFont);
-    myQPainter.setPen(Qt::red);
-    myQPainter.drawText(10, 20, tr("Pixmap not found"));
+    myQPainter.begin( &myPainterPixmap );
+    QFont myQFont( "time", 12, QFont::Bold );
+    myQPainter.setFont( myQFont );
+    myQPainter.setPen( Qt::red );
+    myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );
     myQPainter.end();
-    pixmapLabel->setPixmap(myPainterPixmap);    
+    pixmapLabel->setPixmap( myPainterPixmap );
   }
 }
 
 //
 // Called when the widget has been resized.
-// 
+//
 
-void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent * theResizeEvent)
+void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent * theResizeEvent )
 {
-  rotatePixmap(sliderRotation->value());  
+  rotatePixmap( sliderRotation->value() );
 }

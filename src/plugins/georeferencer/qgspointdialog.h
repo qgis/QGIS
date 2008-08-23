@@ -31,67 +31,67 @@ class QgisInterface;
 
 class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
 {
-Q_OBJECT
-public:
-  QgsPointDialog(QString layerPath, QgisInterface* theQgisInterface,
-                 QWidget* parent = 0, Qt::WFlags fl = 0);
+    Q_OBJECT
+  public:
+    QgsPointDialog( QString layerPath, QgisInterface* theQgisInterface,
+                    QWidget* parent = 0, Qt::WFlags fl = 0 );
 
-  QgsPointDialog(QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0);
-  ~QgsPointDialog();
+    QgsPointDialog( QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~QgsPointDialog();
 
-  /**Opens a new image file in mCanvas*/
-  void openImageFile(QString layerPath);
-  void showCoordDialog(QgsPoint& pixelCoords);
-  void deleteDataPoint(QgsPoint& pixelCoords);
+    /**Opens a new image file in mCanvas*/
+    void openImageFile( QString layerPath );
+    void showCoordDialog( QgsPoint& pixelCoords );
+    void deleteDataPoint( QgsPoint& pixelCoords );
 
-public slots:
-  
-  void addPoint(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
-  void on_pbnGenerateWorldFile_clicked();
-  void on_pbnGenerateAndLoad_clicked();
-  void on_pbnSelectWorldFile_clicked();
-  void on_pbnSelectModifiedRaster_clicked();
-  void on_cmbTransformType_currentIndexChanged(const QString&);
-  void zoomIn();
-  void zoomOut();
-  void zoomToLayer();
-  void pan();
-  void addPoint();
-  void deletePoint();
-  void enableRelevantControls(void);
-   
-private:
+  public slots:
 
-  void initialize();
-  bool generateWorldFile();
-  QString guessWorldFileName(const QString& raster);
+    void addPoint( const QgsPoint& pixelCoords, const QgsPoint& mapCoords );
+    void on_pbnGenerateWorldFile_clicked();
+    void on_pbnGenerateAndLoad_clicked();
+    void on_pbnSelectWorldFile_clicked();
+    void on_pbnSelectModifiedRaster_clicked();
+    void on_cmbTransformType_currentIndexChanged( const QString& );
+    void zoomIn();
+    void zoomOut();
+    void zoomToLayer();
+    void pan();
+    void addPoint();
+    void deletePoint();
+    void enableRelevantControls( void );
 
-  void enableModifiedRasterControls(bool state);
-  QIcon getThemeIcon(const QString theName);
-  
-  QActionGroup* mMapToolGroup;
-  QAction* mActionZoomIn;
-  QAction* mActionZoomOut;
-  QAction* mActionZoomToLayer;
-  QAction* mActionPan;
-  QAction* mActionAddPoint;
-  QAction* mActionDeletePoint;
-  
-  QgsMapCanvas* mCanvas;
-  QgsRasterLayer* mLayer;
-  
-  QgsMapTool* mToolZoomIn;
-  QgsMapTool* mToolZoomOut;
-  QgsMapTool* mToolPan;
-  QgsMapTool* mToolAddPoint;
-  QgsMapTool* mToolDeletePoint;
-  
-  
+  private:
+
+    void initialize();
+    bool generateWorldFile();
+    QString guessWorldFileName( const QString& raster );
+
+    void enableModifiedRasterControls( bool state );
+    QIcon getThemeIcon( const QString theName );
+
+    QActionGroup* mMapToolGroup;
+    QAction* mActionZoomIn;
+    QAction* mActionZoomOut;
+    QAction* mActionZoomToLayer;
+    QAction* mActionPan;
+    QAction* mActionAddPoint;
+    QAction* mActionDeletePoint;
+
+    QgsMapCanvas* mCanvas;
+    QgsRasterLayer* mLayer;
+
+    QgsMapTool* mToolZoomIn;
+    QgsMapTool* mToolZoomOut;
+    QgsMapTool* mToolPan;
+    QgsMapTool* mToolAddPoint;
+    QgsMapTool* mToolDeletePoint;
+
+
 //  std::vector<QgsPoint> mPixelCoords, mMapCoords;
 //  std::vector<QString> mAcetateIDs;
-  std::vector<QgsGeorefDataPoint*> mPoints;
-  QgisInterface* mIface;
-  int mAcetateCounter;
+    std::vector<QgsGeorefDataPoint*> mPoints;
+    QgisInterface* mIface;
+    int mAcetateCounter;
 };
 
 #endif

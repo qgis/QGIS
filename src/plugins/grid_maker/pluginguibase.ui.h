@@ -33,27 +33,27 @@ void QgsGridMakerPluginGuiBase::pbnCancel_clicked()
 }
 
 
-void QgsGridMakerPluginGuiBase::leInputFile_textChanged( const QString & theQString)
+void QgsGridMakerPluginGuiBase::leInputFile_textChanged( const QString & theQString )
 {
-  if (theQString != "") 
-    {
-      pbnOK->setEnabled(true);
+  if ( theQString != "" )
+  {
+    pbnOK->setEnabled( true );
   }
   else
   {
-   pbnOK->setEnabled(false);   
+    pbnOK->setEnabled( false );
   }
 }
 
 
 void QgsGridMakerPluginGuiBase::leOutputShapeFile_textChanged( const QString & theQString )
 {
-  if (theQString != "") 
-    {
-      pbnOK->setEnabled(true);
+  if ( theQString != "" )
+  {
+    pbnOK->setEnabled( true );
   }
   else
   {
-   pbnOK->setEnabled(false);   
+    pbnOK->setEnabled( false );
   }
 }

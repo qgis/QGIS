@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsinterpolationplugin.h    
+                              qgsinterpolationplugin.h
                               ------------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -28,22 +28,22 @@ class QAction;
 a vector layer*/
 class QgsInterpolationPlugin: public QObject, public QgisPlugin
 {
-Q_OBJECT
+    Q_OBJECT
 
- public:
-  QgsInterpolationPlugin(QgisInterface* iface);
-  ~QgsInterpolationPlugin();
-   /**initialize connection to GUI*/
-  void initGui();
-  /**Unload the plugin and cleanup the GUI*/
-  void unload();
+  public:
+    QgsInterpolationPlugin( QgisInterface* iface );
+    ~QgsInterpolationPlugin();
+    /**initialize connection to GUI*/
+    void initGui();
+    /**Unload the plugin and cleanup the GUI*/
+    void unload();
 
   private slots:
-  void showInterpolationDialog();
+    void showInterpolationDialog();
 
- private:
-  QgisInterface* mIface;
-  QAction* mInterpolationAction;
+  private:
+    QgisInterface* mIface;
+    QAction* mInterpolationAction;
 };
 
 #endif

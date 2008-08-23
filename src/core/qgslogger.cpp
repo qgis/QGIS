@@ -19,155 +19,155 @@
 #include "qgslogger.h"
 #include <QtDebug>
 
-void QgsLogger::debug(const QString& msg, int debuglevel, const char* file, const char* function, int line)
+void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
 {
   const char* dfile = debugFile();
-  if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  {
+    if ( !file || strcmp( dfile, file ) != 0 )
     {
-      if(!file || strcmp(dfile, file) != 0)
-	{
-	  return;
-	}
+      return;
     }
+  }
 
   int dlevel = debugLevel();
-  if(dlevel >= debuglevel && debuglevel > 0)
+  if ( dlevel >= debuglevel && debuglevel > 0 )
+  {
+    if ( file == NULL )
     {
-      if(file == NULL)
-	{
-	  qDebug(msg.toLocal8Bit().data());
-	}
-      else if(function == NULL)
-	{
-	  qDebug("%s: %s", file, msg.toLocal8Bit().data());
-	}
-      else if(line == -1)
-	{
-	  qDebug("%s: (%s) %s", file, function, msg.toLocal8Bit().data());
-	}
-      else
-	{
+      qDebug( msg.toLocal8Bit().data() );
+    }
+    else if ( function == NULL )
+    {
+      qDebug( "%s: %s", file, msg.toLocal8Bit().data() );
+    }
+    else if ( line == -1 )
+    {
+      qDebug( "%s: (%s) %s", file, function, msg.toLocal8Bit().data() );
+    }
+    else
+    {
 #ifndef _MSC_VER
-	  qDebug("%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().data());
+      qDebug( "%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().data() );
 #else
-	  qDebug("%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().data());
+      qDebug( "%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().data() );
 #endif
-	}
     }
+  }
 }
 
-void QgsLogger::debug(const QString& var, int val, int debuglevel, const char* file, const char* function, int line)
+void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* file, const char* function, int line )
 {
   const char* dfile = debugFile();
-  if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  {
+    if ( !file || strcmp( dfile, file ) != 0 )
     {
-      if(!file || strcmp(dfile, file) != 0)
-	{
-	  return;
-	}
+      return;
     }
+  }
 
   int dlevel = debugLevel();
-  if(dlevel >= debuglevel && debuglevel > 0)
+  if ( dlevel >= debuglevel && debuglevel > 0 )
+  {
+    if ( file == NULL )
     {
-      if(file == NULL)
-	{
-	  qDebug("%s: %d", var.toLocal8Bit().data(), val);
-	}
-      else if(function == NULL)
-	{
-	  qDebug("%s: %s: %d", file, var.toLocal8Bit().data(), val);
-	}
-      else if(line == -1)
-	{
-	  qDebug("%s: (%s): %s: %d", file, function, var.toLocal8Bit().data(), val);
-	}
-      else
-	{
-#ifdef _MSC_VER
-	  qDebug("%s(%d): (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val);
-#else
-	  qDebug("%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val);
-#endif
-	}
+      qDebug( "%s: %d", var.toLocal8Bit().data(), val );
     }
+    else if ( function == NULL )
+    {
+      qDebug( "%s: %s: %d", file, var.toLocal8Bit().data(), val );
+    }
+    else if ( line == -1 )
+    {
+      qDebug( "%s: (%s): %s: %d", file, function, var.toLocal8Bit().data(), val );
+    }
+    else
+    {
+#ifdef _MSC_VER
+      qDebug( "%s(%d): (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val );
+#else
+      qDebug( "%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val );
+#endif
+    }
+  }
 }
 
-void QgsLogger::debug(const QString& var, double val, int debuglevel, const char* file, const char* function, int line)
+void QgsLogger::debug( const QString& var, double val, int debuglevel, const char* file, const char* function, int line )
 {
   const char* dfile = debugFile();
-  if(dfile) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
+  {
+    if ( !file || strcmp( dfile, file ) != 0 )
     {
-      if(!file || strcmp(dfile, file) != 0)
-	{
-	  return;
-	}
+      return;
     }
+  }
 
   int dlevel = debugLevel();
-  if(dlevel >= debuglevel && debuglevel > 0)
+  if ( dlevel >= debuglevel && debuglevel > 0 )
+  {
+    if ( file == NULL )
     {
-      if(file == NULL)
-	{
-	  qDebug("%s: %f", var.toLocal8Bit().data(), val);
-	}
-      else if(function == NULL)
-	{
-	  qDebug("%s: %s: %f", file, var.toLocal8Bit().data(), val);
-	}
-      else if(line == -1)
-	{
-	  qDebug("%s: (%s): %s: %f", file, function, var.toLocal8Bit().data(), val);
-	}
-      else
-	{
-#ifdef _MSC_VER
-	  qDebug("%s(%d): (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val);
-#else
-	  qDebug("%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val);
-#endif
-	}
+      qDebug( "%s: %f", var.toLocal8Bit().data(), val );
     }
+    else if ( function == NULL )
+    {
+      qDebug( "%s: %s: %f", file, var.toLocal8Bit().data(), val );
+    }
+    else if ( line == -1 )
+    {
+      qDebug( "%s: (%s): %s: %f", file, function, var.toLocal8Bit().data(), val );
+    }
+    else
+    {
+#ifdef _MSC_VER
+      qDebug( "%s(%d): (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val );
+#else
+      qDebug( "%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val );
+#endif
+    }
+  }
 }
 
-void QgsLogger::warning(const QString& msg)
+void QgsLogger::warning( const QString& msg )
 {
-  qWarning(msg.toLocal8Bit().data());
-}
-  
-void QgsLogger::critical(const QString& msg)
-{
-  qCritical(msg.toLocal8Bit().data());
+  qWarning( msg.toLocal8Bit().data() );
 }
 
-void QgsLogger::fatal(const QString& msg)
+void QgsLogger::critical( const QString& msg )
 {
-  qFatal(msg.toLocal8Bit().data());
+  qCritical( msg.toLocal8Bit().data() );
+}
+
+void QgsLogger::fatal( const QString& msg )
+{
+  qFatal( msg.toLocal8Bit().data() );
 }
 
 int QgsLogger::debugLevel()
 {
-  const char* dlevel = getenv("QGIS_DEBUG");
-  if(dlevel == NULL) //environment variable not set
-    {
+  const char* dlevel = getenv( "QGIS_DEBUG" );
+  if ( dlevel == NULL ) //environment variable not set
+  {
 #ifdef QGISDEBUG
-      return 1; //1 is default value in debug mode
+    return 1; //1 is default value in debug mode
 #else
-      return 0;
+    return 0;
 #endif
-    }
-  int level = atoi(dlevel);
+  }
+  int level = atoi( dlevel );
 #ifdef QGISDEBUG
-  if(level == 0)
-    {
-      level = 1;
-    }
+  if ( level == 0 )
+  {
+    level = 1;
+  }
 #endif
   return level;
 }
 
 const char* QgsLogger::debugFile()
 {
-  const char* dfile = getenv("QGIS_DEBUG_FILE");
+  const char* dfile = getenv( "QGIS_DEBUG_FILE" );
   return dfile;
 }

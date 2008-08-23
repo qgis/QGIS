@@ -26,20 +26,20 @@
 
 namespace SpatialIndex
 {
-	namespace StorageManager
-	{
-		class RandomEvictionsBuffer : public Buffer
-		{
-		public:
-			RandomEvictionsBuffer(IStorageManager&, Tools::PropertySet& ps);
-				// see Buffer.h for available properties.
+  namespace StorageManager
+  {
+    class RandomEvictionsBuffer : public Buffer
+    {
+      public:
+        RandomEvictionsBuffer( IStorageManager&, Tools::PropertySet& ps );
+        // see Buffer.h for available properties.
 
-			virtual ~RandomEvictionsBuffer();
+        virtual ~RandomEvictionsBuffer();
 
-			virtual void addEntry(long id, Buffer::Entry* pEntry);
-			virtual void removeEntry();
-		}; // RandomEvictionsBuffer
-	}
+        virtual void addEntry( long id, Buffer::Entry* pEntry );
+        virtual void removeEntry();
+    }; // RandomEvictionsBuffer
+  }
 }
 
 #endif /*__storagemanager_randomevictionsbuffer_h*/

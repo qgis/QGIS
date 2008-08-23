@@ -1,3 +1,4 @@
+#include "qgslogger.h"
 // Tools Library
 //
 // Copyright (C) 2004  Navel Ltd.
@@ -28,96 +29,96 @@
 
 namespace Tools
 {
-	template <class X> class PointerPool
-	{
-//		class PoolPointer<X>;
+  template <class X> class PointerPool
+  {
+//  class PoolPointer<X>;
 
-	public:
-		explicit PointerPool(unsigned long capacity) : m_capacity(capacity)
-		{
-			#ifndef NDEBUG
-			m_hits = 0;
-			m_misses = 0;
-			m_pointerCount = 0;
-			#endif
-		}
+    public:
+      explicit PointerPool( unsigned long capacity ) : m_capacity( capacity )
+      {
+#ifndef NDEBUG
+        m_hits = 0;
+        m_misses = 0;
+        m_pointerCount = 0;
+#endif
+      }
 
-		~PointerPool()
-		{
-			assert(m_pool.size() <= m_capacity);
+      ~PointerPool()
+      {
+        assert( m_pool.size() <= m_capacity );
 
-			while (! m_pool.empty())
-			{
-				X* x = m_pool.top(); m_pool.pop();
-				#ifndef NDEBUG
-				m_pointerCount--;
-				#endif
-				delete x;
-			}
+        while ( ! m_pool.empty() )
+        {
+          X* x = m_pool.top(); m_pool.pop();
+#ifndef NDEBUG
+          m_pointerCount--;
+#endif
+          delete x;
+        }
 
-			#ifndef NDEBUG
-			std::cerr << "Lost pointers: " << m_pointerCount << std::endl;
-			#endif
-		}
+#ifndef NDEBUG
+        QgsDebugMsg( QString( "Lost pointers: %1" ).arg( m_pointerCount ) );
+#endif
+      }
 
-		PoolPointer<X> acquire()
-		{
-			X* p = 0;
+      PoolPointer<X> acquire()
+      {
+        X* p = 0;
 
-			if (! m_pool.empty())
-			{
-				p = m_pool.top(); m_pool.pop();
-				#ifndef NDEBUG
-				m_hits++;
-				#endif
-			}
-			else
-			{
-				p = new X();
-				#ifndef NDEBUG
-				m_pointerCount++;
-				m_misses++;
-				#endif
-			}
+        if ( ! m_pool.empty() )
+        {
+          p = m_pool.top(); m_pool.pop();
+#ifndef NDEBUG
+          m_hits++;
+#endif
+        }
+        else
+        {
+          p = new X();
+#ifndef NDEBUG
+          m_pointerCount++;
+          m_misses++;
+#endif
+        }
 
-			return PoolPointer<X>(p, this);
-		}
+        return PoolPointer<X>( p, this );
+      }
 
-		void release(X* p)
-		{
-			if (m_pool.size() < m_capacity)
-			{
-				m_pool.push(p);
-			}
-			else
-			{
-				#ifndef NDEBUG
-				m_pointerCount--;
-				#endif
-				delete p;
-			}
+      void release( X* p )
+      {
+        if ( m_pool.size() < m_capacity )
+        {
+          m_pool.push( p );
+        }
+        else
+        {
+#ifndef NDEBUG
+          m_pointerCount--;
+#endif
+          delete p;
+        }
 
-			assert(m_pool.size() <= m_capacity);
-		}
+        assert( m_pool.size() <= m_capacity );
+      }
 
-		unsigned long getCapacity() const { return m_capacity; }
-		void setCapacity(unsigned long c)
-		{
-			assert (c >= 0);
-			m_capacity = c;
-		}
+      unsigned long getCapacity() const { return m_capacity; }
+      void setCapacity( unsigned long c )
+      {
+        assert( c >= 0 );
+        m_capacity = c;
+      }
 
-	private:
-		unsigned long m_capacity;
-		std::stack<X*> m_pool;
+    private:
+      unsigned long m_capacity;
+      std::stack<X*> m_pool;
 
-	#ifndef NDEBUG
-	public:
-		unsigned long m_hits;
-		unsigned long m_misses;
-		long m_pointerCount;
-	#endif
-	};
+#ifndef NDEBUG
+    public:
+      unsigned long m_hits;
+      unsigned long m_misses;
+      long m_pointerCount;
+#endif
+  };
 }
 
 #endif /* __tools_pointer_pool_h */

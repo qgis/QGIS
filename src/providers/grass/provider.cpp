@@ -27,7 +27,8 @@
 #include "qgsfield.h"
 #include "qgsrect.h"
 
-extern "C" {
+extern "C"
+{
 #include <grass/gis.h>
 #include <grass/dbmi.h>
 #include <grass/Vect.h>
@@ -37,27 +38,27 @@ extern "C" {
 #include "qgsgrassprovider.h"
 
 /**
-* Class factory to return a pointer to a newly created 
+* Class factory to return a pointer to a newly created
 * QgsGrassProvider object
 */
-QGISEXTERN QgsGrassProvider * classFactory(const QString *uri)
+QGISEXTERN QgsGrassProvider * classFactory( const QString *uri )
 {
-  return new QgsGrassProvider(*uri);
+  return new QgsGrassProvider( *uri );
 }
 
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
-  return QString("grass");
+  return QString( "grass" );
 }
 
 /**
-* Required description function 
+* Required description function
 */
 QGISEXTERN QString description()
 {
-  return QString("GRASS data provider");
+  return QString( "GRASS data provider" );
 }
 
 /**

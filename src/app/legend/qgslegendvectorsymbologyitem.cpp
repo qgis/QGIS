@@ -17,25 +17,25 @@
 
 #include "qgslegendvectorsymbologyitem.h"
 
-QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem(QTreeWidgetItem * theItem, QString col1, int pixmapWidth, int pixmapHeight)
-: QgsLegendSymbologyItem(theItem, col1, pixmapWidth, pixmapHeight)
+QgsLegendVectorSymbologyItem::QgsLegendVectorSymbologyItem( QTreeWidgetItem * theItem, QString col1, int pixmapWidth, int pixmapHeight )
+    : QgsLegendSymbologyItem( theItem, col1, pixmapWidth, pixmapHeight )
 {
-    mType = LEGEND_VECTOR_SYMBOL_ITEM;
+  mType = LEGEND_VECTOR_SYMBOL_ITEM;
 }
 
-void QgsLegendVectorSymbologyItem::addSymbol(QgsSymbol* s)
+void QgsLegendVectorSymbologyItem::addSymbol( QgsSymbol* s )
 {
-    mSymbols.push_back(s);
+  mSymbols.push_back( s );
 }
 
 void QgsLegendVectorSymbologyItem::handleDoubleClickEvent()
 {
 #ifdef QGISDEBUG
-    qWarning("in QgsLegendVectorSymbologyItem::handleDoubleClickEvent");
+  qWarning( "in QgsLegendVectorSymbologyItem::handleDoubleClickEvent" );
 #endif
-    //todo: show the dialog
-    //QgsSiSyDialog d(0);
-    //std::list<QgsSymbol*>::iterator iter = mSymbols.begin();
-    //d.set(*iter);
-    //d.exec();
+  //todo: show the dialog
+  //QgsSiSyDialog d(0);
+  //std::list<QgsSymbol*>::iterator iter = mSymbols.begin();
+  //d.set(*iter);
+  //d.exec();
 }

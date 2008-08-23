@@ -21,10 +21,10 @@
 // The communications technique used here has been adapted from Qt Assistant.
 // See qt/tools/assistant/ main.cpp and lib/qassistantclient.cpp (Qt 3.3.4).
 
-QgsHelpContextServer::QgsHelpContextServer(QObject *parent) :
-  QTcpServer(parent)
+QgsHelpContextServer::QgsHelpContextServer( QObject *parent ) :
+    QTcpServer( parent )
 {
-  listen(QHostAddress::LocalHost, 0);
+  listen( QHostAddress::LocalHost, 0 );
 }
 
 QgsHelpContextServer::~QgsHelpContextServer()
@@ -32,21 +32,21 @@ QgsHelpContextServer::~QgsHelpContextServer()
   // Socket is automatically deleted here because it is a QQbject child
 }
 
-void QgsHelpContextServer::incomingConnection(int socket)
+void QgsHelpContextServer::incomingConnection( int socket )
 {
   // Create socket in response to new connection
-  QgsHelpContextSocket *helpSocket = new QgsHelpContextSocket(socket, this);
+  QgsHelpContextSocket *helpSocket = new QgsHelpContextSocket( socket, this );
   // Pass context from socket upwards
-  connect(helpSocket, SIGNAL(setContext(const QString&)),
-    SIGNAL(setContext(const QString&)));
+  connect( helpSocket, SIGNAL( setContext( const QString& ) ),
+           SIGNAL( setContext( const QString& ) ) );
   emit newConnection();
 }
 
-QgsHelpContextSocket::QgsHelpContextSocket(int socket, QObject *parent) :
-  QTcpSocket(parent)
+QgsHelpContextSocket::QgsHelpContextSocket( int socket, QObject *parent ) :
+    QTcpSocket( parent )
 {
-  connect(this, SIGNAL(readyRead()), SLOT(readClient()));
-  setSocketDescriptor(socket);
+  connect( this, SIGNAL( readyRead() ), SLOT( readClient() ) );
+  setSocketDescriptor( socket );
 }
 
 QgsHelpContextSocket::~QgsHelpContextSocket()
@@ -60,7 +60,7 @@ void QgsHelpContextSocket::readClient()
   while ( canReadLine() )
   {
     contextId = readLine();
-    contextId.remove('\n');
-    emit setContext(contextId);
+    contextId.remove( '\n' );
+    emit setContext( contextId );
   }
 }

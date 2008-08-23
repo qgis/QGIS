@@ -23,7 +23,7 @@ class CORE_EXPORT QgsRasterTransparency
 
   public:
     QgsRasterTransparency();
-    
+
     //
     // Structs to hold transparent pixel vlaues
     //
@@ -40,33 +40,33 @@ class CORE_EXPORT QgsRasterTransparency
       double pixelValue;
       double percentTransparent;
     };
-    
+
     //
     // Initializer, Accessor and mutator for transparency tables.
     //
     /** \brief Mutator for transparentSingleValuePixelList */
     QList<QgsRasterTransparency::TransparentSingleValuePixel> getTransparentSingleValuePixelList();
-    
+
     /** \brief Mutator for transparentThreeValuePixelList */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> getTransparentThreeValuePixelList();
-    
+
     /** \brief Reset to the transparency list to a single value */
-    void initializeTransparentPixelList(double);
-    
+    void initializeTransparentPixelList( double );
+
     /** \brief Reset to the transparency list to a single value */
-    void initializeTransparentPixelList(double, double, double);
+    void initializeTransparentPixelList( double, double, double );
 
     /** \brief Accessor for transparentSingleValuePixelList */
-    void setTransparentSingleValuePixelList(QList<QgsRasterTransparency::TransparentSingleValuePixel>);
-    
+    void setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel> );
+
     /** \brief Accessor for transparentThreeValuePixelList */
-    void setTransparentThreeValuePixelList(QList<QgsRasterTransparency::TransparentThreeValuePixel>);
-    
+    void setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> );
+
     /** \brief Returns the transparency value for a single value Pixel */
-    int getAlphaValue(double, int theGlobalTransparency=255);
+    int getAlphaValue( double, int theGlobalTransparency = 255 );
     /** \brief Return the transparency value for a RGB Pixel */
-    int getAlphaValue(double, double, double, int theGlobalTransparency=255);
-        
+    int getAlphaValue( double, double, double, int theGlobalTransparency = 255 );
+
   private:
     /** \brief The list to hold transparency values for RGB layers */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;

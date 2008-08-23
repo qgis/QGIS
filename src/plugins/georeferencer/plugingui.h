@@ -23,33 +23,33 @@ class QgsPointDialog;
 */
 class QgsGeorefPluginGui : public QDialog, private Ui::QgsGeorefPluginGuiBase
 {
-Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     QgsGeorefPluginGui();
-    QgsGeorefPluginGui(QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0);
+    QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsGeorefPluginGui();
 
     /**Finds the qgis main window
      @return window pointer or 0 in case or error*/
     static QWidget* findMainWindow();
-    
-public slots:
+
+  public slots:
     void on_pbnClose_clicked();
     void on_pbnDescription_clicked();
     void on_pbnSelectRaster_clicked();
     void on_mArrangeWindowsButton_clicked();
-    
-private:
-    
-   QString mProjBehaviour, mProjectCRS;
-   int mProjectCRSID;
-   QgisInterface* mIface;
-   /**dialog to enter reference point*/
-   QgsPointDialog* mPointDialog;
-   /**Flag if plugin windows have been arranged with button*/
-   bool mPluginWindowsArranged;
-   QSize origSize;
-   QPoint origPos;
+
+  private:
+
+    QString mProjBehaviour, mProjectCRS;
+    int mProjectCRSID;
+    QgisInterface* mIface;
+    /**dialog to enter reference point*/
+    QgsPointDialog* mPointDialog;
+    /**Flag if plugin windows have been arranged with button*/
+    bool mPluginWindowsArranged;
+    QSize origSize;
+    QPoint origPos;
 };
 
 #endif

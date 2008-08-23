@@ -18,12 +18,12 @@
 #include "qgscomposerscalebar.h"
 #include <QPainter>
 
-QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(const QgsComposerScaleBar* bar): QgsScaleBarStyle(bar)
+QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
 {
   mTickPosition = MIDDLE;
 }
 
-QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle(0)
+QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( 0 )
 {
   mTickPosition = MIDDLE;
 }
@@ -35,63 +35,63 @@ QgsTicksScaleBarStyle::~QgsTicksScaleBarStyle()
 
 QString QgsTicksScaleBarStyle::name() const
 {
-  switch(mTickPosition)
-    {
+  switch ( mTickPosition )
+  {
     case UP:
       return "Line Ticks Up";
     case DOWN:
       return "Line Ticks Down";
     case MIDDLE:
       return "Line Ticks Middle";
-    }
+  }
   return "";  // to make gcc happy
 }
 
-void QgsTicksScaleBarStyle::draw(QPainter* p, double xOffset) const
+void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
 {
-  if(!mScaleBar)
-    {
-      return;
-    }
+  if ( !mScaleBar )
+  {
+    return;
+  }
   double barTopPosition = mScaleBar->fontHeight() + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
-  double middlePosition = barTopPosition + mScaleBar->height()/2.0;
+  double middlePosition = barTopPosition + mScaleBar->height() / 2.0;
   double bottomPosition = barTopPosition + mScaleBar->height();
 
   p->save();
-  p->setPen(mScaleBar->pen());
+  p->setPen( mScaleBar->pen() );
 
   QList<QPair<double, double> > segmentInfo;
-  mScaleBar->segmentPositions(segmentInfo);
+  mScaleBar->segmentPositions( segmentInfo );
 
   QList<QPair<double, double> >::const_iterator segmentIt = segmentInfo.constBegin();
-  for(; segmentIt != segmentInfo.constEnd(); ++segmentIt)
+  for ( ; segmentIt != segmentInfo.constEnd(); ++segmentIt )
+  {
+    p->drawLine( segmentIt->first + xOffset, barTopPosition, segmentIt->first + xOffset, barTopPosition + mScaleBar->height() );
+    switch ( mTickPosition )
     {
-      p->drawLine(segmentIt->first + xOffset, barTopPosition, segmentIt->first + xOffset, barTopPosition + mScaleBar->height());
-      switch(mTickPosition)
-	{
-	case DOWN:
-	  p->drawLine(xOffset + segmentIt->first, barTopPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), barTopPosition);
-	  break;
-	case MIDDLE:
-	  p->drawLine(xOffset + segmentIt->first, middlePosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), middlePosition); 
-	  break;
-	case UP:
-	  p->drawLine(xOffset + segmentIt->first, bottomPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), bottomPosition); 
-	  break;
-	}
+      case DOWN:
+        p->drawLine( xOffset + segmentIt->first, barTopPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), barTopPosition );
+        break;
+      case MIDDLE:
+        p->drawLine( xOffset + segmentIt->first, middlePosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), middlePosition );
+        break;
+      case UP:
+        p->drawLine( xOffset + segmentIt->first, bottomPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), bottomPosition );
+        break;
     }
+  }
 
   //draw last tick
-  if(!segmentInfo.isEmpty())
-    {
-      double lastTickPositionX = segmentInfo.last().first + mScaleBar->segmentMM();
-      p->drawLine(lastTickPositionX + xOffset, barTopPosition, lastTickPositionX + xOffset, barTopPosition + mScaleBar->height());
-    }
+  if ( !segmentInfo.isEmpty() )
+  {
+    double lastTickPositionX = segmentInfo.last().first + mScaleBar->segmentMM();
+    p->drawLine( lastTickPositionX + xOffset, barTopPosition, lastTickPositionX + xOffset, barTopPosition + mScaleBar->height() );
+  }
 
   p->restore();
 
   //draw labels using the default method
-  drawLabels(p);
+  drawLabels( p );
 }
 
 

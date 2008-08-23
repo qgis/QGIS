@@ -15,7 +15,7 @@
 /* $Id$ */
 
 #include "qgsmessageoutput.h"
-#include <iostream>
+#include "qgslogger.h"
 
 static QgsMessageOutput* messageOutputConsole_()
 {
@@ -26,7 +26,7 @@ static QgsMessageOutput* messageOutputConsole_()
 MESSAGE_OUTPUT_CREATOR QgsMessageOutput::mMessageOutputCreator = messageOutputConsole_;
 
 
-void QgsMessageOutput::setMessageOutputCreator(MESSAGE_OUTPUT_CREATOR f)
+void QgsMessageOutput::setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f )
 {
   mMessageOutputCreator = f;
 }
@@ -44,32 +44,32 @@ QgsMessageOutput::~QgsMessageOutput()
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-  : mMessage(NULL)
+    : mMessage( NULL )
 {
 }
 
-void QgsMessageOutputConsole::setMessage(const QString& message, MessageType)
+void QgsMessageOutputConsole::setMessage( const QString& message, MessageType )
 {
   mMessage = message;
 }
 
-void QgsMessageOutputConsole::appendMessage(const QString& message)
+void QgsMessageOutputConsole::appendMessage( const QString& message )
 {
   mMessage += message;
 }
 
-void QgsMessageOutputConsole::showMessage(bool)
+void QgsMessageOutputConsole::showMessage( bool )
 {
   // show title if provided
-  if (!mTitle.isNull())
-    std::cout << mTitle.toLocal8Bit().data() << ":" << std::endl;
+  if ( !mTitle.isNull() )
+    QgsDebugMsg( QString( "%1:" ).arg( mTitle ) );
   // show the message
-  std::cout << mMessage.toLocal8Bit().data() << std::endl;
+  QgsDebugMsg( mMessage );
   emit destroyed();
   delete this;
 }
 
-void QgsMessageOutputConsole::setTitle(const QString& title)
+void QgsMessageOutputConsole::setTitle( const QString& title )
 {
   mTitle = title;
 }

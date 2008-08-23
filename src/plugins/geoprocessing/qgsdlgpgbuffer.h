@@ -6,7 +6,7 @@
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Gary E.Sherman
     email                : sherman at mrcc.com
-  
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,7 +17,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  $Id$ */
+/*  $Id$ */
 #ifndef QGSDLGPGBUFFER_H
 #define QGSDLGPGBUFFER_H
 #include "ui_qgsdlgpgbufferbase.h"
@@ -26,15 +26,15 @@
 class QgisInterface;
 class QDoubleValidator;
 
-class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
+class QgsDlgPgBuffer: public QDialog, private Ui::QgsDlgPgBufferBase
 {
   Q_OBJECT public:
-  //! Constructor
-    QgsDlgPgBuffer( QgisInterface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    //! Constructor
+    QgsDlgPgBuffer( QgisInterface * _qI = 0, QWidget * parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsDlgPgBuffer();
     //! Set the information label in the dialog
-    void setBufferLabel(QString & lbl);
+    void setBufferLabel( QString & lbl );
     //! Get the buffer distance
     QString bufferDistance();
     //! Get the name of the buffered layer to be created
@@ -50,19 +50,19 @@ class QgsDlgPgBuffer:public QDialog, private Ui::QgsDlgPgBufferBase
     //! Flag to indicate if the layer should be added to the map
     bool addLayerToMap();
     //! Add a field name to the list of fields available for use as the object id
-    void addFieldItem(QString field);
+    void addFieldItem( QString field );
     //! Add a schema name to the list of available schemas
-    void addSchema(QString schema);
+    void addSchema( QString schema );
     //! Set the srid value on the dialog
-    void setSrid(QString srid);
+    void setSrid( QString srid );
     //! Set the bufferd layer name on the dialog
-    void setBufferLayerName(QString name);
+    void setBufferLayerName( QString name );
     //! Set the geometry column on the dialog
-    void setGeometryColumn(QString name);
-    private slots:
+    void setGeometryColumn( QString name );
+  private slots:
     void on_buttonBox_helpRequested();
-    private:
-      //! Pointer to the QGIS interface object
+  private:
+    //! Pointer to the QGIS interface object
     QgisInterface *qI;
     //! Input validator for the buffer distance
     QDoubleValidator *distanceValidator;

@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsprojectproperties.h    
+                             qgsprojectproperties.h
        Set various project properties (inherits qgsprojectpropertiesbase)
                               -------------------
   begin                : May 18, 2004
@@ -33,81 +33,81 @@ class QgsMapCanvas;
  */
 class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     //! Constructor
-  QgsProjectProperties(QgsMapCanvas* mapCanvas, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
-  //! Destructor
-  ~QgsProjectProperties();
+    //! Destructor
+    ~QgsProjectProperties();
 
-  /*! Gets the currently select map units
-   */
-  QGis::units mapUnits() const;
+    /*! Gets the currently select map units
+     */
+    QGis::units mapUnits() const;
 
-  /*!
-   * Set the map units
-   */
-  void setMapUnits(QGis::units);
+    /*!
+     * Set the map units
+     */
+    void setMapUnits( QGis::units );
 
-  /*!
-     Every project has a title
-  */
-  QString title() const;
-  void title( QString const & title );
-  
-  /*! Accessor for projection */
-  QString projectionWKT();
+    /*!
+       Every project has a title
+    */
+    QString title() const;
+    void title( QString const & title );
 
-  /*! Indicates that the projection switch is on */
-  bool isProjected();
+    /*! Accessor for projection */
+    QString projectionWKT();
 
-public slots:
-  /*!
-   * Slot called when apply button is pressed or dialog is accepted
-   */
-  void apply();
+    /*! Indicates that the projection switch is on */
+    bool isProjected();
 
-  /*!
-   * Slot to show the projections tab when the dialog is opened
-   */
-  void showProjectionsTab();
+  public slots:
+    /*!
+     * Slot called when apply button is pressed or dialog is accepted
+     */
+    void apply();
 
-  /*!
-   * Slot to select the map selection colour
-   */
-  void on_pbnSelectionColour_clicked();
-  
-  /*!
-   * Slot to select the map selection colour
-   */
-  void on_pbnCanvasColor_clicked();
+    /*!
+     * Slot to show the projections tab when the dialog is opened
+     */
+    void showProjectionsTab();
 
-  /*!
-   * Slot to show the context help for this dialog
-   */
-  void on_buttonBox_helpRequested();
+    /*!
+     * Slot to select the map selection colour
+     */
+    void on_pbnSelectionColour_clicked();
 
-  /*!
-   * Slot to show dialog for advanced editing options
-   */
-  void on_mSnappingOptionsPushButton_clicked();
+    /*!
+     * Slot to select the map selection colour
+     */
+    void on_pbnCanvasColor_clicked();
 
-signals:
-  //! Signal used to inform listeners that the mouse display precision may have changed
-  void displayPrecisionChanged();
+    /*!
+     * Slot to show the context help for this dialog
+     */
+    void on_buttonBox_helpRequested();
 
-  //! let listening canvases know to refresh
-  void refresh();
-  
+    /*!
+     * Slot to show dialog for advanced editing options
+     */
+    void on_mSnappingOptionsPushButton_clicked();
 
-private:
-  static const int context_id = 361087368;
-  
-  QgsMapCanvas* mMapCanvas;
+  signals:
+    //! Signal used to inform listeners that the mouse display precision may have changed
+    void displayPrecisionChanged();
 
-  /**Snapping settings to pass/read from QgsSnappingDialog.
-   Key is the layer id, the pair consists of snap to vertex = 0/snap to segment = 1, 
-  snapping tolerance*/
-  QMap<QString, LayerEntry> mSnappingLayerSettings;
+    //! let listening canvases know to refresh
+    void refresh();
+
+
+  private:
+    static const int context_id = 361087368;
+
+    QgsMapCanvas* mMapCanvas;
+
+    /**Snapping settings to pass/read from QgsSnappingDialog.
+     Key is the layer id, the pair consists of snap to vertex = 0/snap to segment = 1,
+    snapping tolerance*/
+    QMap<QString, LayerEntry> mSnappingLayerSettings;
 };

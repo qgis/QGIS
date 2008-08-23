@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgscomposerlegenditemdialog.h 
+                         qgscomposerlegenditemdialog.h
                          -----------------------------
     begin                : July 2008
     copyright            : (C) 2008 by Marco Hugentobler
@@ -27,15 +27,15 @@ class QStandardItem;
  * */
 class QgsComposerLegendItemDialog: private Ui::QgsComposerLegendItemDialogBase, public QDialog
 {
- public:
-  QgsComposerLegendItemDialog(const QStandardItem* item, QWidget* parent = 0);
-  ~QgsComposerLegendItemDialog();
+  public:
+    QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent = 0 );
+    ~QgsComposerLegendItemDialog();
 
-  /**Returns the item text inserted by user*/
-  QString itemText() const;
-  
- private:
-  QgsComposerLegendItemDialog(); //forbidden
+    /**Returns the item text inserted by user*/
+    QString itemText() const;
+
+  private:
+    QgsComposerLegendItemDialog(); //forbidden
 };
 
 #endif //QGSCOMPOSERLEGENDITEMDIALOG_H

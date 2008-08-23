@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsidwinterpolatordialog.h    
+                              qgsidwinterpolatordialog.h
                               --------------------------
   begin                : March 25, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -24,15 +24,15 @@
 /**A class that takes the input parameter for inverse distance weighting*/
 class QgsIDWInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsIDWInterpolatorDialogBase
 {
-  Q_OBJECT
- public:
-  QgsIDWInterpolatorDialog(QWidget* parent, QgisInterface* iface);
+    Q_OBJECT
+  public:
+    QgsIDWInterpolatorDialog( QWidget* parent, QgisInterface* iface );
 
-  ~QgsIDWInterpolatorDialog();
+    ~QgsIDWInterpolatorDialog();
 
-  /**Creates an IDW interpolator with the specified distance coefficient
-   @return 0 in case of error*/
-  QgsInterpolator* createInterpolator() const;
+    /**Creates an IDW interpolator with the specified distance coefficient
+     @return 0 in case of error*/
+    QgsInterpolator* createInterpolator() const;
 };
 
 #endif

@@ -27,10 +27,10 @@ class QHeaderView;
 class QgsDelAttrDialog: public QDialog, private Ui::QgsDelAttrDialogBase
 {
     Q_OBJECT
- public:
-    QgsDelAttrDialog(QHeaderView* header);
+  public:
+    QgsDelAttrDialog( QHeaderView* header );
     const std::list<QString>* selectedAttributes();
- protected:
+  protected:
     std::list<QString> mSelectedItems;
 };
 

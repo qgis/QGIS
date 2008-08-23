@@ -34,10 +34,10 @@
 
 static const char *const sIdent =
   "$Id: plugin.cpp 6935 2007-05-07 14:29:51Z wonder $";
-static const QString sName = QObject::tr("Dxf2Shp Converter");
+static const QString sName = QObject::tr( "Dxf2Shp Converter" );
 static const QString sDescription = QObject::tr(
-  "Converts from dxf to shp file format");
-static const QString sPluginVersion = QObject::tr("Version 0.1");
+                                      "Converts from dxf to shp file format" );
+static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -51,11 +51,12 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-dxf2shpConverter::dxf2shpConverter(QgisInterface *theQgisInterface): QgisPlugin
-  (sName, sDescription, sPluginVersion, sPluginType), mQGisIface
-  (theQgisInterface){}
+dxf2shpConverter::dxf2shpConverter( QgisInterface *theQgisInterface ): QgisPlugin
+    ( sName, sDescription, sPluginVersion, sPluginType ), mQGisIface
+    ( theQgisInterface ) {}
 
-dxf2shpConverter::~dxf2shpConverter(){
+dxf2shpConverter::~dxf2shpConverter()
+{
 
 }
 
@@ -66,17 +67,17 @@ dxf2shpConverter::~dxf2shpConverter(){
 void dxf2shpConverter::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/dxf2shpconverter/dxf2shp_converter.png"), "Dxf2Shp Converter", this);
+  mQActionPointer = new QAction( QIcon( ":/dxf2shpconverter/dxf2shp_converter.png" ), "Dxf2Shp Converter", this );
 
   // Set the what's this text
-  mQActionPointer->setWhatsThis(tr("Converts DXF files in Shapefile format"));
+  mQActionPointer->setWhatsThis( tr( "Converts DXF files in Shapefile format" ) );
 
   // Connect the action to the run
-  connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect( mQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
 
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon(mQActionPointer);
-  mQGisIface->addPluginMenu(tr("&Dxf2Shp"), mQActionPointer);
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginMenu( tr( "&Dxf2Shp" ), mQActionPointer );
 }
 
 //method defined in interface
@@ -92,11 +93,11 @@ void dxf2shpConverter::help()
 void dxf2shpConverter::run()
 {
   dxf2shpConverterGui *myPluginGui =
-    new dxf2shpConverterGui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
+    new dxf2shpConverterGui( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
 
-  myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
+  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
-  connect(myPluginGui, SIGNAL(createLayer(QString,QString)), this, SLOT(addMyLayer(QString,QString)));
+  connect( myPluginGui, SIGNAL( createLayer( QString, QString ) ), this, SLOT( addMyLayer( QString, QString ) ) );
 
   myPluginGui->show();
 }
@@ -105,14 +106,14 @@ void dxf2shpConverter::run()
 void dxf2shpConverter::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu(tr("&Dxf2Shp"), mQActionPointer);
-  mQGisIface->removeToolBarIcon(mQActionPointer);
+  mQGisIface->removePluginMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
-void dxf2shpConverter::addMyLayer(QString myfname,QString mytitle)
+void dxf2shpConverter::addMyLayer( QString myfname, QString mytitle )
 {
-  mQGisIface->addVectorLayer(myfname, mytitle, "ogr");
+  mQGisIface->addVectorLayer( myfname, mytitle, "ogr" );
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,9 +133,9 @@ void dxf2shpConverter::addMyLayer(QString myfname,QString mytitle)
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin *classFactory(QgisInterface *theQgisInterfacePointer)
+QGISEXTERN QgisPlugin *classFactory( QgisInterface *theQgisInterfacePointer )
 {
-  return new dxf2shpConverter(theQgisInterfacePointer);
+  return new dxf2shpConverter( theQgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -163,7 +164,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin *thePluginPointer)
+QGISEXTERN void unload( QgisPlugin *thePluginPointer )
 {
   delete thePluginPointer;
 }

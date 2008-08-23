@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
 
 #include <QString>
 #include <QProcess>
@@ -25,6 +24,7 @@
 
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 
 // Note: QGSCONTEXTHELP_REUSE must be defined (or not) in qgscontexthelp.h.
@@ -33,26 +33,26 @@
 
 QgsContextHelp *QgsContextHelp::gContextHelp = NULL;  // Singleton instance
 
-void QgsContextHelp::run(int contextId)
+void QgsContextHelp::run( int contextId )
 {
-  if (gContextHelp == NULL)
+  if ( gContextHelp == NULL )
   {
     // Create singleton instance if it does not exist
-    gContextHelp = new QgsContextHelp(contextId);
+    gContextHelp = new QgsContextHelp( contextId );
   }
   else
   {
-    gContextHelp->showContext(contextId);
+    gContextHelp->showContext( contextId );
   }
 }
 
-QgsContextHelp::QgsContextHelp(int contextId)
+QgsContextHelp::QgsContextHelp( int contextId )
 {
-  mProcess = start(contextId);
+  mProcess = start( contextId );
 #ifdef QGSCONTEXTHELP_REUSE
   // Create socket to communicate with process
-  mSocket = new QTcpSocket(this);
-  connect(mProcess, SIGNAL(readyReadStandardOutput()), SLOT(readPort()));
+  mSocket = new QTcpSocket( this );
+  connect( mProcess, SIGNAL( readyReadStandardOutput() ), SLOT( readPort() ) );
 #else
   // Placeholder for new process if terminating and restarting
   mNextProcess = NULL;
@@ -70,25 +70,23 @@ QgsContextHelp::~QgsContextHelp()
   delete mProcess;
 }
 
-QProcess *QgsContextHelp::start(int contextId)
+QProcess *QgsContextHelp::start( int contextId )
 {
   // Get the path to the help viewer
-  QString helpPath = QgsApplication::helpAppPath(); 
-#ifdef QGISDEBUG
-  std::cout << "Help path is " << helpPath.toLocal8Bit().data() << std::endl; 
-#endif
+  QString helpPath = QgsApplication::helpAppPath();
+  QgsDebugMsg( QString( "Help path is %1" ).arg( helpPath ) );
 
   QString arg1;
-  arg1.setNum(contextId);
+  arg1.setNum( contextId );
   QProcess *process = new QProcess;
-  process->start(helpPath, QStringList(arg1));
+  process->start( helpPath, QStringList( arg1 ) );
 
   // Delete this object if the process terminates
-  connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), 
-                   SLOT(processExited()));
+  connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ),
+           SLOT( processExited() ) );
 
   // Delete the process if the application quits
-  connect(qApp, SIGNAL(aboutToQuit()), process, SLOT(terminate()));
+  connect( qApp, SIGNAL( aboutToQuit() ), process, SLOT( terminate() ) );
 
   return process;
 }
@@ -99,28 +97,26 @@ void QgsContextHelp::readPort()
   // Get port and connect socket to process
   QString p = mProcess->readAllStandardOutput();
   quint16 port = p.toUShort();
-  mSocket->connectToHost("localhost", port);
-  disconnect(mProcess, SIGNAL(readyReadStandardOutput()), this, 
-                       SLOT(readPort()));
+  mSocket->connectToHost( "localhost", port );
+  disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this,
+              SLOT( readPort() ) );
 #endif
 }
 
-void QgsContextHelp::showContext(int contextId)
+void QgsContextHelp::showContext( int contextId )
 {
   // Refresh help process with new context
 #ifdef QGSCONTEXTHELP_REUSE
   // Send context to process
-  QTextStream os(mSocket);
+  QTextStream os( mSocket );
   os << contextId << "\n";
-#ifdef QGISDEBUG
-  std::cout << "Sending help process context " << contextId << std::endl; 
-#endif
+  QgsDebugMsg( QString( "Sending help process context %1" ).arg( contextId ) );
 #else
   // Should be NULL here unless previous process termination failed
   // (if it did fail, we abandon the process and delete the object reference)
   delete mNextProcess;
   // Start new help viewer process (asynchronous)
-  mNextProcess = start(contextId);
+  mNextProcess = start( contextId );
   // Terminate existing help viewer process (asynchronous)
   mProcess->terminate();
 #endif
@@ -129,7 +125,7 @@ void QgsContextHelp::showContext(int contextId)
 void QgsContextHelp::processExited()
 {
 #ifndef QGSCONTEXTHELP_REUSE
-  if (mNextProcess)
+  if ( mNextProcess )
   {
     // New process becomes current process when prior process terminates
     delete mProcess;

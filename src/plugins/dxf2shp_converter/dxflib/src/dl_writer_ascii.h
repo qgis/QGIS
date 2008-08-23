@@ -11,7 +11,7 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use 
+** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -40,30 +40,31 @@ using std::string;
 /**
  * Implements functions defined in DL_Writer for writing low
  *   level DXF constructs to an ASCII format DXF file.
- * 
+ *
  * @para fname File name of the file to be created.
  * @para version DXF version. Defaults to VER_2002.
  *
  * @todo What if \c fname is NULL?  Or \c fname can't be opened for
  * another reason?
  */
-class DL_WriterA : public DL_Writer {
-public:
-    DL_WriterA(const char* fname, DL_Codes::version version=VER_2000)
-            : DL_Writer(version), m_ofile(fname) {}
+class DL_WriterA : public DL_Writer
+{
+  public:
+    DL_WriterA( const char* fname, DL_Codes::version version = VER_2000 )
+        : DL_Writer( version ), m_ofile( fname ) {}
     virtual ~DL_WriterA() {}
 
-	bool openFailed() const;
+    bool openFailed() const;
     void close() const;
-    void dxfReal(int gc, double value) const;
-    void dxfInt(int gc, int value) const;
-    void dxfHex(int gc, int value) const;
-    void dxfString(int gc, const char* value) const;
-    void dxfString(int gc, const string& value) const;
+    void dxfReal( int gc, double value ) const;
+    void dxfInt( int gc, int value ) const;
+    void dxfHex( int gc, int value ) const;
+    void dxfString( int gc, const char* value ) const;
+    void dxfString( int gc, const string& value ) const;
 
-	static void strReplace(char* str, char src, char dest);
+    static void strReplace( char* str, char src, char dest );
 
-private:
+  private:
     /**
      * DXF file to be created.
      */

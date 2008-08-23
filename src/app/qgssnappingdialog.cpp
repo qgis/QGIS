@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgssnappingdialog.cpp    
+                              qgssnappingdialog.cpp
                               ---------------------
   begin                : June 11, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -24,88 +24,88 @@
 #include <QComboBox>
 #include <QLineEdit>
 
-QgsSnappingDialog::QgsSnappingDialog(QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings): mMapCanvas(canvas)
+QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings ): mMapCanvas( canvas )
 {
-  setupUi(this);
-  connect(mButtonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(mButtonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  setupUi( this );
+  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   //an entry for each layer
   int nLayers = mMapCanvas->layerCount();
   int nVectorLayers = 0;
   //mLayerTableWidget->setRowCount(nLayers);
-  
+
   QgsMapLayer* currentLayer = 0;
   QgsVectorLayer* currentVectorLayer = 0;
   QString currentLayerName;
   QMap<QString, LayerEntry >::const_iterator settingIt;
   QTreeWidgetItem* newItem = 0;
 
-  if(mMapCanvas)
+  if ( mMapCanvas )
+  {
+    for ( int i = 0; i < nLayers; ++i )
     {
-      for(int i = 0; i < nLayers; ++i)
-	{
-	  currentLayer = mMapCanvas->getZpos(i);
-	  if(currentLayer)
-	    {
-	      currentVectorLayer = dynamic_cast<QgsVectorLayer*>(currentLayer);
-	      if(currentVectorLayer)
-		{
-		  //snap to layer yes/no
-		  newItem = new QTreeWidgetItem(mLayerTreeWidget);
-		  newItem->setText(0, currentLayer->name());
-		  mLayerIds << currentLayer->getLayerID(); //store also the layer id
-		  newItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
-		  newItem->setCheckState(0, Qt::Unchecked);
+      currentLayer = mMapCanvas->getZpos( i );
+      if ( currentLayer )
+      {
+        currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        if ( currentVectorLayer )
+        {
+          //snap to layer yes/no
+          newItem = new QTreeWidgetItem( mLayerTreeWidget );
+          newItem->setText( 0, currentLayer->name() );
+          mLayerIds << currentLayer->getLayerID(); //store also the layer id
+          newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+          newItem->setCheckState( 0, Qt::Unchecked );
 
-		  //snap to vertex/ snap to segment
-		  QComboBox* snapToComboBox = new QComboBox(mLayerTreeWidget);
-		  snapToComboBox->insertItem(0, tr("to vertex"));
-		  snapToComboBox->insertItem(1, tr("to segment"));
-		  snapToComboBox->insertItem(2, tr("to vertex and segment"));
-		  mLayerTreeWidget->setItemWidget(newItem, 1, snapToComboBox);
+          //snap to vertex/ snap to segment
+          QComboBox* snapToComboBox = new QComboBox( mLayerTreeWidget );
+          snapToComboBox->insertItem( 0, tr( "to vertex" ) );
+          snapToComboBox->insertItem( 1, tr( "to segment" ) );
+          snapToComboBox->insertItem( 2, tr( "to vertex and segment" ) );
+          mLayerTreeWidget->setItemWidget( newItem, 1, snapToComboBox );
 
-		  //snapping tolerance
-		  QLineEdit* snappingToleranceEdit = new QLineEdit(mLayerTreeWidget);
-		  QDoubleValidator* validator = new QDoubleValidator(snappingToleranceEdit);
-		  snappingToleranceEdit->setValidator(validator);
-		  mLayerTreeWidget->setItemWidget(newItem, 2, snappingToleranceEdit);
+          //snapping tolerance
+          QLineEdit* snappingToleranceEdit = new QLineEdit( mLayerTreeWidget );
+          QDoubleValidator* validator = new QDoubleValidator( snappingToleranceEdit );
+          snappingToleranceEdit->setValidator( validator );
+          mLayerTreeWidget->setItemWidget( newItem, 2, snappingToleranceEdit );
 
-		  settingIt = settings.find(currentVectorLayer->getLayerID());
-		  if(settingIt != settings.constEnd())
-		    {
-		      snappingToleranceEdit->setText(QString::number(settingIt.value().tolerance));
-		      int index;
-		      if(settingIt.value().snapTo == 0)//to segment
-			{
-			  index = snapToComboBox->findText(tr("to vertex"));
-			}
-		      else if(settingIt.value().snapTo == 1) //to vertex
-			{
-			  index = snapToComboBox->findText(tr("to segment"));
-			}
-		      else //to vertex and segment
-			{
-			  index = snapToComboBox->findText(tr("to vertex and segment"));
-			}
-		      snapToComboBox->setCurrentIndex(index);
-		      if(settingIt.value().checked)
-			{
-			  newItem->setCheckState(0, Qt::Checked);
-			}
-		    }
-		  else //insert the default values
-		    {
-		      snappingToleranceEdit->setText("0");
-		    }
-		  ++nVectorLayers;
-		}
-	    }
-	}
-      mLayerTreeWidget->resizeColumnToContents(0);
-      mLayerTreeWidget->setColumnWidth(1, 300);  //hardcoded for now
-      mLayerTreeWidget->resizeColumnToContents(2);
+          settingIt = settings.find( currentVectorLayer->getLayerID() );
+          if ( settingIt != settings.constEnd() )
+          {
+            snappingToleranceEdit->setText( QString::number( settingIt.value().tolerance ) );
+            int index;
+            if ( settingIt.value().snapTo == 0 )//to segment
+            {
+              index = snapToComboBox->findText( tr( "to vertex" ) );
+            }
+            else if ( settingIt.value().snapTo == 1 ) //to vertex
+            {
+              index = snapToComboBox->findText( tr( "to segment" ) );
+            }
+            else //to vertex and segment
+            {
+              index = snapToComboBox->findText( tr( "to vertex and segment" ) );
+            }
+            snapToComboBox->setCurrentIndex( index );
+            if ( settingIt.value().checked )
+            {
+              newItem->setCheckState( 0, Qt::Checked );
+            }
+          }
+          else //insert the default values
+          {
+            snappingToleranceEdit->setText( "0" );
+          }
+          ++nVectorLayers;
+        }
+      }
     }
+    mLayerTreeWidget->resizeColumnToContents( 0 );
+    mLayerTreeWidget->setColumnWidth( 1, 300 );  //hardcoded for now
+    mLayerTreeWidget->resizeColumnToContents( 2 );
+  }
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
@@ -118,7 +118,7 @@ QgsSnappingDialog::~QgsSnappingDialog()
 
 }
 
-void QgsSnappingDialog::layerSettings(QMap<QString, LayerEntry>& settings) const
+void QgsSnappingDialog::layerSettings( QMap<QString, LayerEntry>& settings ) const
 {
   settings.clear();
 
@@ -131,35 +131,35 @@ void QgsSnappingDialog::layerSettings(QMap<QString, LayerEntry>& settings) const
   double tolerance;
   bool checked = false;
 
-  for(int i = 0; i < nRows; ++i)
+  for ( int i = 0; i < nRows; ++i )
+  {
+    currentItem = mLayerTreeWidget->topLevelItem( i );
+    if ( !currentItem )
     {
-      currentItem = mLayerTreeWidget->topLevelItem(i);
-      if(!currentItem)
-	{
-	  continue;
-	}
-
-      //get layer id, to vertex/to segment and tolerance
-      layerName = currentItem->text(0);
-      layerId = mLayerIds.at(i);
-      checked = (currentItem->checkState(0) == Qt::Checked);
-      snapToItemText = ((QComboBox*)(mLayerTreeWidget->itemWidget(currentItem, 1)))->currentText();
-      if(snapToItemText == tr("to vertex"))
-	{
-	  snapTo = 0;
-	}
-      else if(snapToItemText == tr("to segment"))
-	{
-	  snapTo = 1;
-	}
-      else //to vertex and segment
-	{
-	  snapTo = 2;
-	}
-      tolerance = ((QLineEdit*)(mLayerTreeWidget->itemWidget(currentItem, 2)))->text().toDouble();
-      LayerEntry newEntry;
-      newEntry.checked = checked; newEntry.snapTo = snapTo; newEntry.layerName = layerName;
-      newEntry.tolerance = tolerance;
-      settings.insert(layerId, newEntry);
+      continue;
     }
+
+    //get layer id, to vertex/to segment and tolerance
+    layerName = currentItem->text( 0 );
+    layerId = mLayerIds.at( i );
+    checked = ( currentItem->checkState( 0 ) == Qt::Checked );
+    snapToItemText = (( QComboBox* )( mLayerTreeWidget->itemWidget( currentItem, 1 ) ) )->currentText();
+    if ( snapToItemText == tr( "to vertex" ) )
+    {
+      snapTo = 0;
+    }
+    else if ( snapToItemText == tr( "to segment" ) )
+    {
+      snapTo = 1;
+    }
+    else //to vertex and segment
+    {
+      snapTo = 2;
+    }
+    tolerance = (( QLineEdit* )( mLayerTreeWidget->itemWidget( currentItem, 2 ) ) )->text().toDouble();
+    LayerEntry newEntry;
+    newEntry.checked = checked; newEntry.snapTo = snapTo; newEntry.layerName = layerName;
+    newEntry.tolerance = tolerance;
+    settings.insert( layerId, newEntry );
+  }
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdelimitedtextplugin.cpp 
+  qgsdelimitedtextplugin.cpp
   Import tool for various worldmap analysis output files
 Functions:
 
@@ -37,21 +37,21 @@ Functions:
 //the gui subclass
 #include "qgsdelimitedtextplugingui.h"
 
-// 
+//
 
-static const QString pluginVersion = QObject::tr("Version 0.2");
-static const QString description_ = QObject::tr("Loads and displays delimited text files containing x,y coordinates");
+static const QString pluginVersion = QObject::tr( "Version 0.2" );
+static const QString description_ = QObject::tr( "Loads and displays delimited text files containing x,y coordinates" );
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-  QgsDelimitedTextPlugin::QgsDelimitedTextPlugin(QgisInterface * theQgisInterFace)
-  : qGisInterface(theQgisInterFace)
+QgsDelimitedTextPlugin::QgsDelimitedTextPlugin( QgisInterface * theQgisInterFace )
+    : qGisInterface( theQgisInterFace )
 {
   /** Initialize the plugin and set the required attributes */
-  pluginNameQString = tr("DelimitedTextLayer");
+  pluginNameQString = tr( "DelimitedTextLayer" );
   pluginVersionQString = pluginVersion;
   pluginDescriptionQString = description_;
 
@@ -91,72 +91,72 @@ void QgsDelimitedTextPlugin::help()
 }
 
 /*
- * Initialize the GUI interface for the plugin 
+ * Initialize the GUI interface for the plugin
  */
 void QgsDelimitedTextPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction(QIcon(":/delimited_text.png"), tr("&Add Delimited Text Layer"), this);
+  myQActionPointer = new QAction( QIcon( ":/delimited_text.png" ), tr( "&Add Delimited Text Layer" ), this );
 
-  myQActionPointer->setWhatsThis(tr("Add a delimited text file as a map layer. ")+
-      tr("The file must have a header row containing the field names. ")+
-      tr("X and Y fields are required and must contain coordinates in decimal units."));
+  myQActionPointer->setWhatsThis( tr( "Add a delimited text file as a map layer. " ) +
+                                  tr( "The file must have a header row containing the field names. " ) +
+                                  tr( "X and Y fields are required and must contain coordinates in decimal units." ) );
   // Connect the action to the run
-  connect(myQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+  connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  qGisInterface->addToolBarIcon(myQActionPointer);
-  qGisInterface->addPluginMenu(tr("&Delimited text"), myQActionPointer);
+  qGisInterface->addToolBarIcon( myQActionPointer );
+  qGisInterface->addPluginMenu( tr( "&Delimited text" ), myQActionPointer );
 
 }
 
 // Slot called when the buffer menu item is activated
 void QgsDelimitedTextPlugin::run()
 {
-  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui=
-    new QgsDelimitedTextPluginGui(qGisInterface,
-             qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags);
-  myQgsDelimitedTextPluginGui->setAttribute(Qt::WA_DeleteOnClose);
+  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui =
+    new QgsDelimitedTextPluginGui( qGisInterface,
+                                   qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  myQgsDelimitedTextPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect(myQgsDelimitedTextPluginGui, 
-      SIGNAL(drawVectorLayer(QString,QString,QString)),
-      this, SLOT(drawVectorLayer(QString,QString,QString)));
+  connect( myQgsDelimitedTextPluginGui,
+           SIGNAL( drawVectorLayer( QString, QString, QString ) ),
+           this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
   myQgsDelimitedTextPluginGui->show();
 }
-//!draw a vector layer in the qui - intended to respond to signal 
+//!draw a vector layer in the qui - intended to respond to signal
 //sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName, 
+////needs to be given vectorLayerPath, baseName,
 //providerKey ("ogr" or "postgres");
-void QgsDelimitedTextPlugin::drawVectorLayer(QString thePathNameQString, 
-    QString theBaseNameQString, QString theProviderQString)
+void QgsDelimitedTextPlugin::drawVectorLayer( QString thePathNameQString,
+    QString theBaseNameQString, QString theProviderQString )
 {
-  qGisInterface->addVectorLayer( thePathNameQString, 
-      theBaseNameQString, theProviderQString);
+  qGisInterface->addVectorLayer( thePathNameQString,
+                                 theBaseNameQString, theProviderQString );
 }
 
 // Unload the plugin by cleaning up the GUI
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->removePluginMenu(tr("&Delimited text"),myQActionPointer);
-  qGisInterface->removeToolBarIcon(myQActionPointer); 
+  qGisInterface->removePluginMenu( tr( "&Delimited text" ), myQActionPointer );
+  qGisInterface->removeToolBarIcon( myQActionPointer );
   delete myQActionPointer;
 }
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-  return new QgsDelimitedTextPlugin(theQgisInterfacePointer);
+  return new QgsDelimitedTextPlugin( theQgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return QString(QObject::tr("Add Delimited Text Layer"));
+  return QString( QObject::tr( "Add Delimited Text Layer" ) );
 }
 
 // Return the description
@@ -178,7 +178,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin * theQgsDelimitedTextPluginPointer)
+QGISEXTERN void unload( QgisPlugin * theQgsDelimitedTextPluginPointer )
 {
   delete theQgsDelimitedTextPluginPointer;
 }

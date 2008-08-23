@@ -28,32 +28,32 @@ class QgsRect;
    \author  Brendan Morley
    \date    March 2005
 
-   
+
    This custom QEvent is designed to be fired when the full extent of a layer has been calculated.
    It was initially included in QGIS to help the QgsPostgresProvider provide the asynchronous
    calculation of PostgreSQL layer extents.
-   
+
    Events are used instead of Qt signals/slots as events can be received asynchronously,
    which makes for better mutlithreading behaviour and less opportunity for programmer mishap.
-  
- */ 
+
+ */
 
 // TODO: Add the pg table this is a extent OF.
 
 class CORE_EXPORT QgsProviderExtentCalcEvent : public QEvent
 {
 
-public:
+  public:
 
-  QgsProviderExtentCalcEvent( QgsRect* layerExtent );
+    QgsProviderExtentCalcEvent( QgsRect* layerExtent );
 
-  QgsRect* layerExtent() const;
+    QgsRect* layerExtent() const;
 
-  
-private:
 
-  QgsRect* le;
-    
+  private:
+
+    QgsRect* le;
+
 };
 
 #endif

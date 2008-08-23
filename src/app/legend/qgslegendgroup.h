@@ -32,16 +32,16 @@ This is a specialised version of QLegendItem that specifies that the items below
 */
 class QgsLegendGroup : public QgsLegendItem
 {
-public:
-    QgsLegendGroup(QTreeWidgetItem * ,QString);
-    QgsLegendGroup(QTreeWidget*,QString);
-    QgsLegendGroup(QString name);
+  public:
+    QgsLegendGroup( QTreeWidgetItem * , QString );
+    QgsLegendGroup( QTreeWidget*, QString );
+    QgsLegendGroup( QString name );
     ~QgsLegendGroup();
 
-    QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     bool isLeafNode();
-    bool insert(QgsLegendItem* theItem);
+    bool insert( QgsLegendItem* theItem );
     /**Returns all legend layer files under this group*/
     std::list<QgsLegendLayerFile*> legendLayerFiles();
     /**Goes through all the legendlayerfiles and sets check state to checked/partially checked/unchecked*/

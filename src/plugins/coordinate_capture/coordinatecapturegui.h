@@ -20,15 +20,15 @@
 */
 class CoordinateCaptureGui : public QDialog, private Ui::CoordinateCaptureGuiBase
 {
-Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     CoordinateCaptureGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~CoordinateCaptureGui();
 
-private:
+  private:
     static const int context_id = 0;
 
-private slots:
+  private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();

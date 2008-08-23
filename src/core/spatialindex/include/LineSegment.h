@@ -24,65 +24,65 @@
 
 namespace Tools
 {
-	namespace Geometry
-	{
-		class LineSegment : public IObject, public virtual IShape
-		{
-		public:
-			LineSegment();
-			LineSegment(const double* startPoint, const double* endPoint, unsigned long dimension);
-			LineSegment(const Point& startPoint, const Point& endPoint);
-			LineSegment(const LineSegment& l);
-			virtual ~LineSegment();
+  namespace Geometry
+  {
+    class LineSegment : public IObject, public virtual IShape
+    {
+      public:
+        LineSegment();
+        LineSegment( const double* startPoint, const double* endPoint, unsigned long dimension );
+        LineSegment( const Point& startPoint, const Point& endPoint );
+        LineSegment( const LineSegment& l );
+        virtual ~LineSegment();
 
-			virtual LineSegment& operator=(const LineSegment& p);
-			virtual bool operator==(const LineSegment& p) const;
+        virtual LineSegment& operator=( const LineSegment& p );
+        virtual bool operator==( const LineSegment& p ) const;
 
-			//
-			// IObject interface
-			//
-			virtual LineSegment* clone();
+        //
+        // IObject interface
+        //
+        virtual LineSegment* clone();
 
-			//
-			// ISerializable interface
-			//
-			virtual unsigned long getByteArraySize();
-			virtual void loadFromByteArray(const byte* data);
-			virtual void storeToByteArray(byte** data, unsigned long& length);
+        //
+        // ISerializable interface
+        //
+        virtual unsigned long getByteArraySize();
+        virtual void loadFromByteArray( const byte* data );
+        virtual void storeToByteArray( byte** data, unsigned long& length );
 
-			//
-			// IShape interface
-			//
-			virtual bool intersectsShape(const IShape& in) const;
-			virtual bool containsShape(const IShape& in) const;
-			virtual bool touchesShape(const IShape& in) const;
-			virtual void getCenter(Point& out) const;
-			virtual unsigned long getDimension() const;
-			virtual void getMBR(Region& out) const;
-			virtual double getArea() const;
-			virtual double getMinimumDistance(const IShape& in) const;
+        //
+        // IShape interface
+        //
+        virtual bool intersectsShape( const IShape& in ) const;
+        virtual bool containsShape( const IShape& in ) const;
+        virtual bool touchesShape( const IShape& in ) const;
+        virtual void getCenter( Point& out ) const;
+        virtual unsigned long getDimension() const;
+        virtual void getMBR( Region& out ) const;
+        virtual double getArea() const;
+        virtual double getMinimumDistance( const IShape& in ) const;
 
-			virtual double getMinimumDistance(const Point& p) const;
-			//virtual double getMinimumDistance(const Region& r) const;
-			virtual double getRelativeMinimumDistance(const Point& p) const;
-			virtual double getRelativeMaximumDistance(const Region& r) const;
-			virtual double getAngleOfPerpendicularRay();
+        virtual double getMinimumDistance( const Point& p ) const;
+        //virtual double getMinimumDistance(const Region& r) const;
+        virtual double getRelativeMinimumDistance( const Point& p ) const;
+        virtual double getRelativeMaximumDistance( const Region& r ) const;
+        virtual double getAngleOfPerpendicularRay();
 
-			virtual void makeInfinite(unsigned long dimension);
-			virtual void makeDimension(unsigned long dimension);
+        virtual void makeInfinite( unsigned long dimension );
+        virtual void makeDimension( unsigned long dimension );
 
-		public:
-			unsigned long m_dimension;
-			double* m_pStartPoint;
-			double* m_pEndPoint;
+      public:
+        unsigned long m_dimension;
+        double* m_pStartPoint;
+        double* m_pEndPoint;
 
-			friend class Region;
-			friend class Point;
-			friend std::ostream& operator<<(std::ostream& os, const LineSegment& pt);
-		}; // Point
+        friend class Region;
+        friend class Point;
+        friend std::ostream& operator<<( std::ostream& os, const LineSegment& pt );
+    }; // Point
 
-		std::ostream& operator<<(std::ostream& os, const LineSegment& pt);
-	}
+    std::ostream& operator<<( std::ostream& os, const LineSegment& pt );
+  }
 }
 
 #endif /*__tools_geometry_linesegment_h*/

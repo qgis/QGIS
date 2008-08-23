@@ -20,20 +20,20 @@
 
 #include <QSortFilterProxyModel>
 
-/**A class that implements a custom filter and can be used 
+/**A class that implements a custom filter and can be used
  as a proxy for QgsDbTableModel*/
 class QgsDbFilterProxyModel: public QSortFilterProxyModel
 {
- public: 
-  QgsDbFilterProxyModel(QObject* parent = 0);
-  ~QgsDbFilterProxyModel();
-  /**Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
-  void _setFilterWildcard(const QString& pattern);
-  /**Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
-  void _setFilterRegExp(const QString& pattern);
+  public:
+    QgsDbFilterProxyModel( QObject* parent = 0 );
+    ~QgsDbFilterProxyModel();
+    /**Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
+    void _setFilterWildcard( const QString& pattern );
+    /**Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
+    void _setFilterRegExp( const QString& pattern );
 
- protected:
-  virtual bool filterAcceptsRow(int row, const QModelIndex & source_parent ) const;
+  protected:
+    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const;
 };
 
 #endif

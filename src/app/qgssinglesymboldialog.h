@@ -30,52 +30,52 @@ class QgsVectorLayer;
 class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBase
 {
     Q_OBJECT
-public:
-    QgsSingleSymbolDialog(QgsVectorLayer* layer, bool disabled = false);
+  public:
+    QgsSingleSymbolDialog( QgsVectorLayer* layer, bool disabled = false );
     ~QgsSingleSymbolDialog();
     QColor getOutlineColor();
     Qt::PenStyle getOutlineStyle();
     double getOutlineWidth();
     QColor getFillColor();
     Qt::BrushStyle getFillStyle();
-    void setOutlineColor(QColor& c);
-    void setOutlineStyle(Qt::PenStyle pstyle);
-    void setOutlineWidth(double width);
-    void setFillColor(QColor& c);
-    void setFillStyle(Qt::BrushStyle fstyle);
-    void setLabel(QString label);
+    void setOutlineColor( QColor& c );
+    void setOutlineStyle( Qt::PenStyle pstyle );
+    void setOutlineWidth( double width );
+    void setFillColor( QColor& c );
+    void setFillStyle( Qt::BrushStyle fstyle );
+    void setLabel( QString label );
     QString label();
 
-protected:
+  protected:
     QgsVectorLayer* mVectorLayer;
 
-public slots:
+  public slots:
     /* arrange the widgets on this dialog to reflect the current state of QgsSymbol */
     void unset();
-    void set(const QgsSymbol *sy);
-    void updateSet(const QgsSymbol *sy);
+    void set( const QgsSymbol *sy );
+    void updateSet( const QgsSymbol *sy );
     /**applies the changes to the vector layer*/
     void apply();
     /**applies the changes to the QgsSymbol */
-    void apply( QgsSymbol *sy);
+    void apply( QgsSymbol *sy );
     /**emits the signal settingsChanged()*/
     void resendSettingsChanged();
     /**changes the texture selection button to enabled or
-     * disabled depending if the texture entry in the combo 
+     * disabled depending if the texture entry in the combo
      */
     void fillStyleChanged( int theIndex );
 
-protected slots:
+  protected slots:
     void selectOutlineColor();
     void selectFillColor();
     void selectTextureImage();
-    void symbolChanged ( QListWidgetItem * current, QListWidgetItem * previous );
-private:
+    void symbolChanged( QListWidgetItem * current, QListWidgetItem * previous );
+  private:
     /** Default constructor is private, do not use this */
     QgsSingleSymbolDialog();
     QString mTexturePath;
 
-signals:
+  signals:
     void settingsChanged();
 };
 

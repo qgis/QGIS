@@ -1,10 +1,10 @@
 /***************************************************************************
-                               qgsattributeaction.cpp 
+                               qgsattributeaction.cpp
 
- A class that stores and controls the managment and execution of actions 
+ A class that stores and controls the managment and execution of actions
  associated. Actions are defined to be external programs that are run
  with user-specified inputs that can depend on the value of layer
- attributes. 
+ attributes.
 
                              -------------------
     begin                : Oct 24 2004
@@ -34,16 +34,16 @@
 
 static const char * const ident_ = "$Id$";
 
-void QgsAttributeAction::addAction(QString name, QString action,
-				   bool capture)
+void QgsAttributeAction::addAction( QString name, QString action,
+                                    bool capture )
 {
-  mActions.push_back(QgsAction(name, action, capture));
+  mActions.push_back( QgsAction( name, action, capture ) );
 }
 
-void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pair<QString, QString> >& values,
-				  uint defaultValueIndex) 
+void QgsAttributeAction::doAction( unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+                                   uint defaultValueIndex )
 {
-  aIter action = retrieveAction(index);
+  aIter action = retrieveAction( index );
 
   // A couple of extra options for running the action may be
   // useful. For example,
@@ -55,32 +55,32 @@ void QgsAttributeAction::doAction(unsigned int index, const std::vector<std::pai
   // the UI and the code in this function to select on the
   // action.capture() return value.
 
-  if (action != end())
+  if ( action != end() )
   {
     // The QgsRunProcess instance created by this static function
     // deletes itself when no longer needed.
-    QString expandedAction = expandAction(action->action(), values, defaultValueIndex);
-    QgsRunProcess::create(expandedAction, action->capture());
+    QString expandedAction = expandAction( action->action(), values, defaultValueIndex );
+    QgsRunProcess::create( expandedAction, action->capture() );
   }
 }
 
-QgsAttributeAction::aIter QgsAttributeAction::retrieveAction(unsigned int index) const
+QgsAttributeAction::aIter QgsAttributeAction::retrieveAction( unsigned int index ) const
 {
   // This function returns an iterator so that it's easy to deal with
   // an invalid index being given.
   aIter a_iter = end();
 
-  if (index >= 0 && index < mActions.size())
+  if ( index >= 0 && index < mActions.size() )
   {
     a_iter = mActions.begin();
-    for (unsigned int i = 0; i < index; ++i, ++a_iter)
+    for ( unsigned int i = 0; i < index; ++i, ++a_iter )
       {}
   }
   return a_iter;
 }
 
-QString QgsAttributeAction::expandAction(QString action, const std::vector<std::pair<QString, QString> >& values, 
-					 uint clickedOnValue)
+QString QgsAttributeAction::expandAction( QString action, const std::vector<std::pair<QString, QString> >& values,
+    uint clickedOnValue )
 {
   // This function currently replaces all %% characters in the action
   // with the value from values[clickedOnValue].second, and then
@@ -94,61 +94,61 @@ QString QgsAttributeAction::expandAction(QString action, const std::vector<std::
   // This function will potentially fall apart if any of the
   // substitutions produce text that could match another
   // substitution. May be better to adopt a two pass approach - identify
-  // all matches and their substitutions and then do a second pass 
+  // all matches and their substitutions and then do a second pass
   // for the actual substitutions.
 
   QString expanded_action;
-  if (clickedOnValue >= 0 && clickedOnValue < static_cast<unsigned int>(values.size()))
-    expanded_action = action.replace("%%", values[clickedOnValue].second);
+  if ( clickedOnValue >= 0 && clickedOnValue < static_cast<unsigned int>( values.size() ) )
+    expanded_action = action.replace( "%%", values[clickedOnValue].second );
   else
     expanded_action = action;
 
-  for (unsigned int i = 0; i < values.size(); ++i)
-    {
-      // Check for a replace a quoted version and a non-quoted version.
-      QString to_replace_1 = "[%" + values[i].first + "]";
-      QString to_replace_2 = "%" + values[i].first;
+  for ( unsigned int i = 0; i < values.size(); ++i )
+  {
+    // Check for a replace a quoted version and a non-quoted version.
+    QString to_replace_1 = "[%" + values[i].first + "]";
+    QString to_replace_2 = "%" + values[i].first;
 
-      expanded_action = expanded_action.replace(to_replace_1, values[i].second);
-      expanded_action = expanded_action.replace(to_replace_2, values[i].second);
-    }
+    expanded_action = expanded_action.replace( to_replace_1, values[i].second );
+    expanded_action = expanded_action.replace( to_replace_2, values[i].second );
+  }
 
   return expanded_action;
 }
 
-bool QgsAttributeAction::writeXML(QDomNode& layer_node, QDomDocument& doc) const
+bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
 {
-  QDomElement aActions = doc.createElement("attributeactions");
+  QDomElement aActions = doc.createElement( "attributeactions" );
 
   aIter a_iter = begin();
 
-  for (; a_iter != end(); ++a_iter)
+  for ( ; a_iter != end(); ++a_iter )
   {
-    QDomElement actionSetting = doc.createElement("actionsetting");
-    actionSetting.setAttribute("name", a_iter->name());
-    actionSetting.setAttribute("action", a_iter->action());
-    actionSetting.setAttribute("capture", a_iter->capture());
-    aActions.appendChild(actionSetting);
+    QDomElement actionSetting = doc.createElement( "actionsetting" );
+    actionSetting.setAttribute( "name", a_iter->name() );
+    actionSetting.setAttribute( "action", a_iter->action() );
+    actionSetting.setAttribute( "capture", a_iter->capture() );
+    aActions.appendChild( actionSetting );
   }
-  layer_node.appendChild(aActions);
+  layer_node.appendChild( aActions );
 
   return true;
 }
 
-bool QgsAttributeAction::readXML(QDomNode& layer_node)
+bool QgsAttributeAction::readXML( QDomNode& layer_node )
 {
-  QDomNode aaNode = layer_node.namedItem("attributeactions");
+  QDomNode aaNode = layer_node.namedItem( "attributeactions" );
 
-  if (!aaNode.isNull())
+  if ( !aaNode.isNull() )
   {
     QDomNodeList actionsettings = aaNode.childNodes();
-    for (unsigned int i = 0; i < actionsettings.length(); ++i)
+    for ( unsigned int i = 0; i < actionsettings.length(); ++i )
     {
-      QDomElement setting = actionsettings.item(i).toElement();
-      int capture = setting.attributeNode("capture").value().toInt();
-      addAction(setting.attributeNode("name").value(),
-		setting.attributeNode("action").value(),
-		capture == 0 ? false : true);
+      QDomElement setting = actionsettings.item( i ).toElement();
+      int capture = setting.attributeNode( "capture" ).value().toInt();
+      addAction( setting.attributeNode( "name" ).value(),
+                 setting.attributeNode( "action" ).value(),
+                 capture == 0 ? false : true );
     }
   }
   return true;

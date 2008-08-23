@@ -25,7 +25,7 @@
 #include <SpatialIndex.h>
 
 #ifdef PTHREADS
-	#include <pthread.h>
+#include <pthread.h>
 #endif
 
 typedef Tools::PoolPointer<Region> RegionPtr;

@@ -24,19 +24,19 @@
 
 /**
 A legend property item is a leaf node (it can have no children) that is used to represent a layer property e.g. projection, labels,metadata etc.
- 
+
 @author Tim Sutton
 */
 class QgsLegendPropertyItem : public QgsLegendItem
 {
-public:
-  QgsLegendPropertyItem(QTreeWidgetItem * theItem,QString theString);
+  public:
+    QgsLegendPropertyItem( QTreeWidgetItem * theItem, QString theString );
 
-  ~QgsLegendPropertyItem();
+    ~QgsLegendPropertyItem();
 
-  bool isLeafNode() {return mLeafNodeFlag;}
-  DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-  QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    bool isLeafNode() {return mLeafNodeFlag;}
+    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
 };
 
 #endif

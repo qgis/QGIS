@@ -1,9 +1,9 @@
 /***************************************************************************
-                                qgsmeasure.h 
+                                qgsmeasure.h
                                ------------------
         begin                : March 2005
         copyright            : (C) 2005 by Radim Blazek
-        email                : blazek@itc.it 
+        email                : blazek@itc.it
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -26,62 +26,62 @@ class QgsMeasureTool;
 
 class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
+  public:
 
-  //! Constructor
-  QgsMeasureDialog(QgsMeasureTool* tool, Qt::WFlags f = 0);
+    //! Constructor
+    QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f = 0 );
 
-  //! Save position
-  void saveWindowLocation(void);
+    //! Save position
+    void saveWindowLocation( void );
 
-  //! Restore last window position/size and show the window
-  void restorePosition(void);
+    //! Restore last window position/size and show the window
+    void restorePosition( void );
 
-  //! Add new point
-  void addPoint(QgsPoint &point);
-  
-  //! Mose move
-  void mouseMove(QgsPoint &point);
-  
-  //! Mouse press
-  void mousePress(QgsPoint &point);
-  
-public slots:
-  //! Close
-  void close ( void);
+    //! Add new point
+    void addPoint( QgsPoint &point );
 
-  //! Reset and start new
-  void restart ();
+    //! Mose move
+    void mouseMove( QgsPoint &point );
 
-  //! Close event
-  void closeEvent(QCloseEvent *e);
+    //! Mouse press
+    void mousePress( QgsPoint &point );
 
-  //! Show the help for the dialog 
-  void on_btnHelp_clicked();
-  
-private:
-  
-  //! formats distance to most appropriate units
-  QString formatDistance(double distance);
-  
-  //! formats area to most appropriate units
-  QString formatArea(double area);
-  
-  //! shows/hides table, shows correct units
-  void updateUi();
-  
-  double mTotal;
+  public slots:
+    //! Close
+    void close( void );
 
-  //! Help context id
-  static const int context_id = 687883780;
-  
-  //! indicates whether we're measuring distances or areas
-  bool mMeasureArea;
+    //! Reset and start new
+    void restart();
 
-  //! pointer to measure tool which owns this dialog
-  QgsMeasureTool* mTool;
+    //! Close event
+    void closeEvent( QCloseEvent *e );
+
+    //! Show the help for the dialog
+    void on_btnHelp_clicked();
+
+  private:
+
+    //! formats distance to most appropriate units
+    QString formatDistance( double distance );
+
+    //! formats area to most appropriate units
+    QString formatArea( double area );
+
+    //! shows/hides table, shows correct units
+    void updateUi();
+
+    double mTotal;
+
+    //! Help context id
+    static const int context_id = 687883780;
+
+    //! indicates whether we're measuring distances or areas
+    bool mMeasureArea;
+
+    //! pointer to measure tool which owns this dialog
+    QgsMeasureTool* mTool;
 };
 
 #endif

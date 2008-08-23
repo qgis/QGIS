@@ -22,76 +22,76 @@
 #include <QAction>
 #include <QAbstractButton>
 
-QgsMapTool::QgsMapTool(QgsMapCanvas* canvas)
-  : QObject(canvas), mCanvas(canvas), mCursor(Qt::CrossCursor), mAction(NULL), mButton(NULL)
+QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
+    : QObject( canvas ), mCanvas( canvas ), mCursor( Qt::CrossCursor ), mAction( NULL ), mButton( NULL )
 {
 }
 
 
 QgsMapTool::~QgsMapTool()
 {
-  mCanvas->unsetMapTool(this);
+  mCanvas->unsetMapTool( this );
 }
 
 
-QgsPoint QgsMapTool::toMapCoords(const QPoint& point)
+QgsPoint QgsMapTool::toMapCoords( const QPoint& point )
 {
-  return mCanvas->getCoordinateTransform()->toMapCoordinates(point);
+  return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
-QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QPoint& point)
+QgsPoint QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QPoint& point )
 {
-  QgsPoint pt = toMapCoords(point);
-  return toLayerCoords(layer, pt);
+  QgsPoint pt = toMapCoords( point );
+  return toLayerCoords( layer, pt );
 }
 
-QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsPoint& point)
+QgsPoint QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QgsPoint& point )
 {
-  return mCanvas->mapRenderer()->mapToLayerCoordinates(layer, point);
+  return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, point );
 }
 
-QgsPoint QgsMapTool::toMapCoords(QgsMapLayer* layer, const QgsPoint& point)
+QgsPoint QgsMapTool::toMapCoords( QgsMapLayer* layer, const QgsPoint& point )
 {
-  return mCanvas->mapRenderer()->layerToMapCoordinates(layer, point);
+  return mCanvas->mapRenderer()->layerToMapCoordinates( layer, point );
 }
 
-QgsRect QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsRect& rect)
+QgsRect QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QgsRect& rect )
 {
-  return mCanvas->mapRenderer()->mapToLayerCoordinates(layer, rect);
+  return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, rect );
 }
 
-QPoint QgsMapTool::toCanvasCoords(const QgsPoint& point)
+QPoint QgsMapTool::toCanvasCoords( const QgsPoint& point )
 {
   double x = point.x(), y = point.y();
-  mCanvas->getCoordinateTransform()->transformInPlace(x,y);
-  return QPoint((int)(x+0.5), (int)(y+0.5)); // round the values
+  mCanvas->getCoordinateTransform()->transformInPlace( x, y );
+  return QPoint(( int )( x + 0.5 ), ( int )( y + 0.5 ) ); // round the values
 }
 
 
 void QgsMapTool::activate()
 {
   // make action and/or button active
-  if (mAction)
-    mAction->setChecked(true);
-  if (mButton)
-    mButton->setChecked(true);
-  
+  if ( mAction )
+    mAction->setChecked( true );
+  if ( mButton )
+    mButton->setChecked( true );
+
   // set cursor (map tools usually set it in constructor)
-  mCanvas->setCursor(mCursor);
-  QgsDebugMsg("Cursor has been set");
+  mCanvas->setCursor( mCursor );
+  QgsDebugMsg( "Cursor has been set" );
 }
-    
+
 
 void QgsMapTool::deactivate()
 {
-  if (mAction)
-    mAction->setChecked(false);
-  if (mButton)
-    mButton->setChecked(false);
+  if ( mAction )
+    mAction->setChecked( false );
+  if ( mButton )
+    mButton->setChecked( false );
 }
 
-void QgsMapTool::setAction(QAction* action)
+void QgsMapTool::setAction( QAction* action )
 {
   mAction = action;
 }
@@ -101,7 +101,7 @@ QAction* QgsMapTool::action()
   return mAction;
 }
 
-void QgsMapTool::setButton(QAbstractButton* button)
+void QgsMapTool::setButton( QAbstractButton* button )
 {
   mButton = button;
 }
@@ -111,24 +111,24 @@ QAbstractButton* QgsMapTool::button()
   return mButton;
 }
 
-    
-void QgsMapTool::canvasMoveEvent(QMouseEvent *)
+
+void QgsMapTool::canvasMoveEvent( QMouseEvent * )
 {
 }
 
-void QgsMapTool::canvasDoubleClickEvent(QMouseEvent *)
+void QgsMapTool::canvasDoubleClickEvent( QMouseEvent * )
 {
 }
 
-void QgsMapTool::canvasPressEvent(QMouseEvent *)
+void QgsMapTool::canvasPressEvent( QMouseEvent * )
 {
 }
 
-void QgsMapTool::canvasReleaseEvent(QMouseEvent *)
+void QgsMapTool::canvasReleaseEvent( QMouseEvent * )
 {
 }
 
-void QgsMapTool::keyPressEvent(QKeyEvent* e)
+void QgsMapTool::keyPressEvent( QKeyEvent* e )
 {
 }
 

@@ -24,27 +24,27 @@
 
 namespace SpatialIndex
 {
-	namespace RTree
-	{
-		class Leaf : public Node
-		{
-		public:
-			virtual ~Leaf();
+  namespace RTree
+  {
+    class Leaf : public Node
+    {
+      public:
+        virtual ~Leaf();
 
-		private:
-			Leaf(RTree* pTree, long id);
+      private:
+        Leaf( RTree* pTree, long id );
 
-			virtual NodePtr chooseSubtree(const Region& mbr, unsigned long level, std::stack<long>& pathBuffer);
-			virtual NodePtr findLeaf(const Region& mbr, long id, std::stack<long>& pathBuffer);
+        virtual NodePtr chooseSubtree( const Region& mbr, unsigned long level, std::stack<long>& pathBuffer );
+        virtual NodePtr findLeaf( const Region& mbr, long id, std::stack<long>& pathBuffer );
 
-			virtual void split(unsigned long dataLength, byte* pData, Region& mbr, long id, NodePtr& left, NodePtr& right);
+        virtual void split( unsigned long dataLength, byte* pData, Region& mbr, long id, NodePtr& left, NodePtr& right );
 
-			virtual void deleteData(long id, std::stack<long>& pathBuffer);
+        virtual void deleteData( long id, std::stack<long>& pathBuffer );
 
-			friend class RTree;
-			friend class BulkLoader;
-		}; // Leaf
-	}
+        friend class RTree;
+        friend class BulkLoader;
+    }; // Leaf
+  }
 }
 
 #endif /*__spatialindex_rtree_leaf_h*/

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgstininterpolatordialog.cpp    
+                              qgstininterpolatordialog.cpp
                               ----------------------------
   begin                : March 29, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -18,17 +18,17 @@
 #include "qgstininterpolatordialog.h"
 #include "qgstininterpolator.h"
 
-QgsTINInterpolatorDialog::QgsTINInterpolatorDialog(QWidget* parent, QgisInterface* iface): QgsInterpolatorDialog(parent, iface)
+QgsTINInterpolatorDialog::QgsTINInterpolatorDialog( QWidget* parent, QgisInterface* iface ): QgsInterpolatorDialog( parent, iface )
 {
-  setupUi(this);
+  setupUi( this );
   //enter available interpolation methods
-  mInterpolationComboBox->insertItem(0, tr("Linear interpolation"));
+  mInterpolationComboBox->insertItem( 0, tr( "Linear interpolation" ) );
   //mInterpolationComboBox->insertItem(1, tr("Clough-Toucher interpolation"));
 }
 
 QgsTINInterpolatorDialog::~QgsTINInterpolatorDialog()
 {
-  
+
 }
 
 QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
@@ -36,11 +36,11 @@ QgsInterpolator* QgsTINInterpolatorDialog::createInterpolator() const
   QList<QgsVectorLayer*> inputLayerList;
 
   QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >::const_iterator data_it = mInputData.constBegin();
-  for(; data_it != mInputData.constEnd(); ++data_it)
-    {
-      inputLayerList.push_back(data_it->first);
-    }
+  for ( ; data_it != mInputData.constEnd(); ++data_it )
+  {
+    inputLayerList.push_back( data_it->first );
+  }
 
-  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator(inputLayerList);
+  QgsTINInterpolator* theInterpolator = new QgsTINInterpolator( inputLayerList );
   return theInterpolator;
 }

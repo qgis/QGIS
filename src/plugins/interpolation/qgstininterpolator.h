@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgstininterpolator.h    
+                              qgstininterpolator.h
                               --------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -26,23 +26,23 @@ class TriangleInterpolator;
 /**Interpolation in a triangular irregular network*/
 class QgsTINInterpolator: public QgsInterpolator
 {
- public:
-  QgsTINInterpolator(const QList<QgsVectorLayer*>& inputData);
-  ~QgsTINInterpolator();
+  public:
+    QgsTINInterpolator( const QList<QgsVectorLayer*>& inputData );
+    ~QgsTINInterpolator();
 
-  /**Calculates interpolation value for map coordinates x, y
-     @param x x-coordinate (in map units)
-     @param y y-coordinate (in map units)
-     @param result out: interpolation result
-     @return 0 in case of success*/
-  int interpolatePoint(double x, double y, double& result);
+    /**Calculates interpolation value for map coordinates x, y
+       @param x x-coordinate (in map units)
+       @param y y-coordinate (in map units)
+       @param result out: interpolation result
+       @return 0 in case of success*/
+    int interpolatePoint( double x, double y, double& result );
 
- private:
-  Triangulation* mTriangulation;
-  TriangleInterpolator* mTriangleInterpolator;
-  bool mIsInitialized;
+  private:
+    Triangulation* mTriangulation;
+    TriangleInterpolator* mTriangleInterpolator;
+    bool mIsInitialized;
 
-  void initialize();
+    void initialize();
 };
 
 #endif

@@ -17,27 +17,27 @@
 /* $Id:$ */
 
 #include "qgsdetaileditemwidget.h"
-QgsDetailedItemWidget::QgsDetailedItemWidget(QWidget * parent) : 
-       QWidget(parent)
-       
+QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget * parent ) :
+    QWidget( parent )
+
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 QgsDetailedItemWidget::~QgsDetailedItemWidget()
 {
 }
 
-void QgsDetailedItemWidget::setData(QgsDetailedItemData theData)
+void QgsDetailedItemWidget::setData( QgsDetailedItemData theData )
 {
-  lblTitle->setText(theData.title());
-  lblDetail->setText(theData.detail());
-  cbx->setVisible(theData.isCheckable());
-  cbx->setChecked(theData.isChecked());
-  lblIcon->setPixmap(theData.icon());
+  lblTitle->setText( theData.title() );
+  lblDetail->setText( theData.detail() );
+  cbx->setVisible( theData.isCheckable() );
+  cbx->setChecked( theData.isChecked() );
+  lblIcon->setPixmap( theData.icon() );
 }
 
-void QgsDetailedItemWidget::setChecked(bool theFlag)
+void QgsDetailedItemWidget::setChecked( bool theFlag )
 {
-  cbx->setChecked(theFlag);
+  cbx->setChecked( theFlag );
 }

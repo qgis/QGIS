@@ -22,22 +22,22 @@
 
 class QgsAbout : public QDialog, private Ui::QgsAbout
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsAbout();
     ~QgsAbout();
-    void setVersion(QString v);
-    void setWhatsNew(QString txt);
-    static QString fileSystemSafe(QString string);
+    void setVersion( QString v );
+    void setWhatsNew( QString txt );
+    static QString fileSystemSafe( QString string );
 
   private:
     void setPluginInfo();
     void init();
-    void openUrl(QString url);
+    void openUrl( QString url );
 
   private slots:
     void on_buttonCancel_clicked();
-    void on_listBox1_currentItemChanged(QListWidgetItem *theItem);
+    void on_listBox1_currentItemChanged( QListWidgetItem *theItem );
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
 };

@@ -26,13 +26,13 @@
 class QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
- public:
-    QgsLUDialog(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+  public:
+    QgsLUDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsLUDialog();
     QString lowerValue() const;
-    void setLowerValue(QString val);
+    void setLowerValue( QString val );
     QString upperValue() const;
-    void setUpperValue(QString val);
+    void setUpperValue( QString val );
 };
 
 #endif

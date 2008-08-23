@@ -1,9 +1,9 @@
 /***************************************************************************
-                          qgsattributeaction.h 
+                          qgsattributeaction.h
 
- These classes store and control the managment and execution of actions 
+ These classes store and control the managment and execution of actions
  associated with particulay Qgis layers. Actions are defined to be
- external programs that are run with user-specified inputs that can 
+ external programs that are run with user-specified inputs that can
  depend on the contents of layer attributes.
 
                              -------------------
@@ -41,23 +41,23 @@ class QDomDocument;
  */
 class CORE_EXPORT QgsAction
 {
- public:
-  QgsAction(QString name, QString action, bool capture) :
-    mName(name), mAction(action), mCaptureOutput(capture) {}
+  public:
+    QgsAction( QString name, QString action, bool capture ) :
+        mName( name ), mAction( action ), mCaptureOutput( capture ) {}
 
-  //! The name of the action
-  QString name() const { return mName; }
+    //! The name of the action
+    QString name() const { return mName; }
 
-  //! The action
-  QString action() const { return mAction; }
+    //! The action
+    QString action() const { return mAction; }
 
-  //! Whether to capture output for display when this action is run
-  bool capture() const { return mCaptureOutput; }
+    //! Whether to capture output for display when this action is run
+    bool capture() const { return mCaptureOutput; }
 
- private:
-  QString mName;
-  QString mAction;
-  bool mCaptureOutput;
+  private:
+    QString mName;
+    QString mAction;
+    bool mCaptureOutput;
 };
 
 /*! \class QgsAttributeAction
@@ -67,66 +67,66 @@ class CORE_EXPORT QgsAction
 
 class  CORE_EXPORT QgsAttributeAction
 {
- public:
+  public:
 
-  typedef std::list<QgsAction> AttributeActions;
-  typedef AttributeActions::const_iterator aIter;
-  
-  //! Constructor
-  QgsAttributeAction() {};
-  
-  //! Destructor
-  virtual ~QgsAttributeAction() {};
+    typedef std::list<QgsAction> AttributeActions;
+    typedef AttributeActions::const_iterator aIter;
 
-  //! Add an action with the given name and action details.
-  // Will happily have duplicate names and actions. If
-  // capture is true, when running the action using doAction(),
-  // any stdout from the process will be captured and displayed in a
-  // dialog box.
-  void addAction(QString name, QString action, bool capture = false);
+    //! Constructor
+    QgsAttributeAction() {};
 
-  //! Does the action using the given values. defaultValueIndex is an
-  // index into values which indicates which value in the values vector
-  // is to be used if the action has a default placeholder. 
-  void doAction(unsigned int index, const std::vector<std::pair<QString, QString> >& values,
-		uint defaultValueIndex = 0);
+    //! Destructor
+    virtual ~QgsAttributeAction() {};
 
-  //! Returns a const_iterator that points to the QgsAction at the
-  // given position in the data collection. The insertion order is
-  // preserved. The index starts at 0 and goes to one less than the
-  // number of actions. An index outside that range will return an
-  // a const_iterator equal to that returned by end().
-  aIter retrieveAction(unsigned int index) const; 
+    //! Add an action with the given name and action details.
+    // Will happily have duplicate names and actions. If
+    // capture is true, when running the action using doAction(),
+    // any stdout from the process will be captured and displayed in a
+    // dialog box.
+    void addAction( QString name, QString action, bool capture = false );
 
-  //! Removes all actions
-  void clearActions() { mActions.clear(); }
+    //! Does the action using the given values. defaultValueIndex is an
+    // index into values which indicates which value in the values vector
+    // is to be used if the action has a default placeholder.
+    void doAction( unsigned int index, const std::vector<std::pair<QString, QString> >& values,
+                   uint defaultValueIndex = 0 );
 
-  //! A const iterator to the start of the action pairs
-  const AttributeActions::const_iterator begin() const
+    //! Returns a const_iterator that points to the QgsAction at the
+    // given position in the data collection. The insertion order is
+    // preserved. The index starts at 0 and goes to one less than the
+    // number of actions. An index outside that range will return an
+    // a const_iterator equal to that returned by end().
+    aIter retrieveAction( unsigned int index ) const;
+
+    //! Removes all actions
+    void clearActions() { mActions.clear(); }
+
+    //! A const iterator to the start of the action pairs
+    const AttributeActions::const_iterator begin() const
     { return mActions.begin(); }
 
-  //! A const iterator to the one past the end of the action pairs
-  const AttributeActions::const_iterator end() const
+    //! A const iterator to the one past the end of the action pairs
+    const AttributeActions::const_iterator end() const
     { return mActions.end(); }
 
-  //! Returns the number of stored actions
-  int size() const { return mActions.size(); }
+    //! Returns the number of stored actions
+    int size() const { return mActions.size(); }
 
-  //! Expands the given action, replacing all %'s with the value as
-  // given.  
-  static QString expandAction(QString action, const std::vector<std::pair<QString, QString> >& values,
-			      uint defaultValueIndex);
+    //! Expands the given action, replacing all %'s with the value as
+    // given.
+    static QString expandAction( QString action, const std::vector<std::pair<QString, QString> >& values,
+                                 uint defaultValueIndex );
 
-  //! Writes the actions out in XML format
-  bool writeXML(QDomNode& layer_node, QDomDocument& doc) const;
+    //! Writes the actions out in XML format
+    bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
 
-  //! Reads the actions in in XML format
-  bool readXML(QDomNode& layer_node);
+    //! Reads the actions in in XML format
+    bool readXML( QDomNode& layer_node );
 
- private:
+  private:
 
-  // Stores the name/action pairs.
-  AttributeActions mActions;
+    // Stores the name/action pairs.
+    AttributeActions mActions;
 };
 
 #endif

@@ -23,24 +23,25 @@ Class to contain information about a loadable plugin, including its name, descri
 
 @author Gary Sherman
 */
-class QgsPluginItem{
-public:
-    QgsPluginItem(QString name=0, QString description=0, QString fullPath=0, QString type=0, bool python=false);
+class QgsPluginItem
+{
+  public:
+    QgsPluginItem( QString name = 0, QString description = 0, QString fullPath = 0, QString type = 0, bool python = false );
     QString name();
     QString description();
     QString fullPath();
     QString type();
     bool isPython();
     ~QgsPluginItem();
-private:
-	QString m_name;
-	QString m_description;
-	QString m_fullPath;
-  //! Plugin type (either ui or maplayer)
-  QString m_type;
-  
-  //! true if is plugin made in python
-  bool m_python;
+  private:
+    QString m_name;
+    QString m_description;
+    QString m_fullPath;
+    //! Plugin type (either ui or maplayer)
+    QString m_type;
+
+    //! true if is plugin made in python
+    bool m_python;
 };
 
 #endif

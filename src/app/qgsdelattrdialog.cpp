@@ -19,29 +19,29 @@
 #include "qgsfield.h"
 #include <QHeaderView>
 
-QgsDelAttrDialog::QgsDelAttrDialog(QHeaderView* header): QDialog()
+QgsDelAttrDialog::QgsDelAttrDialog( QHeaderView* header ): QDialog()
 {
-  setupUi(this);
+  setupUi( this );
 
   //insert attribute names into the QListView
-  if(header)
+  if ( header )
+  {
+    listBox2->clear();
+    QAbstractItemModel *model = header->model();
+    for ( int i = 1;i < header->count();++i )
     {
-      listBox2->clear();
-      QAbstractItemModel *model = header->model();
-      for(int i=1;i<header->count();++i)
-      {
-        listBox2->addItem(model->headerData(i, Qt::Horizontal).toString());
-      }
+      listBox2->addItem( model->headerData( i, Qt::Horizontal ).toString() );
     }
+  }
 }
 
 const std::list<QString>* QgsDelAttrDialog::selectedAttributes()
 {
-    mSelectedItems.clear();
-    QListIterator<QListWidgetItem *> selection(listBox2->selectedItems());
-    while (selection.hasNext())
-    {
-      mSelectedItems.push_back(selection.next()->text());
-    }
-    return &mSelectedItems;
+  mSelectedItems.clear();
+  QListIterator<QListWidgetItem *> selection( listBox2->selectedItems() );
+  while ( selection.hasNext() )
+  {
+    mSelectedItems.push_back( selection.next()->text() );
+  }
+  return &mSelectedItems;
 }

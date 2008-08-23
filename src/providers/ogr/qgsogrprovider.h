@@ -1,6 +1,6 @@
 /***************************************************************************
             qgsogrprovider.h Data provider for ESRI shapefile format
-                    Formerly known as qgsshapefileprovider.h  
+                    Formerly known as qgsshapefileprovider.h
 begin                : Oct 29, 2003
 copyright            : (C) 2003 by Gary E.Sherman
 email                : sherman at mrcc.com
@@ -31,23 +31,23 @@ class QgsField;
 class QgsOgrProvider : public QgsVectorDataProvider
 {
   public:
-    
+
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOgrProvider(QString const & uri = "");
-    
+    QgsOgrProvider( QString const & uri = "" );
+
     /**
      * Destructor
      */
     virtual ~QgsOgrProvider();
 
-    
-    
+
+
     virtual QgsCoordinateReferenceSystem getCRS();
-   
-    
+
+
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
      */
@@ -60,19 +60,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
      *  @param useIntersect true if an accurate intersection test should be used,
      *                     false if a test based on bounding box is sufficient
      */
-    virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
-                        QgsRect rect = QgsRect(),
-                        bool fetchGeometry = true,
-                        bool useIntersect = false);
-  
+    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
+                         QgsRect rect = QgsRect(),
+                         bool fetchGeometry = true,
+                         bool useIntersect = false );
+
     /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature(QgsFeature& feature);
-    
-    /** 
+    virtual bool getNextFeature( QgsFeature& feature );
+
+    /**
      * Gets the feature at the given feature ID.
      * @param featureId id of the feature
      * @param feature feature which will receive the data
@@ -80,10 +80,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      */
-    virtual bool getFeatureAtId(int featureId,
-                                QgsFeature& feature,
-                                bool fetchGeometry = true,
-                                QgsAttributeList fetchAttributes = QgsAttributeList());
+    virtual bool getFeatureAtId( int featureId,
+                                 QgsFeature& feature,
+                                 bool fetchGeometry = true,
+                                 QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /**
      * Get feature type.
@@ -93,19 +93,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** return the number of layers for the current data source
 
-    @note 
+    @note
 
     Should this be subLayerCount() instead?
     */
     virtual size_t layerCount() const;
 
-    /** 
+    /**
      * Get the number of features in the layer
      */
     virtual long featureCount() const;
 
 
-    /** 
+    /**
      * Get the number of fields in the layer
      */
     virtual uint fieldCount() const;
@@ -123,19 +123,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual void reset();
 
     /**Writes a list of features to the file*/
-    virtual bool addFeatures(QgsFeatureList & flist);
+    virtual bool addFeatures( QgsFeatureList & flist );
 
     /**Deletes a feature*/
-    virtual bool deleteFeatures(const QgsFeatureIds & id);
-    
+    virtual bool deleteFeatures( const QgsFeatureIds & id );
+
     /**Adds new attributess. Unfortunately not supported for layers with features in it*/
-    virtual bool addAttributes(const QgsNewAttributesMap & attributes);
+    virtual bool addAttributes( const QgsNewAttributesMap & attributes );
 
     /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
 
     /**Changes existing geometries*/
-    virtual bool changeGeometryValues(QgsGeometryMap & geometry_map);
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
     /**Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
@@ -149,8 +149,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
       */
     virtual int capabilities() const;
 
-    virtual void setEncoding(const QString& e);
-    
+    virtual void setEncoding( const QString& e );
+
 
     /** return vector file filter string
 
@@ -171,38 +171,38 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue(int index);
+    QVariant minimumValue( int index );
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maxValue(int index);
+    QVariant maxValue( int index );
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void getUniqueValues(int index, QStringList &uniqueValues);
+    virtual void getUniqueValues( int index, QStringList &uniqueValues );
 
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
     /**Get an attribute associated with a feature*/
-    void getFeatureAttribute(OGRFeatureH ogrFet, QgsFeature & f, int attindex);
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
 
-      /** return a provider name
+    /** return a provider name
 
-      Essentially just returns the provider key.  Should be used to build file
-      dialogs so that providers can be shown with their supported types. Thus
-      if more than one provider supports a given format, the user is able to
-      select a specific provider to open that file.
+    Essentially just returns the provider key.  Should be used to build file
+    dialogs so that providers can be shown with their supported types. Thus
+    if more than one provider supports a given format, the user is able to
+    select a specific provider to open that file.
 
-      @note
+    @note
 
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
+    Instead of being pure virtual, might be better to generalize this
+    behavior and presume that none of the sub-classes are going to do
+    anything strange with regards to their name or description?
 
-      */
+    */
     QString name() const;
 
 
@@ -221,8 +221,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 
   private:
-    unsigned char *getGeometryPointer(OGRFeatureH fet);
-    
+    unsigned char *getGeometryPointer( OGRFeatureH fet );
+
     QgsFieldMap mAttributeFields;
 
     OGRDataSourceH ogrDataSource;
@@ -244,11 +244,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mUseIntersect;
     int geomType;
     long numberFeatures;
-    
-    //! Selection rectangle 
+
+    //! Selection rectangle
     OGRGeometryH mSelectionRectangle;
     /**Adds one feature*/
-    bool addFeature(QgsFeature& f);
+    bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
-    bool deleteFeature(int id);
+    bool deleteFeature( int id );
 };

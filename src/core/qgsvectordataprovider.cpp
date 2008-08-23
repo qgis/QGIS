@@ -24,11 +24,11 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider(QString uri)
-    : QgsDataProvider(uri),
-      mCacheMinMaxDirty(TRUE),
-      mEncoding(QTextCodec::codecForLocale()),
-      mFetchFeaturesWithoutGeom(FALSE)
+QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
+    : QgsDataProvider( uri ),
+    mCacheMinMaxDirty( TRUE ),
+    mEncoding( QTextCodec::codecForLocale() ),
+    mFetchFeaturesWithoutGeom( FALSE )
 {
 }
 
@@ -47,65 +47,65 @@ long QgsVectorDataProvider::updateFeatureCount()
   return -1;
 }
 
-bool QgsVectorDataProvider::getFeatureAtId(int featureId,
-                                      QgsFeature& feature,
-                                      bool fetchGeometry,
-                                      QgsAttributeList fetchAttributes)
+bool QgsVectorDataProvider::getFeatureAtId( int featureId,
+    QgsFeature& feature,
+    bool fetchGeometry,
+    QgsAttributeList fetchAttributes )
 {
-  select(fetchAttributes, QgsRect(), fetchGeometry);
-  
-  while (getNextFeature(feature))
+  select( fetchAttributes, QgsRect(), fetchGeometry );
+
+  while ( getNextFeature( feature ) )
   {
-    if (feature.featureId() == featureId)
+    if ( feature.featureId() == featureId )
       return TRUE;
   }
-  
+
   return FALSE;
 }
 
 QString QgsVectorDataProvider::dataComment() const
 {
-    return QString();
+  return QString();
 }
 
-bool QgsVectorDataProvider::addFeatures(QgsFeatureList &flist)
+bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist )
 {
   return false;
 }
 
-bool QgsVectorDataProvider::deleteFeatures(const QgsFeatureIds & id)
+bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds & id )
 {
   return false;
 }
 
-bool QgsVectorDataProvider::addAttributes(const QgsNewAttributesMap & attributes)
+bool QgsVectorDataProvider::addAttributes( const QgsNewAttributesMap & attributes )
 {
   return false;
 }
 
-bool QgsVectorDataProvider::deleteAttributes(const QgsAttributeIds& attributes)
+bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   return false;
 }
 
-bool QgsVectorDataProvider::changeAttributeValues(const QgsChangedAttributesMap & attr_map)
+bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
 {
   return false;
 }
 
-QVariant QgsVectorDataProvider::getDefaultValue(int fieldId)
+QVariant QgsVectorDataProvider::getDefaultValue( int fieldId )
 {
   return QVariant();
 }
 
-bool QgsVectorDataProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
+bool QgsVectorDataProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
   return false;
 }
 
 bool QgsVectorDataProvider::createSpatialIndex()
 {
-    return false;
+  return false;
 }
 
 int QgsVectorDataProvider::capabilities() const
@@ -114,26 +114,26 @@ int QgsVectorDataProvider::capabilities() const
 }
 
 
-void QgsVectorDataProvider::setEncoding(const QString& e)
+void QgsVectorDataProvider::setEncoding( const QString& e )
 {
-  QTextCodec* ncodec=QTextCodec::codecForName(e.toLocal8Bit().data());
-  if(ncodec)
+  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().data() );
+  if ( ncodec )
   {
-  	mEncoding=ncodec;
+    mEncoding = ncodec;
   }
   else
   {
-    QgsDebugMsg("error finding QTextCodec for " + e);
+    QgsDebugMsg( "error finding QTextCodec for " + e );
   }
 }
 
 QString QgsVectorDataProvider::encoding() const
 {
-  if (mEncoding)
+  if ( mEncoding )
   {
-    	return mEncoding->name();
+    return mEncoding->name();
   }
-	
+
   return "";
 }
 
@@ -143,88 +143,88 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   int abilities = capabilities();
 
-  if (abilities & QgsVectorDataProvider::AddFeatures)
+  if ( abilities & QgsVectorDataProvider::AddFeatures )
   {
     abilitiesList += "Add Features";
-    QgsDebugMsg("Capability: Add Features");
+    QgsDebugMsg( "Capability: Add Features" );
   }
 
-  if (abilities & QgsVectorDataProvider::DeleteFeatures)
+  if ( abilities & QgsVectorDataProvider::DeleteFeatures )
   {
     abilitiesList += "Delete Features";
-    QgsDebugMsg("Capability: Delete Features");
+    QgsDebugMsg( "Capability: Delete Features" );
   }
 
-  if (abilities & QgsVectorDataProvider::ChangeAttributeValues)
+  if ( abilities & QgsVectorDataProvider::ChangeAttributeValues )
   {
     abilitiesList += "Change Attribute Values";
-    QgsDebugMsg("Capability: Change Attribute Values");
+    QgsDebugMsg( "Capability: Change Attribute Values" );
   }
 
-  if (abilities & QgsVectorDataProvider::AddAttributes)
+  if ( abilities & QgsVectorDataProvider::AddAttributes )
   {
     abilitiesList += "Add Attributes";
-    QgsDebugMsg("Capability: Add Attributes");
+    QgsDebugMsg( "Capability: Add Attributes" );
   }
 
-  if (abilities & QgsVectorDataProvider::DeleteAttributes)
+  if ( abilities & QgsVectorDataProvider::DeleteAttributes )
   {
     abilitiesList += "Delete Attributes";
-    QgsDebugMsg("Capability: Delete Attributes");
+    QgsDebugMsg( "Capability: Delete Attributes" );
   }
 
-  if (abilities & QgsVectorDataProvider::CreateSpatialIndex)
+  if ( abilities & QgsVectorDataProvider::CreateSpatialIndex )
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
     abilitiesList += "Create Spatial Index";
-    QgsDebugMsg("Capability: Create Spatial Index");
+    QgsDebugMsg( "Capability: Create Spatial Index" );
   }
 
-  if (abilities & QgsVectorDataProvider::SelectAtId)
+  if ( abilities & QgsVectorDataProvider::SelectAtId )
   {
     // Not really meaningful to the user.
     // abilitiesList += "Select at ID";
-    QgsDebugMsg("Capability: Select at ID");
+    QgsDebugMsg( "Capability: Select at ID" );
   }
 
-  if (abilities & QgsVectorDataProvider::ChangeGeometries)
+  if ( abilities & QgsVectorDataProvider::ChangeGeometries )
   {
     abilitiesList += "Change Geometries";
-    QgsDebugMsg("Capability: Change Geometries");
+    QgsDebugMsg( "Capability: Change Geometries" );
   }
 
-  if (abilities & QgsVectorDataProvider::SelectGeometryAtId)
+  if ( abilities & QgsVectorDataProvider::SelectGeometryAtId )
   {
 
-    if (abilities & QgsVectorDataProvider::RandomSelectGeometryAtId)
+    if ( abilities & QgsVectorDataProvider::RandomSelectGeometryAtId )
     {
       abilitiesList += "Select Geometries by ID (random access)";
-      QgsDebugMsg("Capability: Select Geometries by ID (random access)");
+      QgsDebugMsg( "Capability: Select Geometries by ID (random access)" );
     }
-    else if (abilities & QgsVectorDataProvider::SequentialSelectGeometryAtId)
+    else if ( abilities & QgsVectorDataProvider::SequentialSelectGeometryAtId )
     {
       abilitiesList += "Select Geometries by ID (sequential access)";
-      QgsDebugMsg("Capability: Select Geometries by ID (sequential access)");
+      QgsDebugMsg( "Capability: Select Geometries by ID (sequential access)" );
     }
     else
     {
       abilitiesList += "Select Geometries by ID (unknown access method)";
-      QgsDebugMsg("Capability: Select Geometries by ID (unknown access method)");
+      QgsDebugMsg( "Capability: Select Geometries by ID (unknown access method)" );
     }
   }
 
-  return abilitiesList.join(", ");
+  return abilitiesList.join( ", " );
 
 }
 
 
-int QgsVectorDataProvider::indexFromFieldName(const QString& fieldName) const
+int QgsVectorDataProvider::indexFromFieldName( const QString& fieldName ) const
 {
   const QgsFieldMap &theFields = fields();
 
-  for (QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it)
+  for ( QgsFieldMap::const_iterator it = theFields.begin(); it != theFields.end(); ++it )
   {
-    if(it->name() == fieldName)
+    if ( it->name() == fieldName )
     {
       return it.key();
     }
@@ -237,13 +237,13 @@ QgsAttributeList QgsVectorDataProvider::allAttributesList()
   uint count = fieldCount();
   QgsAttributeList list;
 
-  for (uint i = 0; i < count; i++)
-    list.append(i);
+  for ( uint i = 0; i < count; i++ )
+    list.append( i );
 
   return list;
 }
 
-void QgsVectorDataProvider::setFetchFeaturesWithoutGeom(bool fetch)
+void QgsVectorDataProvider::setFetchFeaturesWithoutGeom( bool fetch )
 {
   mFetchFeaturesWithoutGeom = fetch;
 }
@@ -254,55 +254,55 @@ const QgsNativeTypeMap &QgsVectorDataProvider::supportedNativeTypes() const
 }
 
 
-QVariant QgsVectorDataProvider::minimumValue(int index)
+QVariant QgsVectorDataProvider::minimumValue( int index )
 {
-  if (!fields().contains(index))
+  if ( !fields().contains( index ) )
   {
-    QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
+    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
-  if (mCacheMinMaxDirty)
+  if ( mCacheMinMaxDirty )
   {
     fillMinMaxCache();
   }
 
-  if (!mCacheMinValues.contains(index))
+  if ( !mCacheMinValues.contains( index ) )
     return QVariant();
 
   return mCacheMinValues[index];
 }
 
-QVariant QgsVectorDataProvider::maxValue(int index)
+QVariant QgsVectorDataProvider::maxValue( int index )
 {
-  if (!fields().contains(index))
+  if ( !fields().contains( index ) )
   {
-    QgsDebugMsg("Warning: access requested to invalid field index: " + QString::number(index));
+    QgsDebugMsg( "Warning: access requested to invalid field index: " + QString::number( index ) );
     return QVariant();
   }
 
-  if (mCacheMinMaxDirty)
+  if ( mCacheMinMaxDirty )
   {
     fillMinMaxCache();
   }
-  
-  if (!mCacheMaxValues.contains(index))
+
+  if ( !mCacheMaxValues.contains( index ) )
     return QVariant();
-  
+
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::getUniqueValues(int index, QStringList &values)
+void QgsVectorDataProvider::getUniqueValues( int index, QStringList &values )
 {
   QgsFeature f;
   QgsAttributeList keys;
-  keys.append(index);
-  select(keys, QgsRect(), false);
+  keys.append( index );
+  select( keys, QgsRect(), false );
 
-  QMap<QString,int> map;
+  QMap<QString, int> map;
 
-  while( getNextFeature(f) )
-    map.insert( f.attributeMap()[index].toString(), 1);
+  while ( getNextFeature( f ) )
+    map.insert( f.attributeMap()[index].toString(), 1 );
 
   values = map.keys();
 }
@@ -310,46 +310,46 @@ void QgsVectorDataProvider::getUniqueValues(int index, QStringList &values)
 void QgsVectorDataProvider::fillMinMaxCache()
 {
   const QgsFieldMap& flds = fields();
-  for(QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it)
+  for ( QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it )
   {
-    if (it->type() == QVariant::Int)
+    if ( it->type() == QVariant::Int )
     {
-      mCacheMinValues[it.key()] = QVariant(INT_MAX);
-      mCacheMaxValues[it.key()] = QVariant(INT_MIN);
+      mCacheMinValues[it.key()] = QVariant( INT_MAX );
+      mCacheMaxValues[it.key()] = QVariant( INT_MIN );
     }
-    else if (it->type() == QVariant::Double)
+    else if ( it->type() == QVariant::Double )
     {
-      mCacheMinValues[it.key()] = QVariant(DBL_MAX);
-      mCacheMaxValues[it.key()] = QVariant(-DBL_MAX);
+      mCacheMinValues[it.key()] = QVariant( DBL_MAX );
+      mCacheMaxValues[it.key()] = QVariant( -DBL_MAX );
     }
   }
 
   QgsFeature f;
   QgsAttributeList keys = mCacheMinValues.keys();
-  select(keys, QgsRect(), false);
+  select( keys, QgsRect(), false );
 
-  while (getNextFeature(f))
+  while ( getNextFeature( f ) )
   {
     QgsAttributeMap attrMap = f.attributeMap();
-    for (QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it)
+    for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
       const QVariant& varValue = attrMap[*it];
-      
-      if (flds[*it].type() == QVariant::Int)
+
+      if ( flds[*it].type() == QVariant::Int )
       {
         int value = varValue.toInt();
-        if (value < mCacheMinValues[*it].toInt())
+        if ( value < mCacheMinValues[*it].toInt() )
           mCacheMinValues[*it] = value;
-        if(value > mCacheMaxValues[*it].toInt())
-          mCacheMaxValues[*it] = value;  
+        if ( value > mCacheMaxValues[*it].toInt() )
+          mCacheMaxValues[*it] = value;
       }
-      else if (flds[*it].type() == QVariant::Double)
+      else if ( flds[*it].type() == QVariant::Double )
       {
         double value = varValue.toDouble();
-        if (value < mCacheMinValues[*it].toDouble())
+        if ( value < mCacheMinValues[*it].toDouble() )
           mCacheMinValues[*it] = value;
-        if(value > mCacheMaxValues[*it].toDouble())
-          mCacheMaxValues[*it] = value;  
+        if ( value > mCacheMaxValues[*it].toDouble() )
+          mCacheMaxValues[*it] = value;
       }
     }
   }
