@@ -411,10 +411,10 @@ QgsProject * QgsProject::theProject_;
 
 
 
- QString QgsProject::setFilename() const
+ QString QgsProject::fileName() const
  {
      return imp_->file.fileName();
- } // QString QgsProject::setFilename() const
+ } // QString QgsProject::fileName() const
 
 
 

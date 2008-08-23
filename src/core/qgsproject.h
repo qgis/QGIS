@@ -95,7 +95,7 @@ public:
     void setFilename( QString const & name );
 
     /** returns file name */
-    QString setFilename() const;
+    QString fileName() const;
     //@}
 
 
