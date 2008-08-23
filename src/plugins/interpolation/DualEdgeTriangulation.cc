@@ -17,7 +17,6 @@
 
 #include "DualEdgeTriangulation.h"
 #include <map>
-//#include <multimap>
 
 double leftOfTresh=0.00001;
 
@@ -26,7 +25,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   //remove all the points
   if(mPointVector.count()>0)
     {
-      for (unsigned int i=0; i<mPointVector.count();i++)
+      for (int i=0; i<mPointVector.count();i++)
 	{
 	  delete mPointVector[i];
 	}
@@ -35,7 +34,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
   //remove all the HalfEdge
   if(mHalfEdge.count()>0)
     {
-      for (unsigned int i=0; i<mHalfEdge.count();i++)
+      for (int i=0; i<mHalfEdge.count();i++)
 	{
 	  delete mHalfEdge[i];
 	}
@@ -44,7 +43,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
 
 void DualEdgeTriangulation::performConsistencyTest()
 {
-  cout << "performing consistency test" << endl << flush;
+  std::cout << "performing consistency test" << std::endl << std::flush;
 
   for(int i=0;i<mHalfEdge.count();i++)
     {
@@ -52,14 +51,14 @@ void DualEdgeTriangulation::performConsistencyTest()
       int b=mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getNext();
       if(i!=a)
 	{
-	  cout << "warning, first test failed" << endl << flush;
+	  std::cout << "warning, first test failed" << std::endl << std::flush;
 	}
       if(i!=b)
 	{
-	  cout << "warning, second test failed" << endl << flush;
+	  std::cout << "warning, second test failed" << std::endl << std::flush;
 	}
     }
-  cout << "consistency test finished" << endl << flush;
+  std::cout << "consistency test finished" << std::endl << std::flush;
 }
 
 void DualEdgeTriangulation::addLine(Line3D* line, bool breakline)
@@ -105,7 +104,7 @@ int DualEdgeTriangulation::addPoint(Point3D* p)
 {
   if(p)
     {
-	//cout << "inserting point " << mPointVector.count() << "," << p->getX() << "//" << p->getY() << "//" << p->getZ() << endl << flush;
+	//std::cout << "inserting point " << mPointVector.count() << "," << p->getX() << "//" << p->getY() << "//" << p->getZ() << std::endl << std::flush;
 	//first update the bounding box
       if(mPointVector.count()==0)//update bounding box when the first point is inserted
 	{
@@ -154,7 +153,7 @@ int DualEdgeTriangulation::addPoint(Point3D* p)
 	  //test, if it is the same point as the first point
 	  if(p->getX()==mPointVector[0]->getX()&&p->getY()==mPointVector[0]->getY())
 	    {
-	      cout << "second point is the same as the first point, it thus has not been inserted" << endl << flush;
+	      std::cout << "second point is the same as the first point, it thus has not been inserted" << std::endl << std::flush;
 	      Point3D* p=mPointVector[1];
 	      mPointVector.remove(1);
 	      delete p;
@@ -220,7 +219,7 @@ int DualEdgeTriangulation::addPoint(Point3D* p)
 	  else//p is in a line with p0 and p1
 	    {
 	      mPointVector.remove(mPointVector.count()-1);
-	      cout << "error in method DualEdgeTriangulation::addPoint, third point is on the same line as the first and the second point. It thus has not been inserted into the triangulation" << endl << flush;
+	      std::cout << "error in method DualEdgeTriangulation::addPoint, third point is on the same line as the first and the second point. It thus has not been inserted into the triangulation" << std::endl << std::flush;
 	      return -100;
 	    }
 	}
@@ -367,7 +366,7 @@ int DualEdgeTriangulation::addPoint(Point3D* p)
 
 	  else if(number==-100||number==-5)//this means unknown problems or a numerical error occured in 'baseEdgeOfTriangle'
 	    {
-		//cout << "point has not been inserted because of unknown problems" << endl << flush;
+		//std::cout << "point has not been inserted because of unknown problems" << std::endl << std::flush;
 	      Point3D* p=mPointVector[mPointVector.count()-1];
 	      mPointVector.remove(mPointVector.count()-1);
 	      delete p;
@@ -390,7 +389,7 @@ int DualEdgeTriangulation::addPoint(Point3D* p)
     }
   else
     {
-      cout << "warning: null pointer in DualEdgeTriangulation::addPoint" << endl << flush;
+      std::cout << "warning: null pointer in DualEdgeTriangulation::addPoint" << std::endl << std::flush;
       return -100;
     }
 }
@@ -402,7 +401,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint(int point)
   if(mPointVector.count()<4||point==-1)//at the beginning, mEdgeInside is not defined yet
     {
       //first find pointingedge(an edge pointing to p1)
-      for(unsigned int i=0;i<mHalfEdge.count();i++)
+      for(int i=0;i<mHalfEdge.count();i++)
 	{
 	  if(mHalfEdge[i]->getPoint()==point)//we found it
 	    {
@@ -418,9 +417,9 @@ int DualEdgeTriangulation::baseEdgeOfPoint(int point)
       control+=1;
       if(control>1000000)
 	{
-	    //cout << "warning, endless loop in DualEdgeTriangulation::baseEdgeOfPoint" << endl << flush;
+	    //std::cout << "warning, endless loop in DualEdgeTriangulation::baseEdgeOfPoint" << std::endl << std::flush;
 	  //use the secure and slow method
-	  for(unsigned int i=0;i<mHalfEdge.count();i++)
+	  for(int i=0;i<mHalfEdge.count();i++)
 	    {
 	      if(mHalfEdge[i]->getPoint()==point&&mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()!=-1)//we found it
 		{
@@ -434,7 +433,7 @@ int DualEdgeTriangulation::baseEdgeOfPoint(int point)
 
       if(frompoint==-1||topoint==-1)//this would cause a crash. Therefore we use the slow method in this case
 	{
-	  for(unsigned int i=0;i<mHalfEdge.count();i++)
+	  for(int i=0;i<mHalfEdge.count();i++)
 	    {
 	      if(mHalfEdge[i]->getPoint()==point&&mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()!=-1)//we found it
 		{
@@ -477,7 +476,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle(Point3D* point)
     {
       if(runs>nBaseOfRuns)//prevents endless loops
 	{
-	    //cout << "warning, probable endless loop detected in DualEdgeTriangulation::baseEdgeOfTriangle" << endl << flush;
+	    //std::cout << "warning, probable endless loop detected in DualEdgeTriangulation::baseEdgeOfTriangle" << std::endl << std::flush;
 	  return -100;
 	}
 
@@ -549,7 +548,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle(Point3D* point)
 
   if(numinstabs>0)//we hit an existing point or a numerical instability occured
     {
-	//cout << "numerical instability occured in DualEdgeTriangulation::BaseEdgeOfTriangle" << endl << flush;
+	//std::cout << "numerical instability occured in DualEdgeTriangulation::BaseEdgeOfTriangle" << std::endl << std::flush;
       mUnstableEdge=actedge;
       return -5;
     }
@@ -561,13 +560,13 @@ int DualEdgeTriangulation::baseEdgeOfTriangle(Point3D* point)
 	{
 	  //firstendp is the number of the point which has been inserted twice
 	  mTwiceInsPoint=firstendp;
-	  //cout << "point nr " << firstendp << " already inserted" << endl << flush;
+	  //std::cout << "point nr " << firstendp << " already inserted" << std::endl << std::flush;
 	}
       else if(secendp==thendp||secendp==fouendp)
 	{
 	  //secendp is the number of the point which has been inserted twice
 	  mTwiceInsPoint=secendp;
-	  //cout << "point nr " << secendp << " already inserted" << endl << flush;
+	  //std::cout << "point nr " << secendp << " already inserted" << std::endl << std::flush;
 	}
 
       return -25;//return the code for a point that is already contained in the triangulation
@@ -651,7 +650,7 @@ bool DualEdgeTriangulation::calcNormal(double x, double y, Vector3D* result)
     }
   else
     {
-      cout << "warning, null pointer in DualEdgeTriangulation::calcNormal" << endl << flush;
+      std::cout << "warning, null pointer in DualEdgeTriangulation::calcNormal" << std::endl << std::flush;
       return false;
     }
 }
@@ -666,7 +665,7 @@ bool DualEdgeTriangulation::calcPoint(double x, double y, Point3D* result)
     }
   else
     {
-      cout << "warning, null pointer in DualEdgeTriangulation::calcPoint" << endl << flush;
+      std::cout << "warning, null pointer in DualEdgeTriangulation::calcPoint" << std::endl << std::flush;
       return false;
     }
 }
@@ -904,8 +903,8 @@ int DualEdgeTriangulation::getOppositePoint(int p1, int p2)
   
   if(theedge==-10)//there is no edge between p1 and p2
     {
-      cout << "warning, error in DualEdgeTriangulation::getOppositePoint" << endl << flush;
-      cout << "the points are: " << p1 << " and " << p2 << endl << flush;
+      std::cout << "warning, error in DualEdgeTriangulation::getOppositePoint" << std::endl << std::flush;
+      std::cout << "the points are: " << p1 << " and " << p2 << std::endl << std::flush;
       return -10;
     }
 
@@ -959,7 +958,7 @@ bool DualEdgeTriangulation::getTriangle(double x, double y, Point3D* p1, int* n1
       int edge=baseEdgeOfTriangle(&point);
       if(edge==-10)//the point is outside the convex hull
 	{
-	  cout << "DualEdgeTriangulation::getTriangle, edge outside the convex hull" << endl << flush;
+	  std::cout << "DualEdgeTriangulation::getTriangle, edge outside the convex hull" << std::endl << std::flush;
 	  return false;
 	}
 
@@ -1052,14 +1051,14 @@ bool DualEdgeTriangulation::getTriangle(double x, double y, Point3D* p1, int* n1
 	}
       else//problems
       {
-	  cout << "problems in DualEdgeTriangulation::getTriangle, the edge is: " << edge << endl << flush;
+	  std::cout << "problems in DualEdgeTriangulation::getTriangle, the edge is: " << edge << std::endl << std::flush;
 	  return false;
       }
     }
 
   else
     {
-      cout << "warning, null pointer in DualEdgeTriangulation::getTriangle" << endl << flush;
+      std::cout << "warning, null pointer in DualEdgeTriangulation::getTriangle" << std::endl << std::flush;
       return false;
     }
 }
@@ -1072,7 +1071,7 @@ bool DualEdgeTriangulation::getTriangle(double x, double y, Point3D* p1, Point3D
       int edge=baseEdgeOfTriangle(&point);
       if(edge==-10)//the point is outside the convex hull
 	{
-	  cout << "DualEdgeTriangulation::getTriangle, edge outside the convex hull" << endl << flush;
+	  std::cout << "DualEdgeTriangulation::getTriangle, edge outside the convex hull" << std::endl << std::flush;
 	  return false;
 	}
       else if(edge>=0)//the point is inside the convex hull
@@ -1152,14 +1151,14 @@ bool DualEdgeTriangulation::getTriangle(double x, double y, Point3D* p1, Point3D
 	}
       else//problems
 	{
-	  cout << "problems in DualEdgeTriangulation::getTriangle, the edge is: " << edge << endl << flush;
+	  std::cout << "problems in DualEdgeTriangulation::getTriangle, the edge is: " << edge << std::endl << std::flush;
 	  return false;
 	}
     }
 
   else
     {
-      cout << "warning, null pointer in DualEdgeTriangulation::getTriangle" << endl << flush;
+      std::cout << "warning, null pointer in DualEdgeTriangulation::getTriangle" << std::endl << std::flush;
       return false;
     }
 }
@@ -1203,7 +1202,7 @@ int DualEdgeTriangulation::insertForcedSegment(int p1, int p2, bool breakline)
       control+=1;
       if(control>17000)
 	{
-	  cout << "warning, endless loop in DualEdgeTriangulation::insertForcedSegment" << endl << flush;
+	  std::cout << "warning, endless loop in DualEdgeTriangulation::insertForcedSegment" << std::endl << std::flush;
 	  return -100;//return an error code
 	}
 
@@ -1568,7 +1567,7 @@ void DualEdgeTriangulation::setTriangleInterpolator(TriangleInterpolator* interp
 
 void DualEdgeTriangulation::eliminateHorizontalTriangles()
 {
-  cout << "bin in eliminateHorizontalTriangles" << endl << flush;
+  std::cout << "bin in eliminateHorizontalTriangles" << std::endl << std::flush;
   double minangle=0;//minimum angle for swapped triangles. If triangles generated by a swap would have a minimum angle (in degrees) below that value, the swap will not be done.
 
   while(true)
@@ -1576,13 +1575,13 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
       bool swaped=false;//flag which allows to exit the loop
       bool* control=new bool[mHalfEdge.count()];//controlarray
   
-      for(unsigned int i=0;i<=mHalfEdge.count()-1;i++)
+      for(int i=0;i<=mHalfEdge.count()-1;i++)
 	{
 	  control[i]=false;
 	}
 
 
-      for(unsigned int i=0;i<=mHalfEdge.count()-1;i++)
+      for(int i=0;i<=mHalfEdge.count()-1;i++)
 	{
 	  if(control[i]==true)//edge has already been examined
 	    {
@@ -1652,13 +1651,13 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
       delete[] control;
     }
   
-  cout << "ende der methode" << endl << flush;
+  std::cout << "ende der methode" << std::endl << std::flush;
   
 }
 
 void DualEdgeTriangulation::ruppertRefinement()
 {
-    cout.precision(9);
+    std::cout.precision(9);
 
     //minimum angle
     double mintol=17;//refinement stops after the minimum angle reached this tolerance
@@ -1691,6 +1690,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 		    {
 			//split segment
 			int pointno=splitHalfEdge(i,0.5);
+			Q_UNUSED(pointno);
 			stop=false;
 		    }
 		}
@@ -1714,7 +1714,6 @@ void DualEdgeTriangulation::ruppertRefinement()
 	angle=MathUtils::angle(mPointVector[p1],mPointVector[p2],mPointVector[p3],mPointVector[p2]);
 	
 	bool twoforcededges;//flag to decide, if edges should be added to the maps. Do not add them if true
-	int forcededgecounter=0;
 
 
 	if((mHalfEdge[i]->getForced()==true||edgeOnConvexHull(i))&&(mHalfEdge[mHalfEdge[i]->getNext()]->getForced()==true||edgeOnConvexHull(mHalfEdge[i]->getNext())))
@@ -1762,7 +1761,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 		//put all three edges to dontexamine and remove them from the other maps
 		dontexamine.insert(minedge);
 		edge_angle.erase(minedge);
-		multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
+		std::multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
 		while(minedgeiter->second!=minedge)
 		{
 		    ++minedgeiter;
@@ -1777,7 +1776,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 		std::cout << "put circumcenter " << circumcenter.getX() << "//" << circumcenter.getY() << "on dontexamine list because it is outside the convex hull" << std::endl << std::flush;
 		dontexamine.insert(minedge);
 		edge_angle.erase(minedge);
-		multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
+		std::multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
 		while(minedgeiter->second!=minedge)
 		{
 		    ++minedgeiter;
@@ -1972,7 +1971,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 	    {
 		//delete minedge from edge_angle and minangle from angle_edge
 		edge_angle.erase(minedge);
-		multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
+		std::multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
 		while(minedgeiter->second!=minedge)
 		{
 		    ++minedgeiter;
@@ -1984,7 +1983,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 	    {
 		//delete minedge from edge_angle and minangle from angle_edge
 		edge_angle.erase(minedge);
-		multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
+		std::multimap<double,int>::iterator minedgeiter=angle_edge.find(minangle);
 		while(minedgeiter->second!=minedge)
 		{
 		    ++minedgeiter;
@@ -2207,7 +2206,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 			}
 			if(flag==false)
 			{
-			    cout << "point is not present in the triangulation" << endl << flush;
+			    std::cout << "point is not present in the triangulation" << std::endl << std::flush;
 			}
 		    }
 		//put all three edges to dontexamine and remove them from the other maps
@@ -2484,7 +2483,7 @@ void DualEdgeTriangulation::triangulatePolygon(QList<int>* poly, QList<int>* fre
 	  //print out all the elements of polya for a test
 	  /*for(iterator=polya.begin();iterator!=polya.end();++iterator)
 	    {
-	      cout << (*iterator) << endl << flush;
+	      std::cout << (*iterator) << std::endl << std::flush;
 	      }*/
 
 	  triangulatePolygon(&polya,free,inserta);
@@ -2563,7 +2562,7 @@ void DualEdgeTriangulation::triangulatePolygon(QList<int>* poly, QList<int>* fre
 
   else
     {
-      cout << "warning, null pointer in DualEdgeTriangulation::triangulatePolygon" << endl << flush;
+      std::cout << "warning, null pointer in DualEdgeTriangulation::triangulatePolygon" << std::endl << std::flush;
     }
   
 }
@@ -2582,7 +2581,7 @@ bool DualEdgeTriangulation::pointInside(double x, double y)
     {
       if(runs>nBaseOfRuns)//prevents endless loops
 	{
-	    cout << "warning, instability detected in DualEdgeTriangulation::pointInside. Point coordinates: " << x << "//" << y << endl << flush;
+	    std::cout << "warning, instability detected in DualEdgeTriangulation::pointInside. Point coordinates: " << x << "//" << y << std::endl << std::flush;
 	    return false;
 	}
 
@@ -2641,7 +2640,7 @@ bool DualEdgeTriangulation::pointInside(double x, double y)
   }
   if(numinstabs>0)//a numerical instability occured
   {
-      cout << "numerical instabilities in DualEdgeTriangulation::pointInside" << endl << flush;
+      std::cout << "numerical instabilities in DualEdgeTriangulation::pointInside" << std::endl << std::flush;
       return true;
   }
 
@@ -2771,7 +2770,7 @@ bool DualEdgeTriangulation::readFromTAFF(QString filename)
       hf2->setBreak(break2);
       hf2->setForced(forced2);
 
-      //cout << "inserting half edge pair " << i << endl << flush;
+      //std::cout << "inserting half edge pair " << i << std::endl << std::flush;
       mHalfEdge.insert(nr1,hf1);
       mHalfEdge.insert(nr2,hf2);
      
@@ -2799,12 +2798,12 @@ bool DualEdgeTriangulation::readFromTAFF(QString filename)
   while(buff.mid(0,4)!="POIN")
     {
       buff=textstream.readLine();
-      cout << buff << endl << flush;
+      std::cout << buff << std::endl << std::flush;
     }
   while(buff.mid(0,4)!="NPTS")
     {
       buff=textstream.readLine();
-      cout << buff << endl << flush;
+      std::cout << buff << std::endl << std::flush;
     }
   numberofpoints=buff.section(' ',1,1).toInt();
   mPointVector.resize(numberofpoints);
@@ -2836,7 +2835,7 @@ bool DualEdgeTriangulation::readFromTAFF(QString filename)
 
       Point3D* p=new Point3D(x,y,z);
       
-      //cout << "inserting point " << i << endl << flush;
+      //std::cout << "inserting point " << i << std::endl << std::flush;
       mPointVector.insert(i,p);
       
       if(i==0)
@@ -2888,9 +2887,9 @@ bool DualEdgeTriangulation::saveToTAFF(QString filename) const
   outstream.precision(9);
 
   //export the edges. Attention, dual edges must be adjacent in the TAFF-file
-  outstream << "TRIA" << endl << flush;
-  outstream << "NEDG " << mHalfEdge.count() << endl << flush;
-  outstream << "PANO 1" << endl << flush;
+  outstream << "TRIA" << std::endl << std::flush;
+  outstream << "NEDG " << mHalfEdge.count() << std::endl << std::flush;
+  outstream << "PANO 1" << std::endl << std::flush;
   outstream << "DATA ";
 
   bool* cont=new bool[mHalfEdge.count()];
@@ -2912,15 +2911,15 @@ bool DualEdgeTriangulation::saveToTAFF(QString filename) const
       cont[i]=true;
       cont[dual]=true;
     }
-  outstream << endl << flush;
-  outstream << endl << flush;
+  outstream << std::endl << std::flush;
+  outstream << std::endl << std::flush;
 
   delete[] cont;
 
   //export the points to the file
-  outstream << "POIN" << endl << flush;
-  outstream << "NPTS " << this->getNumberOfPoints() << endl << flush;
-  outstream << "PATT 3" << endl << flush;
+  outstream << "POIN" << std::endl << std::flush;
+  outstream << "NPTS " << this->getNumberOfPoints() << std::endl << std::flush;
+  outstream << "PATT 3" << std::endl << std::flush;
   outstream << "DATA ";
   
   for(int i=0;i<this->getNumberOfPoints();i++)
@@ -2928,8 +2927,8 @@ bool DualEdgeTriangulation::saveToTAFF(QString filename) const
       Point3D* p=mPointVector[i];
       outstream << p->getX() << " " << p->getY() << " " << p->getZ() << " ";
     }
-  outstream << endl << flush;
-  outstream << endl << flush;
+  outstream << std::endl << std::flush;
+  outstream << std::endl << std::flush;
 
   return true;
 }
@@ -2985,13 +2984,13 @@ bool DualEdgeTriangulation::swapEdge(double x, double y)
 	}
       else
 	{
-	  //cout << "warning: null pointer in DualEdgeTriangulation::swapEdge" << endl << flush;
+	  //std::cout << "warning: null pointer in DualEdgeTriangulation::swapEdge" << std::endl << std::flush;
 	  return false;
 	}
     }
   else
     {
-      //cout << "Edge number negativ in DualEdgeTriangulation::swapEdge" << endl << flush;
+      //std::cout << "Edge number negativ in DualEdgeTriangulation::swapEdge" << std::endl << std::flush;
       return false;
     }
 }
@@ -3048,13 +3047,13 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge(double x, double y)
 	}
       else
 	{
-	  cout << "warning: null pointer in DualEdgeTriangulation::swapEdge" << endl << flush;
+	  std::cout << "warning: null pointer in DualEdgeTriangulation::swapEdge" << std::endl << std::flush;
 	  return 0;
 	}
     }
   else
     {
-      cout << "Edge number negativ in DualEdgeTriangulation::swapEdge" << endl << flush;
+      std::cout << "Edge number negativ in DualEdgeTriangulation::swapEdge" << std::endl << std::flush;
       return 0;
     }
 }
@@ -3104,7 +3103,7 @@ int DualEdgeTriangulation::splitHalfEdge(int edge, float position)
     //just a short test if position is between 0 and 1
     if(position<0||position>1)
     {
-	cout << "warning, position is not between 0 and 1 in DualEdgeTriangulation::splitHalfEdge" << endl << flush;
+	std::cout << "warning, position is not between 0 and 1 in DualEdgeTriangulation::splitHalfEdge" << std::endl << std::flush;
     }
 
     //create the new point on the heap
@@ -3120,7 +3119,7 @@ int DualEdgeTriangulation::splitHalfEdge(int edge, float position)
 	{
 	  mPointVector.resize(mPointVector.count()+1);
 	}
-    cout << "inserting point nr. " << mPointVector.count() << ", " << p->getX() << "//" << p->getY() << "//" << p->getZ() << endl << flush;
+    std::cout << "inserting point nr. " << mPointVector.count() << ", " << p->getX() << "//" << p->getY() << "//" << p->getZ() << std::endl << std::flush;
       mPointVector.insert(mPointVector.count(), p);
      
       //insert the six new halfedges

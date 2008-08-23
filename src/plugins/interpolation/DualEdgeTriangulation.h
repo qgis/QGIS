@@ -17,8 +17,6 @@
 #ifndef DUALEDGETRIANGULATION_H
 #define DUALEDGETRIANGULATION_H
 
-using namespace std;
-
 #include "Triangulation.h"
 #include "HalfEdge.h"
 #include <QVector>

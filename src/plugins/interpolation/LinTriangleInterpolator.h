@@ -17,8 +17,6 @@
 #ifndef LINTRIANGLEINTERPOLATOR_H
 #define LINTRIANGLEINTERPOLATOR_H
 
-using namespace std;
-
 #include "TriangleInterpolator.h"
 #include "DualEdgeTriangulation.h"
 

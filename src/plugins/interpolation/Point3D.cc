@@ -46,7 +46,7 @@ double Point3D::dist3D(Point3D* p) const
     }
   else
     {
-      cout << "warning, null pointer in Point3D::dist3D" << endl << flush;
+      std::cout << "warning, null pointer in Point3D::dist3D" << std::endl << std::flush;
       return 0;
     }
 }

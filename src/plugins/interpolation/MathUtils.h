@@ -17,8 +17,6 @@
 #ifndef MATHUTILS_H
 #define MATHUTILS_H
 
-using namespace std;
-
 #include <cmath>
 #include "Vector3D.h"
 #include "Point3D.h"

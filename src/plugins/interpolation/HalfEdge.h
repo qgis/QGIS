@@ -17,8 +17,6 @@
 #ifndef HALFEDGE_H
 #define HALFEDGE_H
 
-using namespace std;
-
 class HalfEdge
 {
  protected:

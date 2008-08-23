@@ -39,7 +39,7 @@ bool LinTriangleInterpolator::calcFirstDerX(double x, double y, Vector3D* vec)
 
   else
     {
-      cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerX" << endl << flush;
+      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerX" << std::endl << std::flush;
       return false;
     }
 }
@@ -65,7 +65,7 @@ bool LinTriangleInterpolator::calcFirstDerY(double x, double y, Vector3D* vec)
   
   else
     {
-      cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << endl << flush;
+      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << std::endl << std::flush;
       return false;
     }
 }
@@ -91,7 +91,7 @@ bool LinTriangleInterpolator::calcNormVec(double x, double y, Vector3D* vec)
 
   else
     {
-      cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << endl << flush;
+      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << std::endl << std::flush;
       return false;
     }
   
@@ -122,7 +122,7 @@ bool LinTriangleInterpolator::calcPoint(double x, double y, Point3D* point)
     }
   else
     {
-      cout << "warning, null pointer in LinTriangleInterpolator::calcPoint" << endl << flush;
+      std::cout << "warning, null pointer in LinTriangleInterpolator::calcPoint" << std::endl << std::flush;
       return false;
     }
   

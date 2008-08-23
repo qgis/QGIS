@@ -17,8 +17,6 @@
 #ifndef LINE3D_H
 #define LINE3D_H
 
-using namespace std;
-
 #include "Point3D.h"
 #include "Node.h"
 

@@ -17,6 +17,7 @@
 
 #include "qgsidwinterpolator.h"
 #include <cmath>
+#include <limits>
 
 QgsIDWInterpolator::QgsIDWInterpolator(const QList<QgsVectorLayer*>& vlayers): QgsInterpolator(vlayers), mDistanceCoefficient(2.0)
 {
