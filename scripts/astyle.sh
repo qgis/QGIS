@@ -1,9 +1,9 @@
 #!/bin/bash
 
-if ! qgsloggermig.pl >/dev/null 2>&1; then
-	echo qgsloggermig.pl not found in path >&2
-	exit 1
-fi
+#if ! qgsloggermig.pl >/dev/null 2>&1; then
+#	echo qgsloggermig.pl not found in path >&2
+#	exit 1
+#fi
 
 set -e
 
@@ -33,6 +33,6 @@ $ARTISTIC_STYLE_OPTIONS \
 
 for f in "$@"; do
 	flip -ub "$f" 
-    	qgsloggermig.pl "$f"
+    	#qgsloggermig.pl "$f"
 	astyle $ARTISTIC_STYLE_OPTIONS "$f"
 done
