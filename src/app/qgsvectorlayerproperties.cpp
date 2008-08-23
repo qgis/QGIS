@@ -216,7 +216,7 @@ void QgsVectorLayerProperties::attributeAdded(int idx)
   int row = tblAttributes->rowCount();
   tblAttributes->insertRow(row);
   setRow(row, idx, fields[idx]);
-  tblAttributes->setCurrentCell(row, idx, QItemSelectionModel::NoUpdate);
+  tblAttributes->setCurrentCell(row, idx);
 }
 
 
