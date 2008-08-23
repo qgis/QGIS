@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgstininterpolator.cpp    
+                              qgstininterpolator.cpp
                               ----------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -22,8 +22,8 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
-QgsTINInterpolator::QgsTINInterpolator(const QList<QgsVectorLayer*>& inputData): QgsInterpolator(inputData), mTriangulation(0), mTriangleInterpolator(0), mIsInitialized(false)
-{  
+QgsTINInterpolator::QgsTINInterpolator( const QList<QgsVectorLayer*>& inputData ): QgsInterpolator( inputData ), mTriangulation( 0 ), mTriangleInterpolator( 0 ), mIsInitialized( false )
+{
 }
 
 QgsTINInterpolator::~QgsTINInterpolator()
@@ -32,48 +32,48 @@ QgsTINInterpolator::~QgsTINInterpolator()
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint(double x, double y, double& result)
+int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
 {
-  if(!mIsInitialized)
-    {
-      initialize();
-    }
+  if ( !mIsInitialized )
+  {
+    initialize();
+  }
 
-  if(!mTriangleInterpolator)
-    {
-      return 1;
-    }
+  if ( !mTriangleInterpolator )
+  {
+    return 1;
+  }
 
   Point3D r;
-  if(!mTriangleInterpolator->calcPoint(x, y, &r))
-    {
-      return 2;
-    }
+  if ( !mTriangleInterpolator->calcPoint( x, y, &r ) )
+  {
+    return 2;
+  }
   result = r.getZ();
   return 0;
 }
 
 void QgsTINInterpolator::initialize()
 {
-  if(!mDataIsCached)
-    {
-      cacheBaseData();
-    }
+  if ( !mDataIsCached )
+  {
+    cacheBaseData();
+  }
 
   //create DualEdgeTriangulation
-  
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation(mCachedBaseData.size(), 0);
+
+  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( mCachedBaseData.size(), 0 );
   mTriangulation = theDualEdgeTriangulation;
-  
+
   //add all the vertices to the triangulation
   QVector<vertexData>::const_iterator vertex_it = mCachedBaseData.constBegin();
-  for(; vertex_it != mCachedBaseData.constEnd(); ++vertex_it)
-    {
-      Point3D* thePoint = new Point3D(vertex_it->x, vertex_it->y, vertex_it->z);
-      mTriangulation->addPoint(thePoint);
-    }
+  for ( ; vertex_it != mCachedBaseData.constEnd(); ++vertex_it )
+  {
+    Point3D* thePoint = new Point3D( vertex_it->x, vertex_it->y, vertex_it->z );
+    mTriangulation->addPoint( thePoint );
+  }
 
-  mTriangleInterpolator = new LinTriangleInterpolator(theDualEdgeTriangulation);
+  mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
 
   mIsInitialized = true;
 }

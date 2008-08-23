@@ -30,30 +30,30 @@ class QgsRubberBand;
 */
 class CoordinateCaptureMapTool : public QgsMapTool
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
-    CoordinateCaptureMapTool(QgsMapCanvas* thepCanvas);
+    CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas );
 
     ~CoordinateCaptureMapTool();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent(QMouseEvent * e);
+    virtual void canvasMoveEvent( QMouseEvent * e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent(QMouseEvent * e);
+    virtual void canvasPressEvent( QMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e);
+    virtual void canvasReleaseEvent( QMouseEvent * e );
 
     //! called when map tool is being deactivated
     virtual void deactivate();
 
   public slots:
-  
+
   signals:
-    void mouseMoved(QgsPoint);
-    void mouseClicked(QgsPoint);
+    void mouseMoved( QgsPoint );
+    void mouseClicked( QgsPoint );
   private:
 
     //! Rubber band for highlighting identified feature

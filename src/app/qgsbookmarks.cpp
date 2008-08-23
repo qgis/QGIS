@@ -14,14 +14,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #include "qgsbookmarks.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgslogger.h"
- 
+
 #include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
@@ -29,47 +29,45 @@
 #include <QPushButton>
 
 //standard includes
-#include <iostream>
 #include <cassert>
 #include <sqlite3.h>
 #include <fstream>
+#include "qgslogger.h"
 
-QgsBookmarks::QgsBookmarks(QWidget *parent, Qt::WFlags fl)
-  : QDialog(parent, fl),
-  mParent(parent)
+QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
+    : QDialog( parent, fl ),
+    mParent( parent )
 {
-  setupUi(this);
+  setupUi( this );
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
-  myFileInfo.setFile(QgsApplication::qgisSettingsDirPath());
+  myFileInfo.setFile( QgsApplication::qgisSettingsDirPath() );
   if ( !myFileInfo.exists( ) )
   {
-#ifdef QGISDEBUG 
-    std::cout << "The qgis.db does not exist" << std::endl; 
-#endif 
+    QgsDebugMsg( "The qgis.db does not exist" );
   }
-  
+
   // Note proper queens english on next line
   initialise();
 
   //
-  // Create the zoomto and delete buttons and add them to the 
+  // Create the zoomto and delete buttons and add them to the
   // toolbar
   //
-  QPushButton * btnDelete = new QPushButton(tr("&Delete"));
-  QPushButton * btnZoomTo = new QPushButton(tr("&Zoom to"));
-  btnZoomTo->setDefault(true);
-  buttonBox->addButton(btnDelete, QDialogButtonBox::ActionRole);
-  buttonBox->addButton(btnZoomTo, QDialogButtonBox::ActionRole);
-  // connect the slot up to catch when a bookmark is deleted 
-  connect(btnDelete, SIGNAL(clicked()), this, SLOT(on_btnDelete_clicked()));
+  QPushButton * btnDelete = new QPushButton( tr( "&Delete" ) );
+  QPushButton * btnZoomTo = new QPushButton( tr( "&Zoom to" ) );
+  btnZoomTo->setDefault( true );
+  buttonBox->addButton( btnDelete, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( btnZoomTo, QDialogButtonBox::ActionRole );
+  // connect the slot up to catch when a bookmark is deleted
+  connect( btnDelete, SIGNAL( clicked() ), this, SLOT( on_btnDelete_clicked() ) );
   // connect the slot up to catch when a bookmark is zoomed to
-  connect(btnZoomTo, SIGNAL(clicked()), this, SLOT(on_btnZoomTo_clicked()));
+  connect( btnZoomTo, SIGNAL( clicked() ), this, SLOT( on_btnZoomTo_clicked() ) );
   // connect the slot up to catch when a new bookmark is added
-  connect(mParent, SIGNAL(bookmarkAdded()), this, SLOT(refreshBookmarks()));
+  connect( mParent, SIGNAL( bookmarkAdded() ), this, SLOT( refreshBookmarks() ) );
   //and for help requested
-  connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpRequested() ) );
 }
 
 // Destructor
@@ -87,52 +85,52 @@ void QgsBookmarks::refreshBookmarks()
 void QgsBookmarks::initialise()
 {
   int rc = connectDb();
-  if(rc == SQLITE_OK)
+  if ( rc == SQLITE_OK )
   {
     // prepare the sql statement
     const char *pzTail;
     sqlite3_stmt *ppStmt;
     QString sql = "select * from tbl_bookmarks";
 
-    rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
+    rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
     // XXX Need to free memory from the error msg if one is set
-    if(rc == SQLITE_OK)
+    if ( rc == SQLITE_OK )
     {
       // get the first row of the result set
-      while(sqlite3_step(ppStmt) == SQLITE_ROW)
+      while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
       {
-        QTreeWidgetItem *item = new QTreeWidgetItem(lstBookmarks);
-        QString name = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
+        QTreeWidgetItem *item = new QTreeWidgetItem( lstBookmarks );
+        QString name = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 1 ) );
         //        sqlite3_bind_parameter_index(ppStmt, "name"));
-        //QgsDebugMsg("Bookmark name: " + name.toLocal8Bit().data()); 
-        item->setText(0, name);
+        //QgsDebugMsg("Bookmark name: " + name.toLocal8Bit().data());
+        item->setText( 0, name );
         // set the project name
-        item->setText(1, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2))); 
+        item->setText( 1, QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 2 ) ) );
         // get the extents
-        QString xMin = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 3));
-        QString yMin = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 4));
-        QString xMax = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 5));
-        QString yMax = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 6));
+        QString xMin = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 3 ) );
+        QString yMin = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 4 ) );
+        QString xMax = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 5 ) );
+        QString yMax = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 6 ) );
         // set the extents
-        item->setText(2, xMin + ", " + yMin + ", " + xMax + ", " + yMax); 
+        item->setText( 2, xMin + ", " + yMin + ", " + xMax + ", " + yMax );
         // set the id
-        item->setText(3, QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 0)));
+        item->setText( 3, QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
       }
-      for (int col = 0; col < 4; col++)
+      for ( int col = 0; col < 4; col++ )
       {
-        lstBookmarks->resizeColumnToContents(col);
+        lstBookmarks->resizeColumnToContents( col );
       }
-      lstBookmarks->sortByColumn(0, Qt::AscendingOrder);
+      lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
     }
     else
     {
       // XXX query failed -- warn the user some how
-      std::cout << "Failed to get bookmarks: " << sqlite3_errmsg(db) << std::endl; 
+      QgsDebugMsg( QString( "Failed to get bookmarks: %1" ).arg( sqlite3_errmsg( db ) ) );
     }
     // close the statement
-    sqlite3_finalize(ppStmt);
+    sqlite3_finalize( ppStmt );
     // close the database
-    sqlite3_close(db);
+    sqlite3_close( db );
     // return the srs wkt
 
   }
@@ -141,48 +139,48 @@ void QgsBookmarks::initialise()
 void QgsBookmarks::restorePosition()
 {
   QSettings settings;
-  restoreGeometry(settings.value("/Windows/Bookmarks/geometry").toByteArray());
+  restoreGeometry( settings.value( "/Windows/Bookmarks/geometry" ).toByteArray() );
 }
 
 void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue("/Windows/Bookmarks/geometry", saveGeometry());
-} 
+  settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
+}
 
 void QgsBookmarks::on_btnDelete_clicked()
 {
   // get the current item
   QTreeWidgetItem *item = lstBookmarks->currentItem();
-  if(item)
+  if ( item )
   {
     // make sure the user really wants to delete this bookmark
-    if(QMessageBox::Ok == QMessageBox::information(this,tr("Really Delete?"),
-          tr("Are you sure you want to delete the ") + item->text(0) + tr(" bookmark?"),
-          QMessageBox::Ok | QMessageBox::Cancel))
+    if ( QMessageBox::Ok == QMessageBox::information( this, tr( "Really Delete?" ),
+         tr( "Are you sure you want to delete the " ) + item->text( 0 ) + tr( " bookmark?" ),
+         QMessageBox::Ok | QMessageBox::Cancel ) )
     {
       // remove it from the listview
-      item = lstBookmarks->takeTopLevelItem(lstBookmarks->indexOfTopLevelItem(item));
+      item = lstBookmarks->takeTopLevelItem( lstBookmarks->indexOfTopLevelItem( item ) );
       // delete it from the database
       int rc = connectDb();
-      if(rc == SQLITE_OK)
+      if ( rc == SQLITE_OK )
       {
         char *errmsg;
         // build the sql statement
-        QString sql = "delete from tbl_bookmarks where bookmark_id = " + item->text(3);
-        rc = sqlite3_exec(db, sql.toUtf8(), NULL, NULL, &errmsg);
-        if(rc != SQLITE_OK)
+        QString sql = "delete from tbl_bookmarks where bookmark_id = " + item->text( 3 );
+        rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
+        if ( rc != SQLITE_OK )
         {
           // XXX Provide popup message on failure?
-          QMessageBox::warning(this, tr("Error deleting bookmark"),
-                               tr("Failed to delete the ") + 
-                               item->text(0) +
-                               tr(" bookmark from the database. The "
-                                  "database said:\n") + QString(errmsg));
-          sqlite3_free(errmsg);
+          QMessageBox::warning( this, tr( "Error deleting bookmark" ),
+                                tr( "Failed to delete the " ) +
+                                item->text( 0 ) +
+                                tr( " bookmark from the database. The "
+                                    "database said:\n" ) + QString( errmsg ) );
+          sqlite3_free( errmsg );
         }
         // close the database
-        sqlite3_close(db);
+        sqlite3_close( db );
       }
       delete item;
     }
@@ -194,73 +192,74 @@ void QgsBookmarks::on_btnZoomTo_clicked()
   zoomToBookmark();
 }
 
-void QgsBookmarks::on_lstBookmarks_doubleClicked(QTreeWidgetItem *lvi)
+void QgsBookmarks::on_lstBookmarks_doubleClicked( QTreeWidgetItem *lvi )
 {
   zoomToBookmark();
 }
 
 void QgsBookmarks::zoomToBookmark()
 {
-	// Need to fetch the extent for the selected bookmark and then redraw
-	// the map
+  // Need to fetch the extent for the selected bookmark and then redraw
+  // the map
   // get the current item
   QTreeWidgetItem *item = lstBookmarks->currentItem();
-  if(!item)
+  if ( !item )
   {
-      return;
+    return;
   }
   // get the extent from the database
   int rc = connectDb();
-  if(rc == SQLITE_OK)
+  if ( rc == SQLITE_OK )
   {
     sqlite3_stmt *ppStmt;
     const char *pzTail;
     // build the sql statement
-    QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + item->text(3);
-    rc = sqlite3_prepare(db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail);
-    if(rc == SQLITE_OK)
+    QString sql = "select xmin, ymin, xmax, ymax from tbl_bookmarks where bookmark_id = " + item->text( 3 );
+    rc = sqlite3_prepare( db, sql.toUtf8(), sql.length(), &ppStmt, &pzTail );
+    if ( rc == SQLITE_OK )
     {
-      if(sqlite3_step(ppStmt) == SQLITE_ROW){
+      if ( sqlite3_step( ppStmt ) == SQLITE_ROW )
+      {
         // get the extents from the resultset
-        QString xmin  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 0));
-        QString ymin  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 1));
-        QString xmax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 2));
-        QString ymax  = QString::fromUtf8((const char *)sqlite3_column_text(ppStmt, 3));
+        QString xmin  = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) );
+        QString ymin  = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 1 ) );
+        QString xmax  = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 2 ) );
+        QString ymax  = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 3 ) );
         // set the extent to the bookmark
-        QgisApp::instance()->setExtent(QgsRect(xmin.toDouble(),
-              ymin.toDouble(),
-              xmax.toDouble(),
-              ymax.toDouble()));
+        QgisApp::instance()->setExtent( QgsRect( xmin.toDouble(),
+                                        ymin.toDouble(),
+                                        xmax.toDouble(),
+                                        ymax.toDouble() ) );
         // redraw the map
         QgisApp::instance()->getMapCanvas()->refresh();
       }
     }
 
     // close the statement
-    sqlite3_finalize(ppStmt);
+    sqlite3_finalize( ppStmt );
     // close the database
-    sqlite3_close(db);
+    sqlite3_close( db );
   }
-  
+
 }
 
 int QgsBookmarks::connectDb()
 {
 
   int rc;
-  rc = sqlite3_open(QgsApplication::qgisUserDbFilePath().toUtf8().data(), &db);
-  if(rc!=SQLITE_OK)
+  rc = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &db );
+  if ( rc != SQLITE_OK )
   {
-    std::cout <<  "Can't open database: " <<  sqlite3_errmsg(db) << std::endl;
+    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( db ) ) );
 
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    assert(rc == 0);
+    assert( rc == 0 );
   }
   return rc;
 }
 
 void QgsBookmarks::helpRequested()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }

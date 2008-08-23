@@ -20,50 +20,50 @@
 
 #include "qgslegendsymbologyitem.h"
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(QTreeWidgetItem * theItem,QString theString, int pixmapWidth, int pixmapHeight)
-  : QgsLegendItem(theItem, theString), 
-    mPixmapWidth(pixmapWidth), 
-    mPixmapHeight(pixmapHeight), 
-    mLegend(0)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem( QTreeWidgetItem * theItem, QString theString, int pixmapWidth, int pixmapHeight )
+    : QgsLegendItem( theItem, theString ),
+    mPixmapWidth( pixmapWidth ),
+    mPixmapHeight( pixmapHeight ),
+    mLegend( 0 )
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
-QgsLegendSymbologyItem::QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight)
- : QgsLegendItem(), 
-   mPixmapWidth(pixmapWidth), 
-   mPixmapHeight(pixmapHeight), 
-   mLegend(0)
+QgsLegendSymbologyItem::QgsLegendSymbologyItem( int pixmapWidth, int pixmapHeight )
+    : QgsLegendItem(),
+    mPixmapWidth( pixmapWidth ),
+    mPixmapHeight( pixmapHeight ),
+    mLegend( 0 )
 {
   mType = LEGEND_SYMBOL_ITEM;
 }
 
 QgsLegendSymbologyItem::~QgsLegendSymbologyItem()
-{  
-  if(mLegend)
-    {
-      mLegend->removePixmapWidthValue(mPixmapWidth);
-      mLegend->removePixmapHeightValue(mPixmapHeight);
-    }
+{
+  if ( mLegend )
+  {
+    mLegend->removePixmapWidthValue( mPixmapWidth );
+    mLegend->removePixmapHeightValue( mPixmapHeight );
+  }
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept( LEGEND_ITEM_TYPE type )
 {
   return NO_ACTION;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyItem::accept( const QgsLegendItem* li ) const
 {
   return NO_ACTION;
 }
 
-void QgsLegendSymbologyItem::setLegend(QgsLegend* theLegend)
+void QgsLegendSymbologyItem::setLegend( QgsLegend* theLegend )
 {
   mLegend = theLegend;
-  if(mLegend)
-    {
-      mLegend->addPixmapWidthValue(mPixmapWidth);
-      mLegend->addPixmapHeightValue(mPixmapHeight);
-    }
+  if ( mLegend )
+  {
+    mLegend->addPixmapWidthValue( mPixmapWidth );
+    mLegend->addPixmapHeightValue( mPixmapHeight );
+  }
 }
 

@@ -15,24 +15,24 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "qgslinearminmaxenhancement.h"
 
-QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement(QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue) : QgsContrastEnhancementFunction(theQgsRasterDataType, theMinimumValue, theMaximumValue)
+QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement( QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
 {
 }
 
-int QgsLinearMinMaxEnhancement::enhanceValue(double theValue)
+int QgsLinearMinMaxEnhancement::enhanceValue( double theValue )
 {
-  int myStretchedValue = static_cast<int>(((theValue - mMinimumValue)/(mMinimumMaximumRange))*255.0);
-  if(myStretchedValue < 0)
+  int myStretchedValue = static_cast<int>((( theValue - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
+  if ( myStretchedValue < 0 )
   {
     return 0;
   }
-  else if(myStretchedValue > 255)
+  else if ( myStretchedValue > 255 )
   {
     return 255;
   }
-  
-  return myStretchedValue; 
+
+  return myStretchedValue;
 }

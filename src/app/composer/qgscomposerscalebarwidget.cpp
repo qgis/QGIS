@@ -22,24 +22,24 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerScaleBarWidget::QgsComposerScaleBarWidget(QgsComposerScaleBar* scaleBar): QWidget(), mComposerScaleBar(scaleBar)
+QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QWidget(), mComposerScaleBar( scaleBar )
 {
-  setupUi(this);
+  setupUi( this );
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget(this, scaleBar);
-  gridLayout->addWidget(itemPropertiesWidget, 14, 0, 1, 3);
+  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
+  gridLayout->addWidget( itemPropertiesWidget, 14, 0, 1, 3 );
 
-  blockMemberSignals(true);
-  mStyleComboBox->insertItem(0, tr("Single Box"));
-  mStyleComboBox->insertItem(1, tr("Double Box"));
-  mStyleComboBox->insertItem(2, tr("Line Ticks Middle"));
-  mStyleComboBox->insertItem(3, tr("Line Ticks Down"));
-  mStyleComboBox->insertItem(4, tr("Line Ticks Up"));
-  mStyleComboBox->insertItem(5, tr("Numeric"));
+  blockMemberSignals( true );
+  mStyleComboBox->insertItem( 0, tr( "Single Box" ) );
+  mStyleComboBox->insertItem( 1, tr( "Double Box" ) );
+  mStyleComboBox->insertItem( 2, tr( "Line Ticks Middle" ) );
+  mStyleComboBox->insertItem( 3, tr( "Line Ticks Down" ) );
+  mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
+  mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
   setGuiElements(); //set the GUI elements to the state of scaleBar
-  blockMemberSignals(false);
+  blockMemberSignals( false );
 }
 
 QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
@@ -54,72 +54,72 @@ void QgsComposerScaleBarWidget::refreshMapComboBox()
 
   mMapComboBox->clear();
 
-  if(mComposerScaleBar)
+  if ( mComposerScaleBar )
+  {
+    //insert available maps into mMapComboBox
+    const QgsComposition* scaleBarComposition = mComposerScaleBar->composition();
+    if ( scaleBarComposition )
     {
-      //insert available maps into mMapComboBox
-      const QgsComposition* scaleBarComposition = mComposerScaleBar->composition();
-      if(scaleBarComposition)
-	{
-	  QList<const QgsComposerMap*> availableMaps = scaleBarComposition->composerMapItems();
-	  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-	  for(; mapItemIt != availableMaps.constEnd(); ++mapItemIt)
-	    {
-	      mMapComboBox->addItem(tr("Map ") + QString::number((*mapItemIt)->id()));
-	    } 
-	}
+      QList<const QgsComposerMap*> availableMaps = scaleBarComposition->composerMapItems();
+      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+      {
+        mMapComboBox->addItem( tr( "Map " ) + QString::number(( *mapItemIt )->id() ) );
+      }
     }
+  }
 
-  if(mMapComboBox->findText(saveCurrentComboText) == -1)
-    {
-      //the former entry is no longer present. Inform the scalebar about the changed composer map
-      on_mMapComboBox_activated(mMapComboBox->currentText());
-    }
+  if ( mMapComboBox->findText( saveCurrentComboText ) == -1 )
+  {
+    //the former entry is no longer present. Inform the scalebar about the changed composer map
+    on_mMapComboBox_activated( mMapComboBox->currentText() );
+  }
   else
-    {
-      //the former entry is still present. Make it the current entry again
-      mMapComboBox->setCurrentIndex(mMapComboBox->findText(saveCurrentComboText));
-    }
+  {
+    //the former entry is still present. Make it the current entry again
+    mMapComboBox->setCurrentIndex( mMapComboBox->findText( saveCurrentComboText ) );
+  }
 }
 
-void QgsComposerScaleBarWidget::showEvent ( QShowEvent * event )
+void QgsComposerScaleBarWidget::showEvent( QShowEvent * event )
 {
   refreshMapComboBox();
-  QWidget::showEvent(event);
+  QWidget::showEvent( event );
 }
 
-void QgsComposerScaleBarWidget::on_mMapComboBox_activated(const QString& text)
+void QgsComposerScaleBarWidget::on_mMapComboBox_activated( const QString& text )
 {
-  if(!mComposerScaleBar || text.isEmpty())
-    {
-      return;
-    }
+  if ( !mComposerScaleBar || text.isEmpty() )
+  {
+    return;
+  }
 
   const QgsComposition* comp = mComposerScaleBar->composition();
-  if(!comp)
-    {
-      return;
-    }
+  if ( !comp )
+  {
+    return;
+  }
 
   //extract id
   int id;
   bool conversionOk;
-  QString idString = text.split(" ").at(1);
-  id = idString.toInt(&conversionOk);
+  QString idString = text.split( " " ).at( 1 );
+  id = idString.toInt( &conversionOk );
 
-  if(!conversionOk)
-    {
-      return;
-    }
+  if ( !conversionOk )
+  {
+    return;
+  }
 
   //get QgsComposerMap object from composition
-  const QgsComposerMap* composerMap = comp->getComposerMapById(id);
-  if(!composerMap)
-    {
-      return;
-    }
+  const QgsComposerMap* composerMap = comp->getComposerMapById( id );
+  if ( !composerMap )
+  {
+    return;
+  }
 
   //set it to scale bar
-  mComposerScaleBar->setComposerMap(composerMap);
+  mComposerScaleBar->setComposerMap( composerMap );
 
   //update scale bar
   mComposerScaleBar->update();
@@ -127,198 +127,198 @@ void QgsComposerScaleBarWidget::on_mMapComboBox_activated(const QString& text)
 
 void QgsComposerScaleBarWidget::setGuiElements()
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mNumberOfSegmentsSpinBox->setValue(mComposerScaleBar->numSegments());
-  mSegmentsLeftSpinBox->setValue(mComposerScaleBar->numSegmentsLeft());
-  mSegmentSizeSpinBox->setValue(mComposerScaleBar->numUnitsPerSegment());
-  mLineWidthSpinBox->setValue(mComposerScaleBar->pen().widthF());
-  mHeightSpinBox->setValue(mComposerScaleBar->height());
-  mMapUnitsPerBarUnitSpinBox->setValue(mComposerScaleBar->numMapUnitsPerScaleBarUnit());
-  mLabelBarSpaceSpinBox->setValue(mComposerScaleBar->labelBarSpace());
-  mBoxSizeSpinBox->setValue(mComposerScaleBar->boxContentSpace());
-  mUnitLabelLineEdit->setText(mComposerScaleBar->unitLabeling());
+  mNumberOfSegmentsSpinBox->setValue( mComposerScaleBar->numSegments() );
+  mSegmentsLeftSpinBox->setValue( mComposerScaleBar->numSegmentsLeft() );
+  mSegmentSizeSpinBox->setValue( mComposerScaleBar->numUnitsPerSegment() );
+  mLineWidthSpinBox->setValue( mComposerScaleBar->pen().widthF() );
+  mHeightSpinBox->setValue( mComposerScaleBar->height() );
+  mMapUnitsPerBarUnitSpinBox->setValue( mComposerScaleBar->numMapUnitsPerScaleBarUnit() );
+  mLabelBarSpaceSpinBox->setValue( mComposerScaleBar->labelBarSpace() );
+  mBoxSizeSpinBox->setValue( mComposerScaleBar->boxContentSpace() );
+  mUnitLabelLineEdit->setText( mComposerScaleBar->unitLabeling() );
 
   //map combo box
-  if(mComposerScaleBar->composerMap())
+  if ( mComposerScaleBar->composerMap() )
+  {
+    QString mapText = tr( "Map " ) + mComposerScaleBar->composerMap()->id();
+    int itemId = mMapComboBox->findText( mapText );
+    if ( itemId > 0 )
     {
-      QString mapText = tr("Map ") + mComposerScaleBar->composerMap()->id();
-      int itemId = mMapComboBox->findText(mapText);
-      if(itemId > 0)
-	{
-	  mMapComboBox->setCurrentIndex(itemId);
-	}
+      mMapComboBox->setCurrentIndex( itemId );
     }
+  }
 
   //style...
   QString style = mComposerScaleBar->style();
-  mStyleComboBox->setCurrentIndex(mStyleComboBox->findText(tr(style.toLocal8Bit().data())));
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
 }
 
 //slots
 
-void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged(double d)
+void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  QPen newPen(QColor(0, 0, 0));
-  newPen.setWidthF(d);
-  mComposerScaleBar->setPen(newPen);
+  QPen newPen( QColor( 0, 0, 0 ) );
+  newPen.setWidthF( d );
+  mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mSegmentSizeSpinBox_valueChanged(double d)
+void QgsComposerScaleBarWidget::on_mSegmentSizeSpinBox_valueChanged( double d )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setNumUnitsPerSegment(d);
+  mComposerScaleBar->setNumUnitsPerSegment( d );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mSegmentsLeftSpinBox_valueChanged(int i)
+void QgsComposerScaleBarWidget::on_mSegmentsLeftSpinBox_valueChanged( int i )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setNumSegmentsLeft(i);
+  mComposerScaleBar->setNumSegmentsLeft( i );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged(int i)
+void QgsComposerScaleBarWidget::on_mNumberOfSegmentsSpinBox_valueChanged( int i )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setNumSegments(i);
+  mComposerScaleBar->setNumSegments( i );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged(int i)
+void QgsComposerScaleBarWidget::on_mHeightSpinBox_valueChanged( int i )
 {
-if(!mComposerScaleBar)
-   {
-     return;
-   }
- mComposerScaleBar->setHeight(i);
- mComposerScaleBar->update();
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+  mComposerScaleBar->setHeight( i );
+  mComposerScaleBar->update();
 }
 
 void QgsComposerScaleBarWidget::on_mFontButton_clicked()
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
   bool dialogAccepted;
   QFont oldFont = mComposerScaleBar->font();
-  QFont newFont = QFontDialog::getFont(&dialogAccepted, oldFont, 0);
-  if(dialogAccepted)
-    {
-      mComposerScaleBar->setFont(newFont);
-    }
+  QFont newFont = QFontDialog::getFont( &dialogAccepted, oldFont, 0 );
+  if ( dialogAccepted )
+  {
+    mComposerScaleBar->setFont( newFont );
+  }
   mComposerScaleBar->update();
 }
 
 void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
   QColor oldColor = mComposerScaleBar->brush().color();
-  QColor newColor = QColorDialog::getColor(oldColor, 0);
-  
-  if(!newColor.isValid()) //user canceled the dialog
-    {
-      return;
-    }
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
 
-  QBrush newBrush(newColor);
-  mComposerScaleBar->setBrush(newBrush);
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  QBrush newBrush( newColor );
+  mComposerScaleBar->setBrush( newBrush );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged(const QString& text)
+void QgsComposerScaleBarWidget::on_mUnitLabelLineEdit_textChanged( const QString& text )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setUnitLabeling(text);
+  mComposerScaleBar->setUnitLabeling( text );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged(double d)
+void QgsComposerScaleBarWidget::on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
-  
-  mComposerScaleBar->setNumMapUnitsPerScaleBarUnit(d);
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->setNumMapUnitsPerScaleBarUnit( d );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged(const QString& text)
+void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QString& text )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setStyle(text);
+  mComposerScaleBar->setStyle( text );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged(double d)
+void QgsComposerScaleBarWidget::on_mLabelBarSpaceSpinBox_valueChanged( double d )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setLabelBarSpace(d);
+  mComposerScaleBar->setLabelBarSpace( d );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged(double d)
+void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged( double d )
 {
-  if(!mComposerScaleBar)
-    {
-      return;
-    }
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
 
-  mComposerScaleBar->setBoxContentSpace(d);
+  mComposerScaleBar->setBoxContentSpace( d );
   mComposerScaleBar->update();
 }
 
-void QgsComposerScaleBarWidget::blockMemberSignals(bool block)
+void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
 {
-  mSegmentSizeSpinBox->blockSignals(block);
-  mNumberOfSegmentsSpinBox->blockSignals(block);
-  mSegmentsLeftSpinBox->blockSignals(block);
-  mStyleComboBox->blockSignals(block);
-  mUnitLabelLineEdit->blockSignals(block);
-  mMapUnitsPerBarUnitSpinBox->blockSignals(block);
-  mMapComboBox->blockSignals(block);
-  mHeightSpinBox->blockSignals(block);
-  mLineWidthSpinBox->blockSignals(block);
-  mLabelBarSpaceSpinBox->blockSignals(block);
-  mBoxSizeSpinBox->blockSignals(block);
+  mSegmentSizeSpinBox->blockSignals( block );
+  mNumberOfSegmentsSpinBox->blockSignals( block );
+  mSegmentsLeftSpinBox->blockSignals( block );
+  mStyleComboBox->blockSignals( block );
+  mUnitLabelLineEdit->blockSignals( block );
+  mMapUnitsPerBarUnitSpinBox->blockSignals( block );
+  mMapComboBox->blockSignals( block );
+  mHeightSpinBox->blockSignals( block );
+  mLineWidthSpinBox->blockSignals( block );
+  mLabelBarSpaceSpinBox->blockSignals( block );
+  mBoxSizeSpinBox->blockSignals( block );
 }

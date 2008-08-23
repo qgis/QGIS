@@ -28,14 +28,14 @@
   \brief The QgsRubberBand class provides a transparent overlay widget
   for tracking the mouse while drawing polylines or polygons.
 */
-  QgsRubberBand::QgsRubberBand(QgsMapCanvas* mapCanvas, bool isPolygon)
-: QgsMapCanvasItem(mapCanvas), mIsPolygon(isPolygon), mTranslationOffsetX(0.0), mTranslationOffsetY(0.0)
+QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
+    : QgsMapCanvasItem( mapCanvas ), mIsPolygon( isPolygon ), mTranslationOffsetX( 0.0 ), mTranslationOffsetY( 0.0 )
 {
-  reset(isPolygon);
-  setColor(QColor(Qt::lightGray));
+  reset( isPolygon );
+  setColor( QColor( Qt::lightGray ) );
 }
 
-QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem(0)
+QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
 {}
 
 QgsRubberBand::~QgsRubberBand()
@@ -44,31 +44,31 @@ QgsRubberBand::~QgsRubberBand()
 /*!
   Set the outline and fill color.
   */
-void QgsRubberBand::setColor(const QColor & color)
+void QgsRubberBand::setColor( const QColor & color )
 {
-  mPen.setColor(color);
-  QColor fillColor(color.red(), color.green(), color.blue(), 63);
-  mBrush.setColor(fillColor);
-  mBrush.setStyle(Qt::SolidPattern);
+  mPen.setColor( color );
+  QColor fillColor( color.red(), color.green(), color.blue(), 63 );
+  mBrush.setColor( fillColor );
+  mBrush.setStyle( Qt::SolidPattern );
 }
 
 /*!
   Set the outline width.
   */
-void QgsRubberBand::setWidth(int width)
+void QgsRubberBand::setWidth( int width )
 {
-  mPen.setWidth(width);
+  mPen.setWidth( width );
 }
 
 /*!
   Remove all points from the shape being created.
   */
-void QgsRubberBand::reset(bool isPolygon)
+void QgsRubberBand::reset( bool isPolygon )
 {
 
   mPoints.clear();
   QList< QgsPoint > initial_list;
-  mPoints.push_back(initial_list);
+  mPoints.push_back( initial_list );
   mIsPolygon = isPolygon;
   updateRect();
   update();
@@ -77,35 +77,35 @@ void QgsRubberBand::reset(bool isPolygon)
 /*!
   Add a point to the shape being created.
   */
-void QgsRubberBand::addPoint(const QgsPoint & p, bool do_update /* = true */, int geometryIndex)
-{ 
-  if(mPoints.size() < (geometryIndex + 1))
+void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, int geometryIndex )
+{
+  if ( mPoints.size() < ( geometryIndex + 1 ) )
   {
     return;
   }
 
   //we need to set two points at the begin of the ruber band for operations that move the last point
-  if(mPoints[geometryIndex].size() == 0)
+  if ( mPoints[geometryIndex].size() == 0 )
   {
-    mPoints[geometryIndex].push_back(p);
+    mPoints[geometryIndex].push_back( p );
   }
-  mPoints[geometryIndex].push_back(p);
+  mPoints[geometryIndex].push_back( p );
 
-  if (do_update)
+  if ( do_update )
   {
     updateRect();
     update();
   }
 }
 
-void QgsRubberBand::removeLastPoint(int geometryIndex)
+void QgsRubberBand::removeLastPoint( int geometryIndex )
 {
-  if(mPoints.size() < (geometryIndex + 1))
+  if ( mPoints.size() < ( geometryIndex + 1 ) )
   {
     return;
   }
 
-  if(mPoints[geometryIndex].size() > 0)
+  if ( mPoints[geometryIndex].size() > 0 )
   {
     mPoints[geometryIndex].pop_back();
   }
@@ -117,32 +117,32 @@ void QgsRubberBand::removeLastPoint(int geometryIndex)
 /*!
   Update the line between the last added point and the mouse position.
   */
-void QgsRubberBand::movePoint(const QgsPoint & p, int geometryIndex)
+void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
 {
-  if(mPoints.size() < (geometryIndex + 1))
+  if ( mPoints.size() < ( geometryIndex + 1 ) )
   {
     return;
   }
 
-  if(mPoints.at(geometryIndex).size() < 1)
+  if ( mPoints.at( geometryIndex ).size() < 1 )
   {
     return;
   }
 
-  mPoints[geometryIndex][mPoints.at(geometryIndex).size() - 1] = p;
+  mPoints[geometryIndex][mPoints.at( geometryIndex ).size() - 1] = p;
 
   updateRect();
   update();
 }
 
-void QgsRubberBand::movePoint(int index, const QgsPoint& p, int geometryIndex)
+void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 {
-  if(mPoints.size() < (geometryIndex + 1))
+  if ( mPoints.size() < ( geometryIndex + 1 ) )
   {
     return;
   }
 
-  if(mPoints.at(geometryIndex).size() < index)
+  if ( mPoints.at( geometryIndex ).size() < index )
   {
     return;
   }
@@ -153,120 +153,120 @@ void QgsRubberBand::movePoint(int index, const QgsPoint& p, int geometryIndex)
   update();
 }
 
-void QgsRubberBand::setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer)
+void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer& layer )
 {
-  if(!geom)
+  if ( !geom )
   {
     return;
   }
 
   //maprender object of canvas
   QgsMapRenderer* mr = mMapCanvas->mapRenderer();
-  if(!mr)
+  if ( !mr )
   {
     return;
   }
 
-  reset(mIsPolygon);
+  reset( mIsPolygon );
 
-  switch (geom->wkbType())
+  switch ( geom->wkbType() )
   {
 
     case QGis::WKBPoint:
     case QGis::WKBPoint25D:
-      {
-        mIsPolygon = true;
-        double d = mMapCanvas->extent().width() * 0.005;
-        QgsPoint pt = mr->layerToMapCoordinates(&layer, geom->asPoint());
-        addPoint(QgsPoint(pt.x()-d,pt.y()-d));
-        addPoint(QgsPoint(pt.x()+d,pt.y()-d));
-        addPoint(QgsPoint(pt.x()+d,pt.y()+d));
-        addPoint(QgsPoint(pt.x()-d,pt.y()+d));
-      }
-      break;
+    {
+      mIsPolygon = true;
+      double d = mMapCanvas->extent().width() * 0.005;
+      QgsPoint pt = mr->layerToMapCoordinates( &layer, geom->asPoint() );
+      addPoint( QgsPoint( pt.x() - d, pt.y() - d ) );
+      addPoint( QgsPoint( pt.x() + d, pt.y() - d ) );
+      addPoint( QgsPoint( pt.x() + d, pt.y() + d ) );
+      addPoint( QgsPoint( pt.x() - d, pt.y() + d ) );
+    }
+    break;
 
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
+    {
+      mIsPolygon = true;
+      double d = mMapCanvas->extent().width() * 0.005;
+      QgsMultiPoint mpt = geom->asMultiPoint();
+      for ( int i = 0; i < mpt.size(); ++i )
       {
-        mIsPolygon = true;
-        double d = mMapCanvas->extent().width() * 0.005;
-        QgsMultiPoint mpt = geom->asMultiPoint();
-        for(int i = 0; i < mpt.size(); ++i)
-        {
-          QgsPoint pt = mpt[i];
-          addPoint(mr->layerToMapCoordinates(&layer, QgsPoint(pt.x()-d,pt.y()-d)));
-          addPoint(mr->layerToMapCoordinates(&layer, QgsPoint(pt.x()+d,pt.y()-d)));
-          addPoint(mr->layerToMapCoordinates(&layer, QgsPoint(pt.x()+d,pt.y()+d)));
-          addPoint(mr->layerToMapCoordinates(&layer, QgsPoint(pt.x()-d,pt.y()+d)));
-        }
+        QgsPoint pt = mpt[i];
+        addPoint( mr->layerToMapCoordinates( &layer, QgsPoint( pt.x() - d, pt.y() - d ) ) );
+        addPoint( mr->layerToMapCoordinates( &layer, QgsPoint( pt.x() + d, pt.y() - d ) ) );
+        addPoint( mr->layerToMapCoordinates( &layer, QgsPoint( pt.x() + d, pt.y() + d ) ) );
+        addPoint( mr->layerToMapCoordinates( &layer, QgsPoint( pt.x() - d, pt.y() + d ) ) );
       }
-      break;
+    }
+    break;
 
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
+    {
+      mIsPolygon = false;
+      QgsPolyline line = geom->asPolyline();
+      for ( int i = 0; i < line.count(); i++ )
       {
-        mIsPolygon = false;
-        QgsPolyline line = geom->asPolyline();
-        for (int i = 0; i < line.count(); i++)
-        {
-          addPoint(mr->layerToMapCoordinates(&layer, line[i]));
-        }
+        addPoint( mr->layerToMapCoordinates( &layer, line[i] ) );
       }
-      break;
+    }
+    break;
 
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
-      {
-        mIsPolygon = false;
-        mPoints.clear();
+    {
+      mIsPolygon = false;
+      mPoints.clear();
 
-        QgsMultiPolyline mline = geom->asMultiPolyline();
-        for(int i = 0; i < mline.size(); ++i)
+      QgsMultiPolyline mline = geom->asMultiPolyline();
+      for ( int i = 0; i < mline.size(); ++i )
+      {
+        QList<QgsPoint> newList;
+        mPoints.push_back( newList );
+        QgsPolyline line = mline[i];
+        for ( int j = 0; j < line.size(); ++j )
         {
-          QList<QgsPoint> newList;
-          mPoints.push_back(newList);
-          QgsPolyline line = mline[i];
-          for(int j = 0; j < line.size(); ++j)
-          {
-            addPoint(mr->layerToMapCoordinates(&layer, line[j]), false, i);
-          }
+          addPoint( mr->layerToMapCoordinates( &layer, line[j] ), false, i );
         }
       }
-      break;
+    }
+    break;
 
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
+    {
+      mIsPolygon = true;
+      QgsPolygon poly = geom->asPolygon();
+      QgsPolyline line = poly[0];
+      for ( int i = 0; i < line.count(); i++ )
       {
-        mIsPolygon = true;
-        QgsPolygon poly = geom->asPolygon();
-        QgsPolyline line = poly[0];
-        for (int i = 0; i < line.count(); i++)
-        {
-          addPoint(mr->layerToMapCoordinates(&layer, line[i]));
-        }
+        addPoint( mr->layerToMapCoordinates( &layer, line[i] ) );
       }
-      break;
+    }
+    break;
 
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      {
-        mIsPolygon = true;
-        mPoints.clear();
+    {
+      mIsPolygon = true;
+      mPoints.clear();
 
-        QgsMultiPolygon multipoly = geom->asMultiPolygon();
-        for(int i = 0; i < multipoly.size(); ++i)
+      QgsMultiPolygon multipoly = geom->asMultiPolygon();
+      for ( int i = 0; i < multipoly.size(); ++i )
+      {
+        QList<QgsPoint> newList;
+        mPoints.push_back( newList );
+        QgsPolygon poly = multipoly[i];
+        QgsPolyline line = poly[0];
+        for ( int j = 0; j < line.count(); ++j )
         {
-          QList<QgsPoint> newList;
-          mPoints.push_back(newList);
-          QgsPolygon poly = multipoly[i];
-          QgsPolyline line = poly[0];
-          for(int j = 0; j < line.count(); ++j)
-          {
-            addPoint(mr->layerToMapCoordinates(&layer, line[j]), false, i);
-          }
+          addPoint( mr->layerToMapCoordinates( &layer, line[j] ), false, i );
         }
       }
-      break;
+    }
+    break;
 
     case QGis::WKBUnknown:
     default:
@@ -279,31 +279,31 @@ void QgsRubberBand::setToGeometry(QgsGeometry* geom, QgsVectorLayer& layer)
 /*!
   Draw the shape in response to an update event.
   */
-void QgsRubberBand::paint(QPainter* p)
+void QgsRubberBand::paint( QPainter* p )
 {
   QList<QgsPoint> currentList;
-  if(mPoints.size() > 0)
+  if ( mPoints.size() > 0 )
   {
-    p->setPen(mPen);
-    p->setBrush(mBrush);
+    p->setPen( mPen );
+    p->setBrush( mBrush );
 
-    for(int i = 0; i < mPoints.size(); ++i)
+    for ( int i = 0; i < mPoints.size(); ++i )
     {
       QPolygonF pts;
-      QList<QgsPoint>::const_iterator it = mPoints.at(i).constBegin();
-      for(; it != mPoints.at(i).constEnd(); ++it)
+      QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
+      for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
         //QgsDebugMsg("Drawing rubberband vertex: " + QString::number(it->x() + mTranslationOffsetX) + "//" + QString::number(it->y() + mTranslationOffsetY));
-        pts.append(toCanvasCoords(QgsPoint(it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY))-pos());
+        pts.append( toCanvasCoords( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos() );
       }
 
-      if (mIsPolygon)
+      if ( mIsPolygon )
       {
-        p->drawPolygon(pts);
+        p->drawPolygon( pts );
       }
       else
       {
-        p->drawPolyline(pts);
+        p->drawPolyline( pts );
       }
     }
   }
@@ -311,37 +311,37 @@ void QgsRubberBand::paint(QPainter* p)
 
 void QgsRubberBand::updateRect()
 {
-  if(mPoints.size() > 0)
+  if ( mPoints.size() > 0 )
   {
     //initial point
-    QList<QgsPoint>::const_iterator it = mPoints.at(0).constBegin();
-    if(it == mPoints.at(0).constEnd())
+    QList<QgsPoint>::const_iterator it = mPoints.at( 0 ).constBegin();
+    if ( it == mPoints.at( 0 ).constEnd() )
     {
       return;
     }
-    QgsRect r(it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY, \
-        it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY);
+    QgsRect r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY, \
+               it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
 
-    for(int i = 0; i < mPoints.size(); ++i)
+    for ( int i = 0; i < mPoints.size(); ++i )
     {
-      QList<QgsPoint>::const_iterator it = mPoints.at(i).constBegin();
-      for(; it != mPoints.at(i).constEnd(); ++it)
+      QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
+      for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
-        r.combineExtentWith(it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY);
+        r.combineExtentWith( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
         //QgsDebugMsg("Combining extent with: " + QString::number(it->x()) + "//" + QString::number(it->y()));
       }
       //QgsDebugMsg("r: " + r.toString());
     }
-    setRect(r);
+    setRect( r );
   }
   else
   {
-    setRect(QgsRect());
+    setRect( QgsRect() );
   }
-  setVisible(mPoints.size() > 0);
+  setVisible( mPoints.size() > 0 );
 }
 
-void QgsRubberBand::setTranslationOffset(double dx, double dy)
+void QgsRubberBand::setTranslationOffset( double dx, double dy )
 {
   mTranslationOffsetX = dx;
   mTranslationOffsetY = dy;
@@ -352,10 +352,10 @@ int QgsRubberBand::numberOfVertices() const
 {
   int count = 0;
   QList<QList<QgsPoint> >::const_iterator it = mPoints.constBegin();
-  for(;it != mPoints.constEnd(); ++it)
+  for ( ;it != mPoints.constEnd(); ++it )
   {
     QList<QgsPoint>::const_iterator iter = it->constBegin();
-    for(;iter != it->constEnd(); ++iter)
+    for ( ;iter != it->constEnd(); ++iter )
     {
       ++count;
     }
@@ -363,9 +363,9 @@ int QgsRubberBand::numberOfVertices() const
   return count;
 }
 
-const QgsPoint *QgsRubberBand::getPoint(int i, int j) const
+const QgsPoint *QgsRubberBand::getPoint( int i, int j ) const
 {
-  if( i<mPoints.size() && j<mPoints[i].size() )
+  if ( i < mPoints.size() && j < mPoints[i].size() )
     return &mPoints[i][j];
   else
     return 0;

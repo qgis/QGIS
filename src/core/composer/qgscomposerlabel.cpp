@@ -19,135 +19,135 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition): QgsComposerItem(composition), mMargin(0.0)
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 0.0 )
 {
   //default font size is 10 point
-  if(mComposition)
-    {
-      mFont.setPixelSize(mComposition->pixelFontSize(10));
-    }
+  if ( mComposition )
+  {
+    mFont.setPixelSize( mComposition->pixelFontSize( 10 ) );
+  }
   else
-    {
-      mFont.setPixelSize(4);
-    }
+  {
+    mFont.setPixelSize( 4 );
+  }
 }
 
 QgsComposerLabel::~QgsComposerLabel()
 {
 }
 
-void QgsComposerLabel::paint(QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget)
+void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
-  if(!painter)
-    {
-      return;
-    }
+  if ( !painter )
+  {
+    return;
+  }
 
-  drawBackground(painter);
-  painter->setPen(QPen(QColor(0, 0, 0))); //draw all text black
-  painter->setFont(mFont);
+  drawBackground( painter );
+  painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
+  painter->setFont( mFont );
 
-  QFontMetricsF fontSize(mFont);
-  painter->drawText(QPointF(mMargin, mMargin + fontSize.ascent()), mText);
+  QFontMetricsF fontSize( mFont );
+  painter->drawText( QPointF( mMargin, mMargin + fontSize.ascent() ), mText );
 
-  drawFrame(painter);
-  if(isSelected())
-    {
-      drawSelectionBoxes(painter);
-    }
+  drawFrame( painter );
+  if ( isSelected() )
+  {
+    drawSelectionBoxes( painter );
+  }
 }
 
-void QgsComposerLabel::setText(const QString& text)
+void QgsComposerLabel::setText( const QString& text )
 {
   mText = text;
   adjustSizeToText();
 }
 
-void QgsComposerLabel::setFont(const QFont& f)
+void QgsComposerLabel::setFont( const QFont& f )
 {
   //set font size in pixels for proper preview and printout
-  if(mComposition)
-    {
-      int pixelSize = mComposition->pixelFontSize(f.pointSizeF());
-      mFont = f;
-      mFont.setPixelSize(pixelSize);
-    }
+  if ( mComposition )
+  {
+    int pixelSize = mComposition->pixelFontSize( f.pointSizeF() );
+    mFont = f;
+    mFont.setPixelSize( pixelSize );
+  }
   else
-    {
-      mFont = f;
-    }
+  {
+    mFont = f;
+  }
   adjustSizeToText();
 }
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  QFontMetricsF fontInfo(mFont);
-  setSceneRect(QRectF(transform().dx(), transform().dy(), fontInfo.width(mText) + 2 * mMargin, fontInfo.ascent() + 2 * mMargin));
+  QFontMetricsF fontInfo( mFont );
+  setSceneRect( QRectF( transform().dx(), transform().dy(), fontInfo.width( mText ) + 2 * mMargin, fontInfo.ascent() + 2 * mMargin ) );
 }
 
 QFont QgsComposerLabel::font() const
 {
-  if(mComposition) //make pixel to point conversion to show correct point value in dialogs
-    {
-      double pointSize = mComposition->pointFontSize(mFont.pixelSize());
-      QFont returnFont = mFont;
-      returnFont.setPointSize(pointSize);
-      return returnFont;
-    }
+  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
+  {
+    double pointSize = mComposition->pointFontSize( mFont.pixelSize() );
+    QFont returnFont = mFont;
+    returnFont.setPointSize( pointSize );
+    return returnFont;
+  }
   return mFont;
 }
 
-bool QgsComposerLabel::writeXML(QDomElement& elem, QDomDocument & doc)
+bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc )
 {
-  if(elem.isNull())
-    {
-      return false;
-    }
+  if ( elem.isNull() )
+  {
+    return false;
+  }
 
-  QDomElement composerLabelElem = doc.createElement("ComposerLabel");
+  QDomElement composerLabelElem = doc.createElement( "ComposerLabel" );
 
-  composerLabelElem.setAttribute("labelText", mText);
-  composerLabelElem.setAttribute("margin", QString::number(mMargin));
+  composerLabelElem.setAttribute( "labelText", mText );
+  composerLabelElem.setAttribute( "margin", QString::number( mMargin ) );
 
 
   //font
-  QDomElement labelFontElem = doc.createElement("LabelFont");
-  labelFontElem.setAttribute("description", mFont.toString());
-  composerLabelElem.appendChild(labelFontElem);
+  QDomElement labelFontElem = doc.createElement( "LabelFont" );
+  labelFontElem.setAttribute( "description", mFont.toString() );
+  composerLabelElem.appendChild( labelFontElem );
 
-  elem.appendChild(composerLabelElem);
-  return _writeXML(composerLabelElem, doc);
+  elem.appendChild( composerLabelElem );
+  return _writeXML( composerLabelElem, doc );
 }
 
-bool QgsComposerLabel::readXML(const QDomElement& itemElem, const QDomDocument& doc)
+bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  if(itemElem.isNull())
-    {
-      return false;
-    }
+  if ( itemElem.isNull() )
+  {
+    return false;
+  }
 
   //restore label specific properties
-  
+
   //text
-  mText = itemElem.attribute("labelText");
+  mText = itemElem.attribute( "labelText" );
 
   //margin
-  mMargin = itemElem.attribute("margin").toDouble();
+  mMargin = itemElem.attribute( "margin" ).toDouble();
 
   //font
-  QDomNodeList labelFontList = itemElem.elementsByTagName("LabelFont");
-  if(labelFontList.size() > 0)
-    {
-      QDomElement labelFontElem = labelFontList.at(0).toElement();
-      mFont.fromString(labelFontElem.attribute("description"));
-    }
+  QDomNodeList labelFontList = itemElem.elementsByTagName( "LabelFont" );
+  if ( labelFontList.size() > 0 )
+  {
+    QDomElement labelFontElem = labelFontList.at( 0 ).toElement();
+    mFont.fromString( labelFontElem.attribute( "description" ) );
+  }
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName("ComposerItem");
-  if(composerItemList.size() > 0)
-    {
-      QDomElement composerItemElem = composerItemList.at(0).toElement();
-      _readXML(composerItemElem, doc);
-    }
+  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  if ( composerItemList.size() > 0 )
+  {
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+    _readXML( composerItemElem, doc );
+  }
   return true;
 }

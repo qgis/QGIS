@@ -10,7 +10,7 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use 
+** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -38,18 +38,20 @@ using std::string;
  *
  * @author Andrew Mustun
  */
-class DL_Attributes {
+class DL_Attributes
+{
 
-public:
+  public:
 
     /**
      * Default constructor.
      */
-    DL_Attributes() {
-        setLayer("");
-        setColor(0);
-        setWidth(0);
-        setLineType("BYLAYER");
+    DL_Attributes()
+    {
+      setLayer( "" );
+      setColor( 0 );
+      setWidth( 0 );
+      setLineType( "BYLAYER" );
     }
 
 
@@ -60,18 +62,19 @@ public:
      * @param layer Layer name for this entity or NULL for no layer
      *              (every entity should be on a named layer!).
      * @param color Color number (0..256). 0 = BYBLOCK, 256 = BYLAYER.
-     * @param width Line thickness. Defaults to zero. -1 = BYLAYER, 
+     * @param width Line thickness. Defaults to zero. -1 = BYLAYER,
      *               -2 = BYBLOCK, -3 = default width
      * @param lineType Line type name or "BYLAYER" or "BYBLOCK". Defaults
      *              to "BYLAYER"
      */
-    DL_Attributes(const string& layer,
-                  int color, int width,
-                  const string& lineType) {
-        setLayer(layer);
-        setColor(color);
-        setWidth(width);
-        setLineType(lineType);
+    DL_Attributes( const string& layer,
+                   int color, int width,
+                   const string& lineType )
+    {
+      setLayer( layer );
+      setColor( color );
+      setWidth( width );
+      setLineType( lineType );
     }
 
 
@@ -80,8 +83,9 @@ public:
      * Sets the layer. If the given pointer points to NULL, the
      *  new layer name will be an empty but valid string.
      */
-    void setLayer(const string& layer) {
-        this->layer = layer;
+    void setLayer( const string& layer )
+    {
+      this->layer = layer;
     }
 
 
@@ -89,8 +93,9 @@ public:
     /**
      * @return Layer name.
      */
-    string getLayer() const {
-        return layer;
+    string getLayer() const
+    {
+      return layer;
     }
 
 
@@ -100,8 +105,9 @@ public:
      *
      * @see DL_Codes, dxfColors
      */
-    void setColor(int color) {
-        this->color = color;
+    void setColor( int color )
+    {
+      this->color = color;
     }
 
 
@@ -111,8 +117,9 @@ public:
      *
      * @see DL_Codes, dxfColors
      */
-    int getColor() const {
-        return color;
+    int getColor() const
+    {
+      return color;
     }
 
 
@@ -120,8 +127,9 @@ public:
     /**
      * Sets the width.
      */
-    void setWidth(int width) {
-        this->width = width;
+    void setWidth( int width )
+    {
+      this->width = width;
     }
 
 
@@ -129,18 +137,20 @@ public:
     /**
      * @return Width.
      */
-    int getWidth() const {
-        return width;
+    int getWidth() const
+    {
+      return width;
     }
 
 
 
     /**
      * Sets the line type. This can be any string and is not
-     *  checked to be a valid line type. 
+     *  checked to be a valid line type.
      */
-    void setLineType(const string& lineType) {
-        this->lineType = lineType;
+    void setLineType( const string& lineType )
+    {
+      this->lineType = lineType;
     }
 
 
@@ -148,12 +158,16 @@ public:
     /**
      * @return Line type.
      */
-    string getLineType() const {
-        if (lineType.length()==0) {
-            return "BYLAYER";
-        } else {
-            return lineType;
-        }
+    string getLineType() const
+    {
+      if ( lineType.length() == 0 )
+      {
+        return "BYLAYER";
+      }
+      else
+      {
+        return lineType;
+      }
     }
 
 
@@ -161,16 +175,17 @@ public:
     /**
      * Copies attributes (deep copies) from another attribute object.
      */
-    DL_Attributes operator = (const DL_Attributes& attrib) {
-        setLayer(attrib.layer);
-        setColor(attrib.color);
-        setWidth(attrib.width);
-        setLineType(attrib.lineType);
+    DL_Attributes operator = ( const DL_Attributes& attrib )
+    {
+      setLayer( attrib.layer );
+      setColor( attrib.color );
+      setWidth( attrib.width );
+      setLineType( attrib.lineType );
 
-        return *this;
+      return *this;
     }
 
-private:
+  private:
     string layer;
     int color;
     int width;

@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
@@ -23,10 +23,10 @@
 QgsPluginRegistry *QgsPluginRegistry::_instance = 0;
 QgsPluginRegistry *QgsPluginRegistry::instance()
 {
-  if (_instance == 0)
-    {
-      _instance = new QgsPluginRegistry();
-    }
+  if ( _instance == 0 )
+  {
+    _instance = new QgsPluginRegistry();
+  }
   return _instance;
 }
 
@@ -34,54 +34,54 @@ QgsPluginRegistry::QgsPluginRegistry()
 {
 // constructor does nothing
 }
-QString QgsPluginRegistry::library(QString pluginKey)
+QString QgsPluginRegistry::library( QString pluginKey )
 {
   QgsPluginMetadata *pmd = plugins[pluginKey];
   QString retval;
-  if (pmd)
-    {
-      retval = pmd->library();
-    }
+  if ( pmd )
+  {
+    retval = pmd->library();
+  }
   return retval;
 }
 
-QgsPluginMetadata *QgsPluginRegistry::pluginMetadata(QString name)
+QgsPluginMetadata *QgsPluginRegistry::pluginMetadata( QString name )
 {
   return plugins[name];
 }
 
-QgisPlugin *QgsPluginRegistry::plugin(QString name)
+QgisPlugin *QgsPluginRegistry::plugin( QString name )
 {
   QgsPluginMetadata *pmd = plugins[name];
   QgisPlugin *retval = 0;
-  if (pmd)
-    {
-      retval = pmd->plugin();
-    }
+  if ( pmd )
+  {
+    retval = pmd->plugin();
+  }
   return retval;
 }
 
-bool QgsPluginRegistry::isPythonPlugin(QString name)
+bool QgsPluginRegistry::isPythonPlugin( QString name )
 {
   QgsPluginMetadata* pmd = plugins[name];
-  if (pmd)
+  if ( pmd )
     return pmd->isPython();
   else
     return false;
 }
 
-void QgsPluginRegistry::addPlugin(QString library, QString name, QgisPlugin * plugin)
+void QgsPluginRegistry::addPlugin( QString library, QString name, QgisPlugin * plugin )
 {
-  plugins[name] = new QgsPluginMetadata(library, name, plugin);
+  plugins[name] = new QgsPluginMetadata( library, name, plugin );
 }
 
 
-void QgsPluginRegistry::addPythonPlugin(QString packageName, QString pluginName)
+void QgsPluginRegistry::addPythonPlugin( QString packageName, QString pluginName )
 {
-  plugins[pluginName] = new QgsPluginMetadata(packageName, pluginName, NULL, true); // true == python plugin
+  plugins[pluginName] = new QgsPluginMetadata( packageName, pluginName, NULL, true ); // true == python plugin
 }
 
-void QgsPluginRegistry::removePlugin(QString name)
+void QgsPluginRegistry::removePlugin( QString name )
 {
-  plugins.erase(name);
+  plugins.erase( name );
 }

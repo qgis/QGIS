@@ -25,7 +25,7 @@
 class CORE_EXPORT QgsApplication: public QApplication
 {
   public:
-    QgsApplication(int & argc, char ** argv, bool GUIenabled);
+    QgsApplication( int & argc, char ** argv, bool GUIenabled );
     virtual ~QgsApplication();
 
     /** Set the active theme to the specified theme.
@@ -34,10 +34,10 @@ class CORE_EXPORT QgsApplication: public QApplication
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      * @Note A basic test will be carried out to ensure the theme search path
-     * based on the supplied theme name exists. If it does not the theme name will 
+     * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName(const QString theThemeName);
+    static void setThemeName( const QString theThemeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -70,13 +70,13 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     //! Returns the path to the settings directory in user's home dir
     static const QString qgisSettingsDirPath();
-    
+
     //! Returns the path to the user qgis.db file.
     static const QString qgisUserDbFilePath();
 
     //! Returns the path to the splash screen image directory.
     static const QString splashPath();
-    
+
     //! Returns the path to the icons image directory.
     static const QString iconsPath();
 
@@ -87,35 +87,35 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QString svgPath();
 
     //! Returns the path to the application prefix directory.
-    static const QString prefixPath(); 
+    static const QString prefixPath();
 
     //! Returns the path to the application plugin directory.
-    static const QString pluginPath(); 
+    static const QString pluginPath();
 
     //! Returns the common root path of all application data directories.
-    static const QString pkgDataPath(); 
+    static const QString pkgDataPath();
 
     //! Returns the path to the currently active theme directory.
-    static const QString activeThemePath(); 
+    static const QString activeThemePath();
 
     //! Returns the path to the default theme directory.
-    static const QString defaultThemePath(); 
-    
+    static const QString defaultThemePath();
+
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);
-    
+    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = FALSE );
+
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath(const QString thePluginPath);
+    static void setPluginPath( const QString thePluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath(const QString thePkgDataPath);
-    
+    static void setPkgDataPath( const QString thePkgDataPath );
+
     //! loads providers
     static void initQgis();
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
-    
+
     /** constants for endian-ness */
     typedef enum ENDIAN
     {
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsApplication: public QApplication
       NDR = 1   // little-endian byte order
     }
     endian_t;
-    
+
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
 
@@ -136,7 +136,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
-    /** Convenience function to get a summary of the paths used in this 
+    /** Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
   private:

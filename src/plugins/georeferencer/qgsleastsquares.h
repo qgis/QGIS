@@ -23,18 +23,19 @@
 #include "qgspoint.h"
 
 
-class QgsLeastSquares {
- public:
-  static void linear(std::vector<QgsPoint> mapCoords, 
-		     std::vector<QgsPoint> pixelCoords,
-		     QgsPoint& origin, double& pixelXSize, double& pixelYSize);
-  
-  static void helmert(std::vector<QgsPoint> mapCoords, 
-		      std::vector<QgsPoint> pixelCoords,
-		      QgsPoint& origin, double& pixelSize, double& rotation);
-  
-  static void affine(std::vector<QgsPoint> mapCoords,
-		     std::vector<QgsPoint> pixelCoords);  
+class QgsLeastSquares
+{
+  public:
+    static void linear( std::vector<QgsPoint> mapCoords,
+                        std::vector<QgsPoint> pixelCoords,
+                        QgsPoint& origin, double& pixelXSize, double& pixelYSize );
+
+    static void helmert( std::vector<QgsPoint> mapCoords,
+                         std::vector<QgsPoint> pixelCoords,
+                         QgsPoint& origin, double& pixelSize, double& rotation );
+
+    static void affine( std::vector<QgsPoint> mapCoords,
+                        std::vector<QgsPoint> pixelCoords );
 };
 
 

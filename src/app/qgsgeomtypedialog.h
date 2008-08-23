@@ -26,26 +26,26 @@
 
 class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-  QgsGeomTypeDialog(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
-  ~QgsGeomTypeDialog();
-  /**Returns the selected geometry type*/
-  QGis::WKBTYPE selectedType() const;
-  /**Appends the chosen attribute names and types to at*/
-  void attributes(std::list<std::pair<QString, QString> >& at) const;
-  /**Returns the file format for storage*/
-  QString selectedFileFormat() const;
-  
+    QgsGeomTypeDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    ~QgsGeomTypeDialog();
+    /**Returns the selected geometry type*/
+    QGis::WKBTYPE selectedType() const;
+    /**Appends the chosen attribute names and types to at*/
+    void attributes( std::list<std::pair<QString, QString> >& at ) const;
+    /**Returns the file format for storage*/
+    QString selectedFileFormat() const;
+
   protected slots:
-  void on_mAddAttributeButton_clicked();
-  void on_mRemoveAttributeButton_clicked();
-  void on_buttonBox_helpRequested();
+    void on_mAddAttributeButton_clicked();
+    void on_mRemoveAttributeButton_clicked();
+    void on_buttonBox_helpRequested();
 
   private:
-  QPushButton * mOkButton;
-  static const int context_id = 165149618;
-  
+    QPushButton * mOkButton;
+    static const int context_id = 165149618;
+
 };
 
 #endif //QGSGEOMTYPEDIALOG_H

@@ -1,11 +1,11 @@
 /***************************************************************************
-                          qgsspitplugin.h 
- Shapefile to PostgreSQL Import Tool plugin 
+                          qgsspitplugin.h
+ Shapefile to PostgreSQL Import Tool plugin
                              -------------------
     begin                : Jan 30, 2004
     copyright            : (C) 2004 by Gary E.Sherman
     email                : sherman at mrcc.com
-  
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  $Id$ */
+/*  $Id$ */
 #ifndef QGSSPITPLUGIN_H
 #define QGSSPITPLUGIN_H
 #include "../qgisplugin.h"
@@ -34,19 +34,19 @@ class QAction;
 * \brief SPIT PostgreSQL/PostGIS plugin for QGIS
 *
 */
-class QgsSpitPlugin:public QObject, public QgisPlugin
+class QgsSpitPlugin: public QObject, public QgisPlugin
 {
   Q_OBJECT public:
-/** 
-* Constructor for a plugin. The QgisInterface pointer is passed by 
-* QGIS when it attempts to instantiate the plugin.
-* @param qI Pointer to the QgisInterface object. 
-*/
-    QgsSpitPlugin(QgisInterface * qI);
+    /**
+    * Constructor for a plugin. The QgisInterface pointer is passed by
+    * QGIS when it attempts to instantiate the plugin.
+    * @param qI Pointer to the QgisInterface object.
+    */
+    QgsSpitPlugin( QgisInterface * qI );
 
     //! Destructor
-      virtual ~ QgsSpitPlugin();
-    public slots:
+    virtual ~ QgsSpitPlugin();
+  public slots:
     //! init the gui
     virtual void initGui();
     void spit();
@@ -54,7 +54,7 @@ class QgsSpitPlugin:public QObject, public QgisPlugin
     void unload();
   private:
 //! Name of the plugin
-      QString pName;
+    QString pName;
     //! Version
     QString pVersion;
     //! Descrption of the plugin

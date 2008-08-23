@@ -34,24 +34,24 @@ class QgsAttributeActions;
 
 class QgsAttributeTableDisplay : public QDialog, private Ui::QgsAttributeTableBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    static QgsAttributeTableDisplay *attributeTable(QgsVectorLayer *layer);
+    static QgsAttributeTableDisplay *attributeTable( QgsVectorLayer *layer );
 
     ~QgsAttributeTableDisplay();
 
     void fillTable();
 
   protected:
-    QgsAttributeTableDisplay(QgsVectorLayer* layer);
+    QgsAttributeTableDisplay( QgsVectorLayer* layer );
 
     QgsVectorLayer* mLayer;
 
-    void doSearch(QString searchString);
-    void setAttributeActions(const QgsAttributeAction &actions);
-    void selectRowsWithId(const QgsFeatureIds &ids);
+    void doSearch( QString searchString );
+    void setAttributeActions( const QgsAttributeAction &actions );
+    void selectRowsWithId( const QgsFeatureIds &ids );
 
-    virtual void closeEvent(QCloseEvent *ev);
+    virtual void closeEvent( QCloseEvent *ev );
 
     /** array of feature IDs that match last searched condition */
     QgsFeatureIds mSearchIds;
@@ -64,20 +64,20 @@ class QgsAttributeTableDisplay : public QDialog, private Ui::QgsAttributeTableBa
     void zoomMapToSelectedRows();
     void search();
     void advancedSearch();
-    void searchShowResultsChanged(int item);
+    void searchShowResultsChanged( int item );
     void showHelp();
     void toggleEditing();
 
-    void attributeAdded(int idx);
-    void attributeDeleted(int idx);
+    void attributeAdded( int idx );
+    void attributeDeleted( int idx );
 
   public slots:
-    void changeFeatureAttribute(int row, int column);
+    void changeFeatureAttribute( int row, int column );
     void editingToggled();
     void selectionChanged();
- 
+
   signals:
-    void editingToggled(QgsMapLayer *);
+    void editingToggled( QgsMapLayer * );
 
   private:
     /** Set the icon theme for this dialog */

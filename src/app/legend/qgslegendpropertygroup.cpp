@@ -23,13 +23,13 @@
 #include <QCoreApplication>
 #include <QIcon>
 
-QgsLegendPropertyGroup::QgsLegendPropertyGroup(QTreeWidgetItem* theLegendItem, QString theString)
-    : QgsLegendItem(theLegendItem,theString )
+QgsLegendPropertyGroup::QgsLegendPropertyGroup( QTreeWidgetItem* theLegendItem, QString theString )
+    : QgsLegendItem( theLegendItem, theString )
 {
-  mType=LEGEND_PROPERTY_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon("/mIconProperties.png");
-  setText(0, theString);
-  setIcon(0,myIcon);
+  mType = LEGEND_PROPERTY_GROUP;
+  QIcon myIcon = QgisApp::getThemeIcon( "/mIconProperties.png" );
+  setText( 0, theString );
+  setIcon( 0, myIcon );
 }
 
 
@@ -38,13 +38,13 @@ QgsLegendPropertyGroup::~QgsLegendPropertyGroup()
 
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept( LEGEND_ITEM_TYPE type )
 {
-    return NO_ACTION;
+  return NO_ACTION;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendPropertyGroup::accept( const QgsLegendItem* li ) const
 {
-    return NO_ACTION;
+  return NO_ACTION;
 }
 

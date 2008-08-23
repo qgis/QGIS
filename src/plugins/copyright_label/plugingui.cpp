@@ -17,14 +17,14 @@
 
 //standard includes
 
-QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui(QWidget* parent, Qt::WFlags fl)
-: QDialog(parent, fl)
+QgsCopyrightLabelPluginGui::QgsCopyrightLabelPluginGui( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
+  setupUi( this );
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
-}  
+}
 
 QgsCopyrightLabelPluginGui::~QgsCopyrightLabelPluginGui()
 {
@@ -35,18 +35,18 @@ void QgsCopyrightLabelPluginGui::on_buttonBox_accepted()
   //hide the dialog before we send all our signals
   hide();
   //close the dialog
-  emit changeFont(txtCopyrightText->currentFont());
+  emit changeFont( txtCopyrightText->currentFont() );
 #if QT_VERSION < 0x040300
-  emit changeLabel(txtCopyrightText->text());
+  emit changeLabel( txtCopyrightText->text() );
 #else
-  emit changeLabel(txtCopyrightText->toPlainText());
+  emit changeLabel( txtCopyrightText->toPlainText() );
 #endif
-  emit changeColor(pbnColorChooser->color());
-  emit changePlacement(cboPlacement->currentIndex());
-  emit enableCopyrightLabel(cboxEnabled->isChecked());
+  emit changeColor( pbnColorChooser->color() );
+  emit changePlacement( cboPlacement->currentIndex() );
+  emit enableCopyrightLabel( cboxEnabled->isChecked() );
 
   accept();
-} 
+}
 
 void QgsCopyrightLabelPluginGui::on_buttonBox_rejected()
 {
@@ -55,48 +55,48 @@ void QgsCopyrightLabelPluginGui::on_buttonBox_rejected()
 
 void QgsCopyrightLabelPluginGui::on_buttonBox_helpRequested()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }
 
 void QgsCopyrightLabelPluginGui::on_pbnColorChooser_clicked()
 {
   QColor c = QColorDialog::getColor();
-  if (c.isValid())
+  if ( c.isValid() )
   {
-    pbnColorChooser->setColor(c);
+    pbnColorChooser->setColor( c );
     QTextCursor cursor = txtCopyrightText->textCursor();
     txtCopyrightText->selectAll();
-    txtCopyrightText->setTextColor(c);
-    txtCopyrightText->setTextCursor(cursor);
+    txtCopyrightText->setTextColor( c );
+    txtCopyrightText->setTextCursor( cursor );
   }
 }
 
-void QgsCopyrightLabelPluginGui::setEnabled(bool theBool)
+void QgsCopyrightLabelPluginGui::setEnabled( bool theBool )
 {
-  cboxEnabled->setChecked(theBool);
+  cboxEnabled->setChecked( theBool );
 }
 
-void QgsCopyrightLabelPluginGui::setText(QString theTextQString)
+void QgsCopyrightLabelPluginGui::setText( QString theTextQString )
 {
-  txtCopyrightText->setPlainText(theTextQString);
+  txtCopyrightText->setPlainText( theTextQString );
 }
 
-void QgsCopyrightLabelPluginGui::setPlacementLabels(QStringList& labels)
+void QgsCopyrightLabelPluginGui::setPlacementLabels( QStringList& labels )
 {
   cboPlacement->clear();
-  cboPlacement->addItems(labels);
+  cboPlacement->addItems( labels );
 }
 
-void QgsCopyrightLabelPluginGui::setPlacement(int placementIndex)
+void QgsCopyrightLabelPluginGui::setPlacement( int placementIndex )
 {
-  cboPlacement->setCurrentIndex(placementIndex);
+  cboPlacement->setCurrentIndex( placementIndex );
 }
 
-void QgsCopyrightLabelPluginGui::setColor(QColor color)
+void QgsCopyrightLabelPluginGui::setColor( QColor color )
 {
-  pbnColorChooser->setColor(color);
+  pbnColorChooser->setColor( color );
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
-  txtCopyrightText->setTextColor(color);
-  txtCopyrightText->setTextCursor(cursor);
+  txtCopyrightText->setTextColor( color );
+  txtCopyrightText->setTextCursor( cursor );
 }

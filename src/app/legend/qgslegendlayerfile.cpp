@@ -42,8 +42,8 @@
 #include <QSettings>
 
 
-QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer)
-  : QgsLegendItem(theLegendItem, theString), mLyr(theLayer)
+QgsLegendLayerFile::QgsLegendLayerFile( QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer )
+    : QgsLegendItem( theLegendItem, theString ), mLyr( theLayer )
 {
   // Set the initial visibility flag for layers
   // This user option allows the user to turn off inital drawing of
@@ -51,68 +51,68 @@ QgsLegendLayerFile::QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString 
   // many layers and the user wants to adjusty symbology, etc prior to
   // actually viewing the layer.
   QSettings settings;
-  bool visible = settings.value("/qgis/new_layers_visible", true).toBool();
-  mLyr.setVisible(visible);
+  bool visible = settings.value( "/qgis/new_layers_visible", true ).toBool();
+  mLyr.setVisible( visible );
 
   // not in overview by default
-  mLyr.setInOverview(FALSE);
-  
+  mLyr.setInOverview( FALSE );
+
   mType = LEGEND_LAYER_FILE;
-  
-  setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  setCheckState(0, Qt::Checked);
-  setText(0, theString);
+
+  setFlags( Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  setCheckState( 0, Qt::Checked );
+  setText( 0, theString );
 
   // Add check if vector layer when connecting to selectionChanged slot
   // Ticket #811 - racicot
   QgsMapLayer *currentLayer = mLyr.layer();
-  QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >(currentLayer);
-  if (isVectLyr)
+  QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
+  if ( isVectLyr )
   {
-    connect(mLyr.layer(), SIGNAL(editingStarted()), this, SLOT(updateLegendItem()));
-    connect(mLyr.layer(), SIGNAL(editingStopped()), this, SLOT(updateLegendItem()));
-  }  
-  connect(mLyr.layer(), SIGNAL(layerNameChanged()), this, SLOT(layerNameChanged()));
+    connect( mLyr.layer(), SIGNAL( editingStarted() ), this, SLOT( updateLegendItem() ) );
+    connect( mLyr.layer(), SIGNAL( editingStopped() ), this, SLOT( updateLegendItem() ) );
+  }
+  connect( mLyr.layer(), SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept( LEGEND_ITEM_TYPE type )
 {
   return NO_ACTION;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendLayerFile::accept( const QgsLegendItem* li ) const
 {
-  if(li->type() == QgsLegendItem::LEGEND_LAYER_FILE)
+  if ( li->type() == QgsLegendItem::LEGEND_LAYER_FILE )
+  {
+    if ( li->parent() == this->parent() )
     {
-      if(li->parent() == this->parent())
-	{
-	  return REORDER;
-	}
+      return REORDER;
     }
+  }
   return NO_ACTION;
 }
 
 QPixmap QgsLegendLayerFile::getOriginalPixmap() const
 {
-  QPixmap myPixmap = QgisApp::getThemePixmap("mActionFileSmall.png");
+  QPixmap myPixmap = QgisApp::getThemePixmap( "mActionFileSmall.png" );
   return myPixmap;
 }
 
 void QgsLegendLayerFile::updateLegendItem()
 {
   QPixmap pix = legend()->pixmaps().mOriginalPixmap;
-  
-  if(mLyr.inOverview())
+
+  if ( mLyr.inOverview() )
   {
     //add overview glasses to the pixmap
-    QPainter p(&pix);
-    p.drawPixmap(0,0, legend()->pixmaps().mInOverviewPixmap);
+    QPainter p( &pix );
+    p.drawPixmap( 0, 0, legend()->pixmaps().mInOverviewPixmap );
   }
-  if(mLyr.layer()->isEditable())
+  if ( mLyr.layer()->isEditable() )
   {
     //add editing icon to the pixmap
-    QPainter p(&pix);
-    p.drawPixmap(30,0, legend()->pixmaps().mEditablePixmap);
+    QPainter p( &pix );
+    p.drawPixmap( 30, 0, legend()->pixmaps().mEditablePixmap );
   }
 
   /*
@@ -124,64 +124,64 @@ void QgsLegendLayerFile::updateLegendItem()
     p.drawPixmap(60,0, legend()->pixmaps().mProjectionErrorPixmap);
   }
   */
-  
-  QIcon theIcon(pix);
-  setIcon(0, theIcon);
+
+  QIcon theIcon( pix );
+  setIcon( 0, theIcon );
 
 }
 
-void QgsLegendLayerFile::setIconAppearance(bool inOverview,
-                                           bool editable)
+void QgsLegendLayerFile::setIconAppearance( bool inOverview,
+    bool editable )
 {
-  QPixmap newIcon(getOriginalPixmap());
+  QPixmap newIcon( getOriginalPixmap() );
 
-  if (inOverview)
+  if ( inOverview )
   {
     // Overlay the overview icon on the default icon
-    QPixmap myPixmap = QgisApp::getThemePixmap("mIconOverview.png");
-    QPainter p(&newIcon);
-    p.drawPixmap(0,0,myPixmap);
+    QPixmap myPixmap = QgisApp::getThemePixmap( "mIconOverview.png" );
+    QPainter p( &newIcon );
+    p.drawPixmap( 0, 0, myPixmap );
     p.end();
   }
-  
-  if (editable)
+
+  if ( editable )
   {
     // Overlay the editable icon on the default icon
-    QPixmap myPixmap = QgisApp::getThemePixmap("mIconEditable.png");
-    QPainter p(&newIcon);
-    p.drawPixmap(0,0,myPixmap);
+    QPixmap myPixmap = QgisApp::getThemePixmap( "mIconEditable.png" );
+    QPainter p( &newIcon );
+    p.drawPixmap( 0, 0, myPixmap );
     p.end();
   }
 
-  QIcon theIcon(newIcon);
-  setIcon(0, theIcon);
+  QIcon theIcon( newIcon );
+  setIcon( 0, theIcon );
 
   //also update the icon of the legend layer
-  ((QgsLegendLayer*)(parent()->parent()))->updateIcon();
+  (( QgsLegendLayer* )( parent()->parent() ) )->updateIcon();
 }
 
 
-QString QgsLegendLayerFile::nameFromLayer(QgsMapLayer* layer)
+QString QgsLegendLayerFile::nameFromLayer( QgsMapLayer* layer )
 {
   QString sourcename = layer->source(); //todo: move this duplicated code into a new function
-  if(sourcename.startsWith("host", Qt::CaseInsensitive))
-    {
-      //this layer is a database layer
-      //modify source string such that password is not visible
-      sourcename = layer->name();
-    }
+  if ( sourcename.startsWith( "host", Qt::CaseInsensitive ) )
+  {
+    //this layer is a database layer
+    //modify source string such that password is not visible
+    sourcename = layer->name();
+  }
   else
-    {
-      //modify source name such that only the file is visible
-      sourcename = layer->source().section('/',-1,-1);
-    }
+  {
+    //modify source name such that only the file is visible
+    sourcename = layer->source().section( '/', -1, -1 );
+  }
   return sourcename;
 }
 
 
-void QgsLegendLayerFile::setVisible(bool visible)
+void QgsLegendLayerFile::setVisible( bool visible )
 {
-  mLyr.setVisible(visible);
+  mLyr.setVisible( visible );
 }
 
 bool QgsLegendLayerFile::isVisible()
@@ -189,9 +189,9 @@ bool QgsLegendLayerFile::isVisible()
   return mLyr.visible();
 }
 
-void QgsLegendLayerFile::setInOverview(bool inOverview)
+void QgsLegendLayerFile::setInOverview( bool inOverview )
 {
-  mLyr.setInOverview(inOverview);
+  mLyr.setInOverview( inOverview );
 }
 
 bool QgsLegendLayerFile::isInOverview()
@@ -203,182 +203,182 @@ void QgsLegendLayerFile::showInOverview()
 {
   // toggle current status
   setInOverview( ! isInOverview() );
-  
+
   legend()->updateMapCanvasLayerSet();
   legend()->updateOverview();
 }
 
 void QgsLegendLayerFile::saveAsShapefile()
 {
-  saveAsShapefileGeneral(FALSE);
+  saveAsShapefileGeneral( FALSE );
 }
 
 void QgsLegendLayerFile::table()
 {
-  QgsAttributeTableDisplay::attributeTable( dynamic_cast<QgsVectorLayer*>(mLyr.layer()) );
+  QgsAttributeTableDisplay::attributeTable( dynamic_cast<QgsVectorLayer*>( mLyr.layer() ) );
 }
 
 void QgsLegendLayerFile::saveSelectionAsShapefile()
 {
-  saveAsShapefileGeneral(TRUE);
+  saveAsShapefileGeneral( TRUE );
 }
 
-void QgsLegendLayerFile::saveAsShapefileGeneral(bool saveOnlySelection)
+void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 {
-  if (mLyr.layer()->type() != QgsMapLayer::VECTOR)
+  if ( mLyr.layer()->type() != QgsMapLayer::VECTOR )
     return;
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mLyr.layer());
-  
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mLyr.layer() );
+
   // get a name for the shapefile
   // Get a file to process, starting at the current directory
   QSettings settings;
-  QString filter =  QString("Shapefiles (*.shp)");
-  QString dirName = settings.value("/UI/lastShapefileDir", ".").toString();
+  QString filter =  QString( "Shapefiles (*.shp)" );
+  QString dirName = settings.value( "/UI/lastShapefileDir", "." ).toString();
 
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog(0,
-      tr("Save layer as..."),
+  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
+      tr( "Save layer as..." ),
       dirName,
       filter,
-      QString("UTF-8"));
-  openFileDialog->setAcceptMode(QFileDialog::AcceptSave);
+      QString( "UTF-8" ) );
+  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   // allow for selection of more than one file
   //openFileDialog->setMode(QFileDialog::AnyFile);
 
-  if (openFileDialog->exec() != QDialog::Accepted)
+  if ( openFileDialog->exec() != QDialog::Accepted )
     return;
-    
-  
+
+
   QString encoding = openFileDialog->encoding();
   QString shapefileName = openFileDialog->selectedFiles().first();
-  settings.setValue("/UI/lastShapefileDir", QFileInfo(shapefileName).absolutePath());
-  
-  
-  if (shapefileName.isNull())
+  settings.setValue( "/UI/lastShapefileDir", QFileInfo( shapefileName ).absolutePath() );
+
+
+  if ( shapefileName.isNull() )
     return;
 
   // add the extension if not present
-  if (shapefileName.indexOf(".shp") == -1)
+  if ( shapefileName.indexOf( ".shp" ) == -1 )
   {
     shapefileName += ".shp";
   }
-  
+
   // overwrite the file - user will already have been prompted
   // to verify they want to overwrite by the file dialog above
-  if (QFile::exists(shapefileName))
+  if ( QFile::exists( shapefileName ) )
   {
-      if (!QgsVectorFileWriter::deleteShapeFile(shapefileName))
-      {
-        return;
-      }
+    if ( !QgsVectorFileWriter::deleteShapeFile( shapefileName ) )
+    {
+      return;
+    }
   }
   // ok if the file existed it should be deleted now so we can continue...
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-  
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QgsVectorFileWriter::WriterError error;
-  error = QgsVectorFileWriter::writeAsShapefile(vlayer, shapefileName, encoding, saveOnlySelection);
-  
+  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, saveOnlySelection );
+
   QApplication::restoreOverrideCursor();
-  
-  switch (error)
+
+  switch ( error )
   {
     case QgsVectorFileWriter::NoError:
-      QMessageBox::information(0, tr("Saving done"), tr("Export to Shapefile has been completed"));
+      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to Shapefile has been completed" ) );
       break;
-    
+
     case QgsVectorFileWriter::ErrDriverNotFound:
-      QMessageBox::warning(0, tr("Driver not found"), tr("ESRI Shapefile driver is not available"));
+      QMessageBox::warning( 0, tr( "Driver not found" ), tr( "ESRI Shapefile driver is not available" ) );
       break;
-  
+
     case QgsVectorFileWriter::ErrCreateDataSource:
-      QMessageBox::warning(0, tr("Error creating shapefile"),
-                           tr("The shapefile could not be created (") + shapefileName + ")");
+      QMessageBox::warning( 0, tr( "Error creating shapefile" ),
+                            tr( "The shapefile could not be created (" ) + shapefileName + ")" );
       break;
-    
+
     case QgsVectorFileWriter::ErrCreateLayer:
-      QMessageBox::warning(0, tr("Error"), tr("Layer creation failed"));
+      QMessageBox::warning( 0, tr( "Error" ), tr( "Layer creation failed" ) );
       break;
     case QgsVectorFileWriter::ErrAttributeTypeUnsupported:
-      QMessageBox::warning(0, tr("Error"), 
-          tr("Layer attribute table contains unsupported datatype(s)"));
+      QMessageBox::warning( 0, tr( "Error" ),
+                            tr( "Layer attribute table contains unsupported datatype(s)" ) );
       break;
   }
 }
 
 bool QgsLegendLayerFile::isEditing()
 {
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(mLyr.layer());
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mLyr.layer() );
   return vlayer && vlayer->isEditable();
-} 
+}
 
 void QgsLegendLayerFile::layerNameChanged()
 {
   QString name = mLyr.layer()->name();
-  setText(0, name);
+  setText( 0, name );
 
   // set also parent's name
-  legend()->setName(this, name);
+  legend()->setName( this, name );
 }
 
-void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction)
+void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction )
 {
   QgsMapLayer* lyr = layer();
 
   // zoom to layer extent
-  theMenu.addAction(QgisApp::getThemeIcon("/mActionZoomToLayer.png"),
-                    tr("&Zoom to layer extent"), legend(), SLOT(legendLayerZoom()));
-  
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
+                     tr( "&Zoom to layer extent" ), legend(), SLOT( legendLayerZoom() ) );
+
   // show in overview
-  QAction* showInOverviewAction = theMenu.addAction(tr("&Show in overview"), this, SLOT(showInOverview()));
-  showInOverviewAction->setCheckable(true);
-  showInOverviewAction->blockSignals(true);
-  showInOverviewAction->setChecked(mLyr.inOverview());
-  showInOverviewAction->blockSignals(false);
-  
+  QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in overview" ), this, SLOT( showInOverview() ) );
+  showInOverviewAction->setCheckable( true );
+  showInOverviewAction->blockSignals( true );
+  showInOverviewAction->setChecked( mLyr.inOverview() );
+  showInOverviewAction->blockSignals( false );
+
   // remove from canvas
-  theMenu.addAction(QgisApp::getThemeIcon("/mActionRemove.png"),
-                    tr("&Remove"), legend(), SLOT(legendLayerRemove()));
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ),
+                     tr( "&Remove" ), legend(), SLOT( legendLayerRemove() ) );
 
   theMenu.addSeparator();
 
-  if (lyr->type() == QgsMapLayer::VECTOR)
+  if ( lyr->type() == QgsMapLayer::VECTOR )
   {
-    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(lyr);
-    
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
+
     // attribute table
-    theMenu.addAction(tr("&Open attribute table"), this, SLOT(table()));
-    
+    theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );
+
     // editing
     int cap = vlayer->dataProvider()->capabilities();
-    if ((cap & QgsVectorDataProvider::AddFeatures)
-        ||(cap & QgsVectorDataProvider::DeleteFeatures))
+    if (( cap & QgsVectorDataProvider::AddFeatures )
+        || ( cap & QgsVectorDataProvider::DeleteFeatures ) )
     {
-      if(toggleEditingAction)
+      if ( toggleEditingAction )
       {
-        theMenu.addAction(toggleEditingAction);
+        theMenu.addAction( toggleEditingAction );
       }
     }
-    
-    // save as shapefile
-    theMenu.addAction(tr("Save as shapefile..."), this, SLOT(saveAsShapefile()));
 
-    QAction* saveSelectionAction = theMenu.addAction(tr("Save selection as shapefile..."), this, SLOT(saveSelectionAsShapefile()));
-    if (vlayer->selectedFeatureCount() == 0)
+    // save as shapefile
+    theMenu.addAction( tr( "Save as shapefile..." ), this, SLOT( saveAsShapefile() ) );
+
+    QAction* saveSelectionAction = theMenu.addAction( tr( "Save selection as shapefile..." ), this, SLOT( saveSelectionAsShapefile() ) );
+    if ( vlayer->selectedFeatureCount() == 0 )
     {
-      saveSelectionAction->setEnabled(false);
+      saveSelectionAction->setEnabled( false );
     }
 
     theMenu.addSeparator();
   }
-  else if (lyr->type() == QgsMapLayer::RASTER)
+  else if ( lyr->type() == QgsMapLayer::RASTER )
   {
     // TODO: what was this for?
     //QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);
     //theMenu.addAction(tr("&Convert to..."), rlayer, SLOT(convertTo()));
   }
-     
+
   // properties goes on bottom of menu for consistency with normal ui standards
   // e.g. kde stuff
-  theMenu.addAction(tr("&Properties"), legend(), SLOT(legendLayerShowProperties()));
+  theMenu.addAction( tr( "&Properties" ), legend(), SLOT( legendLayerShowProperties() ) );
 }

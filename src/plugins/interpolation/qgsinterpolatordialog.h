@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsinterpolatordialog.h    
+                              qgsinterpolatordialog.h
                               ------------------------
   begin                : March 25, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -28,22 +28,22 @@ class QgisInterface;
 /**Abstract base class for dialogs that allow to enter the options for interpolators*/
 class QgsInterpolatorDialog: public QDialog
 {
- public:
-  QgsInterpolatorDialog(QWidget* parent, QgisInterface* iface);
-  virtual ~QgsInterpolatorDialog();
+  public:
+    QgsInterpolatorDialog( QWidget* parent, QgisInterface* iface );
+    virtual ~QgsInterpolatorDialog();
 
-  /**Method that returns an interpolator object from the settings or 0 in case of error.
-   The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
-  virtual QgsInterpolator* createInterpolator() const = 0;
- 
-  void setInputData(const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData);
+    /**Method that returns an interpolator object from the settings or 0 in case of error.
+     The calling method takes ownership of the created interpolator and is responsible for its proper destruction*/
+    virtual QgsInterpolator* createInterpolator() const = 0;
 
- protected:
-  /**Pointer to the running QGIS instance. This may be necessary to show interpolator properties on the map (e.g. triangulation)*/
-  QgisInterface* mInterface;
+    void setInputData( const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData );
 
-  /**A list of input data layers and their type (point, structure lines, breaklines)*/
-  QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> > mInputData;
+  protected:
+    /**Pointer to the running QGIS instance. This may be necessary to show interpolator properties on the map (e.g. triangulation)*/
+    QgisInterface* mInterface;
+
+    /**A list of input data layers and their type (point, structure lines, breaklines)*/
+    QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> > mInputData;
 };
 
-#endif 
+#endif

@@ -26,12 +26,13 @@
  * to a map layer of any type
  */
 
-class QgsTable : public QgsDataSource  {
-public: 
+class QgsTable : public QgsDataSource
+{
+  public:
     //! Constructor
-	QgsTable();
-	//! Destructor
-	~QgsTable();
+    QgsTable();
+    //! Destructor
+    ~QgsTable();
 };
 
 #endif

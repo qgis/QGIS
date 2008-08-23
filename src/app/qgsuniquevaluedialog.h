@@ -29,43 +29,43 @@ class QgsVectorLayer;
 class QgsUniqueValueDialog: public QDialog, private Ui::QgsUniqueValueDialogBase
 {
     Q_OBJECT
- public:
-    QgsUniqueValueDialog(QgsVectorLayer* vl);
+  public:
+    QgsUniqueValueDialog( QgsVectorLayer* vl );
     ~QgsUniqueValueDialog();
 
- public slots:
+  public slots:
     void apply();
-    void itemChanged(QListWidgetItem *item);
+    void itemChanged( QListWidgetItem *item );
     void randomizeColors();
     void resetColors();
 
- protected:
+  protected:
     /**Pointer to the associated vector layer*/
     QgsVectorLayer* mVectorLayer;
     /**Set to store the already entered values*/
-    QMap<QString,QgsSymbol*> mValues;
+    QMap<QString, QgsSymbol*> mValues;
     QgsSingleSymbolDialog sydialog;
 
- protected slots:
+  protected slots:
     /**Set new attribut for classification*/
     void changeClassificationAttribute();
     /**update single symbol dialog after selection changed*/
     void selectionChanged();
     /**add a new classes to the classification*/
-    void addClass(QString value = QString::null);
+    void addClass( QString value = QString::null );
     /**Removes the selected classes from the classification*/
     void deleteSelectedClasses();
     /**Writes changes in the single symbol dialog to the corresponding QgsSymbol*/
     void applySymbologyChanges();
 
-private:
+  private:
     /** Update the list widget item icon with a preview for the symbol.
      * @param QgsSymbol * - symbol holding the style info.
      * @param QListWidgetItem * - item to get its icon updated.
      */
-    void updateEntryIcon(QgsSymbol * thepSymbol,QListWidgetItem * thepItem);
+    void updateEntryIcon( QgsSymbol * thepSymbol, QListWidgetItem * thepItem );
     QColor randomColor();
-    void setSymbolColor(QgsSymbol *symbol, QColor thecolor);
+    void setSymbolColor( QgsSymbol *symbol, QColor thecolor );
 
     QString mOldClassificationAttribute;
 };

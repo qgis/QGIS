@@ -28,18 +28,18 @@
 */
 class QgsLegendSymbologyItem : public QgsLegendItem
 {
-public:
-    QgsLegendSymbologyItem(QTreeWidgetItem* theItem, QString theString, int pixmapWidth, int pixmapHeight);
-    QgsLegendSymbologyItem(int pixmapWidth, int pixmapHeight);
+  public:
+    QgsLegendSymbologyItem( QTreeWidgetItem* theItem, QString theString, int pixmapWidth, int pixmapHeight );
+    QgsLegendSymbologyItem( int pixmapWidth, int pixmapHeight );
     ~QgsLegendSymbologyItem();
     bool isLeafNode() {return true;}
-    DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     int pixmapWidth() const {return mPixmapWidth;}
     int pixmapHeight() const {return mPixmapHeight;}
-    void setLegend(QgsLegend* theLegend);
+    void setLegend( QgsLegend* theLegend );
     QgsLegend* legend() const {return mLegend;}
- protected:
+  protected:
     int mPixmapWidth;
     int mPixmapHeight;
     /**This pointer is needed to remove the width/height values of this item

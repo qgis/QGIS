@@ -4,7 +4,7 @@
                              -------------------
     begin                : March 2004
     copyright            : (C) 2005 by Gavin Macaulay
-    email                : 
+    email                :
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,11 +15,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgsclipper.h"
 
-// Where has all the code gone? 
+// Where has all the code gone?
 
 // It's been inlined, so is in the qgsclipper.h file.
 

@@ -21,18 +21,18 @@ class QgsLegendLayerFile;
 
 class QgsLegendLayerFileGroup: public QgsLegendItem
 {
- public:
-    QgsLegendLayerFileGroup(QTreeWidgetItem* theItem, QString theString);
+  public:
+    QgsLegendLayerFileGroup( QTreeWidgetItem* theItem, QString theString );
     bool isLeafNode() {return false;}
-    DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
-    bool insert(QgsLegendItem* theItem);
+    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
+    bool insert( QgsLegendItem* theItem );
     /**Returns true if llf is a childelement*/
-    bool containsLegendLayerFile(const QgsLegendLayerFile* llf) const;
+    bool containsLegendLayerFile( const QgsLegendLayerFile* llf ) const;
     /**Makes the parent QgsLegendLayer update the checkState and the icon after a new
      QgsLegendLayerFile was inserted*/
-    void receive(QgsLegendItem* newChild);
+    void receive( QgsLegendItem* newChild );
     /**Cleanups when after a child QgsLegendLayerFile item has left. Tells the parent QgsLegendLayer to
      refresh the checkState and the icon*/
-    void release(QgsLegendItem* formerChild);
+    void release( QgsLegendItem* formerChild );
 };

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgspluginmanager.h 
+                          qgspluginmanager.h
                Plugin manager for loading/unloading QGIS plugins
                              -------------------
     begin                : 2004-02-12
@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
 #include <vector>
@@ -36,10 +36,10 @@ class QTableView;
 */
 class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     //! Constructor
-    QgsPluginManager(QgsPythonUtils* pythonUtils, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsPluginManager();
     //! Get description of plugins (name, etc)
@@ -55,10 +55,10 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     //! Resize columns to contents
     void resizeColumnsToContents();
     //! Sort model by column ascending
-    void sortModel(int );
+    void sortModel( int );
   public slots:
     //! Enable disable checkbox
-    void on_vwPlugins_clicked(const QModelIndex & );
+    void on_vwPlugins_clicked( const QModelIndex & );
     //! Load selected plugins and close the dialog
     void accept();
     //! Select all plugins by setting their checkbox on
@@ -66,11 +66,11 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     //! Clear all selections by clearing the plugins checkbox
     void clearAll();
     //! Update the filter when user changes the filter expression
-    void on_leFilter_textChanged(QString theText);
+    void on_leFilter_textChanged( QString theText );
   private:
     QStandardItemModel *mModelPlugins;
     QSortFilterProxyModel * mModelProxy;
-    
+
     QgsPythonUtils* mPythonUtils;
 };
 

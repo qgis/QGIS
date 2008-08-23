@@ -25,21 +25,21 @@
 /**Render class to display all the features with a single QgsSymbol*/
 class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
 {
- public:
-    QgsSingleSymbolRenderer(QGis::VectorType type);
-    QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other);
-    QgsSingleSymbolRenderer& operator=(const QgsSingleSymbolRenderer& other);
+  public:
+    QgsSingleSymbolRenderer( QGis::VectorType type );
+    QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer& other );
+    QgsSingleSymbolRenderer& operator=( const QgsSingleSymbolRenderer& other );
     virtual ~QgsSingleSymbolRenderer();
     /**Replaces the current mSymbol by sy*/
-    void addSymbol(QgsSymbol* sy);
+    void addSymbol( QgsSymbol* sy );
     /*Returns a pointer to mSymbol*/
     const QgsSymbol* symbol() const;
     /**Renders a feature*/
-    void renderFeature(QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
+    void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
     /**Reads the renderer configuration from an XML file
-     @param rnode the Dom node to read 
+     @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
+    virtual void readXML( const QDomNode& rnode, QgsVectorLayer& vl );
     /**Writes the contents of the renderer to a configuration file*/
     /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     const QList<QgsSymbol*> symbols() const;
     /**Returns a deep copy of this renderer*/
     QgsRenderer* clone() const;
- protected:
+  protected:
     /**Object containing symbology information*/
     QgsSymbol* mSymbol;
     /**Cached copy of all underlying symbols required attribute fields*/
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
 
 inline const QgsSymbol* QgsSingleSymbolRenderer::symbol() const
 {
-    return mSymbol;
+  return mSymbol;
 }
 
 inline bool QgsSingleSymbolRenderer::needsAttributes() const

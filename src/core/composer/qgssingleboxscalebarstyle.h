@@ -25,16 +25,16 @@
  */
 class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 {
- public:
-  QgsSingleBoxScaleBarStyle(const QgsComposerScaleBar* bar);
-  ~QgsSingleBoxScaleBarStyle();
+  public:
+    QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
+    ~QgsSingleBoxScaleBarStyle();
 
-  QString name() const;
+    QString name() const;
 
-  void draw(QPainter* p, double xOffset = 0) const;
+    void draw( QPainter* p, double xOffset = 0 ) const;
 
- private:
-  QgsSingleBoxScaleBarStyle(); //forbidden
+  private:
+    QgsSingleBoxScaleBarStyle(); //forbidden
 };
 
-#endif 
+#endif

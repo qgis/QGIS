@@ -15,38 +15,39 @@
  ***************************************************************************/
 
 #include "Point3D.h"
+#include "qgslogger.h"
 
-Point3D& Point3D::operator=(const Point3D& p)
+Point3D& Point3D::operator=( const Point3D & p )
 {
-  mX=p.mX;
-  mY=p.mY;
-  mZ=p.mZ;
-  return (*this);
+  mX = p.mX;
+  mY = p.mY;
+  mZ = p.mZ;
+  return ( *this );
 }
 
-bool Point3D::operator==(const Point3D& p)
+bool Point3D::operator==( const Point3D& p )
 {
-  return (mX==p.getX()&&mY==p.getY()&&mZ==p.getZ());
+  return ( mX == p.getX() && mY == p.getY() && mZ == p.getZ() );
 }
 
-bool Point3D::operator!=(const Point3D& p)
+bool Point3D::operator!=( const Point3D& p )
 {
-  return (!((*this)==p));
+  return ( !(( *this ) == p ) );
 }
 
-double Point3D::dist3D(Point3D* p) const
+double Point3D::dist3D( Point3D* p ) const
 {
-  if(p)
-    {
-      double dx,dy,dz;
-      dx=p->getX()-getX();
-      dy=p->getY()-getY();
-      dz=p->getZ()-getZ();
-      return sqrt(dx*dx+dy*dy+dz*dz);
-    }
+  if ( p )
+  {
+    double dx, dy, dz;
+    dx = p->getX() - getX();
+    dy = p->getY() - getY();
+    dz = p->getZ() - getZ();
+    return sqrt( dx*dx + dy*dy + dz*dz );
+  }
   else
-    {
-      std::cout << "warning, null pointer in Point3D::dist3D" << std::endl << std::flush;
-      return 0;
-    }
+  {
+    QgsDebugMsg( "" );
+    return 0;
+  }
 }

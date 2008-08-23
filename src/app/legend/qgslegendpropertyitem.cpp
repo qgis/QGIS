@@ -21,26 +21,26 @@
 #include "qgsapplication.h"
 #include <QIcon>
 
-QgsLegendPropertyItem::QgsLegendPropertyItem(QTreeWidgetItem * theItem,QString theString)
- : QgsLegendItem(theItem ,theString)
+QgsLegendPropertyItem::QgsLegendPropertyItem( QTreeWidgetItem * theItem, QString theString )
+    : QgsLegendItem( theItem , theString )
 {
-  mType=LEGEND_PROPERTY_ITEM;
-  QIcon myIcon(QgsApplication::pkgDataPath()+QString("/images/icons/property_item.png"));
-  setIcon(0,myIcon);
+  mType = LEGEND_PROPERTY_ITEM;
+  QIcon myIcon( QgsApplication::pkgDataPath() + QString( "/images/icons/property_item.png" ) );
+  setIcon( 0, myIcon );
 }
 
 
 QgsLegendPropertyItem::~QgsLegendPropertyItem()
 {
-  mType=LEGEND_PROPERTY_ITEM;
+  mType = LEGEND_PROPERTY_ITEM;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept( LEGEND_ITEM_TYPE type )
 {
   return NO_ACTION;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendPropertyItem::accept( const QgsLegendItem* li ) const
 {
   return NO_ACTION;
 }

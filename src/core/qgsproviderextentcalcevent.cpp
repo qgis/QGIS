@@ -21,8 +21,8 @@
 #include "qgis.h"
 
 QgsProviderExtentCalcEvent::QgsProviderExtentCalcEvent( QgsRect* layerExtent )
-    : QEvent( static_cast<QEvent::Type>(QGis::ProviderExtentCalcEvent) ),
-      le( layerExtent )
+    : QEvent( static_cast<QEvent::Type>( QGis::ProviderExtentCalcEvent ) ),
+    le( layerExtent )
 {
   // NO-OP
 }

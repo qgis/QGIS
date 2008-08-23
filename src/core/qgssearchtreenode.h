@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgssearchtreenode.h 
+                          qgssearchtreenode.h
             Definition of node for parsed tree of search string
                           --------------------
     begin                : 2005-07-26
@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #ifndef QGSSEARCHTREENODE_H
 #define QGSSEARCHTREENODE_H
@@ -38,7 +38,7 @@ class QgsSearchTreeValue;
  */
 class CORE_EXPORT QgsSearchTreeNode
 {
-public:
+  public:
 
     //! defines possible types of node
     enum Type
@@ -75,19 +75,19 @@ public:
     };
 
     //! constructors
-    QgsSearchTreeNode(double number);
-    QgsSearchTreeNode(Operator op, QgsSearchTreeNode* left, QgsSearchTreeNode* right);
-    QgsSearchTreeNode(QString text, bool isColumnRef);
+    QgsSearchTreeNode( double number );
+    QgsSearchTreeNode( Operator op, QgsSearchTreeNode* left, QgsSearchTreeNode* right );
+    QgsSearchTreeNode( QString text, bool isColumnRef );
 
     //! copy contructor - copies whole tree!
-    QgsSearchTreeNode(const QgsSearchTreeNode& node);
+    QgsSearchTreeNode( const QgsSearchTreeNode& node );
 
     //! destructor - deletes children nodes (if any)
     ~QgsSearchTreeNode();
 
     //! returns type of current node
     Type type()   { return mType; }
-    
+
     //! node value getters
     Operator op();
     double number() { return mNumber; }
@@ -95,43 +95,43 @@ public:
     QString string() { return mText; }
 
     //! node value setters (type is set also)
-    void setOp(Operator op)         { mType = tOperator;  mOp = op; }
-    void setNumber(double number)   { mType = tNumber;    mNumber = number; }
-    void setColumnRef(QString& str) { mType = tColumnRef; mText = str; }
-    void setString(QString& str)    { mType = tString;    mText = str; stripText(); }
+    void setOp( Operator op )         { mType = tOperator;  mOp = op; }
+    void setNumber( double number )   { mType = tNumber;    mNumber = number; }
+    void setColumnRef( QString& str ) { mType = tColumnRef; mText = str; }
+    void setString( QString& str )    { mType = tString;    mText = str; stripText(); }
 
     //! children
     QgsSearchTreeNode* Left()  { return mLeft;  }
     QgsSearchTreeNode* Right() { return mRight; }
-    void setLeft (QgsSearchTreeNode* left ) { mLeft = left;   }
-    void setRight(QgsSearchTreeNode* right) { mRight = right; }
+    void setLeft( QgsSearchTreeNode* left ) { mLeft = left;   }
+    void setRight( QgsSearchTreeNode* right ) { mRight = right; }
 
     //! returns search string that should be equal to original parsed string
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    bool checkAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes);
-    
+    bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes );
+
     //! checks if there were errors during evaluation
-    bool hasError() { return (!mError.isEmpty()); }
-    
+    bool hasError() { return ( !mError.isEmpty() ); }
+
     //! returns error message
     const QString& errorMsg() { return mError; }
 
-protected:
+  protected:
 
     //! returns scalar value of node
-    QgsSearchTreeValue valueAgainst(const QgsFieldMap& fields, const QgsAttributeMap& attributes);
-    
+    QgsSearchTreeValue valueAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes );
+
     //! wrapper around valueAgainst()
-    bool getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node,
-                  const QgsFieldMap& fields, const QgsAttributeMap& attributes);
+    bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
+                   const QgsFieldMap& fields, const QgsAttributeMap& attributes );
 
     //! strips mText when node is of string type
     void stripText();
-    
-private:
-    
+
+  private:
+
     //! node type
     Type mType;
 
@@ -150,33 +150,33 @@ private:
 // TODO: poslat do zvlast suboru
 class QgsSearchTreeValue
 {
-public:
+  public:
 
-  enum Type
-  {
-    valError,
-    valString,
-    valNumber
-  };
+    enum Type
+    {
+      valError,
+      valString,
+      valNumber
+    };
 
-  QgsSearchTreeValue() { }
-  QgsSearchTreeValue(QString string) { mType = valString; mString = string; }
-  QgsSearchTreeValue(double number) { mType = valNumber; mNumber = number; }
-  QgsSearchTreeValue(int error, QString errorMsg) { mType = valError; mNumber = error; mString = errorMsg; }
+    QgsSearchTreeValue() { }
+    QgsSearchTreeValue( QString string ) { mType = valString; mString = string; }
+    QgsSearchTreeValue( double number ) { mType = valNumber; mNumber = number; }
+    QgsSearchTreeValue( int error, QString errorMsg ) { mType = valError; mNumber = error; mString = errorMsg; }
 
-  static int compare(QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
-                     Qt::CaseSensitivity = Qt::CaseSensitive);
+    static int compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
+                        Qt::CaseSensitivity = Qt::CaseSensitive );
 
-  bool isNumeric() { return mType == valNumber; }
-  bool isError() { return mType == valError; }
+    bool isNumeric() { return mType == valNumber; }
+    bool isError() { return mType == valError; }
 
-  QString& string() { return mString; }
-  double number() { return mNumber; }
+    QString& string() { return mString; }
+    double number() { return mNumber; }
 
-private:
-  Type mType;
-  QString mString;
-  double mNumber;
+  private:
+    Type mType;
+    QString mString;
+    double mNumber;
 
 };
 

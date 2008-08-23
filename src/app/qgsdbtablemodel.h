@@ -19,32 +19,32 @@
 class QIcon;
 #include "qgis.h"
 
-/**A model that holds the tables of a database in a hierarchy where the 
-schemas are the root elements that contain the individual tables as children. 
+/**A model that holds the tables of a database in a hierarchy where the
+schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsDbTableModel: public QStandardItemModel
 {
-  Q_OBJECT
- public:
-  QgsDbTableModel();
-  ~QgsDbTableModel();
-  /**Adds entry for one database table to the model*/
-  void addTableEntry(QString type, QString schemaName, QString tableName, QString geometryColName, QString Sql);
-  /**Sets an sql statement that belongs to a cell specified by a model index*/
-  void setSql(const QModelIndex& index, const QString& sql);
-  /**Sets one or more geometry types to a row. In case of several types, additional rows are inserted. 
-     This is for tables where the type is dectected later by thread*/
-  void setGeometryTypesForTable(const QString& schema, const QString& table, const QString& attribute, const QString& type);
-  /**Returns the number of tables in the model*/
-  int tableCount() const {return mTableCount;}
-  
- private:
-  /**Number of tables in the model*/
-  int mTableCount;
+    Q_OBJECT
+  public:
+    QgsDbTableModel();
+    ~QgsDbTableModel();
+    /**Adds entry for one database table to the model*/
+    void addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, QString Sql );
+    /**Sets an sql statement that belongs to a cell specified by a model index*/
+    void setSql( const QModelIndex& index, const QString& sql );
+    /**Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
+       This is for tables where the type is dectected later by thread*/
+    void setGeometryTypesForTable( const QString& schema, const QString& table, const QString& attribute, const QString& type );
+    /**Returns the number of tables in the model*/
+    int tableCount() const {return mTableCount;}
 
-  QIcon iconForType(QGis::WKBTYPE type) const;
-  QString displayStringForType(QGis::WKBTYPE type) const;
-  /**Returns qgis wkbtype from database typename*/
-  QGis::WKBTYPE qgisTypeFromDbType(const QString& dbType) const;
+  private:
+    /**Number of tables in the model*/
+    int mTableCount;
+
+    QIcon iconForType( QGis::WKBTYPE type ) const;
+    QString displayStringForType( QGis::WKBTYPE type ) const;
+    /**Returns qgis wkbtype from database typename*/
+    QGis::WKBTYPE qgisTypeFromDbType( const QString& dbType ) const;
 };
 

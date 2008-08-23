@@ -3,7 +3,7 @@
                                ------------------
         begin                : March 2005
         copyright            : (C) 2005 by Radim Blazek
-        email                : blazek@itc.it 
+        email                : blazek@itc.it
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -29,131 +29,131 @@
 #include <QSettings>
 
 
-QgsMeasureDialog::QgsMeasureDialog(QgsMeasureTool* tool, Qt::WFlags f)
-  : QDialog(tool->canvas()->topLevelWidget(), f), mTool(tool)
+QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
+    : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
-    setupUi(this);
-    connect(mRestartButton, SIGNAL(clicked()), this, SLOT(restart()));
-    connect(mCloseButton, SIGNAL(clicked()), this, SLOT(close()));
+  setupUi( this );
+  connect( mRestartButton, SIGNAL( clicked() ), this, SLOT( restart() ) );
+  connect( mCloseButton, SIGNAL( clicked() ), this, SLOT( close() ) );
 
-    mMeasureArea = tool->measureArea();
-    mTotal = 0.;
+  mMeasureArea = tool->measureArea();
+  mTotal = 0.;
 
-    // Set one cell row where to update current distance
-    // If measuring area, the table doesn't get shown
-    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(QString::number(0, 'f', 1)));
-    item->setTextAlignment(0, Qt::AlignRight);
-    mTable->addTopLevelItem(item);
+  // Set one cell row where to update current distance
+  // If measuring area, the table doesn't get shown
+  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
+  item->setTextAlignment( 0, Qt::AlignRight );
+  mTable->addTopLevelItem( item );
 
-    //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
+  //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
 
-    updateUi();
+  updateUi();
 }
 
 
 void QgsMeasureDialog::restart()
 {
-    mTool->restart();  
-  
-    // Set one cell row where to update current distance
-    // If measuring area, the table doesn't get shown
-    mTable->clear();
-    QTreeWidgetItem* item = new QTreeWidgetItem(QStringList(QString::number(0, 'f', 1)));
-    item->setTextAlignment(0, Qt::AlignRight);
-    mTable->addTopLevelItem(item);
-    mTotal = 0.;
-    
-    updateUi();
+  mTool->restart();
+
+  // Set one cell row where to update current distance
+  // If measuring area, the table doesn't get shown
+  mTable->clear();
+  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
+  item->setTextAlignment( 0, Qt::AlignRight );
+  mTable->addTopLevelItem( item );
+  mTotal = 0.;
+
+  updateUi();
 }
 
 
-void QgsMeasureDialog::mousePress(QgsPoint &point)
+void QgsMeasureDialog::mousePress( QgsPoint &point )
 {
-  if (mTool->points().size() == 0)
+  if ( mTool->points().size() == 0 )
   {
-    addPoint(point);
+    addPoint( point );
     this->show();
   }
   raise();
 
-  mouseMove(point);
+  mouseMove( point );
 }
 
-void QgsMeasureDialog::mouseMove(QgsPoint &point)
+void QgsMeasureDialog::mouseMove( QgsPoint &point )
 {
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
-  if (mMeasureArea && mTool->points().size() > 1)
+  if ( mMeasureArea && mTool->points().size() > 1 )
   {
     QList<QgsPoint> tmpPoints = mTool->points();
-    tmpPoints.append(point);
-    double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon(tmpPoints);
-    editTotal->setText(formatArea(area));
+    tmpPoints.append( point );
+    double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon( tmpPoints );
+    editTotal->setText( formatArea( area ) );
   }
-  else if (!mMeasureArea && mTool->points().size() > 0)
+  else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
-    QgsPoint p1(mTool->points().last()), p2(point);
+    QgsPoint p1( mTool->points().last() ), p2( point );
 
-    double d = mTool->canvas()->mapRenderer()->distArea()->measureLine(p1,p2);
-    QTreeWidgetItem *item = mTable->topLevelItem(mTable->topLevelItemCount()-1);
-    item->setText(0, QLocale::system().toString(d, 'f', 2));
-    editTotal->setText(formatDistance(mTotal + d));
+    double d = mTool->canvas()->mapRenderer()->distArea()->measureLine( p1, p2 );
+    QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
+    item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
+    editTotal->setText( formatDistance( mTotal + d ) );
   }
 }
 
-void QgsMeasureDialog::addPoint(QgsPoint &point)
+void QgsMeasureDialog::addPoint( QgsPoint &point )
 {
-    int numPoints = mTool->points().size();
-    if (mMeasureArea && numPoints > 2)
-    {
-      double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon(mTool->points());
-      editTotal->setText(formatArea(area));
-    }
-    else if (!mMeasureArea && numPoints > 1)
-    {
-      int last = numPoints-2;
-        
-      QgsPoint p1 = mTool->points()[last], p2 = mTool->points()[last+1];
-      
-      double d = mTool->canvas()->mapRenderer()->distArea()->measureLine(p1,p2);
-            
-      mTotal += d;
-      editTotal->setText(formatDistance(mTotal));
+  int numPoints = mTool->points().size();
+  if ( mMeasureArea && numPoints > 2 )
+  {
+    double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon( mTool->points() );
+    editTotal->setText( formatArea( area ) );
+  }
+  else if ( !mMeasureArea && numPoints > 1 )
+  {
+    int last = numPoints - 2;
 
-      QTreeWidgetItem *item = mTable->topLevelItem(mTable->topLevelItemCount()-1);
-      item->setText(0, QLocale::system().toString(d, 'f', 2));
+    QgsPoint p1 = mTool->points()[last], p2 = mTool->points()[last+1];
 
-      item = new QTreeWidgetItem(QStringList(QLocale::system().toString(0.0, 'f', 2)));
-      item->setTextAlignment(0, Qt::AlignRight);
-      mTable->addTopLevelItem(item);
-      mTable->scrollToItem(item);
-    }
+    double d = mTool->canvas()->mapRenderer()->distArea()->measureLine( p1, p2 );
+
+    mTotal += d;
+    editTotal->setText( formatDistance( mTotal ) );
+
+    QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
+    item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
+
+    item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', 2 ) ) );
+    item->setTextAlignment( 0, Qt::AlignRight );
+    mTable->addTopLevelItem( item );
+    mTable->scrollToItem( item );
+  }
 }
 
 
-void QgsMeasureDialog::close(void)
+void QgsMeasureDialog::close( void )
 {
-    restart();
-    QDialog::close();
+  restart();
+  QDialog::close();
 }
 
-void QgsMeasureDialog::closeEvent(QCloseEvent *e)
+void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 {
-    saveWindowLocation();
-    e->accept();
+  saveWindowLocation();
+  e->accept();
 }
 
 void QgsMeasureDialog::restorePosition()
 {
   QSettings settings;
-  restoreGeometry(settings.value("/Windows/Measure/geometry").toByteArray());
+  restoreGeometry( settings.value( "/Windows/Measure/geometry" ).toByteArray() );
   int wh;
-  if (mMeasureArea)
-    wh = settings.value("/Windows/Measure/hNoTable", 70).toInt();
+  if ( mMeasureArea )
+    wh = settings.value( "/Windows/Measure/hNoTable", 70 ).toInt();
   else
-    wh = settings.value("/Windows/Measure/h", 200).toInt();    
-  resize(width(), wh);
+    wh = settings.value( "/Windows/Measure/h", 200 ).toInt();
+  resize( width(), wh );
   updateUi();
   this->show();
 }
@@ -161,61 +161,61 @@ void QgsMeasureDialog::restorePosition()
 void QgsMeasureDialog::saveWindowLocation()
 {
   QSettings settings;
-  settings.setValue("/Windows/Measure/geometry", saveGeometry());
+  settings.setValue( "/Windows/Measure/geometry", saveGeometry() );
   const QString &key = mMeasureArea ? "/Windows/Measure/hNoTable" : "/Windows/Measure/h";
-  settings.setValue(key, height());
-} 
+  settings.setValue( key, height() );
+}
 
 void QgsMeasureDialog::on_btnHelp_clicked()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }
 
 
-QString QgsMeasureDialog::formatDistance(double distance)
+QString QgsMeasureDialog::formatDistance( double distance )
 {
   QString txt;
   QString unitLabel;
 
   QGis::units myMapUnits = mTool->canvas()->mapUnits();
-  return QgsDistanceArea::textUnit(distance, 2, myMapUnits, false);
+  return QgsDistanceArea::textUnit( distance, 2, myMapUnits, false );
 }
 
-QString QgsMeasureDialog::formatArea(double area)
+QString QgsMeasureDialog::formatArea( double area )
 {
   QGis::units myMapUnits = mTool->canvas()->mapUnits();
-  return QgsDistanceArea::textUnit(area, 2, myMapUnits, true);
+  return QgsDistanceArea::textUnit( area, 2, myMapUnits, true );
 }
 
 void QgsMeasureDialog::updateUi()
 {
-  
+
   QGis::units myMapUnits = mTool->canvas()->mapUnits();
-  switch (myMapUnits)
+  switch ( myMapUnits )
   {
-    case QGis::METERS: 
-      mTable->setHeaderLabels( QStringList( tr("Segments (in meters)") ) );
+    case QGis::METERS:
+      mTable->setHeaderLabels( QStringList( tr( "Segments (in meters)" ) ) );
       break;
     case QGis::FEET:
-      mTable->setHeaderLabels( QStringList( tr("Segments (in feet)") ) );
+      mTable->setHeaderLabels( QStringList( tr( "Segments (in feet)" ) ) );
       break;
     case QGis::DEGREES:
-      mTable->setHeaderLabels( QStringList( tr("Segments (in degrees)") ) );
+      mTable->setHeaderLabels( QStringList( tr( "Segments (in degrees)" ) ) );
       break;
     case QGis::UNKNOWN:
-      mTable->setHeaderLabels( QStringList( tr("Segments") ) );
+      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
   };
 
-  if (mMeasureArea)
+  if ( mMeasureArea )
   {
     mTable->hide();
-    editTotal->setText(formatArea(0));
+    editTotal->setText( formatArea( 0 ) );
   }
   else
   {
     mTable->show();
-    editTotal->setText(formatDistance(0));
+    editTotal->setText( formatDistance( 0 ) );
   }
-  
+
 }
 

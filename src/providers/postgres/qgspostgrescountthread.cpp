@@ -27,6 +27,7 @@
 #include "qgsprovidercountcalcevent.h"
 
 #include "qgspostgrescountthread.h"
+#include "qgslogger.h"
 
 
 /*
@@ -74,60 +75,57 @@ void QgsPostgresCountThread::run()
 {
 //  // placeholders for now.
 //  QString connInfo;
-  
-  std::cout << "QgsPostgresCountThread: Started running." << std::endl;
+
+  QgsDebugMsg( "QgsPostgresCountThread: Started running." );
 
   // Open another connection to the database
-  PGconn *connection = PQconnectdb(connInfo.toUtf8());
+  PGconn *connection = PQconnectdb( connInfo.toUtf8() );
 
   // get the extents
 
   QString sql = "select count(*) from " + tableName;
-  if(sqlWhereClause.length() > 0)
+  if ( sqlWhereClause.length() > 0 )
   {
     sql += " where " + sqlWhereClause;
   }
 
 
-  std::cout << "QgsPostgresCountThread: About to issue query." << std::endl;
+  QgsDebugMsg( "QgsPostgresCountThread: About to issue query." );
 
-  PGresult *result = PQexec(connection, sql.toUtf8());
-  
-  std::cout << "QgsPostgresCountThread: Query completed." << std::endl;
-  
-    
-  numberFeatures = QString(PQgetvalue(result, 0, 0)).toLong();
-  PQclear(result);
+  PGresult *result = PQexec( connection, sql.toUtf8() );
 
-#ifdef QGISDEBUG
-      std::cerr << "QgsPostgresCountThread: Exact Number of features: " << 
-        numberFeatures << std::endl;
-#endif
+  QgsDebugMsg( "QgsPostgresCountThread: Query completed." );
+
+
+  numberFeatures = QString( PQgetvalue( result, 0, 0 ) ).toLong();
+  PQclear( result );
+
+  QgsDebugMsg( QString( "QgsPostgresCountThread: Exact Number of features: %1" ).arg( numberFeatures ) );
 
 
   // Send some events (instead of a signal) as it is thread-safe
-  
+
   // First we tell the object that invoked us that we have some new extents for her
   // Second we tell the application that the extents have changed, so that it
   // can go on and do any visual housekeeping (e.g. update the overview window)
 
-  std::cout << "QgsPostgresCountThread: About to create and dispatch event " << QGis::ProviderCountCalcEvent << " to callback" << std::endl;
-  
-  QgsProviderCountCalcEvent* e1 = new QgsProviderCountCalcEvent(numberFeatures);
-  QApplication::postEvent( (QObject *)callbackObject, e1);
-  
-//  QApplication::postEvent(qApp->mainWidget(), e1);
-  
-  std::cout << "QgsPostgresCountThread: Posted event " << QGis::ProviderCountCalcEvent << " to callback" << std::endl;
+  QgsDebugMsg( QString( "QgsPostgresCountThread: About to create and dispatch event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
 
-   
-  std::cout << "QgsPostgresCountThread: About to finish connection." << std::endl;
+  QgsProviderCountCalcEvent* e1 = new QgsProviderCountCalcEvent( numberFeatures );
+  QApplication::postEvent(( QObject * )callbackObject, e1 );
+
+//  QApplication::postEvent(qApp->mainWidget(), e1);
+
+  QgsDebugMsg( QString( "QgsPostgresCountThread: Posted event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
+
+
+  QgsDebugMsg( "QgsPostgresCountThread: About to finish connection." );
 
   // ending the thread, clean up
-  PQfinish(connection);
-  
-  std::cout << "QgsPostgresCountThread: About to complete running." << std::endl;
-  
-    
+  PQfinish( connection );
+
+  QgsDebugMsg( "QgsPostgresCountThread: About to complete running." );
+
+
 }
 

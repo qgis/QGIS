@@ -29,7 +29,7 @@
 QgsMapLayerRegistry *QgsMapLayerRegistry::mInstance = 0;
 QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 {
-  if (mInstance == 0)
+  if ( mInstance == 0 )
   {
     mInstance = new QgsMapLayerRegistry();
   }
@@ -40,7 +40,7 @@ QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
 // Main class begins now...
 //
 
-QgsMapLayerRegistry::QgsMapLayerRegistry(QObject *parent) : QObject(parent) 
+QgsMapLayerRegistry::QgsMapLayerRegistry( QObject *parent ) : QObject( parent )
 {
   // constructor does nothing
 }
@@ -56,30 +56,31 @@ int QgsMapLayerRegistry::count()
   return mMapLayers.size();
 }
 
-QgsMapLayer * QgsMapLayerRegistry::mapLayer(QString theLayerId)  
+QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
 {
-  return mMapLayers.value(theLayerId);
+  return mMapLayers.value( theLayerId );
 }
 
 
 
 QgsMapLayer *
-  QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
+QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal )
 {
-  if( !theMapLayer->isValid() ) {
-    QgsDebugMsg("cannot add invalid layers");
+  if ( !theMapLayer->isValid() )
+  {
+    QgsDebugMsg( "cannot add invalid layers" );
     return 0;
   }
 
   //check the layer is not already registered!
-  QMap<QString,QgsMapLayer*>::iterator myIterator = mMapLayers.find(theMapLayer->getLayerID());
+  QMap<QString, QgsMapLayer*>::iterator myIterator = mMapLayers.find( theMapLayer->getLayerID() );
   //if myIterator returns mMapLayers.end() then it does not exist in registry and its safe to add it
-  if (myIterator == mMapLayers.end())
+  if ( myIterator == mMapLayers.end() )
   {
     mMapLayers[theMapLayer->getLayerID()] = theMapLayer;
-    
-    if (theEmitSignal)
-      emit layerWasAdded(theMapLayer);
+
+    if ( theEmitSignal )
+      emit layerWasAdded( theMapLayer );
 
     return mMapLayers[theMapLayer->getLayerID()];
   }
@@ -91,33 +92,33 @@ QgsMapLayer *
 
 
 
-void QgsMapLayerRegistry::removeMapLayer(QString theLayerId, bool theEmitSignal)
+void QgsMapLayerRegistry::removeMapLayer( QString theLayerId, bool theEmitSignal )
 {
-  if (theEmitSignal)
-    emit layerWillBeRemoved(theLayerId); 
-  delete mMapLayers[theLayerId]; 
-  mMapLayers.remove(theLayerId);
+  if ( theEmitSignal )
+    emit layerWillBeRemoved( theLayerId );
+  delete mMapLayers[theLayerId];
+  mMapLayers.remove( theLayerId );
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
-  
+
   // moved before physically removing the layers
   emit removedAll();            // now let all canvas Observers know to clear
-                                // themselves, and then consequently any of
-                                // their map legends
-  
+  // themselves, and then consequently any of
+  // their map legends
+
   QMap<QString, QgsMapLayer *>::iterator it;
-  for (it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
+  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
   {
-      delete it.value(); // delete the map layer
+    delete it.value(); // delete the map layer
   }
   mMapLayers.clear();
 
 } // QgsMapLayerRegistry::removeAllMapLayers()
 
 
-QMap<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
+QMap<QString, QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 {
   return mMapLayers;
 }
@@ -126,5 +127,5 @@ QMap<QString,QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
 
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
-    //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
+  //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
 } //  QgsMapLayerRegistry::connectNotify

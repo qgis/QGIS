@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsgpsplugingui.h 
+                          qgsgpsplugingui.h
  Functions:
                              -------------------
     begin                : Jan 21, 2004
@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  $Id$ */
+/*  $Id$ */
 
 #ifndef QGSGPSPLUGINGUI_H
 #define QGSGPSPLUGINGUI_H
@@ -33,76 +33,76 @@
 */
 class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 {
-  Q_OBJECT
-public:
-  QgsGPSPluginGui(const BabelMap& importers, 
-		  std::map<QString, QgsGPSDevice*>& devices, 
-		  std::vector<QgsVectorLayer*> gpxMapLayers,
-		  QWidget* parent, Qt::WFlags);
-  ~QgsGPSPluginGui();
+    Q_OBJECT
+  public:
+    QgsGPSPluginGui( const BabelMap& importers,
+                     std::map<QString, QgsGPSDevice*>& devices,
+                     std::vector<QgsVectorLayer*> gpxMapLayers,
+                     QWidget* parent, Qt::WFlags );
+    ~QgsGPSPluginGui();
 
-public slots:
+  public slots:
 
-  void openDeviceEditor();
-  void devicesUpdated();
-  void enableRelevantControls();
-  
-  void on_pbnGPXSelectFile_clicked();
-  
-  void on_pbnIMPInput_clicked();
-  void on_pbnIMPOutput_clicked();
+    void openDeviceEditor();
+    void devicesUpdated();
+    void enableRelevantControls();
 
-  void on_pbnCONVInput_clicked();
-  void on_pbnCONVOutput_clicked();
-  
-  void on_pbnDLOutput_clicked();
+    void on_pbnGPXSelectFile_clicked();
 
-private:
-  
-  void populateDeviceComboBox();
-  void populateULLayerComboBox();
-  void populateIMPBabelFormats();
-  void populatePortComboBoxes();
-  void populateLoadDialog();
-  void populateDLDialog();
-  void populateULDialog();
-  void populateIMPDialog();
-  void populateCONVDialog();
-  
-private slots:
+    void on_pbnIMPInput_clicked();
+    void on_pbnIMPOutput_clicked();
 
-  void on_pbnRefresh_clicked();
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
-  void on_buttonBox_helpRequested();
+    void on_pbnCONVInput_clicked();
+    void on_pbnCONVOutput_clicked();
 
-signals:
-  void drawRasterLayer(QString);
-  void drawVectorLayer(QString,QString,QString);
-  void loadGPXFile(QString fileName, bool showWaypoints, bool showRoutes, 
-		   bool showTracks);
-  void importGPSFile(QString inputFileName, QgsBabelFormat* importer,
-		     bool importWaypoints, bool importRoutes, 
-		     bool importTracks, QString outputFileName, 
-		     QString layerName);
-  void convertGPSFile(QString inputFileName,
-                      int convertType,
-                      QString outputFileName, 
-                      QString layerName);
-  void downloadFromGPS(QString device, QString port, bool downloadWaypoints, 
-		       bool downloadRoutes, bool downloadTracks, 
-		       QString outputFileName, QString layerName);
-  void uploadToGPS(QgsVectorLayer* gpxLayer, QString device, QString port);
-  
-private:
-  
-  std::vector<QgsVectorLayer*> mGPXLayers;
-  const BabelMap& mImporters;
-  std::map<QString, QgsGPSDevice*>& mDevices;
-  QString mBabelFilter;
-  QString mImpFormat;
-  QAbstractButton *pbnOK;
-  static const int context_id = 995980174;
+    void on_pbnDLOutput_clicked();
+
+  private:
+
+    void populateDeviceComboBox();
+    void populateULLayerComboBox();
+    void populateIMPBabelFormats();
+    void populatePortComboBoxes();
+    void populateLoadDialog();
+    void populateDLDialog();
+    void populateULDialog();
+    void populateIMPDialog();
+    void populateCONVDialog();
+
+  private slots:
+
+    void on_pbnRefresh_clicked();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+
+  signals:
+    void drawRasterLayer( QString );
+    void drawVectorLayer( QString, QString, QString );
+    void loadGPXFile( QString fileName, bool showWaypoints, bool showRoutes,
+                      bool showTracks );
+    void importGPSFile( QString inputFileName, QgsBabelFormat* importer,
+                        bool importWaypoints, bool importRoutes,
+                        bool importTracks, QString outputFileName,
+                        QString layerName );
+    void convertGPSFile( QString inputFileName,
+                         int convertType,
+                         QString outputFileName,
+                         QString layerName );
+    void downloadFromGPS( QString device, QString port, bool downloadWaypoints,
+                          bool downloadRoutes, bool downloadTracks,
+                          QString outputFileName, QString layerName );
+    void uploadToGPS( QgsVectorLayer* gpxLayer, QString device, QString port );
+
+  private:
+
+    std::vector<QgsVectorLayer*> mGPXLayers;
+    const BabelMap& mImporters;
+    std::map<QString, QgsGPSDevice*>& mDevices;
+    QString mBabelFilter;
+    QString mImpFormat;
+    QAbstractButton *pbnOK;
+    static const int context_id = 995980174;
 };
 
 #endif

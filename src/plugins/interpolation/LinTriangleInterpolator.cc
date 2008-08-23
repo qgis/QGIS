@@ -15,117 +15,117 @@
  ***************************************************************************/
 
 #include "LinTriangleInterpolator.h"
-#include <iostream>
+#include "qgslogger.h"
 
-bool LinTriangleInterpolator::calcFirstDerX(double x, double y, Vector3D* vec)
+bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D* vec )
 {
-  
-  if(vec&&mTIN)
-    {
-      Point3D pt1(0,0,0);
-      Point3D pt2(0,0,0);
-      Point3D pt3(0,0,0);
-  
-      if(!mTIN->getTriangle(x, y, &pt1, &pt2, &pt3))
-	{
-	  return false;//point outside the convex hull or numerical problems
-	}
 
-      vec->setX(1.0);
-      vec->setY(0.0);
-      vec->setZ((pt1.getZ()*(pt2.getY()-pt3.getY())+pt2.getZ()*(pt3.getY()-pt1.getY())+pt3.getZ()*(pt1.getY()-pt2.getY()))/((pt1.getX()-pt2.getX())*(pt2.getY()-pt3.getY())-(pt2.getX()-pt3.getX())*(pt1.getY()-pt2.getY())));
-      return true;
+  if ( vec && mTIN )
+  {
+    Point3D pt1( 0, 0, 0 );
+    Point3D pt2( 0, 0, 0 );
+    Point3D pt3( 0, 0, 0 );
+
+    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
+    {
+      return false;//point outside the convex hull or numerical problems
     }
+
+    vec->setX( 1.0 );
+    vec->setY( 0.0 );
+    vec->setZ(( pt1.getZ()*( pt2.getY() - pt3.getY() ) + pt2.getZ()*( pt3.getY() - pt1.getY() ) + pt3.getZ()*( pt1.getY() - pt2.getY() ) ) / (( pt1.getX() - pt2.getX() )*( pt2.getY() - pt3.getY() ) - ( pt2.getX() - pt3.getX() )*( pt1.getY() - pt2.getY() ) ) );
+    return true;
+  }
 
   else
-    {
-      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerX" << std::endl << std::flush;
-      return false;
-    }
+  {
+    QgsDebugMsg( "" );
+    return false;
+  }
 }
-  
-bool LinTriangleInterpolator::calcFirstDerY(double x, double y, Vector3D* vec)
+
+bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D* vec )
 {
-  if(vec&&mTIN)
-    {
-      Point3D pt1(0,0,0);
-      Point3D pt2(0,0,0);
-      Point3D pt3(0,0,0);
+  if ( vec && mTIN )
+  {
+    Point3D pt1( 0, 0, 0 );
+    Point3D pt2( 0, 0, 0 );
+    Point3D pt3( 0, 0, 0 );
 
-      if(!mTIN->getTriangle(x, y, &pt1, &pt2, &pt3))
-	{
-	  return false;
-	}
-  
-      vec->setX(0);
-      vec->setY(1.0);
-      vec->setZ((pt1.getZ()*(pt2.getX()-pt3.getX())+pt2.getZ()*(pt3.getX()-pt1.getX())+pt3.getZ()*(pt1.getX()-pt2.getX()))/((pt1.getY()-pt2.getY())*(pt2.getX()-pt3.getX())-(pt2.getY()-pt3.getY())*(pt1.getX()-pt2.getX())));
-      return true;
-    }
-  
-  else
+    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
     {
-      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << std::endl << std::flush;
       return false;
     }
+
+    vec->setX( 0 );
+    vec->setY( 1.0 );
+    vec->setZ(( pt1.getZ()*( pt2.getX() - pt3.getX() ) + pt2.getZ()*( pt3.getX() - pt1.getX() ) + pt3.getZ()*( pt1.getX() - pt2.getX() ) ) / (( pt1.getY() - pt2.getY() )*( pt2.getX() - pt3.getX() ) - ( pt2.getY() - pt3.getY() )*( pt1.getX() - pt2.getX() ) ) );
+    return true;
+  }
+
+  else
+  {
+    QgsDebugMsg( "" );
+    return false;
+  }
 }
 
-bool LinTriangleInterpolator::calcNormVec(double x, double y, Vector3D* vec)
+bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D* vec )
 {
 //calculate vector product of the two derivative vectors in x- and y-direction and set the length to 1
-  if(vec&&mTIN)
-    {
-      Vector3D vec1;
-      Vector3D vec2;
-      if(!calcFirstDerX(x,y,&vec1))
-	{return false;}
-      if(!calcFirstDerY(x,y,&vec2))
-	{return false;}
-      Vector3D vec3(vec1.getY()*vec2.getZ()-vec1.getZ()*vec2.getY(),vec1.getZ()*vec2.getX()-vec1.getX()*vec2.getZ(),vec1.getX()*vec2.getY()-vec1.getY()*vec2.getX());//calculate vector product
-      double absvec3=sqrt(vec3.getX()*vec3.getX()+vec3.getY()*vec3.getY()+vec3.getZ()*vec3.getZ());//length of vec3
-      vec->setX(vec3.getX()/absvec3);//standardize vec3 and assign it to vec
-      vec->setY(vec3.getY()/absvec3);
-      vec->setZ(vec3.getZ()/absvec3);
-      return true;
-    }
+  if ( vec && mTIN )
+  {
+    Vector3D vec1;
+    Vector3D vec2;
+    if ( !calcFirstDerX( x, y, &vec1 ) )
+      {return false;}
+    if ( !calcFirstDerY( x, y, &vec2 ) )
+      {return false;}
+    Vector3D vec3( vec1.getY()*vec2.getZ() - vec1.getZ()*vec2.getY(), vec1.getZ()*vec2.getX() - vec1.getX()*vec2.getZ(), vec1.getX()*vec2.getY() - vec1.getY()*vec2.getX() );//calculate vector product
+    double absvec3 = sqrt( vec3.getX() * vec3.getX() + vec3.getY() * vec3.getY() + vec3.getZ() * vec3.getZ() );//length of vec3
+    vec->setX( vec3.getX() / absvec3 );//standardize vec3 and assign it to vec
+    vec->setY( vec3.getY() / absvec3 );
+    vec->setZ( vec3.getZ() / absvec3 );
+    return true;
+  }
 
   else
-    {
-      std::cout << "warning, null pointer in LinTriangleInterpolator::calcFirstDerY" << std::endl << std::flush;
-      return false;
-    }
-  
+  {
+    QgsDebugMsg( "" );
+    return false;
+  }
+
 }
 
 
-bool LinTriangleInterpolator::calcPoint(double x, double y, Point3D* point)
+bool LinTriangleInterpolator::calcPoint( double x, double y, Point3D* point )
 {
-  if(point&&mTIN)
+  if ( point && mTIN )
+  {
+    Point3D pt1( 0, 0, 0 );
+    Point3D pt2( 0, 0, 0 );
+    Point3D pt3( 0, 0, 0 );
+
+    if ( !mTIN->getTriangle( x, y, &pt1, &pt2, &pt3 ) )
     {
-      Point3D pt1(0,0,0);
-      Point3D pt2(0,0,0);
-      Point3D pt3(0,0,0);
- 
-      if(!mTIN->getTriangle(x, y, &pt1, &pt2, &pt3))
-      {
       return false;//point is outside the convex hull or numerical problems
-      }
-
-      double a=(pt1.getZ()*(pt2.getY()-pt3.getY())+pt2.getZ()*(pt3.getY()-pt1.getY())+pt3.getZ()*(pt1.getY()-pt2.getY()))/((pt1.getX()-pt2.getX())*(pt2.getY()-pt3.getY())-(pt2.getX()-pt3.getX())*(pt1.getY()-pt2.getY()));
-      double b=(pt1.getZ()*(pt2.getX()-pt3.getX())+pt2.getZ()*(pt3.getX()-pt1.getX())+pt3.getZ()*(pt1.getX()-pt2.getX()))/((pt1.getY()-pt2.getY())*(pt2.getX()-pt3.getX())-(pt2.getY()-pt3.getY())*(pt1.getX()-pt2.getX()));
-      double c=pt1.getZ()-a*pt1.getX()-b*pt1.getY();
-
-      point->setX(x);
-      point->setY(y);
-      point->setZ(a*x+b*y+c);
-      return true;
     }
+
+    double a = ( pt1.getZ() * ( pt2.getY() - pt3.getY() ) + pt2.getZ() * ( pt3.getY() - pt1.getY() ) + pt3.getZ() * ( pt1.getY() - pt2.getY() ) ) / (( pt1.getX() - pt2.getX() ) * ( pt2.getY() - pt3.getY() ) - ( pt2.getX() - pt3.getX() ) * ( pt1.getY() - pt2.getY() ) );
+    double b = ( pt1.getZ() * ( pt2.getX() - pt3.getX() ) + pt2.getZ() * ( pt3.getX() - pt1.getX() ) + pt3.getZ() * ( pt1.getX() - pt2.getX() ) ) / (( pt1.getY() - pt2.getY() ) * ( pt2.getX() - pt3.getX() ) - ( pt2.getY() - pt3.getY() ) * ( pt1.getX() - pt2.getX() ) );
+    double c = pt1.getZ() - a * pt1.getX() - b * pt1.getY();
+
+    point->setX( x );
+    point->setY( y );
+    point->setZ( a*x + b*y + c );
+    return true;
+  }
   else
-    {
-      std::cout << "warning, null pointer in LinTriangleInterpolator::calcPoint" << std::endl << std::flush;
-      return false;
-    }
-  
+  {
+    QgsDebugMsg( "" );
+    return false;
+  }
+
 }
 
 

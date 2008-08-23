@@ -15,18 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmetadata.h"
-QgsPluginMetadata::QgsPluginMetadata(QString _libraryPath, 
-                                     QString _name,
-                                     QgisPlugin * _plugin,
-                                     bool _python):
-        m_name(_name),
-        libraryPath(_libraryPath),
-        m_plugin(_plugin),
-        m_python(_python)
+QgsPluginMetadata::QgsPluginMetadata( QString _libraryPath,
+                                      QString _name,
+                                      QgisPlugin * _plugin,
+                                      bool _python ):
+    m_name( _name ),
+    libraryPath( _libraryPath ),
+    m_plugin( _plugin ),
+    m_python( _python )
 {
 
 }

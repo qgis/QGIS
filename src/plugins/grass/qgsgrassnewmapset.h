@@ -38,7 +38,8 @@ class QgsGrassProvider;
 #include "qgsgrassselect.h"
 #include "qgsgrassattributes.h"
 
-extern "C" {
+extern "C"
+{
 #include <grass/gis.h>
 #include <grass/gprojects.h>
 #include <grass/Vect.h>
@@ -52,32 +53,33 @@ class QgsGrassNewMapset : public Q3Wizard, private Ui::QgsGrassNewMapsetBase
 {
     Q_OBJECT
 
-public:
+  public:
 
-    enum PAGE { 
-		DATABASE, 
-		LOCATION, 
-		PROJECTION,
-		REGION,
-		MAPSET, 
-		FINISH
-    	      };
-    
+    enum PAGE
+    {
+      DATABASE,
+      LOCATION,
+      PROJECTION,
+      REGION,
+      MAPSET,
+      FINISH
+    };
+
     //! Constructor
-    QgsGrassNewMapset ( QgisInterface *iface,
-                   QgsGrassPlugin *plugin, 
-          QWidget * parent = 0, const char * name = "", Qt::WFlags f = 0 );
+    QgsGrassNewMapset( QgisInterface *iface,
+                       QgsGrassPlugin *plugin,
+                       QWidget * parent = 0, const char * name = "", Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassNewMapset();
 
-    //! Is running 
+    //! Is running
     static bool isRunning();
 
     //! Close
-    void close(); 
+    void close();
 
-public slots:
+  public slots:
     //! Browse database
     void on_mDatabaseButton_clicked() { browseDatabase(); }
     void browseDatabase();
@@ -86,23 +88,25 @@ public slots:
     void on_mDatabaseLineEdit_returnPressed() { databaseChanged(); }
     void on_mDatabaseLineEdit_textChanged() { databaseChanged(); }
     void databaseChanged();
-    
+
     /***************** LOCATION *****************/
     //! Set location page
-    void setLocationPage ( );
+    void setLocationPage( );
 
     //! Set locations
-    void setLocations ( );
+    void setLocations( );
 
     //! Location radio switched
     void on_mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
     void on_mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
-    void locationRadioSwitched ( );
+    void locationRadioSwitched( );
 
     //! Existing location selection
-    void on_mLocationComboBox_textChanged(const QString &txt) {
-            existingLocationChanged ( txt ); }
-    void existingLocationChanged(const QString&);
+    void on_mLocationComboBox_textChanged( const QString &txt )
+    {
+      existingLocationChanged( txt );
+    }
+    void existingLocationChanged( const QString& );
 
     //! New location name has changed
     void on_mLocationLineEdit_returnPressed() { newLocationChanged(); }
@@ -117,18 +121,18 @@ public slots:
     void setProjectionPage();
 
     //! Projection selected
-    void sridSelected(QString);
+    void sridSelected( QString );
     void projectionSelected();
 
     //! Location radio switched
     void on_mNoProjRadioButton_clicked() { projRadioSwitched(); }
     void on_mProjRadioButton_clicked() { projRadioSwitched(); }
-    void projRadioSwitched ( );
+    void projRadioSwitched( );
 
     //! Set GRASS projection structures for currently selected projection
     // or PROJECTION_XY if 'not defined' is selected
     void setGrassProjection();
-    
+
     /******************* REGION ******************/
     //! Set region page, called when entered from projection
     void setRegionPage();
@@ -172,24 +176,24 @@ public slots:
     //! Set finish page
     void setFinishPage();
 
-    //! Finish / accept 
-    void accept ();
+    //! Finish / accept
+    void accept();
 
     //! Create new mapset
     void createMapset();
 
     //! New page was selected
-    void pageSelected ( const QString & );
+    void pageSelected( const QString & );
 
     //! Close event
-    void closeEvent(QCloseEvent *e);
+    void closeEvent( QCloseEvent *e );
 
     //! Key event
-    void keyPressEvent ( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e );
 
     //! Set error line
-    void setError ( QLabel *line, const QString &err ); 
-private:
+    void setError( QLabel *line, const QString &err );
+  private:
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
@@ -198,7 +202,7 @@ private:
 
     //! Editing is already running
     static bool mRunning;
-    
+
     //! Projection selector
     QgsProjectionSelector *mProjectionSelector;
 
@@ -213,7 +217,7 @@ private:
     //! Was the region page modified by user
     bool mRegionModified;
 
-    //! Check region seting 
+    //! Check region seting
     void checkRegion();
 
     //! Region map
@@ -230,7 +234,7 @@ private:
 
     //! Last projection used for region
     QgsCoordinateReferenceSystem mSrs;
-    //bool mSrsSet; 
+    //bool mSrsSet;
 };
 
 #endif // QGSGRASSNEWMAPSET_H

@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
 #include <qdir.h>
 #include <qfile.h>
 #include <qsettings.h>
@@ -46,7 +45,8 @@
 #include "qgsdataprovider.h"
 #include "qgsmaptopixel.h"
 
-extern "C" {
+extern "C"
+{
 #include <grass/gis.h>
 #include <grass/Vect.h>
 }
@@ -55,24 +55,26 @@ extern "C" {
 #include "qgsgrassprovider.h"
 #include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
+#include "qgslogger.h"
 
-QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress ( Q3Table *tab )
+QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress( Q3Table *tab )
 {
   mTable = tab;
 }
 
-QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress () {}
+QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress() {}
 
 bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 {
-  if ( e->type() == QEvent::KeyPress ) 
+  if ( e->type() == QEvent::KeyPress )
   {
-    QKeyEvent *k = (QKeyEvent *)e;
+    QKeyEvent *k = ( QKeyEvent * )e;
 
-    if ( k->key() == Qt::Key_Tab ) {
-      if ( mTable->currentRow() < mTable->numRows()-1 ) 
+    if ( k->key() == Qt::Key_Tab )
+    {
+      if ( mTable->currentRow() < mTable->numRows() - 1 )
       {
-        mTable->setCurrentCell( mTable->currentRow()+1, mTable->currentColumn() );
+        mTable->setCurrentCell( mTable->currentRow() + 1, mTable->currentColumn() );
       }
       return TRUE; // eat event
     }
@@ -80,317 +82,296 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
   return FALSE; // standard event processing
 }
 
-QgsGrassAttributes::QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
-        QWidget * parent, const char * name, Qt::WFlags f ) 
-    : QDialog(parent, f ), QgsGrassAttributesBase ()
+QgsGrassAttributes::QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *provider, int line,
+                                        QWidget * parent, const char * name, Qt::WFlags f )
+    : QDialog( parent, f ), QgsGrassAttributesBase()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes()" );
 
-  setupUi(this);
+  setupUi( this );
 
   mEdit = edit;
   mProvider = provider;
   mLine = line;
 
-  resultLabel->setText ( "" );
+  resultLabel->setText( "" );
 
   // Remove old
-  while ( tabCats->count() ) {
+  while ( tabCats->count() )
+  {
     tabCats->removePage( tabCats->currentPage() );
   }
 
-  connect ( this, SIGNAL(destroyed()), mEdit, SLOT(attributesClosed()) );
+  connect( this, SIGNAL( destroyed() ), mEdit, SLOT( attributesClosed() ) );
 
-  // TODO: does not work: 
-  connect( tabCats, SIGNAL(void currentChanged(QWidget *)), this, SLOT(tabChanged(QWidget *)));
+  // TODO: does not work:
+  connect( tabCats, SIGNAL( void currentChanged( QWidget * ) ), this, SLOT( tabChanged( QWidget * ) ) );
 
   resetButtons();
   restorePosition();
 }
 
-QgsGrassAttributes::~QgsGrassAttributes ()
+QgsGrassAttributes::~QgsGrassAttributes()
 {
-#ifdef QGISDEBUG
-  std::cerr << "~QgsGrassAttributes()" << std::endl;
-#endif
+  QgsDebugMsg( "~QgsGrassAttributes()" );
 
   saveWindowLocation();
 }
 
 void QgsGrassAttributes::restorePosition()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::restorePosition()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::restorePosition()" );
   QSettings settings;
-  restoreGeometry(settings.value("/GRASS/windows/attributes/geometry").toByteArray());
+  restoreGeometry( settings.value( "/GRASS/windows/attributes/geometry" ).toByteArray() );
 }
 
 void QgsGrassAttributes::saveWindowLocation()
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::saveWindowLocation()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::saveWindowLocation()" );
   QSettings settings;
-  settings.setValue("/GRASS/windows/attributes/geometry", saveGeometry());
-} 
+  settings.setValue( "/GRASS/windows/attributes/geometry", saveGeometry() );
+}
 
-int QgsGrassAttributes::addTab ( const QString & label )
+int QgsGrassAttributes::addTab( const QString & label )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::addTab()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::addTab()" );
 
-  Q3Table *tb = new Q3Table ( 2, 3 );
-  tb->setColumnReadOnly ( 0, TRUE );
-  tb->setColumnReadOnly ( 2, TRUE );
-  tb->setRowReadOnly ( 0, TRUE );
-  tb->setRowReadOnly ( 1, TRUE );
+  Q3Table *tb = new Q3Table( 2, 3 );
+  tb->setColumnReadOnly( 0, TRUE );
+  tb->setColumnReadOnly( 2, TRUE );
+  tb->setRowReadOnly( 0, TRUE );
+  tb->setRowReadOnly( 1, TRUE );
 
-  tb->horizontalHeader()->setLabel( 0, tr("Column") );
-  tb->horizontalHeader()->setLabel( 1, tr("Value") );
-  tb->horizontalHeader()->setLabel( 2, tr("Type") );  // Internal use
+  tb->horizontalHeader()->setLabel( 0, tr( "Column" ) );
+  tb->horizontalHeader()->setLabel( 1, tr( "Value" ) );
+  tb->horizontalHeader()->setLabel( 2, tr( "Type" ) );  // Internal use
 
-  tb->setLeftMargin(0); // hide row labels
+  tb->setLeftMargin( 0 ); // hide row labels
 
-  tb->setText ( 0, 0, tr("Layer") );
-  tb->setText ( 1, 0, "Cat" );
+  tb->setText( 0, 0, tr( "Layer" ) );
+  tb->setText( 1, 0, "Cat" );
 
-  tabCats->addTab ( tb, label );
+  tabCats->addTab( tb, label );
 
   // Move down with Tab, unfortunately it does not work if the cell is edited
   // TODO: catch Tab also if the cell is edited
-  QgsGrassAttributesKeyPress *ef = new QgsGrassAttributesKeyPress ( tb );
+  QgsGrassAttributesKeyPress *ef = new QgsGrassAttributesKeyPress( tb );
   tb->installEventFilter( ef );
 
   resetButtons();
 
   QSettings settings;
   QString path = "/GRASS/windows/attributes/columnWidth/";
-  for ( int i = 0; i < 2; i++ ) 
+  for ( int i = 0; i < 2; i++ )
   {
     bool ok;
-    int cw = settings.readNumEntry( path+QString::number(i), 30, &ok);
-    if ( ok ) tb->setColumnWidth (i, cw );
+    int cw = settings.readNumEntry( path + QString::number( i ), 30, &ok );
+    if ( ok ) tb->setColumnWidth( i, cw );
   }
 
-  connect ( tb->horizontalHeader(), SIGNAL(sizeChange(int,int,int)),
-    this, SLOT(columnSizeChanged(int,int,int)) );
+  connect( tb->horizontalHeader(), SIGNAL( sizeChange( int, int, int ) ),
+           this, SLOT( columnSizeChanged( int, int, int ) ) );
 
   return ( tabCats->count() - 1 );
 }
 
-void QgsGrassAttributes::setField ( int tab, int field )
+void QgsGrassAttributes::setField( int tab, int field )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::setField()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::setField()" );
 
-  Q3Table *tb = (Q3Table *) tabCats->page(tab);
+  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
   QString str;
-  str.sprintf("%d", field);
+  str.sprintf( "%d", field );
 
-  tb->setText ( 0, 1, str );
+  tb->setText( 0, 1, str );
 }
 
-void QgsGrassAttributes::setCat ( int tab, const QString & name, int cat )
+void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::setField()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::setField()" );
 
-  Q3Table *tb = (Q3Table *) tabCats->page(tab);
+  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
-  tb->setText ( 1, 0, name );
+  tb->setText( 1, 0, name );
 
   QString str;
-  str.sprintf("%d", cat);
+  str.sprintf( "%d", cat );
 
-  tb->setText ( 1, 1, str );
+  tb->setText( 1, 1, str );
 }
 
-void QgsGrassAttributes::addAttribute ( int tab, const QString &name, const QString &value,
-                                        const QString &type )
+void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QString &value,
+                                       const QString &type )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::addAttribute(): " << name.toLocal8Bit().data() << ": " << value.toLocal8Bit().data() << std::endl;
-#endif
+  QgsDebugMsg( QString( "QgsGrassAttributes::addAttribute(): %1: %2" ).arg( name ).arg( value ) );
 
-  Q3Table *tb = (Q3Table *) tabCats->page(tab);
+  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
-  tb->setNumRows ( tb->numRows()+1 );
+  tb->setNumRows( tb->numRows() + 1 );
 
-  int row = tb->numRows()-1;
-  tb->setText ( row, 0, name );
+  int row = tb->numRows() - 1;
+  tb->setText( row, 0, name );
 
   // I have no rational explanation why fromLocal8Bit is necessary, value should be in unicode
-  // because QgsGrassProvider::attributes is using mEncoding->toUnicode() 
+  // because QgsGrassProvider::attributes is using mEncoding->toUnicode()
   //    tb->setText ( row, 1, QString::fromLocal8Bit(value) );
-  tb->setText ( row, 1, value );
-  tb->setText ( row, 2, type );
+  tb->setText( row, 1, value );
+  tb->setText( row, 2, type );
 
   resetButtons();
 }
 
-void QgsGrassAttributes::addTextRow ( int tab, const QString &text )
+void QgsGrassAttributes::addTextRow( int tab, const QString &text )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::addTextRow()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::addTextRow()" );
 
-  Q3Table *tb = (Q3Table *) tabCats->page(tab);
+  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
-  tb->setNumRows ( tb->numRows()+1 );
+  tb->setNumRows( tb->numRows() + 1 );
 
-  int row = tb->numRows()-1;
-  tb->setText ( row, 0, text );
-  tb->item(row,0)->setSpan(1,3); // must be after setText() whe item exists
+  int row = tb->numRows() - 1;
+  tb->setText( row, 0, text );
+  tb->item( row, 0 )->setSpan( 1, 3 ); // must be after setText() whe item exists
 }
 
-void QgsGrassAttributes::updateAttributes ( )
+void QgsGrassAttributes::updateAttributes( )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::updateAttributes()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::updateAttributes()" );
 
   if ( tabCats->count() == 0 ) return;
 
-  Q3Table *tb = (Q3Table *) tabCats->currentPage();
+  Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
 
-  if ( tb->numRows() > 2 ) {
+  if ( tb->numRows() > 2 )
+  {
 
     // Stop editing (trick)
-    tb->setColumnReadOnly ( 1, TRUE );
-    tb->setColumnReadOnly ( 1, FALSE );
-    tb->setRowReadOnly ( 0, TRUE );
-    tb->setRowReadOnly ( 1, TRUE );
+    tb->setColumnReadOnly( 1, TRUE );
+    tb->setColumnReadOnly( 1, FALSE );
+    tb->setRowReadOnly( 0, TRUE );
+    tb->setRowReadOnly( 1, TRUE );
 
     QString sql;
 
-    for ( int i = 2; i < tb->numRows(); i++ ) {
-      if ( i > 2 ) sql.append (", ");
+    for ( int i = 2; i < tb->numRows(); i++ )
+    {
+      if ( i > 2 ) sql.append( ", " );
 
-      QString val = tb->text(i, 1).stripWhiteSpace();
+      QString val = tb->text( i, 1 ).stripWhiteSpace();
 
-      if ( val.isEmpty() ) 
+      if ( val.isEmpty() )
       {
-        sql.append ( tb->text(i, 0) + " = null" );
-      } 
+        sql.append( tb->text( i, 0 ) + " = null" );
+      }
       else
       {
-        if ( tb->text(i, 2) == "int" || tb->text(i, 2) == "double" ) {
-          sql.append ( tb->text(i, 0) + " = " + val );
-        } else {
-          val.replace("'","''");
-          sql.append ( tb->text(i, 0) + " = '" + val + "'" );
+        if ( tb->text( i, 2 ) == "int" || tb->text( i, 2 ) == "double" )
+        {
+          sql.append( tb->text( i, 0 ) + " = " + val );
+        }
+        else
+        {
+          val.replace( "'", "''" );
+          sql.append( tb->text( i, 0 ) + " = '" + val + "'" );
         }
       }
     }
 
-#ifdef QGISDEBUG
-    std::cerr << "sql: " << sql.toLocal8Bit().data() << std::endl;
-#endif
+    QgsDebugMsg( QString( "sql: %1" ).arg( sql ) );
 
-    QString *error = mProvider->updateAttributes ( tb->text(0,1).toInt(), tb->text(1,1).toInt(), sql );
+    QString *error = mProvider->updateAttributes( tb->text( 0, 1 ).toInt(), tb->text( 1, 1 ).toInt(), sql );
 
-    if ( !error->isEmpty() ) {
-      QMessageBox::warning( 0, tr("Warning"), *error );
-      resultLabel->setText ( tr("ERROR") );
-    } else {
-      resultLabel->setText ( tr("OK") );
+    if ( !error->isEmpty() )
+    {
+      QMessageBox::warning( 0, tr( "Warning" ), *error );
+      resultLabel->setText( tr( "ERROR" ) );
+    }
+    else
+    {
+      resultLabel->setText( tr( "OK" ) );
     }
 
     delete error;
   }
 }
 
-void QgsGrassAttributes::addCat ( )
+void QgsGrassAttributes::addCat( )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::addCat()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::addCat()" );
 
   mEdit->addCat( mLine );
 
   // Select new tab
-  tabCats->setCurrentPage( tabCats->count()-1 );
+  tabCats->setCurrentPage( tabCats->count() - 1 );
 
   resetButtons();
 }
 
-void QgsGrassAttributes::deleteCat ( )
+void QgsGrassAttributes::deleteCat( )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::deleteCat()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::deleteCat()" );
 
   if ( tabCats->count() == 0 ) return;
 
-  Q3Table *tb = (Q3Table *) tabCats->currentPage();
+  Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
 
-  int field = tb->text(0,1).toInt();
-  int cat = tb->text(1,1).toInt();
+  int field = tb->text( 0, 1 ).toInt();
+  int cat = tb->text( 1, 1 ).toInt();
 
-  mEdit->deleteCat(mLine, field, cat);
+  mEdit->deleteCat( mLine, field, cat );
 
   tabCats->removePage( tb );
   delete tb;
   resetButtons();
 }
 
-void QgsGrassAttributes::clear ( )
+void QgsGrassAttributes::clear( )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::clear()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::clear()" );
 
   while ( tabCats->count() > 0 )
   {
-    Q3Table *tb = (Q3Table *) tabCats->currentPage();
+    Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
     tabCats->removePage( tb );
     delete tb;
   }
   resetButtons();
 }
 
-void QgsGrassAttributes::tabChanged ( QWidget *widget )
+void QgsGrassAttributes::tabChanged( QWidget *widget )
 {
-#ifdef QGISDEBUG
-  std::cerr << "QgsGrassAttributes::tabChanged()" << std::endl;
-#endif
+  QgsDebugMsg( "QgsGrassAttributes::tabChanged()" );
 
   //Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
-  resultLabel->setText ( "" );
+  resultLabel->setText( "" );
 }
 
-void QgsGrassAttributes::setLine ( int line )
+void QgsGrassAttributes::setLine( int line )
 {
   mLine = line;
 }
 
-void QgsGrassAttributes::resetButtons ( )
+void QgsGrassAttributes::resetButtons( )
 {
   if ( tabCats->count() == 0 )
   {
-    deleteButton->setEnabled(false);
-    updateButton->setEnabled(false);
+    deleteButton->setEnabled( false );
+    updateButton->setEnabled( false );
   }
   else
   {
-    deleteButton->setEnabled(true);
-    updateButton->setEnabled(true);
+    deleteButton->setEnabled( true );
+    updateButton->setEnabled( true );
   }
 }
 
-void QgsGrassAttributes::columnSizeChanged ( int section, int oldSize, int newSize )
+void QgsGrassAttributes::columnSizeChanged( int section, int oldSize, int newSize )
 {
   QSettings settings;
   QString path = "/GRASS/windows/attributes/columnWidth/"
-    + QString::number(section);
-  std::cerr << "path = " << path.ascii() << " newSize = " << newSize << std::endl;
-  settings.writeEntry( path, newSize);
+                 + QString::number( section );
+  QgsDebugMsg( QString( "path = %1 newSize = %2" ).arg( path ).arg( newSize ) );
+  settings.writeEntry( path, newSize );
 }

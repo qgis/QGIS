@@ -29,18 +29,18 @@ container for layer properties  (e.g. projection, scale dependent view)
 */
 class QgsLegendPropertyGroup : public QgsLegendItem
 {
-public:
-    QgsLegendPropertyGroup(QTreeWidgetItem * ,QString);
+  public:
+    QgsLegendPropertyGroup( QTreeWidgetItem * , QString );
 
     ~QgsLegendPropertyGroup();
 
-	bool isLeafNode() {return mLeafNodeFlag;}
-        DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-	QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
-        /** Overloads cmpare function of QListViewItem
-          * @note The property group must always be the first in the list
-          */
-        int compare (QTreeWidgetItem* i,int col, bool ascending) {return -1;}
+    bool isLeafNode() {return mLeafNodeFlag;}
+    DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
+    /** Overloads cmpare function of QListViewItem
+      * @note The property group must always be the first in the list
+      */
+    int compare( QTreeWidgetItem* i, int col, bool ascending ) {return -1;}
 };
 
 #endif

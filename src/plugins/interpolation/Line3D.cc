@@ -16,26 +16,26 @@
 
 #include "Line3D.h"
 
-Line3D::Line3D() 
+Line3D::Line3D()
 {
-  head=new Node;
-  z=new Node;
-  head->setNext(z);
-  z->setNext(z);
-  currentNode=head;
-  size=0;
-  current=0;
+  head = new Node;
+  z = new Node;
+  head->setNext( z );
+  z->setNext( z );
+  currentNode = head;
+  size = 0;
+  current = 0;
 }
 
 Line3D::~Line3D()
 {
   //First remove all the content
   goToBegin();
-  unsigned int s=size;
-  for (unsigned int i=1;i<=s;i++)
-    {
-      removePoint();
-    }
+  unsigned int s = size;
+  for ( unsigned int i = 1;i <= s;i++ )
+  {
+    removePoint();
+  }
   //then remove head and z
   delete head;
   delete z;
@@ -43,47 +43,47 @@ Line3D::~Line3D()
 
 bool Line3D::empty() const
 {
-  return (head->getNext()==z);
+  return ( head->getNext() == z );
 }
 
-void Line3D::insertPoint(Point3D* p)
+void Line3D::insertPoint( Point3D* p )
 {
-  if(currentNode!=z)//we can't insert a node behind the z-node
-    {
-      //create a new Node after the current Node
-      Node* thenode=new Node();
-      thenode->setPoint(p);
-      thenode->setNext(currentNode->getNext());
-      currentNode->setNext(thenode);
-      size+=1;
-      //set the current Node to the inserted node
-      currentNode=currentNode->getNext();
-      current+=1;
-    }
+  if ( currentNode != z )//we can't insert a node behind the z-node
+  {
+    //create a new Node after the current Node
+    Node* thenode = new Node();
+    thenode->setPoint( p );
+    thenode->setNext( currentNode->getNext() );
+    currentNode->setNext( thenode );
+    size += 1;
+    //set the current Node to the inserted node
+    currentNode = currentNode->getNext();
+    current += 1;
+  }
 }
 
 void Line3D::removePoint()
 {
-  Node* x=currentNode->getNext();
-  if (x!=z)//don't remove the end node of the list
-    {
-      currentNode->setNext(x->getNext());
-      delete x;
-    }
-  size-=1;
+  Node* x = currentNode->getNext();
+  if ( x != z )//don't remove the end node of the list
+  {
+    currentNode->setNext( x->getNext() );
+    delete x;
+  }
+  size -= 1;
 }
 
 void Line3D::goToBegin()
 {
-  currentNode=head;
-  current=0;
+  currentNode = head;
+  current = 0;
 }
 
 void Line3D::goToNext()
 {
-  if(current<size)
-    {
-      currentNode=currentNode->getNext();
-      current+=1;
-    }
+  if ( current < size )
+  {
+    currentNode = currentNode->getNext();
+    current += 1;
+  }
 }

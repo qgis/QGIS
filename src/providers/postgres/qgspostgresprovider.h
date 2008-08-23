@@ -49,7 +49,7 @@ class QgsGeometry;
   */
 class QgsPostgresProvider : public QgsVectorDataProvider
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     /**
@@ -58,7 +58,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param uri String containing the required parameters to connect to the database
      * and query the table.
      */
-    QgsPostgresProvider(QString const & uri = "");
+    QgsPostgresProvider( QString const & uri = "" );
 
     //! Destructor
     virtual ~ QgsPostgresProvider();
@@ -69,7 +69,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     virtual QString storageType() const;
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
-     * @note Must be reimplemented by each provider. 
+     * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
@@ -82,19 +82,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *  @param useIntersect true if an accurate intersection test should be used,
      *                     false if a test based on bounding box is sufficient
      */
-    virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
-                        QgsRect rect = QgsRect(),
-                        bool fetchGeometry = true,
-                        bool useIntersect = false);
-  
+    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
+                         QgsRect rect = QgsRect(),
+                         bool fetchGeometry = true,
+                         bool useIntersect = false );
+
     /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature(QgsFeature& feature);
-    
-    /** 
+    virtual bool getNextFeature( QgsFeature& feature );
+
+    /**
       * Gets the feature at the given feature ID.
       * @param featureId id of the feature
       * @param feature feature which will receive the data
@@ -102,10 +102,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
       * @return True when feature was found, otherwise false
       */
-    virtual bool getFeatureAtId(int featureId,
-                                QgsFeature& feature,
-                                bool fetchGeometry = true,
-                                QgsAttributeList fetchAttributes = QgsAttributeList());
+    virtual bool getFeatureAtId( int featureId,
+                                 QgsFeature& feature,
+                                 bool fetchGeometry = true,
+                                 QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -121,7 +121,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** return the number of layers for the current data source
 
-    @note 
+    @note
 
     Should this be subLayerCount() instead?
     */
@@ -150,7 +150,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
-     */ 
+     */
     void setExtent( QgsRect& newExtent );
 
     /** Return the extent for this data layer
@@ -180,70 +180,70 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue(int index);
+    QVariant minimumValue( int index );
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maxValue(int index);
+    QVariant maxValue( int index );
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void getUniqueValues(int index, QStringList &uniqueValues);
+    virtual void getUniqueValues( int index, QStringList &uniqueValues );
 
     /**Returns true if layer is valid
     */
     bool isValid();
-    
+
     QgsAttributeList allAttributesList();
 
     //! get postgis version string
-    QString postgisVersion(PGconn *);
+    QString postgisVersion( PGconn * );
 
     //! get status of GEOS capability
-    bool hasGEOS(PGconn *);
+    bool hasGEOS( PGconn * );
 
     //! get status of GIST capability
-    bool hasGIST(PGconn *);
+    bool hasGIST( PGconn * );
 
     //! get status of PROJ4 capability
-    bool hasPROJ(PGconn *);
+    bool hasPROJ( PGconn * );
 
     /**Returns the default value for field specified by @c fieldId */
-    QVariant getDefaultValue(int fieldId);
+    QVariant getDefaultValue( int fieldId );
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures(QgsFeatureList & flist);
+    bool addFeatures( QgsFeatureList & flist );
 
     /**Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures(const QgsFeatureIds & id);
+    bool deleteFeatures( const QgsFeatureIds & id );
 
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes(const QgsNewAttributesMap & name);
+    bool addAttributes( const QgsNewAttributesMap & name );
 
     /**Deletes existing attributes
       @param names of the attributes to delete
       @return true in case of success and false in case of failure*/
-    bool deleteAttributes(const QgsAttributeIds & name);
+    bool deleteAttributes( const QgsAttributeIds & name );
 
     /**Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);
+    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
 
-    /** 
+    /**
        Changes geometries of existing features
-       @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
+       @param geometry_map   A std::map containing the feature IDs to change the geometries of.
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues(QgsGeometryMap & geometry_map);
+    bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
     //! Get the postgres connection
     PGconn * pgConnection();
@@ -255,7 +255,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString subsetString();
 
     /** mutator for sql where clause used to limit dataset size */
-    void setSubsetString(QString theSQL);
+    void setSubsetString( QString theSQL );
 
     /**Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
@@ -267,7 +267,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the PG provider since
     //     it appears there are problems with some of the projection definitions
-    bool supportsNativeTransform(){return false;}
+    bool supportsNativeTransform() {return false;}
 
 
     /** return a provider name
@@ -300,11 +300,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString description() const;
 
   signals:
-    /** 
+    /**
      *   This is emitted whenever the worker thread has fully calculated the
      *   PostGIS extents for this layer, and its event has been received by this
      *   provider.
-     */  
+     */
     void fullExtentCalculated();
 
     /**
@@ -322,16 +322,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
   private:
     int providerId; // id to append to provider specific identified (like cursors)
 
-    bool declareCursor(const QString &cursorName,
-                       const QgsAttributeList &fetchAttributes,
-                       bool fetchGeometry,
-                       QString whereClause);
+    bool declareCursor( const QString &cursorName,
+                        const QgsAttributeList &fetchAttributes,
+                        bool fetchGeometry,
+                        QString whereClause );
 
-    bool getFeature(PGresult *queryResult, int row, bool fetchGeometry,
-                    QgsFeature &feature,
-                    const QgsAttributeList &fetchAttributes);
+    bool getFeature( PGresult *queryResult, int row, bool fetchGeometry,
+                     QgsFeature &feature,
+                     const QgsAttributeList &fetchAttributes );
 
-    const QgsField &field(int index) const;
+    const QgsField &field( int index ) const;
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
@@ -372,7 +372,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Name of the table with schema included
      */
     QString mSchemaTableName;
-    /** 
+    /**
      * Name of the schema
      */
     QString mSchemaName;
@@ -407,11 +407,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     PGconn *connectionRO;
     PGconn *connectionRW;
 
-    bool connectRW() {
-      if(connectionRW)
+    bool connectRW()
+    {
+      if ( connectionRW )
         return connectionRW;
 
-      connectionRW = connectDb(mUri.connInfo(), false);
+      connectionRW = connectDb( mUri.connInfo(), false );
 
       return connectionRW;
     }
@@ -431,24 +432,24 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long numberFeatures;
 
     /**
-     * Feature queue that GetNextFeature will retrieve from 
+     * Feature queue that GetNextFeature will retrieve from
      * before the next fetch from PostgreSQL
      */
-    std::queue<QgsFeature> mFeatureQueue; 
-    
+    std::queue<QgsFeature> mFeatureQueue;
+
     /**
      * Maximal size of the feature queue
      */
     int mFeatureQueueSize;
-        
+
     /**
      * Flag indicating whether data from binary cursors must undergo an
      * endian conversion prior to use
-     @note 
+     @note
 
-     XXX Umm, it'd be helpful to know what we're swapping from and to.  
+     XXX Umm, it'd be helpful to know what we're swapping from and to.
      XXX Presumably this means swapping from big-endian (network) byte order
-     XXX to little-endian; but the inverse transaction is possible, too, and 
+     XXX to little-endian; but the inverse transaction is possible, too, and
      XXX that's not reflected in this variable
      */
     bool swapEndian;
@@ -456,58 +457,60 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool deduceEndian();
     bool getGeometryDetails();
 
-    PGresult* executeDbCommand(PGconn* connection, const QString& sql);
+    PGresult* executeDbCommand( PGconn* connection, const QString& sql );
 
     // Produces a QMessageBox with the given title and text. Doesn't
     // return until the user has dismissed the dialog box.
-    static void showMessageBox(const QString& title, const QString& text);
-    static void showMessageBox(const QString& title, const QStringList& text);
+    static void showMessageBox( const QString& title, const QString& text );
+    static void showMessageBox( const QString& title, const QStringList& text );
 
     // A simple class to store the rows of the sql executed in the
     // findColumns() function.
     class TT
     {
-    public:
-      TT() {};
+      public:
+        TT() {};
 
-      QString view_schema;
-      QString view_name;
-      QString view_column_name;
-      QString table_schema;
-      QString table_name;
-      QString column_name;
-      QString table_type;
-      QString column_type;
+        QString view_schema;
+        QString view_name;
+        QString view_column_name;
+        QString table_schema;
+        QString table_name;
+        QString column_name;
+        QString table_type;
+        QString column_type;
     };
 
-    struct PGFieldNotFound {
+    struct PGFieldNotFound
+    {
     };
 
-    struct PGException {
-      PGException(PGresult *r) : result(r)
+    struct PGException
+    {
+      PGException( PGresult *r ) : result( r )
       {
       }
 
-      PGException(const PGException &e) : result(e.result) 
+      PGException( const PGException &e ) : result( e.result )
       {
       }
 
       ~PGException()
       {
-        if(result)
-          PQclear(result);
+        if ( result )
+          PQclear( result );
       }
 
       QString errorMessage() const
       {
         return result ?
-          QString::fromUtf8(PQresultErrorMessage(result)) :
-          tr("unexpected PostgreSQL error");
+               QString::fromUtf8( PQresultErrorMessage( result ) ) :
+               tr( "unexpected PostgreSQL error" );
       }
 
-      void showErrorMessage(QString title) const
+      void showErrorMessage( QString title ) const
       {
-        showMessageBox(title, errorMessage() );
+        showMessageBox( title, errorMessage() );
       }
 
     private:
@@ -515,13 +518,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     };
 
     // A simple class to store four strings
-    class SRC 
-    { 
-    public:
-      SRC() {};
-      SRC(QString s, QString r, QString c, QString t) :
-        schema(s), relation(r), column(c), type(t) {};
-      QString schema, relation, column, type; 
+    class SRC
+    {
+      public:
+        SRC() {};
+        SRC( QString s, QString r, QString c, QString t ) :
+            schema( s ), relation( r ), column( c ), type( t ) {};
+        QString schema, relation, column, type;
     };
 
     // A structure to store the underlying schema.table.column for
@@ -530,28 +533,28 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     // A function that chooses a view column that is suitable for use
     // a the qgis key column.
-    QString chooseViewColumn(const tableCols& cols);
+    QString chooseViewColumn( const tableCols& cols );
 
     // A function that determines if the given schema.table.column
     // contains unqiue entries
-    bool uniqueData(QString schemaName, QString tableName, QString colName);
+    bool uniqueData( QString schemaName, QString tableName, QString colName );
 
     // Function that populates the given cols structure.
-    void findColumns(tableCols& cols);
+    void findColumns( tableCols& cols );
 
-    /**Helper function that collects information about the origin and type of a view column. 
-       Inputs are information about the column in the underlying table 
-       (from information_schema.view_column_usage), the attribute name 
-       in the view and the view definition. For view columns that refer 
+    /**Helper function that collects information about the origin and type of a view column.
+       Inputs are information about the column in the underlying table
+       (from information_schema.view_column_usage), the attribute name
+       in the view and the view definition. For view columns that refer
        to other views, this function calls itself until a table entry is found.
     @param ns namespace of underlying table
     @param relname name of underlying relation
     @param attname attribute name in underlying table
     @param viewDefinition definition of this view
-    @param result 
+    @param result
     @return 0 in case of success*/
-    int SRCFromViewColumn(const QString& ns, const QString& relname, const QString& attname_table, 
-			  const QString& attname_view, const QString& viewDefinition, SRC& result) const;
+    int SRCFromViewColumn( const QString& ns, const QString& relname, const QString& attname_table,
+                           const QString& attname_view, const QString& viewDefinition, SRC& result ) const;
 
     //! PostGIS version string
     QString postgisVersionInfo;
@@ -592,25 +595,25 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Event sink for events from threads
      */
-    void customEvent ( QEvent *e );
+    void customEvent( QEvent *e );
 
-    PGconn *connectDb(const QString &conninfo, bool readonly=true);
+    PGconn *connectDb( const QString &conninfo, bool readonly = true );
     void disconnectDb();
 
     bool useWkbHex;
-   
-    void appendGeomString(QgsGeometry *geom, QString &geomParam) const;
-    QByteArray paramValue(QString fieldvalue, const QString &defaultValue) const;
+
+    void appendGeomString( QgsGeometry *geom, QString &geomParam ) const;
+    QByteArray paramValue( QString fieldvalue, const QString &defaultValue ) const;
 
     // run a query and check for errors
-    static PGresult *PQexec(PGconn *conn, const char *query);
+    static PGresult *PQexec( PGconn *conn, const char *query );
 
     // run a query and free result buffer
-    static bool PQexecNR(PGconn *conn, const char *query);
+    static bool PQexecNR( PGconn *conn, const char *query );
 
     struct Conn
     {
-      Conn(PGconn *connection) : ref(1), conn(connection) {}
+      Conn( PGconn *connection ) : ref( 1 ), conn( connection ) {}
 
       int ref;
       PGconn *conn;

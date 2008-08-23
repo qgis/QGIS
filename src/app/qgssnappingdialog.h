@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgssnappingdialog.h    
+                              qgssnappingdialog.h
                               --------------------------
   begin                : June 11, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -34,26 +34,26 @@ struct LayerEntry
 for the individual layers*/
 class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  /**Constructor
-   @param canvas pointer to the map canvas (for detecting which vector layers are loaded
-  @param settings existing snapping layer settings*/
-  QgsSnappingDialog(QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings);
-  ~QgsSnappingDialog();
+  public:
+    /**Constructor
+     @param canvas pointer to the map canvas (for detecting which vector layers are loaded
+    @param settings existing snapping layer settings*/
+    QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings );
+    ~QgsSnappingDialog();
 
-  /**Returns the snapping settings per layer. Key of the map is the layer id and value the \
-   corresponding layer entry*/
-  void layerSettings(QMap<QString, LayerEntry>& settings) const;
- 
- private:
-  /**Default constructor forbidden*/
-  QgsSnappingDialog();
-  /**Used to query the loaded layers*/
-  QgsMapCanvas* mMapCanvas;
-  /**Stores the layer ids from top to bottom*/
-  QStringList mLayerIds;
+    /**Returns the snapping settings per layer. Key of the map is the layer id and value the \
+     corresponding layer entry*/
+    void layerSettings( QMap<QString, LayerEntry>& settings ) const;
+
+  private:
+    /**Default constructor forbidden*/
+    QgsSnappingDialog();
+    /**Used to query the loaded layers*/
+    QgsMapCanvas* mMapCanvas;
+    /**Stores the layer ids from top to bottom*/
+    QStringList mLayerIds;
 };
 
 #endif

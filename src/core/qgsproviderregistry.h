@@ -15,8 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
- 
+/* $Id$ */
+
 #ifndef QGSPROVIDERREGISTRY_H
 #define QGSPROVIDERREGISTRY_H
 
@@ -42,36 +42,36 @@ class CORE_EXPORT QgsProviderRegistry
   public:
 
     /** means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance(QString pluginPath = QString::null);
-    
+    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
+
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
 
     /** Return path for the library of the provider */
-    QString library(QString const & providerKey) const;
+    QString library( QString const & providerKey ) const;
 
     /** Return list of provider plugins found */
-    QString pluginList(bool asHtml = false) const;
+    QString pluginList( bool asHtml = false ) const;
 
     /** return library directory where plugins are found */
     const QDir & libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
-    void setLibraryDirectory(QDir const & path);
- 
+    void setLibraryDirectory( QDir const & path );
+
     /** Create an instance of the provider
         @param providerKey identificator of the provider
         @param dataSource  string containing data source for the provider
         @return instance of provider or NULL on error
      */
-    QgsDataProvider * getProvider( const QString & providerKey, 
+    QgsDataProvider * getProvider( const QString & providerKey,
                                    const QString & dataSource );
-    
+
     /** Return list of available providers by their keys */
     QStringList providerList() const;
 
     /** Return metadata of the provider or NULL if not found */
-    const QgsProviderMetadata* providerMetadata(const QString& providerKey) const;
+    const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
 
     /** return vector file filter string
 
@@ -88,22 +88,22 @@ class CORE_EXPORT QgsProviderRegistry
     virtual QString fileVectorFilters() const;
 
     /** open the given vector data source
-  
-    Similar to open(QString const &), except that the user specifies a data provider 
+
+    Similar to open(QString const &), except that the user specifies a data provider
     with which to open the data source instead of using the default data provider
     that QgsDataManager would figure out to use.  This should be useful when (and if)
     there will exist more than one data provider that can handle a given data
     source.  (E.g., use GDAL to open an SDTS file, or a different data provider that uses
     sdts++.)
-  
+
     Called by QgsDataManager::open().
 
     @param name could be a file, URI
     @param provider is the key for the dataprovider used to open name
     @return NULL if unable to open vector data source
-    
+
     Temporarily always returns false until finished implementing.
-    
+
     Eventually would be nice if could make QgsDataManager smart
     enough to figure out whether the given name mapped to a vector,
     raster, or database source.
@@ -112,13 +112,13 @@ class CORE_EXPORT QgsProviderRegistry
 
 
     /** type for data provider metadata associative container */
-    typedef std::map<QString,QgsProviderMetadata*> Providers;
-    
+    typedef std::map<QString, QgsProviderMetadata*> Providers;
+
 
   private:
 
     /** ctor private since instance() creates it */
-    QgsProviderRegistry(QString pluginPath);
+    QgsProviderRegistry( QString pluginPath );
 
     /** pointer to canonical Singleton object */
     static QgsProviderRegistry* _instance;

@@ -29,113 +29,113 @@ class QgsSymbol;
  */
 class CORE_EXPORT QgsComposerLegend: public QObject, public QgsComposerItem
 {
-  Q_OBJECT
+    Q_OBJECT
 
- public:
-  QgsComposerLegend(QgsComposition* composition);
-  ~QgsComposerLegend();
+  public:
+    QgsComposerLegend( QgsComposition* composition );
+    ~QgsComposerLegend();
 
-  /** \brief Reimplementation of QCanvasItem::paint*/
-  void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
+    /** \brief Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
-  QSizeF paintAndDetermineSize(QPainter* painter);
+    /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    QSizeF paintAndDetermineSize( QPainter* painter );
 
-  /**Sets item box to the whole content*/
-  void adjustBoxSize();
+    /**Sets item box to the whole content*/
+    void adjustBoxSize();
 
-  /**Returns pointer to the legend model*/
-  QgsLegendModel* model(){return &mLegendModel;}
+    /**Returns pointer to the legend model*/
+    QgsLegendModel* model() {return &mLegendModel;}
 
-  //setters and getters
-  void setTitle(const QString& t) {mTitle = t;}
-  QString title() const {return mTitle;}
+    //setters and getters
+    void setTitle( const QString& t ) {mTitle = t;}
+    QString title() const {return mTitle;}
 
-  QFont titleFont() const;
-  void setTitleFont(const QFont& f);
+    QFont titleFont() const;
+    void setTitleFont( const QFont& f );
 
-  QFont layerFont() const;
-  void setLayerFont(const QFont& f);
+    QFont layerFont() const;
+    void setLayerFont( const QFont& f );
 
-  QFont itemFont() const;
-  void setItemFont(const QFont& f);
+    QFont itemFont() const;
+    void setItemFont( const QFont& f );
 
-  double boxSpace() const {return mBoxSpace;}
-  void setBoxSpace(double s){mBoxSpace = s;}
+    double boxSpace() const {return mBoxSpace;}
+    void setBoxSpace( double s ) {mBoxSpace = s;}
 
-  double layerSpace() const {return mLayerSpace;}
-  void setLayerSpace(double s){mLayerSpace = s;}
+    double layerSpace() const {return mLayerSpace;}
+    void setLayerSpace( double s ) {mLayerSpace = s;}
 
-  double symbolSpace() const {return mSymbolSpace;}
-  void setSymbolSpace(double s){mSymbolSpace = s;}
+    double symbolSpace() const {return mSymbolSpace;}
+    void setSymbolSpace( double s ) {mSymbolSpace = s;}
 
-  double iconLabelSpace() const {return mIconLabelSpace;}
-  void setIconLabelSpace(double s){mIconLabelSpace = s;}
+    double iconLabelSpace() const {return mIconLabelSpace;}
+    void setIconLabelSpace( double s ) {mIconLabelSpace = s;}
 
-  double symbolWidth() const {return mSymbolWidth;}
-  void setSymbolWidth(double w){mSymbolWidth = w;}
+    double symbolWidth() const {return mSymbolWidth;}
+    void setSymbolWidth( double w ) {mSymbolWidth = w;}
 
-  double symbolHeight() const {return mSymbolHeight;}
-  void setSymbolHeight(double h){mSymbolHeight = h;}
+    double symbolHeight() const {return mSymbolHeight;}
+    void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
-  /** stores state in Dom node
-     * @param elem is Dom element corresponding to 'Composer' tag
-     * @param temp write template file
-     */
-  bool writeXML(QDomElement& elem, QDomDocument & doc);
+    /** stores state in Dom node
+       * @param elem is Dom element corresponding to 'Composer' tag
+       * @param temp write template file
+       */
+    bool writeXML( QDomElement& elem, QDomDocument & doc );
 
-  /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     */
-  bool readXML(const QDomElement& itemElem, const QDomDocument& doc);
+    /** sets state from Dom document
+       * @param itemElem is Dom node corresponding to item tag
+       */
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
- public slots:
-  /**Data changed*/
-  void synchronizeWithModel();
+  public slots:
+    /**Data changed*/
+    void synchronizeWithModel();
 
- protected:
-  QString mTitle;
+  protected:
+    QString mTitle;
 
-  //different fonts for entries
-  QFont mTitleFont;
-  QFont mLayerFont;
-  QFont mItemFont;
+    //different fonts for entries
+    QFont mTitleFont;
+    QFont mLayerFont;
+    QFont mItemFont;
 
-  /**Space between item box and contents*/
-  double mBoxSpace;
-  /**Vertical space between layer entries*/
-  double mLayerSpace;
-  /**Vertical space between symbol entries*/
-  double mSymbolSpace;
-  /**Horizontal space between item icon and label*/
-  double mIconLabelSpace;
-  /**Width of symbol icon*/
-  double mSymbolWidth;
-  /**Height of symbol icon*/
-  double mSymbolHeight;
+    /**Space between item box and contents*/
+    double mBoxSpace;
+    /**Vertical space between layer entries*/
+    double mLayerSpace;
+    /**Vertical space between symbol entries*/
+    double mSymbolSpace;
+    /**Horizontal space between item icon and label*/
+    double mIconLabelSpace;
+    /**Width of symbol icon*/
+    double mSymbolWidth;
+    /**Height of symbol icon*/
+    double mSymbolHeight;
 
-  QgsLegendModel mLegendModel;
+    QgsLegendModel mLegendModel;
 
 
- private:
-  QgsComposerLegend(); //forbidden
+  private:
+    QgsComposerLegend(); //forbidden
 
-  /**Draws child items of a layer item
-     @param layerItem parent model item (layer)
-     @param currentYCoord in/out: current y position of legend item
-     @param maxXCoord in/out: maximum x-coordinate of the whole legend
-  */
-  void drawLayerChildItems(QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord);
+    /**Draws child items of a layer item
+       @param layerItem parent model item (layer)
+       @param currentYCoord in/out: current y position of legend item
+       @param maxXCoord in/out: maximum x-coordinate of the whole legend
+    */
+    void drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord );
 
-  /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points, 
-   it is possible that it differs from mSymbolHeight*/
-  void drawSymbol(QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight) const;
-  void drawPointSymbol(QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight) const;
-  void drawLineSymbol(QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition) const;
-  void drawPolygonSymbol(QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition) const; 
+    /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
+     it is possible that it differs from mSymbolHeight*/
+    void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
+    void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
+    void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
+    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
 
-  /**Helper function that lists ids of layers contained in map canvas*/
-  QStringList layerIdList() const;
+    /**Helper function that lists ids of layers contained in map canvas*/
+    QStringList layerIdList() const;
 };
 
 #endif

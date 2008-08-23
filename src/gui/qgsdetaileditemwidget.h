@@ -21,15 +21,15 @@
 #include <ui_qgsdetaileditemwidgetbase.h>
 #include <qgsdetaileditemdata.h>
 
-class QgsDetailedItemWidget : 
-     public QWidget, private Ui::QgsDetailedItemWidgetBase
+class QgsDetailedItemWidget :
+      public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsDetailedItemWidget(QWidget * parent = 0);
+    QgsDetailedItemWidget( QWidget * parent = 0 );
     ~QgsDetailedItemWidget();
-    void setData(QgsDetailedItemData theData);
-    void setChecked(bool theFlag);
+    void setData( QgsDetailedItemData theData );
+    void setChecked( bool theFlag );
   private:
     QgsDetailedItemData mData;
 };

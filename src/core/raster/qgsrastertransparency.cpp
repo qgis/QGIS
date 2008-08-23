@@ -24,7 +24,7 @@ QgsRasterTransparency::QgsRasterTransparency()
 
 }
 
-/** 
+/**
   Accessor for transparentSingleValuePixelList
 */
 QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::getTransparentSingleValuePixelList()
@@ -32,7 +32,7 @@ QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency:
   return mTransparentSingleValuePixelList;
 }
 
-/** 
+/**
   Accessor for transparentThreeValuePixelList
 */
 QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::getTransparentThreeValuePixelList()
@@ -40,51 +40,51 @@ QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::
   return mTransparentThreeValuePixelList;
 }
 
-/** 
-  Reset to the transparency list to a single value 
+/**
+  Reset to the transparency list to a single value
 */
-void QgsRasterTransparency::initializeTransparentPixelList(double theValue)
+void QgsRasterTransparency::initializeTransparentPixelList( double theValue )
 {
   //clear the existing list
   mTransparentSingleValuePixelList.clear();
-  
+
   //add the initial value
   TransparentSingleValuePixel myTransparentSingleValuePixel;
   myTransparentSingleValuePixel.pixelValue = theValue;
   myTransparentSingleValuePixel.percentTransparent = 100.0;
-  mTransparentSingleValuePixelList.append(myTransparentSingleValuePixel);
+  mTransparentSingleValuePixelList.append( myTransparentSingleValuePixel );
 }
 
-/** 
-  Reset to the transparency list to a single value 
+/**
+  Reset to the transparency list to a single value
 */
-void QgsRasterTransparency::initializeTransparentPixelList(double theRedValue, double theGreenValue, double theBlueValue)
+void QgsRasterTransparency::initializeTransparentPixelList( double theRedValue, double theGreenValue, double theBlueValue )
 {
   //clearn the existing list
   mTransparentThreeValuePixelList.clear();
-  
+
   //add the initial values
   TransparentThreeValuePixel myTransparentThreeValuePixel;
   myTransparentThreeValuePixel.red = theRedValue;
   myTransparentThreeValuePixel.green = theGreenValue;
   myTransparentThreeValuePixel.blue = theBlueValue;
   myTransparentThreeValuePixel.percentTransparent = 100.0;
-  mTransparentThreeValuePixelList.append(myTransparentThreeValuePixel);
+  mTransparentThreeValuePixelList.append( myTransparentThreeValuePixel );
 }
 
 
-/** 
-  Mutator for transparentSingleValuePixelList, , replaces the whole list 
+/**
+  Mutator for transparentSingleValuePixelList, , replaces the whole list
 */
-void QgsRasterTransparency::setTransparentSingleValuePixelList(QList<QgsRasterTransparency::TransparentSingleValuePixel> theNewList)
+void QgsRasterTransparency::setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel> theNewList )
 {
   mTransparentSingleValuePixelList = theNewList;
 }
 
-/** 
-  Mutator for transparentThreeValuePixelList, , replaces the whole list 
+/**
+  Mutator for transparentThreeValuePixelList, , replaces the whole list
 */
-void QgsRasterTransparency::setTransparentThreeValuePixelList(QList<QgsRasterTransparency::TransparentThreeValuePixel> theNewList)
+void QgsRasterTransparency::setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> theNewList )
 {
   mTransparentThreeValuePixelList = theNewList;
 }
@@ -95,31 +95,31 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList(QList<QgsRasterTra
   @param theValue the needle to search for in the transparency hay stack
   @param theGlobalTransparency  the overal transparency level for the layer
 */
-int QgsRasterTransparency::getAlphaValue(double theValue, int theGlobalTransparency)
+int QgsRasterTransparency::getAlphaValue( double theValue, int theGlobalTransparency )
 {
-  //if NaN return 0, transparent 
-  if(theValue != theValue)
+  //if NaN return 0, transparent
+  if ( theValue != theValue )
   {
     return 0;
   }
-  
+
   //Search throught he transparency list looking for a match
   bool myTransparentPixelFound = false;
   TransparentSingleValuePixel myTransparentPixel;
-  for(int myListRunner = 0; myListRunner < mTransparentSingleValuePixelList.count(); myListRunner++)
+  for ( int myListRunner = 0; myListRunner < mTransparentSingleValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentSingleValuePixelList[myListRunner];
-    if(myTransparentPixel.pixelValue == theValue)
+    if ( myTransparentPixel.pixelValue == theValue )
     {
       myTransparentPixelFound = true;
       break;
     }
   }
-  
+
   //if a match was found use the stored transparency percentage
-  if(myTransparentPixelFound)
+  if ( myTransparentPixelFound )
   {
-    return (int)((float)theGlobalTransparency * (1.0 - (myTransparentPixel.percentTransparent/100.0)));
+    return ( int )(( float )theGlobalTransparency * ( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
 
   return theGlobalTransparency;
@@ -133,25 +133,25 @@ int QgsRasterTransparency::getAlphaValue(double theValue, int theGlobalTranspare
   @param theBlueValue the green portion of the needle to search for in the transparency hay stack
   @param theGlobalTransparency  the overal transparency level for the layer
 */
-int QgsRasterTransparency::getAlphaValue(double theRedValue, double theGreenValue, double theBlueValue, int theGlobalTransparency)
+int QgsRasterTransparency::getAlphaValue( double theRedValue, double theGreenValue, double theBlueValue, int theGlobalTransparency )
 {
-  //if NaN return 0, transparent 
-  if(theRedValue != theRedValue || theGreenValue != theGreenValue || theBlueValue != theBlueValue)
+  //if NaN return 0, transparent
+  if ( theRedValue != theRedValue || theGreenValue != theGreenValue || theBlueValue != theBlueValue )
   {
     return 0;
   }
-  
+
   //Search throught he transparency list looking for a match
   bool myTransparentPixelFound = false;
   TransparentThreeValuePixel myTransparentPixel;
-  for(int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++)
+  for ( int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentThreeValuePixelList[myListRunner];
-    if(myTransparentPixel.red == theRedValue)
+    if ( myTransparentPixel.red == theRedValue )
     {
-      if(myTransparentPixel.green == theGreenValue)
+      if ( myTransparentPixel.green == theGreenValue )
       {
-        if(myTransparentPixel.blue == theBlueValue)
+        if ( myTransparentPixel.blue == theBlueValue )
         {
           myTransparentPixelFound = true;
           break;
@@ -159,13 +159,13 @@ int QgsRasterTransparency::getAlphaValue(double theRedValue, double theGreenValu
       }
     }
   }
-  
+
   //if a match was found use the stored transparency percentage
-  if(myTransparentPixelFound)
+  if ( myTransparentPixelFound )
   {
-    return  (int)((float)theGlobalTransparency * (1.0 - (myTransparentPixel.percentTransparent/100.0)));
+    return ( int )(( float )theGlobalTransparency * ( 1.0 - ( myTransparentPixel.percentTransparent / 100.0 ) ) );
   }
-  
+
   return theGlobalTransparency;
 }
 

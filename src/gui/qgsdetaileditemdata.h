@@ -23,26 +23,26 @@
 #include <QString>
 #include <QPixmap>
 
-/** This class is the data only representation of a 
+/** This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
-class GUI_EXPORT QgsDetailedItemData 
+class GUI_EXPORT QgsDetailedItemData
 {
   public:
     QgsDetailedItemData();
     ~QgsDetailedItemData();
-    void setTitle(const QString theTitle);
-    void setDetail(const QString theDetail);
-    void setIcon(const QPixmap theIcon);
-    void setCheckable(const bool theFlag);
-    void setChecked(const bool theFlag);
-    /** This is a hint to the delegate to render using 
-     * a widget rather than manually painting every 
+    void setTitle( const QString theTitle );
+    void setDetail( const QString theDetail );
+    void setIcon( const QPixmap theIcon );
+    void setCheckable( const bool theFlag );
+    void setChecked( const bool theFlag );
+    /** This is a hint to the delegate to render using
+     * a widget rather than manually painting every
      * part of the list item.
-     * @note the delegate may completely ignore this 
+     * @note the delegate may completely ignore this
      * depending on the delegate implementation.
      */
-    void setRenderAsWidget(bool theFlag);
+    void setRenderAsWidget( bool theFlag );
 
     QString title() const;
     QString detail() const;
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsDetailedItemData
     bool mRenderAsWidgetFlag;
 };
 
-// Make QVariant aware of this data type (see qtdocs star 
+// Make QVariant aware of this data type (see qtdocs star
 // rating delegate example for more details)
-Q_DECLARE_METATYPE(QgsDetailedItemData)
+Q_DECLARE_METATYPE( QgsDetailedItemData )
 #endif //QGSDETAILEDITEMDATA_H

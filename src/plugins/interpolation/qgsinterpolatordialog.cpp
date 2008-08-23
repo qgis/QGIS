@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsinterpolatordialog.cpp    
+                              qgsinterpolatordialog.cpp
                               -------------------------
   begin                : March 25, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -17,7 +17,7 @@
 
 #include "qgsinterpolatordialog.h"
 
-QgsInterpolatorDialog::QgsInterpolatorDialog(QWidget* parent, QgisInterface* iface): QDialog(parent), mInterface(iface)
+QgsInterpolatorDialog::QgsInterpolatorDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mInterface( iface )
 {
 
 }
@@ -27,7 +27,7 @@ QgsInterpolatorDialog::~QgsInterpolatorDialog()
 
 }
 
-void QgsInterpolatorDialog::setInputData(const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData)
+void QgsInterpolatorDialog::setInputData( const QList< QPair <QgsVectorLayer*, QgsInterpolator::InputType> >& inputData )
 {
   mInputData = inputData;
 }

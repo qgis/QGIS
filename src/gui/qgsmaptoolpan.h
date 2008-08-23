@@ -25,24 +25,24 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 {
   public:
     //! constructor
-    QgsMapToolPan(QgsMapCanvas* canvas);
-    
+    QgsMapToolPan( QgsMapCanvas* canvas );
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent(QMouseEvent * e);
-  
+    virtual void canvasMoveEvent( QMouseEvent * e );
+
     //! Overridden mouse press event
-    virtual void canvasPressEvent(QMouseEvent * e);
-  
+    virtual void canvasPressEvent( QMouseEvent * e );
+
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e);
-    
+    virtual void canvasReleaseEvent( QMouseEvent * e );
+
     virtual bool isZoomTool() { return true; }
-    
+
   private:
-    
+
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
-    
+
 };
 
 #endif

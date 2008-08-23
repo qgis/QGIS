@@ -21,14 +21,14 @@
 #include "qgsnumericsortlistviewitem.h"
 
 
-QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem(QTreeWidget * parent)
-  : QTreeWidgetItem(parent, UserType)
+QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem( QTreeWidget * parent )
+    : QTreeWidgetItem( parent, UserType )
 {
   // NOOP
 }
 
-QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem(QTreeWidgetItem * parent)
-  : QTreeWidgetItem(parent, UserType)
+QgsNumericSortTreeWidgetItem::QgsNumericSortTreeWidgetItem( QTreeWidgetItem * parent )
+    : QTreeWidgetItem( parent, UserType )
 {
   // NOOP
 }
@@ -38,13 +38,13 @@ QgsNumericSortTreeWidgetItem::~QgsNumericSortTreeWidgetItem()
   // NOOP
 }
 
-bool QgsNumericSortTreeWidgetItem::operator<(const QTreeWidgetItem &other) const
+bool QgsNumericSortTreeWidgetItem::operator<( const QTreeWidgetItem &other ) const
 {
   int column = treeWidget() ? treeWidget()->sortColumn() : 0;
-  if (column == 0)  // The ID column
+  if ( column == 0 )  // The ID column
   {
-    return text(column).toUInt() < other.text(column).toUInt();
+    return text( column ).toUInt() < other.text( column ).toUInt();
   }
   else
-    return text(column) < other.text(column);
+    return text( column ) < other.text( column );
 }

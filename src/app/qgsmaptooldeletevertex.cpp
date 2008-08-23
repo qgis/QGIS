@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsmaptooldeletevertex.cpp   
+                              qgsmaptooldeletevertex.cpp
                               --------------------------
   begin                : June 30, 2007
   copyright            : (C) 2007 by Marco Hugentobler
@@ -21,7 +21,7 @@
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolDeleteVertex::QgsMapToolDeleteVertex(QgsMapCanvas* canvas): QgsMapToolVertexEdit(canvas), mCross(0)
+QgsMapToolDeleteVertex::QgsMapToolDeleteVertex( QgsMapCanvas* canvas ): QgsMapToolVertexEdit( canvas ), mCross( 0 )
 {
 
 }
@@ -31,59 +31,59 @@ QgsMapToolDeleteVertex::~QgsMapToolDeleteVertex()
   delete mCross;
 }
 
-void QgsMapToolDeleteVertex::canvasMoveEvent(QMouseEvent * e)
+void QgsMapToolDeleteVertex::canvasMoveEvent( QMouseEvent * e )
 {
   //nothing to do
 }
 
-void QgsMapToolDeleteVertex::canvasPressEvent(QMouseEvent * e)
+void QgsMapToolDeleteVertex::canvasPressEvent( QMouseEvent * e )
 {
   delete mCross;
   mCross = 0;
 
   mRecentSnappingResults.clear();
   //do snap -> new recent snapping results
-  if(mSnapper.snapToCurrentLayer(e->pos(), mRecentSnappingResults, QgsSnapper::SNAP_TO_VERTEX) != 0)
-    {
-      //error
-    }
-  
-  if(mRecentSnappingResults.size() > 0)
-    {
-      QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
-      
-      //show vertex marker
-      mCross = new QgsVertexMarker(mCanvas);
-      mCross->setIconType(QgsVertexMarker::ICON_X);
-      mCross->setCenter(markerPoint);
-    }
+  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SNAP_TO_VERTEX ) != 0 )
+  {
+    //error
+  }
+
+  if ( mRecentSnappingResults.size() > 0 )
+  {
+    QgsPoint markerPoint = mRecentSnappingResults.begin()->snappedVertex;
+
+    //show vertex marker
+    mCross = new QgsVertexMarker( mCanvas );
+    mCross->setIconType( QgsVertexMarker::ICON_X );
+    mCross->setCenter( markerPoint );
+  }
   else
-    {
-      displaySnapToleranceWarning();
-    }
+  {
+    displaySnapToleranceWarning();
+  }
 }
 
-void QgsMapToolDeleteVertex::canvasReleaseEvent(QMouseEvent * e)
+void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent * e )
 {
   delete mCross;
   mCross = 0;
-  
+
   //delete the vertices in mRecentSnappingResults
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
   QgsVectorLayer* vlayer = 0;
-  if(currentLayer)
-    {
-      vlayer = dynamic_cast<QgsVectorLayer*>(currentLayer);
-    }
+  if ( currentLayer )
+  {
+    vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  }
 
-  if(vlayer && mRecentSnappingResults.size() > 0)
+  if ( vlayer && mRecentSnappingResults.size() > 0 )
+  {
+    QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
+    for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
-      for(; sr_it != mRecentSnappingResults.end(); ++sr_it)
-	{
-	  vlayer->deleteVertexAt(sr_it->snappedAtGeometry, sr_it->snappedVertexNr);
-	}
+      vlayer->deleteVertexAt( sr_it->snappedAtGeometry, sr_it->snappedVertexNr );
     }
+  }
 
   mCanvas->refresh();
 }

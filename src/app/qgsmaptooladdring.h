@@ -19,8 +19,8 @@
 /**A tool to cut holes into polygons and multipolygon features*/
 class QgsMapToolAddRing: public QgsMapToolCapture
 {
- public:
-  QgsMapToolAddRing(QgsMapCanvas* canvas);
-  virtual ~QgsMapToolAddRing();
-  void canvasReleaseEvent(QMouseEvent * e);
+  public:
+    QgsMapToolAddRing( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolAddRing();
+    void canvasReleaseEvent( QMouseEvent * e );
 };

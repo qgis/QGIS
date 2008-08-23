@@ -28,26 +28,26 @@ class QgsMapCanvas;
 class QgsMapToolSelect : public QgsMapTool
 {
   public:
-    QgsMapToolSelect(QgsMapCanvas* canvas);
+    QgsMapToolSelect( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent(QMouseEvent * e);
-  
+    virtual void canvasMoveEvent( QMouseEvent * e );
+
     //! Overridden mouse press event
-    virtual void canvasPressEvent(QMouseEvent * e);
-  
+    virtual void canvasPressEvent( QMouseEvent * e );
+
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e);    
-      
-    
+    virtual void canvasReleaseEvent( QMouseEvent * e );
+
+
   protected:
-    
+
     //! stores actual select rect
     QRect mSelectRect;
-    
+
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
-    
+
     //! rubber band for select rect
     QRubberBand* mRubberBand;
 };

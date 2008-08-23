@@ -15,36 +15,36 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "qgscliptominmaxenhancement.h"
- 
-QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement(QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue) : QgsContrastEnhancementFunction(theQgsRasterDataType, theMinimumValue, theMaximumValue)
+
+QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
 {
 }
 
-int QgsClipToMinMaxEnhancement::enhanceValue(double theValue)
+int QgsClipToMinMaxEnhancement::enhanceValue( double theValue )
 {
-  if(theValue < mMinimumValue || theValue > mMaximumValue)
+  if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {
     return -1;
   }
-      
-  if(mQgsRasterDataType == QgsContrastEnhancement::QGS_Byte)
+
+  if ( mQgsRasterDataType == QgsContrastEnhancement::QGS_Byte )
   {
-    return static_cast<int>(theValue);
+    return static_cast<int>( theValue );
   }
   else
   {
-    return static_cast<int>((((theValue - QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType))/(QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType) - QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType)))*255.0));
+    return static_cast<int>(((( theValue - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType ) - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) )*255.0 ) );
   }
 }
 
-bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange(double theValue)
+bool QgsClipToMinMaxEnhancement::isValueInDisplayableRange( double theValue )
 {
-  if(theValue < mMinimumValue || theValue > mMaximumValue)
+  if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {
     return false;
   }
-  
+
   return true;
 }

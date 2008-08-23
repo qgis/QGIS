@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 #include "qgsprojectversion.h"
 
-QgsProjectVersion::QgsProjectVersion(int major, int minor, int sub, QString name)
+QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, QString name )
 {
   mMajor = major;
   mMinor = minor;
@@ -29,56 +29,56 @@ QgsProjectVersion::QgsProjectVersion(int major, int minor, int sub, QString name
   mName  = name;
 }
 
-QgsProjectVersion::QgsProjectVersion(QString string)
+QgsProjectVersion::QgsProjectVersion( QString string )
 {
-  QString pre = string.section('-', 0, 0);
+  QString pre = string.section( '-', 0, 0 );
 
-  QStringList fileVersionParts = pre.section("-", 0).split(".");
-  
-  mMajor = fileVersionParts.at(0).toInt();
-  mMinor = fileVersionParts.at(1).toInt();
-  mSub   = fileVersionParts.at(2).toInt();
-  mName  = string.section('-', 1);
+  QStringList fileVersionParts = pre.section( "-", 0 ).split( "." );
 
-  QgsDebugMsg(QString("Version is set to ") + text());
-  
+  mMajor = fileVersionParts.at( 0 ).toInt();
+  mMinor = fileVersionParts.at( 1 ).toInt();
+  mSub   = fileVersionParts.at( 2 ).toInt();
+  mName  = string.section( '-', 1 );
+
+  QgsDebugMsg( QString( "Version is set to " ) + text() );
+
 }
 
 /*! Boolean equal operator
  */
-bool QgsProjectVersion::operator==(const QgsProjectVersion &other)
+bool QgsProjectVersion::operator==( const QgsProjectVersion &other )
 {
-  return ((mMajor == other.mMajor) &&
-          (mMinor == other.mMinor) &&
-          (mSub == other.mSub));
+  return (( mMajor == other.mMajor ) &&
+          ( mMinor == other.mMinor ) &&
+          ( mSub == other.mSub ) );
 }
 
 /*! Boolean >= operator
  */
-bool QgsProjectVersion::operator>=(const QgsProjectVersion &other)
+bool QgsProjectVersion::operator>=( const QgsProjectVersion &other )
 {
-  return ( (mMajor >= other.mMajor) ||
-          ((mMajor == other.mMajor) && (mMinor >= other.mMinor)) ||
-          ((mMajor == other.mMajor) && (mMinor == other.mMinor) && (mSub >= other.mSub)));
+  return (( mMajor >= other.mMajor ) ||
+          (( mMajor == other.mMajor ) && ( mMinor >= other.mMinor ) ) ||
+          (( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub >= other.mSub ) ) );
 }
 
 /*! Boolean > operator
  */
-bool QgsProjectVersion::operator>(const QgsProjectVersion &other)
+bool QgsProjectVersion::operator>( const QgsProjectVersion &other )
 {
-  return ( (mMajor > other.mMajor) ||
-           ((mMajor == other.mMajor) && (mMinor > other.mMinor)) ||
-           ((mMajor == other.mMajor) && (mMinor == other.mMinor) && (mSub > other.mSub)));
-} 
+  return (( mMajor > other.mMajor ) ||
+          (( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) ||
+          (( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
+}
 
 QString QgsProjectVersion::text()
 {
-  if (mName.isNull())
+  if ( mName.isNull() )
   {
-    return QString("%1.%2.%3").arg(mMajor).arg(mMinor).arg(mSub);
+    return QString( "%1.%2.%3" ).arg( mMajor ).arg( mMinor ).arg( mSub );
   }
   else
   {
-    return QString("%1.%2.%3-%4").arg(mMajor).arg(mMinor).arg(mSub).arg(mName);
+    return QString( "%1.%2.%3-%4" ).arg( mMajor ).arg( mMinor ).arg( mSub ).arg( mName );
   }
 }

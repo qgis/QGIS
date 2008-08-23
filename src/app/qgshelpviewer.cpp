@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgshelpviewer.cpp 
+                          qgshelpviewer.cpp
  Simple help browser
                              -------------------
     begin                : 2004-01-28
@@ -15,16 +15,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #include "qgshelpviewer.h"
 
 #include <QString>
 
-QgsHelpViewer::QgsHelpViewer(QWidget * parent, Qt::WFlags fl)
-: QDialog(parent, fl)
+QgsHelpViewer::QgsHelpViewer( QWidget * parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 /*
@@ -34,7 +34,7 @@ QgsHelpViewer::~QgsHelpViewer()
 {
   // no need to delete child widgets, Qt does it all for us
 }
-void QgsHelpViewer::showContent(QString path, QString doc)
+void QgsHelpViewer::showContent( QString path, QString doc )
 {
   //textBrowser->mimeSourceFactory()->addFilePath(path);
   //textBrowser->setSource(doc);

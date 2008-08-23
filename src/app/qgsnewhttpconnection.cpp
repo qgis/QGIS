@@ -14,20 +14,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
 #include <QSettings>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
-    QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl): 
-    QDialog(parent, fl), 
-    mBaseKey(baseKey), 
-    mOriginalConnName(connName)
+  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
+    QDialog( parent, fl ),
+    mBaseKey( baseKey ),
+    mOriginalConnName( connName )
 {
-  setupUi(this);
+  setupUi( this );
 
-  if (!connName.isEmpty())
+  if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
@@ -35,10 +35,10 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QSettings settings;
 
     QString key = mBaseKey + connName;
-    txtName->setText     (connName);
-    txtUrl->setText      (settings.value(key + "/url").toString());
+    txtName->setText( connName );
+    txtUrl->setText( settings.value( key + "/url" ).toString() );
   }
-  connect(buttonBox, SIGNAL(helpRequested()), this, SLOT(helpRequested()));
+  connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpRequested() ) );
 }
 
 QgsNewHttpConnection::~QgsNewHttpConnection()
@@ -47,20 +47,20 @@ QgsNewHttpConnection::~QgsNewHttpConnection()
 
 void QgsNewHttpConnection::accept()
 {
-  QSettings settings; 
+  QSettings settings;
   QString key = mBaseKey + txtName->text();
 
   //delete original entry first
-  if(!mOriginalConnName.isNull() && mOriginalConnName != key)
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
-    settings.remove(mBaseKey + mOriginalConnName);
+    settings.remove( mBaseKey + mOriginalConnName );
   }
-  settings.setValue(key + "/url", txtUrl->text().trimmed());
+  settings.setValue( key + "/url", txtUrl->text().trimmed() );
 
   QDialog::accept();
 }
 
 void QgsNewHttpConnection::helpRequested()
 {
-  QgsContextHelp::run(context_id);
+  QgsContextHelp::run( context_id );
 }

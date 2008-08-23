@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsinterpolationplugin.cpp    
+                              qgsinterpolationplugin.cpp
                               --------------------------
   begin                : Marco 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -21,15 +21,15 @@
 
 #include "mIconInterpolation.xpm"
 
-static const QString name_ = QObject::tr("Interpolation plugin");
-static const QString description_ = QObject::tr("A plugin for interpolation based on vertices of a vector layer");
-static const QString version_ = QObject::tr("Version 0.001");
+static const QString name_ = QObject::tr( "Interpolation plugin" );
+static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
+static const QString version_ = QObject::tr( "Version 0.001" );
 
-QgsInterpolationPlugin::QgsInterpolationPlugin(QgisInterface* iface): mIface(iface), mInterpolationAction(0)
+QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( 0 )
 {
 
 }
-  
+
 QgsInterpolationPlugin::~QgsInterpolationPlugin()
 {
 
@@ -37,31 +37,31 @@ QgsInterpolationPlugin::~QgsInterpolationPlugin()
 
 void QgsInterpolationPlugin::initGui()
 {
-  if(mIface)
-    {
-      mInterpolationAction = new QAction(QIcon(mIconInterpolation), tr("&Interpolation"), 0);
-      QObject::connect(mInterpolationAction, SIGNAL(triggered()), this, SLOT(showInterpolationDialog()));
-      mIface->addToolBarIcon(mInterpolationAction);
-      mIface->addPluginMenu(tr("&Interpolation"), mInterpolationAction);
-    }
+  if ( mIface )
+  {
+    mInterpolationAction = new QAction( QIcon( mIconInterpolation ), tr( "&Interpolation" ), 0 );
+    QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
+    mIface->addToolBarIcon( mInterpolationAction );
+    mIface->addPluginMenu( tr( "&Interpolation" ), mInterpolationAction );
+  }
 }
 
 void QgsInterpolationPlugin::unload()
 {
-  mIface->removePluginMenu(tr("&Interpolation"), mInterpolationAction);
-  mIface->removeToolBarIcon(mInterpolationAction);
+  mIface->removePluginMenu( tr( "&Interpolation" ), mInterpolationAction );
+  mIface->removeToolBarIcon( mInterpolationAction );
   delete mInterpolationAction;
 }
 
 void QgsInterpolationPlugin::showInterpolationDialog()
 {
-  QgsInterpolationDialog dialog(0, mIface);
+  QgsInterpolationDialog dialog( 0, mIface );
   dialog.exec();
 }
 
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-  return new QgsInterpolationPlugin(theQgisInterfacePointer);
+  return new QgsInterpolationPlugin( theQgisInterfacePointer );
 }
 
 QGISEXTERN QString name()
@@ -84,7 +84,7 @@ QGISEXTERN int type()
   return QgisPlugin::UI;
 }
 
-QGISEXTERN void unload(QgisPlugin* theInterpolationPluginPointer)
+QGISEXTERN void unload( QgisPlugin* theInterpolationPluginPointer )
 {
   delete theInterpolationPluginPointer;
 }

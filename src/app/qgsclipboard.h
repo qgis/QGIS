@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgsclipboard.h  -  QGIS internal clipboard for storage of features 
+      qgsclipboard.h  -  QGIS internal clipboard for storage of features
       ------------------------------------------------------------------
     begin                : 20 May, 2005
     copyright            : (C) 2005 by Brendan Morley
@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 /* $Id$ */
 
 #ifndef QGSCLIPBOARD_H
@@ -30,61 +30,61 @@
 /**
 
   \brief QGIS internal clipboard for features.
- 
+
   An internal clipboard is required so that features can be retained in
   their original fidelity.
-  
+
   The internal clipboard makes a copy of features that are presented to it,
   therefore the original objects can safely be destructed independent of
   the lifetime of the internal clipboard.
-  
+
   As this class matures it should also be able to accept CSV repesentations
   of features in and out of the system clipboard (QClipboard).
-  
+
   TODO: Make it work
-  
+
 */
 
 class QgsClipboard
 {
-  
-
-public:
-  
- 
-  /**
-  * Constructor for the clipboard. 
-  */
-  QgsClipboard();
-
-  //! Destructor
-  virtual ~QgsClipboard();
-  
-  /*
-   *  Place a copy of features on the internal clipboard, 
-   *  destroying the previous contents.
-   */
-  void replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features );
-
-  /*
-   *  Returns a copy of features on the internal clipboard, 
-   *  the caller assumes responsibility fot destroying the contents
-   *  when it's done with it.
-   */
-  QgsFeatureList copyOf();
-
-  /*
-   *  Clears the internal clipboard.
-   */
-  void clear();
-
-  /*
-   *  Inserts a copy of the feature on the internal clipboard.
-   */
-  void insert( QgsFeature& feature );
 
 
-private:
+  public:
+
+
+    /**
+    * Constructor for the clipboard.
+    */
+    QgsClipboard();
+
+    //! Destructor
+    virtual ~QgsClipboard();
+
+    /*
+     *  Place a copy of features on the internal clipboard,
+     *  destroying the previous contents.
+     */
+    void replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features );
+
+    /*
+     *  Returns a copy of features on the internal clipboard,
+     *  the caller assumes responsibility fot destroying the contents
+     *  when it's done with it.
+     */
+    QgsFeatureList copyOf();
+
+    /*
+     *  Clears the internal clipboard.
+     */
+    void clear();
+
+    /*
+     *  Inserts a copy of the feature on the internal clipboard.
+     */
+    void insert( QgsFeature& feature );
+
+
+  private:
 
     /** QGIS-internal vector feature clipboard.
         Stored as values not pointers as each clipboard operation

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsgridfilewriter.h   
+                              qgsgridfilewriter.h
                               --------------------
   begin                : March 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -28,29 +28,29 @@ class QgsInterpolator;
 //todo: extend such that writing to other file types is possible
 class QgsGridFileWriter
 {
- public:
-  QgsGridFileWriter(QgsInterpolator* i, QString outputPath, QgsRect extent, int nCols, int nRows);
-  ~QgsGridFileWriter();
-  
-  /**Writes the grid file.
-   @param showProgressDialog shows a dialog with the possibility to cancel
-  @return 0 in case of success*/
+  public:
+    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRect extent, int nCols, int nRows );
+    ~QgsGridFileWriter();
 
-  int writeFile(bool showProgressDialog = false);
+    /**Writes the grid file.
+     @param showProgressDialog shows a dialog with the possibility to cancel
+    @return 0 in case of success*/
 
- private:
+    int writeFile( bool showProgressDialog = false );
 
-  QgsGridFileWriter(); //forbidden
-  int writeHeader(QTextStream& outStream);
+  private:
 
-  QgsInterpolator* mInterpolator;
-  QString mOutputFilePath;
-  QgsRect mInterpolationExtent;
-  int mNumColumns;
-  int mNumRows;
+    QgsGridFileWriter(); //forbidden
+    int writeHeader( QTextStream& outStream );
 
-  double mCellSizeX;
-  double mCellSizeY;
+    QgsInterpolator* mInterpolator;
+    QString mOutputFilePath;
+    QgsRect mInterpolationExtent;
+    int mNumColumns;
+    int mNumRows;
+
+    double mCellSizeX;
+    double mCellSizeY;
 };
 
 #endif

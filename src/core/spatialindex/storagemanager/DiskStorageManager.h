@@ -24,38 +24,38 @@
 
 namespace SpatialIndex
 {
-	namespace StorageManager
-	{
-		class DiskStorageManager : public SpatialIndex::IStorageManager
-		{
-		public:
-			DiskStorageManager(Tools::PropertySet&);
-			virtual ~DiskStorageManager();
+  namespace StorageManager
+  {
+    class DiskStorageManager : public SpatialIndex::IStorageManager
+    {
+      public:
+        DiskStorageManager( Tools::PropertySet& );
+        virtual ~DiskStorageManager();
 
-			void flush();
+        void flush();
 
-			virtual void loadByteArray(const long id, unsigned long& len, byte** data);
-			virtual void storeByteArray(long& id, const unsigned long len, const byte* const data);
-			virtual void deleteByteArray(const long id);
+        virtual void loadByteArray( const long id, unsigned long& len, byte** data );
+        virtual void storeByteArray( long& id, const unsigned long len, const byte* const data );
+        virtual void deleteByteArray( const long id );
 
-		private:
-			class Entry
-			{
-			public:
-				unsigned long m_length;
-				std::vector<long> m_pages;
-			};
+      private:
+        class Entry
+        {
+          public:
+            unsigned long m_length;
+            std::vector<long> m_pages;
+        };
 
-			int m_dataFile;
-			int m_indexFile;
-			unsigned long m_pageSize;
-			long m_nextPage;
-			std::priority_queue<long, std::vector<long>, std::greater<long> > m_emptyPages;
-			std::map<long, Entry*> m_pageIndex;
+        int m_dataFile;
+        int m_indexFile;
+        unsigned long m_pageSize;
+        long m_nextPage;
+        std::priority_queue<long, std::vector<long>, std::greater<long> > m_emptyPages;
+        std::map<long, Entry*> m_pageIndex;
 
-			unsigned char* m_buffer;
-		}; // DiskStorageManager
-	}
+        unsigned char* m_buffer;
+    }; // DiskStorageManager
+  }
 }
 
 #endif /*__storagemanager_diskstoragemanager_h*/

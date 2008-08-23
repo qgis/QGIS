@@ -16,49 +16,49 @@
 
 #include "Node.h"
 
-Node::Node(const Node& n)
+Node::Node( const Node& n )
 {
-  if(n.getPoint())
-    {
-      Point3D* point=new Point3D(n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ());
-      mPoint=point;
-    }
+  if ( n.getPoint() )
+  {
+    Point3D* point = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
+    mPoint = point;
+  }
   else
-    {
-      mPoint=0;
-    }
-  
-  mNext=n.getNext();
+  {
+    mPoint = 0;
+  }
+
+  mNext = n.getNext();
 }
 
 
-Node& Node::operator=(const Node& n)
+Node& Node::operator=( const Node & n )
 {
-  Point3D* tmp=mPoint;
-  
-  if(n.getPoint())//mPoint of n is not a null pointer
+  Point3D* tmp = mPoint;
+
+  if ( n.getPoint() )//mPoint of n is not a null pointer
+  {
+    mPoint = new Point3D( n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ() );
+    if ( mPoint == 0 )//no memory
     {
-      mPoint=new Point3D(n.getPoint()->getX(), n.getPoint()->getY(), n.getPoint()->getZ());
-      if(mPoint==0)//no memory
-	{
-	  mPoint=tmp;
-	  mNext=n.getNext();
-	  return (*this);
-	}
-      
+      mPoint = tmp;
+      mNext = n.getNext();
+      return ( *this );
     }
+
+  }
   else//mPoint of n is a null pointer
-    {
-      mPoint=0;
-    }
+  {
+    mPoint = 0;
+  }
 
-  if(tmp)
-	{
-	  delete tmp;
-	}
+  if ( tmp )
+  {
+    delete tmp;
+  }
 
-  mNext=n.getNext();
-  return (*this);
+  mNext = n.getNext();
+  return ( *this );
 }
 
 

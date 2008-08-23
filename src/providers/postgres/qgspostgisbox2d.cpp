@@ -25,13 +25,14 @@
 #include "qgsrect.h"
 
 #include "qgspostgisbox2d.h"
+#include "qgslogger.h"
 
 
 QgsPostGisBox2d::QgsPostGisBox2d( std::string box2d )
 {
 
   // If given a nil box2d, give back a nominal QgsPostGisBox2d
-  if ("" == box2d)
+  if ( "" == box2d )
   {
     xmin = xmax = ymin = ymax = 0;
     return;
@@ -39,23 +40,23 @@ QgsPostGisBox2d::QgsPostGisBox2d( std::string box2d )
 
   std::string s;
 
-  box2d = box2d.substr(box2d.find_first_of("(")+1);
-  box2d = box2d.substr(box2d.find_first_not_of(" "));
-  s = box2d.substr(0, box2d.find_first_of(" "));
-  xmin = strtod(s.c_str(), NULL);
+  box2d = box2d.substr( box2d.find_first_of( "(" ) + 1 );
+  box2d = box2d.substr( box2d.find_first_not_of( " " ) );
+  s = box2d.substr( 0, box2d.find_first_of( " " ) );
+  xmin = strtod( s.c_str(), NULL );
 
-  box2d = box2d.substr(box2d.find_first_of(" ")+1);
-  s = box2d.substr(0, box2d.find_first_of(" "));
-  ymin = strtod(s.c_str(), NULL);
+  box2d = box2d.substr( box2d.find_first_of( " " ) + 1 );
+  s = box2d.substr( 0, box2d.find_first_of( " " ) );
+  ymin = strtod( s.c_str(), NULL );
 
-  box2d = box2d.substr(box2d.find_first_of(",")+1);
-  box2d = box2d.substr(box2d.find_first_not_of(" "));
-  s = box2d.substr(0, box2d.find_first_of(" "));
-  xmax = strtod(s.c_str(), NULL);
+  box2d = box2d.substr( box2d.find_first_of( "," ) + 1 );
+  box2d = box2d.substr( box2d.find_first_not_of( " " ) );
+  s = box2d.substr( 0, box2d.find_first_of( " " ) );
+  xmax = strtod( s.c_str(), NULL );
 
-  box2d = box2d.substr(box2d.find_first_of(" ")+1);
-  s = box2d.substr(0, box2d.find_first_of(" "));
-  ymax = strtod(s.c_str(), NULL);
+  box2d = box2d.substr( box2d.find_first_of( " " ) + 1 );
+  s = box2d.substr( 0, box2d.find_first_of( " " ) );
+  ymax = strtod( s.c_str(), NULL );
 }
 
 
@@ -69,15 +70,15 @@ QString QgsPostGisBox2d::toStringAsBox2d()
 {
 
   QString s;
-  
+
   s = QString( "BOX2D(%f %f,%f %f)" )
-        .arg( xmin )
-        .arg( ymin )
-        .arg( xmax )
-        .arg( ymax );
+      .arg( xmin )
+      .arg( ymin )
+      .arg( xmax )
+      .arg( ymax );
 
-  std::cerr << "QgsPostGisBox2d: toStringAsBox2d is returning '" << s.toLocal8Bit().data() << "'" << std::endl;
+  QgsDebugMsg( QString( "QgsPostGisBox2d: toStringAsBox2d is returning '%1'" ).arg( s ) );
 
-  return s;        
+  return s;
 }
 

@@ -22,33 +22,33 @@
 class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabelPluginGuiBase
 {
     Q_OBJECT
-public:
+  public:
     QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();
-    void setText(QString);
-    void setPlacementLabels(QStringList&);
-    void setPlacement(int);
-    void setColor(QColor);
-    void setEnabled(bool); 
+    void setText( QString );
+    void setPlacementLabels( QStringList& );
+    void setPlacement( int );
+    void setColor( QColor );
+    void setEnabled( bool );
 
-private slots:
+  private slots:
     void on_buttonBox_accepted();
-    void on_buttonBox_rejected();    
+    void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
     void on_pbnColorChooser_clicked();
-     
-private:
+
+  private:
     static const int context_id = 32338213;
-    
-signals:
-   //void drawRasterLayer(QString);
-   //void drawVectorrLayer(QString,QString,QString);
-   void changeFont(QFont);
-   void changeLabel(QString);
-   void changeColor(QColor);
-   void changePlacement(int);
-   void enableCopyrightLabel(bool);
-  
+
+  signals:
+    //void drawRasterLayer(QString);
+    //void drawVectorrLayer(QString,QString,QString);
+    void changeFont( QFont );
+    void changeLabel( QString );
+    void changeColor( QColor );
+    void changePlacement( int );
+    void enableCopyrightLabel( bool );
+
 };
 
 #endif

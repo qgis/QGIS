@@ -24,34 +24,35 @@
 #include "../rtree/RTree.h"
 //#include "../mvrtree/MVRTree.h"
 //#include "../tprtree/TPRTree.h"
+#include "qgslogger.h"
 
 using namespace SpatialIndex;
 
 //const std::string VERSION = "0.82b";
 //const std::string DATE = "March 16th 2005";
 
-std::ostream& SpatialIndex::operator<<(std::ostream& os, const ISpatialIndex& i)
+std::ostream& SpatialIndex::operator<<( std::ostream& os, const ISpatialIndex& i )
 {
-	const SpatialIndex::RTree::RTree* pRTree = dynamic_cast<const SpatialIndex::RTree::RTree*>(&i);
-	if (pRTree != 0)
-	{
-		os << *pRTree;
-		return os;
-	}
-	std::cerr << "ISpatialIndex operator<<: Not implemented yet for this index type." << std::endl;
-	return os;
+  const SpatialIndex::RTree::RTree* pRTree = dynamic_cast<const SpatialIndex::RTree::RTree*>( &i );
+  if ( pRTree != 0 )
+  {
+    os << *pRTree;
+    return os;
+  }
+  QgsDebugMsg( QString( "%1%2" ).arg( "ISpatialIndex operator).arg(: Not implemented yet for this index type." ) );
+  return os;
 }
 
-std::ostream& SpatialIndex::operator<<(std::ostream& os, const IStatistics& s)
+std::ostream& SpatialIndex::operator<<( std::ostream& os, const IStatistics& s )
 {
-	using std::endl;
+  using std::endl;
 
-	const SpatialIndex::RTree::Statistics* pRTreeStats = dynamic_cast<const SpatialIndex::RTree::Statistics*>(&s);
-	if (pRTreeStats != 0)
-	{
-		os << *pRTreeStats;
-		return os;
-	}
-	std::cerr << "IStatistics operator<<: Not implemented yet for this index type." << std::endl;
-	return os;
+  const SpatialIndex::RTree::Statistics* pRTreeStats = dynamic_cast<const SpatialIndex::RTree::Statistics*>( &s );
+  if ( pRTreeStats != 0 )
+  {
+    os << *pRTreeStats;
+    return os;
+  }
+  QgsDebugMsg( QString( "%1%2" ).arg( "IStatistics operator).arg(: Not implemented yet for this index type." ) );
+  return os;
 }

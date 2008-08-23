@@ -21,8 +21,8 @@
 #include "qgis.h"
 
 QgsProviderCountCalcEvent::QgsProviderCountCalcEvent( long numberFeatures )
-    : QEvent( static_cast<QEvent::Type>(QGis::ProviderCountCalcEvent) ),
-      n( numberFeatures )
+    : QEvent( static_cast<QEvent::Type>( QGis::ProviderCountCalcEvent ) ),
+    n( numberFeatures )
 {
   // NO-OP
 }

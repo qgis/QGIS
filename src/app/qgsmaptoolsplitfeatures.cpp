@@ -22,7 +22,7 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 
-QgsMapToolSplitFeatures::QgsMapToolSplitFeatures(QgsMapCanvas* canvas): QgsMapToolCapture(canvas, QgsMapToolCapture::CaptureLine)
+QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
 {
 
 }
@@ -32,61 +32,61 @@ QgsMapToolSplitFeatures::~QgsMapToolSplitFeatures()
 
 }
 
-void QgsMapToolSplitFeatures::canvasReleaseEvent(QMouseEvent * e)
+void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
 {
   //check if we operate on a vector layer
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>(mCanvas->currentLayer());
-  
-  if (!vlayer)
-    {
-      QMessageBox::information(0, QObject::tr("Not a vector layer"), \
-			       QObject::tr("The current layer is not a vector layer"));
-      return;
-    }
+  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
 
-  if (!vlayer->isEditable())
-    {
-      QMessageBox::information(0, QObject::tr("Layer not editable"),
-			       QObject::tr("Cannot edit the vector layer. To make it editable, go to the file item "
-					   "of the layer, right click and check 'Allow Editing'."));
-      return;
-    }
-  
+  if ( !vlayer )
+  {
+    QMessageBox::information( 0, QObject::tr( "Not a vector layer" ), \
+                              QObject::tr( "The current layer is not a vector layer" ) );
+    return;
+  }
+
+  if ( !vlayer->isEditable() )
+  {
+    QMessageBox::information( 0, QObject::tr( "Layer not editable" ),
+                              QObject::tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                           "of the layer, right click and check 'Allow Editing'." ) );
+    return;
+  }
+
   //add point to list and to rubber band
-  int error = addVertex(e->pos());
-  if(error == 1)
-    {
-      //current layer is not a vector layer
-      return;
-    }
-  else if (error == 2)
-    {
-      //problem with coordinate transformation
-      QMessageBox::information(0, QObject::tr("Coordinate transform error"), \
-			       QObject::tr("Cannot transform the point to the layers coordinate system"));
-      return;
-    }
-  
-  if (e->button() == Qt::LeftButton)
-    {
-      mCapturing = TRUE;
-    }
-  else if (e->button() == Qt::RightButton)
-    {
-      mCapturing = FALSE;	  
-      delete mRubberBand;
-      mRubberBand = 0;
+  int error = addVertex( e->pos() );
+  if ( error == 1 )
+  {
+    //current layer is not a vector layer
+    return;
+  }
+  else if ( error == 2 )
+  {
+    //problem with coordinate transformation
+    QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ), \
+                              QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
+    return;
+  }
 
-      //bring up dialog if a split was not possible (polygon) or only done once (line)
-      int topologicalEditing = QgsProject::instance()->readNumEntry("Digitizing", "/TopologicalEditing", 0);
-      int returnCode = vlayer->splitFeatures(mCaptureList, topologicalEditing);
-      if(returnCode != 0)
-	{
-	  //several intersections but only one split (most likely line)
-	  QMessageBox::warning(0, tr("Split error"), tr("An error occured during feature splitting"));
-	}
-      
-      mCaptureList.clear();
-      mCanvas->refresh();
+  if ( e->button() == Qt::LeftButton )
+  {
+    mCapturing = TRUE;
+  }
+  else if ( e->button() == Qt::RightButton )
+  {
+    mCapturing = FALSE;
+    delete mRubberBand;
+    mRubberBand = 0;
+
+    //bring up dialog if a split was not possible (polygon) or only done once (line)
+    int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+    int returnCode = vlayer->splitFeatures( mCaptureList, topologicalEditing );
+    if ( returnCode != 0 )
+    {
+      //several intersections but only one split (most likely line)
+      QMessageBox::warning( 0, tr( "Split error" ), tr( "An error occured during feature splitting" ) );
     }
+
+    mCaptureList.clear();
+    mCanvas->refresh();
+  }
 }

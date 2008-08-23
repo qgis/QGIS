@@ -30,13 +30,13 @@
   or directories only. By default, dropping is limited to files only.
 */
 
-QgsFileDropEdit::QgsFileDropEdit(QWidget *parent)
-: QLineEdit(parent)
+QgsFileDropEdit::QgsFileDropEdit( QWidget *parent )
+    : QLineEdit( parent )
 {
   mDirOnly = false;
   mFileOnly = true;
   mDragActive = false;
-  setAcceptDrops(true);
+  setAcceptDrops( true );
 }
 
 QgsFileDropEdit::~QgsFileDropEdit()
@@ -45,10 +45,10 @@ QgsFileDropEdit::~QgsFileDropEdit()
 /*!
   Limit drops to directories.
 */
-void QgsFileDropEdit::setDirOnly(bool dirOnly)
+void QgsFileDropEdit::setDirOnly( bool dirOnly )
 {
   mDirOnly = dirOnly;
-  if (mDirOnly)
+  if ( mDirOnly )
   {
     mFileOnly = false;
   }
@@ -57,10 +57,10 @@ void QgsFileDropEdit::setDirOnly(bool dirOnly)
 /*!
   Limit drops to files.
 */
-void QgsFileDropEdit::setFileOnly(bool fileOnly)
+void QgsFileDropEdit::setFileOnly( bool fileOnly )
 {
   mFileOnly = fileOnly;
-  if (mFileOnly)
+  if ( mFileOnly )
   {
     mDirOnly = false;
   }
@@ -69,7 +69,7 @@ void QgsFileDropEdit::setFileOnly(bool fileOnly)
 /*!
   Limit drops to files with specified extension.
 */
-void QgsFileDropEdit::setSuffixFilter(const QString& suffix)
+void QgsFileDropEdit::setSuffixFilter( const QString& suffix )
 {
   mSuffix = suffix;
 }
@@ -77,15 +77,15 @@ void QgsFileDropEdit::setSuffixFilter(const QString& suffix)
 /*!
   Return file name if object meets drop criteria.
 */
-QString QgsFileDropEdit::acceptableFilePath(QDropEvent *event) const
+QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
 {
   QString path;
-  if (event->mimeData()->hasUrls())
+  if ( event->mimeData()->hasUrls() )
   {
-    QFileInfo file(event->mimeData()->urls().first().toLocalFile());
-    if ( !( (mFileOnly && !file.isFile()) ||
-            (mDirOnly && !file.isDir()) ||
-            (!mSuffix.isEmpty() && mSuffix.compare(file.suffix(), Qt::CaseInsensitive)) ) )
+    QFileInfo file( event->mimeData()->urls().first().toLocalFile() );
+    if ( !(( mFileOnly && !file.isFile() ) ||
+           ( mDirOnly && !file.isDir() ) ||
+           ( !mSuffix.isEmpty() && mSuffix.compare( file.suffix(), Qt::CaseInsensitive ) ) ) )
       path = file.filePath();
   }
   return path;
@@ -95,10 +95,10 @@ QString QgsFileDropEdit::acceptableFilePath(QDropEvent *event) const
   Check if dragged object is acceptible. Called when a drag is in progress
   and the mouse enters this widget.
 */
-void QgsFileDropEdit::dragEnterEvent(QDragEnterEvent *event)
+void QgsFileDropEdit::dragEnterEvent( QDragEnterEvent *event )
 {
-  QString filePath = acceptableFilePath(event);
-  if (!filePath.isEmpty())
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
   {
     event->acceptProposedAction();
     mDragActive = true;
@@ -106,16 +106,16 @@ void QgsFileDropEdit::dragEnterEvent(QDragEnterEvent *event)
   }
   else
   {
-    QLineEdit::dragEnterEvent(event);
+    QLineEdit::dragEnterEvent( event );
   }
 }
 
 /*!
   Called when a drag is in progress and the mouse leaves this widget.
 */
-void QgsFileDropEdit::dragLeaveEvent(QDragLeaveEvent *event)
+void QgsFileDropEdit::dragLeaveEvent( QDragLeaveEvent *event )
 {
-  QLineEdit::dragLeaveEvent(event);
+  QLineEdit::dragLeaveEvent( event );
   event->accept();
   mDragActive = false;
   update();
@@ -124,36 +124,36 @@ void QgsFileDropEdit::dragLeaveEvent(QDragLeaveEvent *event)
 /*!
   Receive the dragged object. Called when the drag is dropped on this widget.
 */
-void QgsFileDropEdit::dropEvent(QDropEvent *event)
+void QgsFileDropEdit::dropEvent( QDropEvent *event )
 {
-  QString filePath = acceptableFilePath(event);
-  if (!filePath.isEmpty())
+  QString filePath = acceptableFilePath( event );
+  if ( !filePath.isEmpty() )
   {
-    setText(filePath);
+    setText( filePath );
     selectAll();
-    setFocus(Qt::MouseFocusReason);
+    setFocus( Qt::MouseFocusReason );
     event->acceptProposedAction();
     mDragActive = false;
     update();
   }
   else
   {
-    QLineEdit::dropEvent(event);
+    QLineEdit::dropEvent( event );
   }
 }
 
 /*!
   Paints line edit with drag highlight in response to a paint event.
 */
-void QgsFileDropEdit::paintEvent(QPaintEvent *e)
+void QgsFileDropEdit::paintEvent( QPaintEvent *e )
 {
-  QLineEdit::paintEvent(e);
-  if (mDragActive)
+  QLineEdit::paintEvent( e );
+  if ( mDragActive )
   {
-    QPainter p(this);
+    QPainter p( this );
     int width = 2;  // width of highlight rectangle inside frame
-    p.setPen(QPen(palette().highlight(), width));
-    QRect r = rect().adjusted(width, width, -width, -width);
-    p.drawRect(r);
+    p.setPen( QPen( palette().highlight(), width ) );
+    QRect r = rect().adjusted( width, width, -width, -width );
+    p.drawRect( r );
   }
 }

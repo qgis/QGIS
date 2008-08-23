@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgscontinuouscolordialog.h 
+                          qgscontinuouscolordialog.h
                         Continuous color renderer dialog
                              -------------------
     begin                : 2004-02-12
@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #ifndef QGSCONTINUOUSCOLORDIALOG_H
 #define QGSCONTINUOUSCOLORDIALOG_H
@@ -30,25 +30,25 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
 {
     Q_OBJECT
 
- public:
-    QgsContinuousColorDialog(QgsVectorLayer* layer);
+  public:
+    QgsContinuousColorDialog( QgsVectorLayer* layer );
     ~QgsContinuousColorDialog();
 
- public slots:
+  public slots:
     void apply();
 
- protected slots:
+  protected slots:
     void selectMinimumColor();
     void selectMaximumColor();
     void on_cb_polygonOutline_clicked();
 
- protected:
+  protected:
     QgsVectorLayer* mVectorLayer;
-    /**Stores the relationship between provider field indices and field selection 
+    /**Stores the relationship between provider field indices and field selection
        combobox indices. First is the combobox index, second is the provider field index */
-     std::map<int,int> mFieldMap;
+    std::map<int, int> mFieldMap;
 
- private:
+  private:
     /** Default constructor is private, do not use this */
     QgsContinuousColorDialog();
 

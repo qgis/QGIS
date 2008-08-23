@@ -19,38 +19,38 @@ email                : ersts@amnh.org
 
 #include "qgsrastershaderfunction.h"
 
-QgsRasterShaderFunction::QgsRasterShaderFunction(double theMinimumValue, double theMaximumValue)
+QgsRasterShaderFunction::QgsRasterShaderFunction( double theMinimumValue, double theMaximumValue )
 {
 #ifdef QGISDEBUG
-      QgsDebugMsg("QgsRasterShaderFunction::QgsRasterShaderFunction called");
+  QgsDebugMsg( "QgsRasterShaderFunction::QgsRasterShaderFunction called" );
 #endif
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
-/** 
+/**
   Generates and new RGB value based on one input value
-  
+
   @param theValue The original value to base a new RGB value on
   @param theReturnRedValue  The red component of the new RGB value
   @param theReturnGreenValue  The green component of the new RGB value
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::generateShadedValue(double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue)
+bool QgsRasterShaderFunction::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
-  
+
   return false;
 }
 
-/** 
+/**
   Generates and new RGB value based on an original RGB value
-  
-    
+
+
   @param theRedValue The red component of the original value to base a new RGB value on
   @param theGreenValue The green component of the original value to base a new RGB value on
   @param theBlueValue The blue component of the original value to base a new RGB value on
@@ -59,24 +59,24 @@ bool QgsRasterShaderFunction::generateShadedValue(double theValue, int* theRetur
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShaderFunction::generateShadedValue(double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue)
+bool QgsRasterShaderFunction::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
-  
+
   return false;
 }
 
 /**
-    Set the maximum value for the raster shader. 
-    
+    Set the maximum value for the raster shader.
+
     @param theValue The new maximum value
 */
-void QgsRasterShaderFunction::setMaximumValue(double theValue)
+void QgsRasterShaderFunction::setMaximumValue( double theValue )
 {
 #ifdef QGISDEBUG
-      QgsDebugMsg("QgsRasterShaderFunction::setMaximumValue called - Value = " + QString::number(theValue));
+  QgsDebugMsg( "QgsRasterShaderFunction::setMaximumValue called - Value = " + QString::number( theValue ) );
 #endif
   mMaximumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
@@ -84,13 +84,13 @@ void QgsRasterShaderFunction::setMaximumValue(double theValue)
 
 /**
     Set the maximum value for the raster shader
-    
+
     @param theValue The new minimum value
 */
-void QgsRasterShaderFunction::setMinimumValue(double theValue)
+void QgsRasterShaderFunction::setMinimumValue( double theValue )
 {
 #ifdef QGISDEBUG
-      QgsDebugMsg("QgsRasterShaderFunction::setMinimumValue called - Value = " + QString::number(theValue));
+  QgsDebugMsg( "QgsRasterShaderFunction::setMinimumValue called - Value = " + QString::number( theValue ) );
 #endif
   mMinimumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;

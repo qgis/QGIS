@@ -22,9 +22,9 @@
 #include <QKeyEvent>
 #include <QSettings>
 
-QgsMapToolEdit::QgsMapToolEdit(QgsMapCanvas* canvas): QgsMapTool(canvas)
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas ): QgsMapTool( canvas )
 {
-  mSnapper.setMapCanvas(canvas);
+  mSnapper.setMapCanvas( canvas );
 }
 
 
@@ -33,11 +33,11 @@ QgsMapToolEdit::~QgsMapToolEdit()
 
 }
 
-int QgsMapToolEdit::insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer)
+int QgsMapToolEdit::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer )
 {
   QgsPoint layerPoint;
 
-  if(!editedLayer || !editedLayer->isEditable())
+  if ( !editedLayer || !editedLayer->isEditable() )
   {
     return 1;
   }
@@ -45,20 +45,20 @@ int QgsMapToolEdit::insertSegmentVerticesForSnap(const QList<QgsSnappingResult>&
   //transform snaping coordinates to layer crs first
   QList<QgsSnappingResult> transformedSnapResults = snapResults;
   QList<QgsSnappingResult>::iterator it = transformedSnapResults.begin();
-  for(; it != transformedSnapResults.constEnd(); ++it)
+  for ( ; it != transformedSnapResults.constEnd(); ++it )
   {
-    QgsPoint layerPoint = toLayerCoords(editedLayer, it->snappedVertex);
+    QgsPoint layerPoint = toLayerCoords( editedLayer, it->snappedVertex );
     it->snappedVertex = layerPoint;
   }
 
-  return editedLayer->insertSegmentVerticesForSnap(transformedSnapResults);
+  return editedLayer->insertSegmentVerticesForSnap( transformedSnapResults );
 }
 
-QgsPoint QgsMapToolEdit::snapPointFromResults(const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords)
+QgsPoint QgsMapToolEdit::snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords )
 {
-  if(snapResults.size() < 1)
+  if ( snapResults.size() < 1 )
   {
-    return toMapCoords(screenCoords);
+    return toMapCoords( screenCoords );
   }
   else
   {
@@ -66,15 +66,15 @@ QgsPoint QgsMapToolEdit::snapPointFromResults(const QList<QgsSnappingResult>& sn
   }
 }
 
-QgsRubberBand* QgsMapToolEdit::createRubberBand(bool isPolygon)
+QgsRubberBand* QgsMapToolEdit::createRubberBand( bool isPolygon )
 {
   QSettings settings;
-  QgsRubberBand* rb = new QgsRubberBand(mCanvas, isPolygon);
-  QColor color( settings.value("/qgis/digitizing/line_color_red", 255).toInt(),
-      settings.value("/qgis/digitizing/line_color_green", 0).toInt(),
-      settings.value("/qgis/digitizing/line_color_blue", 0).toInt());
-  rb->setColor(color);
-  rb->setWidth(settings.value("/qgis/digitizing/line_width", 1).toInt());
+  QgsRubberBand* rb = new QgsRubberBand( mCanvas, isPolygon );
+  QColor color( settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt(),
+                settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt(),
+                settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt() );
+  rb->setColor( color );
+  rb->setWidth( settings.value( "/qgis/digitizing/line_width", 1 ).toInt() );
   rb->show();
   return rb;
 }
@@ -82,13 +82,13 @@ QgsRubberBand* QgsMapToolEdit::createRubberBand(bool isPolygon)
 QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
 {
   QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  if(!currentLayer)
+  if ( !currentLayer )
   {
     return 0;
   }
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>(currentLayer);
-  if(!vlayer)
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  if ( !vlayer )
   {
     return 0;
   }
@@ -96,9 +96,9 @@ QgsVectorLayer* QgsMapToolEdit::currentVectorLayer()
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints(const QList<QgsPoint>& geom)
+int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPoint>& geom )
 {
-  if(!mCanvas)
+  if ( !mCanvas )
   {
     return 1;
   }
@@ -106,15 +106,15 @@ int QgsMapToolEdit::addTopologicalPoints(const QList<QgsPoint>& geom)
   //find out current vector layer
   QgsVectorLayer *vlayer = currentVectorLayer();
 
-  if (!vlayer)
+  if ( !vlayer )
   {
     return 2;
   }
 
   QList<QgsPoint>::const_iterator list_it = geom.constBegin();
-  for(; list_it != geom.constEnd(); ++list_it)
+  for ( ; list_it != geom.constEnd(); ++list_it )
   {
-    vlayer->addTopologicalPoints(*list_it);
+    vlayer->addTopologicalPoints( *list_it );
   }
   return 0;
 }

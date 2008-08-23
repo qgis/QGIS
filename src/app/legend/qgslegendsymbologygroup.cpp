@@ -26,25 +26,25 @@
 #include <QCoreApplication>
 #include <QIcon>
 
-QgsLegendSymbologyGroup::QgsLegendSymbologyGroup(QTreeWidgetItem * theItem, QString theString)
-    : QgsLegendItem( theItem, theString)
+QgsLegendSymbologyGroup::QgsLegendSymbologyGroup( QTreeWidgetItem * theItem, QString theString )
+    : QgsLegendItem( theItem, theString )
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon("/mIconSymbology.png");
-  setText(0, theString);
-  setIcon(0,myIcon);
+  QIcon myIcon = QgisApp::getThemeIcon( "/mIconSymbology.png" );
+  setText( 0, theString );
+  setIcon( 0, myIcon );
 }
 
 
 QgsLegendSymbologyGroup::~QgsLegendSymbologyGroup()
 {}
 
-QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(LEGEND_ITEM_TYPE type)
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept( LEGEND_ITEM_TYPE type )
 {
-    return NO_ACTION;
+  return NO_ACTION;
 }
 
-QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(const QgsLegendItem* li) const
+QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept( const QgsLegendItem* li ) const
 {
   return NO_ACTION;
 }
@@ -52,14 +52,14 @@ QgsLegendItem::DRAG_ACTION QgsLegendSymbologyGroup::accept(const QgsLegendItem* 
 /** Overloads cmpare function of QListViewItem
   * @note The symbology group must always be the second in the list
   */
-int QgsLegendSymbologyGroup::compare (QTreeWidgetItem * i,int col, bool ascending)
+int QgsLegendSymbologyGroup::compare( QTreeWidgetItem * i, int col, bool ascending )
 {
-  QgsLegendItem * myItem = dynamic_cast<QgsLegendItem *>(i) ;
-  if (myItem->type() == QgsLegendItem::LEGEND_PROPERTY_GROUP)
+  QgsLegendItem * myItem = dynamic_cast<QgsLegendItem *>( i ) ;
+  if ( myItem->type() == QgsLegendItem::LEGEND_PROPERTY_GROUP )
   {
     return 1;
   }
-  else 
+  else
   {
     return -1;
   }

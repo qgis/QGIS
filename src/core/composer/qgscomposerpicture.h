@@ -27,63 +27,63 @@
  * */
 class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
 {
-  Q_OBJECT
- public:
-  QgsComposerPicture(QgsComposition *composition);
-  ~QgsComposerPicture();
+    Q_OBJECT
+  public:
+    QgsComposerPicture( QgsComposition *composition );
+    ~QgsComposerPicture();
 
-  /**Reimplementation of QCanvasItem::paint*/
-  void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
+    /**Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  /**Sets the source file of the image (may be svg or a raster format)*/
-  void setPictureFile(const QString& path);
-  QString pictureFile() const;
+    /**Sets the source file of the image (may be svg or a raster format)*/
+    void setPictureFile( const QString& path );
+    QString pictureFile() const;
 
-  /**Sets this items bound in scene coordinates such that 1 item size units
-     corresponds to 1 scene size unit*/
-  void setSceneRect(const QRectF& rectangle);
+    /**Sets this items bound in scene coordinates such that 1 item size units
+       corresponds to 1 scene size unit*/
+    void setSceneRect( const QRectF& rectangle );
 
-  void setRotation(double rotation);
+    void setRotation( double rotation );
 
-  double rotation() const {return mRotation;}
+    double rotation() const {return mRotation;}
 
-  /** stores state in Dom node
-     * @param node is Dom node corresponding to 'Composer' tag
-     * @param temp write template file
-     */
-    bool writeXML(QDomElement& elem, QDomDocument & doc);
+    /** stores state in Dom node
+       * @param node is Dom node corresponding to 'Composer' tag
+       * @param temp write template file
+       */
+    bool writeXML( QDomElement& elem, QDomDocument & doc );
 
-   /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     */
-    bool readXML(const QDomElement& itemElem, const QDomDocument& doc); 
+    /** sets state from Dom document
+      * @param itemElem is Dom node corresponding to item tag
+      */
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
- private:
+  private:
 
-  enum Mode //SVG or raster graphic format
+    enum Mode //SVG or raster graphic format
     {
       SVG,
       RASTER,
       UNKNOWN
     };
 
-  //default constructor is forbidden
-  QgsComposerPicture();
-  /**Updates content of current image using svg generator*/
-  void updateImageFromSvg();
+    //default constructor is forbidden
+    QgsComposerPicture();
+    /**Updates content of current image using svg generator*/
+    void updateImageFromSvg();
 
-  QImage mImage;
-  double mRotation;
-  QFile mSourceFile;
-  Mode mMode;
-  /**False if image needs to be rendered from svg*/
-  bool mSvgCacheUpToDate;
-  int mCachedDpi; //store dpis for which the svg cache is valid
-  QSize mDefaultSvgSize;
+    QImage mImage;
+    double mRotation;
+    QFile mSourceFile;
+    Mode mMode;
+    /**False if image needs to be rendered from svg*/
+    bool mSvgCacheUpToDate;
+    int mCachedDpi; //store dpis for which the svg cache is valid
+    QSize mDefaultSvgSize;
 
- signals:
-  /**Tell the configuration widget that the settings need to be updated*/
-  void settingsChanged();
+  signals:
+    /**Tell the configuration widget that the settings need to be updated*/
+    void settingsChanged();
 };
 
 #endif

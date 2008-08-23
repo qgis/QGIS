@@ -22,7 +22,7 @@ class QgisInterface;
  */
 class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPluginGuiBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
@@ -45,12 +45,12 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
     void on_btnBrowseForFile_clicked();
-    void on_txtDelimiter_textChanged(const QString & text);
+    void on_txtDelimiter_textChanged( const QString & text );
     void pbnParse_clicked();
 
   signals:
-    void drawRasterLayer(QString);
-    void drawVectorLayer(QString,QString,QString);
+    void drawRasterLayer( QString );
+    void drawVectorLayer( QString, QString, QString );
 };
 
 #endif

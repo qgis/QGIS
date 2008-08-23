@@ -34,72 +34,72 @@ class QgsRect;
 
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    QgsMapOverviewCanvas(QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL);
-    
+    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+
     ~QgsMapOverviewCanvas();
-  
+
     //! used for overview canvas to reflect changed extent in main map canvas
     void reflectChangedExtent();
 
     //! renders overview and updates panning widget
     void refresh();
-  
+
     //! changes background color
-    void setbgColor(const QColor& color);
-        
+    void setbgColor( const QColor& color );
+
     //! updates layer set for overview
-    void setLayerSet(const QStringList& layerSet);
-    
+    void setLayerSet( const QStringList& layerSet );
+
     QStringList& layerSet();
-    
-    void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
-    
-    void updateFullExtent(const QgsRect& rect);
-    
+
+    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+
+    void updateFullExtent( const QgsRect& rect );
+
   public slots:
-    
-    void projectionsEnabled(bool flag);
-    
+
+    void projectionsEnabled( bool flag );
+
     void destinationSrsChanged();
-    
+
   protected:
-  
+
     //! Overridden paint event
-    void paintEvent(QPaintEvent * pe);
+    void paintEvent( QPaintEvent * pe );
 
     //! Overridden resize event
-    void resizeEvent(QResizeEvent * e);
+    void resizeEvent( QResizeEvent * e );
 
     //! Overridden mouse move event
-    void mouseMoveEvent(QMouseEvent * e);
+    void mouseMoveEvent( QMouseEvent * e );
 
     //! Overridden mouse press event
-    void mousePressEvent(QMouseEvent * e);
+    void mousePressEvent( QMouseEvent * e );
 
     //! Overridden mouse release event
-    void mouseReleaseEvent(QMouseEvent * e);
-    
+    void mouseReleaseEvent( QMouseEvent * e );
+
     //! called when panning to reflect mouse movement
-    void updatePanningWidget(const QPoint& pos);
-    
+    void updatePanningWidget( const QPoint& pos );
+
     //! widget for panning map in overview
     QgsPanningWidget* mPanningWidget;
-    
+
     //! position of cursor inside panning widget
     QPoint mPanningCursorOffset;
-  
+
     //! main map canvas - used to get/set extent
     QgsMapCanvas* mMapCanvas;
-    
+
     //! for rendering overview
     QgsMapRenderer* mMapRenderer;
-    
+
     //! pixmap where the map is stored
     QPixmap mPixmap;
-    
+
     //! background color
     QColor mBgColor;
 

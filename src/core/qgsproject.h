@@ -2,7 +2,7 @@
                                   qgsproject.h
 
                       Implements persistent project state.
- 
+
                               -------------------
   begin                : July 23, 2004
   copyright            : (C) 2004 by Mark Coletti
@@ -35,7 +35,7 @@ class QDomNode;
 
 /** \ingroup core
  * Reads and writes project states.
-   
+
 
   @note
 
@@ -53,9 +53,9 @@ class QDomNode;
 */
 class CORE_EXPORT QgsProject : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
+  public:
 
     /**
        @todo XXX Should have semantics for saving project if dirty as last gasp?
@@ -185,10 +185,10 @@ public:
        @todo "properties" is, overall, a good name; but that might imply that
        the qgis specific state properites are different since they aren't
        accessible here.  Actually, what if we make "qgis" yet another
-       scope that stores its state in the properties list?  E.g., 
+       scope that stores its state in the properties list?  E.g.,
        QgsProject::instance()->properties()["qgis"]?
 
-       
+
      */
     // DEPRECATED Properties & properties( QString const & scope );
 
@@ -198,7 +198,7 @@ public:
     void clearProperties();
 
 
-    /* key value mutators 
+    /* key value mutators
 
       keys would be the familiar QSettings-like '/' delimited entries, implying
       a hierarchy of keys and corresponding values
@@ -206,11 +206,11 @@ public:
       @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    bool writeEntry ( QString const & scope, const QString & key, bool value );
-    bool writeEntry ( QString const & scope, const QString & key, double value );
-    bool writeEntry ( QString const & scope, const QString & key, int value );
-    bool writeEntry ( QString const & scope, const QString & key, const QString & value );
-    bool writeEntry ( QString const & scope, const QString & key, const QStringList & value );
+    bool writeEntry( QString const & scope, const QString & key, bool value );
+    bool writeEntry( QString const & scope, const QString & key, double value );
+    bool writeEntry( QString const & scope, const QString & key, int value );
+    bool writeEntry( QString const & scope, const QString & key, const QString & value );
+    bool writeEntry( QString const & scope, const QString & key, const QStringList & value );
     //@}
 
     /** key value accessors
@@ -222,33 +222,33 @@ public:
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry ( QString const & scope, const QString & key, bool * ok = 0 ) const;
+    QStringList readListEntry( QString const & scope, const QString & key, bool * ok = 0 ) const;
 
-    QString readEntry ( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
-    int readNumEntry ( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
-    double readDoubleEntry ( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry ( QString const & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
+    QString readEntry( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
+    int readNumEntry( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
+    double readDoubleEntry( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
+    bool readBoolEntry( QString const & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
     //@}
 
 
     /** remove the given key */
-    bool removeEntry ( QString const & scope, const QString & key );
+    bool removeEntry( QString const & scope, const QString & key );
 
 
     /** return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
-    QStringList entryList ( QString const & scope, QString const & key ) const;
+    QStringList entryList( QString const & scope, QString const & key ) const;
 
     /** return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
-    QStringList subkeyList ( QString const & scope, QString const & key ) const;
+    QStringList subkeyList( QString const & scope, QString const & key ) const;
 
 
-    /** dump out current project properties to stderr 
+    /** dump out current project properties to stderr
 
       @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
                 and redundantly prints sub-keys.
@@ -256,17 +256,17 @@ public:
     void dumpProperties() const;
 
   signals:
-    
+
     //! emitted when project is being read
-    void readProject(const QDomDocument &);
-    
+    void readProject( const QDomDocument & );
+
     //! emitted when project is being written
-    void writeProject(QDomDocument &);
+    void writeProject( QDomDocument & );
 
     //! emitted when an old project file is read.
-    void warnOlderProjectVersion(QString);
+    void warnOlderProjectVersion( QString );
 
-private:
+  private:
 
     QgsProject(); // private 'cause it's a singleton
 

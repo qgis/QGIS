@@ -23,10 +23,11 @@
 #include <QPen>
 #include <QBrush>
 #include <QPainter>
+#include "qgslogger.h"
 
-QgsMapCanvasItem::QgsMapCanvasItem(QgsMapCanvas* mapCanvas)
-  : QGraphicsItem(0, mapCanvas->scene()), mMapCanvas(mapCanvas),
-    mPanningOffset(0,0), mItemSize(0,0)
+QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
+    : QGraphicsItem( 0, mapCanvas->scene() ), mMapCanvas( mapCanvas ),
+    mPanningOffset( 0, 0 ), mItemSize( 0, 0 )
 {
 }
 
@@ -35,24 +36,24 @@ QgsMapCanvasItem::~QgsMapCanvasItem()
   update(); // shedule redraw of canvas
 }
 
-void QgsMapCanvasItem::paint(QPainter * painter,
-                             const QStyleOptionGraphicsItem * option,
-                             QWidget * widget)
+void QgsMapCanvasItem::paint( QPainter * painter,
+                              const QStyleOptionGraphicsItem * option,
+                              QWidget * widget )
 {
-  paint(painter); // call the derived item's drawing routines
+  paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoords(const QPoint& point)
+QgsPoint QgsMapCanvasItem::toMapCoords( const QPoint& point )
 {
-  return mMapCanvas->getCoordinateTransform()->toMapCoordinates(point - mPanningOffset);
+  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
 }
-    
 
-QPointF QgsMapCanvasItem::toCanvasCoords(const QgsPoint& point)
+
+QPointF QgsMapCanvasItem::toCanvasCoords( const QgsPoint& point )
 {
   double x = point.x(), y = point.y();
-  mMapCanvas->getCoordinateTransform()->transformInPlace(x,y);
-  return QPointF(x, y) + mPanningOffset;
+  mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
+  return QPointF( x, y ) + mPanningOffset;
 }
 
 
@@ -62,37 +63,36 @@ QgsRect QgsMapCanvasItem::rect() const
 }
 
 
-void QgsMapCanvasItem::setRect(const QgsRect& rect)
+void QgsMapCanvasItem::setRect( const QgsRect& rect )
 {
   mRect = rect;
   //updatePosition();
-  
+
   QRectF r; // empty rect by default
-  if (!mRect.isEmpty())
+  if ( !mRect.isEmpty() )
   {
-    r.setTopLeft(toCanvasCoords(QgsPoint(mRect.xMin(), mRect.yMin())));
-    r.setBottomRight(toCanvasCoords(QgsPoint(mRect.xMax(), mRect.yMax())));
+    r.setTopLeft( toCanvasCoords( QgsPoint( mRect.xMin(), mRect.yMin() ) ) );
+    r.setBottomRight( toCanvasCoords( QgsPoint( mRect.xMax(), mRect.yMax() ) ) );
     r = r.normalized();
   }
-  
+
   // update the point prior to changing its position
   update();
-  
+
   // set position in canvas where the item will have coordinate (0,0)
-  setPos(r.topLeft());
-  mItemSize = QSizeF(r.width()+2,r.height()+2);
-  
+  setPos( r.topLeft() );
+  mItemSize = QSizeF( r.width() + 2, r.height() + 2 );
+
 #ifdef QGISDEBUG
-//  std::cout << "QgsMapCanvasItem::setRect: "  << " [" << (int) r.left() << ","
-//     << (int) r.top() << "]-[" << (int) r.width() << "x" << (int) r.height() << "]" << std::endl;
+  // QgsDebugMsg(QString("QgsMapCanvasItem::setRect:  [%1,%2]-[%3x%4]").arg((int) r.left()).arg((int) r.top()).arg((int) r.width()).arg((int) r.height()));
 #endif
-  
+
   update();
 }
 
 QRectF QgsMapCanvasItem::boundingRect() const
 {
-  return QRectF(QPointF(-1,-1),mItemSize);
+  return QRectF( QPointF( -1, -1 ), mItemSize );
 }
 
 
@@ -106,11 +106,11 @@ void QgsMapCanvasItem::updateCanvas()
 void QgsMapCanvasItem::updatePosition()
 {
   // default implementation: recalculate position of the item
-  setRect(mRect);
+  setRect( mRect );
 }
 
 
-void QgsMapCanvasItem::setPanningOffset(const QPoint& point)
+void QgsMapCanvasItem::setPanningOffset( const QPoint& point )
 {
   mPanningOffset = point;
 }

@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************
 
-  $Id$ 
+  $Id$
 
 */
 
@@ -26,42 +26,43 @@ class QgsMapCanvas;
 /*! \class QgsMapServerExport
 * \brief Class to handle reading and writing a Qgis project file
 */
-class QgsMapserverExport:public QDialog, private Ui::QgsMapserverExportBase
+class QgsMapserverExport: public QDialog, private Ui::QgsMapserverExportBase
 {
-Q_OBJECT
-public:
-  QgsMapserverExport(QgsMapCanvas *map=0, QWidget* parent = 0, 
-	Qt::WFlags fl = QgisGui::ModalDialogFlags);
-  ~QgsMapserverExport();
-  //! Read the file and create the map
-  bool read();
-  //! Write the contents of the map to a file
-  bool write();
-  void setMapCanvas(QgsMapCanvas *map);
-  //! Open a file dialog, the type determined by action (SAVE AS or OPEN)
-  QString selectFileName();
-  //! get the basename of the file (no path, just the file name)
-  QString baseName();
-  //! get the full path name of the map file
-  QString fullPathName();
-  //! Set the full path to the file
-  void setFileName(QString fileName);
-  enum ACTION {
-  	SAVE,
-	SAVEAS,
-	OPEN
-	};
-public slots:
-  void on_chkExpLayersOnly_clicked();
-  void on_btnChooseFile_clicked();
-  void on_buttonHelp_clicked();
-private:
-  void writeMapFile(void);
-  QString fileName;
-  QString fullPath;
-  bool neverSaved;
-  QgsMapCanvas *map;
-  int action;
+    Q_OBJECT
+  public:
+    QgsMapserverExport( QgsMapCanvas *map = 0, QWidget* parent = 0,
+                        Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    ~QgsMapserverExport();
+    //! Read the file and create the map
+    bool read();
+    //! Write the contents of the map to a file
+    bool write();
+    void setMapCanvas( QgsMapCanvas *map );
+    //! Open a file dialog, the type determined by action (SAVE AS or OPEN)
+    QString selectFileName();
+    //! get the basename of the file (no path, just the file name)
+    QString baseName();
+    //! get the full path name of the map file
+    QString fullPathName();
+    //! Set the full path to the file
+    void setFileName( QString fileName );
+    enum ACTION
+    {
+      SAVE,
+      SAVEAS,
+      OPEN
+    };
+  public slots:
+    void on_chkExpLayersOnly_clicked();
+    void on_btnChooseFile_clicked();
+    void on_buttonHelp_clicked();
+  private:
+    void writeMapFile( void );
+    QString fileName;
+    QString fullPath;
+    bool neverSaved;
+    QgsMapCanvas *map;
+    int action;
 };
 
 #endif //QGSMAPSERVEREXPORT_H

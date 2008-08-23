@@ -17,38 +17,38 @@
 /* $Id:$ */
 
 #include "qgsdetaileditemdata.h"
-QgsDetailedItemData::QgsDetailedItemData() 
+QgsDetailedItemData::QgsDetailedItemData()
 {
-  mRenderAsWidgetFlag=false;
+  mRenderAsWidgetFlag = false;
 }
 
 QgsDetailedItemData::~QgsDetailedItemData()
 {
 }
 
-void QgsDetailedItemData::setTitle(const QString theTitle)
+void QgsDetailedItemData::setTitle( const QString theTitle )
 {
-  mTitle=theTitle;
+  mTitle = theTitle;
 }
 
-void QgsDetailedItemData::setDetail(const QString theDetail)
+void QgsDetailedItemData::setDetail( const QString theDetail )
 {
-  mDetail=theDetail;
+  mDetail = theDetail;
 }
 
-void QgsDetailedItemData::setIcon(const QPixmap theIcon)
+void QgsDetailedItemData::setIcon( const QPixmap theIcon )
 {
   mPixmap = theIcon;
 }
-void QgsDetailedItemData::setCheckable(const bool theFlag)
+void QgsDetailedItemData::setCheckable( const bool theFlag )
 {
   mCheckableFlag = theFlag;
 }
-void QgsDetailedItemData::setChecked(const bool theFlag)
+void QgsDetailedItemData::setChecked( const bool theFlag )
 {
   mCheckedFlag = theFlag;
 }
-void QgsDetailedItemData::setRenderAsWidget(const bool theFlag)
+void QgsDetailedItemData::setRenderAsWidget( const bool theFlag )
 {
   mRenderAsWidgetFlag = theFlag;
 }

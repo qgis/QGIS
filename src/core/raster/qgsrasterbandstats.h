@@ -1,9 +1,9 @@
 /***************************************************************************
                         qgsrasterbandstats.h  -  description
                               -------------------
-	begin                : Fri Jun 28 2002
-	copyright            : (C) 2005 by T.Sutton
-	email                : tim@linfiniti.com
+ begin                : Fri Jun 28 2002
+ copyright            : (C) 2005 by T.Sutton
+ email                : tim@linfiniti.com
 ***************************************************************************/
 
 /***************************************************************************
@@ -18,7 +18,7 @@
 
 /** \file qgsrasterbandstats
  *  \brief This class provides statistics for a given raster band.
- *  
+ *
  *  The qgsrasterbandstats holds various stats relating to a given raster band.
  */
 #ifndef QGSRASTERBANDSTATS
@@ -36,7 +36,8 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-    QgsRasterBandStats() {
+    QgsRasterBandStats()
+    {
       bandName = "";
       statsGatheredFlag = false;
       minVal = std::numeric_limits<double>::max();
@@ -50,14 +51,14 @@ class CORE_EXPORT QgsRasterBandStats
       histogramEstimatedFlag = false;
       histogramOutOfRangeFlag = false;
     }
-  
+
     /** \brief The name of the band that these stats belong to. */
     QString bandName;
     /** \brief The gdal band number (starts at 1)*/
-    int bandNo; 
-    /** \brief A flag to indicate whether this RasterBandStats struct 
+    int bandNo;
+    /** \brief A flag to indicate whether this RasterBandStats struct
      * is completely populated */
-    bool statsGatheredFlag; 
+    bool statsGatheredFlag;
     /** \brief The minimum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMinimum function. */
     double minVal;
@@ -69,14 +70,14 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The mean cell value for the band. NO_DATA values are excluded. */
     double mean;
     /** \brief The sum of the squares. Used to calculate standard deviation. */
-    double sumSqrDev; 
+    double sumSqrDev;
     /** \brief The standard deviation of the cell values. */
     double stdDev;
     /** \brief The sum of all cells in the band. NO_DATA values are excluded. */
     double sum;
-    /** \brief The number of cells in the band. Equivalent to height x width. 
+    /** \brief The number of cells in the band. Equivalent to height x width.
      * TODO: check if NO_DATA are excluded!*/
-    int elementCount;    
+    int elementCount;
     /** \brief Store the histogram for a given layer */
     typedef QVector<int> HistogramVector;
     HistogramVector * histogramVector;

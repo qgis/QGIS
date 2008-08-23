@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsscalecalculator.h    
+                          qgsscalecalculator.h
               Calculates scale based on map extent and units
                              -------------------
     begin                : May 18, 2004
@@ -39,8 +39,8 @@ class CORE_EXPORT QgsScaleCalculator
      * @param mapUnits Units of the data on the map. Must match a value from the
      * QGis::units enum (METERS, FEET, DEGREES)
      */
-    QgsScaleCalculator(int dpi = 0, 
-                       QGis::units mapUnits = QGis::METERS);
+    QgsScaleCalculator( int dpi = 0,
+                        QGis::units mapUnits = QGis::METERS );
 
     //! Destructor
     ~QgsScaleCalculator();
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsScaleCalculator
      * Set the dpi to be used in scale calculations
      * @param dpi Dots per inch of monitor resolution
      */
-    void setDpi(int dpi);
+    void setDpi( int dpi );
     /**
      * Accessor for dpi used in scale calculations
      * @return int the dpi used for scale calculations.
@@ -60,18 +60,18 @@ class CORE_EXPORT QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits(QGis::units mapUnits);
+    void setMapUnits( QGis::units mapUnits );
 
     /** Returns current map units */
     QGis::units mapUnits() const;
-    
+
     /**
      * Calculate the scale
      * @param mapExtent QgsRect containing the current map extent
      * @param canvasWidth Width of the map canvas in pixel (physical) units
      * @return scale of current map view
      */
-    double calculate(const QgsRect &mapExtent, int canvasWidth);
+    double calculate( const QgsRect &mapExtent, int canvasWidth );
 
     /**
      * Calculate the distance between two points in geographic coordinates.
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsScaleCalculator
      * data.
      * @param mapExtent QgsRect containing the current map extent
      */
-    double calculateGeographicDistance(const QgsRect &mapExtent);
+    double calculateGeographicDistance( const QgsRect &mapExtent );
 
   private:
 

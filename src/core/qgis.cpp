@@ -1,6 +1,6 @@
 /***************************************************************************
-                                qgis.cpp 
-                       
+                                qgis.cpp
+
                              -------------------
     begin                : 2007
     copyright            : (C) 2007 by Gary E. Sherman
@@ -30,11 +30,11 @@ const char* QGis::qgisVersion = VERSION;
 
 // SVN version
 const char* QGis::qgisSvnVersion = QGSSVNVERSION;
-  
-// Version number used for comparing versions using the 
+
+// Version number used for comparing versions using the
 // "Check QGIS Version" function
 const int QGis::qgisVersionInt = VERSION_INT;
-  
+
 // Release name
 const char* QGis::qgisReleaseName = RELEASE_NAME;
 
@@ -57,5 +57,5 @@ const char* QGis::qgisFeatureTypes[] =
   "WKBMultiPolygon"
 };
 
-const double QGis::DEFAULT_IDENTIFY_RADIUS=0.5;
+const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 

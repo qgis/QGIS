@@ -20,7 +20,7 @@
 /*!
   \class QgsColorButton
 
-  \brief The QgsColorButton class provides a tool button widget displaying 
+  \brief The QgsColorButton class provides a tool button widget displaying
   a color which can be altered by calling QColorDialog::getColor.
 
   A subclass of QToolButton is needed to draw the button content because
@@ -32,10 +32,10 @@
   by Qt Designer to do the same thing.
 */
 
-QgsColorButton::QgsColorButton(QWidget *parent)
-: QToolButton(parent)
+QgsColorButton::QgsColorButton( QWidget *parent )
+    : QToolButton( parent )
 {
-  setToolButtonStyle(Qt::ToolButtonTextOnly);   // decrease default button height
+  setToolButtonStyle( Qt::ToolButtonTextOnly ); // decrease default button height
 }
 
 QgsColorButton::~QgsColorButton()
@@ -44,24 +44,24 @@ QgsColorButton::~QgsColorButton()
 /*!
   Paints button in response to a paint event.
 */
-void QgsColorButton::paintEvent(QPaintEvent *e)
+void QgsColorButton::paintEvent( QPaintEvent *e )
 {
-  QToolButton::paintEvent(e);
+  QToolButton::paintEvent( e );
   if (
 #ifdef Q_WS_MAC
     // Mac shows color only a when a window is active
     isActiveWindow() &&
 #endif
-    isEnabled())
+    isEnabled() )
   {
-    QPainter p(this);
+    QPainter p( this );
     int margin = 2;  // Leave some space for highlighting
-    QRect r = rect().adjusted(margin, margin, -margin, -margin);
-    p.fillRect(r, mColor);
+    QRect r = rect().adjusted( margin, margin, -margin, -margin );
+    p.fillRect( r, mColor );
   }
 }
 
-void QgsColorButton::setColor(const QColor &color)
+void QgsColorButton::setColor( const QColor &color )
 {
   mColor = color;
   update();

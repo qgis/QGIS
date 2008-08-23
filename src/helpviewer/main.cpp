@@ -15,78 +15,75 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>
 #include "qgshelpserver.h"
 #include "qgshelpviewer.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QCoreApplication::setOrganizationName("QuantumGIS");
-  QCoreApplication::setOrganizationDomain("qgis.org");
-  QCoreApplication::setApplicationName("qgis");
+  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "qgis" );
 
   QString context = QString::null;
-  QString myTranslationCode="";
+  QString myTranslationCode = "";
 
-  if(argc == 2)
+  if ( argc == 2 )
   {
     context = argv[1];
   }
 #ifdef Q_WS_MAC
   // If we're on Mac, we have the resource library way above us...
-  a.setPkgDataPath(QgsApplication::prefixPath()+"/../../../../share/qgis");
+  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../share/qgis" );
 #endif
 
   QString i18nPath = QgsApplication::i18nPath();
-  if (myTranslationCode.isEmpty())
+  if ( myTranslationCode.isEmpty() )
   {
     myTranslationCode = QLocale::system().name();
   }
-#ifdef QGISDEBUG
-  std::cout << "Setting translation to "
-    << i18nPath.toLocal8Bit().data() << "/qgis_" << myTranslationCode.toLocal8Bit().data() << std::endl;
-#endif
+  QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
 
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
-  QTranslator qttor(0);
-  if (qttor.load(QString("qt_") + myTranslationCode, i18nPath))
+  QTranslator qttor( 0 );
+  if ( qttor.load( QString( "qt_" ) + myTranslationCode, i18nPath ) )
   {
-    a.installTranslator(&qttor);
+    a.installTranslator( &qttor );
   }
 
   /* Translation file for QGIS.
    */
-  QTranslator qgistor(0);
-  if (qgistor.load(QString("qgis_") + myTranslationCode, i18nPath))
+  QTranslator qgistor( 0 );
+  if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
-    a.installTranslator(&qgistor);
+    a.installTranslator( &qgistor );
   }
 
-  QgsHelpViewer w(context);
+  QgsHelpViewer w( context );
   w.show();
 
-  a.connect(&a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()));
+  a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
 
   // Create socket for client to send context requests to.
   // This allows an existing viewer to be reused rather then creating
   // an additional viewer if one is already running.
   QgsHelpContextServer *helpServer = new QgsHelpContextServer();
   // Make port number available to client
-  std::cout << helpServer->serverPort() << std::endl; 
+  QgsDebugMsg( helpServer->serverPort() );
   // Pass context request from socket to viewer widget
-  QObject::connect(helpServer, SIGNAL(setContext(const QString&)),
-      &w, SLOT(setContext(const QString&)));
+  QObject::connect( helpServer, SIGNAL( setContext( const QString& ) ),
+                    &w, SLOT( setContext( const QString& ) ) );
 
   return a.exec();
 }

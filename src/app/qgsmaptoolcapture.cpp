@@ -36,15 +36,15 @@
 #include <QMouseEvent>
 
 
-QgsMapToolCapture::QgsMapToolCapture(QgsMapCanvas* canvas, enum CaptureTool tool)
-  : QgsMapToolEdit(canvas), mTool(tool), mRubberBand(0)
+QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureTool tool )
+    : QgsMapToolEdit( canvas ), mTool( tool ), mRubberBand( 0 )
 {
   mCapturing = FALSE;
 
-  QPixmap mySelectQPixmap = QPixmap((const char **) capture_point_cursor);
-  mCursor = QCursor(mySelectQPixmap, 8, 8);
+  QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
+  mCursor = QCursor( mySelectQPixmap, 8, 8 );
 
-  mSnapper.setMapCanvas(canvas);
+  mSnapper.setMapCanvas( canvas );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -53,22 +53,22 @@ QgsMapToolCapture::~QgsMapToolCapture()
   mRubberBand = 0;
 }
 
-void QgsMapToolCapture::canvasMoveEvent(QMouseEvent * e)
+void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
 {
-  if (mRubberBand && mCapturing)
+  if ( mRubberBand && mCapturing )
   {
     QgsPoint mapPoint;
     QList<QgsSnappingResult> snapResults;
-    if(mSnapper.snapToBackgroundLayers(e->pos(), snapResults) == 0)
-      {
-	mapPoint = snapPointFromResults(snapResults, e->pos());
-	mRubberBand->movePoint(mapPoint);
-      }
+    if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
+    {
+      mapPoint = snapPointFromResults( snapResults, e->pos() );
+      mRubberBand->movePoint( mapPoint );
+    }
   }
 } // mouseMoveEvent
 
 
-void QgsMapToolCapture::canvasPressEvent(QMouseEvent * e)
+void QgsMapToolCapture::canvasPressEvent( QMouseEvent * e )
 {
   // nothing to be done
 }
@@ -85,75 +85,75 @@ void QgsMapToolCapture::deactivate()
   mCaptureList.clear();
 }
 
-int QgsMapToolCapture::addVertex(const QPoint& p)
+int QgsMapToolCapture::addVertex( const QPoint& p )
 {
-  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>(mCanvas->currentLayer());
-  
-  if (!vlayer)
-    {
-      return 1;
-    }
+  QgsVectorLayer *vlayer = dynamic_cast <QgsVectorLayer*>( mCanvas->currentLayer() );
 
-  if (!mRubberBand)
-    {
-      mRubberBand = createRubberBand(mTool == CapturePolygon);
-    }
+  if ( !vlayer )
+  {
+    return 1;
+  }
+
+  if ( !mRubberBand )
+  {
+    mRubberBand = createRubberBand( mTool == CapturePolygon );
+  }
 
   QgsPoint digitisedPoint;
   try
-    {
-      digitisedPoint = toLayerCoords(vlayer, p);
-    }
-  catch(QgsCsException &cse)
-    {
-		  Q_UNUSED(cse);
-      return 2;
-    }
+  {
+    digitisedPoint = toLayerCoords( vlayer, p );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    return 2;
+  }
 
   QgsPoint mapPoint;
   QgsPoint layerPoint;
 
   QList<QgsSnappingResult> snapResults;
-  if(mSnapper.snapToBackgroundLayers(p, snapResults) == 0)
+  if ( mSnapper.snapToBackgroundLayers( p, snapResults ) == 0 )
+  {
+    mapPoint = snapPointFromResults( snapResults, p );
+    try
     {
-      mapPoint = snapPointFromResults(snapResults, p);
-      try
-	{
-	  layerPoint = toLayerCoords(vlayer, mapPoint); //transform snapped point back to layer crs
-	}
-      catch(QgsCsException &cse)
-	{
-    Q_UNUSED (cse);
-	  return 2;
-	}
-      mRubberBand->addPoint(mapPoint);
-      mCaptureList.push_back(layerPoint); 
+      layerPoint = toLayerCoords( vlayer, mapPoint ); //transform snapped point back to layer crs
     }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      return 2;
+    }
+    mRubberBand->addPoint( mapPoint );
+    mCaptureList.push_back( layerPoint );
+  }
 
   return 0;
 }
 
 void QgsMapToolCapture::undo()
 {
-  if(mRubberBand)
+  if ( mRubberBand )
+  {
+    int rubberBandSize = mRubberBand->numberOfVertices();
+    int captureListSize = mCaptureList.size();
+
+    if ( rubberBandSize < 1 || captureListSize < 1 )
     {
-      int rubberBandSize = mRubberBand->numberOfVertices();
-      int captureListSize = mCaptureList.size();
-
-      if(rubberBandSize < 1 || captureListSize < 1)
-	{
-	  return;
-	}
-
-      mRubberBand->removeLastPoint();
-      mCaptureList.pop_back();
+      return;
     }
+
+    mRubberBand->removeLastPoint();
+    mCaptureList.pop_back();
+  }
 }
 
-void QgsMapToolCapture::keyPressEvent(QKeyEvent* e)
+void QgsMapToolCapture::keyPressEvent( QKeyEvent* e )
 {
-  if(e->key() == Qt::Key_Backspace)
-    {
-      undo();
-    }
+  if ( e->key() == Qt::Key_Backspace )
+  {
+    undo();
+  }
 }

@@ -27,29 +27,29 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 {
   public:
     //! constructor
-    QgsMapToolZoom(QgsMapCanvas* canvas, bool zoomOut);
-          
+    QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
+
     //! Overridden mouse move event
-    virtual void canvasMoveEvent(QMouseEvent * e);
-  
+    virtual void canvasMoveEvent( QMouseEvent * e );
+
     //! Overridden mouse press event
-    virtual void canvasPressEvent(QMouseEvent * e);
-  
+    virtual void canvasPressEvent( QMouseEvent * e );
+
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e);
+    virtual void canvasReleaseEvent( QMouseEvent * e );
 
     virtual bool isZoomTool() { return true; }
-    
+
   protected:
     //! stores actual zoom rect
     QRect mZoomRect;
-    
+
     //! indicates whether we're zooming in or out
     bool mZoomOut;
-    
+
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
-    
+
     //! TODO: to be changed to a canvas item
     QRubberBand* mRubberBand;
 };

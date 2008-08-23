@@ -17,79 +17,84 @@
 #include "qgsgpsdevice.h"
 
 
-QgsGPSDevice::QgsGPSDevice(const QString& wptDlCmd, const QString& wptUlCmd,
-			   const QString& rteDlCmd, const QString& rteUlCmd,
-			   const QString& trkDlCmd, const QString& trkUlCmd) {
-  if (!wptDlCmd.isEmpty())
-    mWptDlCmd = wptDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
-  if (!wptUlCmd.isEmpty())
-    mWptUlCmd = wptUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
-  if (!rteDlCmd.isEmpty())
-    mRteDlCmd = rteDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
-  if (!rteUlCmd.isEmpty())
-    mRteUlCmd = rteUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
-  if (!trkDlCmd.isEmpty())
-    mTrkDlCmd = trkDlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
-  if (!trkUlCmd.isEmpty())
-    mTrkUlCmd = trkUlCmd.split(QRegExp("\\s"), QString::SkipEmptyParts); 
+QgsGPSDevice::QgsGPSDevice( const QString& wptDlCmd, const QString& wptUlCmd,
+                            const QString& rteDlCmd, const QString& rteUlCmd,
+                            const QString& trkDlCmd, const QString& trkUlCmd )
+{
+  if ( !wptDlCmd.isEmpty() )
+    mWptDlCmd = wptDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+  if ( !wptUlCmd.isEmpty() )
+    mWptUlCmd = wptUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+  if ( !rteDlCmd.isEmpty() )
+    mRteDlCmd = rteDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+  if ( !rteUlCmd.isEmpty() )
+    mRteUlCmd = rteUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+  if ( !trkDlCmd.isEmpty() )
+    mTrkDlCmd = trkDlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
+  if ( !trkUlCmd.isEmpty() )
+    mTrkUlCmd = trkUlCmd.split( QRegExp( "\\s" ), QString::SkipEmptyParts );
 }
 
 
-QStringList QgsGPSDevice::importCommand(const QString& babel, 
-					const QString& type,
-					const QString& in, 
-					const QString& out) const {
+QStringList QgsGPSDevice::importCommand( const QString& babel,
+    const QString& type,
+    const QString& in,
+    const QString& out ) const
+{
   const QStringList* original;
-  if (type == "-w")
+  if ( type == "-w" )
     original = &mWptDlCmd;
-  else if (type == "-r")
+  else if ( type == "-r" )
     original = &mRteDlCmd;
-  else if (type == "-t")
+  else if ( type == "-t" )
     original = &mTrkDlCmd;
   else throw "Bad error!";
   QStringList copy;
   QStringList::const_iterator iter;
-  for (iter = original->begin(); iter != original->end(); ++iter) {
-    if (*iter == "%babel")
-      copy.append(babel);
-    else if (*iter == "%type")
-      copy.append(type);
-    else if (*iter == "%in")
-      copy.append(in);
-    else if (*iter == "%out")
-      copy.append(out);
+  for ( iter = original->begin(); iter != original->end(); ++iter )
+  {
+    if ( *iter == "%babel" )
+      copy.append( babel );
+    else if ( *iter == "%type" )
+      copy.append( type );
+    else if ( *iter == "%in" )
+      copy.append( in );
+    else if ( *iter == "%out" )
+      copy.append( out );
     else
-      copy.append(*iter);
+      copy.append( *iter );
   }
   return copy;
 }
 
 
-QStringList QgsGPSDevice::exportCommand(const QString& babel, 
-					const QString& type,
-					const QString& in, 
-					const QString& out) const {
+QStringList QgsGPSDevice::exportCommand( const QString& babel,
+    const QString& type,
+    const QString& in,
+    const QString& out ) const
+{
   const QStringList* original;
-  if (type == "-w")
+  if ( type == "-w" )
     original = &mWptUlCmd;
-  else if (type == "-r")
+  else if ( type == "-r" )
     original = &mRteUlCmd;
-  else if (type == "-t")
+  else if ( type == "-t" )
     original = &mTrkUlCmd;
   else throw "Bad error!";
   QStringList copy;
   QStringList::const_iterator iter;
-  for (iter = original->begin(); iter != original->end(); ++iter) {
-    if (*iter == "%babel")
-      copy.append(babel);
-    else if (*iter == "%type")
-      copy.append(type);
-    else if (*iter == "%in")
-      copy.append(in);
-    else if (*iter == "%out")
-      copy.append(out);
+  for ( iter = original->begin(); iter != original->end(); ++iter )
+  {
+    if ( *iter == "%babel" )
+      copy.append( babel );
+    else if ( *iter == "%type" )
+      copy.append( type );
+    else if ( *iter == "%in" )
+      copy.append( in );
+    else if ( *iter == "%out" )
+      copy.append( out );
     else
-      copy.append(*iter);
+      copy.append( *iter );
   }
   return copy;
 }

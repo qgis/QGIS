@@ -15,7 +15,7 @@
  ***************************************************************************/
 
 #ifndef QGSTICKSSCALEBARSTYLE_H
-#define QGSTICKSSCALEBARSTYLE_H 
+#define QGSTICKSSCALEBARSTYLE_H
 
 #include "qgsscalebarstyle.h"
 
@@ -25,26 +25,26 @@
 class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
 {
   public:
-  enum TickPosition
+    enum TickPosition
     {
       UP,
       DOWN,
       MIDDLE
     };
 
-  QgsTicksScaleBarStyle(const QgsComposerScaleBar* bar);
-  ~QgsTicksScaleBarStyle();
+    QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar );
+    ~QgsTicksScaleBarStyle();
 
-  QString name() const;
+    QString name() const;
 
-  void draw(QPainter* p, double xOffset = 0) const;
+    void draw( QPainter* p, double xOffset = 0 ) const;
 
-  void setTickPosition(TickPosition p){mTickPosition = p;}
+    void setTickPosition( TickPosition p ) {mTickPosition = p;}
 
- private:
-  QgsTicksScaleBarStyle(); //forbidden
+  private:
+    QgsTicksScaleBarStyle(); //forbidden
 
-  TickPosition mTickPosition;
+    TickPosition mTickPosition;
 };
 
-#endif 
+#endif

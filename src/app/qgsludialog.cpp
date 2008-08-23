@@ -19,10 +19,10 @@
 #include "qgsludialog.h"
 
 
-QgsLUDialog::QgsLUDialog(QWidget *parent, Qt::WFlags fl)
-: QDialog(parent, fl)
+QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-    setupUi(this);
+  setupUi( this );
 }
 
 QgsLUDialog::~QgsLUDialog()
@@ -32,20 +32,20 @@ QgsLUDialog::~QgsLUDialog()
 
 QString QgsLUDialog::lowerValue() const
 {
-    return mLowerEdit->text();
+  return mLowerEdit->text();
 }
 
 QString QgsLUDialog::upperValue() const
 {
-    return mUpperEdit->text();
+  return mUpperEdit->text();
 }
 
-void QgsLUDialog::setLowerValue(QString val)
+void QgsLUDialog::setLowerValue( QString val )
 {
-    mLowerEdit->setText(val);
+  mLowerEdit->setText( val );
 }
 
-void QgsLUDialog::setUpperValue(QString val)
+void QgsLUDialog::setUpperValue( QString val )
 {
-    mUpperEdit->setText(val);
+  mUpperEdit->setText( val );
 }

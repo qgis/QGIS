@@ -24,60 +24,60 @@
 
 namespace Tools
 {
-	namespace Geometry
-	{
-		class Point : public IObject, public virtual IShape
-		{
-		public:
-			Point();
-			Point(const double* pCoords, unsigned long dimension);
-			Point(const Point& p);
-			virtual ~Point();
+  namespace Geometry
+  {
+    class Point : public IObject, public virtual IShape
+    {
+      public:
+        Point();
+        Point( const double* pCoords, unsigned long dimension );
+        Point( const Point& p );
+        virtual ~Point();
 
-			virtual Point& operator=(const Point& p);
-			virtual bool operator==(const Point& p) const;
+        virtual Point& operator=( const Point& p );
+        virtual bool operator==( const Point& p ) const;
 
-			//
-			// IObject interface
-			//
-			virtual Point* clone();
+        //
+        // IObject interface
+        //
+        virtual Point* clone();
 
-			//
-			// ISerializable interface
-			//
-			virtual unsigned long getByteArraySize();
-			virtual void loadFromByteArray(const byte* data);
-			virtual void storeToByteArray(byte** data, unsigned long& length);
+        //
+        // ISerializable interface
+        //
+        virtual unsigned long getByteArraySize();
+        virtual void loadFromByteArray( const byte* data );
+        virtual void storeToByteArray( byte** data, unsigned long& length );
 
-			//
-			// IShape interface
-			//
-			virtual bool intersectsShape(const IShape& in) const;
-			virtual bool containsShape(const IShape& in) const;
-			virtual bool touchesShape(const IShape& in) const;
-			virtual void getCenter(Point& out) const;
-			virtual unsigned long getDimension() const;
-			virtual void getMBR(Region& out) const;
-			virtual double getArea() const;
-			virtual double getMinimumDistance(const IShape& in) const;
+        //
+        // IShape interface
+        //
+        virtual bool intersectsShape( const IShape& in ) const;
+        virtual bool containsShape( const IShape& in ) const;
+        virtual bool touchesShape( const IShape& in ) const;
+        virtual void getCenter( Point& out ) const;
+        virtual unsigned long getDimension() const;
+        virtual void getMBR( Region& out ) const;
+        virtual double getArea() const;
+        virtual double getMinimumDistance( const IShape& in ) const;
 
-			virtual double getMinimumDistance(const Point& p) const;
+        virtual double getMinimumDistance( const Point& p ) const;
 
-			virtual double getCoordinate(unsigned long index) const;
+        virtual double getCoordinate( unsigned long index ) const;
 
-			virtual void makeInfinite(unsigned long dimension);
-			virtual void makeDimension(unsigned long dimension);
+        virtual void makeInfinite( unsigned long dimension );
+        virtual void makeDimension( unsigned long dimension );
 
-		public:
-			unsigned long m_dimension;
-			double* m_pCoords;
+      public:
+        unsigned long m_dimension;
+        double* m_pCoords;
 
-			friend class Region;
-			friend std::ostream& operator<<(std::ostream& os, const Point& pt);
-		}; // Point
+        friend class Region;
+        friend std::ostream& operator<<( std::ostream& os, const Point& pt );
+    }; // Point
 
-		std::ostream& operator<<(std::ostream& os, const Point& pt);
-	}
+    std::ostream& operator<<( std::ostream& os, const Point& pt );
+  }
 }
 
 #endif /*__tools_geometry_point_h*/

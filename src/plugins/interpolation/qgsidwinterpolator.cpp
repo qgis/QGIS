@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsidwinterpolator.cpp    
+                              qgsidwinterpolator.cpp
                               ----------------------
   begin                : Marco 10, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -19,27 +19,27 @@
 #include <cmath>
 #include <limits>
 
-QgsIDWInterpolator::QgsIDWInterpolator(const QList<QgsVectorLayer*>& vlayers): QgsInterpolator(vlayers), mDistanceCoefficient(2.0)
+QgsIDWInterpolator::QgsIDWInterpolator( const QList<QgsVectorLayer*>& vlayers ): QgsInterpolator( vlayers ), mDistanceCoefficient( 2.0 )
 {
 
 }
 
-QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator(QList<QgsVectorLayer*>()), mDistanceCoefficient(2.0)
+QgsIDWInterpolator::QgsIDWInterpolator(): QgsInterpolator( QList<QgsVectorLayer*>() ), mDistanceCoefficient( 2.0 )
 {
 
 }
- 
+
 QgsIDWInterpolator::~QgsIDWInterpolator()
 {
 
 }
- 
-int QgsIDWInterpolator::interpolatePoint(double x, double y, double& result)
+
+int QgsIDWInterpolator::interpolatePoint( double x, double y, double& result )
 {
-  if(!mDataIsCached)
-    {
-      cacheBaseData();
-    }
+  if ( !mDataIsCached )
+  {
+    cacheBaseData();
+  }
 
   double currentWeight;
   double distance;
@@ -48,19 +48,19 @@ int QgsIDWInterpolator::interpolatePoint(double x, double y, double& result)
   double sumDenominator = 0;
 
   QVector<vertexData>::iterator vertex_it = mCachedBaseData.begin();
-  
-  for(; vertex_it != mCachedBaseData.end(); ++vertex_it)
+
+  for ( ; vertex_it != mCachedBaseData.end(); ++vertex_it )
+  {
+    distance = sqrt(( vertex_it->x - x ) * ( vertex_it->x - x ) + ( vertex_it->y - y ) * ( vertex_it->y - y ) );
+    if (( distance - 0 ) < std::numeric_limits<double>::min() )
     {
-      distance = sqrt((vertex_it->x - x) * (vertex_it->x - x) + (vertex_it->y - y) * (vertex_it->y - y));
-      if((distance - 0) < std::numeric_limits<double>::min())
-	{
-	  result = vertex_it->z;
-	  return 0;
-	}
-      currentWeight = 1 / (pow(distance, mDistanceCoefficient));
-      sumCounter += (currentWeight * vertex_it->z);
-      sumDenominator += currentWeight;
+      result = vertex_it->z;
+      return 0;
     }
+    currentWeight = 1 / ( pow( distance, mDistanceCoefficient ) );
+    sumCounter += ( currentWeight * vertex_it->z );
+    sumDenominator += currentWeight;
+  }
 
   result = sumCounter / sumDenominator;
   return 0;

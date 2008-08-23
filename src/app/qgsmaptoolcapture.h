@@ -30,7 +30,7 @@ class QgsRubberBand;
 class QgsMapToolCapture : public QgsMapToolEdit
 {
   public:
-  
+
     enum CaptureTool
     {
       CapturePoint,
@@ -39,43 +39,43 @@ class QgsMapToolCapture : public QgsMapToolEdit
     };
 
     //! constructor
-    QgsMapToolCapture(QgsMapCanvas* canvas, enum CaptureTool tool);
+    QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureTool tool );
 
     //! destructor
     virtual ~QgsMapToolCapture();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent(QMouseEvent * e);
-  
-    //! Overridden mouse press event
-    virtual void canvasPressEvent(QMouseEvent * e);
-  
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent(QMouseEvent * e)=0;   
+    virtual void canvasMoveEvent( QMouseEvent * e );
 
-    virtual void keyPressEvent(QKeyEvent* e);
-    
+    //! Overridden mouse press event
+    virtual void canvasPressEvent( QMouseEvent * e );
+
+    //! Overridden mouse release event
+    virtual void canvasReleaseEvent( QMouseEvent * e ) = 0;
+
+    virtual void keyPressEvent( QKeyEvent* e );
+
     //! Resize rubber band
     virtual void renderComplete();
-    
+
 
     virtual void deactivate();
 
     /*
     // FIXME: is this still actual or something old that's not used anymore?
-  signals:
+    signals:
     //! emits mouse position when the canvas is clicked
     void xyClickCoordinates(QgsPoint &p);
     */
-  
+
   protected:
-    
+
     /** which capturing tool is being used */
     enum CaptureTool mTool;
-    
+
     /** Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;
-    
+
     /** rubber band for polylines and polygons */
     QgsRubberBand* mRubberBand;
 
@@ -84,7 +84,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
 
     /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex(const QPoint& p);
+    int addVertex( const QPoint& p );
 
     /**Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();

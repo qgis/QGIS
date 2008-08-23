@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgspgquerybuilder.h - Subclassed PostgreSQL query builder 
+    qgspgquerybuilder.h - Subclassed PostgreSQL query builder
      --------------------------------------
     Date                 : 2004-11-19
     Copyright            : (C) 2004 by Gary E.Sherman
@@ -38,42 +38,43 @@ extern "C"
  * will be returned.
  *
  */
-class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase { 
-   Q_OBJECT 
+class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
+{
+    Q_OBJECT
   public:
-  //! Default constructor - not very useful
-  QgsPgQueryBuilder(QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
+    //! Default constructor - not very useful
+    QgsPgQueryBuilder( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
-  /*! Constructor which also takes the table name and PG connection pointer.
-  * This constructor is used when adding layers to the map from a PG database since
-  * the query builder can use the same connection as the layer selection dialog.
-  * @param tableName Name of the table being queried
-  * @param con PostgreSQL connection from the Add PostGIS Layer dialog
-  * @param parent Parent widget
-  * @param name Name of the widget
-  */
-  QgsPgQueryBuilder(QString tableName, PGconn *con, QWidget *parent = 0,
-      Qt::WFlags fl = QgisGui::ModalDialogFlags);
-  
-  /*! Constructor that uses a data source URI to create its own connection to the 
-  * PG database. This constructor should be used when a layer's own PG connection
-  * cannot. Using the same connection as that of the layer typically causes problems
-  * and crashes. This constructor is used when the query builder is called from the
-  * vector layer properties dialog
-  * @param uri Reference to a fully populates QgsDataSourceURI structure
-   * @param parent Parent widget
-   * @param name Name of the widget
-   */
-  QgsPgQueryBuilder(QgsDataSourceURI *uri, QWidget *parent = 0,
-      Qt::WFlags fl = QgisGui::ModalDialogFlags); 
-  
-  ~QgsPgQueryBuilder(); 
- 
- /*!
-  * Set the connection used the by query builder
-  * @param con Active PostgreSQL connection
-  */ 
-  void setConnection(PGconn *con); 
+    /*! Constructor which also takes the table name and PG connection pointer.
+    * This constructor is used when adding layers to the map from a PG database since
+    * the query builder can use the same connection as the layer selection dialog.
+    * @param tableName Name of the table being queried
+    * @param con PostgreSQL connection from the Add PostGIS Layer dialog
+    * @param parent Parent widget
+    * @param name Name of the widget
+    */
+    QgsPgQueryBuilder( QString tableName, PGconn *con, QWidget *parent = 0,
+                       Qt::WFlags fl = QgisGui::ModalDialogFlags );
+
+    /*! Constructor that uses a data source URI to create its own connection to the
+    * PG database. This constructor should be used when a layer's own PG connection
+    * cannot. Using the same connection as that of the layer typically causes problems
+    * and crashes. This constructor is used when the query builder is called from the
+    * vector layer properties dialog
+    * @param uri Reference to a fully populates QgsDataSourceURI structure
+     * @param parent Parent widget
+     * @param name Name of the widget
+     */
+    QgsPgQueryBuilder( QgsDataSourceURI *uri, QWidget *parent = 0,
+                       Qt::WFlags fl = QgisGui::ModalDialogFlags );
+
+    ~QgsPgQueryBuilder();
+
+    /*!
+     * Set the connection used the by query builder
+     * @param con Active PostgreSQL connection
+     */
+    void setConnection( PGconn *con );
 
   public slots:
     void on_btnEqual_clicked();
@@ -86,7 +87,7 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
     void on_btnLike_clicked();
     void on_btnILike_clicked();
     QString sql();
-    void setSql( QString sqlStatement);
+    void setSql( QString sqlStatement );
     void on_lstFields_clicked( const QModelIndex &index );
     void on_lstFields_doubleClicked( const QModelIndex &index );
     void on_lstValues_doubleClicked( const QModelIndex &index );
@@ -97,64 +98,64 @@ class QgsPgQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase {
     void on_btnNot_clicked();
     void on_btnOr_clicked();
     void on_btnClear_clicked();
-  /*! Test the constructed sql statement to see if the database likes it.
-   * The number of rows that would be returned is displayed in a message box.
-   * The test uses a "select count(*) from ..." query to test the SQL 
-   * statement.
-   * @param showResults If true, the results are displayed in a QMessageBox
-   */
+    /*! Test the constructed sql statement to see if the database likes it.
+     * The number of rows that would be returned is displayed in a message box.
+     * The test uses a "select count(*) from ..." query to test the SQL
+     * statement.
+     * @param showResults If true, the results are displayed in a QMessageBox
+     */
     void on_btnTest_clicked();
-  /*! 
-   * Get all distinct values for the field. Values are inserted
-   * into the value list box
-   */
+    /*!
+     * Get all distinct values for the field. Values are inserted
+     * into the value list box
+     */
     void on_btnGetAllValues_clicked();
-  /*! 
-   * Get sample distinct values for the selected field. The sample size is
-   * limited to an arbitrary value (currently set to 25). The values
-   * are inserted into the values list box.
-   */
+    /*!
+     * Get sample distinct values for the selected field. The sample size is
+     * limited to an arbitrary value (currently set to 25). The values
+     * are inserted into the values list box.
+     */
     void on_btnSampleValues_clicked();
-    void setDatasourceDescription(QString uri);
+    void setDatasourceDescription( QString uri );
   private:
-  /*! 
-   * Populate the field list for the selected table
-   */ 
-  void populateFields();
-  /*! 
-   * Setup models for listviews
-   */ 
-  void setupGuiViews();
-  void setupLstFieldsModel();
-  void fillValues(QString theSQL);
+    /*!
+     * Populate the field list for the selected table
+     */
+    void populateFields();
+    /*!
+     * Setup models for listviews
+     */
+    void setupGuiViews();
+    void setupLstFieldsModel();
+    void fillValues( QString theSQL );
 
-  /*! Get the number of records that would be returned by the current SQL
-   * @return Number of records or -1 if an error was encountered
-   */
-  long countRecords(QString sql);
-  
-  // private members
-  //! Datasource URI
-  QgsDataSourceURI *mUri;
-  //! PostgreSQL connection object
-  PGconn *mPgConnection;
-  //! Table name
-  QString mTableName;
-  //! Vector of QgsField objects
-  std::vector<QgsField> mFields;
-  //! Map that holds field information, keyed by field name
-  std::map<QString, QgsField> mFieldMap;
-  //! Latest PG error message
-  QString mPgErrorMessage;
-  //! Flag to indicate if the class owns the connection to the pg database
-  bool mOwnConnection;
-  //! Model for fields ListView
-  QStandardItemModel *mModelFields;
-  //! Model for values ListView
-  QStandardItemModel *mModelValues;
-  //! Actual field char?
-  bool mActualFieldIsChar;
-  //! Previous field row to delete model
-  int mPreviousFieldRow;
+    /*! Get the number of records that would be returned by the current SQL
+     * @return Number of records or -1 if an error was encountered
+     */
+    long countRecords( QString sql );
+
+    // private members
+    //! Datasource URI
+    QgsDataSourceURI *mUri;
+    //! PostgreSQL connection object
+    PGconn *mPgConnection;
+    //! Table name
+    QString mTableName;
+    //! Vector of QgsField objects
+    std::vector<QgsField> mFields;
+    //! Map that holds field information, keyed by field name
+    std::map<QString, QgsField> mFieldMap;
+    //! Latest PG error message
+    QString mPgErrorMessage;
+    //! Flag to indicate if the class owns the connection to the pg database
+    bool mOwnConnection;
+    //! Model for fields ListView
+    QStandardItemModel *mModelFields;
+    //! Model for values ListView
+    QStandardItemModel *mModelValues;
+    //! Actual field char?
+    bool mActualFieldIsChar;
+    //! Previous field row to delete model
+    int mPreviousFieldRow;
 };
 #endif //QGSPGQUERYBUILDER_H

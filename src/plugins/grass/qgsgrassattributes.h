@@ -32,14 +32,14 @@ class QgsGrassAttributesKeyPress : public QObject
 {
     Q_OBJECT
 
-public:
-    QgsGrassAttributesKeyPress ( Q3Table *tab );
-    ~QgsGrassAttributesKeyPress ();
+  public:
+    QgsGrassAttributesKeyPress( Q3Table *tab );
+    ~QgsGrassAttributesKeyPress();
 
-protected:
+  protected:
     bool eventFilter( QObject *o, QEvent *e );
 
-private:
+  private:
     Q3Table *mTable;
 };
 
@@ -52,38 +52,38 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
 {
     Q_OBJECT
 
-public:
+  public:
     //! Constructor
-    QgsGrassAttributes ( QgsGrassEdit *edit, QgsGrassProvider *provider, int line, 
-                   QWidget * parent = 0, const char * name = 0, 
-                   Qt::WFlags f = Qt::Window );
-       //Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
+    QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *provider, int line,
+                        QWidget * parent = 0, const char * name = 0,
+                        Qt::WFlags f = Qt::Window );
+    //Qt::WFlags f = Qt::WStyle_Customize | Qt::WStyle_DialogBorder | Qt::WStyle_Title | Qt::WType_Dialog | Qt::WStyle_Tool);
 
     //! Destructor
     ~QgsGrassAttributes();
 
     //! Add tab for one field:cat pair, returns tab id
-    int addTab ( const QString & label );
+    int addTab( const QString & label );
 
     //! Set field
-    void setField ( int tab, int field );
+    void setField( int tab, int field );
 
     //! Set Category
-    void setCat ( int tab, const QString & name, int cat );
+    void setCat( int tab, const QString & name, int cat );
 
     //! Add attribute (but no category)
-    void addAttribute ( int tab, const QString &name, const QString &value, const QString &type );
-    
+    void addAttribute( int tab, const QString &name, const QString &value, const QString &type );
+
     //! Add text in one row usually warning
-    void addTextRow ( int tab, const QString &text );
-    
+    void addTextRow( int tab, const QString &text );
+
     //! Set Line (must be used if the line is rewritten)
-    void setLine ( int line );
+    void setLine( int line );
 
     //! Reset buttons
     void resetButtons();
 
-public slots:
+  public slots:
     //! Update DB for current tab
     void on_updateButton_clicked() { updateAttributes(); }
     void updateAttributes();
@@ -97,25 +97,25 @@ public slots:
     void deleteCat();
 
     //! Called if tab is changed
-    void tabChanged ( QWidget *widget );
+    void tabChanged( QWidget *widget );
 
-    //! Column size changed 
-    void columnSizeChanged ( int section, int oldSize, int newSize );
+    //! Column size changed
+    void columnSizeChanged( int section, int oldSize, int newSize );
 
     //! Remove all tabs
     void clear();
 
-private:
-    //! Pointer to vector provider 
+  private:
+    //! Pointer to vector provider
     QgsGrassProvider *mProvider;
 
     QgsGrassEdit *mEdit;
 
     int mLine;
 
-    void restorePosition(void);
-    
-    void saveWindowLocation(void);
+    void restorePosition( void );
+
+    void saveWindowLocation( void );
 };
 
 #endif // QGSGRASSATTRIBUTES_H

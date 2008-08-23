@@ -19,42 +19,42 @@
 */
 class QgsNorthArrowPluginGui : public QDialog, private Ui::QgsNorthArrowPluginGuiBase
 {
-Q_OBJECT
-public:
+    Q_OBJECT
+  public:
     QgsNorthArrowPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsNorthArrowPluginGui();
 
-private:
-    void rotatePixmap(int theRotationInt);
+  private:
+    void rotatePixmap( int theRotationInt );
     //    void paintEvent( QPaintEvent * );//overloads qwidget
-    void resizeEvent(QResizeEvent *); //overloads qwidget
+    void resizeEvent( QResizeEvent * ); //overloads qwidget
 
     static const int context_id = 0;
 
-signals:
-   //void drawRasterLayer(QString);
-   //void drawVectorrLayer(QString,QString,QString);
-   void rotationChanged(int);
-   void changePlacement(int);
-   // enable NorthArrow
-   void enableNorthArrow(bool);
-   void enableAutomatic(bool);
-   void needToRefresh();
+  signals:
+    //void drawRasterLayer(QString);
+    //void drawVectorrLayer(QString,QString,QString);
+    void rotationChanged( int );
+    void changePlacement( int );
+    // enable NorthArrow
+    void enableNorthArrow( bool );
+    void enableAutomatic( bool );
+    void needToRefresh();
 
-public slots:
-    void setRotation(int);
-    void setPlacementLabels(QStringList&);
-    void setPlacement(int);
-    void setEnabled(bool);
-    void setAutomatic(bool);
+  public slots:
+    void setRotation( int );
+    void setPlacementLabels( QStringList& );
+    void setPlacement( int );
+    void setEnabled( bool );
+    void setAutomatic( bool );
     void setAutomaticDisabled();
 
-private slots:
+  private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
-    void on_spinAngle_valueChanged( int theInt);
-    void on_sliderRotation_valueChanged( int theInt);
+    void on_spinAngle_valueChanged( int theInt );
+    void on_sliderRotation_valueChanged( int theInt );
 };
 
 #endif

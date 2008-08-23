@@ -24,36 +24,36 @@
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
- public:
-  QgsComposerLabel( QgsComposition *composition);
-  ~QgsComposerLabel();
+  public:
+    QgsComposerLabel( QgsComposition *composition );
+    ~QgsComposerLabel();
 
-  /** \brief Reimplementation of QCanvasItem::paint*/
-  void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
+    /** \brief Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  /**resizes the widget such that the text fits to the item. Keeps top left point*/
-  void adjustSizeToText();
+    /**resizes the widget such that the text fits to the item. Keeps top left point*/
+    void adjustSizeToText();
 
-  QString text() {return mText;}
-  void setText(const QString& text);
-  QFont font() const;
-  void setFont(const QFont& f);
-  double margin(){return mMargin;}
-  void setMargin(double m){mMargin = m;}
+    QString text() {return mText;}
+    void setText( const QString& text );
+    QFont font() const;
+    void setFont( const QFont& f );
+    double margin() {return mMargin;}
+    void setMargin( double m ) {mMargin = m;}
 
-  /** stores state in Dom node
-     * @param node is Dom node corresponding to 'Composer' tag
-     * @param temp write template file
-     */
-  bool writeXML(QDomElement& elem, QDomDocument & doc);
+    /** stores state in Dom node
+       * @param node is Dom node corresponding to 'Composer' tag
+       * @param temp write template file
+       */
+    bool writeXML( QDomElement& elem, QDomDocument & doc );
 
-  /** sets state from Dom document
-     * @param node is Dom node corresponding to 'ComposerLabel' tag
-     */
-  bool readXML(const QDomElement& itemElem, const QDomDocument& doc);
- 
- private:
-  // Text 
+    /** sets state from Dom document
+       * @param node is Dom node corresponding to 'ComposerLabel' tag
+       */
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+  private:
+    // Text
     QString mText;
 
     // Font
@@ -63,6 +63,6 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double mMargin;
 };
 
-#endif 
+#endif
 
 

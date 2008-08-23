@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <iostream>
 
 #include <QApplication>
 #include <QString>
@@ -24,430 +23,433 @@
 #include <QBrush>
 
 #include "qgslabelattributes.h"
+#include "qgslogger.h"
 
 QgsLabelAttributes::QgsLabelAttributes( bool def )
     : mTextIsSet( false ),
-      mFamilyIsSet( false ),
-      mBoldIsSet( false ),
-      mItalicIsSet( false ),
-      mUnderlineIsSet( false ),
-      mSizeType( 0 ),
-      mSize( 0.0 ),
-      mSizeIsSet( false ),
-      mColorIsSet( false ),
-      mOffsetType( 0 ),
-      mXOffset( 0 ),
-      mYOffset( 0 ),
-      mOffsetIsSet( false ),
-      mAngle( 0.0 ),
-      mAngleIsSet( false ),
-      mAlignment( 0 ),
-      mAlignmentIsSet( false ),
-      mBufferEnabledFlag( false ),
-      mBufferSizeType( 0 ),
-      mBufferSize( 0.0 ),
-      mBufferSizeIsSet( false ),
-      mBufferColorIsSet( false ),
-      mBufferStyleIsSet( false ),
-      mBorderColorIsSet( false ),
-      mBorderWidthIsSet( false ),
-      mBorderStyleIsSet( false ),
-      mMultilineEnabledFlag( false )
+    mFamilyIsSet( false ),
+    mBoldIsSet( false ),
+    mItalicIsSet( false ),
+    mUnderlineIsSet( false ),
+    mSizeType( 0 ),
+    mSize( 0.0 ),
+    mSizeIsSet( false ),
+    mColorIsSet( false ),
+    mOffsetType( 0 ),
+    mXOffset( 0 ),
+    mYOffset( 0 ),
+    mOffsetIsSet( false ),
+    mAngle( 0.0 ),
+    mAngleIsSet( false ),
+    mAlignment( 0 ),
+    mAlignmentIsSet( false ),
+    mBufferEnabledFlag( false ),
+    mBufferSizeType( 0 ),
+    mBufferSize( 0.0 ),
+    mBufferSizeIsSet( false ),
+    mBufferColorIsSet( false ),
+    mBufferStyleIsSet( false ),
+    mBorderColorIsSet( false ),
+    mBorderWidthIsSet( false ),
+    mBorderStyleIsSet( false ),
+    mMultilineEnabledFlag( false )
 {
 
-    if ( def ) { // set defaults
-	setText (QObject::tr("Label"));
+  if ( def )   // set defaults
+  {
+    setText( QObject::tr( "Label" ) );
 
-	mFont = QApplication::font();
-	mFamilyIsSet = true;
-	mBoldIsSet = true;
-	mItalicIsSet = true;
-	mUnderlineIsSet = true;
+    mFont = QApplication::font();
+    mFamilyIsSet = true;
+    mBoldIsSet = true;
+    mItalicIsSet = true;
+    mUnderlineIsSet = true;
 
-	setSize(12.0, PointUnits);
-	
-	setOffset ( 0, 0, PointUnits );
-	setAngle ( 0 );
-	
-	setAlignment ( Qt::AlignCenter );
-	setColor ( QColor(0,0,0) );
+    setSize( 12.0, PointUnits );
 
-	setBufferSize ( 1, PointUnits );
-	setBufferColor ( QColor(255,255,255) );
-	setBufferStyle ( Qt::NoBrush );
-	
-	setBorderWidth ( 0 );
-	setBorderColor ( QColor(0,0,0) );
-	setBorderStyle ( Qt::NoPen );
-    }
+    setOffset( 0, 0, PointUnits );
+    setAngle( 0 );
+
+    setAlignment( Qt::AlignCenter );
+    setColor( QColor( 0, 0, 0 ) );
+
+    setBufferSize( 1, PointUnits );
+    setBufferColor( QColor( 255, 255, 255 ) );
+    setBufferStyle( Qt::NoBrush );
+
+    setBorderWidth( 0 );
+    setBorderColor( QColor( 0, 0, 0 ) );
+    setBorderStyle( Qt::NoPen );
+  }
 }
 
 QgsLabelAttributes::~QgsLabelAttributes()
 {
 }
-  /* Text */
-void QgsLabelAttributes::setText ( const QString & text )
+/* Text */
+void QgsLabelAttributes::setText( const QString & text )
 {
-    mText = text;
-    mTextIsSet = true;
+  mText = text;
+  mTextIsSet = true;
 }
 
-bool QgsLabelAttributes::textIsSet ( void ) const
+bool QgsLabelAttributes::textIsSet( void ) const
 {
-    return mTextIsSet;
+  return mTextIsSet;
 }
 
-const QString QgsLabelAttributes::text ( void ) const
+const QString QgsLabelAttributes::text( void ) const
 {
-    return mText;
-}
-
-
-  /* Offset */
-void QgsLabelAttributes::setOffset ( double x, double y, int type )
-{
-    mOffsetType = type;
-    mXOffset = x;
-    mYOffset = y;
-    mOffsetIsSet = true;
-}
-
-bool QgsLabelAttributes::offsetIsSet ( void ) const
-{
-    return mOffsetIsSet;
-}
-
-int QgsLabelAttributes::offsetType ( void ) const
-{
-    return mOffsetType;
-}
-
-double QgsLabelAttributes::xOffset ( void ) const
-{
-    return mXOffset;
-}
-
-double QgsLabelAttributes::yOffset ( void ) const
-{
-    return mYOffset;
-}
-
-  /* Angle */
-void QgsLabelAttributes::setAngle ( double angle )
-{
-    mAngle = angle;
-    mAngleIsSet = true;
-}
-
-bool QgsLabelAttributes::angleIsSet ( void ) const
-{
-    return mAngleIsSet;
-}
-
-double QgsLabelAttributes::angle ( void ) const
-{
-    return mAngle;
-}
-
-  /* Alignment */
-void QgsLabelAttributes::setAlignment ( int alignment )
-{
-    mAlignment = alignment;
-    mAlignmentIsSet = true;
-}
-
-bool QgsLabelAttributes::alignmentIsSet ( void ) const
-{
-    return mAlignmentIsSet;
-}
-
-int QgsLabelAttributes::alignment ( void ) const
-{
-    return mAlignment;
-}
-
-  /* Font */
-void QgsLabelAttributes::setFamily ( const QString & family )
-{
-    mFont.setFamily ( family );
-    mFamilyIsSet = true;
-}
-
-bool QgsLabelAttributes::familyIsSet ( void ) const
-{
-    return mFamilyIsSet;
-}
-
-const QString QgsLabelAttributes::family ( void ) const
-{
-    return mFont.family();
+  return mText;
 }
 
 
-void QgsLabelAttributes::setBold ( bool enable )
+/* Offset */
+void QgsLabelAttributes::setOffset( double x, double y, int type )
 {
-    mFont.setBold ( enable );
-    mBoldIsSet = true;
+  mOffsetType = type;
+  mXOffset = x;
+  mYOffset = y;
+  mOffsetIsSet = true;
 }
 
-bool QgsLabelAttributes::boldIsSet ( void ) const
+bool QgsLabelAttributes::offsetIsSet( void ) const
 {
-    return mBoldIsSet;
+  return mOffsetIsSet;
 }
 
-bool QgsLabelAttributes::bold ( void ) const
+int QgsLabelAttributes::offsetType( void ) const
 {
-    return mFont.bold();
+  return mOffsetType;
+}
+
+double QgsLabelAttributes::xOffset( void ) const
+{
+  return mXOffset;
+}
+
+double QgsLabelAttributes::yOffset( void ) const
+{
+  return mYOffset;
+}
+
+/* Angle */
+void QgsLabelAttributes::setAngle( double angle )
+{
+  mAngle = angle;
+  mAngleIsSet = true;
+}
+
+bool QgsLabelAttributes::angleIsSet( void ) const
+{
+  return mAngleIsSet;
+}
+
+double QgsLabelAttributes::angle( void ) const
+{
+  return mAngle;
+}
+
+/* Alignment */
+void QgsLabelAttributes::setAlignment( int alignment )
+{
+  mAlignment = alignment;
+  mAlignmentIsSet = true;
+}
+
+bool QgsLabelAttributes::alignmentIsSet( void ) const
+{
+  return mAlignmentIsSet;
+}
+
+int QgsLabelAttributes::alignment( void ) const
+{
+  return mAlignment;
+}
+
+/* Font */
+void QgsLabelAttributes::setFamily( const QString & family )
+{
+  mFont.setFamily( family );
+  mFamilyIsSet = true;
+}
+
+bool QgsLabelAttributes::familyIsSet( void ) const
+{
+  return mFamilyIsSet;
+}
+
+const QString QgsLabelAttributes::family( void ) const
+{
+  return mFont.family();
 }
 
 
-void QgsLabelAttributes::setItalic ( bool enable )
+void QgsLabelAttributes::setBold( bool enable )
 {
-    mFont.setItalic ( enable );
-    mItalicIsSet = true;
+  mFont.setBold( enable );
+  mBoldIsSet = true;
 }
 
-bool QgsLabelAttributes::italicIsSet ( void ) const
+bool QgsLabelAttributes::boldIsSet( void ) const
 {
-    return mItalicIsSet;
+  return mBoldIsSet;
 }
 
-bool QgsLabelAttributes::italic ( void ) const
+bool QgsLabelAttributes::bold( void ) const
 {
-    return mFont.italic();
-}
-
-
-void QgsLabelAttributes::setUnderline ( bool enable )
-{
-    mFont.setUnderline ( enable );
-    mUnderlineIsSet = true;
-}
-
-bool QgsLabelAttributes::underlineIsSet ( void ) const
-{
-    return mUnderlineIsSet;
-}
-
-bool QgsLabelAttributes::underline ( void ) const
-{
-    return mFont.underline();
+  return mFont.bold();
 }
 
 
-void QgsLabelAttributes::setSize ( double size, int type )
+void QgsLabelAttributes::setItalic( bool enable )
 {
-    mSizeType = type;
-    mSize = size;
-    mSizeIsSet = true;
+  mFont.setItalic( enable );
+  mItalicIsSet = true;
 }
 
-bool QgsLabelAttributes::sizeIsSet ( void ) const
+bool QgsLabelAttributes::italicIsSet( void ) const
 {
-    return mSizeIsSet;
+  return mItalicIsSet;
 }
 
-int QgsLabelAttributes::sizeType ( void ) const
+bool QgsLabelAttributes::italic( void ) const
 {
-    return mSizeType;
-}
-
-double QgsLabelAttributes::size ( void ) const
-{
-    return mSize;
+  return mFont.italic();
 }
 
 
-void QgsLabelAttributes::setColor ( const QColor &color )
+void QgsLabelAttributes::setUnderline( bool enable )
 {
-    mColor = color;
-    mColorIsSet = true;
+  mFont.setUnderline( enable );
+  mUnderlineIsSet = true;
 }
 
-bool QgsLabelAttributes::colorIsSet ( void ) const
+bool QgsLabelAttributes::underlineIsSet( void ) const
 {
-    return mColorIsSet;
+  return mUnderlineIsSet;
 }
 
-const QColor & QgsLabelAttributes::color ( void ) const
+bool QgsLabelAttributes::underline( void ) const
 {
-    return mColor;
+  return mFont.underline();
 }
 
-  /* Buffer */
+
+void QgsLabelAttributes::setSize( double size, int type )
+{
+  mSizeType = type;
+  mSize = size;
+  mSizeIsSet = true;
+}
+
+bool QgsLabelAttributes::sizeIsSet( void ) const
+{
+  return mSizeIsSet;
+}
+
+int QgsLabelAttributes::sizeType( void ) const
+{
+  return mSizeType;
+}
+
+double QgsLabelAttributes::size( void ) const
+{
+  return mSize;
+}
+
+
+void QgsLabelAttributes::setColor( const QColor &color )
+{
+  mColor = color;
+  mColorIsSet = true;
+}
+
+bool QgsLabelAttributes::colorIsSet( void ) const
+{
+  return mColorIsSet;
+}
+
+const QColor & QgsLabelAttributes::color( void ) const
+{
+  return mColor;
+}
+
+/* Buffer */
 bool QgsLabelAttributes::bufferEnabled() const
 {
   return mBufferEnabledFlag;
 }
-void QgsLabelAttributes::setBufferEnabled(bool useBufferFlag)
+void QgsLabelAttributes::setBufferEnabled( bool useBufferFlag )
 {
- mBufferEnabledFlag=useBufferFlag;   
+  mBufferEnabledFlag = useBufferFlag;
 }
-void QgsLabelAttributes::setBufferSize ( double size, int type )
+void QgsLabelAttributes::setBufferSize( double size, int type )
 {
-    mBufferSizeType = type;
-    mBufferSize = size;
-    mBufferSizeIsSet = true;
-}
-
-bool QgsLabelAttributes::bufferSizeIsSet ( void ) const
-{
-    return mBufferSizeIsSet;
+  mBufferSizeType = type;
+  mBufferSize = size;
+  mBufferSizeIsSet = true;
 }
 
-int QgsLabelAttributes::bufferSizeType ( void ) const
+bool QgsLabelAttributes::bufferSizeIsSet( void ) const
 {
-    return mBufferSizeType;
+  return mBufferSizeIsSet;
 }
 
-double QgsLabelAttributes::bufferSize ( void ) const
+int QgsLabelAttributes::bufferSizeType( void ) const
 {
-    return mBufferSize;
+  return mBufferSizeType;
 }
 
-
-void QgsLabelAttributes::setBufferColor ( const QColor &color )
+double QgsLabelAttributes::bufferSize( void ) const
 {
-    mBufferBrush.setColor ( color );
-    mBufferColorIsSet = true;
-}
-
-bool QgsLabelAttributes::bufferColorIsSet ( void ) const
-{
-    return mColorIsSet;
-}
-
-QColor QgsLabelAttributes::bufferColor ( void ) const
-{
-    return mBufferBrush.color();
+  return mBufferSize;
 }
 
 
-void QgsLabelAttributes::setBufferStyle ( Qt::BrushStyle style )
+void QgsLabelAttributes::setBufferColor( const QColor &color )
 {
-    mBufferBrush.setStyle ( style );
-    mBufferStyleIsSet = true;
+  mBufferBrush.setColor( color );
+  mBufferColorIsSet = true;
 }
 
-bool QgsLabelAttributes::bufferStyleIsSet ( void ) const
+bool QgsLabelAttributes::bufferColorIsSet( void ) const
 {
-    return mBufferStyleIsSet;
+  return mColorIsSet;
 }
 
-Qt::BrushStyle QgsLabelAttributes::bufferStyle ( void ) const
+QColor QgsLabelAttributes::bufferColor( void ) const
 {
-    return mBufferBrush.style();
-}
-
-  /* Border */
-void QgsLabelAttributes::setBorderColor ( const QColor &color )
-{
-    mBorderPen.setColor ( color );
-    mBorderColorIsSet = true;
-}
-
-bool QgsLabelAttributes::borderColorIsSet ( void ) const
-{
-    return mBorderColorIsSet;
-}
-
-QColor QgsLabelAttributes::borderColor ( void ) const
-{
-    return mBorderPen.color();
-}
-
-void QgsLabelAttributes::setBorderWidth ( int width )
-{
-    mBorderPen.setWidth ( width );
-    mBorderWidthIsSet = true;
-}
-
-bool QgsLabelAttributes::borderWidthIsSet ( void ) const 
-{
-    return mBorderWidthIsSet;
-}
-
-int QgsLabelAttributes::borderWidth ( void ) const
-{
-    return mBorderPen.width();
+  return mBufferBrush.color();
 }
 
 
-void QgsLabelAttributes::setBorderStyle ( Qt::PenStyle style )
+void QgsLabelAttributes::setBufferStyle( Qt::BrushStyle style )
 {
-     mBorderPen.setStyle ( style );
-     mBorderStyleIsSet = true;
+  mBufferBrush.setStyle( style );
+  mBufferStyleIsSet = true;
 }
 
-bool QgsLabelAttributes::borderStyleIsSet ( void ) const
+bool QgsLabelAttributes::bufferStyleIsSet( void ) const
 {
-    return mBorderStyleIsSet;
+  return mBufferStyleIsSet;
 }
 
-Qt::PenStyle QgsLabelAttributes::borderStyle ( void ) const
+Qt::BrushStyle QgsLabelAttributes::bufferStyle( void ) const
 {
-    return mBorderPen.style();
+  return mBufferBrush.style();
 }
 
-  /* Multiline */
+/* Border */
+void QgsLabelAttributes::setBorderColor( const QColor &color )
+{
+  mBorderPen.setColor( color );
+  mBorderColorIsSet = true;
+}
+
+bool QgsLabelAttributes::borderColorIsSet( void ) const
+{
+  return mBorderColorIsSet;
+}
+
+QColor QgsLabelAttributes::borderColor( void ) const
+{
+  return mBorderPen.color();
+}
+
+void QgsLabelAttributes::setBorderWidth( int width )
+{
+  mBorderPen.setWidth( width );
+  mBorderWidthIsSet = true;
+}
+
+bool QgsLabelAttributes::borderWidthIsSet( void ) const
+{
+  return mBorderWidthIsSet;
+}
+
+int QgsLabelAttributes::borderWidth( void ) const
+{
+  return mBorderPen.width();
+}
+
+
+void QgsLabelAttributes::setBorderStyle( Qt::PenStyle style )
+{
+  mBorderPen.setStyle( style );
+  mBorderStyleIsSet = true;
+}
+
+bool QgsLabelAttributes::borderStyleIsSet( void ) const
+{
+  return mBorderStyleIsSet;
+}
+
+Qt::PenStyle QgsLabelAttributes::borderStyle( void ) const
+{
+  return mBorderPen.style();
+}
+
+/* Multiline */
 bool QgsLabelAttributes::multilineEnabled() const
 {
   return mMultilineEnabledFlag;
 }
-void QgsLabelAttributes::setMultilineEnabled(bool useMultilineFlag)
+void QgsLabelAttributes::setMultilineEnabled( bool useMultilineFlag )
 {
-  mMultilineEnabledFlag=useMultilineFlag;
+  mMultilineEnabledFlag = useMultilineFlag;
 }
 
-  /* units */
-QString QgsLabelAttributes::unitsName ( int units ) 
+/* units */
+QString QgsLabelAttributes::unitsName( int units )
 {
   if ( units == MapUnits )
   {
-    return QString("mu");
+    return QString( "mu" );
   }
 
-  return QString("pt");
+  return QString( "pt" );
 }
 
-int QgsLabelAttributes::unitsCode ( const QString &name )
+int QgsLabelAttributes::unitsCode( const QString &name )
 {
-    if ( name.compare("mu") == 0 ) {
-	return MapUnits;
-    }
-	
-    return PointUnits;
+  if ( name.compare( "mu" ) == 0 )
+  {
+    return MapUnits;
+  }
+
+  return PointUnits;
 }
 
- /* alignment */
-QString QgsLabelAttributes::alignmentName ( int alignment ) 
+/* alignment */
+QString QgsLabelAttributes::alignmentName( int alignment )
 {
-  std::cout << "QString QgsLabelAttributes::alignmentName (" << alignment << ")" << std::endl;
-  if (!alignment)                                       return  QString("center");
-  if (alignment == (Qt::AlignRight | Qt::AlignBottom )) return  QString("aboveleft");
-  if (alignment == (Qt::AlignRight | Qt::AlignTop    )) return  QString("belowleft"); 
-  if (alignment == (Qt::AlignLeft  | Qt::AlignBottom )) return  QString("aboveright");
-  if (alignment == (Qt::AlignLeft  | Qt::AlignTop    )) return  QString("belowright");
-  if (alignment == (Qt::AlignRight | Qt::AlignVCenter)) return  QString("left");
-  if (alignment == (Qt::AlignLeft  | Qt::AlignVCenter)) return  QString("right");
-  if (alignment == (Qt::AlignBottom| Qt::AlignHCenter)) return  QString("above"); 
-  if (alignment == (Qt::AlignTop   | Qt::AlignHCenter)) return  QString("below"); 
-  if (alignment == (Qt::AlignCenter                  )) return  QString("center");
-  return QString("center");
+  QgsDebugMsg( QString( "QString QgsLabelAttributes::alignmentName (%1)" ).arg( alignment ) );
+  if ( !alignment )                                       return  QString( "center" );
+  if ( alignment == ( Qt::AlignRight | Qt::AlignBottom ) ) return  QString( "aboveleft" );
+  if ( alignment == ( Qt::AlignRight | Qt::AlignTop ) ) return  QString( "belowleft" );
+  if ( alignment == ( Qt::AlignLeft  | Qt::AlignBottom ) ) return  QString( "aboveright" );
+  if ( alignment == ( Qt::AlignLeft  | Qt::AlignTop ) ) return  QString( "belowright" );
+  if ( alignment == ( Qt::AlignRight | Qt::AlignVCenter ) ) return  QString( "left" );
+  if ( alignment == ( Qt::AlignLeft  | Qt::AlignVCenter ) ) return  QString( "right" );
+  if ( alignment == ( Qt::AlignBottom | Qt::AlignHCenter ) ) return  QString( "above" );
+  if ( alignment == ( Qt::AlignTop   | Qt::AlignHCenter ) ) return  QString( "below" );
+  if ( alignment == ( Qt::AlignCenter ) ) return  QString( "center" );
+  return QString( "center" );
 }
 
-int QgsLabelAttributes::alignmentCode ( const QString &name ) 
+int QgsLabelAttributes::alignmentCode( const QString &name )
 {
   QString lname = name.toLower();
-  if (lname.compare("aboveleft")  == 0)  return Qt::AlignRight | Qt::AlignBottom     ;
-  if (lname.compare("belowleft")  == 0)  return Qt::AlignRight | Qt::AlignTop        ; 
-  if (lname.compare("aboveright")  == 0) return Qt::AlignLeft  | Qt::AlignBottom     ;
-  if (lname.compare("belowright")  == 0) return Qt::AlignLeft  | Qt::AlignTop        ;
-  if (lname.compare("left")  == 0)       return Qt::AlignRight | Qt::AlignVCenter    ;
-  if (lname.compare("right")  == 0)      return Qt::AlignLeft  | Qt::AlignVCenter    ;
-  if (lname.compare("above")  == 0)      return Qt::AlignBottom| Qt::AlignHCenter    ; 
-  if (lname.compare("below")  == 0)      return Qt::AlignTop   | Qt::AlignHCenter    ; 
-  if (lname.compare("center")  == 0)       return Qt::AlignCenter                      ;  
+  if ( lname.compare( "aboveleft" )  == 0 )  return Qt::AlignRight | Qt::AlignBottom     ;
+  if ( lname.compare( "belowleft" )  == 0 )  return Qt::AlignRight | Qt::AlignTop        ;
+  if ( lname.compare( "aboveright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignBottom     ;
+  if ( lname.compare( "belowright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignTop        ;
+  if ( lname.compare( "left" )  == 0 )       return Qt::AlignRight | Qt::AlignVCenter    ;
+  if ( lname.compare( "right" )  == 0 )      return Qt::AlignLeft  | Qt::AlignVCenter    ;
+  if ( lname.compare( "above" )  == 0 )      return Qt::AlignBottom | Qt::AlignHCenter    ;
+  if ( lname.compare( "below" )  == 0 )      return Qt::AlignTop   | Qt::AlignHCenter    ;
+  if ( lname.compare( "center" )  == 0 )       return Qt::AlignCenter                      ;
 
 
   return Qt::AlignCenter;

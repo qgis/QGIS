@@ -19,12 +19,12 @@
 #include <QList>
 #include <QPainter>
 
-QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(const QgsComposerScaleBar* bar): QgsScaleBarStyle(bar)
+QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
 {
 
 }
 
-QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(): QgsScaleBarStyle(0)
+QgsDoubleBoxScaleBarStyle::QgsDoubleBoxScaleBarStyle(): QgsScaleBarStyle( 0 )
 {
 
 }
@@ -39,58 +39,58 @@ QString QgsDoubleBoxScaleBarStyle::name() const
   return "Double Box";
 }
 
-void QgsDoubleBoxScaleBarStyle::draw(QPainter* p, double xOffset) const
+void QgsDoubleBoxScaleBarStyle::draw( QPainter* p, double xOffset ) const
 {
-  if(!mScaleBar)
-    {
-      return;
-    }
+  if ( !mScaleBar )
+  {
+    return;
+  }
   double barTopPosition = mScaleBar->fontHeight() + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double segmentHeight = mScaleBar->height() / 2;
 
   p->save();
-  p->setPen(p->pen());
+  p->setPen( p->pen() );
 
   QList<QPair<double, double> > segmentInfo;
-  mScaleBar->segmentPositions(segmentInfo);
-  
+  mScaleBar->segmentPositions( segmentInfo );
+
   bool useColor = true; //alternate brush color/white
 
 
 
   QList<QPair<double, double> >::const_iterator segmentIt = segmentInfo.constBegin();
-  for(; segmentIt != segmentInfo.constEnd(); ++segmentIt)
+  for ( ; segmentIt != segmentInfo.constEnd(); ++segmentIt )
+  {
+    //draw top half
+    if ( useColor )
     {
-      //draw top half
-      if(useColor)
-	{
-	  p->setBrush(mScaleBar->brush());
-	}
-      else //white
-	{
-	  p->setBrush(QColor(255, 255, 255));
-	}
-
-      QRectF segmentRectTop(segmentIt->first + xOffset, barTopPosition, segmentIt->second, segmentHeight);
-      p->drawRect(segmentRectTop);
-
-      //draw bottom half
-      if(useColor)
-	{
-	  p->setBrush(QColor(255, 255, 255)); 
-	}
-      else //white
-	{
-	  p->setBrush(mScaleBar->brush());
-	}
-      
-      QRectF segmentRectBottom(segmentIt->first + xOffset, barTopPosition + segmentHeight, segmentIt->second, segmentHeight);
-      p->drawRect(segmentRectBottom);
-      useColor = !useColor;
+      p->setBrush( mScaleBar->brush() );
     }
+    else //white
+    {
+      p->setBrush( QColor( 255, 255, 255 ) );
+    }
+
+    QRectF segmentRectTop( segmentIt->first + xOffset, barTopPosition, segmentIt->second, segmentHeight );
+    p->drawRect( segmentRectTop );
+
+    //draw bottom half
+    if ( useColor )
+    {
+      p->setBrush( QColor( 255, 255, 255 ) );
+    }
+    else //white
+    {
+      p->setBrush( mScaleBar->brush() );
+    }
+
+    QRectF segmentRectBottom( segmentIt->first + xOffset, barTopPosition + segmentHeight, segmentIt->second, segmentHeight );
+    p->drawRect( segmentRectBottom );
+    useColor = !useColor;
+  }
 
   p->restore();
 
   //draw labels using the default method
-  drawLabels(p);
+  drawLabels( p );
 }

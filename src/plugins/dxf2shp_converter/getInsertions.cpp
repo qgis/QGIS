@@ -7,8 +7,8 @@
 //
 // This means, in simple terms, that you are free to use this code for any open-source or
 // public domain project. You may NOT use this source code as part of a commercial application.
-// It may be included, in binary form and bearing a GPL notice, along with commercial 
-// applications, but the code shall not be compiled directly into a closed-source, 
+// It may be included, in binary form and bearing a GPL notice, along with commercial
+// applications, but the code shall not be compiled directly into a closed-source,
 // commercial application.
 //
 // This code is based on two other products:
@@ -40,26 +40,26 @@ InsertRetrClass::InsertRetrClass()
 
 InsertRetrClass::~InsertRetrClass()
 {
-  if (Names != NULL)
+  if ( Names != NULL )
   {
     delete [] Names;
     Names = NULL;
   }
-  if (XVals != NULL)
+  if ( XVals != NULL )
   {
     delete [] XVals;
     XVals = NULL;
   }
-  if (YVals != NULL)
+  if ( YVals != NULL )
   {
     delete [] YVals;
     YVals = NULL;
   }
 }
 
-void InsertRetrClass::addInsert(const DL_InsertData &data)
+void InsertRetrClass::addInsert( const DL_InsertData &data )
 {
-  if (countInserts < MaxInserts)
+  if ( countInserts < MaxInserts )
   {
     Names[countInserts] = data.name;
     XVals[countInserts] = data.ipx;

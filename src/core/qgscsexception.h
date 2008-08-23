@@ -25,8 +25,8 @@
 class CORE_EXPORT QgsCsException : public QgsException
 {
   public:
-    QgsCsException(std::string const &what) : QgsException(what){};
-    QgsCsException(QString const &what) : QgsException(what){};
-    
+    QgsCsException( std::string const &what ) : QgsException( what ) {};
+    QgsCsException( QString const &what ) : QgsException( what ) {};
+
 };
 #endif //QGCSEXCEPTION_H

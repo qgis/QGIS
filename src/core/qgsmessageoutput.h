@@ -22,10 +22,10 @@
 #include <QObject>
 
 class QgsMessageOutput;
-typedef QgsMessageOutput* (*MESSAGE_OUTPUT_CREATOR)();
+typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();
 
 
-/** \ingroup core 
+/** \ingroup core
  * Interface for showing messages from QGIS in GUI independent way.
  * This class provides abstraction of a dialog for showing output to the user.
  * By default QgsMessageConsoleOutput will be used if not overridden with other
@@ -39,34 +39,34 @@ typedef QgsMessageOutput* (*MESSAGE_OUTPUT_CREATOR)();
 class CORE_EXPORT QgsMessageOutput
 {
   public:
-    
+
     //! message can be in plain text or in html format
     enum MessageType { MessageText, MessageHtml };
-    
+
     //! virtual destructor
     virtual ~QgsMessageOutput();
 
-    //! set message, it won't be displayed until 
-    virtual void setMessage(const QString& message, MessageType msgType) = 0;
-    
+    //! set message, it won't be displayed until
+    virtual void setMessage( const QString& message, MessageType msgType ) = 0;
+
     //! message to be appended to the current text
-    virtual void appendMessage(const QString& message) = 0;
-    
+    virtual void appendMessage( const QString& message ) = 0;
+
     //! set title for the messages
-    virtual void setTitle(const QString& title) = 0;
-    
+    virtual void setTitle( const QString& title ) = 0;
+
     //! display the message to the user
-    virtual void showMessage(bool blocking = true) = 0;
-    
+    virtual void showMessage( bool blocking = true ) = 0;
+
     //! sets function that will be used to create message output
-    static void setMessageOutputCreator(MESSAGE_OUTPUT_CREATOR f);
-    
+    static void setMessageOutputCreator( MESSAGE_OUTPUT_CREATOR f );
+
     //! function that returns new class derived from QgsMessageOutput
     //! (don't forget to delete it then)
     static QgsMessageOutput* createMessageOutput();
 
   private:
-    
+
     //! Pointer to the function which creates the class for output
     static MESSAGE_OUTPUT_CREATOR mMessageOutputCreator;
 };
@@ -74,37 +74,37 @@ class CORE_EXPORT QgsMessageOutput
 
 /**
 \brief Default implementation of message output interface
-           
+
 This class outputs messages to the standard output. Therefore it might
 be the right choice for apps without GUI.
 */
 class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOutput
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    
+
     QgsMessageOutputConsole();
-    
-    virtual void setMessage(const QString& message, MessageType msgType);
-    
-    virtual void appendMessage(const QString& message);
-    
-    virtual void setTitle(const QString& title);
-    
+
+    virtual void setMessage( const QString& message, MessageType msgType );
+
+    virtual void appendMessage( const QString& message );
+
+    virtual void setTitle( const QString& title );
+
     //! sends the message to the standard output
-    virtual void showMessage(bool blocking = true);
-    
+    virtual void showMessage( bool blocking = true );
+
   signals:
-    
+
     //! signals that object will be destroyed and shouldn't be used anymore
     void destroyed();
 
   private:
-    
+
     //! stores current message
     QString mMessage;
-    
+
     //! stores current title
     QString mTitle;
 

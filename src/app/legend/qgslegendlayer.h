@@ -43,18 +43,18 @@ Container for layer, including layer file(s), symbology class breaks and propert
 class QgsLegendLayer : public QgsLegendItem
 {
     Q_OBJECT
-  
-public:
-    QgsLegendLayer(QTreeWidgetItem * ,QString);
-    QgsLegendLayer(QTreeWidget* ,QString);
-    QgsLegendLayer(QString name);
+
+  public:
+    QgsLegendLayer( QTreeWidgetItem * , QString );
+    QgsLegendLayer( QTreeWidget* , QString );
+    QgsLegendLayer( QString name );
     ~QgsLegendLayer();
     /**Sets an icon characterising the type of layer(s) it contains.
      Note: cannot be in the constructor because layers are added after creation*/
     void setLayerTypeIcon();
     bool isLeafNode();
-    QgsLegendItem::DRAG_ACTION accept(LEGEND_ITEM_TYPE type);
-    QgsLegendItem::DRAG_ACTION accept(const QgsLegendItem* li) const;
+    QgsLegendItem::DRAG_ACTION accept( LEGEND_ITEM_TYPE type );
+    QgsLegendItem::DRAG_ACTION accept( const QgsLegendItem* li ) const;
     /**Returns the map layer associated with the first QgsLegendLayerFile or 0 if
      there is no QgsLegendLayerFile*/
     QgsMapLayer* firstMapLayer() const;
@@ -68,54 +68,54 @@ public:
     void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
-    void refreshSymbology(const QString& key, double widthScale = 1.0);
+    void refreshSymbology( const QString& key, double widthScale = 1.0 );
 
     /**Goes through all the legendlayerfiles and adds editing/overview pixmaps to the icon. If not all layer files
     have the same editing/overview state, a tristate is applied*/
     void updateIcon();
-  
+
     /** called to add appropriate menu items to legend's popup menu */
-    void addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAction);
-    
+    void addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction );
+
     /**Determines whether there are layers in overview*/
     bool isInOverview();
-    
+
   public slots:
-    
+
     /**Toggle show in overview*/
     void showInOverview();
-  
+
     /**Show layer attribute table*/
     void table();
-    
+
     void saveAsShapefile();
     void saveSelectionAsShapefile();
-    
+
   protected:
-    
+
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology(const QgsVectorLayer* mapLayer, double widthScale = 1.0);
-    
+    void vectorLayerSymbology( const QgsVectorLayer* mapLayer, double widthScale = 1.0 );
+
     /** Prepare and change symbology for raster layer */
-    void rasterLayerSymbology(QgsRasterLayer* mapLayer);
-    
+    void rasterLayerSymbology( QgsRasterLayer* mapLayer );
+
     /** Removes the symbology items of a layer and adds new ones.
      * If other files are in the same legend layer, the new symbology settings are copied.
      * Note: the QIcon* are deleted and therefore need to be allocated by calling
      * functions using operator new
      */
-    void changeSymbologySettings(const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems);
-    
+    void changeSymbologySettings( const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems );
+
     /** Copies the symbology settings of the layer to all maplayers in the QgsLegendLayerFileGroup.
      * This method should be called whenever a layer in this group changes it symbology settings
      */
-    void updateLayerSymbologySettings(const QgsMapLayer* mapLayer);
+    void updateLayerSymbologySettings( const QgsMapLayer* mapLayer );
 
     QPixmap getOriginalPixmap() const;
 
   private:
     /** Helper method to make the font bold from all ctors.
-     *  Not to be confused with setFont() which is inherited 
+     *  Not to be confused with setFont() which is inherited
      *  from the QTreeWidgetItem base class.
      */
     void setupFont();

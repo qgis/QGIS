@@ -27,51 +27,51 @@ class QgsMapCanvas;
 class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
 {
   public:
-    
+
     //! constructor
-    QgsMapCanvasMap(QgsMapCanvas* canvas);
-    
+    QgsMapCanvasMap( QgsMapCanvas* canvas );
+
     //! resize canvas item and pixmap
-    void resize(QSize size);
-    
-    void enableAntiAliasing(bool flag) { mAntiAliasing = flag; }
-    
-    void useQImageToRender(bool flag) { mUseQImageToRender = flag; }
+    void resize( QSize size );
+
+    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+
+    void useQImageToRender( bool flag ) { mUseQImageToRender = flag; }
 
     //! renders map using QgsMapRenderer to mPixmap
     void render();
-    
-    void setBgColor(const QColor& color) { mBgColor = color; }
-    
-    void setPanningOffset(const QPoint& point);
-    
+
+    void setBgColor( const QColor& color ) { mBgColor = color; }
+
+    void setPanningOffset( const QPoint& point );
+
     //deprecated. Please use paintDevice() function
     //which is also save in case QImage is used
     QPixmap& pixmap() { return mPixmap; }
 
     QPaintDevice& paintDevice();
-    
-    void paint(QPainter* p, const QStyleOptionGraphicsItem*, QWidget*);
+
+    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
 
     QRectF boundingRect() const;
-  
-  
+
+
   private:
 
     //! indicates whether antialiasing will be used for rendering
     bool mAntiAliasing;
-    
+
     //! Whether to use a QPixmap or a QImage for the rendering
     bool mUseQImageToRender;
-    
+
     QPixmap mPixmap;
     QImage mImage;
 
     //QgsMapRenderer* mRender;
     QgsMapCanvas* mCanvas;
-    
+
     QColor mBgColor;
-    
+
     QPoint mOffset;
 };
 

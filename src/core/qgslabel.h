@@ -44,109 +44,110 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 /** \ingroup core
   * A class to render labels.
-  * Label rendering properties can be either specified directly or 
-  * in most cases determined dynamically based on the value of an attribute. 
+  * Label rendering properties can be either specified directly or
+  * in most cases determined dynamically based on the value of an attribute.
   **/
 class CORE_EXPORT QgsLabel
 {
-public:
-    QgsLabel ( const QgsFieldMap & fields  );
+  public:
+    QgsLabel( const QgsFieldMap & fields );
 
     ~QgsLabel();
 
     /* Fields */
-    enum LabelField {
-	Text = 0,
-	Family,
-	Size,
-	SizeType,
-	Bold,
-	Italic,
-	Underline,
-	Color,
-	XCoordinate,
-	YCoordinate,
-	XOffset,
-	YOffset,
-	Angle,
-	Alignment,
-        BufferEnabled,
-	BufferSize,
-	BufferColor,
-	BufferBrush,
-	BorderWidth,
-	BorderColor,
-	BorderStyle,
-	MultilineEnabled,
-	LabelFieldCount
+    enum LabelField
+    {
+      Text = 0,
+      Family,
+      Size,
+      SizeType,
+      Bold,
+      Italic,
+      Underline,
+      Color,
+      XCoordinate,
+      YCoordinate,
+      XOffset,
+      YOffset,
+      Angle,
+      Alignment,
+      BufferEnabled,
+      BufferSize,
+      BufferColor,
+      BufferBrush,
+      BorderWidth,
+      BorderColor,
+      BorderStyle,
+      MultilineEnabled,
+      LabelFieldCount
     };
 
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
      */
-    void renderLabel ( QPainter* painter, const QgsRect& viewExtent, 
-                       const QgsCoordinateTransform* coordinateTransform,
-                       const QgsMapToPixel *transform,
-                       QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1.);
+    void renderLabel( QPainter* painter, const QgsRect& viewExtent,
+                      const QgsCoordinateTransform* coordinateTransform,
+                      const QgsMapToPixel *transform,
+                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1. );
 
     /** Reads the renderer configuration from an XML file
-     @param rnode the Dom node to read 
+     @param rnode the Dom node to read
     */
-    void readXML(const QDomNode& node);
+    void readXML( const QDomNode& node );
 
     /** Writes the contents of the renderer to a configuration file */
-    void writeXML(std::ostream& xml);
+    void writeXML( std::ostream& xml );
 
     //! add vector of required fields to existing list of fields
-    void addRequiredFields ( QgsAttributeList& fields );
+    void addRequiredFields( QgsAttributeList& fields );
 
     //! Set available fields
-    void setFields( const QgsFieldMap & fields  );
+    void setFields( const QgsFieldMap & fields );
 
     //! Available vector fields
-    QgsFieldMap & fields ( void );
+    QgsFieldMap & fields( void );
 
     //! Pointer to default attributes
-    QgsLabelAttributes *layerAttributes ( void );
+    QgsLabelAttributes *layerAttributes( void );
 
     //! Set label field
-    void setLabelField ( int attr, int fieldIndex );
+    void setLabelField( int attr, int fieldIndex );
 
     //! label field
-    QString labelField ( int attr );
+    QString labelField( int attr );
 
     /** Get field value if : 1) field name is not empty
      *                       2) field exists
      *                       3) value is defined
      *  otherwise returns empty string
     */
-    QString fieldValue ( int attr, QgsFeature& feature );
+    QString fieldValue( int attr, QgsFeature& feature );
 
-private:
+  private:
     /** Does the actual rendering of a label at the given point
-     * 
+     *
      */
-    void renderLabel(QPainter* painter, QgsPoint point, 
-                     const QgsCoordinateTransform* coordinateTransform,
-                     const QgsMapToPixel* transform,
-                     QString text, QFont font, QPen pen,
-                     int dx, int dy,
-                     double xoffset, double yoffset,
-                     double ang,
-                     int width, int height, int alignment);
+    void renderLabel( QPainter* painter, QgsPoint point,
+                      const QgsCoordinateTransform* coordinateTransform,
+                      const QgsMapToPixel* transform,
+                      QString text, QFont font, QPen pen,
+                      int dx, int dy,
+                      double xoffset, double yoffset,
+                      double ang,
+                      int width, int height, int alignment );
 
     /** Get label point for simple feature in map units */
-    void labelPoint ( std::vector<QgsPoint>&, QgsFeature &feature );
+    void labelPoint( std::vector<QgsPoint>&, QgsFeature &feature );
 
     /** Get label point for the given feature in wkb format. */
-    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb, size_t wkblen);
+    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb, size_t wkblen );
 
     /** Color to draw selected features */
     QColor mSelectionColor;
-    
+
     //! Default layer attributes
     QgsLabelAttributes *mLabelAttributes;
-    
+
     //! Available layer fields
     QgsFieldMap mField;
 

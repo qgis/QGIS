@@ -28,23 +28,23 @@
 class GraticuleCreator
 {
   public:
-    GraticuleCreator(QString theOutputFileName);
+    GraticuleCreator( QString theOutputFileName );
     ~GraticuleCreator() ;
     void generatePointGraticule(
-        double theXIntervalDouble,
-        double theYIntervalDouble,
-        double theXOriginDouble,
-        double theYOriginDouble,
-        double theXEndPointDouble,
-        double theYEndPointDouble);
+      double theXIntervalDouble,
+      double theYIntervalDouble,
+      double theXOriginDouble,
+      double theYOriginDouble,
+      double theXEndPointDouble,
+      double theYEndPointDouble );
     void generatePolygonGraticule(
-        double theXIntervalDouble,
-        double theYIntervalDouble,
-        double theXOriginDouble,
-        double theYOriginDouble,
-        double theXEndPointDouble,
-        double theYEndPointDouble);
-    void generatePoints (QString theInputFileName );
+      double theXIntervalDouble,
+      double theYIntervalDouble,
+      double theXOriginDouble,
+      double theYOriginDouble,
+      double theXEndPointDouble,
+      double theYEndPointDouble );
+    void generatePoints( QString theInputFileName );
 
   private:
     QString mFileName;

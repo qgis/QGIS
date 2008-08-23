@@ -18,28 +18,28 @@
 #include "qgsaddattrdialog.h"
 #include "qgsvectordataprovider.h"
 
-QgsAddAttrDialog::QgsAddAttrDialog(QgsVectorDataProvider* provider, QWidget *parent, Qt::WFlags fl)
-: QDialog(parent, fl), mDataProvider(provider)
+QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorDataProvider* provider, QWidget *parent, Qt::WFlags fl )
+    : QDialog( parent, fl ), mDataProvider( provider )
 {
-  setupUi(this);
+  setupUi( this );
 
-  //fill data types into the combo box    
-  const QgsNativeTypeMap &typelist=mDataProvider->supportedNativeTypes();
+  //fill data types into the combo box
+  const QgsNativeTypeMap &typelist = mDataProvider->supportedNativeTypes();
 
-  for(QgsNativeTypeMap::const_iterator it = typelist.constBegin(); it != typelist.constEnd(); ++it)
+  for ( QgsNativeTypeMap::const_iterator it = typelist.constBegin(); it != typelist.constEnd(); ++it )
   {
-    mTypeBox->addItem(it.key());
+    mTypeBox->addItem( it.key() );
   }
 }
 
-QgsAddAttrDialog::QgsAddAttrDialog(const std::list<QString>& typelist, QWidget *parent, Qt::WFlags fl)
-: QDialog(parent, fl), mDataProvider(0)
+QgsAddAttrDialog::QgsAddAttrDialog( const std::list<QString>& typelist, QWidget *parent, Qt::WFlags fl )
+    : QDialog( parent, fl ), mDataProvider( 0 )
 {
-  setupUi(this);
+  setupUi( this );
 
-  for(std::list<QString>::const_iterator iter=typelist.begin();iter!=typelist.end();++iter)
+  for ( std::list<QString>::const_iterator iter = typelist.begin();iter != typelist.end();++iter )
   {
-    mTypeBox->addItem(*iter);
+    mTypeBox->addItem( *iter );
   }
 }
 

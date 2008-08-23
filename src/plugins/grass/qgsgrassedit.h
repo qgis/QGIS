@@ -58,9 +58,10 @@ class QgsGrassEditDeleteLine;
 class QgsGrassEditSplitLine;
 class QgsGrassEditAttributes;
 
-typedef struct {
-    int field;
-    int maxCat;
+typedef struct
+{
+  int field;
+  int maxCat;
 } MaxCat;
 
 /*! \class QgsGrassEdit
@@ -71,106 +72,109 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
 {
     Q_OBJECT
 
-public:
+  public:
     //! Tools
-    enum EditTools {     
-	NONE,
-	NEW_POINT,
-	NEW_LINE,
-	NEW_BOUNDARY,
-	NEW_CENTROID,
-	MOVE_VERTEX,
-	ADD_VERTEX,
-	DELETE_VERTEX,
-	SPLIT_LINE,
-	MOVE_LINE,
-	DELETE_LINE,
-	EDIT_CATS,
-	EDIT_ATTRIBUTES
-    }; 
-
-    // Symbology codes */
-    enum SymbCode {
-	SYMB_BACKGROUND,
-	SYMB_HIGHLIGHT,
-	SYMB_DYNAMIC,
-	SYMB_POINT,
-	SYMB_LINE,
-	SYMB_BOUNDARY_0, /* No areas */
-	SYMB_BOUNDARY_1, /* 1 area */
-	SYMB_BOUNDARY_2, /* 2 areas */
-	SYMB_CENTROID_IN,    /* Centroid in area */
-	SYMB_CENTROID_OUT,   /* Centroid outside area */
-	SYMB_CENTROID_DUPL,  /* Duplicate centroid in area */
-	SYMB_NODE_0,     /* Node without lines (points or centroids) */
-	SYMB_NODE_1,     /* Node with 1 line */
-	SYMB_NODE_2,     /* Node with 2 lines */
-	SYMB_COUNT       /* MUST BE LAST, number of symbology layers */
+    enum EditTools
+    {
+      NONE,
+      NEW_POINT,
+      NEW_LINE,
+      NEW_BOUNDARY,
+      NEW_CENTROID,
+      MOVE_VERTEX,
+      ADD_VERTEX,
+      DELETE_VERTEX,
+      SPLIT_LINE,
+      MOVE_LINE,
+      DELETE_LINE,
+      EDIT_CATS,
+      EDIT_ATTRIBUTES
     };
 
-    enum CatMode {
-	CAT_MODE_NEXT = 0,
-	CAT_MODE_MANUAL,
-	CAT_MODE_NOCAT
+    // Symbology codes */
+    enum SymbCode
+    {
+      SYMB_BACKGROUND,
+      SYMB_HIGHLIGHT,
+      SYMB_DYNAMIC,
+      SYMB_POINT,
+      SYMB_LINE,
+      SYMB_BOUNDARY_0, /* No areas */
+      SYMB_BOUNDARY_1, /* 1 area */
+      SYMB_BOUNDARY_2, /* 2 areas */
+      SYMB_CENTROID_IN,    /* Centroid in area */
+      SYMB_CENTROID_OUT,   /* Centroid outside area */
+      SYMB_CENTROID_DUPL,  /* Duplicate centroid in area */
+      SYMB_NODE_0,     /* Node without lines (points or centroids) */
+      SYMB_NODE_1,     /* Node with 1 line */
+      SYMB_NODE_2,     /* Node with 2 lines */
+      SYMB_COUNT       /* MUST BE LAST, number of symbology layers */
+    };
+
+    enum CatMode
+    {
+      CAT_MODE_NEXT = 0,
+      CAT_MODE_MANUAL,
+      CAT_MODE_NOCAT
     };
 
     //! Constructor
-    QgsGrassEdit ( QgisInterface *iface, 
-                   QgsMapLayer *layer, bool newMap,
-	           QWidget * parent = 0, Qt::WFlags f = 0 );
+    QgsGrassEdit( QgisInterface *iface,
+                  QgsMapLayer *layer, bool newMap,
+                  QWidget * parent = 0, Qt::WFlags f = 0 );
 
     // Shared by constructors
-    void init ();
+    void init();
 
     //! Destructor
     ~QgsGrassEdit();
 
     //! Close editing
-    bool isValid (void); 
+    bool isValid( void );
 
     //! Close editing
-    static bool isRunning (void); 
+    static bool isRunning( void );
 
     //! Set new tool and close old one if any
-    void startTool (int); 
+    void startTool( int );
 
-    //! Add category to selected line 
-    void addCat ( int line ); 
+    //! Add category to selected line
+    void addCat( int line );
 
-    //! Delete category from selected line 
-    void deleteCat ( int line, int field, int cat ); 
+    //! Delete category from selected line
+    void deleteCat( int line, int field, int cat );
 
-    //! Add attributes to current mAttributes 
-    void addAttributes ( int field, int cat ); 
+    //! Add attributes to current mAttributes
+    void addAttributes( int field, int cat );
 
     //! Increase max cat
-    void increaseMaxCat ( void );
+    void increaseMaxCat( void );
 
     //! Check orphan database records
-    void checkOrphan ( int field, int cat );
+    void checkOrphan( int field, int cat );
 
     //! pointer to layer
     QgsVectorLayer *layer() { return mLayer; }
 
-public slots:
+  public slots:
     // TODO: once available in QGIS, use only one reciver for all signals
-    
+
     //! Called when rendering is finished
-    void postRender ( QPainter * ); 
+    void postRender( QPainter * );
 
     // Slots to start tools (is it possible to pass tool to startTool() directly from GUI ?)
-    void newPoint (void);       // digitize new point
-    void newLine (void);        // digitize new line
-    void newBoundary (void);    // digitize new boundary
-    void newCentroid (void);    // digitize new centroid
-    void moveVertex (void);     // move vertex of existing line/boundary
-    void addVertex (void);      // add new vertex to existing line/boundary
-    void deleteVertex (void);   // delete vertex of existing line/boundary
-    void splitLine (void);      // split existing line/boundary
-    void moveLine (void);       // move existing line/boundary
-    void deleteLine (void);     // delete existing line/boundary
-    void editCats (void);       // edit element categories
-    void editAttributes (void); // edit element attributes
+    void newPoint( void );      // digitize new point
+    void newLine( void );       // digitize new line
+    void newBoundary( void );   // digitize new boundary
+    void newCentroid( void );   // digitize new centroid
+    void moveVertex( void );    // move vertex of existing line/boundary
+    void addVertex( void );     // add new vertex to existing line/boundary
+    void deleteVertex( void );  // delete vertex of existing line/boundary
+    void splitLine( void );     // split existing line/boundary
+    void moveLine( void );      // move existing line/boundary
+    void deleteLine( void );    // delete existing line/boundary
+    void editCats( void );      // edit element categories
+    void editAttributes( void ); // edit element attributes
 
     //! Category mode was changed
     void on_mCatModeBox_activated() { catModeChanged(); }
@@ -193,7 +197,7 @@ public slots:
     void alterTable();
 
     //! Close editing
-    void closeEdit(); 
+    void closeEdit();
 
     void changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col );
 
@@ -204,23 +208,23 @@ public slots:
     void on_mMarkerSizeSpinBox_valueChanged() { markerSizeChanged(); }
 
     // The type of column was changed
-    void columnTypeChanged ( int row, int col );
+    void columnTypeChanged( int row, int col );
 
     // ! Close event
-    void closeEvent(QCloseEvent *e);
+    void closeEvent( QCloseEvent *e );
 
-    static bool isEditable ( QgsMapLayer *layer );
+    static bool isEditable( QgsMapLayer *layer );
 
     //! Window with attributes closed
     void attributesClosed();
 
-    //! Recieve key press from different widget 
-    void keyPress(QKeyEvent *e); 
+    //! Recieve key press from different widget
+    void keyPress( QKeyEvent *e );
 
-signals:
-    void finished(); 
+  signals:
+    void finished();
 
-private:
+  private:
     //! Editing is already running
     static bool mRunning;
 
@@ -229,88 +233,88 @@ private:
 
     //! Pointer to toolbar
     QToolBar *mToolBar;
-    
+
     //! Point / node size (later make editable array of Sizes)
     int mSize;
 
     //! Transform from layer coordinates to canvas including reprojection
-    QgsPoint transformLayerToCanvas ( QgsPoint point);
+    QgsPoint transformLayerToCanvas( QgsPoint point );
 
     //! Transform from layer coordinates to current projection
-    QgsPoint transformLayerToMap ( QgsPoint point);
+    QgsPoint transformLayerToMap( QgsPoint point );
 
     //! Display all lines and nodes
-    void displayMap (); 
+    void displayMap();
 
-    /** 
-     *  Display icon 
+    /**
+     *  Display icon
      *  @param x x coordinate in map units
      *  @param y y coordinate in map units
      *  @param type ICON_CROSS, ICON_X
      *  @param size size in pixels, should be odd number
      */
-    void displayIcon (double x, double y, const QPen & pen, int type, int size, QPainter *painter = 0); 
+    void displayIcon( double x, double y, const QPen & pen, int type, int size, QPainter *painter = 0 );
 
-    /** 
+    /**
      *  Display dynamic drawing (XOR)
-     *  Old drawing (in mLastDynamicPoints) is deleted first, and new one is drawn and 
+     *  Old drawing (in mLastDynamicPoints) is deleted first, and new one is drawn and
      *  mLastDynamicPoints is set to Points.
      *  SYMB_DYNAMIC color is used
      */
-    void displayDynamic ( struct line_pnts *Points );
+    void displayDynamic( struct line_pnts *Points );
 
     /** Display dynamic icon */
-    void displayDynamic ( double x, double y, int type, int size ); 
+    void displayDynamic( double x, double y, int type, int size );
 
     /* Display dynamic points + icon */
-    void displayDynamic ( struct line_pnts *Points, double x, double y, int type, int size ); 
+    void displayDynamic( struct line_pnts *Points, double x, double y, int type, int size );
 
     /** Erase dynamic */
-    void eraseDynamic ( void ); 
+    void eraseDynamic( void );
 
-    /** 
+    /**
      *  Display map element (lines and points)
      *  @param line line number
      */
-    void displayElement (int line, const QPen & pen, int size, QPainter *painter = 0); 
+    void displayElement( int line, const QPen & pen, int size, QPainter *painter = 0 );
 
-    /** 
+    /**
      *  Erase element and its nodes using SYMB_BACKGROUD
      *  @param line line number
      */
-    void eraseElement ( int line ); 
+    void eraseElement( int line );
 
-    /** 
-     *  Display one node 
+    /**
+     *  Display one node
      *  @param painter pointer to painter or 0
      *  @param node node number
      *  @param size size in pixels, should be odd number
      */
-    void displayNode ( int node, const QPen & pen, int size, QPainter *painter = 0); 
+    void displayNode( int node, const QPen & pen, int size, QPainter *painter = 0 );
 
     //! Status: true - active vector was successfully opened for editing
     bool mValid;
 
     //! Initialization complete
     bool mInited;
-    
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
-    //! Pointer to canvas 
+    //! Pointer to canvas
     QgsMapCanvas *mCanvas;
 
-    //! Pointer to vector provider 
+    //! Pointer to vector provider
     QgsGrassProvider *mProvider;
-    
+
     //! Current tool (EditTools)
     int mTool;
-    
+
     //! If tool is not closed and another QGIS tool is selected, suspend is set to true.
     //  GRASS Edit will continue if the same tool is selected later.
     bool mSuspend;
 
-    //! Currently digitized line points, 
+    //! Currently digitized line points,
     //  points of currently mooving line (original coordinates)
     struct line_pnts *mEditPoints;
 
@@ -365,62 +369,62 @@ private:
     //! Marker size
     int mMarkerSize;
 
-    /** 
+    /**
      *  Read line symbology from map
      *  @return symbology code
      */
-    int lineSymbFromMap ( int line );
+    int lineSymbFromMap( int line );
 
-    /** 
+    /**
      *  Read node symbology from map
      *  @return symbology code
      */
-    int nodeSymbFromMap ( int node );
+    int nodeSymbFromMap( int node );
 
-    /** 
+    /**
      *  Set symbology of updated lines and nodes from map
      */
-    void updateSymb ( void );
+    void updateSymb( void );
 
-    /** 
+    /**
      *  Display updated lines and nodes
      */
-    void displayUpdated ( void );
+    void displayUpdated( void );
 
-    /** Write new element. Current field category is taken. 
+    /** Write new element. Current field category is taken.
      * return line number
      */
-    int writeLine (  int type, struct line_pnts *Points );
+    int writeLine( int type, struct line_pnts *Points );
 
     /** Get Current threshold in map units */
-    double threshold ( void );
+    double threshold( void );
 
     /** Snap to nearest node in current threshold */
-    void snap ( QgsPoint & point );
-    void snap ( double *x, double *y);
+    void snap( QgsPoint & point );
+    void snap( double *x, double *y );
     /** Snap point line  considering line starting point */
-    void snap ( QgsPoint & point, double startX, double startY);
+    void snap( QgsPoint & point, double startX, double startY );
 
     /** Attributes */
     QgsGrassAttributes *mAttributes;
 
-    void restorePosition(void);
+    void restorePosition( void );
 
-    void saveWindowLocation(void);
+    void saveWindowLocation( void );
 
     // Set attribute table
-    void setAttributeTable(int field);
+    void setAttributeTable( int field );
 
     // Pront which should be displayed in status bar when mouse is in canvas
     QString mCanvasPrompt;
-    
+
     // Set prompt for mouse buttons
-    void setCanvasPropmt ( QString left, QString mid, QString rigth);
+    void setCanvasPropmt( QString left, QString mid, QString rigth );
 
     // New map, add new layers on exit
     bool mNewMap;
 
-    // Actions 
+    // Actions
     QAction *mNewPointAction;
     QAction *mNewLineAction;
     QAction *mNewBoundaryAction;
@@ -435,7 +439,7 @@ private:
     QAction *mCloseEditAction;
 
     // Current map tool
-    QgsMapTool	*mMapTool;
+    QgsMapTool *mMapTool;
 
     // Is projection enabled?
     bool mProjectionEnabled;
@@ -444,7 +448,7 @@ private:
     QgsGrassEditLayer* mCanvasEdit;
     QgsRubberBand *mRubberBandLine;
     QgsVertexMarker *mRubberBandIcon;
-    
+
     // edit tools are friend classes so they can
     // access proteced/private members of QgsGrassEdit
     friend class QgsGrassEditTool;

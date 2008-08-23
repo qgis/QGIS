@@ -23,27 +23,27 @@
   */
 class dxf2shpConverterGui: public QDialog, private Ui::dxf2shpConverterGui
 {
-  Q_OBJECT
-  
-public:
-  dxf2shpConverterGui(QWidget *parent = 0, Qt::WFlags fl = 0);
-  ~dxf2shpConverterGui();
+    Q_OBJECT
 
-private:
-  static const int context_id = 0;
-  void getInputFileName();
-  void getOutputFileName();
-  void getOutputDir();
+  public:
+    dxf2shpConverterGui( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    ~dxf2shpConverterGui();
 
-private slots:
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
-  void on_buttonBox_helpRequested();
-  void on_btnBrowseForFile_clicked();
-  void on_btnBrowseOutputDir_clicked();
+  private:
+    static const int context_id = 0;
+    void getInputFileName();
+    void getOutputFileName();
+    void getOutputDir();
 
-signals:
-  void createLayer(QString,QString);
+  private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void on_buttonBox_helpRequested();
+    void on_btnBrowseForFile_clicked();
+    void on_btnBrowseOutputDir_clicked();
+
+  signals:
+    void createLayer( QString, QString );
 };
 
 #endif

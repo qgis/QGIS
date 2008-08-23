@@ -31,69 +31,69 @@
 // drand48() returns real number x where 0 <= x < 1
 // srand48() initializes generator
 
-double drand48(void) { return (double) rand() / (double) (RAND_MAX+1); }
-void srand48(long seed) { srand(seed); }
+double drand48( void ) { return ( double ) rand() / ( double )( RAND_MAX + 1 ); }
+void srand48( long seed ) { srand( seed ); }
 #endif
 
 using namespace SpatialIndex;
 using namespace SpatialIndex::StorageManager;
 using std::map;
 
-IBuffer* SpatialIndex::StorageManager::returnRandomEvictionsBuffer(IStorageManager& sm, Tools::PropertySet& ps)
+IBuffer* SpatialIndex::StorageManager::returnRandomEvictionsBuffer( IStorageManager& sm, Tools::PropertySet& ps )
 {
-	IBuffer* b = new RandomEvictionsBuffer(sm, ps);
-	return b;
+  IBuffer* b = new RandomEvictionsBuffer( sm, ps );
+  return b;
 }
 
-IBuffer* SpatialIndex::StorageManager::createNewRandomEvictionsBuffer(IStorageManager& sm, unsigned int capacity, bool bWriteThrough)
+IBuffer* SpatialIndex::StorageManager::createNewRandomEvictionsBuffer( IStorageManager& sm, unsigned int capacity, bool bWriteThrough )
 {
-	Tools::Variant var;
-	Tools::PropertySet ps;
+  Tools::Variant var;
+  Tools::PropertySet ps;
 
-	var.m_varType = Tools::VT_ULONG;
-	var.m_val.ulVal = capacity;
-	ps.setProperty("Capacity", var);
+  var.m_varType = Tools::VT_ULONG;
+  var.m_val.ulVal = capacity;
+  ps.setProperty( "Capacity", var );
 
-	var.m_varType = Tools::VT_BOOL;
-	var.m_val.blVal = bWriteThrough;
-	ps.setProperty("WriteThrough", var);
+  var.m_varType = Tools::VT_BOOL;
+  var.m_val.blVal = bWriteThrough;
+  ps.setProperty( "WriteThrough", var );
 
-	return returnRandomEvictionsBuffer(sm, ps);
+  return returnRandomEvictionsBuffer( sm, ps );
 }
 
-RandomEvictionsBuffer::RandomEvictionsBuffer(IStorageManager& sm, Tools::PropertySet& ps) : Buffer(sm, ps)
+RandomEvictionsBuffer::RandomEvictionsBuffer( IStorageManager& sm, Tools::PropertySet& ps ) : Buffer( sm, ps )
 {
-	srand48((long)time(NULL));
+  srand48(( long )time( NULL ) );
 }
 
 RandomEvictionsBuffer::~RandomEvictionsBuffer()
 {
 }
 
-void RandomEvictionsBuffer::addEntry(long id, Entry* e)
+void RandomEvictionsBuffer::addEntry( long id, Entry* e )
 {
-	assert(m_buffer.size() <= m_capacity);
+  assert( m_buffer.size() <= m_capacity );
 
-	if (m_buffer.size() == m_capacity) removeEntry();
-	assert(m_buffer.find(id) == m_buffer.end());
-	m_buffer.insert(std::pair<long, Entry*>(id, e));
+  if ( m_buffer.size() == m_capacity ) removeEntry();
+  assert( m_buffer.find( id ) == m_buffer.end() );
+  m_buffer.insert( std::pair<long, Entry*>( id, e ) );
 }
 
 void RandomEvictionsBuffer::removeEntry()
 {
-	if (m_buffer.size() == 0) return;
+  if ( m_buffer.size() == 0 ) return;
 
-	unsigned int entry = (unsigned int) floor(((double) m_buffer.size()) * drand48());
+  unsigned int entry = ( unsigned int ) floor((( double ) m_buffer.size() ) * drand48() );
 
-	map<long, Entry*>::iterator it = m_buffer.begin();
-	for (unsigned int cIndex = 0; cIndex < entry; cIndex++) it++;
+  map<long, Entry*>::iterator it = m_buffer.begin();
+  for ( unsigned int cIndex = 0; cIndex < entry; cIndex++ ) it++;
 
-	if ((*it).second->m_bDirty)
-	{
-		long id = (*it).first;
-		m_pStorageManager->storeByteArray(id, ((*it).second)->m_length, (const byte *) ((*it).second)->m_pData);
-	}
+  if (( *it ).second->m_bDirty )
+  {
+    long id = ( *it ).first;
+    m_pStorageManager->storeByteArray( id, (( *it ).second )->m_length, ( const byte * )(( *it ).second )->m_pData );
+  }
 
-	delete (*it).second;
-	m_buffer.erase(it);
+  delete( *it ).second;
+  m_buffer.erase( it );
 }

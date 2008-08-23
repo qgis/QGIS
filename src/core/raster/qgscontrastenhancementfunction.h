@@ -15,7 +15,7 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #ifndef QGSCONTRASTENHANCEMENTFUNCTION_H
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
@@ -25,19 +25,19 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 {
 
   public:
-    QgsContrastEnhancementFunction(QgsContrastEnhancement::QgsRasterDataType, double, double);
+    QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType, double, double );
     virtual ~QgsContrastEnhancementFunction() {}
-    
+
     /** \brief Mustator for the maximum value */
-    void setMaximumValue(double);    
+    void setMaximumValue( double );
     /** \brief Mutator for the minimum value */
-    void setMinimumValue(double);
-    
+    void setMinimumValue( double );
+
     /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */
-    virtual int enhanceValue(double);
+    virtual int enhanceValue( double );
     /** \brief A customicable method to indicate if the pixels is displayable */
-    virtual bool isValueInDisplayableRange(double);
-    
+    virtual bool isValueInDisplayableRange( double );
+
   protected:
     /** \brief User defineable maximum value for the band, used for stretching */
     double mMaximumValue;

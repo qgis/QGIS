@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 
 #ifndef QGSSEARCHSTRING_H
 #define QGSSEARCHSTRING_H
@@ -26,7 +26,7 @@ class QgsSearchTreeNode;
 
 /** \ingroup core
  * A class to represent a search string.
- * - interface for 'search string' parser 
+ * - interface for 'search string' parser
  * - when a string is set, it parses it and creates parsed tree of it
  * - owns node tree and coresponding search string
  * - keeps string and node tree always in sync
@@ -34,47 +34,47 @@ class QgsSearchTreeNode;
  */
 class CORE_EXPORT QgsSearchString
 {
-public:
-  //! constructor
-  QgsSearchString();
-  
-  //! copy constructor - makes also copy of search tree
-  QgsSearchString(const QgsSearchString& str);
+  public:
+    //! constructor
+    QgsSearchString();
 
-  //! destructor - deletes node tree
-  ~QgsSearchString();
-  
-  //! assigment operator takes care to copy search tree correctly
-  QgsSearchString& operator=(const QgsSearchString& str);
+    //! copy constructor - makes also copy of search tree
+    QgsSearchString( const QgsSearchString& str );
 
-  /** sets search string and parses search tree
-      on success returns true and sets member variables to the new values */
-  bool setString(QString str);
+    //! destructor - deletes node tree
+    ~QgsSearchString();
 
-  /* copies tree and makes search string for it
-     on success returns true and sets member variables to the new values */
-  bool setTree(QgsSearchTreeNode* tree);
-  
-  //! getter functions
-  QgsSearchTreeNode* tree() { return mTree; }
-  QString string() { return mString; }
+    //! assigment operator takes care to copy search tree correctly
+    QgsSearchString& operator=( const QgsSearchString& str );
 
-  //! returns parser error message - valid only after unsuccessfull parsing
-  const QString& parserErrorMsg() { return mParserErrorMsg; }
+    /** sets search string and parses search tree
+        on success returns true and sets member variables to the new values */
+    bool setString( QString str );
 
-  //! returns true if no string is set
-  bool isEmpty();
+    /* copies tree and makes search string for it
+       on success returns true and sets member variables to the new values */
+    bool setTree( QgsSearchTreeNode* tree );
 
-  //! clear search string
-  void setEmpty();
-    
-private:
-  //! search string and coresponding tree
-  QgsSearchTreeNode*    mTree;
-  QString               mString;
+    //! getter functions
+    QgsSearchTreeNode* tree() { return mTree; }
+    QString string() { return mString; }
 
-  //! error message from parser
-  QString               mParserErrorMsg;
+    //! returns parser error message - valid only after unsuccessfull parsing
+    const QString& parserErrorMsg() { return mParserErrorMsg; }
+
+    //! returns true if no string is set
+    bool isEmpty();
+
+    //! clear search string
+    void setEmpty();
+
+  private:
+    //! search string and coresponding tree
+    QgsSearchTreeNode*    mTree;
+    QString               mString;
+
+    //! error message from parser
+    QString               mParserErrorMsg;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsrendercontext.cpp    
+                              qgsrendercontext.cpp
                               --------------------
   begin                : March 16, 2008
   copyright            : (C) 2008 by Marco Hugentobler
@@ -18,7 +18,7 @@
 
 #include "qgsrendercontext.h"
 
-QgsRenderContext::QgsRenderContext(): mPainter(0), mCoordTransform(0), mDrawEditingInformation(false), mForceVectorOutput(true), mRenderingStopped(false), mScaleFactor(1.0), mRasterScaleFactor(1.0)
+QgsRenderContext::QgsRenderContext(): mPainter( 0 ), mCoordTransform( 0 ), mDrawEditingInformation( false ), mForceVectorOutput( true ), mRenderingStopped( false ), mScaleFactor( 1.0 ), mRasterScaleFactor( 1.0 )
 {
 
 }
@@ -28,7 +28,7 @@ QgsRenderContext::~QgsRenderContext()
   delete mCoordTransform;
 }
 
-void QgsRenderContext::setCoordTransform(QgsCoordinateTransform* t) 
+void QgsRenderContext::setCoordTransform( QgsCoordinateTransform* t )
 {
   delete mCoordTransform;
   mCoordTransform = t;

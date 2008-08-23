@@ -1,10 +1,10 @@
 /***************************************************************************
-    [pluginlcasename].h 
+    [pluginlcasename].h
     -------------------
     begin                : Jan 21, 2004
     copyright            : (C) 2004 by Tim Sutton
     email                : tim@linfiniti.com
-  
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,10 +15,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /*  $Id$ */
+/*  $Id$ */
 /***************************************************************************
  *   QGIS Programming conventions:
- *   
+ *
  *   mVariableName - a class level member variable
  *   sVariableName - a static class level member variable
  *   variableName() - accessor for a class member (no 'get' in front of name)
@@ -28,7 +28,7 @@
  *
  *   theVariableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
- * 
+ *
  *   DO: Use mixed case variable names - myVariableName
  *   DON'T: separate variable names using underscores: my_variable_name (NO!)
  *
@@ -53,54 +53,54 @@ class QgisInterface;
 * \brief [name] plugin for QGIS
 * [description]
 */
-class [pluginname]:public QObject, public QgisPlugin
+class [pluginname]: public QObject, public QgisPlugin
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-      
-  //////////////////////////////////////////////////////////////////////
-  //
-  //                MANDATORY PLUGIN METHODS FOLLOW
-  //
-  //////////////////////////////////////////////////////////////////////
 
-  /** 
-  * Constructor for a plugin. The QgisInterface pointer is passed by 
-  * QGIS when it attempts to instantiate the plugin.
-  * @param theInterface Pointer to the QgisInterface object. 
-   */
-  [pluginname](QgisInterface * theInterface);
-  //! Destructor
-  virtual ~[pluginname]();
+    //////////////////////////////////////////////////////////////////////
+    //
+    //                MANDATORY PLUGIN METHODS FOLLOW
+    //
+    //////////////////////////////////////////////////////////////////////
 
-public slots:
-  //! init the gui
-  virtual void initGui();
-  //! Show the dialog box
-  void run();
-  //! unload the plugin
-  void unload();
-  //! show the help document
-  void help();
+    /**
+    * Constructor for a plugin. The QgisInterface pointer is passed by
+    * QGIS when it attempts to instantiate the plugin.
+    * @param theInterface Pointer to the QgisInterface object.
+     */
+    [pluginname]( QgisInterface * theInterface );
+    //! Destructor
+    virtual ~[pluginname]();
 
-private:
+  public slots:
+    //! init the gui
+    virtual void initGui();
+    //! Show the dialog box
+    void run();
+    //! unload the plugin
+    void unload();
+    //! show the help document
+    void help();
 
-  ////////////////////////////////////////////////////////////////////
-  //
-  // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
-  //
-  ////////////////////////////////////////////////////////////////////
-  
-  int mPluginType;
-  //! Pointer to the QGIS interface object
-  QgisInterface *mQGisIface;
-  //!pointer to the qaction for this plugin
-  QAction * mQActionPointer;
-  ////////////////////////////////////////////////////////////////////
-  //
-  // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-  //
-  ////////////////////////////////////////////////////////////////////
+  private:
+
+    ////////////////////////////////////////////////////////////////////
+    //
+    // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
+    //
+    ////////////////////////////////////////////////////////////////////
+
+    int mPluginType;
+    //! Pointer to the QGIS interface object
+    QgisInterface *mQGisIface;
+    //!pointer to the qaction for this plugin
+    QAction * mQActionPointer;
+    ////////////////////////////////////////////////////////////////////
+    //
+    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
+    //
+    ////////////////////////////////////////////////////////////////////
 };
 
 #endif //[pluginname]_H

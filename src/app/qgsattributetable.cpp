@@ -32,8 +32,8 @@
 #include <QMenu>
 
 
-QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate(QgsAttributeTable *table, QObject *parent)
-  : QItemDelegate(parent), mTable(table)
+QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate( QgsAttributeTable *table, QObject *parent )
+    : QItemDelegate( parent ), mTable( table )
 {
 }
 
@@ -42,51 +42,51 @@ QWidget *QgsAttributeTableItemDelegate::createEditor(
   const QStyleOptionViewItem &option,
   const QModelIndex &index ) const
 {
-  QWidget *editor = QItemDelegate::createEditor(parent, option, index);
-  QLineEdit *le = dynamic_cast<QLineEdit*>(editor);
-  if (!le)
+  QWidget *editor = QItemDelegate::createEditor( parent, option, index );
+  QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
+  if ( !le )
     return editor;
 
   int col = index.column();
-  QTableWidgetItem *twi = mTable->horizontalHeaderItem(col);
-  if(!twi)
+  QTableWidgetItem *twi = mTable->horizontalHeaderItem( col );
+  if ( !twi )
   {
-    QgsDebugMsg( QString("horizontalHeaderItem %1 not found").arg(col) );
+    QgsDebugMsg( QString( "horizontalHeaderItem %1 not found" ).arg( col ) );
     return editor;
   }
 
-  int type = twi->data(QgsAttributeTable::AttributeType).toInt();
-  if( type==QVariant::Int )
+  int type = twi->data( QgsAttributeTable::AttributeType ).toInt();
+  if ( type == QVariant::Int )
   {
-    le->setValidator( new QIntValidator(le) );
+    le->setValidator( new QIntValidator( le ) );
   }
-  else if( type==QVariant::Double )
+  else if ( type == QVariant::Double )
   {
-    le->setValidator( new QDoubleValidator(le) );
+    le->setValidator( new QDoubleValidator( le ) );
   }
 
   return editor;
 }
 
 
-QgsAttributeTable::QgsAttributeTable(QWidget * parent) :
-        QTableWidget(parent),
-        lockKeyPressed(false),
-        mEditable(false),
-        mEdited(false),
-        mActionPopup(0),
-        mPreviousSortIndicatorColumn(-1)
+QgsAttributeTable::QgsAttributeTable( QWidget * parent ) :
+    QTableWidget( parent ),
+    lockKeyPressed( false ),
+    mEditable( false ),
+    mEdited( false ),
+    mActionPopup( 0 ),
+    mPreviousSortIndicatorColumn( -1 )
 {
-  QFont f(font());
-  f.setFamily("Helvetica");
-  f.setPointSize(9);
-  setFont(f);
-  mDelegate = new QgsAttributeTableItemDelegate(this);
-  setItemDelegate(mDelegate);
-  setSelectionBehavior(QAbstractItemView::SelectRows);
-  connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
-  connect(horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(columnClicked(int)));
-  connect(verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(rowClicked(int)));
+  QFont f( font() );
+  f.setFamily( "Helvetica" );
+  f.setPointSize( 9 );
+  setFont( f );
+  mDelegate = new QgsAttributeTableItemDelegate( this );
+  setItemDelegate( mDelegate );
+  setSelectionBehavior( QAbstractItemView::SelectRows );
+  connect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
+  connect( horizontalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( columnClicked( int ) ) );
+  connect( verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( rowClicked( int ) ) );
   setFocus();
 }
 
@@ -96,89 +96,90 @@ QgsAttributeTable::~QgsAttributeTable()
   delete mDelegate;
 }
 
-void QgsAttributeTable::setReadOnly(bool b)
+void QgsAttributeTable::setReadOnly( bool b )
 {
-  setEditTriggers(b ? QAbstractItemView::NoEditTriggers :
-    QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
-  if(!b) {
-    setColumnReadOnly(0, true);
-  }
-}
-
-void QgsAttributeTable::setColumnReadOnly(int col, bool ro)
-{
-  for (int i = 0; i < rowCount(); ++i)
+  setEditTriggers( b ? QAbstractItemView::NoEditTriggers :
+                   QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed );
+  if ( !b )
   {
-    QTableWidgetItem *twi = item(i, col);
-    twi->setFlags(ro ? twi->flags() & ~Qt::ItemIsEditable : twi->flags() | Qt::ItemIsEditable);
+    setColumnReadOnly( 0, true );
   }
 }
 
-void QgsAttributeTable::columnClicked(int col)
+void QgsAttributeTable::setColumnReadOnly( int col, bool ro )
 {
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+  for ( int i = 0; i < rowCount(); ++i )
+  {
+    QTableWidgetItem *twi = item( i, col );
+    twi->setFlags( ro ? twi->flags() & ~Qt::ItemIsEditable : twi->flags() | Qt::ItemIsEditable );
+  }
+}
+
+void QgsAttributeTable::columnClicked( int col )
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
   //store the ids of the selected rows in a list
   QList<int> idsOfSelected;
   QList<QTableWidgetSelectionRange> selection = selectedRanges();
-  for (int i = 0; i < selection.count(); i++)
+  for ( int i = 0; i < selection.count(); i++ )
   {
-    for (int j = selection.at(i).topRow(); j <= selection.at(i).bottomRow(); j++)
+    for ( int j = selection.at( i ).topRow(); j <= selection.at( i ).bottomRow(); j++ )
     {
-      idsOfSelected.append(item(j, 0)->text().toInt());
+      idsOfSelected.append( item( j, 0 )->text().toInt() );
     }
   }
 
   QHeaderView *header = horizontalHeader();
-  if (!header->isSortIndicatorShown())
+  if ( !header->isSortIndicatorShown() )
   {
-    header->setSortIndicatorShown(true);
-    header->setSortIndicator(col, Qt::AscendingOrder);
+    header->setSortIndicatorShown( true );
+    header->setSortIndicator( col, Qt::AscendingOrder );
   }
-  if (col != mPreviousSortIndicatorColumn)
+  if ( col != mPreviousSortIndicatorColumn )
   {
     // Workaround for QTableView sortIndicator displayed in wrong direction
-    header->setSortIndicator(col, header->sortIndicatorOrder() == Qt::AscendingOrder ?
-      Qt::DescendingOrder : Qt::AscendingOrder);
+    header->setSortIndicator( col, header->sortIndicatorOrder() == Qt::AscendingOrder ?
+                              Qt::DescendingOrder : Qt::AscendingOrder );
   }
   mPreviousSortIndicatorColumn = col;
-  sortColumn(col, header->sortIndicatorOrder() == Qt::DescendingOrder);
+  sortColumn( col, header->sortIndicatorOrder() == Qt::DescendingOrder );
 
   //clear and rebuild rowIdMap. Overwrite sortColumn later and sort rowIdMap there
   rowIdMap.clear();
   int id;
-  for (int i = 0; i < rowCount(); i++)
+  for ( int i = 0; i < rowCount(); i++ )
   {
-    id = item(i, 0)->text().toInt();
-    rowIdMap.insert(id, i);
+    id = item( i, 0 )->text().toInt();
+    rowIdMap.insert( id, i );
   }
 
-  disconnect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
+  disconnect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
   clearSelection();
 
   //select the rows again after sorting
 
   QList < int >::iterator it;
-  for (it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it)
+  for ( it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it )
   {
-    selectRowWithId((*it));
+    selectRowWithId(( *it ) );
   }
-  connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
+  connect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
 
   QApplication::restoreOverrideCursor();
 }
 
-void QgsAttributeTable::keyPressEvent(QKeyEvent * ev)
+void QgsAttributeTable::keyPressEvent( QKeyEvent * ev )
 {
-  if (ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift)
+  if ( ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift )
   {
     lockKeyPressed = true;
   }
 }
 
-void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
+void QgsAttributeTable::keyReleaseEvent( QKeyEvent * ev )
 {
-  if (ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift)
+  if ( ev->key() == Qt::Key_Control || ev->key() == Qt::Key_Shift )
   {
     lockKeyPressed = false;
   }
@@ -186,15 +187,15 @@ void QgsAttributeTable::keyReleaseEvent(QKeyEvent * ev)
 
 void QgsAttributeTable::handleChangedSelections()
 {
-  emit selectionRemoved(false);
+  emit selectionRemoved( false );
 
   QList<QTableWidgetSelectionRange> selectedItemRanges = selectedRanges();
   QList<QTableWidgetSelectionRange>::const_iterator range_it = selectedItemRanges.constBegin();
-  for (; range_it != selectedItemRanges.constEnd(); ++range_it)
-  { 
-    for (int index = range_it->topRow(); index <= range_it->bottomRow(); index++)
+  for ( ; range_it != selectedItemRanges.constEnd(); ++range_it )
+  {
+    for ( int index = range_it->topRow(); index <= range_it->bottomRow(); index++ )
     {
-      emit selected(item(index, 0)->text().toInt(), false);
+      emit selected( item( index, 0 )->text().toInt(), false );
     }
   }
 
@@ -203,34 +204,34 @@ void QgsAttributeTable::handleChangedSelections()
   //todo: don't repaint in case of double clicks
 }
 
-void QgsAttributeTable::insertFeatureId(int id, int row)
+void QgsAttributeTable::insertFeatureId( int id, int row )
 {
-  rowIdMap.insert(id, row);
+  rowIdMap.insert( id, row );
 }
 
-void QgsAttributeTable::selectRowWithId(int id)
+void QgsAttributeTable::selectRowWithId( int id )
 {
-  QMap < int, int >::iterator it = rowIdMap.find(id);
-  setRangeSelected(QTableWidgetSelectionRange(it.value(), 0, it.value(), columnCount()-1), true);
+  QMap < int, int >::iterator it = rowIdMap.find( id );
+  setRangeSelected( QTableWidgetSelectionRange( it.value(), 0, it.value(), columnCount() - 1 ), true );
 }
 
-void QgsAttributeTable::sortColumn(int col, bool ascending)
+void QgsAttributeTable::sortColumn( int col, bool ascending )
 {
-  int type = horizontalHeaderItem(col)->data(QgsAttributeTable::AttributeType).toInt();
-  qsort(0, rowCount() - 1, col, ascending, type!=QVariant::Int && type!=QVariant::Double);
+  int type = horizontalHeaderItem( col )->data( QgsAttributeTable::AttributeType ).toInt();
+  qsort( 0, rowCount() - 1, col, ascending, type != QVariant::Int && type != QVariant::Double );
 }
 
 
 /**
   XXX Doesn't QString have something ilke this already?
 */
-int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool alphanumeric)
+int QgsAttributeTable::compareItems( QString s1, QString s2, bool ascending, bool alphanumeric )
 {
-  if (alphanumeric)
+  if ( alphanumeric )
   {
-    if (s1 > s2)
+    if ( s1 > s2 )
     {
-      if (ascending)
+      if ( ascending )
       {
         return 1;
       }
@@ -239,9 +240,9 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
         return -1;
       }
     }
-    else if (s1 < s2)
+    else if ( s1 < s2 )
     {
-      if (ascending)
+      if ( ascending )
       {
         return -1;
       }
@@ -250,7 +251,7 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
         return 1;
       }
     }
-    else if (s1 == s2)
+    else if ( s1 == s2 )
     {
       return 0;
     }
@@ -259,9 +260,9 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
   {
     double d1 = s1.toDouble();
     double d2 = s2.toDouble();
-    if (d1 > d2)
+    if ( d1 > d2 )
     {
-      if (ascending)
+      if ( ascending )
       {
         return 1;
       }
@@ -270,9 +271,9 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
         return -1;
       }
     }
-    else if (d1 < d2)
+    else if ( d1 < d2 )
     {
-      if (ascending)
+      if ( ascending )
       {
         return -1;
       }
@@ -281,7 +282,7 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
         return 1;
       }
     }
-    else if (d1 == d2)
+    else if ( d1 == d2 )
     {
       return 0;
     }
@@ -290,69 +291,69 @@ int QgsAttributeTable::compareItems(QString s1, QString s2, bool ascending, bool
   return 0;                     // XXX has to return something; is this reasonable?
 }
 
-void QgsAttributeTable::qsort(int lower, int upper, int col, bool ascending, bool alphanumeric)
+void QgsAttributeTable::qsort( int lower, int upper, int col, bool ascending, bool alphanumeric )
 {
   int i, j;
   QString v;
-  if (upper > lower)
+  if ( upper > lower )
   {
     //chose a random element (this avoids n^2 worst case)
-    int element = int ( (double)rand() / (double)RAND_MAX * (upper - lower) + lower);
-    swapRows(element, upper);
-    v = item(upper, col)->text();
+    int element = int (( double )rand() / ( double )RAND_MAX * ( upper - lower ) + lower );
+    swapRows( element, upper );
+    v = item( upper, col )->text();
     i = lower - 1;
     j = upper;
-    for (;;)
+    for ( ;; )
     {
-      while (compareItems(item(++i, col)->text(), v, ascending, alphanumeric) == -1)
+      while ( compareItems( item( ++i, col )->text(), v, ascending, alphanumeric ) == -1 )
         ;
-      while (compareItems(item(--j, col)->text(), v, ascending, alphanumeric) == 1 && j > 0); //make sure that j does not get negative
-      if (i >= j)
+      while ( compareItems( item( --j, col )->text(), v, ascending, alphanumeric ) == 1 && j > 0 ); //make sure that j does not get negative
+      if ( i >= j )
       {
         break;
       }
-      swapRows(i, j);
+      swapRows( i, j );
     }
-    swapRows(i, upper);
-    qsort(lower, i - 1, col, ascending, alphanumeric);
-    qsort(i + 1, upper, col, ascending, alphanumeric);
+    swapRows( i, upper );
+    qsort( lower, i - 1, col, ascending, alphanumeric );
+    qsort( i + 1, upper, col, ascending, alphanumeric );
   }
 }
 
-void QgsAttributeTable::swapRows(int row1, int row2)
+void QgsAttributeTable::swapRows( int row1, int row2 )
 {
-  for (int col = 0; col < columnCount(); col++)
+  for ( int col = 0; col < columnCount(); col++ )
   {
-    QTableWidgetItem *item = takeItem(row1, col);
-    setItem(row1, col, takeItem(row2, col));
-    setItem(row2, col, item);
+    QTableWidgetItem *item = takeItem( row1, col );
+    setItem( row1, col, takeItem( row2, col ) );
+    setItem( row2, col, item );
   }
 }
 
-void QgsAttributeTable::contextMenuEvent(QContextMenuEvent *event)
+void QgsAttributeTable::contextMenuEvent( QContextMenuEvent *event )
 {
   const QPoint& pos = event->globalPos();
-  int row = rowAt(pos.x());
-  int col = columnAt(pos.y());
+  int row = rowAt( pos.x() );
+  int col = columnAt( pos.y() );
 
   // Duplication of code in qgsidentufyresults.cpp. Consider placing
   // in a seperate class
-  if (mActionPopup == 0)
+  if ( mActionPopup == 0 )
   {
     mActionPopup = new QMenu();
-    mActionPopup->addAction( tr("Run action") );
+    mActionPopup->addAction( tr( "Run action" ) );
     mActionPopup->addSeparator();
 
-    QgsAttributeAction::aIter	iter = mActions.begin();
-    for (int j = 0; iter != mActions.end(); ++iter, ++j)
+    QgsAttributeAction::aIter iter = mActions.begin();
+    for ( int j = 0; iter != mActions.end(); ++iter, ++j )
     {
-      QAction* a = mActionPopup->addAction(iter->name());
+      QAction* a = mActionPopup->addAction( iter->name() );
       // The menu action stores an integer that is used later on to
       // associate an menu action with an actual qgis action.
-      a->setData(QVariant::fromValue(j));
+      a->setData( QVariant::fromValue( j ) );
     }
-    connect(mActionPopup, SIGNAL(triggered(QAction*)),
-            this, SLOT(popupItemSelected(QAction*)));
+    connect( mActionPopup, SIGNAL( triggered( QAction* ) ),
+             this, SLOT( popupItemSelected( QAction* ) ) );
   }
 
   // Get and store the attribute values and their column names are
@@ -360,9 +361,9 @@ void QgsAttributeTable::contextMenuEvent(QContextMenuEvent *event)
   // chooses one.
   mActionValues.clear();
 
-  for (int i = 0; i < columnCount(); ++i)
+  for ( int i = 0; i < columnCount(); ++i )
   {
-    if (row >= 0) //prevent crash if row is negative, see ticket #1149
+    if ( row >= 0 ) //prevent crash if row is negative, see ticket #1149
     {
       mActionValues.push_back(
         std::make_pair(
@@ -374,14 +375,14 @@ void QgsAttributeTable::contextMenuEvent(QContextMenuEvent *event)
   // mActionValues vector.
   mClickedOnValue = col;
 
-  if (mActions.size() > 0)
-    mActionPopup->popup(pos);  
+  if ( mActions.size() > 0 )
+    mActionPopup->popup( pos );
 }
 
-void QgsAttributeTable::popupItemSelected(QAction* menuAction)
+void QgsAttributeTable::popupItemSelected( QAction* menuAction )
 {
   int id = menuAction->data().toInt();
-  mActions.doAction(id, mActionValues, mClickedOnValue);
+  mActions.doAction( id, mActionValues, mClickedOnValue );
 }
 
 /* Deprecated: See QgisApp::editCopy() instead */
@@ -393,24 +394,24 @@ void QgsAttributeTable::copySelectedRows()
   const char fieldSep = '\t';
 
   // Pick up the headers first
-  for (int i = 0; i < columnCount(); ++i)
-    toClipboard += horizontalHeaderItem(i)->text() + fieldSep;
+  for ( int i = 0; i < columnCount(); ++i )
+    toClipboard += horizontalHeaderItem( i )->text() + fieldSep;
   toClipboard += '\n';
 
   QList<QTableWidgetSelectionRange> selection = selectedRanges();
   // Then populate with the cell contents
-  for (int i = 0; i < selection.count(); ++i)
+  for ( int i = 0; i < selection.count(); ++i )
   {
-    QTableWidgetSelectionRange sel = selection.at(i);
-    for (int row = sel.topRow(); row < sel.topRow()+sel.rowCount(); ++row)
+    QTableWidgetSelectionRange sel = selection.at( i );
+    for ( int row = sel.topRow(); row < sel.topRow() + sel.rowCount(); ++row )
     {
-      for (int column = 0; column < columnCount(); ++column)
-        toClipboard += item(row, column)->text() + fieldSep;
+      for ( int column = 0; column < columnCount(); ++column )
+        toClipboard += item( row, column )->text() + fieldSep;
       toClipboard += '\n';
     }
   }
 #ifdef QGISDEBUG
-  std::cerr << "Selected data in table is:\n" << toClipboard.data();
+  std::cerr << "Selected data in table is:\n" << toClipboard.data(); // OK
 #endif
   // And then copy to the clipboard
   QClipboard* clipboard = QApplication::clipboard();
@@ -423,41 +424,41 @@ void QgsAttributeTable::copySelectedRows()
 
   // The ::Selection setText() below one may need placing inside so
   // #ifdef so that it doesn't get compiled under Windows.
-  clipboard->setText(toClipboard, QClipboard::Selection);
-  clipboard->setText(toClipboard, QClipboard::Clipboard);
+  clipboard->setText( toClipboard, QClipboard::Selection );
+  clipboard->setText( toClipboard, QClipboard::Clipboard );
 }
 
-void QgsAttributeTable::fillTable(QgsVectorLayer *layer)
+void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
 {
   const QgsFieldMap &fields = layer->pendingFields();
 
   // set up the column headers
-  setColumnCount(fields.size()+1);
+  setColumnCount( fields.size() + 1 );
 
-  setHorizontalHeaderItem(0, new QTableWidgetItem("id")); //label for the id-column
+  setHorizontalHeaderItem( 0, new QTableWidgetItem( "id" ) ); //label for the id-column
 
   int h = 1;
-  for (QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt!=fields.end(); fldIt++, h++)
+  for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); fldIt++, h++ )
   {
-    QgsDebugMsg( QString("%1: field %2: %3 | %4")
-                   .arg(h).arg(fldIt.key()).arg(fldIt->name()).arg( QVariant::typeToName(fldIt->type()) ) );
+    QgsDebugMsg( QString( "%1: field %2: %3 | %4" )
+                 .arg( h ).arg( fldIt.key() ).arg( fldIt->name() ).arg( QVariant::typeToName( fldIt->type() ) ) );
 
-    QTableWidgetItem *twi = new QTableWidgetItem(fldIt->name());
+    QTableWidgetItem *twi = new QTableWidgetItem( fldIt->name() );
     twi->setData( AttributeIndex, fldIt.key() );
     twi->setData( AttributeName, fldIt->name() );
     twi->setData( AttributeType, fldIt->type() );
-    setHorizontalHeaderItem(h, twi);
+    setHorizontalHeaderItem( h, twi );
 
-    mAttrIdxMap.insert(fldIt.key(), h);
+    mAttrIdxMap.insert( fldIt.key(), h );
   }
 
   QgsFeatureList features;
-  if( layer->selectedFeatureCount()==0 )
+  if ( layer->selectedFeatureCount() == 0 )
   {
-    layer->select(layer->pendingAllAttributesList(), QgsRect(), false);
+    layer->select( layer->pendingAllAttributesList(), QgsRect(), false );
 
     QgsFeature f;
-    while( layer->getNextFeature(f) )
+    while ( layer->getNextFeature( f ) )
       features << f;
   }
   else
@@ -466,121 +467,123 @@ void QgsAttributeTable::fillTable(QgsVectorLayer *layer)
   }
 
   setRowCount( features.size() );
-  
-  for(int i=0; i<features.size(); i++)
-    putFeatureInTable(i, features[i]);
+
+  for ( int i = 0; i < features.size(); i++ )
+    putFeatureInTable( i, features[i] );
 
   // Default row height is too tall
   resizeRowsToContents();
 
   // Make each column wide enough to show all the contents
-  for (int i=0; i<columnCount(); i++)
-    resizeColumnToContents(i);
+  for ( int i = 0; i < columnCount(); i++ )
+    resizeColumnToContents( i );
 }
 
-void QgsAttributeTable::putFeatureInTable(int row, const QgsFeature& fet)
+void QgsAttributeTable::putFeatureInTable( int row, const QgsFeature& fet )
 {
   // Prevent a crash if a provider doesn't update the feature count properly
-  if(row >= rowCount())
+  if ( row >= rowCount() )
   {
-    setRowCount(row+1);
+    setRowCount( row + 1 );
   }
 
   //id-field
   int id = fet.featureId();
-  QTableWidgetItem *twi = new QTableWidgetItem(QString::number(id));
-  twi->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  setItem(row, 0, twi);
-  insertFeatureId(id, row);  //insert the id into the search tree of qgsattributetable
+  QTableWidgetItem *twi = new QTableWidgetItem( QString::number( id ) );
+  twi->setTextAlignment( Qt::AlignRight | Qt::AlignVCenter );
+  setItem( row, 0, twi );
+  insertFeatureId( id, row );  //insert the id into the search tree of qgsattributetable
 
   const QgsAttributeMap& attr = fet.attributeMap();
 
-  for (QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it)
-  { 
-    if( !mAttrIdxMap.contains( it.key() ) )
+  for ( QgsAttributeMap::const_iterator it = attr.begin(); it != attr.end(); ++it )
+  {
+    if ( !mAttrIdxMap.contains( it.key() ) )
       continue;
 
-    int h = mAttrIdxMap[ it.key() ];
+    int h = mAttrIdxMap[ it.key()];
 
-    twi = horizontalHeaderItem(h);
-    if(!twi)
+    twi = horizontalHeaderItem( h );
+    if ( !twi )
     {
-      QgsDebugMsg("header item not found.");
+      QgsDebugMsg( "header item not found." );
       continue;
     }
 
-    int type = twi->data(AttributeType).toInt();
-    bool isNum = (type == QVariant::Double || type == QVariant::Int);
+    int type = twi->data( AttributeType ).toInt();
+    bool isNum = ( type == QVariant::Double || type == QVariant::Int );
 
     QString value;
     // get the field values
-    if( it->isNull() )
+    if ( it->isNull() )
     {
-      if( isNum )
-        value="";
+      if ( isNum )
+        value = "";
       else
-        value="NULL";
-    } else {
+        value = "NULL";
+    }
+    else
+    {
       value = it->toString();
     }
 
-    twi = new QTableWidgetItem(value);
-    if (isNum)
-      twi->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    setItem(row, h, twi);
+    twi = new QTableWidgetItem( value );
+    if ( isNum )
+      twi->setTextAlignment( Qt::AlignRight | Qt::AlignVCenter );
+    setItem( row, h, twi );
   }
 }
 
 void QgsAttributeTable::bringSelectedToTop()
 {
-  blockSignals(true);
-  horizontalHeader()->setSortIndicatorShown(false);
+  blockSignals( true );
+  horizontalHeader()->setSortIndicatorShown( false );
   mPreviousSortIndicatorColumn = -1;
-  int swaptorow=0;
+  int swaptorow = 0;
   QList<QTableWidgetSelectionRange> selections = selectedRanges();
   bool removeselection;
 
-  for(QList<QTableWidgetSelectionRange>::iterator iter=selections.begin();iter!=selections.end();++iter)
+  for ( QList<QTableWidgetSelectionRange>::iterator iter = selections.begin();iter != selections.end();++iter )
   {
-    removeselection=true;
-    while(item(swaptorow, 0)->isSelected())//selections are not necessary stored in ascending order
+    removeselection = true;
+    while ( item( swaptorow, 0 )->isSelected() )//selections are not necessary stored in ascending order
     {
       ++swaptorow;
     }
 
-    for(int j=iter->topRow();j<=iter->bottomRow();++j)
-    {   
-      if(j>swaptorow)//selections are not necessary stored in ascending order
+    for ( int j = iter->topRow();j <= iter->bottomRow();++j )
+    {
+      if ( j > swaptorow )//selections are not necessary stored in ascending order
       {
-        swapRows(j,swaptorow);
-        setRangeSelected(QTableWidgetSelectionRange(swaptorow, 0, swaptorow, columnCount()-1), true);
-        ++swaptorow;	
+        swapRows( j, swaptorow );
+        setRangeSelected( QTableWidgetSelectionRange( swaptorow, 0, swaptorow, columnCount() - 1 ), true );
+        ++swaptorow;
 
       }
       else
       {
-        removeselection=false;//keep selection
+        removeselection = false;//keep selection
       }
     }
-    if(removeselection)
-    {	    
-      setRangeSelected(*iter, false);
+    if ( removeselection )
+    {
+      setRangeSelected( *iter, false );
     }
   }
 
   //clear and rebuild rowIdMap.
   rowIdMap.clear();
   int id;
-  for (int i = 0; i < rowCount(); i++)
+  for ( int i = 0; i < rowCount(); i++ )
   {
-    id = item(i, 0)->text().toInt();
-    rowIdMap.insert(id, i);
+    id = item( i, 0 )->text().toInt();
+    rowIdMap.insert( id, i );
   }
 
-  blockSignals(false);
+  blockSignals( false );
 }
 
-void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
+void QgsAttributeTable::selectRowsWithId( const QgsFeatureIds& ids )
 {
   /*
   // if selecting rows takes too much time we can use progress dialog
@@ -605,56 +608,56 @@ void QgsAttributeTable::selectRowsWithId(const QgsFeatureIds& ids)
   // to select more rows at once effectively, we stop sending signals to handleChangedSelections()
   // otherwise it will repaint map everytime row is selected
 
-  disconnect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
+  disconnect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
 
   clearSelection();
   QgsFeatureIds::const_iterator it;
-  for (it = ids.begin(); it != ids.end(); it++)
+  for ( it = ids.begin(); it != ids.end(); it++ )
   {
-    selectRowWithId(*it);
+    selectRowWithId( *it );
   }
 
-  connect(this, SIGNAL(itemSelectionChanged()), this, SLOT(handleChangedSelections()));
+  connect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
   emit repaintRequested();
 }
 
-void QgsAttributeTable::showRowsWithId(const QgsFeatureIds& ids)
+void QgsAttributeTable::showRowsWithId( const QgsFeatureIds& ids )
 {
-  setUpdatesEnabled(false);
+  setUpdatesEnabled( false );
 
   // hide all rows first
-  for (int i = 0; i < rowCount(); i++)
-    hideRow(i);
+  for ( int i = 0; i < rowCount(); i++ )
+    hideRow( i );
 
   // show only matching rows
   QgsFeatureIds::const_iterator it;
-  for (it = ids.begin(); it != ids.end(); it++)
+  for ( it = ids.begin(); it != ids.end(); it++ )
   {
-    showRow(rowIdMap[*it]);
+    showRow( rowIdMap[*it] );
   }
 
   clearSelection(); // deselect all
-  setUpdatesEnabled(true);
+  setUpdatesEnabled( true );
 }
 
 void QgsAttributeTable::showAllRows()
 {
-  for (int i = 0; i < rowCount(); i++)
-    showRow(i);
+  for ( int i = 0; i < rowCount(); i++ )
+    showRow( i );
 }
 
-void QgsAttributeTable::rowClicked(int row)
+void QgsAttributeTable::rowClicked( int row )
 {
-  if(checkSelectionChanges())//only repaint the canvas if the selection has changed
+  if ( checkSelectionChanges() )//only repaint the canvas if the selection has changed
   {
     emit repaintRequested();
   }
 }
 
-void QgsAttributeTable::mouseReleaseEvent(QMouseEvent* e)
+void QgsAttributeTable::mouseReleaseEvent( QMouseEvent* e )
 {
-  QTableWidget::mouseReleaseEvent(e);
-  if(checkSelectionChanges())//only repaint the canvas if the selection has changed
+  QTableWidget::mouseReleaseEvent( e );
+  if ( checkSelectionChanges() )//only repaint the canvas if the selection has changed
   {
     emit repaintRequested();
   }
@@ -665,15 +668,15 @@ bool QgsAttributeTable::checkSelectionChanges()
   std::set<int> theCurrentSelection;
   QList<QTableWidgetSelectionRange> selectedItemRanges = selectedRanges();
   QList<QTableWidgetSelectionRange>::const_iterator range_it = selectedItemRanges.constBegin();
-  for (; range_it != selectedItemRanges.constEnd(); ++range_it)
+  for ( ; range_it != selectedItemRanges.constEnd(); ++range_it )
   {
-    for (int index = range_it->topRow(); index <= range_it->bottomRow(); index++)
+    for ( int index = range_it->topRow(); index <= range_it->bottomRow(); index++ )
     {
-      theCurrentSelection.insert(index);
+      theCurrentSelection.insert( index );
     }
   }
 
-  if(theCurrentSelection == mLastSelectedRows)
+  if ( theCurrentSelection == mLastSelectedRows )
   {
     return false;
   }
@@ -684,32 +687,32 @@ bool QgsAttributeTable::checkSelectionChanges()
   }
 }
 
-void QgsAttributeTable::attributeValueChanged(int fid, int idx, const QVariant &value)
+void QgsAttributeTable::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
-  if( !rowIdMap.contains(fid) )
+  if ( !rowIdMap.contains( fid ) )
     return;
 
-  if( !mAttrIdxMap.contains(idx) )
+  if ( !mAttrIdxMap.contains( idx ) )
     return;
 
   item( rowIdMap[fid], mAttrIdxMap[idx] )->setText( value.toString() );
 }
 
-void QgsAttributeTable::featureDeleted(int fid)
+void QgsAttributeTable::featureDeleted( int fid )
 {
-  if( !rowIdMap.contains(fid) )
+  if ( !rowIdMap.contains( fid ) )
     return;
 
   int row = rowIdMap[fid];
 
-  removeRow(row);
+  removeRow( row );
 
-  for(QMap<int,int>::iterator it=rowIdMap.begin(); it!=rowIdMap.end(); it++)
-    if( it.value() > row )
-      rowIdMap[ it.key() ]--;
+  for ( QMap<int, int>::iterator it = rowIdMap.begin(); it != rowIdMap.end(); it++ )
+    if ( it.value() > row )
+      rowIdMap[ it.key()]--;
 }
 
-void QgsAttributeTable::addAttribute(int attr, const QgsField &fld)
+void QgsAttributeTable::addAttribute( int attr, const QgsField &fld )
 {
   QTableWidgetItem *twi = new QTableWidgetItem( fld.name() );
   twi->setData( AttributeIndex, attr );
@@ -717,20 +720,20 @@ void QgsAttributeTable::addAttribute(int attr, const QgsField &fld)
   twi->setData( AttributeType, fld.type() );
 
   insertColumn( columnCount() );
-  setHorizontalHeaderItem(columnCount()-1, twi);
+  setHorizontalHeaderItem( columnCount() - 1, twi );
 
-  mAttrIdxMap.insert(attr, columnCount()-1);
+  mAttrIdxMap.insert( attr, columnCount() - 1 );
 }
 
-void QgsAttributeTable::deleteAttribute(int attr)
+void QgsAttributeTable::deleteAttribute( int attr )
 {
   int column = mAttrIdxMap[attr];
 
   removeColumn( column );
-  mAttrIdxMap.remove(attr);
-  for(QMap<int, int>::iterator it=mAttrIdxMap.begin(); it!=mAttrIdxMap.end(); it++)
+  mAttrIdxMap.remove( attr );
+  for ( QMap<int, int>::iterator it = mAttrIdxMap.begin(); it != mAttrIdxMap.end(); it++ )
   {
-    if( it.value()>column )
-      mAttrIdxMap[ it.key() ]--;
+    if ( it.value() > column )
+      mAttrIdxMap[ it.key()]--;
   }
 }

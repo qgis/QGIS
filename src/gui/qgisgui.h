@@ -44,9 +44,9 @@ namespace QgisGui
    */
   static const Qt::WFlags ModalDialogFlags =
 #if QT_VERSION < 0x040200
-      Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint;
+    Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint;
 #else
-      0;
+    0;
 #endif
 
 }

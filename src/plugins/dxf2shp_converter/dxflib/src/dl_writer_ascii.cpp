@@ -11,7 +11,7 @@
 ** Foundation and appearing in the file LICENSE.GPL included in the
 ** packaging of this file.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use 
+** Licensees holding valid dxflib Professional Edition licenses may use
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -35,8 +35,9 @@
 /**
  * Closes the output file.
  */
-void DL_WriterA::close() const {
-    m_ofile.close();
+void DL_WriterA::close() const
+{
+  m_ofile.close();
 }
 
 
@@ -44,8 +45,9 @@ void DL_WriterA::close() const {
  * @retval true Opening file has failed.
  * @retval false Otherwise.
  */
-bool DL_WriterA::openFailed() const {
-	return m_ofile.fail();
+bool DL_WriterA::openFailed() const
+{
+  return m_ofile.fail();
 }
 
 
@@ -56,31 +58,37 @@ bool DL_WriterA::openFailed() const {
  * @param gc Group code.
  * @param value Double value
  */
-void DL_WriterA::dxfReal(int gc, double value) const {
-    char str[256];
-    sprintf(str, "%.16f", value);
-	
-	// fix for german locale:
-	strReplace(str, ',', '.');
+void DL_WriterA::dxfReal( int gc, double value ) const
+{
+  char str[256];
+  sprintf( str, "%.16f", value );
 
-    // Cut away those zeros at the end:
-    bool dot = false;
-    int end = -1;
-    for (unsigned int i=0; i<strlen(str); ++i) {
-        if (str[i]=='.') {
-            dot = true;
-            end = i+2;
-            continue;
-        } else if (dot && str[i]!='0') {
-            end = i+1;
-        }
-    }
-    if (end>0 && end<(int)strlen(str)) {
-        str[end] = '\0';
-    }
+  // fix for german locale:
+  strReplace( str, ',', '.' );
 
-    dxfString(gc, str);
-    m_ofile.flush();
+  // Cut away those zeros at the end:
+  bool dot = false;
+  int end = -1;
+  for ( unsigned int i = 0; i < strlen( str ); ++i )
+  {
+    if ( str[i] == '.' )
+    {
+      dot = true;
+      end = i + 2;
+      continue;
+    }
+    else if ( dot && str[i] != '0' )
+    {
+      end = i + 1;
+    }
+  }
+  if ( end > 0 && end < ( int )strlen( str ) )
+  {
+    str[end] = '\0';
+  }
+
+  dxfString( gc, str );
+  m_ofile.flush();
 }
 
 
@@ -91,9 +99,10 @@ void DL_WriterA::dxfReal(int gc, double value) const {
  * @param gc Group code.
  * @param value Int value
  */
-void DL_WriterA::dxfInt(int gc, int value) const {
-    m_ofile << (gc<10 ? "  " : (gc<100 ? " " : "")) << gc << "\n"
-    << value << "\n";
+void DL_WriterA::dxfInt( int gc, int value ) const
+{
+  m_ofile << ( gc < 10 ? "  " : ( gc < 100 ? " " : "" ) ) << gc << "\n"
+  << value << "\n";
 }
 
 
@@ -104,10 +113,11 @@ void DL_WriterA::dxfInt(int gc, int value) const {
  * @param gc Group code.
  * @param value Int value
  */
-void DL_WriterA::dxfHex(int gc, int value) const {
-    char str[12];
-    sprintf(str, "%0X", value);
-    dxfString(gc, str);
+void DL_WriterA::dxfHex( int gc, int value ) const
+{
+  char str[12];
+  sprintf( str, "%0X", value );
+  dxfString( gc, str );
 }
 
 
@@ -118,33 +128,39 @@ void DL_WriterA::dxfHex(int gc, int value) const {
  * @param gc Group code.
  * @param value String
  */
-void DL_WriterA::dxfString(int gc, const char* value) const {
-    if (value==NULL) {
+void DL_WriterA::dxfString( int gc, const char* value ) const
+{
+  if ( value == NULL )
+  {
 #ifndef __GCC2x__
-        throw DL_NullStrExc();
+    throw DL_NullStrExc();
 #endif
-    }
-    m_ofile << (gc<10 ? "  " : (gc<100 ? " " : "")) << gc << "\n"
-    << value << "\n";
+  }
+  m_ofile << ( gc < 10 ? "  " : ( gc < 100 ? " " : "" ) ) << gc << "\n"
+  << value << "\n";
 }
 
 
 
-void DL_WriterA::dxfString(int gc, const string& value) const {
-    m_ofile << (gc<10 ? "  " : (gc<100 ? " " : "")) << gc << "\n"
-    << value << "\n";
+void DL_WriterA::dxfString( int gc, const string& value ) const
+{
+  m_ofile << ( gc < 10 ? "  " : ( gc < 100 ? " " : "" ) ) << gc << "\n"
+  << value << "\n";
 }
 
 
 /**
  * Replaces every occurence of src with dest in the null terminated str.
  */
-void DL_WriterA::strReplace(char* str, char src, char dest) {
-	size_t i;
-	for	(i=0; i<strlen(str); i++) {
-		if (str[i]==src) {
-			str[i] = dest;
-		}
-	}
+void DL_WriterA::strReplace( char* str, char src, char dest )
+{
+  size_t i;
+  for ( i = 0; i < strlen( str ); i++ )
+  {
+    if ( str[i] == src )
+    {
+      str[i] = dest;
+    }
+  }
 }
 

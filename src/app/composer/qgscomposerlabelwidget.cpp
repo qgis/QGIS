@@ -21,51 +21,51 @@
 #include <QFontDialog>
 #include <QWidget>
 
-QgsComposerLabelWidget::QgsComposerLabelWidget(QgsComposerLabel* label): QWidget(), mComposerLabel(label)
+QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidget(), mComposerLabel( label )
 {
-  setupUi(this);
+  setupUi( this );
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget(this, label);
-  gridLayout->addWidget(itemPropertiesWidget, 5, 0, 1, 2);
+  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
+  gridLayout->addWidget( itemPropertiesWidget, 5, 0, 1, 2 );
 
-  if(mComposerLabel)
-    {
-      mTextEdit->setText(mComposerLabel->text());
-      mMarginDoubleSpinBox->setValue(mComposerLabel->margin());
-    }
+  if ( mComposerLabel )
+  {
+    mTextEdit->setText( mComposerLabel->text() );
+    mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+  }
 }
 
 void QgsComposerLabelWidget::on_mTextEdit_textChanged()
 {
-  if(mComposerLabel)
-    {
-      mComposerLabel->setText(mTextEdit->toPlainText());
-      mComposerLabel->update();
-    }
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setText( mTextEdit->toPlainText() );
+    mComposerLabel->update();
+  }
 }
 
 void QgsComposerLabelWidget::on_mFontButton_clicked()
 {
-  if(mComposerLabel)
+  if ( mComposerLabel )
+  {
+    bool ok;
+    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this );
+    if ( ok )
     {
-      bool ok;
-      QFont newFont = QFontDialog::getFont(&ok, mComposerLabel->font(), this);
-      if(ok)
-	{
-	  mComposerLabel->setFont(newFont);
-	  mComposerLabel->update();
-	}
-    }
-}
-
-void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged(double d)
-{
-  if(mComposerLabel)
-    {
-      mComposerLabel->setMargin(d);
-      mComposerLabel->adjustSizeToText();
+      mComposerLabel->setFont( newFont );
       mComposerLabel->update();
     }
+  }
+}
+
+void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged( double d )
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->setMargin( d );
+    mComposerLabel->adjustSizeToText();
+    mComposerLabel->update();
+  }
 }
 

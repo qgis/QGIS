@@ -1,6 +1,6 @@
 /***************************************************************************
   qgshttptransaction.h  -  Tracks a HTTP request with its response,
-                           with particular attention to tracking 
+                           with particular attention to tracking
                            HTTP redirect responses
                              -------------------
     begin                : 17 Mar, 2005
@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 /* $Id: qgshttptransaction.h 5697 2006-08-15 10:29:46Z morb_au $ */
 
 #ifndef QGSHTTPTRANSACTION_H
@@ -35,159 +35,159 @@ class QTimer;
 
 class CORE_EXPORT QgsHttpTransaction : public QObject
 {
-  
-  Q_OBJECT
 
-public:
-  /**
-  * Constructor.
-  */
-  QgsHttpTransaction( QString uri,
-                      QString proxyHost = QString(),
-                      int     proxyPort = 80,
-                      QString proxyUser = QString(),
-                      QString proxyPass = QString() );
+    Q_OBJECT
 
-  //! Destructor
-  virtual ~QgsHttpTransaction();
-  
-  void getAsynchronously();
-  
-  //! Gets the response synchronously.  Note that signals will still be emitted
-  //! while in this function.
+  public:
+    /**
+    * Constructor.
+    */
+    QgsHttpTransaction( QString uri,
+                        QString proxyHost = QString(),
+                        int     proxyPort = 80,
+                        QString proxyUser = QString(),
+                        QString proxyPass = QString() );
 
-  /*!
-      The function returns FALSE if there is an error while getting the response.
-      @param[out] respondedContent is replaced with the new content.
-      
-      @param[in]  redirections     is used to measure how many http redirections we've been through.
-      Clients typically don't need to set this.
-      
-      @param postData data to send with the http message. This is only used for HTTP POST. If 
-      0 then the request is done with HTTP GET.
+    //! Destructor
+    virtual ~QgsHttpTransaction();
 
-      @return true in case of success
-   */
-  bool getSynchronously(QByteArray &respondedContent, int redirections = 0, const QByteArray* postData = 0);
+    void getAsynchronously();
 
-  QString responseContentType();
+    //! Gets the response synchronously.  Note that signals will still be emitted
+    //! while in this function.
 
-  /**
-   * If an operation returns 0 (e.g. getSynchronously()), this function
-   * returns the text of the error associated with the failure.
-   * Interactive users of this provider can then, for example,
-   * call a QMessageBox to display the contents.
-   */
-  QString errorString();
+    /*!
+        The function returns FALSE if there is an error while getting the response.
+        @param[out] respondedContent is replaced with the new content.
+
+        @param[in]  redirections     is used to measure how many http redirections we've been through.
+        Clients typically don't need to set this.
+
+        @param postData data to send with the http message. This is only used for HTTP POST. If
+        0 then the request is done with HTTP GET.
+
+        @return true in case of success
+     */
+    bool getSynchronously( QByteArray &respondedContent, int redirections = 0, const QByteArray* postData = 0 );
+
+    QString responseContentType();
+
+    /**
+     * If an operation returns 0 (e.g. getSynchronously()), this function
+     * returns the text of the error associated with the failure.
+     * Interactive users of this provider can then, for example,
+     * call a QMessageBox to display the contents.
+     */
+    QString errorString();
 
 
-public slots:
+  public slots:
 
-  void dataStarted( int id );
+    void dataStarted( int id );
 
-  void dataHeaderReceived( const QHttpResponseHeader& resp );
+    void dataHeaderReceived( const QHttpResponseHeader& resp );
 
-  void dataReceived( const QHttpResponseHeader& resp );
+    void dataReceived( const QHttpResponseHeader& resp );
 
-  void dataProgress( int done, int total );
+    void dataProgress( int done, int total );
 
-  void dataFinished( int id, bool error );
+    void dataFinished( int id, bool error );
 
-  void transactionFinished( bool error );
+    void transactionFinished( bool error );
 
-  void dataStateChanged( int state );
+    void dataStateChanged( int state );
 
-  void networkTimedOut();
+    void networkTimedOut();
 
-signals:
+  signals:
 
     /** \brief emit a signal to notify of a progress event */
-    void setProgress(int theProgress, int theTotalSteps);
+    void setProgress( int theProgress, int theTotalSteps );
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-    void setStatus(QString theStatusQString);
+    void setStatus( QString theStatusQString );
 
 
-private:
-  
-  /**
-   * Indicates the associated QHttp object
-   *
-   * \note  We tried to use this as a plain QHttp object
-   *        but strange things were happening with the signals -
-   *        therefore we use the "pointer to" instead.
-   */
-  QHttp* http;
+  private:
 
-  /**
-   * Indicates the QHttp ID
-   */
-  int httpid;
-  
-  /**
-   * Indicates if the transaction is in progress
-   */
-  bool httpactive;
+    /**
+     * Indicates the associated QHttp object
+     *
+     * \note  We tried to use this as a plain QHttp object
+     *        but strange things were happening with the signals -
+     *        therefore we use the "pointer to" instead.
+     */
+    QHttp* http;
 
-  /*
-   * Indicates the response from the QHttp 
-   */ 
-  QByteArray httpresponse;
-  
-  /*
-   * Indicates the content type of the response from the QHttp 
-   */ 
-  QString    httpresponsecontenttype;
-    
-  /**
-   * The original URL requested for this transaction
-   */
-  QString httpurl;
-  
-  /**
-   * The host being used for this transaction
-   */
-  QString httphost;
+    /**
+     * Indicates the QHttp ID
+     */
+    int httpid;
 
-  /**
-   * The port being used for this transaction
-   */
-  int httpport;
+    /**
+     * Indicates if the transaction is in progress
+     */
+    bool httpactive;
 
-  /**
-   * The username being used for this transaction
-   */
-  QString httpuser;
+    /*
+     * Indicates the response from the QHttp
+     */
+    QByteArray httpresponse;
 
-  /**
-   * The password being used for this transaction
-   */
-  QString httppass;
+    /*
+     * Indicates the content type of the response from the QHttp
+     */
+    QString    httpresponsecontenttype;
 
-  /**
-   * If not empty, indicates that the QHttp is a redirect
-   * to the contents of this variable
-   */
-  QString httpredirecturl;
+    /**
+     * The original URL requested for this transaction
+     */
+    QString httpurl;
 
-  /**
-   * Number of http redirections this transaction has been
-   * subjected to.
-   *
-   * TODO: Use this as part of a redirection loop detector
-   *
-   */
-  int httpredirections;
+    /**
+     * The host being used for this transaction
+     */
+    QString httphost;
 
-  /**
-   * Indicates the associated QTimer object - used to detect network timeouts
-   */
-  QTimer * mWatchdogTimer;
+    /**
+     * The port being used for this transaction
+     */
+    int httpport;
 
-  /**
-   * The error message associated with the last HTTP error.
-   */
-  QString mError;
+    /**
+     * The username being used for this transaction
+     */
+    QString httpuser;
+
+    /**
+     * The password being used for this transaction
+     */
+    QString httppass;
+
+    /**
+     * If not empty, indicates that the QHttp is a redirect
+     * to the contents of this variable
+     */
+    QString httpredirecturl;
+
+    /**
+     * Number of http redirections this transaction has been
+     * subjected to.
+     *
+     * TODO: Use this as part of a redirection loop detector
+     *
+     */
+    int httpredirections;
+
+    /**
+     * Indicates the associated QTimer object - used to detect network timeouts
+     */
+    QTimer * mWatchdogTimer;
+
+    /**
+     * The error message associated with the last HTTP error.
+     */
+    QString mError;
 
 };
 

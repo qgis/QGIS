@@ -27,17 +27,17 @@ class QgsComposerLabel;
   */
 class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidgetBase
 {
-  Q_OBJECT
- public:
-  QgsComposerLabelWidget(QgsComposerLabel* label);
+    Q_OBJECT
+  public:
+    QgsComposerLabelWidget( QgsComposerLabel* label );
 
   public slots:
-  void on_mTextEdit_textChanged();
-  void on_mFontButton_clicked();
-  void on_mMarginDoubleSpinBox_valueChanged(double d);
+    void on_mTextEdit_textChanged();
+    void on_mFontButton_clicked();
+    void on_mMarginDoubleSpinBox_valueChanged( double d );
 
- private:
-  QgsComposerLabel* mComposerLabel;
+  private:
+    QgsComposerLabel* mComposerLabel;
 };
 
 #endif //QGSCOMPOSERLABELWIDGET

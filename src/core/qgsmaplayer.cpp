@@ -16,7 +16,6 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
 
 #include <QDateTime>
 #include <QDomNode>
@@ -39,35 +38,36 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 
-QgsMapLayer::QgsMapLayer(int type,
-                         QString lyrname,
-                         QString source) :
-        mTransparencyLevel(255), // 0 is completely transparent
-        mValid(FALSE), // assume the layer is invalid
-        mDataSource(source),
-        mID(""),
-        mLayerType(type)
+QgsMapLayer::QgsMapLayer( int type,
+                          QString lyrname,
+                          QString source ) :
+    mTransparencyLevel( 255 ), // 0 is completely transparent
+    mValid( FALSE ), // assume the layer is invalid
+    mDataSource( source ),
+    mID( "" ),
+    mLayerType( type )
 
 {
-  QgsDebugMsg("QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'");
+  QgsDebugMsg( "QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'" );
 
   mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
-  mLayerName = capitaliseLayerName(lyrname);
-  QgsDebugMsg("QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'");
+  mLayerName = capitaliseLayerName( lyrname );
+  QgsDebugMsg( "QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'" );
 
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
-  mID = lyrname + dt.toString("yyyyMMddhhmmsszzz");
+  mID = lyrname + dt.toString( "yyyyMMddhhmmsszzz" );
   // Tidy the ID up to avoid characters that may cause problems
   // elsewhere (e.g in some parts of XML). Replaces every non-word
   // character (word characters are the alphabet, numbers and
-  // underscore) with an underscore. 
+  // underscore) with an underscore.
   // Note that the first backslashe in the regular expression is
   // there for the compiler, so the pattern is actually \W
-  mID.replace(QRegExp("[\\W]"), "_");
+  mID.replace( QRegExp( "[\\W]" ), "_" );
 
   //set some generous  defaults for scale based visibility
   mMinScale = 0;
@@ -94,28 +94,28 @@ QString QgsMapLayer::getLayerID() const
 }
 
 /** Write property of QString layerName. */
-void QgsMapLayer::setLayerName(const QString & _newVal)
+void QgsMapLayer::setLayerName( const QString & _newVal )
 {
-  QgsDebugMsg("QgsMapLayer::setLayerName: new name is '" + _newVal + "'");
-  mLayerName = capitaliseLayerName(_newVal);
+  QgsDebugMsg( "QgsMapLayer::setLayerName: new name is '" + _newVal + "'" );
+  mLayerName = capitaliseLayerName( _newVal );
   emit layerNameChanged();
 }
 
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsg("QgsMapLayer::name: returning name '" + mLayerName + "'");
+  QgsDebugMsg( "QgsMapLayer::name: returning name '" + mLayerName + "'" );
   return mLayerName;
 }
 
-QString QgsMapLayer::publicSource() const 
-{ 
-  // Redo this every time we're asked for it, as we don't know if 
-  // dataSource has changed. 
-  static QRegExp regexp(" password=.* "); 
-  regexp.setMinimal(true); 
-  QString safeName(mDataSource); 
-  return safeName.replace(regexp, " "); 
+QString QgsMapLayer::publicSource() const
+{
+  // Redo this every time we're asked for it, as we don't know if
+  // dataSource has changed.
+  static QRegExp regexp( " password=.* " );
+  regexp.setMinimal( true );
+  QString safeName( mDataSource );
+  return safeName.replace( regexp, " " );
 }
 
 QString const & QgsMapLayer::source() const
@@ -128,14 +128,14 @@ QgsRect QgsMapLayer::extent() const
   return mLayerExtent;
 }
 
-bool QgsMapLayer::draw(QgsRenderContext& rendererContext)
+bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
 {
   return false;
 }
 
-void QgsMapLayer::drawLabels(QgsRenderContext& rendererContext)
+void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 {
-  //  std::cout << "In QgsMapLayer::draw" << std::endl;
+  // QgsDebugMsg("In QgsMapLayer::draw");
 }
 
 bool QgsMapLayer::readXML( QDomNode & layer_node )
@@ -145,7 +145,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   // XXX not needed? QString type = element.attribute("type");
 
   // set data source
-  QDomNode mnl = layer_node.namedItem("datasource");
+  QDomNode mnl = layer_node.namedItem( "datasource" );
   QDomElement mne = mnl.toElement();
   mDataSource = mne.text();
 
@@ -153,11 +153,11 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   // Make it the saved CRS to have WMS layer projected correctly.
   // We will still overwrite whatever GDAL etc picks up anyway
   // further down this function.
-  QDomNode srsNode = layer_node.namedItem("srs");
-  mCRS->readXML(srsNode);
+  QDomNode srsNode = layer_node.namedItem( "srs" );
+  mCRS->readXML( srsNode );
 
   // now let the children grab what they need from the Dom node.
-  if (!readXml( layer_node ))
+  if ( !readXml( layer_node ) )
   {
     return false;
   }
@@ -167,8 +167,8 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   //internalName = dataSourceFileInfo.baseName();
 
   // set ID
-  mnl = layer_node.namedItem("id");
-  if ( ! mnl.isNull() ) 
+  mnl = layer_node.namedItem( "id" );
+  if ( ! mnl.isNull() )
   {
     mne = mnl.toElement();
     if ( ! mne.isNull() && mne.text().length() > 10 ) // should be at least 17 (yyyyMMddhhmmsszzz)
@@ -178,35 +178,35 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   }
 
   // use scale dependent visibility flag
-  QString scaleBasedVisibility = element.attribute("scaleBasedVisibilityFlag");
+  QString scaleBasedVisibility = element.attribute( "scaleBasedVisibilityFlag" );
   if ( "1" == scaleBasedVisibility )
   {
-    setScaleBasedVisibility(true);
+    setScaleBasedVisibility( true );
   }
   else
   {
-    setScaleBasedVisibility(false);
+    setScaleBasedVisibility( false );
   }
-  setMinScale(element.attribute("minScale").toFloat());
-  setMaxScale(element.attribute("maxScale").toFloat());
+  setMinScale( element.attribute( "minScale" ).toFloat() );
+  setMaxScale( element.attribute( "maxScale" ).toFloat() );
 
   // set name
-  mnl = layer_node.namedItem("layerName");
+  mnl = layer_node.namedItem( "layerName" );
   mne = mnl.toElement();
   setLayerName( mne.text() );
 
   // overwrite srs
   // FIXME: is this necessary?
-  mCRS->readXML(srsNode);
+  mCRS->readXML( srsNode );
 
   //read transparency level
-  QDomNode transparencyNode = layer_node.namedItem("transparencyLevelInt");
+  QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
   if ( ! transparencyNode.isNull() )
   {
     // set transparency level only if it's in project
     // (otherwise it sets the layer transparent)
     QDomElement myElement = transparencyNode.toElement();
-    setTransparency(myElement.text().toInt());
+    setTransparency( myElement.text().toInt() );
   }
 
   return true;
@@ -239,7 +239,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   maplayer.setAttribute( "minScale", minScale() );
   maplayer.setAttribute( "maxScale", maxScale() );
 
-  // ID 
+  // ID
   QDomElement id = document.createElement( "id" );
   QDomText idText = document.createTextNode( getLayerID() );
   id.appendChild( idText );
@@ -267,12 +267,12 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // spatial reference system id
   QDomElement mySrsElement = document.createElement( "srs" );
-  mCRS->writeXML(mySrsElement, document);
-  maplayer.appendChild(mySrsElement);
+  mCRS->writeXML( mySrsElement, document );
+  maplayer.appendChild( mySrsElement );
 
   // <transparencyLevelInt>
   QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number(getTransparency()) );
+  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   maplayer.appendChild( transparencyLevelIntElement );
   // now append layer node to map layer node
@@ -303,7 +303,7 @@ bool QgsMapLayer::isValid()
 
 void QgsMapLayer::invalidTransformInput()
 {
-  QgsLogger::warning("QgsMapLayer::invalidTransformInput() called");
+  QgsLogger::warning( "QgsMapLayer::invalidTransformInput() called" );
   // TODO: emit a signal - it will be used to update legend
 }
 
@@ -320,12 +320,12 @@ QString QgsMapLayer::errorString()
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
-  QgsDebugMsg("QgsMapLayer connected to " + QString(signal));
+  QgsDebugMsg( "QgsMapLayer connected to " + QString( signal ) );
 } //  QgsMapLayer::connectNotify
 
 
 
-void QgsMapLayer::setScaleBasedVisibility(bool theVisibilityFlag)
+void QgsMapLayer::setScaleBasedVisibility( bool theVisibilityFlag )
 {
   mScaleBasedVisibility = theVisibilityFlag;
 }
@@ -335,18 +335,18 @@ bool QgsMapLayer::scaleBasedVisibility()
   return mScaleBasedVisibility;
 }
 
-void QgsMapLayer::setMinScale(float theMinScale)
+void QgsMapLayer::setMinScale( float theMinScale )
 {
   mMinScale = theMinScale;
 }
-    
+
 float QgsMapLayer::minScale()
 {
   return mMinScale;
 }
 
-    
-void QgsMapLayer::setMaxScale(float theMaxScale)
+
+void QgsMapLayer::setMaxScale( float theMaxScale )
 {
   mMaxScale = theMaxScale;
 }
@@ -361,13 +361,13 @@ QStringList QgsMapLayer::subLayers()
 {
   return QStringList();  // Empty
 }
-    
-void QgsMapLayer::setLayerOrder(QStringList layers)
+
+void QgsMapLayer::setLayerOrder( QStringList layers )
 {
   // NOOP
 }
 
-void QgsMapLayer::setSubLayerVisibility(QString name, bool vis)
+void QgsMapLayer::setSubLayerVisibility( QString name, bool vis )
 {
   // NOOP
 }
@@ -377,7 +377,7 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
   return *mCRS;
 }
 
-void QgsMapLayer::setSrs(const QgsCoordinateReferenceSystem& srs)
+void QgsMapLayer::setSrs( const QgsCoordinateReferenceSystem& srs )
 {
   *mCRS = srs;
 }
@@ -387,80 +387,83 @@ unsigned int QgsMapLayer::getTransparency()
   return mTransparencyLevel;
 }
 
-void QgsMapLayer::setTransparency(unsigned int theInt)
+void QgsMapLayer::setTransparency( unsigned int theInt )
 {
   mTransparencyLevel = theInt;
 }
 
-QString QgsMapLayer::capitaliseLayerName(const QString name)
+QString QgsMapLayer::capitaliseLayerName( const QString name )
 {
   // Capitalise the first letter of the layer name if requested
   QSettings settings;
-  bool capitaliseLayerName = 
-         settings.value("qgis/capitaliseLayerName", QVariant(false)).toBool();
+  bool capitaliseLayerName =
+    settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool();
 
-  QString layerName(name);
+  QString layerName( name );
 
-  if (capitaliseLayerName)
-    layerName = layerName.left(1).toUpper() + layerName.mid(1);
+  if ( capitaliseLayerName )
+    layerName = layerName.left( 1 ).toUpper() + layerName.mid( 1 );
 
   return layerName;
 }
 
-QString QgsMapLayer::loadDefaultStyle ( bool & theResultFlag )
+QString QgsMapLayer::loadDefaultStyle( bool & theResultFlag )
 {
   QString myURI = publicSource();
-  QFileInfo myFileInfo ( myURI );
+  QFileInfo myFileInfo( myURI );
   QString key;
-  if( myFileInfo.exists() ) {
+  if ( myFileInfo.exists() )
+  {
     // get the file name for our .qml style file
-    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName () + ".qml";
-  } else {
+    key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
+  }
+  else
+  {
     key = myURI;
   }
-  return loadNamedStyle ( key, theResultFlag );
+  return loadNamedStyle( key, theResultFlag );
 }
 
-bool QgsMapLayer::loadNamedStyleFromDb (const QString db, const QString theURI, QString &qml)
+bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml )
 {
   bool theResultFlag = false;
 
   // read from database
-  sqlite3 *myDatabase; 
+  sqlite3 *myDatabase;
   sqlite3_stmt *myPreparedStatement;
   const char *myTail;
   int myResult;
 
-  QgsDebugMsg( QString("Trying to load style for \"%1\" from \"%2\"").arg(theURI).arg(db) );
+  QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( theURI ).arg( db ) );
 
-  myResult = sqlite3_open(db.toUtf8().data(), &myDatabase);
-  if (myResult!=SQLITE_OK)
+  myResult = sqlite3_open( db.toUtf8().data(), &myDatabase );
+  if ( myResult != SQLITE_OK )
   {
     return false;
   }
 
   QString mySql = "select qml from tbl_styles where style=?";
-  myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
-  if (myResult==SQLITE_OK)
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+  if ( myResult == SQLITE_OK )
   {
     QByteArray param = theURI.toUtf8();
 
-    if( sqlite3_bind_text(myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC)==SQLITE_OK &&
-        sqlite3_step(myPreparedStatement)==SQLITE_ROW ) 
+    if ( sqlite3_bind_text( myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
+         sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8( (char *)sqlite3_column_text(myPreparedStatement, 0) );
+      qml = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
       theResultFlag = true;
     }
 
-    sqlite3_finalize(myPreparedStatement);
+    sqlite3_finalize( myPreparedStatement );
   }
 
-  sqlite3_close(myDatabase);
+  sqlite3_close( myDatabase );
 
   return theResultFlag;
 }
 
-QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
+QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
   theResultFlag = false;
 
@@ -470,54 +473,54 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
   int line, column;
   QString myErrorMessage;
 
-  QFile myFile ( theURI );
-  if ( myFile.open(QFile::ReadOnly ) )
-  { 
+  QFile myFile( theURI );
+  if ( myFile.open( QFile::ReadOnly ) )
+  {
     // read file
-    theResultFlag = myDocument.setContent ( &myFile, &myErrorMessage, &line, &column );
-    if(!theResultFlag)
-      myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
+    theResultFlag = myDocument.setContent( &myFile, &myErrorMessage, &line, &column );
+    if ( !theResultFlag )
+      myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
     myFile.close();
   }
   else
-  { 
+  {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsg( QString("project fileName: %1").arg( project.absoluteFilePath() ) );
+    QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
 
     QString qml;
-    if( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ), theURI, qml ) ||
-        ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), theURI, qml) ) ||
-        loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml) )
+    if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ), theURI, qml ) ||
+         ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), theURI, qml ) ) ||
+         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml ) )
     {
-      theResultFlag = myDocument.setContent ( qml, &myErrorMessage, &line, &column );
-      if(!theResultFlag)
+      theResultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
+      if ( !theResultFlag )
       {
-        myErrorMessage = tr("%1 at line %2 column %3").arg( myErrorMessage ).arg( line ).arg(column);
+        myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
       }
     }
     else
     {
-      myErrorMessage = tr("style not found in database");
+      myErrorMessage = tr( "style not found in database" );
     }
   }
 
-  if(!theResultFlag)
+  if ( !theResultFlag )
   {
     return myErrorMessage;
   }
 
   // now get the layer node out and pass it over to the layer
   // to deserialise...
-  QDomElement myRoot = myDocument.firstChildElement("qgis");
-  if (myRoot.isNull())
+  QDomElement myRoot = myDocument.firstChildElement( "qgis" );
+  if ( myRoot.isNull() )
   {
     myErrorMessage = "Error: qgis element could not be found in " + theURI;
     theResultFlag = false;
     return myErrorMessage;
   }
 
-  QDomElement myLayer = myRoot.firstChildElement("maplayer");
-  if (myLayer.isNull())
+  QDomElement myLayer = myRoot.firstChildElement( "maplayer" );
+  if ( myLayer.isNull() )
   {
     myErrorMessage = "Error: maplayer element could not be found in " + theURI;
     theResultFlag = false;
@@ -528,8 +531,8 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
   // we need to ensure the data source matches the layers
   // current datasource not the one specified in the qml
   //
-  QDomElement myDataSource = myLayer.firstChildElement("datasource");
-  if (myDataSource.isNull())
+  QDomElement myDataSource = myLayer.firstChildElement( "datasource" );
+  if ( myDataSource.isNull() )
   {
     myErrorMessage = "Error: datasource element could not be found in " + theURI;
     theResultFlag = false;
@@ -538,57 +541,57 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
   QDomElement myNewDataSource = myDocument.createElement( "datasource" );
   QDomText myDataSourceText = myDocument.createTextNode( source() );
   myNewDataSource.appendChild( myDataSourceText );
-  myLayer.replaceChild( myNewDataSource, myLayer.firstChildElement("datasource") );
-  
+  myLayer.replaceChild( myNewDataSource, myLayer.firstChildElement( "datasource" ) );
+
   //
   // Now go on to parse the xml (QDomElement inherits QDomNode
   // so we can just pass along the element to readXML)
   //
-  theResultFlag = readXML ( myLayer );
+  theResultFlag = readXML( myLayer );
 
   return QObject::tr( "Loaded default style file from " ) + theURI;
 }
 
-QString QgsMapLayer::saveDefaultStyle ( bool & theResultFlag )
+QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
 {
-  return saveNamedStyle ( publicSource(), theResultFlag );
+  return saveNamedStyle( publicSource(), theResultFlag );
 }
 
-QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag )
+QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
 {
   QString myErrorMessage;
 
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
-      DomImplementation.createDocumentType(
-          "qgis", "http://mrcc.com/qgis.dtd","SYSTEM" );
-  QDomDocument myDocument ( documentType );
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument myDocument( documentType );
   QDomElement myRootNode = myDocument.createElement( "qgis" );
-  myRootNode.setAttribute( "version", QString("%1").arg( QGis::qgisVersion ) );
+  myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::qgisVersion ) );
   myDocument.appendChild( myRootNode );
   writeXML( myRootNode, myDocument );
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
   // everything else goes to the database.
-  QFileInfo myFileInfo ( theURI );
-  if ( myFileInfo.exists() || theURI.endsWith(".qml", Qt::CaseInsensitive) )
+  QFileInfo myFileInfo( theURI );
+  if ( myFileInfo.exists() || theURI.endsWith( ".qml", Qt::CaseInsensitive ) )
   {
-    QFileInfo myDirInfo ( myFileInfo.path() ); //excludes fileName
+    QFileInfo myDirInfo( myFileInfo.path() );  //excludes fileName
     if ( !myDirInfo.isWritable() )
     {
       return QObject::tr( "The directory containing your dataset needs to be writeable!" );
     }
 
     // now construct the file name for our .qml style file
-    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName () + ".qml";
+    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
 
-    QFile myFile ( myFileName );
-    if ( myFile.open(QFile::WriteOnly | QFile::Truncate ) )
+    QFile myFile( myFileName );
+    if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
     {
       QTextStream myFileStream( &myFile );
       // save as utf-8 with 2 spaces for indents
-      myDocument.save( myFileStream, 2 );  
+      myDocument.save( myFileStream, 2 );
       myFile.close();
       theResultFlag = true;
       return QObject::tr( "Created default style file as " ) + myFileName;
@@ -596,7 +599,7 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
     else
     {
       theResultFlag = false;
-      return QObject::tr( "ERROR: Failed to created default style file as %1 Check file permissions and retry." ).arg(myFileName); 
+      return QObject::tr( "ERROR: Failed to created default style file as %1 Check file permissions and retry." ).arg( myFileName );
     }
   }
   else
@@ -604,80 +607,80 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
     QString qml = myDocument.toString();
 
     // read from database
-    sqlite3 *myDatabase; 
+    sqlite3 *myDatabase;
     sqlite3_stmt *myPreparedStatement;
     const char *myTail;
     int myResult;
 
-    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb").toUtf8().data(), &myDatabase);
-    if (myResult!=SQLITE_OK)
+    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ).toUtf8().data(), &myDatabase );
+    if ( myResult != SQLITE_OK )
     {
-      return tr("User database could not be opened.");
+      return tr( "User database could not be opened." );
     }
 
     QByteArray param0 = theURI.toUtf8();
     QByteArray param1 = qml.toUtf8();
 
     QString mySql = "create table if not exists tbl_styles(style varchar primary key,qml varchar)";
-    myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
-    if (myResult==SQLITE_OK)
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+    if ( myResult == SQLITE_OK )
     {
-      if( sqlite3_step(myPreparedStatement)!=SQLITE_DONE ) 
+      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
       {
-        sqlite3_finalize(myPreparedStatement);
-        sqlite3_close(myDatabase);
+        sqlite3_finalize( myPreparedStatement );
+        sqlite3_close( myDatabase );
         theResultFlag = false;
-        return tr("The style table could not be created.");
+        return tr( "The style table could not be created." );
       }
     }
 
-    sqlite3_finalize(myPreparedStatement);
+    sqlite3_finalize( myPreparedStatement );
 
     mySql = "insert into tbl_styles(style,qml) values (?,?)";
-    myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
-    if (myResult==SQLITE_OK)
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+    if ( myResult == SQLITE_OK )
     {
-      if( sqlite3_bind_text(myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC)==SQLITE_OK &&
-          sqlite3_bind_text(myPreparedStatement, 2, param1.data(), param1.length(), SQLITE_STATIC)==SQLITE_OK &&
-          sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
+      if ( sqlite3_bind_text( myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_bind_text( myPreparedStatement, 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
       {
         theResultFlag = true;
-        myErrorMessage = tr("The style %1 was saved to database").arg(theURI);
+        myErrorMessage = tr( "The style %1 was saved to database" ).arg( theURI );
       }
     }
 
-    sqlite3_finalize(myPreparedStatement);
+    sqlite3_finalize( myPreparedStatement );
 
-    if(!theResultFlag)
-    { 
+    if ( !theResultFlag )
+    {
       QString mySql = "update tbl_styles set qml=? where style=?";
-      myResult = sqlite3_prepare(myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail);
-      if (myResult==SQLITE_OK)
+      myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.length(), &myPreparedStatement, &myTail );
+      if ( myResult == SQLITE_OK )
       {
-        if( sqlite3_bind_text(myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC)==SQLITE_OK &&
-            sqlite3_bind_text(myPreparedStatement, 1, param1.data(), param1.length(), SQLITE_STATIC)==SQLITE_OK &&
-            sqlite3_step(myPreparedStatement)==SQLITE_DONE ) 
+        if ( sqlite3_bind_text( myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_bind_text( myPreparedStatement, 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
         {
           theResultFlag = true;
-          myErrorMessage = tr("The style %1 was updated in the database.").arg(theURI);
+          myErrorMessage = tr( "The style %1 was updated in the database." ).arg( theURI );
         }
         else
         {
           theResultFlag = false;
-          myErrorMessage = tr("The style %1 could not be updated in the database.").arg(theURI);
+          myErrorMessage = tr( "The style %1 could not be updated in the database." ).arg( theURI );
         }
       }
       else
       {
         // try an update
         theResultFlag = false;
-        myErrorMessage = tr("The style %1 could not be inserted into database.").arg(theURI);
+        myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( theURI );
       }
 
-      sqlite3_finalize(myPreparedStatement);
+      sqlite3_finalize( myPreparedStatement );
     }
 
-    sqlite3_close(myDatabase);
+    sqlite3_close( myDatabase );
   }
 
   return myErrorMessage;

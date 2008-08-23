@@ -18,27 +18,27 @@
 #include <QString>
 
 
-class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase 
+class QgsGPSDeviceDialog : public QDialog, private Ui::QgsGPSDeviceDialogBase
 {
-  Q_OBJECT
-public:
-  QgsGPSDeviceDialog(std::map<QString, QgsGPSDevice*>& devices);
+    Q_OBJECT
+  public:
+    QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>& devices );
 
-public slots:
-  void on_pbnNewDevice_clicked();
-  void on_pbnDeleteDevice_clicked();
-  void on_pbnUpdateDevice_clicked();
-  void on_pbnClose_clicked();
-  void slotUpdateDeviceList(const QString& selection = "");
-  void slotSelectionChanged(QListWidgetItem *current);
+  public slots:
+    void on_pbnNewDevice_clicked();
+    void on_pbnDeleteDevice_clicked();
+    void on_pbnUpdateDevice_clicked();
+    void on_pbnClose_clicked();
+    void slotUpdateDeviceList( const QString& selection = "" );
+    void slotSelectionChanged( QListWidgetItem *current );
 
-signals:
-  void devicesChanged();
+  signals:
+    void devicesChanged();
 
-private:
-  void writeDeviceSettings();
-  
-  std::map<QString, QgsGPSDevice*>& mDevices;
+  private:
+    void writeDeviceSettings();
+
+    std::map<QString, QgsGPSDevice*>& mDevices;
 };
 
 #endif

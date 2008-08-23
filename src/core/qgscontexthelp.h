@@ -41,32 +41,33 @@ class QTcpSocket;
  * window for window managers such as Linux/GNOME which will make a window
  * active but not bring it to the top if raised programatically.
  */
-class CORE_EXPORT QgsContextHelp : public QObject {
-  Q_OBJECT
-public:
-  static void run(int contextId);
+class CORE_EXPORT QgsContextHelp : public QObject
+{
+    Q_OBJECT
+  public:
+    static void run( int contextId );
 
-private slots:
-  void readPort();
-  void processExited();
+  private slots:
+    void readPort();
+    void processExited();
 
-private:
-  //! Constructor
-  QgsContextHelp(int contextId);
-  //! Destructor
-  ~QgsContextHelp();
+  private:
+    //! Constructor
+    QgsContextHelp( int contextId );
+    //! Destructor
+    ~QgsContextHelp();
 
-  QProcess *start(int contextId);
-  void showContext(int contextId);
+    QProcess *start( int contextId );
+    void showContext( int contextId );
 
-  static QgsContextHelp *gContextHelp; // Singleton instance
-  QProcess *mProcess;
+    static QgsContextHelp *gContextHelp; // Singleton instance
+    QProcess *mProcess;
 #ifdef QGSCONTEXTHELP_REUSE
-  // Communications socket when reusing existing process
-  QTcpSocket *mSocket;
+    // Communications socket when reusing existing process
+    QTcpSocket *mSocket;
 #else
-  // Replacement process when terminating and restarting
-  QProcess *mNextProcess;
+    // Replacement process when terminating and restarting
+    QProcess *mNextProcess;
 #endif
 };
 #endif //QGSCONTEXTHELP_H

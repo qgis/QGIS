@@ -24,70 +24,70 @@
 
 namespace Tools
 {
-	class ExternalSort : public IObjectStream
-	{
-	public:
-		ExternalSort(
-			Tools::IObjectStream& source,
-			unsigned long bufferSize
-		);
-		ExternalSort(
-			Tools::IObjectStream& source,
-			Tools::IObjectComparator& comp,
-			unsigned long bufferSize
-		);
-		virtual ~ExternalSort();
+  class ExternalSort : public IObjectStream
+  {
+    public:
+      ExternalSort(
+        Tools::IObjectStream& source,
+        unsigned long bufferSize
+      );
+      ExternalSort(
+        Tools::IObjectStream& source,
+        Tools::IObjectComparator& comp,
+        unsigned long bufferSize
+      );
+      virtual ~ExternalSort();
 
-		virtual IObject* getNext();
-		virtual bool hasNext() throw();
-		virtual unsigned long size() throw();
-		virtual void rewind();
+      virtual IObject* getNext();
+      virtual bool hasNext() throw();
+      virtual unsigned long size() throw();
+      virtual void rewind();
 
-	private:
-		class PQEntry
-		{
-		public:
-			PQEntry(
-				ISerializable* pS,
-				IObjectComparator* pC,
-				SmartPointer<TemporaryFile>& f
-			);
-			~PQEntry();
+    private:
+      class PQEntry
+      {
+        public:
+          PQEntry(
+            ISerializable* pS,
+            IObjectComparator* pC,
+            SmartPointer<TemporaryFile>& f
+          );
+          ~PQEntry();
 
-			struct ascendingComparator
-			 : public std::binary_function<
-				PQEntry*, PQEntry*, bool
-			   >
-			{
-				bool operator()(
-					PQEntry* x,
-					PQEntry* y
-				) const;
-			};
+          struct ascendingComparator
+                : public std::binary_function <
+                PQEntry*, PQEntry*, bool
+                >
+          {
+            bool operator()(
+              PQEntry* x,
+              PQEntry* y
+            ) const;
+          };
 
-			ISerializable* m_pRecord;
-			IObjectComparator* m_pComparator;
-			SmartPointer<TemporaryFile> m_spFile;
-		};
+          ISerializable* m_pRecord;
+          IObjectComparator* m_pComparator;
+          SmartPointer<TemporaryFile> m_spFile;
+      };
 
-		void initializeRuns(std::deque<SmartPointer<TemporaryFile> >& runs);
-		void mergeRuns();
+      void initializeRuns( std::deque<SmartPointer<TemporaryFile> >& runs );
+      void mergeRuns();
 
-		std::priority_queue<
-			PQEntry*,
-			std::vector<PQEntry*>,
-			PQEntry::ascendingComparator> m_buffer;
+      std::priority_queue <
+      PQEntry*,
+      std::vector<PQEntry*>,
+      PQEntry::ascendingComparator > m_buffer;
 
-		unsigned long m_cMaxBufferSize;
-		bool m_bFitsInBuffer;
-		unsigned long m_cNumberOfSortedRecords;
-		unsigned long m_cNumberOfReturnedRecords;
+      unsigned long m_cMaxBufferSize;
+      bool m_bFitsInBuffer;
+      unsigned long m_cNumberOfSortedRecords;
+      unsigned long m_cNumberOfReturnedRecords;
 
-		IObjectStream* m_pExternalSource;
-		IObject* m_pTemplateRecord;
-		IObjectComparator* m_pComparator;
-		SmartPointer<TemporaryFile> m_spSortedFile;
-	}; // ExternalSort
+      IObjectStream* m_pExternalSource;
+      IObject* m_pTemplateRecord;
+      IObjectComparator* m_pComparator;
+      SmartPointer<TemporaryFile> m_spSortedFile;
+  }; // ExternalSort
 }
 
 #endif /* __tools_external_sort_h */

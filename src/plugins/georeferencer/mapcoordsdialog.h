@@ -21,35 +21,35 @@ class QgsMapTool;
 #include <QDialog>
 class MapCoordsDialog : public QDialog, private Ui::MapCoordsDialogBase
 {
-Q_OBJECT
-public:
-  MapCoordsDialog();
-  MapCoordsDialog(const QgsPoint& pixelCoords, QgsMapCanvas* qgisCanvas,
-		  QWidget* parent = 0, Qt::WFlags fl = 0);
-  ~MapCoordsDialog();
-  
-public slots:
-  
-  void on_buttonOk_clicked();
-  void on_buttonCancel_clicked(); 
-  
-  void on_btnPointFromCanvas_clicked();
-  
-  void setXY(QgsPoint &);
-  void updateOK();
-  
-private:
-  
-  QgsPoint mPixelCoords;
-  
-  QgsMapTool* mToolEmitPoint;
-  QgsMapTool* mPrevMapTool;
-  
-  QgsMapCanvas* mQgisCanvas;
+    Q_OBJECT
+  public:
+    MapCoordsDialog();
+    MapCoordsDialog( const QgsPoint& pixelCoords, QgsMapCanvas* qgisCanvas,
+                     QWidget* parent = 0, Qt::WFlags fl = 0 );
+    ~MapCoordsDialog();
 
-signals:
+  public slots:
 
-  void pointAdded(const QgsPoint& pixelCoords, const QgsPoint& mapCoords);
+    void on_buttonOk_clicked();
+    void on_buttonCancel_clicked();
+
+    void on_btnPointFromCanvas_clicked();
+
+    void setXY( QgsPoint & );
+    void updateOK();
+
+  private:
+
+    QgsPoint mPixelCoords;
+
+    QgsMapTool* mToolEmitPoint;
+    QgsMapTool* mPrevMapTool;
+
+    QgsMapCanvas* mQgisCanvas;
+
+  signals:
+
+    void pointAdded( const QgsPoint& pixelCoords, const QgsPoint& mapCoords );
 
 };
 

@@ -19,70 +19,70 @@
 #include "qgsvertexmarker.h"
 
 
-QgsVertexMarker::QgsVertexMarker(QgsMapCanvas* mapCanvas)
-  : QgsMapCanvasItem(mapCanvas)
+QgsVertexMarker::QgsVertexMarker( QgsMapCanvas* mapCanvas )
+    : QgsMapCanvasItem( mapCanvas )
 {
   mIconSize = 10;
   mIconType = ICON_X;
-  mColor = QColor(255,0,0);
+  mColor = QColor( 255, 0, 0 );
   mPenWidth = 1;
 }
 
-void QgsVertexMarker::setIconType(int type)
+void QgsVertexMarker::setIconType( int type )
 {
   mIconType = type;
 }
-    
-void QgsVertexMarker::setIconSize(int iconSize)
+
+void QgsVertexMarker::setIconSize( int iconSize )
 {
   mIconSize = iconSize;
 }
-    
-void QgsVertexMarker::setCenter(const QgsPoint& point)
+
+void QgsVertexMarker::setCenter( const QgsPoint& point )
 {
-   mCenter = point;
-   QPointF pt = toCanvasCoords(mCenter);
-   setPos(pt);
+  mCenter = point;
+  QPointF pt = toCanvasCoords( mCenter );
+  setPos( pt );
 }
 
-void QgsVertexMarker::setColor(const QColor& color)
+void QgsVertexMarker::setColor( const QColor& color )
 {
   mColor = color;
 }
 
-void QgsVertexMarker::setPenWidth(int width)
+void QgsVertexMarker::setPenWidth( int width )
 {
   mPenWidth = width;
 }
 
-void QgsVertexMarker::paint(QPainter* p)
+void QgsVertexMarker::paint( QPainter* p )
 {
-  qreal s = (mIconSize - 1) / 2;
+  qreal s = ( mIconSize - 1 ) / 2;
 
-  QPen pen(mColor);
-  pen.setWidth(mPenWidth);
-  p->setPen(pen);
-  
-  switch (mIconType)
+  QPen pen( mColor );
+  pen.setWidth( mPenWidth );
+  p->setPen( pen );
+
+  switch ( mIconType )
   {
     case ICON_NONE:
       break;
-      
+
     case ICON_CROSS:
-      p->drawLine(QLineF(-s, 0, s, 0));
-      p->drawLine(QLineF( 0,-s, 0, s));
+      p->drawLine( QLineF( -s, 0, s, 0 ) );
+      p->drawLine( QLineF( 0, -s, 0, s ) );
       break;
-      
+
     case ICON_X:
-      p->drawLine(QLineF(-s,-s, s, s));
-      p->drawLine(QLineF(-s, s, s,-s));
+      p->drawLine( QLineF( -s, -s, s, s ) );
+      p->drawLine( QLineF( -s, s, s, -s ) );
       break;
-      
+
     case ICON_BOX:
-      p->drawLine(QLineF(-s,-s, s,-s));
-      p->drawLine(QLineF( s,-s, s, s));
-      p->drawLine(QLineF( s, s,-s, s));
-      p->drawLine(QLineF(-s, s,-s,-s));
+      p->drawLine( QLineF( -s, -s, s, -s ) );
+      p->drawLine( QLineF( s, -s, s, s ) );
+      p->drawLine( QLineF( s, s, -s, s ) );
+      p->drawLine( QLineF( -s, s, -s, -s ) );
       break;
   }
 }
@@ -90,11 +90,11 @@ void QgsVertexMarker::paint(QPainter* p)
 
 QRectF QgsVertexMarker::boundingRect() const
 {
-  qreal s = qreal(mIconSize + mPenWidth) / 2.0;
-  return QRectF(-s,-s,2.0*s,2.0*s);
+  qreal s = qreal( mIconSize + mPenWidth ) / 2.0;
+  return QRectF( -s, -s, 2.0*s, 2.0*s );
 }
 
 void QgsVertexMarker::updatePosition()
 {
-  setCenter(mCenter);
+  setCenter( mCenter );
 }

@@ -24,53 +24,53 @@
 
 namespace SpatialIndex
 {
-	namespace RTree
-	{
-		class Index : public Node
-		{
-		public:
-			virtual ~Index();
+  namespace RTree
+  {
+    class Index : public Node
+    {
+      public:
+        virtual ~Index();
 
-		private:
-			Index(RTree* pTree, long id, unsigned long level);
+      private:
+        Index( RTree* pTree, long id, unsigned long level );
 
-			virtual NodePtr chooseSubtree(const Region& mbr, unsigned long level, std::stack<long>& pathBuffer);
-			virtual NodePtr findLeaf(const Region& mbr, long id, std::stack<long>& pathBuffer);
+        virtual NodePtr chooseSubtree( const Region& mbr, unsigned long level, std::stack<long>& pathBuffer );
+        virtual NodePtr findLeaf( const Region& mbr, long id, std::stack<long>& pathBuffer );
 
-			virtual void split(unsigned long dataLength, byte* pData, Region& mbr, long id, NodePtr& left, NodePtr& right);
+        virtual void split( unsigned long dataLength, byte* pData, Region& mbr, long id, NodePtr& left, NodePtr& right );
 
-			long findLeastEnlargement(const Region&) const;
-			long findLeastOverlap(const Region&) const;
+        long findLeastEnlargement( const Region& ) const;
+        long findLeastOverlap( const Region& ) const;
 
-			void adjustTree(Node*, std::stack<long>&);
-			void adjustTree(Node*, Node*, std::stack<long>&, byte* overflowTable);
+        void adjustTree( Node*, std::stack<long>& );
+        void adjustTree( Node*, Node*, std::stack<long>&, byte* overflowTable );
 
-			class OverlapEntry
-			{
-			public:
-				unsigned long m_id;
-				double m_enlargement;
-				RegionPtr m_original;
-				RegionPtr m_combined;
-				double m_oa;
-				double m_ca;
+        class OverlapEntry
+        {
+          public:
+            unsigned long m_id;
+            double m_enlargement;
+            RegionPtr m_original;
+            RegionPtr m_combined;
+            double m_oa;
+            double m_ca;
 
-				static int compareEntries(const void* pv1, const void* pv2)
-				{
-					OverlapEntry* pe1 = * (OverlapEntry**) pv1;
-					OverlapEntry* pe2 = * (OverlapEntry**) pv2;
+            static int compareEntries( const void* pv1, const void* pv2 )
+            {
+              OverlapEntry* pe1 = * ( OverlapEntry** ) pv1;
+              OverlapEntry* pe2 = * ( OverlapEntry** ) pv2;
 
-					if (pe1->m_enlargement < pe2->m_enlargement) return -1;
-					if (pe1->m_enlargement > pe2->m_enlargement) return 1;
-					return 0;
-				}
-			}; // OverlapEntry
+              if ( pe1->m_enlargement < pe2->m_enlargement ) return -1;
+              if ( pe1->m_enlargement > pe2->m_enlargement ) return 1;
+              return 0;
+            }
+        }; // OverlapEntry
 
-			friend class RTree;
-			friend class Node;
-			friend class BulkLoader;
-		}; // Index
-	}
+        friend class RTree;
+        friend class Node;
+        friend class BulkLoader;
+    }; // Index
+  }
 }
 
 #endif /*__spatialindex_rtree_index_h*/

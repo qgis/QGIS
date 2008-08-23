@@ -26,53 +26,53 @@
 
 namespace SpatialIndex
 {
-	namespace StorageManager
-	{
-		class Buffer : public IBuffer
-		{
-		public:
-			Buffer(IStorageManager& sm, Tools::PropertySet& ps);
-				// String                   Value     Description
-				// ----------------------------------------------
-				// Capacity		VT_ULONG	Buffer maximum capacity.
-				// WriteThrough	VT_BOOL	Enable or disable write through policy.
+  namespace StorageManager
+  {
+    class Buffer : public IBuffer
+    {
+      public:
+        Buffer( IStorageManager& sm, Tools::PropertySet& ps );
+        // String                   Value     Description
+        // ----------------------------------------------
+        // Capacity  VT_ULONG Buffer maximum capacity.
+        // WriteThrough VT_BOOL Enable or disable write through policy.
 
-			virtual ~Buffer();
+        virtual ~Buffer();
 
-			virtual void loadByteArray(const long id, unsigned long& len, byte** data);
-			virtual void storeByteArray(long& id, const unsigned long len, const byte* const data);
-			virtual void deleteByteArray(const long id);
+        virtual void loadByteArray( const long id, unsigned long& len, byte** data );
+        virtual void storeByteArray( long& id, const unsigned long len, const byte* const data );
+        virtual void deleteByteArray( const long id );
 
-			virtual void clear();
-			virtual unsigned long getHits();
+        virtual void clear();
+        virtual unsigned long getHits();
 
-		protected:
-			class Entry
-			{
-			public:
-				Entry(unsigned long l, const byte* const d) : m_pData(0), m_length(l), m_bDirty(false)
-				{
-					m_pData = new byte[m_length];
-					memcpy(m_pData, d, m_length);
-				}
+      protected:
+        class Entry
+        {
+          public:
+            Entry( unsigned long l, const byte* const d ) : m_pData( 0 ), m_length( l ), m_bDirty( false )
+            {
+              m_pData = new byte[m_length];
+              memcpy( m_pData, d, m_length );
+            }
 
-				~Entry() { delete[] m_pData; }
+            ~Entry() { delete[] m_pData; }
 
-				byte* m_pData;
-				unsigned long m_length;
-				bool m_bDirty;
-			}; // Entry
+            byte* m_pData;
+            unsigned long m_length;
+            bool m_bDirty;
+        }; // Entry
 
-			virtual void addEntry(long id, Entry* pEntry) = 0;
-			virtual void removeEntry() = 0;
+        virtual void addEntry( long id, Entry* pEntry ) = 0;
+        virtual void removeEntry() = 0;
 
-			unsigned long m_capacity;
-			bool m_bWriteThrough;
-			IStorageManager* m_pStorageManager;
-			std::map<long, Entry*> m_buffer;
-			unsigned long m_hits;
-		}; // Buffer
-	}
+        unsigned long m_capacity;
+        bool m_bWriteThrough;
+        IStorageManager* m_pStorageManager;
+        std::map<long, Entry*> m_buffer;
+        unsigned long m_hits;
+    }; // Buffer
+  }
 }
 
 #endif /*__storagemanager_buffer_h*/

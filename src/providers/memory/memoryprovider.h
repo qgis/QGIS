@@ -22,176 +22,176 @@ class QgsSpatialIndex;
 
 class QgsMemoryProvider : public QgsVectorDataProvider
 {
-public:
-  QgsMemoryProvider(QString uri = QString());
+  public:
+    QgsMemoryProvider( QString uri = QString() );
 
-  virtual ~QgsMemoryProvider();
+    virtual ~QgsMemoryProvider();
 
-  /* Implementation of functions from QgsVectorDataProvider */
-  
-  /**
-   * Returns the permanent storage type for this layer as a friendly name.
-   */
-  virtual QString storageType() const;
+    /* Implementation of functions from QgsVectorDataProvider */
 
-  /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
-   *  @param fetchAttributes list of attributes which should be fetched
-   *  @param rect spatial filter
-   *  @param fetchGeometry true if the feature geometry should be fetched
-   *  @param useIntersect true if an accurate intersection test should be used,
-   *                     false if a test based on bounding box is sufficient
-   */
-  virtual void select(QgsAttributeList fetchAttributes = QgsAttributeList(),
-                      QgsRect rect = QgsRect(),
-                      bool fetchGeometry = true,
-                      bool useIntersect = false);
+    /**
+     * Returns the permanent storage type for this layer as a friendly name.
+     */
+    virtual QString storageType() const;
 
-  /**
-   * Get the next feature resulting from a select operation.
-   * @param feature feature which will receive data from the provider
-   * @return true when there was a feature to fetch, false when end was hit
-   *
-   * mFile should be open with the file pointer at the record of the next
-   * feature, or EOF.  The feature found on the current line is parsed.
-   */
-  virtual bool getNextFeature(QgsFeature& feature);
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+     *  @param fetchAttributes list of attributes which should be fetched
+     *  @param rect spatial filter
+     *  @param fetchGeometry true if the feature geometry should be fetched
+     *  @param useIntersect true if an accurate intersection test should be used,
+     *                     false if a test based on bounding box is sufficient
+     */
+    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
+                         QgsRect rect = QgsRect(),
+                         bool fetchGeometry = true,
+                         bool useIntersect = false );
 
-  /** 
-    * Gets the feature at the given feature ID.
-    * @param featureId id of the feature
-    * @param feature feature which will receive the data
-    * @param fetchGeoemtry if true, geometry will be fetched from the provider
-    * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-    * @return True when feature was found, otherwise false
-    */
-  virtual bool getFeatureAtId(int featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList());  
-  
-  /**
-   * Get feature type.
-   * @return int representing the feature type
-   */
-  virtual QGis::WKBTYPE geometryType() const;
+    /**
+     * Get the next feature resulting from a select operation.
+     * @param feature feature which will receive data from the provider
+     * @return true when there was a feature to fetch, false when end was hit
+     *
+     * mFile should be open with the file pointer at the record of the next
+     * feature, or EOF.  The feature found on the current line is parsed.
+     */
+    virtual bool getNextFeature( QgsFeature& feature );
 
-  /**
-   * Number of features in the layer
-   * @return long containing number of features
-   */
-  virtual long featureCount() const;
+    /**
+      * Gets the feature at the given feature ID.
+      * @param featureId id of the feature
+      * @param feature feature which will receive the data
+      * @param fetchGeoemtry if true, geometry will be fetched from the provider
+      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
+      * @return True when feature was found, otherwise false
+      */
+    virtual bool getFeatureAtId( int featureId,
+                                 QgsFeature& feature,
+                                 bool fetchGeometry = true,
+                                 QgsAttributeList fetchAttributes = QgsAttributeList() );
 
-  /**
-   * Number of attribute fields for a feature in the layer
-   */
-  virtual uint fieldCount() const;
-    
-  /**
-   * Return a map of indexes with field names for this layer
-   * @return map of fields
-   */
-  virtual const QgsFieldMap & fields() const;
+    /**
+     * Get feature type.
+     * @return int representing the feature type
+     */
+    virtual QGis::WKBTYPE geometryType() const;
 
-  /** Restart reading features from previous select operation */
-  virtual void reset();
+    /**
+     * Number of features in the layer
+     * @return long containing number of features
+     */
+    virtual long featureCount() const;
 
-  
-  /**
-    * Adds a list of features
-    * @return true in case of success and false in case of failure
-    */
-  virtual bool addFeatures(QgsFeatureList & flist);
+    /**
+     * Number of attribute fields for a feature in the layer
+     */
+    virtual uint fieldCount() const;
 
-  /** 
-    * Deletes a feature
-    * @param id list containing feature ids to delete
-    * @return true in case of success and false in case of failure
-    */
-  virtual bool deleteFeatures(const QgsFeatureIds & id);  
-  
-  
-      /**
-       * Adds new attributes
-       * @param attributes map with attribute name as key and type as value
-       * @return true in case of success and false in case of failure
-       */
-      virtual bool addAttributes(const QgsNewAttributesMap & attributes);
+    /**
+     * Return a map of indexes with field names for this layer
+     * @return map of fields
+     */
+    virtual const QgsFieldMap & fields() const;
 
-      /**
-       * Deletes existing attributes
-       * @param attributes a set containing names of attributes
-       * @return true in case of success and false in case of failure
-       */
-      virtual bool deleteAttributes(const QgsAttributeIds& attributes);
+    /** Restart reading features from previous select operation */
+    virtual void reset();
 
-      /**
-       * Changes attribute values of existing features.
-       * @param attr_map a map containing changed attributes
-       * @return true in case of success and false in case of failure 
-       */
-      virtual bool changeAttributeValues(const QgsChangedAttributesMap & attr_map);  
-  
-      /**
-       * Changes geometries of existing features
-       * @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
-       *                       the second map parameter being the new geometries themselves
-       * @return               true in case of success and false in case of failure
-       */
-      virtual bool changeGeometryValues(QgsGeometryMap & geometry_map);      
-      
-      /**
-       * Creates a spatial index
-       * @return true in case of success
-       */
-      virtual bool createSpatialIndex();
 
-  /** Returns a bitmask containing the supported capabilities
-  Note, some capabilities may change depending on whether
-  a spatial filter is active on this provider, so it may
-  be prudent to check this value per intended operation.
-   */
-  virtual int capabilities() const;
+    /**
+      * Adds a list of features
+      * @return true in case of success and false in case of failure
+      */
+    virtual bool addFeatures( QgsFeatureList & flist );
 
-  
-  /* Implementation of functions from QgsDataProvider */
-  
-  /**
-   * return a provider name
-   */
-  QString name() const;
+    /**
+      * Deletes a feature
+      * @param id list containing feature ids to delete
+      * @return true in case of success and false in case of failure
+      */
+    virtual bool deleteFeatures( const QgsFeatureIds & id );
 
-  /**
-   * return description
-   */
-  QString description() const;
 
-  /**
-   * Return the extent for this data layer
-   */
-  virtual QgsRect extent();
+    /**
+     * Adds new attributes
+     * @param attributes map with attribute name as key and type as value
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool addAttributes( const QgsNewAttributesMap & attributes );
 
-  /**
-   * Returns true if this is a valid provider
-   */
-  bool isValid();
+    /**
+     * Deletes existing attributes
+     * @param attributes a set containing names of attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool deleteAttributes( const QgsAttributeIds& attributes );
 
-  virtual QgsCoordinateReferenceSystem getCRS();
+    /**
+     * Changes attribute values of existing features.
+     * @param attr_map a map containing changed attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
 
-protected:
-    
-  // called when added / removed features or geometries has been changed
-  void updateExtent();
-     
-private:
+    /**
+     * Changes geometries of existing features
+     * @param geometry_map   A std::map containing the feature IDs to change the geometries of.
+     *                       the second map parameter being the new geometries themselves
+     * @return               true in case of success and false in case of failure
+     */
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+
+    /**
+     * Creates a spatial index
+     * @return true in case of success
+     */
+    virtual bool createSpatialIndex();
+
+    /** Returns a bitmask containing the supported capabilities
+    Note, some capabilities may change depending on whether
+    a spatial filter is active on this provider, so it may
+    be prudent to check this value per intended operation.
+     */
+    virtual int capabilities() const;
+
+
+    /* Implementation of functions from QgsDataProvider */
+
+    /**
+     * return a provider name
+     */
+    QString name() const;
+
+    /**
+     * return description
+     */
+    QString description() const;
+
+    /**
+     * Return the extent for this data layer
+     */
+    virtual QgsRect extent();
+
+    /**
+     * Returns true if this is a valid provider
+     */
+    bool isValid();
+
+    virtual QgsCoordinateReferenceSystem getCRS();
+
+  protected:
+
+    // called when added / removed features or geometries has been changed
+    void updateExtent();
+
+  private:
     // fields
     QgsFieldMap mFields;
     QGis::WKBTYPE mWkbType;
     QgsRect mExtent;
-    
+
     // features
     QgsFeatureMap mFeatures;
     int mNextFeatureId;
-    
+
     // selection
     QgsAttributeList mSelectAttrs;
     QgsRect mSelectRect;
@@ -201,8 +201,8 @@ private:
     bool mSelectUsingSpatialIndex;
     QList<int> mSelectSI_Features;
     QList<int>::iterator mSelectSI_Iterator;
-    
+
     // indexing
     QgsSpatialIndex* mSpatialIndex;
-    
+
 };

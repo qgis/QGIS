@@ -26,62 +26,62 @@
 #include <QProcess>
 #include <QMessageBox>
 
-QgsRunProcess::QgsRunProcess(const QString& action, bool capture)
-  : mProcess(NULL), mOutput(NULL)
+QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
+    : mProcess( NULL ), mOutput( NULL )
 {
   // Make up a string from the command and arguments that we'll use
   // for display purposes
-  QgsDebugMsg("Running command: " + action);
-  
+  QgsDebugMsg( "Running command: " + action );
+
   mCommand = action;
 
   mProcess = new QProcess;
 
-  if (capture)
+  if ( capture )
   {
-    connect(mProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
-    connect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(stdoutAvailable()));
-    connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(stderrAvailable()));
+    connect( mProcess, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( processError( QProcess::ProcessError ) ) );
+    connect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( stdoutAvailable() ) );
+    connect( mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( stderrAvailable() ) );
     // We only care if the process has finished if we are capturing
     // the output from the process, hence this connect() call is
     // inside the capture if() statement.
-    connect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processExit(int,QProcess::ExitStatus)));
+    connect( mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( processExit( int, QProcess::ExitStatus ) ) );
 
     // start the process!
-    mProcess->start(action);
-  
+    mProcess->start( action );
+
     // Use QgsMessageOutput for displaying output to user
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
-    mOutput->setTitle(action);
-    mOutput->setMessage( "<b>" + tr("Starting") + " " + action + "...</b>",
-                         QgsMessageOutput::MessageHtml);
-    mOutput->showMessage(false); // non-blocking
-  
+    mOutput->setTitle( action );
+    mOutput->setMessage( "<b>" + tr( "Starting" ) + " " + action + "...</b>",
+                         QgsMessageOutput::MessageHtml );
+    mOutput->showMessage( false ); // non-blocking
+
     // get notification of delete if it's derived from QObject
-    QObject* mOutputObj = dynamic_cast<QObject*>(mOutput);
-    if (mOutputObj)
+    QObject* mOutputObj = dynamic_cast<QObject*>( mOutput );
+    if ( mOutputObj )
     {
-      connect(mOutputObj, SIGNAL(destroyed()), this, SLOT(dialogGone()));
+      connect( mOutputObj, SIGNAL( destroyed() ), this, SLOT( dialogGone() ) );
     }
   }
   else
   {
-      if ( ! mProcess->startDetached(action) ) // let the program run by itself
-      {
-	  QMessageBox::critical(0, tr("Action"),
-				tr("Unable to run command") + "\n" + action
-				, QMessageBox::Ok, Qt::NoButton);
-      }
+    if ( ! mProcess->startDetached( action ) ) // let the program run by itself
+    {
+      QMessageBox::critical( 0, tr( "Action" ),
+                             tr( "Unable to run command" ) + "\n" + action
+                             , QMessageBox::Ok, Qt::NoButton );
+    }
     // We're not capturing the output from the process, so we don't
     // need to exist anymore.
     die();
   }
 }
 
-QgsRunProcess::~QgsRunProcess() 
-{ 
-  delete mProcess; 
+QgsRunProcess::~QgsRunProcess()
+{
+  delete mProcess;
 }
 
 void QgsRunProcess::die()
@@ -91,21 +91,21 @@ void QgsRunProcess::die()
 
 void QgsRunProcess::stdoutAvailable()
 {
-  QString line(mProcess->readAllStandardOutput());
-  
+  QString line( mProcess->readAllStandardOutput() );
+
   // Add the new output to the dialog box
-  mOutput->appendMessage(line);
+  mOutput->appendMessage( line );
 }
 
 void QgsRunProcess::stderrAvailable()
 {
-  QString line(mProcess->readAllStandardError());
-  
+  QString line( mProcess->readAllStandardError() );
+
   // Add the new output to the dialog box, but colour it red
-  mOutput->appendMessage("<font color=red>" + line + "</font>");
+  mOutput->appendMessage( "<font color=red>" + line + "</font>" );
 }
 
-void QgsRunProcess::processExit(int, QProcess::ExitStatus)
+void QgsRunProcess::processExit( int, QProcess::ExitStatus )
 {
   // Because we catch the dialog box going (the dialogGone()
   // function), and delete this instance, control will only pass to
@@ -114,9 +114,9 @@ void QgsRunProcess::processExit(int, QProcess::ExitStatus)
   // (unless it was never created in the first case, which is what the
   // test against 0 is for).
 
-  if (mOutput != 0)
+  if ( mOutput != 0 )
   {
-    mOutput->appendMessage( "<b>" + tr("Done") + "</b>" );
+    mOutput->appendMessage( "<b>" + tr( "Done" ) + "</b>" );
   }
 
   // Since the dialog box takes care of deleting itself, and the
@@ -134,25 +134,25 @@ void QgsRunProcess::dialogGone()
   // class being called after it has been deleted (Qt seems not to be
   // disconnecting them itself)
 
-  disconnect(mProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
- disconnect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(stdoutAvailable()));
- disconnect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(stderrAvailable()));
-  disconnect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processExit(int,QProcess::ExitStatus)));
+  disconnect( mProcess, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( processError( QProcess::ProcessError ) ) );
+  disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( stdoutAvailable() ) );
+  disconnect( mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( stderrAvailable() ) );
+  disconnect( mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( processExit( int, QProcess::ExitStatus ) ) );
 
   die();
 }
 
-void QgsRunProcess::processError(QProcess::ProcessError err)
+void QgsRunProcess::processError( QProcess::ProcessError err )
 {
-  if (err == QProcess::FailedToStart)
+  if ( err == QProcess::FailedToStart )
   {
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-    output->setMessage( tr("Unable to run command") + mCommand, QgsMessageOutput::MessageText);
+    output->setMessage( tr( "Unable to run command" ) + mCommand, QgsMessageOutput::MessageText );
     // Didn't work, so no need to hang around
     die();
   }
   else
   {
-    QgsDebugMsg("Got error: " + QString("%d").arg(err));
+    QgsDebugMsg( "Got error: " + QString( "%d" ).arg( err ) );
   }
 }

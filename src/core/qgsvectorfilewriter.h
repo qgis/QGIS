@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsvectorfilewriter.h
-                          generic vector file writer 
+                          generic vector file writer
                              -------------------
     begin                : Jun 6 2004
     copyright            : (C) 2004 by Tim Sutton
@@ -51,24 +51,24 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Write contents of vector layer to a shapefile */
-    static WriterError writeAsShapefile(QgsVectorLayer* layer,
-                                        const QString& shapefileName,
-                                        const QString& fileEncoding,
-                                        bool onlySelected = FALSE);
+    static WriterError writeAsShapefile( QgsVectorLayer* layer,
+                                         const QString& shapefileName,
+                                         const QString& fileEncoding,
+                                         bool onlySelected = FALSE );
 
 
     /** create shapefile and initialize it */
-    QgsVectorFileWriter(const QString& shapefileName,
-                        const QString& fileEncoding,
-                        const QgsFieldMap& fields,
-                        QGis::WKBTYPE geometryType,
-                        const QgsCoordinateReferenceSystem* srs);
-    
+    QgsVectorFileWriter( const QString& shapefileName,
+                         const QString& fileEncoding,
+                         const QgsFieldMap& fields,
+                         QGis::WKBTYPE geometryType,
+                         const QgsCoordinateReferenceSystem* srs );
+
     /** checks whether there were any errors in constructor */
     WriterError hasError();
 
     /** add feature to the currently opened shapefile */
-    bool addFeature(QgsFeature& feature);
+    bool addFeature( QgsFeature& feature );
 
     /** close opened shapefile for writing */
     ~QgsVectorFileWriter();
@@ -76,11 +76,11 @@ class CORE_EXPORT QgsVectorFileWriter
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
      * @param QString theFileName - /path/to/file.shp
      * @return bool true if the file was deleted successfully
-     */ 
-    static bool deleteShapeFile(QString theFileName);
+     */
+    static bool deleteShapeFile( QString theFileName );
   protected:
 
-    OGRGeometryH createEmptyGeometry(QGis::WKBTYPE wkbType);
+    OGRGeometryH createEmptyGeometry( QGis::WKBTYPE wkbType );
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;

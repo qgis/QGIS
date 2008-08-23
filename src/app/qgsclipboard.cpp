@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgsclipboard.cpp  -  QGIS internal clipboard for storage of features 
+     qgsclipboard.cpp  -  QGIS internal clipboard for storage of features
      --------------------------------------------------------------------
     begin                : 20 May, 2005
     copyright            : (C) 2005 by Brendan Morley
@@ -18,7 +18,6 @@
 /* $Id$ */
 
 #include <fstream>
-#include <iostream>
 
 #include <QApplication>
 #include <QString>
@@ -30,10 +29,11 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgslogger.h"
 
 
 QgsClipboard::QgsClipboard()
-  : mFeatureClipboard()
+    : mFeatureClipboard()
 {
 }
 
@@ -46,10 +46,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
 
   // Replace the QGis clipboard.
   mFeatureClipboard = features;
-#ifdef QGISDEBUG
-        std::cerr << "QgsClipboard::replaceWith: replaced QGis clipboard."
-                  << std::endl;
-#endif
+  QgsDebugMsg( "QgsClipboard::replaceWith: replaced QGis clipboard." );
 
   // Replace the system clipboard.
 
@@ -58,45 +55,43 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
 
   // first do the field names
   textFields += "wkt_geom";
-  for (QgsFieldMap::const_iterator fit = fields.begin(); fit != fields.end(); ++fit)
+  for ( QgsFieldMap::const_iterator fit = fields.begin(); fit != fields.end(); ++fit )
   {
     textFields += fit->name();
   }
-  textLines += textFields.join("\t");
+  textLines += textFields.join( "\t" );
   textFields.clear();
 
-  
+
   // then the field contents
-  for (QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it)
+  for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsAttributeMap attributes = it->attributeMap();
 
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
 
-    if (it->geometry())
+    if ( it->geometry() )
       textFields += it->geometry()->exportToWkt();
     else
       textFields += "NULL";
 
 #ifdef QGISDEBUG
-//       std::cout << "QgsClipboard::replaceWithCopyOf: about to traverse fields." << std::endl;
+    // QgsDebugMsg("QgsClipboard::replaceWithCopyOf: about to traverse fields.");
 #endif
-    for (QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2)
+    for ( QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2 )
     {
 #ifdef QGISDEBUG
-//       std::cout << "QgsClipboard::replaceWithCopyOf: inspecting field '"
-//                 << (it2->fieldName()).toLocal8Bit().data()
-//                 << "'." << std::endl;
+      // QgsDebugMsg(QString("QgsClipboard::replaceWithCopyOf: inspecting field '%1'.").arg(it2->toString()));
 #endif
       textFields += it2->toString();
     }
 
-    textLines += textFields.join("\t");
+    textLines += textFields.join( "\t" );
     textFields.clear();
   }
-  
-  QString textCopy = textLines.join("\n");
+
+  QString textCopy = textLines.join( "\n" );
 
   QClipboard *cb = QApplication::clipboard();
 
@@ -110,42 +105,37 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
 
   // The ::Selection setText() below one may need placing inside so
   // #ifdef so that it doesn't get compiled under Windows.
-  cb->setText(textCopy, QClipboard::Selection);
-  cb->setText(textCopy, QClipboard::Clipboard);
-  
-#ifdef QGISDEBUG
-        std::cerr << "QgsClipboard::replaceWith: replaced system clipboard with: "
-                  << textCopy.toLocal8Bit().data()
-                  << "."
-                  << std::endl;
-#endif
+  cb->setText( textCopy, QClipboard::Selection );
+  cb->setText( textCopy, QClipboard::Clipboard );
+
+  QgsDebugMsg( QString( "QgsClipboard::replaceWith: replaced system clipboard with: %1." ).arg( textCopy ) );
 
 }
 
 QgsFeatureList QgsClipboard::copyOf()
 {
 
-  QgsDebugMsg("QgsClipboard::copyOf: returning clipboard.");
-  
+  QgsDebugMsg( "QgsClipboard::copyOf: returning clipboard." );
+
   //TODO: Slurp from the system clipboard as well.
 
   return mFeatureClipboard;
-    
+
 //  return mFeatureClipboard;
-  
+
 }
 
 void QgsClipboard::clear()
 {
   mFeatureClipboard.clear();
 
-  QgsDebugMsg("QgsClipboard::clear: cleared clipboard.");
+  QgsDebugMsg( "QgsClipboard::clear: cleared clipboard." );
 }
-  
+
 void QgsClipboard::insert( QgsFeature& feature )
 {
-  mFeatureClipboard.push_back(feature);
-        
-  QgsDebugMsg("QgsClipboard::insert: inserted " + feature.geometry()->exportToWkt());
+  mFeatureClipboard.push_back( feature );
+
+  QgsDebugMsg( "QgsClipboard::insert: inserted " + feature.geometry()->exportToWkt() );
 }
- 
+

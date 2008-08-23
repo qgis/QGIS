@@ -15,39 +15,39 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- 
+
 #include "qgslinearminmaxenhancementwithclip.h"
- 
-QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip(QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue) : QgsContrastEnhancementFunction(theQgsRasterDataType, theMinimumValue, theMaximumValue)
+
+QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( QgsContrastEnhancement::QgsRasterDataType theQgsRasterDataType, double theMinimumValue, double theMaximumValue ) : QgsContrastEnhancementFunction( theQgsRasterDataType, theMinimumValue, theMaximumValue )
 {
 }
 
-int QgsLinearMinMaxEnhancementWithClip::enhanceValue(double theValue)
+int QgsLinearMinMaxEnhancementWithClip::enhanceValue( double theValue )
 {
-  if(theValue < mMinimumValue || theValue > mMaximumValue)
+  if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {
     return -1;
   }
 
-  int myStretchedValue = static_cast<int>(((theValue - mMinimumValue)/(mMinimumMaximumRange))*255.0);
-  if(myStretchedValue < 0)
+  int myStretchedValue = static_cast<int>((( theValue - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
+  if ( myStretchedValue < 0 )
   {
     return 0;
   }
-  else if(myStretchedValue > 255)
+  else if ( myStretchedValue > 255 )
   {
     return 255;
   }
-  
-  return myStretchedValue; 
+
+  return myStretchedValue;
 }
 
-bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange(double theValue)
+bool QgsLinearMinMaxEnhancementWithClip::isValueInDisplayableRange( double theValue )
 {
-  if(theValue < mMinimumValue || theValue > mMaximumValue)
+  if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {
     return false;
   }
-  
+
   return true;
 }

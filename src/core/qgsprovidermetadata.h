@@ -15,8 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
- 
+/* $Id$ */
+
 #ifndef QGSPROVIDERMETADATA_H
 #define QGSPROVIDERMETADATA_H
 
@@ -37,9 +37,9 @@
  */
 class CORE_EXPORT QgsProviderMetadata
 {
-public:
+  public:
 
-    QgsProviderMetadata(QString const & _key, QString const & _description, QString const & _library);
+    QgsProviderMetadata( QString const & _key, QString const & _description, QString const & _library );
 
     /** this returns the unique key associated with the provider
 
@@ -59,8 +59,8 @@ public:
     */
     QString const & library() const;
 
-private:
-    
+  private:
+
     /// unique key for data provider
     QString key_;
 

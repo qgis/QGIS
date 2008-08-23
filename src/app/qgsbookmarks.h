@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
+/* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
@@ -26,25 +26,25 @@ class QTreeWidgetItem;
 struct sqlite3;
 class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
-  Q_OBJECT
-public:
- QgsBookmarks(QWidget *parent = 0, Qt::WFlags fl = 0);
- ~QgsBookmarks();
- void restorePosition();
-private slots:
- void saveWindowLocation();
- void on_btnDelete_clicked();
- void on_btnZoomTo_clicked();
- void on_lstBookmarks_doubleClicked(QTreeWidgetItem *);
- void helpRequested();
- void refreshBookmarks();
-private:
- QWidget *mParent;
- void initialise();
- int connectDb();
- void zoomToBookmark();
- sqlite3 *db;
- static const int context_id = 151694916;
+    Q_OBJECT
+  public:
+    QgsBookmarks( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    ~QgsBookmarks();
+    void restorePosition();
+  private slots:
+    void saveWindowLocation();
+    void on_btnDelete_clicked();
+    void on_btnZoomTo_clicked();
+    void on_lstBookmarks_doubleClicked( QTreeWidgetItem * );
+    void helpRequested();
+    void refreshBookmarks();
+  private:
+    QWidget *mParent;
+    void initialise();
+    int connectDb();
+    void zoomToBookmark();
+    sqlite3 *db;
+    static const int context_id = 151694916;
 
 };
 #endif // QGSBOOKMARKS_H

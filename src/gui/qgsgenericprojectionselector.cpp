@@ -20,36 +20,36 @@
 #include <QApplication>
 
 /**
- * \class QgsGenericProjectionSelector 
+ * \class QgsGenericProjectionSelector
  * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
-QgsGenericProjectionSelector::QgsGenericProjectionSelector(QWidget *parent, 
-                                                       Qt::WFlags fl)
-  : QDialog(parent, fl)
+QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
+    Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
+  setupUi( this );
   //we will show this only when a message is set
   textEdit->hide();
 }
 
-void QgsGenericProjectionSelector::setMessage(QString theMessage)
+void QgsGenericProjectionSelector::setMessage( QString theMessage )
 {
   //short term kludge to make the layer selector default to showing
   //a layer projection selection message. If you want the selector
-  if (theMessage.isEmpty())
+  if ( theMessage.isEmpty() )
   {
     // Set up text edit pane
-    QString format("<h2>%1</h2>%2 %3");
-    QString header = tr("Define this layer's projection:");
-    QString sentence1 = tr("This layer appears to have no projection specification.");
-    QString sentence2 = tr("By default, this layer will now have its projection set to that of the project"
-        ", but you may override this by selecting a different projection below.");
-    textEdit->setHtml(format.arg(header).arg(sentence1)
-        .arg(sentence2));
+    QString format( "<h2>%1</h2>%2 %3" );
+    QString header = tr( "Define this layer's projection:" );
+    QString sentence1 = tr( "This layer appears to have no projection specification." );
+    QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project"
+                            ", but you may override this by selecting a different projection below." );
+    textEdit->setHtml( format.arg( header ).arg( sentence1 )
+                       .arg( sentence2 ) );
   }
   else
   {
-    textEdit->setHtml(theMessage);
+    textEdit->setHtml( theMessage );
   }
   textEdit->show();
 
@@ -58,19 +58,19 @@ void QgsGenericProjectionSelector::setMessage(QString theMessage)
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 {}
 
-void QgsGenericProjectionSelector::setSelectedCRSName(QString theName)
+void QgsGenericProjectionSelector::setSelectedCRSName( QString theName )
 {
-  projectionSelector->setSelectedCRSName(theName);
+  projectionSelector->setSelectedCRSName( theName );
 }
 
-void QgsGenericProjectionSelector::setSelectedCRSID(long theID)
+void QgsGenericProjectionSelector::setSelectedCRSID( long theID )
 {
-  projectionSelector->setSelectedCRSID(theID);
+  projectionSelector->setSelectedCRSID( theID );
 }
 
-void QgsGenericProjectionSelector::setSelectedEpsg(long theID)
+void QgsGenericProjectionSelector::setSelectedEpsg( long theID )
 {
-  projectionSelector->setSelectedEpsg(theID);
+  projectionSelector->setSelectedEpsg( theID );
 }
 
 QString QgsGenericProjectionSelector::getSelectedProj4String()
@@ -90,8 +90,8 @@ long QgsGenericProjectionSelector::getSelectedEpsg()
   return projectionSelector->getSelectedEpsg();
 }
 
-void QgsGenericProjectionSelector::setOgcWmsCrsFilter(QSet<QString> crsFilter)
+void QgsGenericProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
 {
-  projectionSelector->setOgcWmsCrsFilter(crsFilter);
+  projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }
 
