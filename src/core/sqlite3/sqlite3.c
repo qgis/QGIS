@@ -3986,7 +3986,7 @@ extern "C"
   ** be deallocated after sqlite3_result_value() returns without harm.
   **
   ** {U16491} These routines are called from within the different thread
-  ** than the one containing the application-defined function that recieved
+  ** than the one containing the application-defined function that received
   ** the [sqlite3_context] pointer, the results are undefined.
   */
   SQLITE_API void sqlite3_result_blob( sqlite3_context*, const void*, int, void( * )( void* ) );

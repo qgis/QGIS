@@ -93,13 +93,13 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool inputRegion( struct Cell_head *window, bool all );
     QStringList output( int type );
 
-    /** \brief recieves contentsMousePressEvent from view */
+    /** \brief receives contentsMousePressEvent from view */
     void contentsMousePressEvent( QMouseEvent* );
 
-    /** \brief recieves contentsMouseReleaseEvent from view */
+    /** \brief receives contentsMouseReleaseEvent from view */
     void contentsMouseReleaseEvent( QMouseEvent* );
 
-    /** \brief recieves contentsMouseMoveEvent from view */
+    /** \brief receives contentsMouseMoveEvent from view */
     void contentsMouseMoveEvent( QMouseEvent* );
 
     void keyPressEvent( QKeyEvent * e );

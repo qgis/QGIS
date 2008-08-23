@@ -1310,7 +1310,7 @@ void QgsGrassEdit::startTool( int tool )
   Vect_reset_line( mEditPoints );
   mSelectedLine = 0;
 
-  // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be recieved
+  // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be received
   if ( mAttributes && mTool != QgsGrassEdit::NEW_LINE && mTool != QgsGrassEdit::NEW_BOUNDARY )
   {
     delete mAttributes;
