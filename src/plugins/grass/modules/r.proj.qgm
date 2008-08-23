@@ -2,9 +2,11 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Re-project a raster map from one location to the current location" module="r.proj">
-	<file key="input" />
-	<option key="dbase" />
-	<option key="location" />
-	<option key="mapset" />
+	<option key="input" />
+	<option key="dbase"/>
+	<option key="location"/>
+	<option key="mapset"/>
 	<option key="method" />
+	<option key="resolution" />
+	<option key="output" />
 </qgisgrassmodule>
