@@ -18,8 +18,14 @@
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
+#include "qgscomposeritem.h"
 
 class QgisApp;
+class QgsComposerLabel;
+class QgsComposerLegend;
+class QgsComposerMap;
+class QgsComposerPicture;
+class QgsComposerScaleBar;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
@@ -33,7 +39,9 @@ class QResizeEvent;
 class QFile;
 class QSizeGrip;
 
-/* The constructor creates empty composer, without compositions and mFirstTime set to true. 
+/** \ingroup MapComposer
+ * \brief A gui for composing a printable map.
+ * The constructor creates empty composer, without compositions and mFirstTime set to true. 
  * - if signal projectRead() is recieved all old compositions are deleted and
  *     - if the composition exists in project it is created from project settings (mFirstTime set to false)
  *     - if the composition does not exist in project 
@@ -70,25 +78,16 @@ public:
     QgsComposerView *view ( void );
 
     //! Return current composition
-    QgsComposition *composition(void);
+    //QgsComposition *composition(void);
 
     //! Show composition options in widget
     void showCompositionOptions ( QWidget *w );
-    
-    //! Show item options in widget
-    void showItemOptions ( QWidget *w );
 
     /** \brief stores statei in project */
     bool writeSettings ( void );
 
     /** \brief read state from project */
     bool readSettings ( void );
-
-    //! Stores state in DOM node
-    bool writeXML( QDomNode & node, QDomDocument & doc);
-
-    //! Sets state from DOM document
-    bool readXML( QDomNode & node );
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -127,8 +126,8 @@ public slots:
     //! Add new map
     void on_mActionAddNewMap_activated(void);
 
-    //! Add new vector legend
-    void on_mActionAddNewVectLegend_activated(void);
+    //! Add new legend
+    void on_mActionAddNewLegend_activated(void);
     
     //! Add new label
     void on_mActionAddNewLabel_activated(void);
@@ -138,6 +137,15 @@ public slots:
     
     //! Add new picture
     void on_mActionAddImage_activated(void);
+
+    //! Set tool to move item content
+    void moveItemContent();
+
+    //! Group selected items 
+    void groupItems(void);
+
+    //! Ungroup selected item group
+    void ungroupItems(void);
 
     //! read project
     void projectRead();
@@ -154,11 +162,43 @@ public slots:
     //! Slot for when the close button is clicked
     void on_closePButton_clicked();
 
+    /**Add a composer map to the item/widget map and creates a configuration widget for it*/
+    void addComposerMap(QgsComposerMap* map);
+
+    /**Adds a composer label to the item/widget map and creates a configuration widget for it*/
+    void addComposerLabel(QgsComposerLabel* label);
+
+    /**Adds a composer scale bar to the item/widget map and creates a configuration widget for it*/
+    void addComposerScaleBar(QgsComposerScaleBar* scalebar);
+
+    /**Adds a composer legend to the item/widget map and creates a configuration widget for it*/
+    void addComposerLegend(QgsComposerLegend* legend);
+
+    /**Adds a composer picture to the item/widget map and creates a configuration widget*/
+    void addComposerPicture(QgsComposerPicture* picture);
+
+    /**Removes item from the item/widget map and deletes the configuration widget*/
+    void deleteItem(QgsComposerItem* item);
+    
+    /**Shows the configuration widget for a composer item*/
+    void showItemOptions(const QgsComposerItem* i);
+
+    //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
+
+    //! Stores state in DOM node
+    void writeXML(QDomDocument& doc);
+
+    //! Sets state from DOM document
+    void readXML( const QDomDocument& doc);
+
+    void setSelectionTool();
+    
+
 private:
     //! Set teh pixmap / icons on the toolbar buttons
     void setupTheme();
-    //! remove widget childrens
-    void removeWidgetChildren ( QWidget *w );
+    /**Etablishes the signal slot connection for the class*/
+    void connectSlots();
 
     /** \brief move up the content of the file
         \param file file
@@ -196,6 +236,9 @@ private:
 
     //! Size grip
     QSizeGrip *mSizeGrip;
+
+    //! To know which item to show if selection changes
+    QMap<QgsComposerItem*, QWidget*> mItemWidgetMap;
 
     //! Help context id
     static const int context_id = 985715179;

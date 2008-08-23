@@ -1197,26 +1197,15 @@ bool QgsRasterLayer::draw(QgsRenderContext& renderContext)
   }
   else
   {
-    if ((myRasterViewPort->drawableAreaXDim) > 4000 && (myRasterViewPort->drawableAreaYDim > 4000))
-      {
-	// We have scaled one raster pixel to more than 4000 screen pixels. What's the point of showing this layer?
-	// Instead, we just stop displaying the layer. Prevents allocating the entire world of memory for showing
-	// very few pixels.
-	// (Alternatively, we have a very big screen > 2000 x 2000)
-	QgsDebugMsg("Too zoomed in! Displaying raster requires too much memory. Raster will not display");
-      } 
-    else 
-      {
-	// Otherwise use the old-fashioned GDAL direct-drawing style
-	// TODO: Move into its own GDAL provider.
-	
-	// \/\/\/ - commented-out to handle zoomed-in rasters
-	//    draw(theQPainter,myRasterViewPort);
-	// /\/\/\ - commented-out to handle zoomed-in rasters
-	// \/\/\/ - added to handle zoomed-in rasters
-	draw(theQPainter, myRasterViewPort, &theQgsMapToPixel);
-	// /\/\/\ - added to handle zoomed-in rasters
-      }
+    // Otherwise use the old-fashioned GDAL direct-drawing style
+    // TODO: Move into its own GDAL provider.
+    
+    // \/\/\/ - commented-out to handle zoomed-in rasters
+    //    draw(theQPainter,myRasterViewPort);
+    // /\/\/\ - commented-out to handle zoomed-in rasters
+    // \/\/\/ - added to handle zoomed-in rasters
+    draw(theQPainter, myRasterViewPort, &theQgsMapToPixel);
+    // /\/\/\ - added to handle zoomed-in rasters
   }
 
   delete myRasterViewPort;

@@ -1,18 +1,16 @@
 <ui version="4.0" >
- <class>QgsComposerLabelBase</class>
- <widget class="QWidget" name="QgsComposerLabelBase" >
+ <class>QgsComposerLabelWidgetBase</class>
+ <widget class="QWidget" name="QgsComposerLabelWidgetBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
-    <height>341</height>
+    <width>217</width>
+    <height>274</height>
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>7</hsizetype>
-    <vsizetype>7</vsizetype>
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -20,26 +18,18 @@
   <property name="windowTitle" >
    <string>Label Options</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
     <widget class="QTextEdit" name="mTextEdit" >
      <property name="lineWrapMode" >
       <enum>QTextEdit::NoWrap</enum>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0" colspan="2" >
     <widget class="QPushButton" name="mFontButton" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -49,35 +39,21 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QCheckBox" name="mBoxCheckBox" >
+   <item row="2" column="0" >
+    <widget class="QLabel" name="mMarginTextLabel" >
      <property name="text" >
-      <string>Box</string>
+      <string>Margin (mm):</string>
      </property>
     </widget>
    </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>197</width>
-       <height>71</height>
-      </size>
-     </property>
-    </spacer>
+   <item row="2" column="1" >
+    <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox" />
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
   <tabstop>mFontButton</tabstop>
-  <tabstop>mBoxCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

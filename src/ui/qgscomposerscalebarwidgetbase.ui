@@ -1,0 +1,242 @@
+<ui version="4.0" >
+ <class>QgsComposerScaleBarWidgetBase</class>
+ <widget class="QWidget" name="QgsComposerScaleBarWidgetBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>367</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Barscale Options</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="mSegmentSizeLabel" >
+     <property name="text" >
+      <string>Segment size (map units):</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QDoubleSpinBox" name="mSegmentSizeSpinBox" >
+     <property name="maximum" >
+      <double>9999999999999.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QLabel" name="mNumbereOfSegmentsLabel" >
+     <property name="text" >
+      <string>Number of segments:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" >
+    <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox" />
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QLabel" name="mSegmentsLeftLabel" >
+     <property name="text" >
+      <string>Segments left:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QSpinBox" name="mSegmentsLeftSpinBox" />
+   </item>
+   <item row="3" column="0" >
+    <widget class="QLabel" name="mStyleLabel" >
+     <property name="text" >
+      <string>Style:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QComboBox" name="mStyleComboBox" />
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="mUnitLabelLabel" >
+     <property name="text" >
+      <string>Unit label:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mUnitLabelLineEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QLineEdit" name="mUnitLabelLineEdit" />
+   </item>
+   <item row="5" column="0" >
+    <widget class="QLabel" name="mMapUnitsPerBarUnitLabel" >
+     <property name="text" >
+      <string>Map units per bar unit:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2" >
+    <widget class="QDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox" >
+     <property name="maximum" >
+      <double>9999999999999.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" >
+    <widget class="QLabel" name="mMapLabel" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Map:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mMapComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2" >
+    <widget class="QComboBox" name="mMapComboBox" >
+     <property name="enabled" >
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" >
+    <widget class="QLabel" name="mHeightLabel" >
+     <property name="text" >
+      <string>Height (mm):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2" >
+    <widget class="QSpinBox" name="mHeightSpinBox" />
+   </item>
+   <item row="8" column="0" >
+    <widget class="QLabel" name="mLineWidthLabel" >
+     <property name="text" >
+      <string>Line width:</string>
+     </property>
+     <property name="wordWrap" >
+      <bool>true</bool>
+     </property>
+     <property name="buddy" >
+      <cstring>mLineWidthSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2" >
+    <widget class="QDoubleSpinBox" name="mLineWidthSpinBox" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimum" >
+      <double>0.010000000000000</double>
+     </property>
+     <property name="singleStep" >
+      <double>0.100000000000000</double>
+     </property>
+     <property name="value" >
+      <double>0.200000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" >
+    <widget class="QLabel" name="mLabelBarSpaceLabel" >
+     <property name="text" >
+      <string>Label space:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="2" >
+    <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox" />
+   </item>
+   <item row="10" column="0" >
+    <widget class="QLabel" name="mBoxSpaceLabel" >
+     <property name="text" >
+      <string>Box space:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="2" >
+    <widget class="QDoubleSpinBox" name="mBoxSizeSpinBox" />
+   </item>
+   <item row="11" column="0" >
+    <widget class="QPushButton" name="mFontButton" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Font...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="2" >
+    <widget class="QPushButton" name="mColorPushButton" >
+     <property name="text" >
+      <string>Color...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>16</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>mUnitLabelLineEdit</tabstop>
+  <tabstop>mMapComboBox</tabstop>
+  <tabstop>mFontButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

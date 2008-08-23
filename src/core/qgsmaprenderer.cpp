@@ -59,7 +59,7 @@ QgsMapRenderer::~QgsMapRenderer()
 }
 
 
-QgsRect QgsMapRenderer::extent()
+QgsRect QgsMapRenderer::extent() const
 {
   return mExtent;
 }

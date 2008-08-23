@@ -17,6 +17,8 @@
 #ifndef QGSCOMPOSERVECTORLEGEND_H
 #define QGSCOMPOSERVECTORLEGEND_H
 
+#if 0
+
 /*           
  *                    |<>| - mMargin         
  *           
@@ -29,7 +31,7 @@
  *                --  |  +-----+             |  __ 
  *  mSymbolHeight |   |  |     | Item Label  |  __| - mFont->pointSize()
  *                --  |  +-----+             |  --          
- *                    |                      |    | - mSymbolSpace (vertical space between symbo, boxes)
+ *                    |                      |    | - mSymbolSpace (vertical space between symbol, boxes)
  *                    |  +-----+             |  --
  *                    |  |     | Item Label  |
  *                    |  +-----+             |            
@@ -41,25 +43,25 @@
  *                   
  */ 
  
+
 #include "ui_qgscomposervectorlegendbase.h"
 #include "qgscomposeritem.h"
 
 #include <QGraphicsRectItem>
 #include <QPen>
-
 class QgsComposition;
 class QgsMapCanvas;
 class QDomNode;
 class QDomDocument;
 class QTreeWidgetItem;
 
-/** \class QgsComposerVectorLegend 
+/** \ingroup MapComposer
+ *  \class QgsComposerVectorLegend 
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerVectorLegendBase must be first, otherwise does not compile
 class QgsComposerVectorLegend : public QWidget,
-                                private Ui::QgsComposerVectorLegendBase, 
-                                public QGraphicsRectItem, 
+                                private Ui::QgsComposerVectorLegendBase,  
                                 public QgsComposerItem
 {
     Q_OBJECT
@@ -212,5 +214,7 @@ private:
     /** \brief Draw frame  */
     bool mFrame;
 };
+
+#endif //0
 
 #endif

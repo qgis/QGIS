@@ -56,14 +56,15 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
 
   composer/qgscomposer.cpp
-  composer/qgscomposeritem.cpp
-  composer/qgscomposerlabel.cpp
-  composer/qgscomposerpicture.cpp
-  composer/qgscomposermap.cpp
-  composer/qgscomposerscalebar.cpp
-  composer/qgscomposervectorlegend.cpp
+  composer/qgscomposeritemwidget.cpp
+  composer/qgscomposerlabelwidget.cpp
+  composer/qgscomposerpicturewidget.cpp
+  composer/qgscomposermapwidget.cpp
+  composer/qgscomposerscalebarwidget.cpp
+  composer/qgscomposerlegenditemdialog.cpp
+  composer/qgscomposerlegendwidget.cpp
   composer/qgscomposerview.cpp
-  composer/qgscomposition.cpp
+  composer/qgscompositionwidget.cpp
 
   legend/qgslegendgroup.cpp
   legend/qgslegend.cpp
@@ -120,13 +121,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
 
   composer/qgscomposer.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposermap.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposervectorlegend.h
+  composer/qgscomposeritemwidget.h
+  composer/qgscomposerlabelwidget.h
+  composer/qgscomposerlegendwidget.h
+  composer/qgscomposermapwidget.h
+  composer/qgscomposerpicturewidget.h
+  composer/qgscomposerscalebarwidget.h
   composer/qgscomposerview.h
-  composer/qgscomposition.h
+  composer/qgscompositionwidget.h
 
   legend/qgslegend.h
   legend/qgslegendlayer.h
@@ -184,7 +186,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ../core
-  ../core/raster ../core/renderer ../core/symbology
+  ../core/composer ../core/raster ../core/renderer ../core/symbology
   ../gui
   ../plugins
   ../python

@@ -36,9 +36,11 @@
 #include <iostream>
 #include <vector>
 
+#if 0
+
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id, 
                                               int x, int y, int fontSize )
-    : QWidget(composition), QGraphicsRectItem(x,y,10,10,0)
+    : QWidget(composition), QgsComposerItem(x,y,10,10,0)
 {
   setupUi(this);
 
@@ -77,7 +79,7 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 }
 
 QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, int id ) 
-    : QGraphicsRectItem(0,0,10,10,0)
+    : QgsComposerItem(0,0,10,10,0)
 {
 #ifdef QGISDEBUG
     std::cout << "QgsComposerVectorLegend::QgsComposerVectorLegend()" << std::endl;
@@ -105,7 +107,7 @@ QgsComposerVectorLegend::QgsComposerVectorLegend ( QgsComposition *composition, 
 
 void QgsComposerVectorLegend::init ( void ) 
 {
-    mSelected = false;
+  setSelected(false);
     mNumCachedLayers = 0;
     mTitle = tr("Legend");
     mMap = 0;
@@ -150,6 +152,8 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
 #ifdef QGISDEBUG
   std::cout << "QgsComposerVectorLegend::render p = " << p << std::endl;
 #endif
+
+#if 0
 
   // Painter can be 0, create dummy to avoid many if below
   QPainter *painter = NULL;
@@ -288,12 +292,12 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
             itemLabels.resize(sectionItemsCount); 
           }
 
-          double widthScale = map->widthScale() * mComposition->scale();
+	  //          double widthScale = map->widthScale() * mComposition->scale();
           if ( plotStyle() == QgsComposition::Preview && mPreviewMode == Render ) {
             widthScale *= mComposition->viewScale();
           }
 		
-          double scale = map->symbolScale() * mComposition->scale();
+          //double scale = map->symbolScale() * mComposition->scale();
 
           int icnt = 0;
           for ( QList<QgsSymbol*>::iterator it = symbols.begin(); it != symbols.end(); ++it ) {
@@ -377,7 +381,7 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
           QgsSymbol* sym = (*it);
 	    
           QPen pen = sym->pen();
-          double widthScale = map->widthScale();
+          //double widthScale = map->widthScale();
 
           pen.setWidthF( ( widthScale * pen.widthF() ) );
           pen.setCapStyle(Qt::FlatCap); //make sure that the line doesn't extend past its endpoints
@@ -466,6 +470,7 @@ QRectF QgsComposerVectorLegend::render ( QPainter *p )
   }
 
   return QRectF ( 0, 0, width, height);
+#endif //0
 }
 
 void QgsComposerVectorLegend::cache ( void )
@@ -521,7 +526,7 @@ void QgsComposerVectorLegend::paint( QPainter* painter, const QStyleOptionGraphi
 
 
   // Draw the "selected highlight" boxes
-  if ( mSelected && plotStyle() == QgsComposition::Preview ) {
+  if ( isSelected() && plotStyle() == QgsComposition::Preview ) {
 
     painter->setPen( mComposition->selectionPen() );
     painter->setBrush( mComposition->selectionBrush() );
@@ -699,13 +704,13 @@ void QgsComposerVectorLegend::setOptions ( void )
 
 void QgsComposerVectorLegend::setSelected (  bool s ) 
 {
-    mSelected = s;
-    QGraphicsRectItem::update(); // show highlight
+  QGraphicsRectItem::setSelected(s);
+  QGraphicsRectItem::update(); // show highlight
 }    
 
 bool QgsComposerVectorLegend::selected( void )
 {
-    return mSelected;
+  return isSelected();
 }
 
 void QgsComposerVectorLegend::contextMenuEvent( QContextMenuEvent *event)
@@ -951,3 +956,5 @@ bool QgsComposerVectorLegend::readXML( QDomNode & node )
 {
     return true;
 }
+
+#endif //0

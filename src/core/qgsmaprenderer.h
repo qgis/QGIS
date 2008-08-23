@@ -57,11 +57,14 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool setExtent(const QgsRect& extent);
     
     //! returns current extent
-    QgsRect extent();
+    QgsRect extent() const;
     
     const QgsMapToPixel* coordXForm() { return &(mRenderContext.mapToPixel()); }
     
     double scale() const { return mScale; }
+    /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This 
+     function is only used to force a preview scale (e.g. for print composer)*/
+    void setScale(double scale) {mScale = scale;}
     double mupp() const { return mMupp; }
 
     int width() const { return mSize.width(); };

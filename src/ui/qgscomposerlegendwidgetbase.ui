@@ -1,0 +1,216 @@
+<ui version="4.0" >
+ <class>QgsComposerLegendWidgetBase</class>
+ <widget class="QWidget" name="QgsComposerLegendWidgetBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>496</width>
+    <height>626</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Barscale Options</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="mGeneralGroupBox" >
+     <property name="title" >
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="mTitleLabel" >
+          <property name="text" >
+           <string>Title:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mTitleLineEdit" />
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="mFontLabel" >
+          <property name="text" >
+           <string>Font:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mTitleFontButton" >
+          <property name="sizePolicy" >
+           <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>Title...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mLayerFontButton" >
+          <property name="text" >
+           <string>Layer...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mItemFontButton" >
+          <property name="text" >
+           <string>Item...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" >
+       <layout class="QGridLayout" >
+        <item row="0" column="0" colspan="2" >
+         <widget class="QLabel" name="mSymbolWidthLabel" >
+          <property name="text" >
+           <string>Symbol width: </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" >
+         <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox" />
+        </item>
+        <item row="0" column="3" colspan="2" >
+         <widget class="QLabel" name="mSymbolHeightLabel" >
+          <property name="text" >
+           <string>Symbol height:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5" >
+         <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox" />
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="mLayerSpaceLabel" >
+          <property name="text" >
+           <string>Layer space: </string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2" >
+         <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox" />
+        </item>
+        <item row="1" column="3" >
+         <widget class="QLabel" name="mSymbolSpaceLabel" >
+          <property name="text" >
+           <string>Symbol space:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4" colspan="2" >
+         <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox" />
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLabel" name="mIconLabelSpaceLabel" >
+          <property name="text" >
+           <string>Icon label space:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox" />
+        </item>
+        <item>
+         <widget class="QLabel" name="mBoxSpaceLabel" >
+          <property name="text" >
+           <string>Box space:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox" />
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="mLegendItemsGroupBox" >
+     <property name="title" >
+      <string>Legend items</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QPushButton" name="mMoveDownPushButton" >
+        <property name="text" >
+         <string>down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QPushButton" name="mMoveUpPushButton" >
+        <property name="text" >
+         <string>up</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="mRemovePushButton" >
+        <property name="text" >
+         <string>remove</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QPushButton" name="mEditPushButton" >
+        <property name="text" >
+         <string>edit...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>121</width>
+          <height>33</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" colspan="5" >
+       <widget class="QTreeView" name="mItemTreeView" >
+        <property name="headerHidden" stdset="0" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>mTitleFontButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
