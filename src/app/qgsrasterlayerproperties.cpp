@@ -51,10 +51,10 @@ const char * const ident =
 "$Id$";
 
 QgsRasterLayerProperties::QgsRasterLayerProperties(QgsMapLayer *lyr, QWidget *parent, Qt::WFlags fl)
-  : QDialog(parent, fl), 
-  mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr)),
+  : QDialog(parent, fl),
   // Constant that signals property not used.
-  TRSTRING_NOT_SET( tr("Not Set"))
+  TRSTRING_NOT_SET( tr("Not Set")),
+  mRasterLayer( dynamic_cast<QgsRasterLayer*>(lyr) )
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayActualMinimumMaximum = false;
@@ -1722,7 +1722,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged(const QString& theText)
 {
-  if(mRasterLayerIsGdal && theText == tr("Pseudocolor") || theText == tr("Freak Out"))
+  if(mRasterLayerIsGdal && (theText == tr("Pseudocolor") || theText == tr("Freak Out")))
   {
     tabBar->setTabEnabled(tabBar->indexOf(tabPageColormap), FALSE);
     rbtnSingleBandMinMax->setEnabled(false);

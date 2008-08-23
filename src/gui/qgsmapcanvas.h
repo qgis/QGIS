@@ -91,7 +91,7 @@ private:
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     

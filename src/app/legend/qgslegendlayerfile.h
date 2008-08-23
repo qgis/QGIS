@@ -32,7 +32,7 @@ class QgsMapLayer;
 */
 class QgsLegendLayerFile : public QgsLegendItem
 {
-  Q_OBJECT;
+  Q_OBJECT
   
 public:
     QgsLegendLayerFile(QTreeWidgetItem * theLegendItem, QString theString, QgsMapLayer* theLayer);

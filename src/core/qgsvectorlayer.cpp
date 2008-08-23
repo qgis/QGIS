@@ -95,10 +95,10 @@ QgsVectorLayer::QgsVectorLayer(QString vectorLayerPath,
   mProviderKey(providerKey),
   mEditable(false),
   mModified(false),
+  mMaxUpdatedIndex(-1),
   mRenderer(0),
   mLabel(0),
   mLabelOn(false),
-  mMaxUpdatedIndex(-1),
   mFetching(false)
 {
   mActions = new QgsAttributeAction;
@@ -700,11 +700,6 @@ bool QgsVectorLayer::draw(QgsRenderContext& rendererContext)
     /*Pointer to a marker image*/
     QImage marker;
 
-    /* Scale factor of the marker image*/
-    /* We set this to the symbolScale, and if it is NOT changed, */
-    /* we don't have to do another scaling here */
-    double markerScaleFactor = rendererContext.rasterScaleFactor();
-
     if(mEditable)
     {
       // Destroy all cached geometries and clear the references to them
@@ -740,6 +735,8 @@ bool QgsVectorLayer::draw(QgsRenderContext& rendererContext)
           emit drawingProgress(featureCount, totalFeatures);
           qApp->processEvents();
         }
+#else
+        Q_UNUSED(totalFeatures);
 #endif //Q_WS_MAC
 
         if (mEditable)
@@ -1648,7 +1645,6 @@ int QgsVectorLayer::translateFeature(int featureId, double dx, double dy)
 
 int QgsVectorLayer::splitFeatures(const QList<QgsPoint>& splitLine, bool topologicalEditing)
 {
-  QgsGeometry* newGeometry = 0;
   QgsFeatureList newFeatures; //store all the newly created features
   double xMin, yMin, xMax, yMax;
   QgsRect bBox; //bounding box of the split line
@@ -1874,6 +1870,8 @@ int QgsVectorLayer::addTopologicalPoints(QgsGeometry* geom)
         }
         break;
       }
+    default:
+      break;
   }
   return returnVal;
 }

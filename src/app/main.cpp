@@ -612,7 +612,7 @@ int main(int argc, char *argv[])
   {
     double coords[4];
     int pos, posOld = 0;
-    bool ok;
+    bool ok = true;
 
     // XXX is it necessary to switch to "C" locale?
     
@@ -623,7 +623,8 @@ int main(int argc, char *argv[])
       // find comma and get coordinate
       pos = myInitialExtent.indexOf(',', posOld);
       if (pos == -1) {
-        ok = false; break;
+        ok = false;
+        break;
       }
 
       coords[i] = QString( myInitialExtent.mid(posOld, pos - posOld) ).toDouble(&ok);

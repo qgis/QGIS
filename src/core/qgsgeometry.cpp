@@ -41,7 +41,7 @@ email                : morb at ozemail dot com dot au
     throw; \
   }
 
-#if GEOS_VERSION_MAJOR<3
+#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
 #define GEOSGeom_clone(g) GEOSGeom_clone( (GEOSGeometry *) g )
 #define GEOSGeom_getCoordSeq(g) GEOSGeom_getCoordSeq( (GEOSGeometry *) g )
 #define GEOSGetExteriorRing(g) GEOSGetExteriorRing( (GEOSGeometry *)g )
@@ -80,10 +80,7 @@ private:
   const char *msg;
 };
 
-extern "C" void throwGEOSException(const char *fmt, ...)
-#ifdef _MSC_VER
-throw()
-#endif
+void throwGEOSException(const char *fmt, ...)
 {
   va_list ap;
   va_start(ap, fmt);
@@ -95,7 +92,7 @@ throw()
   throw GEOSException(msg);
 }
 
-extern "C" void printGEOSNotice(const char *fmt, ...)
+void printGEOSNotice(const char *fmt, ...)
 {
 #if defined(QGISDEBUG)
   va_list ap;
@@ -187,7 +184,7 @@ static GEOSGeometry *createGeosPoint(const QgsPoint &point)
 
 static GEOSCoordSequence *createGeosCoordSequence(const QgsPolyline& points)
 {
-  GEOSCoordSequence *coord;
+  GEOSCoordSequence *coord = 0;
 
   try {
     coord = GEOSCoordSeq_create(points.count(), 2);
@@ -328,7 +325,7 @@ static QgsGeometry *fromGeosGeom(GEOSGeometry *geom)
 
 QgsGeometry* QgsGeometry::fromWkt(QString wkt)
 {
-#if GEOS_VERSION_MAJOR>=3
+#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR>=3)
   GEOSWKTReader *reader = GEOSWKTReader_create();;
   QgsGeometry *g = fromGeosGeom( GEOSWKTReader_read(reader, wkt.toLocal8Bit().data()) );
   GEOSWKTReader_destroy(reader);
@@ -595,7 +592,7 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, int& atVertex, int& b
     return QgsPoint(0,0);
   }
 
-  int vertexnr;
+  int vertexnr = -1;
   int vertexcounter = 0;
   QGis::WKBTYPE wkbType;
   double actdist = std::numeric_limits<double>::max();
@@ -620,6 +617,9 @@ QgsPoint QgsGeometry::closestVertex(const QgsPoint& point, int& atVertex, int& b
       }
     case QGis::WKBLineString25D:
       hasZValue = true;
+
+      // fall-through
+     
     case QGis::WKBLineString:
       {
         unsigned char* ptr=mGeometry+5;
@@ -1109,7 +1109,7 @@ bool QgsGeometry::insertVertexBefore(double x, double y,
   for (unsigned int i=0, j=0; i<numPoints; i++, j++)
   {
     // Do we insert the new vertex here?
-    if (beforeVertex == i)
+    if (beforeVertex == static_cast<int>(i))
     {
       GEOSCoordSeq_setX(*new_sequence, j, x);
       GEOSCoordSeq_setY(*new_sequence, j, y);
@@ -3880,15 +3880,12 @@ bool QgsGeometry::exportWkbToGeos()
       }
 
     default:
-      return FALSE;
+      return false;
     }
   }
-  CATCH_GEOS(FALSE)
-  {
-    return false;
-  }
+  CATCH_GEOS(false)
 
-  return TRUE;
+  return true;
 }
 
 bool QgsGeometry::exportGeosToWkb()
@@ -4574,7 +4571,8 @@ int QgsGeometry::splitPolygonGeometry(GEOSGeometry* splitLine, QList<QgsGeometry
     return 2; //an error occured during noding
   }
 
-#if GEOS_VERSION_MAJOR>3 || (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=1)
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=1)))
   GEOSGeometry *cutEdges = GEOSPolygonizer_getCutEdges( &nodedGeometry, 1 );
   if( cutEdges ) {
     if( GEOSGetNumGeometries(cutEdges)>0 ) {
@@ -4608,7 +4606,6 @@ int QgsGeometry::splitPolygonGeometry(GEOSGeometry* splitLine, QList<QgsGeometry
   //ratio intersect geometry / geometry. This should be close to 1
   //if the polygon belongs to the input geometry
 
-  double areaRatio = 0.0;
   for(int i=0; i<GEOSGetNumGeometries(polygons); i++)
   {
     const GEOSGeometry *polygon = GEOSGetGeometryN(polygons, i);
@@ -4620,7 +4617,7 @@ int QgsGeometry::splitPolygonGeometry(GEOSGeometry* splitLine, QList<QgsGeometry
     double polygonArea;
     GEOSArea(polygon, &polygonArea);
 
-    double areaRatio = intersectionArea / polygonArea;
+    const double areaRatio = intersectionArea / polygonArea;
     if(areaRatio > 0.99 && areaRatio < 1.01)
       testedGeometries << GEOSGeom_clone(polygon);
 
@@ -4931,7 +4928,6 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon()
   return polygons;
 }
 
-
 double QgsGeometry::distance(QgsGeometry& geom)
 {
   if (mGeos == NULL)
@@ -4944,13 +4940,15 @@ double QgsGeometry::distance(QgsGeometry& geom)
     geom.exportWkbToGeos();
   }
 
+  double dist=-1.0;
+
   try
   {
-    double dist;
     GEOSDistance(mGeos, geom.mGeos, &dist);
-    return dist;
   }
   CATCH_GEOS(-1.0)
+
+  return dist;
 }
 
 

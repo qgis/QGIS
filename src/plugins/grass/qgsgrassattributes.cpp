@@ -61,7 +61,7 @@ QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress ( Q3Table *tab )
   mTable = tab;
 }
 
-QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress () {};
+QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress () {}
 
 bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 {

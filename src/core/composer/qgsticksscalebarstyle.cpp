@@ -44,6 +44,7 @@ QString QgsTicksScaleBarStyle::name() const
     case MIDDLE:
       return "Line Ticks Middle";
     }
+  return "";  // to make gcc happy
 }
 
 void QgsTicksScaleBarStyle::draw(QPainter* p, double xOffset) const

@@ -36,7 +36,7 @@ class QMenu;
 
 class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
 
   //! Constructor - takes it own copy of the QgsAttributeAction so

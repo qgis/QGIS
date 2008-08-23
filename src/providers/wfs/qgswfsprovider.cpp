@@ -212,7 +212,6 @@ int QgsWFSProvider::getFeature(const QString& uri)
     {
       return getFeatureFILE(uri, geometryAttribute); //read the features from disk
     }
-  return 2;
 }
 
 int QgsWFSProvider::describeFeatureType(const QString& uri, QString& geometryAttribute, QgsFieldMap& fields)
@@ -718,6 +717,8 @@ int QgsWFSProvider::setCRSFromGML2(const QDomElement& wfsCollectionElement)
 	  return 5;
 	}
     }
+  else
+    epsgId = GEOEPSG_ID;
 
   if(!mSourceCRS.createFromEpsg(epsgId))
     {

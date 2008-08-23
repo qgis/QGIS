@@ -49,7 +49,7 @@ class QgsGeometry;
   */
 class QgsPostgresProvider : public QgsVectorDataProvider
 {
-  Q_OBJECT;
+  Q_OBJECT
 
   public:
     /**

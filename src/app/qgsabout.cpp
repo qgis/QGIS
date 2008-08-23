@@ -215,8 +215,7 @@ void QgsAbout::on_listBox1_currentItemChanged(QListWidgetItem *theItem)
 #ifdef QGISDEBUG 
   printf ("Loading mug: %s\n", myString.toLocal8Bit().constData()); 
 #endif 
-  QPixmap *pixmap = new QPixmap(myString);
-  //pixAuthorMug->setPixmap(*pixmap);
+  
   /* Uncomment this block to use preloaded images
   pixAuthorMug->setPixmap(mugs[myString]);
   */

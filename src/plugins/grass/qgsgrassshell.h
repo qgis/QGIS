@@ -72,7 +72,7 @@ extern "C" {
 
 class QgsGrassShell: public QDialog, private Ui::QgsGrassShellBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     QgsGrassShell ( QgsGrassTools *tools, 
@@ -222,7 +222,7 @@ private:
 
 class QgsGrassShellText : public Q3TextEdit
 {
-    Q_OBJECT;
+    Q_OBJECT
 public:
     QgsGrassShellText ( QgsGrassShell *, 
 	                QWidget * parent = 0, const char * name = 0 );

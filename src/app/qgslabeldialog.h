@@ -26,7 +26,7 @@ class QgsLabel;
 /** QgsLabelDialog is the dialog for label. */
 class QgsLabelDialog: public QWidget, private Ui::QgsLabelDialogBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     QgsLabelDialog( QgsLabel *label,  QWidget * parent = 0 );

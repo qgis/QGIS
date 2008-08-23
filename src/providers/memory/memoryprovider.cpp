@@ -28,8 +28,8 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
 QgsMemoryProvider::QgsMemoryProvider(QString uri)
   : QgsVectorDataProvider(uri),
-    mSpatialIndex(NULL),
-    mSelectRectGeom(NULL)
+    mSelectRectGeom(NULL),
+    mSpatialIndex(NULL)
 {
   if (uri == "Point")
     mWkbType = QGis::WKBPoint;

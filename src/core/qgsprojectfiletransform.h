@@ -66,7 +66,7 @@ class QgsProjectFileTransform
     void (QgsProjectFileTransform::* transformFunc)();
   } transform;
 
-  static transform transformers[];;
+  static transform transformers[];
 
   QDomDocument mDom;
   QgsProjectVersion mCurrentVersion;

@@ -84,17 +84,16 @@ void QgsMeasureDialog::mouseMove(QgsPoint &point)
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
-  QList<QgsPoint> tmpPoints = mTool->points();
-  tmpPoints.append(point);
-  if (mMeasureArea && tmpPoints.size() > 2)
+  if (mMeasureArea && mTool->points().size() > 1)
   {
+    QList<QgsPoint> tmpPoints = mTool->points();
+    tmpPoints.append(point);
     double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon(tmpPoints);
     editTotal->setText(formatArea(area));
   }
-  else if (!mMeasureArea && tmpPoints.size() > 1)
+  else if (!mMeasureArea && mTool->points().size() > 0)
   {
-    int last = tmpPoints.size()-2;
-    QgsPoint p1 = tmpPoints[last], p2 = tmpPoints[last+1];
+    QgsPoint p1(mTool->points().last()), p2(point);
 
     double d = mTool->canvas()->mapRenderer()->distArea()->measureLine(p1,p2);
     QTreeWidgetItem *item = mTable->topLevelItem(mTable->topLevelItemCount()-1);

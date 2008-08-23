@@ -35,7 +35,6 @@ QgsMapToolEdit::~QgsMapToolEdit()
 
 int QgsMapToolEdit::insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer)
 {
-  int returnval = 0;
   QgsPoint layerPoint;
 
   if(!editedLayer || !editedLayer->isEditable())

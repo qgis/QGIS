@@ -20,7 +20,7 @@
 */
 class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBase
 {
-Q_OBJECT;
+Q_OBJECT
 public:
     QgsScaleBarPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsScaleBarPluginGui();

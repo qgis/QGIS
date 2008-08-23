@@ -274,8 +274,6 @@ bool QgsSearchTreeNode::checkAgainst(const QgsFieldMap& fields, const QgsAttribu
       mError += QString::number(mOp);
       return false;
   }
-
-  return false; // will never get there
 }
 
 bool QgsSearchTreeNode::getValue(QgsSearchTreeValue& value, QgsSearchTreeNode* node, const QgsFieldMap& fields, const QgsAttributeMap& attributes)

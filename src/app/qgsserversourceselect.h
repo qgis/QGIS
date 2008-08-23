@@ -140,9 +140,6 @@ private:
     //! Populate the image encoding button group - private for now.
     void populateImageEncodingGroup(QgsWmsProvider* wmsProvider);
 
-    //! Returns the common CRSs for the selected layers.
-    std::set<QString> crsForSelection();
-
     //! Returns a textual description for the EPSG number
     QString descriptionForEpsg(long epsg);
 

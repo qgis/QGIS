@@ -32,7 +32,7 @@ class QgisApp;
  */
 class QgisAppInterface : public QgisInterface
 {
-    Q_OBJECT;
+    Q_OBJECT
 
     public:
         /**

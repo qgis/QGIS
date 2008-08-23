@@ -24,7 +24,7 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-QgsComposerPicture::QgsComposerPicture(QgsComposition *composition): QgsComposerItem(composition), QObject(0), mRotation(0.0), mMode(UNKNOWN), mSvgCacheUpToDate(false), mCachedDpi(0)
+QgsComposerPicture::QgsComposerPicture(QgsComposition *composition): QObject(0), QgsComposerItem(composition), mRotation(0.0), mMode(UNKNOWN), mSvgCacheUpToDate(false), mCachedDpi(0)
 {
 }
 

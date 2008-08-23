@@ -32,7 +32,7 @@ class QgisInterface;
  */
 class QgsGrassBrowser: public QMainWindow
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor

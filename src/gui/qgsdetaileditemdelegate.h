@@ -30,7 +30,7 @@ class QFont;
 class GUI_EXPORT QgsDetailedItemDelegate : 
      public QAbstractItemDelegate 
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
     QgsDetailedItemDelegate(QObject * parent = 0);
     ~QgsDetailedItemDelegate();

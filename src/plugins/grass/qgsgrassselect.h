@@ -23,7 +23,7 @@
  */
 class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor

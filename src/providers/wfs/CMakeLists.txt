@@ -9,12 +9,12 @@ SET (WFS_MOC_HDRS
      qgswfsprovider.h
 )
 
-IF(NOT MSVC)
-  IF (PEDANTIC)
-    MESSAGE("providers/wfs : -Werror removed for qgswfsprovider.cpp for now - please get rid of any compiler warnings!")
-  ENDIF (PEDANTIC)
-  SET_SOURCE_FILES_PROPERTIES(qgswfsprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
-ENDIF (NOT MSVC)
+#IF(NOT MSVC)
+#  IF (PEDANTIC)
+#    MESSAGE("providers/wfs : -Werror removed for qgswfsprovider.cpp for now - please get rid of any compiler warnings!")
+#  ENDIF (PEDANTIC)
+#  SET_SOURCE_FILES_PROPERTIES(qgswfsprovider.cpp PROPERTIES COMPILE_FLAGS -Wno-error )
+#ENDIF (NOT MSVC)
 ########################################################
 # Build
 

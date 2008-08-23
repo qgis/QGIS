@@ -126,7 +126,6 @@ int QgsLegendModel::addVectorLayerItems(QStandardItem* layerItem, QgsMapLayer* v
   QList<QgsSymbol*>::const_iterator symbolIt = vectorSymbols.constBegin();
 
   QStandardItem* currentSymbolItem = 0;
-  QStandardItem* currentLabelItem = 0;
 
   for(; symbolIt != vectorSymbols.constEnd(); ++symbolIt)
     {
@@ -176,7 +175,6 @@ int QgsLegendModel::addVectorLayerItems(QStandardItem* layerItem, QgsMapLayer* v
 	  continue;
 	}
 
-      int currentRowCount = layerItem->rowCount();
       currentSymbolItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 
       layerItem->setChild(layerItem->rowCount(), 0, currentSymbolItem);
@@ -468,6 +466,9 @@ bool QgsLegendModel::readXML(const QDomElement& legendModelElem, const QDomDocum
 			case QGis::Polygon:
 			  childItem->setIcon(QIcon(QPixmap::fromImage(symbol->getPolygonSymbolAsImage())));
 			  break;
+			case QGis::Unknown:
+			  // should not occur
+			  break;
 			}
 		      insertSymbol(symbol);
 		    }
@@ -488,4 +489,6 @@ bool QgsLegendModel::readXML(const QDomElement& legendModelElem, const QDomDocum
 
       invisibleRootItem()->setChild (invisibleRootItem()->rowCount(), layerItem);
     }
+
+    return true;
 }

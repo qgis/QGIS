@@ -499,8 +499,7 @@ bool QgsMapRenderer::splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsR
       QgsCoordinateTransform tr(layer->srs(), *mDestCRS);
       
 #ifdef QGISDEBUG
-     // QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__,\
-     //   __FUNCTION__, __LINE__);
+     // QgsLogger::debug<QgsRect>("Getting extent of canvas in layers CS. Canvas is ", extent, __FILE__, __FUNCTION__, __LINE__);
 #endif
       // Split the extent into two if the source CRS is
       // geographic and the extent crosses the split in

@@ -582,18 +582,13 @@ void Tools::uncompressRLE(
 	if (lin == 0) { *out = 0; lout = 0;	return; }
 
 	byte *data = 0, *pdata = 0, *pin;
-#ifdef _MSC_VER
-	// MSVC doesn't like non-const array initialisers
 	byte* cv = new byte[blockSize];
 	byte* pv = new byte[blockSize];
-#else
-	byte cv[blockSize], pv[blockSize];
-#endif//_MSC_VER
 	byte rl;
 	unsigned long bufferLength = 2 * lin;
 
 	pin = in;
-	memcpy(cv, pin, blockSize);
+	std::memcpy(cv, pin, blockSize);
 	pv[0] = ~cv[0]; // force next character to be different.
 	assert(pv[0] != cv[0]);
 	data = new byte[bufferLength];
@@ -601,7 +596,7 @@ void Tools::uncompressRLE(
 
 	while (pin < in + lin)
 	{
-		memcpy(cv, pin, blockSize);
+		std::memcpy(cv, pin, blockSize);
 		pin += blockSize;
 
 		assert(pin <= in + lin);
@@ -619,14 +614,12 @@ void Tools::uncompressRLE(
 			catch(...)
 			{
 				delete[] data;
-#ifdef _MSC_VER
 				delete[] cv;
 				delete[] pv;
-#endif//_MSC_VER
 				throw;
 			}
 
-			memcpy(tmp, data, bufferLength);
+			std::memcpy(tmp, data, bufferLength);
 			pdata = tmp + (pdata - data);
 			byte* tmp2 = data;
 			data = tmp;
@@ -634,12 +627,12 @@ void Tools::uncompressRLE(
 			bufferLength *= 2;
 		}
 
-		memcpy(pdata, cv, blockSize);
+		std::memcpy(pdata, cv, blockSize);
 		pdata += blockSize;
 
 		if (memcmp(cv, pv, blockSize) == 0 && pin < in + lin)
 		{
-			memcpy(&rl, pin, sizeof(byte));
+			std::memcpy(&rl, pin, sizeof(byte));
 			pin += sizeof(byte);
 			assert(pin <= in + lin);
 			if (
@@ -657,14 +650,12 @@ void Tools::uncompressRLE(
 				catch(...)
 				{
 					delete[] data;
-#ifdef _MSC_VER
 					delete[] cv;
 					delete[] pv;
-#endif//_MSC_VER
 					throw;
 				}
 
-				memcpy(tmp, data, bufferLength);
+				std::memcpy(tmp, data, bufferLength);
 				pdata = tmp + (pdata - data);
 				byte* tmp2 = data;
 				data = tmp;
@@ -674,15 +665,15 @@ void Tools::uncompressRLE(
 
 			while (rl > 0)
 			{
-				memcpy(pdata, cv, blockSize);
+				std::memcpy(pdata, cv, blockSize);
 				pdata += blockSize;
 				rl--;
 			}
-			memcpy(cv, pin, blockSize);
+			std::memcpy(cv, pin, blockSize);
 			pv[0] = ~cv[0];
 			assert(pv[0] != cv[0]);
 		}
-		else memcpy(pv, cv, blockSize);
+		else std::memcpy(pv, cv, blockSize);
 	}
 
 	lout = pdata - data;
@@ -694,19 +685,15 @@ void Tools::uncompressRLE(
 	catch(...)
 	{
 		delete[] data;
-#ifdef _MSC_VER
 		delete[] cv;
 		delete[] pv;
-#endif//_MSC_VER
 		throw;
 	}
 
-	memcpy(*out, data, lout);
+	std::memcpy(*out, data, lout);
 	delete[] data;
-#ifdef _MSC_VER
 	delete[] cv;
 	delete[] pv;
-#endif//_MSC_VER
 }
 
 #if HAVE_GETTIMEOFDAY

@@ -102,6 +102,10 @@ double QgsContrastEnhancement::getMaximumPossibleValue(QgsRasterDataType theData
     case QGS_CFloat64:
     return std::numeric_limits<double>::max();
       break;
+    case QGS_Unknown:
+    case QGS_TypeCount:
+      // XXX - mloskot: not handled?
+      break;
   }
 
   return std::numeric_limits<double>::max();
@@ -145,6 +149,10 @@ double QgsContrastEnhancement::getMinimumPossibleValue(QgsRasterDataType theData
       break;
     case QGS_CFloat64:
     return std::numeric_limits<double>::max() * -1.0;
+      break;
+    case QGS_Unknown:
+    case QGS_TypeCount:
+      // XXX - mloskot: not handled?
       break;
   }
 

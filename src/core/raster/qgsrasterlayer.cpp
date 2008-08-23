@@ -305,16 +305,15 @@ QgsRasterLayer::QgsRasterLayer(
     QString const & baseName, 
     bool loadDefaultStyleFlag)
   : QgsMapLayer(RASTER, baseName, path),
+  // Constant that signals property not used.
+  QSTRING_NOT_SET("Not Set"),
+  TRSTRING_NOT_SET(tr("Not Set")),
   mRasterXDim( std::numeric_limits<int>::max() ),
   mRasterYDim( std::numeric_limits<int>::max() ),
   mDebugOverlayFlag(false),
   mInvertPixelsFlag(false),
   mStandardDeviations(0),
-  mDataProvider(0),
-  // Constant that signals property not used.
-  QSTRING_NOT_SET("Not Set"),
-  TRSTRING_NOT_SET(tr("Not Set"))
-
+  mDataProvider(0)
 {
 
   mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
@@ -2409,6 +2408,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats(int theBandNo)
   // a certain range -- in this case twenty times the smallest value that
   // doubles can take for the current system.  (Yes, 20 was arbitrary.)
   double myPrecision = std::numeric_limits<double>::epsilon() * 20;
+  Q_UNUSED(myPrecision);
   
   //ifdefs below to remove compiler warning about unused vars
 #ifdef QGISDEBUG
@@ -4891,7 +4891,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   {
     QgsDebugMsg("QgsRasterLayer::setDataProvider: Loaded data provider library");
     QgsDebugMsg("QgsRasterLayer::setDataProvider: Attempting to resolve the classFactory function");
-    classFactoryFunction_t * classFactory = (classFactoryFunction_t *) mLib->resolve("classFactory");
+    classFactoryFunction_t * classFactory = (classFactoryFunction_t *) cast_to_fptr(mLib->resolve("classFactory"));
 
     mValid = false;            // assume the layer is invalid until we
     // determine otherwise
@@ -5143,6 +5143,8 @@ QString QgsRasterLayer::getColorShadingAlgorithmAsQString()
       break;
     case USER_DEFINED:
       return QString("USER_DEFINED");
+      break;
+    default:
       break;
   }
   

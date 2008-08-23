@@ -62,7 +62,7 @@ class QgsGrassModuleStandardOptions;
  */
 class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase 
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor
@@ -360,7 +360,7 @@ private:
  */
 class QgsGrassModuleOption: public QGroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -460,7 +460,7 @@ private:
  */
 class QgsGrassModuleFlag: public QCheckBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -485,7 +485,7 @@ private:
  */
 class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -592,7 +592,7 @@ private:
  */
 class QgsGrassModuleGdalInput: public Q3GroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -646,7 +646,7 @@ private:
  */
 class QgsGrassModuleField: public Q3GroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -693,7 +693,7 @@ private:
  */
 class QgsGrassModuleSelection: public Q3GroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor
@@ -744,7 +744,7 @@ private:
  */
 class QgsGrassModuleFile: public QGroupBox, public QgsGrassModuleItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     /*! \brief Constructor

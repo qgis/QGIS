@@ -751,9 +751,6 @@ bool QgsProject::read()
                                 // sure it's closed anyway
 
         throw QgsIOException( QObject::tr("Unable to open ") + imp_->file.fileName());
-
-        return false;           // XXX raise exception? Ok now superfluous
-                                // XXX because of exception.
     }
 
     // location of problem associated with errorMsg
@@ -776,8 +773,6 @@ bool QgsProject::read()
         imp_->file.close();
 
         throw QgsException(errorString + QObject::tr(" for file ") + imp_->file.fileName());
-
-        return false;               // XXX superfluous because of exception
     }
 
     imp_->file.close();
@@ -932,9 +927,6 @@ bool QgsProject::write()
     // sure it's closed anyway
 
     throw QgsIOException(QObject::tr("Unable to save to file ") + imp_->file.fileName());
-
-    return false;               // XXX raise exception? Ok now superfluous
-    // XXX because of exception.
   }
   QFileInfo myFileInfo(imp_->file);
   if (!myFileInfo.isWritable())
@@ -944,9 +936,6 @@ bool QgsProject::write()
     imp_->file.close();         
     throw QgsIOException(imp_->file.fileName() + QObject::tr(" is not writeable.")
             + QObject::tr("Please adjust permissions (if possible) and try again."));
-    // XXX raise exception? Ok now superfluous
-    return false;               
-   
   }
 
   QDomImplementation DomImplementation;

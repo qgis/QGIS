@@ -68,7 +68,7 @@ class QgsVectorLayer;
  */
 class QgisApp : public QMainWindow
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
   //! Constructor
   QgisApp(QSplashScreen *splash, QWidget * parent = 0, Qt::WFlags fl = Qt::Window);

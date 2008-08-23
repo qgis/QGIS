@@ -37,7 +37,7 @@ extern "C"
 
 class QgsSpit : public QDialog, private Ui::QgsSpitBase
 {
-  Q_OBJECT;
+  Q_OBJECT
 public:
   QgsSpit( QWidget *parent = 0, Qt::WFlags fl = 0 );
   ~QgsSpit();
@@ -124,7 +124,7 @@ private:
 
 class ShapefileTableDelegate : public QItemDelegate
 {
-  Q_OBJECT;
+  Q_OBJECT
 
  public:
   ShapefileTableDelegate(QObject *parent, QStringList& schema_list) :

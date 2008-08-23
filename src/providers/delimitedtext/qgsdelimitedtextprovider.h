@@ -42,7 +42,7 @@ class QTextStream;
 */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
 

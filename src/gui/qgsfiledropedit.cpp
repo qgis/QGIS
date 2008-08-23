@@ -83,9 +83,9 @@ QString QgsFileDropEdit::acceptableFilePath(QDropEvent *event) const
   if (event->mimeData()->hasUrls())
   {
     QFileInfo file(event->mimeData()->urls().first().toLocalFile());
-    if ( !( mFileOnly && !file.isFile() ||
-        mDirOnly && !file.isDir() ||
-        !mSuffix.isEmpty() && mSuffix.compare(file.suffix(), Qt::CaseInsensitive) ) )
+    if ( !( (mFileOnly && !file.isFile()) ||
+            (mDirOnly && !file.isDir()) ||
+            (!mSuffix.isEmpty() && mSuffix.compare(file.suffix(), Qt::CaseInsensitive)) ) )
       path = file.filePath();
   }
   return path;

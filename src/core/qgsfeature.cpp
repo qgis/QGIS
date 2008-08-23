@@ -36,11 +36,11 @@ QgsFeature::QgsFeature(int id, QString typeName)
 QgsFeature::QgsFeature( QgsFeature const & rhs )
     : mFid( rhs.mFid ),
       mAttributes( rhs.mAttributes ),
+      mGeometry( 0 ),
+      mOwnsGeometry( false ),
       mValid( rhs.mValid ),
       mDirty( rhs.mDirty ),
-      mTypeName( rhs.mTypeName ),
-      mGeometry( 0 ),
-      mOwnsGeometry( false )
+      mTypeName( rhs.mTypeName )
 {
 
   // copy embedded geometry

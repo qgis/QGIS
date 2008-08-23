@@ -27,7 +27,7 @@
  */
 class QgsPasteTransformations : public QDialog, private Ui::QgsPasteTransformationsBase
 {
-  Q_OBJECT;
+  Q_OBJECT
  public:
     //! Constructor
     QgsPasteTransformations();

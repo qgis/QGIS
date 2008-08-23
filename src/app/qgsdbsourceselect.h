@@ -103,7 +103,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 	dbssType=0,
 	dbssDetail,
 	dbssSql,
-	dbssColumns,
+	dbssColumns
     };
 
     typedef std::pair<QString, QString> geomPair;

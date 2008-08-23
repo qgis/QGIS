@@ -61,7 +61,7 @@ class QgsPoint;
 */
 class CoordinateCapture:public QObject, public QgisPlugin
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
       
   //////////////////////////////////////////////////////////////////////

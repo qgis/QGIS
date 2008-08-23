@@ -33,7 +33,7 @@
 
 
 QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate(QgsAttributeTable *table, QObject *parent)
-  : mTable(table), QItemDelegate(parent)
+  : QItemDelegate(parent), mTable(table)
 {
 }
 
@@ -429,8 +429,6 @@ void QgsAttributeTable::copySelectedRows()
 
 void QgsAttributeTable::fillTable(QgsVectorLayer *layer)
 {
-  int row = 0;
-
   const QgsFieldMap &fields = layer->pendingFields();
 
   // set up the column headers

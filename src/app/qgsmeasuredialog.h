@@ -26,7 +26,7 @@ class QgsMeasureTool;
 
 class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
-  Q_OBJECT;
+  Q_OBJECT
 
 public:
 
