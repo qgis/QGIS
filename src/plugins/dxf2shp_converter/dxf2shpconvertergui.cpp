@@ -26,89 +26,81 @@
 #include <QFile>
 #include <QDir>
 
+#include "qgslogger.h"
+
 dxf2shpConverterGui::dxf2shpConverterGui(QWidget *parent, Qt::WFlags fl):
   QDialog(parent, fl)
 {
   setupUi(this);
 }
 
-dxf2shpConverterGui::~dxf2shpConverterGui(){}
+dxf2shpConverterGui::~dxf2shpConverterGui()
+{
+}
 
 void dxf2shpConverterGui::on_buttonBox_accepted()
 {
-
-  QString inf = nomein->text();
+  QString inf = name->text();
   QString outd = dirout->text();
 
   if (inf.size() > 1)
   {
+    int type = SHPT_POINT;
+    bool convtexts = convertTextCheck->checkState();
 
-    int type = 1;
-    bool convtexts;
+    if (polyline->isChecked())
+      type = SHPT_ARC;
 
-    if(convertTextCheck->checkState())
-      convtexts = true;
-    else
-      convtexts = false;
+    if (polygon->isChecked())
+      type = SHPT_POLYGON;
 
-    if (zero->isChecked())
-      type = 0;
+    if (point->isChecked())
+      type = SHPT_POINT;
 
-    if (uno->isChecked())
-      type = 2;
+    InsertRetrClass *insertRetr = new InsertRetrClass();
 
-    if (due->isChecked())
-      type = 1;
+    DL_Dxf *dxf_inserts = new DL_Dxf();
 
-    InsertRetrClass * insertRetr = new InsertRetrClass();
-
-    DL_Dxf * dxf_inserts = new DL_Dxf();
-
-    if (!dxf_inserts->in((string)(inf.toLatin1()), insertRetr)) { // if file open failed
-
-      cout << "Aborting: The input file could not be opened.\n";
-
+    if ( !dxf_inserts->in(inf.toStdString(), insertRetr) )
+    {
+      // if file open failed
+      QgsDebugMsg( "Aborting: The input file could not be opened." );
       return ;
-
     }
 
-    Builder * parserClass = new Builder();
-    parserClass->initBuilder((string)(outd.toLatin1()), type, insertRetr->XVals, insertRetr->YVals, insertRetr->Names, 
-        insertRetr->countInserts, convtexts);
+    Builder *parser= new Builder(
+                       outd.toStdString(),
+                       type,
+                       insertRetr->XVals, insertRetr->YVals,
+                       insertRetr->Names,
+                       insertRetr->countInserts,
+                       convtexts);
 
-    cout << "Finished getting insertions. Count: " << insertRetr->countInserts <<"\n";
+    QgsDebugMsg( QString("Finished getting insertions. Count: %1").arg( insertRetr->countInserts ) );
 
-    DL_Dxf * dxf_Main = new DL_Dxf();
+    DL_Dxf *dxf_Main = new DL_Dxf();
 
-    if (!dxf_Main->in((string)(inf.toLatin1()), parserClass)) { // if file open failed
-
-      cout << "Aborting: The input file could not be opened.\n";
-
-      return ;
-
+    if ( !dxf_Main->in( inf.toStdString(), parser) )
+    {
+      // if file open failed
+      QgsDebugMsg( "Aborting: The input file could not be opened." );
+      return;
     }
 
     delete insertRetr;
     delete dxf_inserts;
     delete dxf_Main;
-    parserClass->print_shpObjects();
-    bool textsPresent;
-    if(parserClass->ret_textObjectsSize() > 0)
-      textsPresent = true;
-    else 
-      textsPresent = false;
 
+    parser->print_shpObjects();
 
-    QString mystring = QString((parserClass->ret_outputshp()).c_str());
+    emit createLayer( QString((parser->outputShp()).c_str()), QString("Data layer") );
 
-    emit(createLayer(mystring));
-
-    if((convertTextCheck->checkState()) && (textsPresent)) {
-      mystring =  QString((parserClass->ret_outputtshp()).c_str());
-      emit(createLayer(mystring));
+    if( convtexts && parser->textObjectsSize()>0 )
+    {
+      emit createLayer( QString((parser->outputTShp()).c_str()), QString("Text layer") );
     }
 
-    delete parserClass; 
+    delete parser;
   }
   else
   {
@@ -125,8 +117,8 @@ void dxf2shpConverterGui::on_buttonBox_rejected()
 
 void dxf2shpConverterGui::on_buttonBox_helpRequested()
 {
-  QString s = "Fields description:\n"
-  "* Input DXF file: path to the DXF file to be converted\n" 
+  QString s = tr("Fields description:\n"
+  "* Input DXF file: path to the DXF file to be converted\n"
   "* Output Shp file: desired filename of the ShapeFile to be created\n"
   "* Shp output file type: specifies the type of the output shapefile\n"
   "* Export text labels checkbox: if checked, an additional shp points layer will be created, "
@@ -135,7 +127,7 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
   "---\n"
   "Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula\n"
   "CNR, Milan Unit (Information Technology), Construction Technologies Institute.\n"
-  "For support send a mail to scala@itc.cnr.it\n";
+  "For support send a mail to scala@itc.cnr.it\n");
 
   QMessageBox::information(this, "Help", s);
 }
@@ -156,20 +148,20 @@ void dxf2shpConverterGui::getInputFileName()
 {
   QSettings settings;
 
-  QString s = QFileDialog::getOpenFileName(this, tr(
-        "Choose a delimited text file to open"), settings.value(
-          "/Plugin-DelimitedText/text_path", "./").toString(), "Files DXF (*.dxf)");
+  QString s = QFileDialog::getOpenFileName(this,
+                                           tr("Choose a DXF file to open"),
+                                           settings.value("/Plugin-DXF/text_path", "./").toString(),
+                                           "Files DXF (*.dxf)");
 
-  nomein->setText(s);
+  name->setText(s);
 }
 
 void dxf2shpConverterGui::getOutputDir()
 {
-  QSettings settings;
-
-  QString s = QFileDialog::getSaveFileName(this, 
-      "Choose a filename to save under", "output.shp", "Shapefile (*.shp)");
-
+  QString s = QFileDialog::getSaveFileName(this,
+                                           tr("Choose a filename to save to"),
+					   "output.shp",
+					   "Shapefile (*.shp)");
 
   dirout->setText(s);
 }

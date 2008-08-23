@@ -58,7 +58,7 @@ bool DL_WriterA::openFailed() const {
  */
 void DL_WriterA::dxfReal(int gc, double value) const {
     char str[256];
-    sprintf(str, "%.16lf", value);
+    sprintf(str, "%.16f", value);
 	
 	// fix for german locale:
 	strReplace(str, ',', '.');

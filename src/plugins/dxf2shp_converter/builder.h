@@ -24,13 +24,16 @@
 #include "shapelib-1.2.10/shapefil.h"
 #include "getInsertions.h"
 #include <vector>
-#include <fstream>
-using namespace std;
 
 class Builder: public DL_CreationAdapter
 {
   public:
-    Builder();
+    Builder(std::string theFname,
+                 int theShapefileType,
+                 double *theGrpXVals, double *theGrpYVals,
+                 std::string *theGrpNames,
+                 int theInsertCount,
+                 bool theConvertText);
     ~Builder();
 
     void FinalizeAnyPolyline();
@@ -47,49 +50,35 @@ class Builder: public DL_CreationAdapter
     virtual void endSequence();
     virtual void addText(const DL_TextData &data);
 
-    void set_numlayers(int n);
-    void set_numpoints(int n);
-    void set_numlines(int n);
-    void set_numplines(int n);
-    void set_shptype(int n);
-
-    void set_convertText(bool);
-    void initBuilder(string, int, double*, double*, string*, int, bool);
     void print_shpObjects();
 
-    int ret_numlabels();
-    int ret_numlayers();
-    int ret_numpoints();
-    int ret_numlines();
-    int ret_numplines();
-    int ret_shptype();
-    int ret_textObjectsSize();
-    string ret_outputshp();
-    string ret_outputtshp();
-    bool convertText; 
-
-
+    int textObjectsSize();
+    std::string outputShp();
+    std::string outputTShp();
 
   private:
-    string outputdbf;
-    string outputshp;
-    string outputtdbf;
-    string outputtshp;
-    string logfname;
-    ofstream logfile;
+    std::string fname;
+    int shapefileType; // SHPT_POINT, ...
+    double *grpXVals;
+    double *grpYVals;
+    std::string *grpNames;
+    int insertCount;
+    bool convertText; 
 
+    std::string outputdbf;
+    std::string outputshp;
+    std::string outputtdbf;
+    std::string outputtshp;
 
-    vector < DL_VertexData > polyVertex;
-    vector <SHPObject *> shpObjects; // metto qui tutti gli oggetti letti
-    vector <DL_TextData> textObjects;
+    std::vector <DL_VertexData> polyVertex;
+    std::vector <SHPObject *> shpObjects; // all read objects are stored here
+    std::vector <DL_TextData> textObjects;
 
     int numlayers;
     int numpoints;
     int numlines;
     int numplines;
 
-    int shptype; // 0 ,1 ,2
-    int shapefileType; // SHPT_POINT, ...
     int fetchedprims;
     int fetchedtexts;
 
@@ -102,11 +91,6 @@ class Builder: public DL_CreationAdapter
 
     SHPObject *currently_Adding_PolyLine;
 
-    double *grpXVals;
-    double *grpYVals;
-    string *grpNames;
-    string fname;
-    int insertCount;
 
     double closePolyX, closePolyY, closePolyZ;
     double currentBlockX, currentBlockY;
