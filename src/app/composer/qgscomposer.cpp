@@ -422,7 +422,7 @@ void QgsComposer::on_mActionPrint_activated( void )
     // << /PageSize [ %d %d ] >> setpagedevice
     // %d %d is width and height in points
 
-    // WARNING: If QCanvasView recieves repaint signal during the printing
+    // WARNING: If QCanvasView receives repaint signal during the printing
     // (e.g. covered by QPrinter::setup dialog) it breaks somehow drawing of QCanvas items
     // (for example not all features in the map are drawn.
     // I don't know how to stop temporarily updating, (I don't want to reimplement
