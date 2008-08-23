@@ -808,15 +808,15 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMuppDouble = std::abs(thepMapRenderer->mupp());
+  double myMapUnitsPerPixelDouble = std::abs(thepMapRenderer->mapUnitsPerPixel());
   // 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount=thepMapRenderer->layerSet().count();
-  if (!myLayerCount || !myMuppDouble) return;
+  if (!myLayerCount || !myMapUnitsPerPixelDouble) return;
 
   //Calculate size of scale bar for preferred number of map units
   double myScaleBarWidth = myPreferredSize;
-  myActualSize = myScaleBarWidth * myMuppDouble;
+  myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble;
 
 
   // Work out the exponent for the number - e.g, 1234 will give 3,
@@ -828,7 +828,7 @@ void QgsQuickPrint::renderPrintScaleBar(QPainter * thepPainter,
   {
     double scaler = pow(10.0, myPowerOf10);
     myActualSize = round(myActualSize / scaler) * scaler;
-    myScaleBarWidth = myActualSize / myMuppDouble;
+    myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
   }
 
   //Get type of map units and set scale bar unit label text

@@ -224,14 +224,14 @@ static void setTitleBarText_( QWidget & qgisApp )
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
-    if ( QgsProject::instance()->filename().isEmpty() )
+    if ( QgsProject::instance()->setFilename().isEmpty() )
     {
       // no project title nor file name, so just leave caption with
       // application name and version
     }
     else
     {
-      QFileInfo projectFileInfo( QgsProject::instance()->filename() );
+      QFileInfo projectFileInfo( QgsProject::instance()->setFilename() );
       caption += projectFileInfo.baseName();
     }
   }
@@ -2882,7 +2882,7 @@ bool QgisApp::fileSave()
   // the current project file name is empty
   bool isNewProject = false;
 
-  if ( QgsProject::instance()->filename().isNull() )
+  if ( QgsProject::instance()->setFilename().isNull() )
   {
     isNewProject = true;
 
@@ -2925,7 +2925,7 @@ bool QgisApp::fileSave()
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_(*this); // update title bar
-      statusBar()->showMessage(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
+      statusBar()->showMessage(tr("Saved project to:") + " " + QgsProject::instance()->setFilename() );
 
       if (isNewProject)
       {
@@ -2938,13 +2938,13 @@ bool QgisApp::fileSave()
     {
       QMessageBox::critical(this,
           tr("Unable to save project"),
-          tr("Unable to save project to ") + QgsProject::instance()->filename() );
+          tr("Unable to save project to ") + QgsProject::instance()->setFilename() );
     }
   }
   catch ( std::exception & e )
   {
     QMessageBox::critical( this,
-        tr("Unable to save project ") + QgsProject::instance()->filename(),
+        tr("Unable to save project ") + QgsProject::instance()->setFilename(),
         QString::fromLocal8Bit( e.what() ) );
   }
   return true;
@@ -3008,7 +3008,7 @@ void QgisApp::fileSaveAs()
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_(*this); // update title bar
-      statusBar()->showMessage(tr("Saved project to:") + " " + QgsProject::instance()->filename() );
+      statusBar()->showMessage(tr("Saved project to:") + " " + QgsProject::instance()->setFilename() );
       // add this to the list of recently used project files
       saveRecentProjectPath(fullPath.filePath(), settings);
     }
@@ -3016,13 +3016,13 @@ void QgisApp::fileSaveAs()
     {
       QMessageBox::critical(this,
           tr("Unable to save project"),
-          tr("Unable to save project to ") + QgsProject::instance()->filename() );
+          tr("Unable to save project to ") + QgsProject::instance()->setFilename() );
     }
   }
   catch ( std::exception & e )
   {
     QMessageBox::critical( 0x0,
-        tr("Unable to save project ") + QgsProject::instance()->filename(),
+        tr("Unable to save project ") + QgsProject::instance()->setFilename(),
         QString::fromLocal8Bit( e.what() ),
         QMessageBox::Ok,
         Qt::NoButton );
@@ -4618,8 +4618,8 @@ void QgisApp::updateMouseCoordinatePrecision()
     // coordinates with the aim of always having enough decimal places
     // to show the difference in position between adjacent pixels.
     // Also avoid taking the log of 0.
-    if (getMapCanvas()->mupp() != 0.0)
-      dp = static_cast<int> (ceil(-1.0*log10(getMapCanvas()->mupp())));
+    if (getMapCanvas()->mapUnitsPerPixel() != 0.0)
+      dp = static_cast<int> (ceil(-1.0*log10(getMapCanvas()->mapUnitsPerPixel())));
   }
   else
     dp = QgsProject::instance()->readNumEntry("PositionPrecision","/DecimalPlaces");

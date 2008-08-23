@@ -762,7 +762,7 @@ bool QgsVectorLayer::draw(QgsRenderContext& rendererContext)
         // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
         //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
 
-        //double scale = renderContext.scaleFactor() /  markerScaleFactor;
+        //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature(
             rendererContext.painter(),
             fet,

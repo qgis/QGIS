@@ -180,8 +180,8 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(const QgsPoint& point)
   //we need to map the view pixel coordinates
   //to WMS layer pixel coordinates
   QgsRect viewExtent = mCanvas->extent();
-  double mupp = mCanvas->mupp();
-  if(mupp == 0)
+  double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
+  if(mapUnitsPerPixel == 0)
   {
     return;
   }
@@ -196,7 +196,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(const QgsPoint& point)
 
   if(xMinView < xMinLayer)
   {
-    i = (int)(point.x() - (xMinLayer - xMinView) / mupp);
+    i = (int)(point.x() - (xMinLayer - xMinView) / mapUnitsPerPixel);
   }
   else
   {
@@ -205,7 +205,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(const QgsPoint& point)
 
   if(yMaxView > yMaxLayer)
   {
-    j = (int)(point.y() - (yMaxView - yMaxLayer) / mupp);
+    j = (int)(point.y() - (yMaxView - yMaxLayer) / mapUnitsPerPixel);
   }
   else
   {

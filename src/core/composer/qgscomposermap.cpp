@@ -147,10 +147,10 @@ void QgsComposerMap::cache ( void )
     }
       
   mCachePixmap = QPixmap( w, h );
-  double mupp = mExtent.width() / w;
+  double mapUnitsPerPixel = mExtent.width() / w;
 
   // WARNING: ymax in QgsMapToPixel is device height!!!
-  QgsMapToPixel transform(mupp, h, mExtent.yMin(), mExtent.xMin() );
+  QgsMapToPixel transform(mapUnitsPerPixel, h, mExtent.yMin(), mExtent.xMin() );
     
   mCachePixmap.fill(QColor(255,255,255));
   

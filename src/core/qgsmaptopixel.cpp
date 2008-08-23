@@ -19,11 +19,11 @@
 #include <QPoint>
 #include <QTextStream>
 
-QgsMapToPixel::QgsMapToPixel(double mupp, 
+QgsMapToPixel::QgsMapToPixel(double mapUnitsPerPixel, 
 				    double ymax,
 				    double ymin, 
 				    double xmin)
-  : mMapUnitsPerPixel(mupp), 
+  : mMapUnitsPerPixel(mapUnitsPerPixel), 
      yMax(ymax), 
      yMin(ymin), 
      xMin(xmin),
@@ -53,9 +53,9 @@ QgsPoint QgsMapToPixel::toMapCoordinates(int x, int y) const
   return toMapPoint(x, y);
 }
 
-void QgsMapToPixel::setMapUnitsPerPixel(double mupp)
+void QgsMapToPixel::setMapUnitsPerPixel(double mapUnitsPerPixel)
 {
-  mMapUnitsPerPixel = mupp;
+  mMapUnitsPerPixel = mapUnitsPerPixel;
 }
 
 double QgsMapToPixel::mapUnitsPerPixel() const
@@ -78,9 +78,9 @@ void QgsMapToPixel::setXMinimum(double xmin)
   xMin = xmin;
 }
 
-void QgsMapToPixel::setParameters(double mupp, double xmin, double ymin, double ymax)
+void QgsMapToPixel::setParameters(double mapUnitsPerPixel, double xmin, double ymin, double ymax)
 {
-  mMapUnitsPerPixel = mupp;
+  mMapUnitsPerPixel = mapUnitsPerPixel;
   xMin = xmin;
   yMin = ymin;
   yMax = ymax;

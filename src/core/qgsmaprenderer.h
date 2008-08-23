@@ -65,7 +65,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This 
      function is only used to force a preview scale (e.g. for print composer)*/
     void setScale(double scale) {mScale = scale;}
-    double mupp() const { return mMupp; }
+    double mapUnitsPerPixel() const { return mMapUnitsPerPixel; }
 
     int width() const { return mSize.width(); };
     int height() const { return mSize.height(); };
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool mDrawing;
     
     //! map units per pixel
-    double mMupp;
+    double mMapUnitsPerPixel;
     
     //! Map scale at its current zool level
     double mScale;

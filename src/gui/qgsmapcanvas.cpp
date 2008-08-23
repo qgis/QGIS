@@ -1039,10 +1039,10 @@ QPixmap& QgsMapCanvas::canvasPixmap()
 
 
 
-double QgsMapCanvas::mupp() const
+double QgsMapCanvas::mapUnitsPerPixel() const
 {
-  return mMapRenderer->mupp();
-} // mupp
+  return mMapRenderer->mapUnitsPerPixel();
+} // mapUnitsPerPixel
 
 
 void QgsMapCanvas::setMapUnits(QGis::units u)
