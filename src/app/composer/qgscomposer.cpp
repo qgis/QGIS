@@ -20,8 +20,20 @@
 #include "qgsapplication.h"
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
+#include "qgscompositionwidget.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlabelwidget.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposerlegendwidget.h"
+#include "qgscomposermap.h"
+#include "qgscomposermapwidget.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerpicturewidget.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposerscalebarwidget.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
@@ -53,11 +65,41 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
 {
   setupUi(this);
   setupTheme();
+
+  QString myIconPath = QgsApplication::activeThemePath();
+
+  QAction* moveItemContentAction = new QAction(QIcon(QPixmap(myIconPath+"mActionMoveItemContent.png")), tr("Move Item content"), 0);
+  moveItemContentAction->setCheckable(true);
+  connect(moveItemContentAction, SIGNAL(triggered()), this, SLOT(moveItemContent()));
+  toolBar->addAction(moveItemContentAction);
+  //toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionMoveItemContent.png")), tr("Move Item content"), this, SLOT(moveItemContent()));
+
+  toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionGroupItems.png")), tr("&Group Items"), this, SLOT(groupItems()));
+  toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionUngroupItems.png")), tr("&Ungroup Items"), this, SLOT(ungroupItems()));
+
+  QActionGroup* toggleActionGroup = new QActionGroup(this);
+  toggleActionGroup->addAction(moveItemContentAction);
+  toggleActionGroup->addAction(mActionAddNewMap);
+  toggleActionGroup->addAction(mActionAddNewLabel);
+  toggleActionGroup->addAction(mActionAddNewLegend);
+  toggleActionGroup->addAction(mActionAddNewScalebar);
+  toggleActionGroup->addAction(mActionAddImage);
+  toggleActionGroup->addAction(mActionSelectMoveItem);
+  toggleActionGroup->setExclusive(true);
+  
+
   setWindowTitle(tr("QGIS - print composer"));
 
   // Template save and load is not yet implemented, so disable those actions
   mActionOpenTemplate->setEnabled(false);
   mActionSaveTemplateAs->setEnabled(false);
+
+  mActionAddNewMap->setCheckable(true);
+  mActionAddNewLabel->setCheckable(true);
+  mActionAddNewLegend->setCheckable(true);
+  mActionSelectMoveItem->setCheckable(true);
+  mActionAddNewScalebar->setCheckable(true);
+  mActionAddImage->setCheckable(true);
 
   mQgis = qgis;
   mFirstTime = true;
@@ -65,42 +107,52 @@ QgsComposer::QgsComposer( QgisApp *qgis): QMainWindow()
 #ifdef QGISDEBUG
   std::cout << "QgsComposer::QgsComposer" << std::endl;
 #endif
+ 
+  setMouseTracking(true);
+  mSplitter->setMouseTracking(true);
+  mViewFrame->setMouseTracking(true);
 
-  mView = new QgsComposerView ( this, mViewFrame);
+  //create composer view
+  mView = new QgsComposerView (mViewFrame);
+  connectSlots();
+
+  mComposition  = new QgsComposition(mQgis->getMapCanvas()->mapRenderer());
+  mView->setComposition(mComposition);
+
+  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget(mCompositionOptionsFrame, mComposition);
+  compositionWidget->show();
+
+  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
+  mCompositionOptionsLayout->setMargin(0);
+  mCompositionOptionsLayout->addWidget(compositionWidget);
+  
   mPrinter = 0;
 
   QGridLayout *l = new QGridLayout(mViewFrame );
   l->setMargin(0);
   l->addWidget( mView, 0, 0 );
 
-  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
-  mCompositionOptionsLayout->setMargin(0);
-  mItemOptionsLayout = new QGridLayout( mItemOptionsFrame );
-  mItemOptionsLayout->setMargin(0);
+  mCompositionNameComboBox->insertItem(0, tr("Map 1") );
 
-  mCompositionNameComboBox->addItem( tr("Map 1") );
-
-  mComposition  = new QgsComposition( this, 1 );
-  mComposition->setActive ( true );
+  //mComposition  = new QgsComposition( this, 1 );
+  //mComposition->setActive ( true );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip(this);
   mSizeGrip->resize(mSizeGrip->sizeHint());
   mSizeGrip->move(rect().bottomRight() - mSizeGrip->rect().bottomRight());
 
-  if ( ! connect( mQgis, SIGNAL( projectRead() ), this, SLOT( projectRead()) ) ) {
-    qDebug( "unable to connect to projectRead" );
-  } 
-  if ( ! connect( mQgis, SIGNAL( newProject() ), this, SLOT(newProject()) ) ) {
-    qDebug( "unable to connect to newProject" );
-  }
-
-  if ( ! connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(saveWindowState()) ) ) { 
-    qDebug( "unable to connect to aboutToQuit" );
-  }
   restoreWindowState();
-
   selectItem(); // Set selection tool
+
+  mView->setFocus();
+
+  //connect with signals from QgsProject to read/write project files
+  if(QgsProject::instance())
+    {
+      connect(QgsProject::instance(), SIGNAL(readProject(const QDomDocument&)), this, SLOT(readXML(const QDomDocument&)));
+      connect(QgsProject::instance(), SIGNAL(writeProject(QDomDocument&)), this, SLOT(writeXML(QDomDocument&)));
+    }
 }
 
 QgsComposer::~QgsComposer()
@@ -109,7 +161,8 @@ QgsComposer::~QgsComposer()
 
 void QgsComposer::setupTheme()
 {
-  //now set all the icons
+  //now set all the icons - getThemeIcon will fall back to default theme if its 
+  //missing from active theme
   mActionOpenTemplate->setIcon(QgisApp::getThemeIcon("/mActionFileOpen.png"));
   mActionSaveTemplateAs->setIcon(QgisApp::getThemeIcon("/mActionFileSaveAs.png"));
   mActionExportAsImage->setIcon(QgisApp::getThemeIcon("/mActionExportMapServer.png"));
@@ -122,15 +175,27 @@ void QgsComposer::setupTheme()
   mActionAddImage->setIcon(QgisApp::getThemeIcon("/mActionSaveMapAsImage.png"));
   mActionAddNewMap->setIcon(QgisApp::getThemeIcon("/mActionAddRasterLayer.png"));
   mActionAddNewLabel->setIcon(QgisApp::getThemeIcon("/mActionLabel.png"));
-  mActionAddNewVectLegend->setIcon(QgisApp::getThemeIcon("/mActionAddLegend.png"));
+  mActionAddNewLegend->setIcon(QgisApp::getThemeIcon("/mActionAddLegend.png"));
   mActionAddNewScalebar->setIcon(QgisApp::getThemeIcon("/mActionScaleBar.png"));
   mActionSelectMoveItem->setIcon(QgisApp::getThemeIcon("/mActionPan.png"));
+}
+
+void QgsComposer::connectSlots()
+{
+  connect(mView, SIGNAL(selectedItemChanged(const QgsComposerItem*)), this, SLOT(showItemOptions(const QgsComposerItem*)));
+  connect(mView, SIGNAL(composerLabelAdded(QgsComposerLabel*)), this, SLOT(addComposerLabel(QgsComposerLabel*)));
+  connect(mView, SIGNAL(composerMapAdded(QgsComposerMap*)), this, SLOT(addComposerMap(QgsComposerMap*)));
+  connect(mView, SIGNAL(itemRemoved(QgsComposerItem*)), this, SLOT(deleteItem(QgsComposerItem*)));
+  connect(mView, SIGNAL(composerScaleBarAdded(QgsComposerScaleBar*)), this, SLOT(addComposerScaleBar(QgsComposerScaleBar*)));
+  connect(mView, SIGNAL(composerLegendAdded(QgsComposerLegend*)), this, SLOT(addComposerLegend(QgsComposerLegend*)));
+  connect(mView, SIGNAL(composerPictureAdded(QgsComposerPicture*)), this, SLOT(addComposerPicture(QgsComposerPicture*)));
+  connect(mView, SIGNAL(actionFinished()), this, SLOT(setSelectionTool()));
 }
 
 void QgsComposer::open ( void )
 {
   if ( mFirstTime ) {
-    mComposition->createDefault();
+    //mComposition->createDefault();
     mFirstTime = false;
     show();
     zoomFull(); // zoomFull() does not work properly until we have called show()
@@ -143,68 +208,41 @@ void QgsComposer::open ( void )
   }
 }
 
-void QgsComposer::removeWidgetChildren ( QWidget *w )
+void QgsComposer::showCompositionOptions ( QWidget *w ) 
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::removeWidgetChildren" << std::endl;
-#endif
+  QWidget* currentWidget = mItemStackedWidget->currentWidget();
+  mItemStackedWidget->removeWidget(currentWidget);
+  mItemStackedWidget->addWidget(w);
+}
 
-  const QObjectList ol = mItemOptionsFrame->children();
-  if ( !ol.isEmpty() ) 
-  {
-    QListIterator<QObject*> olit( ol );
-    QObject *ob;
-    while( olit.hasNext() )
+void QgsComposer::showItemOptions(const QgsComposerItem* item)
+{
+  QWidget* currentWidget = mItemStackedWidget->currentWidget();
+
+  if(!item)
     {
-      ob = olit.next();
-      if( ob->isWidgetType() ) 
-      {
-        QWidget *ow = (QWidget *) ob;
-
-        // The following line is legacy Qt3, is not supported in Qt4
-        // and can cause a SIGABRT
-        //w->removeChild ( ob );
-        // instead:
-        ow->setParent(0);
-        // TODO: Eventually mItemOptionsFrame should be made
-        // a Qt4 QStackedWidget and all this removeWidgetChildren
-        // shenanigans can alledgedly go away
-
-        ow->hide();
-      }
+      mItemStackedWidget->removeWidget(currentWidget);
+      mItemStackedWidget->setCurrentWidget(0);
+      return;
     }
-  }
-}
 
-void QgsComposer::showCompositionOptions ( QWidget *w ) {
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::showCompositionOptions" << std::endl;
-#endif
-  removeWidgetChildren ( mCompositionOptionsFrame );
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find(const_cast<QgsComposerItem*>(item));
+  if(it == mItemWidgetMap.constEnd())
+    {
+      return;
+    }
 
-  if ( w ) { 
-    w->setParent ( mCompositionOptionsFrame );
-    w->show();
-    mCompositionOptionsLayout->addWidget( w, 0, 0 );
-  }
-}
+  QWidget* newWidget = it.value();
 
-void QgsComposer::showItemOptions ( QWidget *w )
-{
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::showItemOptions" << std::endl;
-#endif
-  removeWidgetChildren ( mItemOptionsFrame );
+  if(!newWidget || newWidget == currentWidget) //bail out if new widget does not exist or is already there
+    {
+      return;
+    }
 
-  // NOTE: It is better to leave there the tab with item options if w is NULL
-
-  if ( w ) {
-    w->setParent ( mItemOptionsFrame );
-    w->show();
-
-    mItemOptionsLayout->addWidget( w, 0, 0 );
-    mOptionsTabWidget->setCurrentIndex (1);
-  }
+  mItemStackedWidget->removeWidget(currentWidget);
+  mItemStackedWidget->addWidget(newWidget);
+  mItemStackedWidget->setCurrentWidget(newWidget);
+  //newWidget->show();
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas(void)
@@ -217,14 +255,17 @@ QgsComposerView *QgsComposer::view(void)
   return mView;
 }
 
-QgsComposition *QgsComposer::composition(void)
+/*QgsComposition *QgsComposer::composition(void)
 {
   return mComposition;
-}
+  }*/
 
 void QgsComposer::zoomFull(void)
 {
-  mView->fitInView(0, 0, mComposition->paperWidth(), mComposition->paperHeight(), Qt::KeepAspectRatio);
+  if(mView)
+    {
+      mView->fitInView(0, 0, mComposition->paperWidth(), mComposition->paperHeight(), Qt::KeepAspectRatio);
+    }
 }
 
 void QgsComposer::on_mActionZoomAll_activated(void)
@@ -235,23 +276,79 @@ void QgsComposer::on_mActionZoomAll_activated(void)
 void QgsComposer::on_mActionZoomIn_activated(void)
 {
   mView->scale(2, 2);
-  mView->update();
+  //mView->update();
 }
 
 void QgsComposer::on_mActionZoomOut_activated(void)
 {
   mView->scale(.5, .5);
-  mView->update();
+  //mView->update();
 }
 
 void QgsComposer::on_mActionRefreshView_activated(void)
 {
+  /*
   mComposition->refresh();
   mView->update();
+  */
 }
 
 void QgsComposer::on_mActionPrint_activated(void)
 {
+  if(!mComposition)
+    {
+      return;
+    }
+
+  QPrinter printer;
+
+  //try to set most of the print dialog settings based on composer properties
+  if(mComposition->paperHeight() > mComposition->paperWidth())
+    {
+      printer.setOrientation(QPrinter::Portrait);
+    }
+  else
+    {
+      printer.setOrientation(QPrinter::Landscape);
+    }
+
+  //set resolution based on composer setting
+  
+
+  printer.setFullPage(true);
+  printer.setColorMode(QPrinter::Color);
+  
+  QPrintDialog printDialog(&printer);
+  
+  if(printDialog.exec() == QDialog::Accepted)
+    {
+      //set user-defined resolution
+      if(mComposition)
+	{
+	  printer.setResolution(mComposition->printoutResolution());
+	}
+      QPainter p(&printer);
+
+      QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
+      mComposition->setPlotStyle(QgsComposition::Print);
+
+      QApplication::setOverrideCursor(Qt::BusyCursor);
+
+#if QT_VERSION < 0x040400
+      QRectF paperRect(0, 0, mComposition->paperWidth(), mComposition->paperHeight());
+      QRect pageRect = printer.pageRect();
+      mComposition->render(&p, pageRect, paperRect);
+#else
+      //better in case of custom page size, but only possible with Qt>=4.4.0
+      QRectF paperRectMM = printer.pageRect(QPrinter::Millimeter);
+      QRectF paperRectPixel = printer.pageRect(QPrinter::DevicePixel);
+      mComposition->render(&p, paperRectPixel, paperRectMM);
+#endif   
+      mComposition->setPlotStyle(savedPlotStyle);
+
+      QApplication::restoreOverrideCursor();
+    }
+#if 0
   /* Uff!!! It is impossible to set a custom page size for QPrinter.
    * Only the sizes hardcoded in Qt library can be used.
    * 'Fortunately', it seems that everything is written to postscript output file,
@@ -390,10 +487,10 @@ void QgsComposer::on_mActionPrint_activated(void)
                 std::cout << "Overwrite the bounding box" << std::endl;
                 if (!f.open(QIODevice::ReadWrite))
                   {
-                    throw QgsIOException(tr("Couldn't open ") + f.fileName() + tr(" for read/write"));
+                    throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
                   }
-                qint64 offset = 0;
-                qint64 size;
+                Q_LONG offset = 0;
+                Q_LONG size;
                 bool found = false;
                 QString s;
                 char buf[101];
@@ -401,7 +498,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                   {
                     size = f.readLine(buf, 100);
                     s = QString(buf);
-                    if (s.indexOf("%%BoundingBox:") == 0)
+                    if (s.find("%%BoundingBox:") == 0)
                       {
                         found = true;
                         break;
@@ -429,7 +526,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                         shiftFileContent(&f, offset + size + 1, shift);
                     } else
                       {
-                        if (!f.seek(offset))
+                        if (!f.at(offset))
                           {
                             QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
                         } else
@@ -438,14 +535,14 @@ void QgsComposer::on_mActionPrint_activated(void)
                             QString es;
                             es.fill(' ', size - 1);
                             f.flush();
-                            if (f.write(es.toLocal8Bit().constData(), size - 1) < size - 1)
+                            if (f.writeBlock(es.toLocal8Bit().data(), size - 1) < size - 1)
                               {
                                 QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
                               }
                             f.flush();
-                            f.seek(offset);
+                            f.at(offset);
                             f.flush();
-                            if (f.write(s.toLocal8Bit().constData(), s.length()) < s.length() - 1)
+                            if (f.writeBlock(s.toLocal8Bit().data(), s.length()) < s.length() - 1)
                               {
                                 QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite BoundingBox"));
                               }
@@ -465,7 +562,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                     std::cout << "Orientation portraint -> overwrite translate" << std::endl;
                     if (!f.open(QIODevice::ReadWrite))
                       {
-                        throw QgsIOException(tr("Couldn't open ") + f.fileName() + tr(" for read/write"));
+                        throw QgsIOException(tr("Couldn't open ") + f.name() + tr(" for read/write"));
                       }
                     offset = 0;
                     found = false;
@@ -481,7 +578,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                       {
                         size = f.readLine(buf, 100);
                         s = QString(buf);
-                        if (rx.indexIn(s) != -1)
+                        if (rx.search(s) != -1)
                           {
                             found = true;
                             break;
@@ -496,9 +593,9 @@ void QgsComposer::on_mActionPrint_activated(void)
                         trans = (int) (72 * mComposition->paperHeight() / 25.4);
                         std::cout << "trans = " << trans << std::endl;
                         //Qt3:
-                        //s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, rx.cap(1).toLocal8Bit().constData() );
+                        //s.sprintf( "0 %d translate %s scale/defM matrix CM d } d", trans, (const char *)rx.cap(1).toLocal8Bit().data() );
                         //Qt4:
-                        s.sprintf("0 %d translate %s scale } def\n", trans, rx.cap(1).toLocal8Bit().constData());
+                        s.sprintf("0 %d translate %s scale } def\n", trans, (const char *) rx.cap(1).toLocal8Bit().data());
 
                         std::cout << "s.length() = " << s.length() << " size = " << size << std::endl;
                         if (s.length() > size)
@@ -510,9 +607,9 @@ void QgsComposer::on_mActionPrint_activated(void)
                                int last = f.size() + shift -1;
                                for ( int i = last; i > offset + size; i-- )
                                {
-                               f.seek(i-shift);
+                               f.at(i-shift);
                                QByteArray ba = f.read(1);
-                               f.seek(i);
+                               f.at(i);
                                f.write(ba);
                                }
                              */
@@ -520,7 +617,7 @@ void QgsComposer::on_mActionPrint_activated(void)
                           }     //END if( s.length() > size)
 
                         // Overwrite the row
-                        if (!f.seek(offset))
+                        if (!f.at(offset))
                           {
                             QMessageBox::warning(this, tr("Error in Print"), tr("Cannot seek"));
                         } else
@@ -529,14 +626,14 @@ void QgsComposer::on_mActionPrint_activated(void)
                             QString es;
                             es.fill(' ', size - 1);
                             f.flush();
-                            if (f.write(es.toLocal8Bit().constData(), size - 1) < size - 1)
+                            if (f.writeBlock(es.toLocal8Bit().data(), size - 1) < size - 1)
                               {
                                 QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
                               }
                             f.flush();
-                            f.seek(offset);
+                            f.at(offset);
                             f.flush();
-                            if (f.write(s.toLocal8Bit().constData(), s.length()) < s.length() - 1)
+                            if (f.writeBlock(s.toLocal8Bit().data(), s.length()) < s.length() - 1)
                               {
                                 QMessageBox::warning(this, tr("Error in Print"), tr("Cannot overwrite translate"));
                               }
@@ -595,27 +692,30 @@ void QgsComposer::on_mActionPrint_activated(void)
     {
       raise();
     }
-
+#endif //0
 }
 
 
-bool QgsComposer::shiftFileContent ( QFile *file, qint64 start, int shift )
+#if 0
+bool QgsComposer::shiftFileContent ( QFile *file, Q_LONG start, int shift )
 {
 	int last = file->size() + shift -1;
 	for ( int i = last; i >= start + shift; i-- )
 	{
-	    if ( !file->seek(i-shift) ) return false;
+            if ( !file->at(i-shift) ) return false;
 	    QByteArray ba = file->read(1);
 	    if ( ba.isEmpty() ) return false;
-	    if ( !file->seek(i) ) return false;
+	    if ( !file->at(i) ) return false;
 	    if ( file->write(ba) != 1 ) return false;
 	}
 	return true;
 }
+#endif //0
 
 void QgsComposer::on_mActionExportAsImage_activated(void)
 {
 
+#if 0
   // Image size 
   int width = (int) (mComposition->resolution() * mComposition->paperWidth() / 25.4); 
   int height = (int) (mComposition->resolution() * mComposition->paperHeight() / 25.4); 
@@ -647,8 +747,8 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
 
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistant state
-  QString myLastUsedFormat = myQSettings.value("/UI/lastSaveAsImageFormat", "png" ).toString();
-  QString myLastUsedFile = myQSettings.value("/UI/lastSaveAsImageFile","qgis.png").toString();
+  QString myLastUsedFormat = myQSettings.readEntry("/UI/lastSaveAsImageFormat", "png" );
+  QString myLastUsedFile = myQSettings.readEntry("/UI/lastSaveAsImageFile","qgis.png");
   QFileInfo file(myLastUsedFile);
 
   // get a list of supported output image types
@@ -658,7 +758,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
   {
     QString myFormat=QString(QImageWriter::supportedImageFormats().at( myCounterInt ));
-    QString myFilter = myFormat + " " + tr("format") + " (*." + myFormat.toLower() + " *." + myFormat.toUpper() + ")";
+    QString myFilter = myFormat + " " + tr("format") + " (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
 
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
@@ -673,7 +773,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   FilterMap::Iterator myIterator;
   for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
   {
-    std::cout << myIterator.key().toLocal8Bit().constData() << "  :  " << myIterator.value().toLocal8Bit().constData() << std::endl;
+    std::cout << myIterator.key().toLocal8Bit().data() << "  :  " << myIterator.data().toLocal8Bit().data() << std::endl;
   }
 #endif
 
@@ -689,7 +789,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   myQFileDialog->selectFile( file.fileName() );
 
   // allow for selection of more than one file
-  myQFileDialog->setFileMode(QFileDialog::AnyFile);
+  myQFileDialog->setMode(QFileDialog::AnyFile);
 
   // set the filter to the last one used
   myQFileDialog->selectFilter(myLastUsedFilter);
@@ -708,12 +808,12 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   QString myFilterString = myQFileDialog->selectedFilter();
 #ifdef QGISDEBUG
-  std::cout << "Selected filter: " << myFilterString.toLocal8Bit().constData() << std::endl;
-  std::cout << "Image type: " << myFilterMap[myFilterString].toLocal8Bit().constData() << std::endl;
+  std::cout << "Selected filter: " << myFilterString.toLocal8Bit().data() << std::endl;
+  std::cout << "Image type: " << myFilterMap[myFilterString].toLocal8Bit().data() << std::endl;
 #endif
 
-  myQSettings.setValue("/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
-  myQSettings.setValue("/UI/lastSaveAsImageFile", myOutputFileNameQString);
+  myQSettings.writeEntry("/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
+  myQSettings.writeEntry("/UI/lastSaveAsImageFile", myOutputFileNameQString);
 
   if ( myOutputFileNameQString == "" ) return;
 
@@ -735,13 +835,13 @@ QRectF renderArea(0,0,(mComposition->paperWidth() * mComposition->scale()),(mCom
   mComposition->setPlotStyle ( QgsComposition::Preview );
   mView->setScene(mComposition->canvas());
 
-  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().constData() );
+  pixmap.save ( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
+#endif //0
 }
 
 
 void QgsComposer::on_mActionExportAsSVG_activated(void)
 {
-
   QString myQSettingsLabel = "/UI/displaySVGWarning";
   QSettings myQSettings;
 
@@ -791,7 +891,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
 
   myQSettings.setValue("/UI/lastSaveAsSvgFile", myOutputFileNameQString);
 
-  mView->setScene(0);//don't redraw the scene on the display while we render
+  //mView->setScene(0);//don't redraw the scene on the display while we render
   mComposition->setPlotStyle ( QgsComposition::Print );
 
 #if QT_VERSION < 0x040300
@@ -802,16 +902,16 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   QSvgGenerator generator;
   generator.setFileName(myOutputFileNameQString);
   generator.setSize(QSize( (int)mComposition->paperWidth(), (int)mComposition->paperHeight() ));
-  generator.setResolution((int)(mComposition->resolution() / 25.4)); //because the rendering is done in mm, convert the dpi
- 
+  generator.setResolution(25.4); //because the rendering is done in mm, convert the dpi
+
   QPainter p(&generator);
   QRectF renderArea(0,0, mComposition->paperWidth(), mComposition->paperHeight());
 #endif
-  mComposition->canvas()->render(&p, renderArea);
+  mComposition->render(&p, renderArea, renderArea);
   p.end();
 
   mComposition->setPlotStyle ( QgsComposition::Preview );
-  mView->setScene(mComposition->canvas()); //now that we're done, set the view to show the scene again
+  //mView->setScene(mComposition->canvas()); //now that we're done, set the view to show the scene again
 
 #if QT_VERSION < 0x040300
   QRect br = pic.boundingRect();
@@ -823,70 +923,104 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
 
 void QgsComposer::setToolActionsOff(void)
 {
-  mActionOpenTemplate->setChecked ( false );
-  mActionSaveTemplateAs->setChecked ( false );
-  mActionExportAsImage->setChecked ( false );
-  mActionExportAsSVG->setChecked ( false );
-  mActionPrint->setChecked ( false );
-  mActionZoomAll->setChecked ( false );
-  mActionZoomIn->setChecked ( false );
-  mActionZoomOut->setChecked ( false );
-  mActionRefreshView->setChecked ( false );
-  mActionAddNewMap->setChecked ( false );
-  mActionAddImage->setChecked ( false );
-  mActionAddNewLabel->setChecked ( false );
-  mActionAddNewVectLegend->setChecked ( false );
-  mActionAddNewScalebar->setChecked ( false );
-  mActionSelectMoveItem->setChecked ( false );
+#if 0
+  mActionOpenTemplate->setOn ( false );
+  mActionSaveTemplateAs->setOn ( false );
+  mActionExportAsImage->setOn ( false );
+  mActionExportAsSVG->setOn ( false );
+  mActionPrint->setOn ( false );
+  mActionZoomAll->setOn ( false );
+  mActionZoomIn->setOn ( false );
+  mActionZoomOut->setOn ( false );
+  mActionRefreshView->setOn ( false );
+  mActionAddNewMap->setOn ( false );
+  mActionAddImage->setOn ( false );
+  mActionAddNewLabel->setOn ( false );
+  mActionAddNewVectLegend->setOn ( false );
+  mActionAddNewScalebar->setOn ( false );
+  mActionSelectMoveItem->setOn ( false );
+#endif //0
 }
 
 void QgsComposer::selectItem(void)
 {
+#if 0
   mComposition->setTool ( QgsComposition::Select );
   setToolActionsOff();
-  mActionSelectMoveItem->setChecked ( true );
+  mActionSelectMoveItem->setOn ( true );
+#endif //0
 }
 
 void QgsComposer::on_mActionSelectMoveItem_activated(void)
 {
-  selectItem();
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::Select);
+    }
 }
 
 void QgsComposer::on_mActionAddNewMap_activated(void)
 {
-  mComposition->setTool ( QgsComposition::AddMap );
-  setToolActionsOff();
-  mActionAddNewMap->setChecked ( true );
-  mView->setCursor(QCursor(cross_hair_cursor));
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::AddMap);
+    }
 }
 
-void QgsComposer::on_mActionAddNewVectLegend_activated(void)
+void QgsComposer::on_mActionAddNewLegend_activated(void)
 {
-  mComposition->setTool ( QgsComposition::AddVectorLegend );
-  setToolActionsOff();
-  mActionAddNewVectLegend->setChecked ( true );
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::AddLegend);
+    }
 }
 
 void QgsComposer::on_mActionAddNewLabel_activated(void)
 {
-  mComposition->setTool ( QgsComposition::AddLabel );
-  setToolActionsOff();
-  mActionAddNewLabel->setChecked ( true );
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::AddLabel);
+    }
 }
 
 void QgsComposer::on_mActionAddNewScalebar_activated(void)
 {
-  mComposition->setTool ( QgsComposition::AddScalebar );
-  setToolActionsOff();
-  mActionAddNewScalebar->setChecked ( true );
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::AddScalebar);
+    }
 }
 
 void QgsComposer::on_mActionAddImage_activated(void)
 {
-  mComposition->setTool ( QgsComposition::AddPicture );
-  setToolActionsOff();
-  mActionAddImage->setChecked ( true );
-  mView->setCursor(QCursor(cross_hair_cursor));
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::AddPicture);
+    }
+}
+
+void QgsComposer::moveItemContent()
+{
+  if(mView)
+    {
+      mView->setCurrentTool(QgsComposerView::MoveItemContent);
+    }
+}
+ 
+void QgsComposer::groupItems(void)
+{
+  if(mView)
+    {
+      mView->groupItems();
+    }
+}
+
+void QgsComposer::ungroupItems(void)
+{
+  if(mView)
+    {
+      mView->ungroupItems();
+    }
 }
 
 void QgsComposer::moveEvent ( QMoveEvent *e ) { saveWindowState(); }
@@ -936,15 +1070,15 @@ void QgsComposer::projectRead(void)
 #ifdef QGISDEBUG
   std::cout << "QgsComposer::projectRead" << std::endl;
 #endif
-  if ( mComposition ) delete mComposition;
-  mComposition  = new QgsComposition( this, 1 );
+  //if ( mComposition ) delete mComposition;
+  //mComposition  = new QgsComposition( this, 1 );
 
   // Read composition if it is defined in project
   QStringList l = QgsProject::instance()->subkeyList ( "Compositions", "" );
 
   bool found = false;
   for ( QStringList::iterator it = l.begin(); it != l.end(); ++it ) {
-    std::cout << "key: " << (*it).toLocal8Bit().constData() << std::endl;
+    std::cout << "key: " << (*it).toLocal8Bit().data() << std::endl;
     if ( (*it).compare ( "composition_1" ) == 0 ) {
       found = true;
       break;
@@ -952,18 +1086,18 @@ void QgsComposer::projectRead(void)
   }
 
   if ( found ) {
-    mComposition->readSettings ( );
+    //mComposition->readSettings ( );
     mFirstTime = false;
   } else { 
     if ( isVisible() ) {
-      mComposition->createDefault();
+      //mComposition->createDefault();
       mFirstTime = false;
     } else {
       mFirstTime = true;
     }
   }
 
-  mComposition->setActive ( true );
+  //mComposition->setActive ( true );
 }
 
 void QgsComposer::newProject(void)
@@ -971,14 +1105,14 @@ void QgsComposer::newProject(void)
 #ifdef QGISDEBUG
   std::cout << "QgsComposer::newProject" << std::endl;
 #endif
-  if ( mComposition ) delete mComposition;
+  //if ( mComposition ) delete mComposition;
 
-  mComposition  = new QgsComposition( this, 1 );
-  mComposition->setActive ( true );
+  //mComposition  = new QgsComposition( this, 1 );
+  //mComposition->setActive ( true );
 
   // If composer is visible, create default immediately, otherwise wait for the first open()
   if ( isVisible() ) {
-    mComposition->createDefault();
+    //mComposition->createDefault();
     mFirstTime = false;
   } else {
     mFirstTime = true;
@@ -1005,23 +1139,231 @@ bool QgsComposer::readSettings ( void )
   return ok;
 }
 
-bool QgsComposer::writeXML( QDomNode & node, QDomDocument & doc )
+void  QgsComposer::writeXML(QDomDocument& doc)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::writeXML" << std::endl;
-#endif
-  QDomElement compositionsNode = doc.createElement("compositions");
+  QDomNodeList nl = doc.elementsByTagName("qgis");
+  if (nl.count() < 1)
+    {
+      return;
+    }
+  QDomElement qgisElem = nl.at(0).toElement();
+  if(qgisElem.isNull())
+    {
+      return;
+    }
+  
+  QDomElement composerElem = doc.createElement("Composer");
+  qgisElem.appendChild( composerElem );
 
-  node.appendChild( compositionsNode );
+  //store composer items:
+  QMap<QgsComposerItem*, QWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
+  for(; itemIt != mItemWidgetMap.constEnd(); ++itemIt)
+    {
+      itemIt.key()->writeXML(composerElem, doc);
+    }
 
-  return true;
+  //store composer view
+
+  //store composition
+  if(mComposition)
+    {
+      mComposition->writeXML(composerElem, doc);
+    }
+
+
+  return;
 }
 
-bool QgsComposer::readXML( QDomNode & node )
+void QgsComposer::readXML(const QDomDocument& doc)
 {
-#ifdef QGISDEBUG
-  std::cout << "QgsComposer::readXML" << std::endl;
-#endif
-  return true;
+  //look for Composer element
+  QDomNodeList nl = doc.elementsByTagName("Composer");
+  if(nl.size() < 1)
+    {
+      return; //nothing to do...
+    }
+  QDomElement composerElem = nl.at(0).toElement();
+
+  //look for Composition element
+  QDomNodeList cnl = composerElem.elementsByTagName("Composition");
+  if(cnl.size() < 1)
+    {
+      return; //nothing to do
+    }
+
+
+  //delete composer view and composition
+  delete mView;
+  mView = 0;
+  //delete every child of mViewFrame
+  QObjectList viewFrameChildren = mViewFrame->children();
+  QObjectList::iterator it = viewFrameChildren.begin();
+  for(; it != viewFrameChildren.end(); ++it)
+    {
+      delete (*it);
+    }
+  //delete composition widget
+  QgsCompositionWidget* oldCompositionWidget = dynamic_cast<QgsCompositionWidget*>(mCompositionOptionsFrame->children().at(0));
+  delete oldCompositionWidget;
+  delete mCompositionOptionsLayout;
+  mCompositionOptionsLayout = 0;
+    
+  QDomElement compositionElem = cnl.at(0).toElement();
+  
+  //todo: move in function because duplicated code with constructor
+  mView = new QgsComposerView(mViewFrame);
+  connectSlots();
+
+  mComposition = new QgsComposition(mQgis->getMapCanvas()->mapRenderer());
+  mComposition->readXML(compositionElem, doc);
+  
+  QGridLayout *l = new QGridLayout(mViewFrame );
+  l->setMargin(0);
+  l->addWidget( mView, 0, 0 );
+  
+  //create compositionwidget
+  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget(mCompositionOptionsFrame, mComposition);
+  compositionWidget->show();
+  
+  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
+  mCompositionOptionsLayout->setMargin(0);
+  mCompositionOptionsLayout->addWidget(compositionWidget);
+  
+  //read and restore all the items
+  
+  //composer labels
+  QDomNodeList composerLabelList = composerElem.elementsByTagName("ComposerLabel");
+  for(int i = 0; i < composerLabelList.size(); ++i)
+    {
+      QDomElement currentComposerLabelElem = composerLabelList.at(i).toElement();
+      QgsComposerLabel* newLabel = new QgsComposerLabel(mComposition);
+      newLabel->readXML(currentComposerLabelElem, doc);
+      addComposerLabel(newLabel);
+      mComposition->addItem(newLabel);
+      mComposition->update();
+    }
+  
+  //composer maps
+  QDomNodeList composerMapList = composerElem.elementsByTagName("ComposerMap");
+  for(int i = 0; i < composerMapList.size(); ++i)
+    {
+      QDomElement currentComposerMapElem = composerMapList.at(i).toElement();
+      QgsComposerMap* newMap = new QgsComposerMap(mComposition);
+      newMap->readXML(currentComposerMapElem, doc);
+      addComposerMap(newMap);
+      mComposition->addItem(newMap);
+      mComposition->update();
+    }
+  
+  //composer scalebars
+  QDomNodeList composerScaleBarList = composerElem.elementsByTagName("ComposerScaleBar");
+  for(int i = 0; i < composerScaleBarList.size(); ++i)
+    {
+      QDomElement currentScaleBarElem = composerScaleBarList.at(i).toElement();
+      QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar(mComposition);
+      newScaleBar->readXML(currentScaleBarElem, doc);
+      addComposerScaleBar(newScaleBar);
+      mComposition->addItem(newScaleBar);
+      mComposition->update();
+    }
+  
+  //composer legends
+  QDomNodeList composerLegendList = composerElem.elementsByTagName("ComposerLegend");
+  for(int i = 0; i < composerLegendList.size(); ++i)
+    {
+      QDomElement currentLegendElem = composerLegendList.at(i).toElement();
+      QgsComposerLegend* newLegend = new QgsComposerLegend(mComposition);
+      newLegend->readXML(currentLegendElem, doc);
+      addComposerLegend(newLegend);
+      mComposition->addItem(newLegend);
+      mComposition->update();
+    }
+
+  //composer pictures
+  QDomNodeList composerPictureList = composerElem.elementsByTagName("ComposerPicture");
+  for(int i = 0; i < composerPictureList.size(); ++i)
+    {
+      QDomElement currentPictureElem = composerPictureList.at(i).toElement();
+      QgsComposerPicture* newPicture = new QgsComposerPicture(mComposition);
+      newPicture->readXML(currentPictureElem, doc);
+      addComposerPicture(newPicture);
+      mComposition->addItem(newPicture);
+      mComposition->update();
+    }
+
+  mView->setComposition(mComposition);
 }
 
+void QgsComposer::addComposerMap(QgsComposerMap* map)
+{
+  if(!map)
+    {
+      return;
+    }
+
+  QgsComposerMapWidget* mapWidget= new QgsComposerMapWidget(map);
+  mItemWidgetMap.insert(map, mapWidget);
+}
+
+void QgsComposer::addComposerLabel(QgsComposerLabel* label)
+{
+  if(!label)
+    {
+      return;
+    }
+  
+  QgsComposerLabelWidget* labelWidget = new QgsComposerLabelWidget(label);
+  mItemWidgetMap.insert(label, labelWidget);
+}
+
+void QgsComposer::addComposerScaleBar(QgsComposerScaleBar* scalebar)
+{
+  if(!scalebar)
+    {
+      return;
+    }
+  
+  QgsComposerScaleBarWidget* sbWidget = new QgsComposerScaleBarWidget(scalebar);
+  mItemWidgetMap.insert(scalebar, sbWidget);
+}
+
+void QgsComposer::addComposerLegend(QgsComposerLegend* legend)
+{
+  if(!legend)
+    {
+      return;
+    }
+  
+  QgsComposerLegendWidget* lWidget = new QgsComposerLegendWidget(legend);
+  mItemWidgetMap.insert(legend, lWidget);
+}
+
+void QgsComposer::addComposerPicture(QgsComposerPicture* picture)
+{
+  if(!picture)
+    {
+      return;
+    }
+
+  QgsComposerPictureWidget* pWidget = new QgsComposerPictureWidget(picture);
+  mItemWidgetMap.insert(picture, pWidget);
+}
+
+void QgsComposer::deleteItem(QgsComposerItem* item)
+{
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find(item);
+
+  if(it == mItemWidgetMap.end())
+    {
+      return;
+    }
+
+  delete (it.value());
+  mItemWidgetMap.remove(it.key());
+}
+
+void QgsComposer::setSelectionTool()
+{
+  mActionSelectMoveItem->setChecked(true);
+  on_mActionSelectMoveItem_activated();
+}

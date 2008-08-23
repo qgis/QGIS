@@ -9,23 +9,44 @@
     <height>609</height>
    </rect>
   </property>
+  <property name="mouseTracking" >
+   <bool>true</bool>
+  </property>
   <property name="windowTitle" >
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="mouseTracking" >
+    <bool>true</bool>
+   </property>
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <property name="leftMargin" >
+     <number>9</number>
+    </property>
+    <property name="topMargin" >
+     <number>9</number>
+    </property>
+    <property name="rightMargin" >
+     <number>9</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>9</number>
+    </property>
     <item>
      <widget class="QSplitter" name="mSplitter" >
+      <property name="mouseTracking" >
+       <bool>true</bool>
+      </property>
       <property name="orientation" >
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QFrame" name="mViewFrame" >
+       <property name="mouseTracking" >
+        <bool>true</bool>
+       </property>
        <property name="frameShape" >
         <enum>QFrame::StyledPanel</enum>
        </property>
@@ -35,9 +56,7 @@
       </widget>
       <widget class="QTabWidget" name="mOptionsTabWidget" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>7</vsizetype>
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -55,17 +74,29 @@
         </size>
        </property>
        <property name="currentIndex" >
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab" >
         <attribute name="title" >
          <string>General</string>
         </attribute>
         <layout class="QGridLayout" >
-         <property name="margin" >
+         <property name="leftMargin" >
           <number>9</number>
          </property>
-         <property name="spacing" >
+         <property name="topMargin" >
+          <number>9</number>
+         </property>
+         <property name="rightMargin" >
+          <number>9</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>9</number>
+         </property>
+         <property name="horizontalSpacing" >
+          <number>6</number>
+         </property>
+         <property name="verticalSpacing" >
           <number>6</number>
          </property>
          <item row="1" column="0" colspan="2" >
@@ -84,9 +115,7 @@
             <bool>false</bool>
            </property>
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>0</vsizetype>
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -96,9 +125,7 @@
          <item row="0" column="0" >
           <widget class="QLabel" name="textLabel1" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>7</hsizetype>
-             <vsizetype>5</vsizetype>
+            <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -115,20 +142,28 @@
          <string>Item</string>
         </attribute>
         <layout class="QGridLayout" >
-         <property name="margin" >
+         <property name="leftMargin" >
           <number>9</number>
          </property>
-         <property name="spacing" >
+         <property name="topMargin" >
+          <number>9</number>
+         </property>
+         <property name="rightMargin" >
+          <number>9</number>
+         </property>
+         <property name="bottomMargin" >
+          <number>9</number>
+         </property>
+         <property name="horizontalSpacing" >
+          <number>6</number>
+         </property>
+         <property name="verticalSpacing" >
           <number>6</number>
          </property>
          <item row="0" column="0" >
-          <widget class="QFrame" name="mItemOptionsFrame" >
-           <property name="frameShape" >
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow" >
-            <enum>QFrame::Raised</enum>
-           </property>
+          <widget class="QStackedWidget" name="mItemStackedWidget" >
+           <widget class="QWidget" name="page" />
+           <widget class="QWidget" name="page_2" />
           </widget>
          </item>
         </layout>
@@ -138,11 +173,20 @@
     </item>
     <item>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="leftMargin" >
+       <number>0</number>
+      </property>
+      <property name="topMargin" >
+       <number>0</number>
+      </property>
+      <property name="rightMargin" >
+       <number>0</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>0</number>
       </property>
       <item>
        <widget class="QPushButton" name="helpPButton" >
@@ -180,7 +224,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="mActionOpenTemplate" />
    <addaction name="mActionSaveTemplateAs" />
@@ -196,7 +243,7 @@
    <addaction name="mActionAddNewMap" />
    <addaction name="mActionAddImage" />
    <addaction name="mActionAddNewLabel" />
-   <addaction name="mActionAddNewVectLegend" />
+   <addaction name="mActionAddNewLegend" />
    <addaction name="mActionAddNewScalebar" />
    <addaction name="mActionSelectMoveItem" />
   </widget>
@@ -264,7 +311,7 @@
     <string>Add new label</string>
    </property>
   </action>
-  <action name="mActionAddNewVectLegend" >
+  <action name="mActionAddNewLegend" >
    <property name="icon" >
     <iconset>../themes/default/mActionAddLegend.png</iconset>
    </property>

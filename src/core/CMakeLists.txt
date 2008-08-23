@@ -48,6 +48,21 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
 
+  composer/qgscomposeritem.cpp
+  composer/qgscomposeritemgroup.cpp
+  composer/qgscomposerlabel.cpp
+  composer/qgscomposerpicture.cpp
+  composer/qgscomposermap.cpp
+  composer/qgscomposerscalebar.cpp
+  composer/qgslegendmodel.cpp
+  composer/qgscomposerlegend.cpp
+  composer/qgsscalebarstyle.cpp
+  composer/qgsdoubleboxscalebarstyle.cpp
+  composer/qgsnumericscalebarstyle.cpp
+  composer/qgssingleboxscalebarstyle.cpp
+  composer/qgsticksscalebarstyle.cpp
+  composer/qgscomposition.cpp
+
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscolortable.cpp
@@ -103,6 +118,12 @@ qgsproject.h
 qgsrunprocess.h
 qgsvectorlayer.h
 qgsrasterdataprovider.h
+composer/qgscomposerlegend.h
+composer/qgscomposermap.h
+composer/qgscomposerpicture.h
+composer/qgscomposerscalebar.h
+composer/qgscomposeritemgroup.h
+composer/qgslegendmodel.h
 raster/qgsrasterlayer.h
 )
 
@@ -110,6 +131,7 @@ QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
+  composer
   raster 
   renderer 
   symbology

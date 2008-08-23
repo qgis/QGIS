@@ -17,98 +17,52 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
-#include "ui_qgscomposerlabelbase.h"
 #include "qgscomposeritem.h"
-#include <QAbstractGraphicsShapeItem>
-#include <QFont>
-#include <QPen>
-#include <QPolygon>
-#include <QRect>
-#include <QString>
 
-class QgsComposition;
-class QDomNode;
-class QDomDocument;
-
-/** \class QgsComposerLabel 
- *  \brief Object representing label. 
+/** \ingroup MapComposer
+ * A label that can be placed onto a map composition.
  */
-// NOTE: QgsComposerLabelBase must be first, otherwise does not compile
-//class QgsComposerLabel : public QgsComposerLabelBase, public QCanvasRectangle, public QgsComposerItem
-class QgsComposerLabel : public QWidget, private Ui::QgsComposerLabelBase, public QAbstractGraphicsShapeItem, public QgsComposerItem
+class QgsComposerLabel: public QgsComposerItem
 {
-    Q_OBJECT
+ public:
+  QgsComposerLabel( QgsComposition *composition);
+  ~QgsComposerLabel();
 
-public:
-    /** \brief Constructor. Settings are written to project.  
-     *  \param id object id
-     *  \param fontSize font size in typographic points!
+  /** \brief Reimplementation of QCanvasItem::paint*/
+  void paint (QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget);
+
+  /**resizes the widget such that the text fits to the item. Keeps top left point*/
+  void adjustSizeToText();
+
+  QString text() {return mText;}
+  void setText(const QString& text);
+  QFont font() const;
+  void setFont(const QFont& f);
+  double margin(){return mMargin;}
+  void setMargin(double m){mMargin = m;}
+
+  /** stores state in DOM node
+     * @param node is DOM node corresponding to 'Composer' tag
+     * @param temp write template file
      */
-    QgsComposerLabel( QgsComposition *composition, int id, int x, int y, QString text, int fontSize = 0 );
+  bool writeXML(QDomElement& elem, QDomDocument & doc);
 
-    /** \brief Constructor. Settings are read from project.  
-     *  \param id object id
+  /** sets state from DOM document
+     * @param node is DOM node corresponding to 'ComposerLabel' tag
      */
-    QgsComposerLabel( QgsComposition *composition, int id );
-
-    ~QgsComposerLabel();
-
-    // Reimplement QgsComposerItem:
-    void setSelected( bool s );
-    bool selected( void );
-    QWidget *options ( void );
-    bool writeSettings ( void );
-    bool readSettings ( void );
-    bool removeSettings ( void );
-    bool writeXML( QDomNode & node, QDomDocument & document, bool temp = false );
-    bool readXML( QDomNode & node );
-
-    QRectF boundingRect ( void ) const; //errors about overriding things?
-     
-    /** \brief Reimplementation of QGraphicsItem::paint() - draw on canvas */
-    void paint ( QPainter*, const QStyleOptionGraphicsItem*, QWidget* );
-
-    QPolygonF areaPoints() const;
-    
-    /** \brief Set values in GUI to current values */
-    void setOptions ( void );
-
-public slots:
-    // Open font dialog
-    void on_mFontButton_clicked();
-
-    void on_mTextEdit_textChanged();
-
-    // Box settings changed
-    void on_mBoxCheckBox_clicked();
-    
-private:
-    // Pointer to composition
-    QgsComposition *mComposition;
-
-
-    
-    // Text 
+  bool readXML(const QDomElement& itemElem, const QDomDocument& doc);
+ 
+ private:
+  // Text 
     QString mText;
 
-    // Font. Font size in typographic points!
+    // Font
     QFont mFont;
 
-    // Pen
-    QPen  mPen;
-
-    // Margin in box
-    int mMargin;
-
-    // Current bounding box
-    // Not used - would it be more effecient if paint() updated the bounding box, and boundingRect returned this?
-    //QRect mBoundingRect; 
-
-    // Draw box around the label
-    bool mBox;
-
-    // Box buffer
-    double mBoxBuffer;
+    // Border between text and fram (in mm)
+    double mMargin;
 };
 
-#endif
+#endif 
+
+

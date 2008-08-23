@@ -2521,6 +2521,9 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   mMapCanvas->clear();
 
+  delete mComposer;
+  mComposer = new QgsComposer(this);
+
   QgsProject* prj = QgsProject::instance();
   prj->title( QString::null );
   prj->filename( QString::null );
@@ -2741,6 +2744,9 @@ void QgisApp::fileOpen()
     // clear out any stuff from previous project
     mMapCanvas->freeze(true);
     removeAllLayers();
+    
+    delete mComposer;
+    mComposer = new QgsComposer(this);
 
     QgsProject::instance()->filename( fullPath );
 
