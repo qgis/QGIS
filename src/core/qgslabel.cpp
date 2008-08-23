@@ -510,7 +510,7 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
   case QGis::WKBMultiPolygon:
     // Return a position for each individual in the multi-feature
     {
-      assert( 1+sizeof(wkbType)+sizeof(int)<=geomlen );
+      Q_ASSERT( 1+sizeof(wkbType)+sizeof(int)<=geomlen );
       geom += 1+sizeof(wkbType);
       int nFeatures = *(unsigned int *)geom;
       geom += sizeof(int);
@@ -531,9 +531,9 @@ void QgsLabel::labelPoint ( std::vector<QgsPoint>& points, QgsFeature & feature 
 unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size_t geomlen)
 {
   // verify that local types match sizes as WKB spec
-  assert( sizeof(int) == 4 );
-  assert( sizeof(QGis::WKBTYPE) == 4 );
-  assert( sizeof(double) == 8 );
+  Q_ASSERT( sizeof(int) == 4 );
+  Q_ASSERT( sizeof(QGis::WKBTYPE) == 4 );
+  Q_ASSERT( sizeof(double) == 8 );
 
   if(geom==NULL) {
     QgsDebugMsg("empty wkb");
@@ -541,9 +541,10 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size
   }
 
   QGis::WKBTYPE wkbType;
+#ifndef QT_NO_DEBUG
   unsigned char *geomend = geom+geomlen;
-
-  assert( geom+1+sizeof(wkbType)<=geomend );
+#endif
+  Q_ASSERT (geom+1+sizeof(wkbType)<=geomend );
 
   geom++; // skip endianess
   memcpy(&wkbType, geom, sizeof(wkbType));
@@ -556,7 +557,7 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size
   case QGis::WKBPoint25D:
   case QGis::WKBPoint:
     {
-      assert( geom+2*sizeof(double)<=geomend );
+      Q_ASSERT( geom+2*sizeof(double)<=geomend );
       double *pts = (double *)geom;
       point.set( pts[0], pts[1] );
       geom += 2*sizeof(double);
@@ -567,11 +568,11 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size
     dims=3;
   case QGis::WKBLineString: // Line center
     {
-      assert( geom+sizeof(int)<=geomend );
+      Q_ASSERT( geom+sizeof(int)<=geomend );
       int nPoints = *(unsigned int *)geom;
       geom += sizeof(int);
 
-      assert( geom+nPoints*sizeof(double)*dims<=geomend );
+      Q_ASSERT( geom+nPoints*sizeof(double)*dims<=geomend );
 
       // get line center
       double *pts = (double *)geom;
@@ -612,17 +613,17 @@ unsigned char* QgsLabel::labelPoint ( QgsPoint& point, unsigned char *geom, size
     dims = 3;
   case QGis::WKBPolygon: // centroid of outer ring
     {
-      assert( geom+sizeof(int)<=geomend);
+      Q_ASSERT( geom+sizeof(int)<=geomend);
       int nRings = *(unsigned int *)geom;
       geom += sizeof(int);
 
       for (int i=0; i<nRings; ++i) 
       {
-        assert( geom+sizeof(int)<=geomend );
+        Q_ASSERT( geom+sizeof(int)<=geomend );
         int nPoints = *(unsigned int *)geom;
         geom += sizeof(int);
 
-        assert( geom+nPoints*sizeof(double)*dims<=geomend );
+        Q_ASSERT( geom+nPoints*sizeof(double)*dims<=geomend );
 
         if( i==0 ) {
           double sx=0.0, sy=0.0;

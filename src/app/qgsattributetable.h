@@ -57,7 +57,7 @@ class QgsAttributeTable : public QTableWidget
     enum {
       AttributeIndex = Qt::UserRole,
       AttributeName = Qt::UserRole+1,
-      AttributeType = Qt::UserRole+2,
+      AttributeType = Qt::UserRole+2
     };
 
     void setReadOnly(bool b);

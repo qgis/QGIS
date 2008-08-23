@@ -23,6 +23,7 @@
 #include <QTextStream>
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
+#include <cstdlib>
 
 typedef QgsProjectVersion PFV;
 
@@ -42,7 +43,7 @@ bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
 
   if ( ! mDom.isNull() )
   {
-    for (int i = 0; i < sizeof(transformers)/sizeof(transform); i++)
+    for (std::size_t i = 0; i < sizeof(transformers)/sizeof(transform); i++)
     {
       if ( transformers[i].from == mCurrentVersion)
       {
@@ -54,7 +55,7 @@ bool QgsProjectFileTransform::updateRevision(QgsProjectVersion newVersion)
     }
   }
   return returnValue;
-};
+}
 
 void QgsProjectFileTransform::dump()
 {
@@ -176,7 +177,7 @@ void QgsProjectFileTransform::transform081to090()
   }
   return;
 
-};
+}
 
 void QgsProjectFileTransform::transform091to0100()
 {
@@ -235,7 +236,7 @@ void QgsProjectFileTransform::transform091to0100()
   }
   return;
 
-};
+}
 
 void QgsProjectFileTransform::transform0100to0110()
 {

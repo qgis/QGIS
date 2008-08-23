@@ -82,7 +82,7 @@ class QTreeWidgetItem;
 
 class QgsLegend : public QTreeWidget
 {
-    Q_OBJECT;
+    Q_OBJECT
  private:
     // Moved here to match access of declaration later in file.
     // Previous location raised a warning in msvc as the forward

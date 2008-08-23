@@ -21,7 +21,7 @@
 */
 class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabelPluginGuiBase
 {
-Q_OBJECT;
+    Q_OBJECT
 public:
     QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCopyrightLabelPluginGui();

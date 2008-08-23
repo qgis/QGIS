@@ -18,6 +18,7 @@
 
 #include "qgsconfig.h"
 
+#include "qgis.h"
 #include <iostream>
 #include <QApplication>
 #include <QFileDialog>
@@ -260,9 +261,9 @@ sharedLibExtension = "*.so*";
     }
     
     // resolve the metadata from plugin
-    name_t *pName = (name_t *) myLib->resolve("name");
-    description_t *pDesc = (description_t *) myLib->resolve("description");
-    version_t *pVersion = (version_t *) myLib->resolve("version");
+    name_t *pName = (name_t *) cast_to_fptr(myLib->resolve("name"));
+    description_t *pDesc = (description_t *) cast_to_fptr(myLib->resolve("description"));
+    version_t *pVersion = (version_t *) cast_to_fptr(myLib->resolve("version"));
 
     // show the values (or lack of) for each function
     if(pName)

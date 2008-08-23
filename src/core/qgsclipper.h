@@ -233,7 +233,7 @@ inline QgsPoint QgsClipper::intersect(const double x1, const double y1,
   // (x2, y2) cross the given boundary. Making this assumption allows
   // some optimisations. 
 
-  double r_n, r_d;
+  double r_n = SMALL_NUM, r_d = SMALL_NUM;
 
   switch (b)
   {

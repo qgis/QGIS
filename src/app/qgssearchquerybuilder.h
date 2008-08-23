@@ -108,9 +108,9 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsPgQueryBuilderBase
 
     /*!
      * populates list box with values of selected field
-     * @param limit if not zero, insterts only this count of values
+     * @param limit if not zero, inserts only this count of values
      */
-    void getFieldValues(uint limit);
+    void getFieldValues(int limit);
 
   private:
     

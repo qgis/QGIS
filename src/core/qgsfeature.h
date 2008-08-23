@@ -168,7 +168,7 @@ class CORE_EXPORT QgsFeature
 
        This is usually set by a call to OGRGeometry::exportToWkb()
      */
-    QgsGeometry* mGeometry;
+    QgsGeometry *mGeometry;
 
     /** Indicator if the mGeometry is owned by this QgsFeature.
         If so, this QgsFeature takes responsibility for the mGeometry's destruction.

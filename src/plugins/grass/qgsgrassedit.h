@@ -69,7 +69,7 @@ typedef struct {
  */
 class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Tools

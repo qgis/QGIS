@@ -119,7 +119,7 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   QString largestLabel = QString::number(largestLabelNumber) + " " + mScaleBar->unitLabeling();
   double largestLabelWidth = fontMetrics.width(largestLabel) - fontMetrics.width(largestNumberLabel) / 2;
 
-  double totalBarLength;
+  double totalBarLength = 0.0;
   
   QList< QPair<double, double> > segmentList;
   mScaleBar->segmentPositions(segmentList);

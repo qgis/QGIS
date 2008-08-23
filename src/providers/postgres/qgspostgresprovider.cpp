@@ -55,10 +55,10 @@ int QgsPostgresProvider::providerIds=0;
 
 QgsPostgresProvider::QgsPostgresProvider(QString const & uri)
 : QgsVectorDataProvider(uri),
+  mFetching(false),
   geomType(QGis::WKBUnknown),
   mFeatureQueueSize(200),
-  gotPostgisVersion(false),
-  mFetching(false)
+  gotPostgisVersion(false)
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;

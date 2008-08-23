@@ -34,7 +34,7 @@ class QgsRect;
 
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {
-  Q_OBJECT;
+  Q_OBJECT
   
   public:
     QgsMapOverviewCanvas(QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL);

@@ -314,7 +314,8 @@ QgisApp *QgisApp::smInstance = 0;
   QgisApp::QgisApp(QSplashScreen *splash, QWidget * parent, Qt::WFlags fl)
 : QMainWindow(parent,fl),
   mSplash(splash),
-  mPythonUtils(NULL), mPythonConsole(NULL)
+  mPythonConsole(NULL),
+  mPythonUtils(NULL)
 {
   if(smInstance) {
     QMessageBox::critical(
@@ -1662,9 +1663,9 @@ void QgisApp::restoreSessionPlugins(QString thePluginDirString)
     if (loaded)
     {
 
-        name_t * myName =(name_t *) myLib->resolve("name");
-        description_t *  myDescription = (description_t *)  myLib->resolve("description");
-        version_t *  myVersion =  (version_t *) myLib->resolve("version");
+        name_t * myName =(name_t *) cast_to_fptr(myLib->resolve("name"));
+        description_t *  myDescription = (description_t *)  cast_to_fptr(myLib->resolve("description"));
+        version_t *  myVersion =  (version_t *) cast_to_fptr(myLib->resolve("version"));
         if (myName && myDescription  && myVersion )
         {
           //check if the plugin was active on last session
@@ -2451,7 +2452,7 @@ findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
       break;
   }
 
-}; // findLayer_
+} // findLayer_
 
 
 
@@ -2661,7 +2662,7 @@ void QgisApp::newVectorLayer()
 
     typedef bool (*createEmptyDataSourceProc)(const QString&, const QString&, const QString&, QGis::WKBTYPE, \
       const std::list<std::pair<QString, QString> >&);
-    createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc)myLib->resolve("createEmptyDataSource");
+    createEmptyDataSourceProc createEmptyDataSource=(createEmptyDataSourceProc) cast_to_fptr(myLib->resolve("createEmptyDataSource"));
     if(createEmptyDataSource)
     {
 #if 0
@@ -3926,7 +3927,7 @@ void QgisApp::loadPythonSupport()
   {
     //QgsDebugMsg("Python support library loaded successfully.");
     typedef QgsPythonUtils* (*inst)();
-    inst pythonlib_inst = (inst) pythonlib.resolve("instance");
+    inst pythonlib_inst = (inst) cast_to_fptr(pythonlib.resolve("instance"));
     if (pythonlib_inst)
     {
       //QgsDebugMsg("Python support library's instance() symbol resolved.");
@@ -4009,7 +4010,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
     {
       myError += "Attempting to resolve the classFactory function " +  QString (__LINE__) + " in " + QString (__FUNCTION__ ) + "\n";
 
-      type_t *pType = (type_t *) myLib->resolve("type");
+      type_t *pType = (type_t *) cast_to_fptr(myLib->resolve("type"));
 
       switch (pType())
       {
@@ -4017,7 +4018,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
         case QgisPlugin::UI:
           {
             // UI only -- doesn't use mapcanvas
-            create_ui *cf = (create_ui *) myLib->resolve("classFactory");
+            create_ui *cf = (create_ui *) cast_to_fptr(myLib->resolve("classFactory"));
             if (cf)
             {
               QgisPlugin *pl = cf(mQgisInterface);
@@ -4049,7 +4050,7 @@ void QgisApp::loadPlugin(QString name, QString description, QString theFullPathN
         case QgisPlugin::MAPLAYER:
           {
             // Map layer - requires interaction with the canvas
-            create_it *cf = (create_it *) myLib->resolve("classFactory");
+            create_it *cf = (create_it *) cast_to_fptr(myLib->resolve("classFactory"));
             if (cf)
             {
               QgsMapLayerInterface *pl = cf();
@@ -4412,7 +4413,7 @@ bool QgisApp::saveDirty()
   QSettings settings;
   bool askThem = settings.value("qgis/askToSaveProjectChanges", true).toBool();
 
-  if (askThem && (QgsProject::instance()->isDirty() || (mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0))
+  if (askThem && (QgsProject::instance()->isDirty() || mMapCanvas->isDirty()) && mMapCanvas->layerCount() > 0)
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan

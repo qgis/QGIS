@@ -39,7 +39,7 @@ class QgsVectorLayer;
 */
 class QgsMapToolIdentify : public QgsMapTool
 {
-  Q_OBJECT;
+  Q_OBJECT
 
   public:
     QgsMapToolIdentify(QgsMapCanvas* canvas);

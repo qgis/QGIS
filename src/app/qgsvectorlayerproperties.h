@@ -35,7 +35,7 @@ class QgsVectorLayer;
 
 class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
 {
-  Q_OBJECT;
+  Q_OBJECT
 public:
   QgsVectorLayerProperties(QgsVectorLayer *lyr = 0,QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
   ~QgsVectorLayerProperties();

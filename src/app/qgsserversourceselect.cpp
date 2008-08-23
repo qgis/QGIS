@@ -317,39 +317,6 @@ void QgsServerSourceSelect::populateImageEncodingGroup(QgsWmsProvider* wmsProvid
 }
 
 
-std::set<QString> QgsServerSourceSelect::crsForSelection()
-{
-  std::set<QString> crsCandidates;
-
-  // XXX - mloskot - temporary solution, function must return a value
-  return crsCandidates;
-
-  QStringList::const_iterator i;
-  for (i = m_selectedLayers.constBegin(); i != m_selectedLayers.constEnd(); ++i)
-  {
-/*    
-
-    for ( int j = 0; j < ilayerProperty.boundingBox.size(); i++ ) 
-    {
-#ifdef QGISDEBUG
-  std::cout << "QgsWmsProvider::parseLayer: testing bounding box CRS which is " 
-            << layerProperty.boundingBox[i].crs.toLocal8Bit().data() << "." << std::endl;
-#endif
-      if ( layerProperty.boundingBox[i].crs == DEFAULT_LATLON_CRS )
-      {
-        extentForLayer[ layerProperty.name ] = 
-                layerProperty.boundingBox[i].box;
-      }
-    }
-
-
-    if
-      cout << (*i).ascii() << endl;*/
-  }
-
-}
-
-
 void QgsServerSourceSelect::on_btnConnect_clicked()
 {
   // populate the table list

@@ -167,7 +167,21 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 # enable warnings
 
 IF (PEDANTIC)
-  ADD_DEFINITIONS( -Wall -Werror )
+  MESSAGE ("Pedantic compiler settings enabled")
+  IF(MSVC)
+    ADD_DEFINITIONS( /W4 )
+
+    # disable warnings
+    ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
+    ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
+    ADD_DEFINITIONS( /wd4510 )  # default constructor could not be generated (sqlite3_index_info, QMap)
+    ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
+    ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
+  ELSE (MSVC)
+    ADD_DEFINITIONS( -Wall -Werror -Wno-long-long )
+    # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
+    # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 )
+  ENDIF (MSVC)
 ENDIF (PEDANTIC)
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug)

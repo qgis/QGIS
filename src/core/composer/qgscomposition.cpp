@@ -162,6 +162,8 @@ bool QgsComposition::writeXML(QDomElement& composerElem, QDomDocument& doc)
       compositionElem.setAttribute("paperHeight", mPaperItem->rect().height());
     }
   composerElem.appendChild(compositionElem);
+
+  return true;
 }
 
 bool QgsComposition::readXML(const QDomElement& compositionElem, const QDomDocument& doc)
@@ -184,4 +186,6 @@ bool QgsComposition::readXML(const QDomElement& compositionElem, const QDomDocum
       addItem(mPaperItem);
       mPaperItem->setZValue(0);
     }
+
+  return true;
 }

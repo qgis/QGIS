@@ -65,7 +65,7 @@ public:
     UniqueValuesEditable,
     ValueMap,
     Classification,
-    Range,
+    Range
   };
 
   struct RangeData {

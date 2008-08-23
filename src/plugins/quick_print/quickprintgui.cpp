@@ -28,8 +28,8 @@
 //standard includes
 
 QuickPrintGui::QuickPrintGui( QgsMapCanvas * thepMapCanvas, 
-    QWidget* parent,  Qt::WFlags fl )
-: mpMapCanvas ( thepMapCanvas ), QDialog ( parent, fl ) 
+    QWidget* parent,  Qt::WFlags fl ) :
+        QDialog ( parent, fl ), mpMapCanvas ( thepMapCanvas )
 {
   setupUi(this);
   grpOuput->hide();  //until properly implemented

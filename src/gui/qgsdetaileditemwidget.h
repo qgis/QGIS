@@ -24,7 +24,7 @@
 class QgsDetailedItemWidget : 
      public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
     QgsDetailedItemWidget(QWidget * parent = 0);
     ~QgsDetailedItemWidget();

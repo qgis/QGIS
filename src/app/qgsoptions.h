@@ -29,7 +29,7 @@
  */
 class QgsOptions :public QDialog, private Ui::QgsOptionsBase
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
     /**
      * Constructor

@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
 {
-  Q_OBJECT;
+  Q_OBJECT
 
   public:
   QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature * thepFeature);

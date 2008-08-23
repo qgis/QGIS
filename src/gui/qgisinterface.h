@@ -48,7 +48,7 @@ class QgsVectorLayer;
 
 class GUI_EXPORT QgisInterface : public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
 
   public:
 

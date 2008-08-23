@@ -36,7 +36,7 @@
 */
 class GUI_EXPORT QgsQuickPrint:public QObject
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
       
   QgsQuickPrint();

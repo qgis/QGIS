@@ -22,6 +22,9 @@
 #include <QList>
 #include "qgssearchtreenode.h"
 
+// don't redeclare malloc/free
+#define YYINCLUDED_STDLIB_H 1
+
 /** returns parsed tree, otherwise returns NULL and sets parserErrorMsg
     (interface function to be called from QgsSearchString) 
   */

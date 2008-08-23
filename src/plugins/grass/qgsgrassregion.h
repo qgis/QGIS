@@ -39,7 +39,7 @@ extern "C" {
  */
 class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor

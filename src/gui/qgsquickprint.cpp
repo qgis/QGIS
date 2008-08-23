@@ -132,8 +132,7 @@ void QgsQuickPrint::printMap()
   // the screen resolution is which we store and then 
   // reset the resolution of the printer after that...
   QPrinter myPrinter ( QPrinter::ScreenResolution ); 
-  int myScreenResolutionDpi = myPrinter.resolution(); //try to get programmatically
-  //
+
   // Try to force the printer resolution to 300dpi
   // to get past platform specific defaults in printer
   // resolution...
@@ -410,7 +409,6 @@ void QgsQuickPrint::printMap()
       if ( mypVectorLayer )
       {
         QString myLayerName = mypVectorLayer->name();
-        int myLayerNameWidth = myLegendFontMetrics.width(myLayerName);
         QIcon myIcon;
         QPixmap myPixmap ( QSize ( myIconWidth, myIconWidth ) ); //square
         //based on code from qgslegendlayer.cpp - see that file for more info
@@ -445,7 +443,6 @@ void QgsQuickPrint::printMap()
           }
           myLegendXPos += myIconWidth + myLegendSpacer;
           myPrintPainter.setPen( Qt::black );
-          int myMaximumLabelWidth = myLegendDimensionX - myLegendXPos;
           QStringList myWrappedLayerNameList = wordWrap(myLayerName, 
               myLegendFontMetrics, 
               myLegendDimensionX - myIconWidth);
@@ -547,9 +544,7 @@ void QgsQuickPrint::printMap()
             }
             myLabel = myLabel.trimmed();
             myLegendXPos += myIconWidth + myLegendSpacer;
-            int myLabelWidth = myLegendFontMetrics.width(myLabel);
             myPrintPainter.setPen( Qt::black );
-            //
 
             QStringList myWrappedLayerNameList = wordWrap(myLabel, 
                 myLegendFontMetrics, 

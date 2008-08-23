@@ -107,7 +107,7 @@ bool QgsRenderChecker::compareImages( QString theTestName )
   // Set pixel count score and target
   //
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
-  int myPixelCount = myResultImage.width() * myResultImage.height();
+  unsigned int myPixelCount = myResultImage.width() * myResultImage.height();
   //
   // Set the report with the result
   //

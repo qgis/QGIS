@@ -30,7 +30,7 @@ class QgsRubberBand;
 */
 class CoordinateCaptureMapTool : public QgsMapTool
 {
-  Q_OBJECT;
+  Q_OBJECT
 
   public:
     CoordinateCaptureMapTool(QgsMapCanvas* thepCanvas);

@@ -55,7 +55,7 @@ class QgisInterface;
 */
 class [pluginname]:public QObject, public QgisPlugin
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
       
   //////////////////////////////////////////////////////////////////////

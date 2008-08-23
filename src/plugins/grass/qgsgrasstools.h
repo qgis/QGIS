@@ -53,7 +53,7 @@ class QgsMapCanvas;
  */
 class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor

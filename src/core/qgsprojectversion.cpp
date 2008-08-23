@@ -51,7 +51,7 @@ bool QgsProjectVersion::operator==(const QgsProjectVersion &other)
   return ((mMajor == other.mMajor) &&
           (mMinor == other.mMinor) &&
           (mSub == other.mSub));
-};
+}
 
 /*! Boolean >= operator
  */
@@ -60,7 +60,7 @@ bool QgsProjectVersion::operator>=(const QgsProjectVersion &other)
   return ( (mMajor >= other.mMajor) ||
           ((mMajor == other.mMajor) && (mMinor >= other.mMinor)) ||
           ((mMajor == other.mMajor) && (mMinor == other.mMinor) && (mSub >= other.mSub)));
-};
+}
 
 /*! Boolean > operator
  */
@@ -69,7 +69,7 @@ bool QgsProjectVersion::operator>(const QgsProjectVersion &other)
   return ( (mMajor > other.mMajor) ||
            ((mMajor == other.mMajor) && (mMinor > other.mMinor)) ||
            ((mMajor == other.mMajor) && (mMinor == other.mMinor) && (mSub > other.mSub)));
-}; 
+} 
 
 QString QgsProjectVersion::text()
 {

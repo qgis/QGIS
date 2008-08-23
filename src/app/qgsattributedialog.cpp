@@ -38,8 +38,8 @@
 QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeature)
   : QDialog(),
     mSettingsPath("/Windows/AttributeDialog/"),
-    mpFeature(thepFeature),
-    mLayer(vl)
+    mLayer(vl),
+    mpFeature(thepFeature)
 {
   setupUi(this);
   if (mpFeature==NULL || vl->dataProvider()==NULL )
@@ -109,71 +109,6 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeatu
 
     switch( editType )
     {
-    case QgsVectorLayer::Range:
-      {
-        if( myFieldType==QVariant::Int )
-        {
-          int min = vl->range( it.key() ).mMin.toInt();
-          int max = vl->range( it.key() ).mMax.toInt();
-          int step = vl->range( it.key() ).mStep.toInt();
-
-          QSpinBox *sb = new QSpinBox();
-          sb->setMinimum(min);
-          sb->setMaximum(max);
-          sb->setSingleStep(step);
-          sb->setValue( it.value().toInt() );
-
-          myWidget = sb;
-          break;
-        } else if( myFieldType==QVariant::Double ) {
-          double min = vl->range( it.key() ).mMin.toDouble();
-          double max = vl->range( it.key() ).mMax.toDouble();
-          double step = vl->range( it.key() ).mStep.toDouble();
-          QDoubleSpinBox *dsb = new QDoubleSpinBox();
-          
-          dsb->setMinimum(min);
-          dsb->setMaximum(max);
-          dsb->setSingleStep(step);
-          dsb->setValue( it.value().toDouble() );
-
-          myWidget = dsb;
-
-          break;
-        }
-        
-      }
-
-      // fall-through
-
-
-    case QgsVectorLayer::LineEdit:
-    case QgsVectorLayer::UniqueValuesEditable:
-      {
-        QLineEdit *le = new QLineEdit( myFieldValue.toString() );
-
-        if( editType == QgsVectorLayer::UniqueValuesEditable )
-        {
-          QStringList values;
-          mLayer->dataProvider()->getUniqueValues(it.key(), values);
-
-          QCompleter *c = new QCompleter(values);
-          c->setCompletionMode(QCompleter::PopupCompletion);
-          le->setCompleter(c);
-        }
-
-        if( myFieldType==QVariant::Int )
-        {
-          le->setValidator( new QIntValidator(le) );
-        }
-        else if( myFieldType==QVariant::Double )
-        {
-          le->setValidator( new QIntValidator(le) );
-        }
-
-        myWidget = le;
-      }
-      break;
-
     case QgsVectorLayer::UniqueValues:
       {
         QStringList values;
@@ -223,6 +158,71 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeatu
           cb->setCurrentIndex( idx );
 
         myWidget = cb;
+      }
+      break;
+
+    case QgsVectorLayer::Range:
+      {
+        if( myFieldType==QVariant::Int )
+        {
+          int min = vl->range( it.key() ).mMin.toInt();
+          int max = vl->range( it.key() ).mMax.toInt();
+          int step = vl->range( it.key() ).mStep.toInt();
+
+          QSpinBox *sb = new QSpinBox();
+          sb->setMinimum(min);
+          sb->setMaximum(max);
+          sb->setSingleStep(step);
+          sb->setValue( it.value().toInt() );
+
+          myWidget = sb;
+          break;
+        } else if( myFieldType==QVariant::Double ) {
+          double min = vl->range( it.key() ).mMin.toDouble();
+          double max = vl->range( it.key() ).mMax.toDouble();
+          double step = vl->range( it.key() ).mStep.toDouble();
+          QDoubleSpinBox *dsb = new QDoubleSpinBox();
+          
+          dsb->setMinimum(min);
+          dsb->setMaximum(max);
+          dsb->setSingleStep(step);
+          dsb->setValue( it.value().toDouble() );
+
+          myWidget = dsb;
+
+          break;
+        }
+        
+      }
+
+      // fall-through
+
+    case QgsVectorLayer::LineEdit:
+    case QgsVectorLayer::UniqueValuesEditable:
+    default:
+      {
+        QLineEdit *le = new QLineEdit( myFieldValue.toString() );
+
+        if( editType == QgsVectorLayer::UniqueValuesEditable )
+        {
+          QStringList values;
+          mLayer->dataProvider()->getUniqueValues(it.key(), values);
+
+          QCompleter *c = new QCompleter(values);
+          c->setCompletionMode(QCompleter::PopupCompletion);
+          le->setCompleter(c);
+        }
+
+        if( myFieldType==QVariant::Int )
+        {
+          le->setValidator( new QIntValidator(le) );
+        }
+        else if( myFieldType==QVariant::Double )
+        {
+          le->setValidator( new QIntValidator(le) );
+        }
+
+        myWidget = le;
       }
       break;
     }

@@ -32,7 +32,7 @@ class QgsAttributeAction;
 
 class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
 {
-  Q_OBJECT;
+  Q_OBJECT
   
  public:
   QgsAttributeActionDialog(QgsAttributeAction* actions, 

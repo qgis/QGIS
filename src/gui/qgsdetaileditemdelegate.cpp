@@ -54,7 +54,6 @@ void QgsDetailedItemDelegate::paint(QPainter * thepPainter,
   {
     QgsDetailedItemData myData = 
       qVariantValue<QgsDetailedItemData>(theIndex.data(Qt::UserRole));
-    bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
     if (myData.isRenderedAsWidget())
     {
       paintAsWidget(thepPainter,theOption,myData);

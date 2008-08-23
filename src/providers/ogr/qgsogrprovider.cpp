@@ -471,7 +471,6 @@ bool QgsOgrProvider::addFeature(QgsFeature& f)
   bool returnValue = true;
   OGRFeatureDefnH fdef=OGR_L_GetLayerDefn(ogrLayer);
   OGRFeatureH feature= OGR_F_Create(fdef);
-  QGis::WKBTYPE ftype = f.geometry()->wkbType();
   unsigned char* wkb = f.geometry()->wkbBuffer();
 
   if( f.geometry()->wkbSize() > 0 )
@@ -1263,18 +1262,18 @@ void QgsOgrProvider::getUniqueValues(int index, QStringList &uniqueValues)
 
   uniqueValues.clear();
 
-  OGRLayerH l = OGR_DS_ExecuteSQL(ogrDataSource, sql.toAscii(), NULL, "SQL");
-  if(l==0)
+  OGRLayerH lyr = OGR_DS_ExecuteSQL(ogrDataSource, sql.toAscii(), NULL, "SQL");
+  if( 0 == lyr )
     return;
 
   OGRFeatureH f;
-  while( f=OGR_L_GetNextFeature(l) )
+  while( 0 != (f = OGR_L_GetNextFeature(lyr)) )
   {
     uniqueValues.append( mEncoding->toUnicode(OGR_F_GetFieldAsString(f, 0)) );
     OGR_F_Destroy(f);
   }
 
-  OGR_DS_ReleaseResultSet(ogrDataSource, l);
+  OGR_DS_ReleaseResultSet(ogrDataSource, lyr);
 }
 
 

@@ -30,6 +30,7 @@
 #include <QTextCodec>
 
 #include <cassert>
+#include <cstdlib> // size_t
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
@@ -340,7 +341,7 @@ bool QgsVectorFileWriter::deleteShapeFile(QString theFileName)
   bool ok = TRUE;
 
   const char* suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix" };
-  for (int i = 0; i < sizeof(suffixes) / sizeof(char*); i++)
+  for (std::size_t i = 0; i < sizeof(suffixes) / sizeof(char*); i++)
   {
     QString file = myFileBase + suffixes[i];
     QFileInfo myInfo(file);

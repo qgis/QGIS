@@ -30,7 +30,7 @@
 
 class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsGenericProjectionSelectorBase
 {
-  Q_OBJECT;
+  Q_OBJECT
   public:
     /**
      * Constructor

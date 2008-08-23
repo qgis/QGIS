@@ -112,11 +112,11 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
       if (loaded)
       {
         // get the description and the key for the provider plugin
-        isprovider_t *isProvider = (isprovider_t *) myLib->resolve("isProvider");
+        isprovider_t *isProvider = (isprovider_t *) cast_to_fptr(myLib->resolve("isProvider"));
 
         //MH: Added a further test to detect non-provider plugins linked to provider plugins.
         //Only pure provider plugins have 'type' not defined
-        isprovider_t *hasType = (isprovider_t *) myLib->resolve("type");
+        isprovider_t *hasType = (isprovider_t *) cast_to_fptr(myLib->resolve("type"));
 
         if (!hasType && isProvider)
         {
@@ -124,8 +124,8 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
           if (isProvider())
           {
             // looks like a provider. get the key and description
-            description_t *pDesc = (description_t *) myLib->resolve("description");
-            providerkey_t *pKey = (providerkey_t *) myLib->resolve("providerKey");
+            description_t *pDesc = (description_t *) cast_to_fptr(myLib->resolve("description"));
+            providerkey_t *pKey = (providerkey_t *) cast_to_fptr(myLib->resolve("providerKey"));
             if (pDesc && pKey)
             {
               // add this provider to the provider map
@@ -135,7 +135,7 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
 
               // now get vector file filters, if any
               fileVectorFilters_t *pFileVectorFilters = 
-                (fileVectorFilters_t *) myLib->resolve("fileVectorFilters");
+                (fileVectorFilters_t *) cast_to_fptr(myLib->resolve("fileVectorFilters"));
 
               if ( pFileVectorFilters )
               {
@@ -143,7 +143,7 @@ QgsProviderRegistry::QgsProviderRegistry(QString pluginPath)
 
                 // now get vector file filters, if any
                 fileVectorFilters_t *pVectorFileFilters = 
-                  (fileVectorFilters_t *) myLib->resolve("fileVectorFilters");
+                  (fileVectorFilters_t *) cast_to_fptr(myLib->resolve("fileVectorFilters"));
 
                 if ( pVectorFileFilters )
                 {
@@ -350,7 +350,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
       QgsDebugMsg( "Attempting to resolve the classFactory function" );
 
       classFactoryFunction_t * classFactory = 
-          (classFactoryFunction_t *) myLib->resolve("classFactory");
+          (classFactoryFunction_t *) cast_to_fptr(myLib->resolve("classFactory"));
 
     if (classFactory)
     {

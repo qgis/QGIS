@@ -277,7 +277,7 @@ QgsGrassModule::QgsGrassModule ( QgsGrassTools *tools, QString moduleName, QgisI
 
     QWidget *w = dynamic_cast<QWidget *>(mOptions);
 
-    layout->addWidget ( dynamic_cast<QWidget *>(mOptions), 0, 0 );
+    layout->addWidget ( w, 0, 0 );
   }
   else
   {
@@ -819,17 +819,16 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
 
     struct Cell_head window;
 
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
-      (mItems[i]);
+    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>(mItems[i]);
 
-    int mapType;
+    QgsGrass::MapType mapType = QgsGrass::Vector;
     switch ( item->type() ) {
-  case QgsGrassModuleInput::Raster :
-    mapType = QgsGrass::Raster;
-    break;
-  case QgsGrassModuleInput::Vector :
-    mapType = QgsGrass::Vector;
-    break;
+      case QgsGrassModuleInput::Raster :
+        mapType = QgsGrass::Raster;
+        break;
+      case QgsGrassModuleInput::Vector :
+        mapType = QgsGrass::Vector;
+        break;
     }
 
     QStringList mm = item->currentMap().split("@");
@@ -879,12 +878,12 @@ bool QgsGrassModuleStandardOptions::inputRegion ( struct Cell_head *window, bool
 
     struct Cell_head mapWindow;
 
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>
-      (mItems[i]);
+    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>(mItems[i]);
 
     if  ( !all && !item->useRegion() ) continue;
 
-    int mapType;
+    QgsGrass::MapType mapType = QgsGrass::Vector;
+
     switch ( item->type() ) {
     case QgsGrassModuleInput::Raster :
       mapType = QgsGrass::Raster;
@@ -1182,7 +1181,7 @@ void QgsGrassModule::run()
           "Input " + outsideRegion.join(",") + " outside current region!",  
           QMessageBox::Ok | QMessageBox::Cancel );
         QPushButton *resetButton = NULL;
-        if  ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1 )
+        if ( QgsGrass::versionMajor() > 6 || (QgsGrass::versionMajor() == 6 && QgsGrass::versionMinor() >= 1) )
         {
           resetButton = questionBox.addButton(tr("Use Input Region"), QMessageBox::DestructiveRole);
         }

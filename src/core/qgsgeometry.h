@@ -24,7 +24,7 @@ email                : morb at ozemail dot com dot au
 
 #include <geos_c.h>
 
-#if GEOS_VERSION_MAJOR<3
+#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
 #define GEOSGeometry struct GEOSGeom_t
 #define GEOSCoordSequence struct GEOSCoordSeq_t
 #endif

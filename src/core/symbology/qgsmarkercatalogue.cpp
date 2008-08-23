@@ -264,8 +264,6 @@ void QgsMarkerCatalogue::hardMarker (QPainter * thepPainter, QString name, doubl
     }
   else if (name == "star")
     {
-      int oneThird = 2*r/3;
-      int twoThird = 4*r/3;
       int oneSixth = 2*r/6;
 
       QPolygon pa(10);

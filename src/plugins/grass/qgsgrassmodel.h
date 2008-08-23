@@ -35,7 +35,7 @@ class QgsGrassModelItem;
  */
 class QgsGrassModel: public QAbstractItemModel
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor

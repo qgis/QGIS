@@ -970,7 +970,7 @@ void QgsGrassNewMapset::setSelectedRegion()
     }
   }
 
-  double n, s, e, w;
+  double n=-90.0, s=90.0, e=-180.0, w=180.0;
 
   if ( mCellHead.proj == PROJECTION_LL ) 
   {

@@ -93,7 +93,7 @@ void QgsSearchQueryBuilder::setupListViews()
   lstValues->setUniformItemSizes(true);
 }
 
-void QgsSearchQueryBuilder::getFieldValues(uint limit)
+void QgsSearchQueryBuilder::getFieldValues(int limit)
 {
   // clear the values list 
   mModelValues->clear();

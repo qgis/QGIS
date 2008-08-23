@@ -82,7 +82,7 @@ void QgsAttributeActionDialog::insertRow(int row, const QString &name, const QSt
   attributeActionTable->setItem(row, 0, new QTableWidgetItem(name));
   attributeActionTable->setItem(row, 1, new QTableWidgetItem(action));
   QTableWidgetItem* item = new QTableWidgetItem();
-  item->setFlags(item->flags() & ~Qt::ItemIsEditable | Qt::ItemIsUserCheckable);
+  item->setFlags(item->flags() & ~(Qt::ItemIsEditable | Qt::ItemIsUserCheckable) );
   item->setCheckState(capture ? Qt::Checked : Qt::Unchecked);
   attributeActionTable->setItem(row, 2, item);
 }

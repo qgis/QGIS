@@ -50,7 +50,7 @@ extern "C" {
  */
 class QgsGrassNewMapset : public Q3Wizard, private Ui::QgsGrassNewMapsetBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
 

@@ -251,6 +251,9 @@ void QgsComposerLegend::drawSymbol(QPainter* p, QgsSymbol* s, double currentYCoo
       drawPolygonSymbol(p, s, currentYCoord, currentXPosition);
       symbolHeight = mSymbolHeight;
       break;
+    case QGis::Unknown:
+      // shouldn't occur
+      break;
     }
 }
 
@@ -272,7 +275,6 @@ void QgsComposerLegend::drawPointSymbol(QPainter* p, QgsSymbol* s, double curren
 	}
       
       rasterScaleFactor = (paintDevice->logicalDpiX() + paintDevice->logicalDpiY()) / 2.0 / 25.4;
-      double widthScale = (paintDevice->logicalDpiX() + paintDevice->logicalDpiY()) / 2 / 25.4;
     }
   
   //width scale is 1.0

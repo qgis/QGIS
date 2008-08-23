@@ -65,7 +65,6 @@ int QgsContrastEnhancementFunction::enhanceValue(double theValue)
   {
     return static_cast<int>((((theValue - QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType))/(QgsContrastEnhancement::getMaximumPossibleValue(mQgsRasterDataType) - QgsContrastEnhancement::getMinimumPossibleValue(mQgsRasterDataType)))*255.0));
   }
-  return 0;
 }
 
 bool QgsContrastEnhancementFunction::isValueInDisplayableRange(double theValue) {

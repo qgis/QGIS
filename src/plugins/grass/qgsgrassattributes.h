@@ -30,7 +30,7 @@ class QgsGrassEdit;
 
 class QgsGrassAttributesKeyPress : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     QgsGrassAttributesKeyPress ( Q3Table *tab );
@@ -50,7 +50,7 @@ private:
  */
 class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
 {
-    Q_OBJECT;
+    Q_OBJECT
 
 public:
     //! Constructor
