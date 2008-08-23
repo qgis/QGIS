@@ -88,10 +88,10 @@ class CORE_EXPORT QgsPoint
   }
 
   //! String representation of the point (x,y)
-  QString stringRep() const;
+  QString toString() const;
 
   //! As above but with precision for string representaiton of a point
-  QString stringRep(int thePrecision) const;
+  QString toString(int thePrecision) const;
   
   /*! Return the well known text representation for the point.
    * The wkt is created without an SRID.
@@ -146,7 +146,7 @@ inline bool operator==(const QgsPoint &p1, const QgsPoint &p2)
 inline std::ostream& operator << (std::ostream& os, const QgsPoint &p)
 {
   // Use Local8Bit for printouts
-  os << p.stringRep().toLocal8Bit().data();
+  os << p.toString().toLocal8Bit().data();
   return os;
 }
 

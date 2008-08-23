@@ -39,8 +39,8 @@ class QgsProjectFileTransform
   //QgsProjectfiletransform() {}
   ~QgsProjectFileTransform() {}
     
-  /*! Create an instance from a DOM and a supplied version
-   * @param domDocument The DOM document to use as content
+  /*! Create an instance from a Dom and a supplied version
+   * @param domDocument The Dom document to use as content
    * @param version Version number
    */
   QgsProjectFileTransform(QDomDocument & domDocument,

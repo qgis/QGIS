@@ -16,7 +16,7 @@ class QgsSingleSymbolRenderer : QgsRenderer
     /**Renders an OGRFeature*/
     void renderFeature(QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0);
     /**Reads the renderer configuration from an XML file
-     @param rnode the DOM node to read 
+     @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/

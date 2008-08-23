@@ -558,14 +558,14 @@ void QgsPostgresProvider::select(QgsAttributeList fetchAttributes, QgsRect rect,
       // This version actually invokes PostGIS's use of spatial indexes
       whereClause = QString("%1 && setsrid('BOX3D(%2)'::box3d,%3) and intersects(%1,setsrid('BOX3D(%2)'::box3d,%3))")
                       .arg( quotedIdentifier(geometryColumn) )
-                      .arg( rect.asWKTCoords() )
+                      .arg( rect.asWktCoordinates() )
                       .arg( srid );
     }
     else
     {
       whereClause = QString("%1 && setsrid('BOX3D(%2)'::box3d,%3)")
                       .arg( quotedIdentifier(geometryColumn) )
-                      .arg( rect.asWKTCoords() )
+                      .arg( rect.asWktCoordinates() )
                       .arg( srid );
     }
   }
@@ -685,8 +685,8 @@ QgsDataSourceURI& QgsPostgresProvider::getURI()
 
 void QgsPostgresProvider::setExtent( QgsRect& newExtent )
 {
-  layerExtent.setXmax( newExtent.xMax() );
-  layerExtent.setXmin( newExtent.xMin() );
+  layerExtent.setXMaximum( newExtent.xMax() );
+  layerExtent.setXMinimum( newExtent.xMin() );
   layerExtent.setYmax( newExtent.yMax() );
   layerExtent.setYmin( newExtent.yMin() );
 }
@@ -1527,7 +1527,7 @@ void QgsPostgresProvider::findColumns(tableCols& cols)
 }
 
 // Returns the minimum value of an attribute
-QVariant QgsPostgresProvider::minValue(int index)
+QVariant QgsPostgresProvider::minimumValue(int index)
 {
   try
   {
@@ -1548,9 +1548,9 @@ QVariant QgsPostgresProvider::minValue(int index)
         .arg(sqlWhereClause);
     }
     PGresult *rmin = PQexec(connectionRO, sql.toUtf8());
-    QString minValue = QString::fromUtf8(PQgetvalue(rmin,0,0));
+    QString minimumValue = QString::fromUtf8(PQgetvalue(rmin,0,0));
     PQclear(rmin);
-    return minValue.toDouble();
+    return minimumValue.toDouble();
   }
   catch(PGFieldNotFound)
   {
@@ -2282,7 +2282,7 @@ void QgsPostgresProvider::calculateExtents()
     }
 
     QgsDebugMsg("After row " + QString::number(i) +
-        ", extent is: " + layerExtent.stringRep());
+        ", extent is: " + layerExtent.toString());
   }
 
   // clear query result
@@ -2339,8 +2339,8 @@ void QgsPostgresProvider::calculateExtents()
       s = box3d.substr(0, box3d.find_first_of(" "));
       double maxy = strtod(s.c_str(), NULL);
 
-      layerExtent.setXmax(maxx);
-      layerExtent.setXmin(minx);
+      layerExtent.setXMaximum(maxx);
+      layerExtent.setXMinimum(minx);
       layerExtent.setYmax(maxy);
       layerExtent.setYmin(miny);
     }
@@ -2363,7 +2363,7 @@ void QgsPostgresProvider::calculateExtents()
   //     xMin() << ", " << layerExtent.yMin() << " " << layerExtent.xMax() << ", " << layerExtent.yMax();
   //   std::cerr << xMsg << std::endl;
   // #endif
-  QgsDebugMsg("Set extents to: " + layerExtent.stringRep());
+  QgsDebugMsg("Set extents to: " + layerExtent.toString());
 }
 
 /**
@@ -2389,7 +2389,7 @@ void QgsPostgresProvider::customEvent( QEvent * e )
 
       QgsDebugMsg("new extent has been saved");
 
-      QgsDebugMsg("Set extent to: " + layerExtent.stringRep());
+      QgsDebugMsg("Set extent to: " + layerExtent.toString());
 
       QgsDebugMsg("emitting fullExtentCalculated()");
 

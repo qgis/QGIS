@@ -128,12 +128,12 @@ QgsRect QgsMapLayer::extent() const
   return mLayerExtent;
 }
 
-bool QgsMapLayer::draw(QgsRenderContext& renderContext)
+bool QgsMapLayer::draw(QgsRenderContext& rendererContext)
 {
   return false;
 }
 
-void QgsMapLayer::drawLabels(QgsRenderContext& renderContext)
+void QgsMapLayer::drawLabels(QgsRenderContext& rendererContext)
 {
   //  std::cout << "In QgsMapLayer::draw" << std::endl;
 }
@@ -156,7 +156,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   QDomNode srsNode = layer_node.namedItem("srs");
   mCRS->readXML(srsNode);
 
-  // now let the children grab what they need from the DOM node.
+  // now let the children grab what they need from the Dom node.
   if (!readXml( layer_node ))
   {
     return false;
@@ -558,9 +558,9 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
 {
   QString myErrorMessage;
 
-  QDomImplementation DOMImplementation;
+  QDomImplementation DomImplementation;
   QDomDocumentType documentType =
-      DOMImplementation.createDocumentType(
+      DomImplementation.createDocumentType(
           "qgis", "http://mrcc.com/qgis.dtd","SYSTEM" );
   QDomDocument myDocument ( documentType );
   QDomElement myRootNode = myDocument.createElement( "qgis" );

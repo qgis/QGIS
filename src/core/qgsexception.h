@@ -100,7 +100,7 @@ private:
 
     /** QDomNodes representing the state of a layer that couldn't be loaded
 
-    The layer data was either relocated or deleted.  The DOM node also
+    The layer data was either relocated or deleted.  The Dom node also
     contains ancillary data such as line widths and the like.
 
      */

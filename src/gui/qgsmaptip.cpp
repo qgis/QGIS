@@ -90,13 +90,13 @@ QString QgsMapTip::fetchFeature ( QgsMapLayer *layer, QgsPoint & mapPosition, Qg
     // create the search rectangle
     double searchRadius = mpMapCanvas->extent().width() * ( identifyValue / 100.0 );
     QgsRect r;
-    r.setXmin ( mapPosition.x() - searchRadius );
-    r.setXmax ( mapPosition.x() + searchRadius );
+    r.setXMinimum ( mapPosition.x() - searchRadius );
+    r.setXMaximum ( mapPosition.x() + searchRadius );
     r.setYmin ( mapPosition.y() - searchRadius );
     r.setYmax ( mapPosition.y() + searchRadius );
 
     // Get the data provider
-    QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*> ( layer )->getDataProvider();
+    QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*> ( layer )->dataProvider();
     // Fetch the attribute list for the layer
     QgsAttributeList allAttributes = dataProvider->allAttributesList();
     // Select all attributes within the search radius

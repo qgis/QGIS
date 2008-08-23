@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorFileWriter
                         const QgsFieldMap& fields,
                         QGis::WKBTYPE geometryType,
                         const QgsCoordinateReferenceSystem* srs);
-
+    
     /** checks whether there were any errors in constructor */
     WriterError hasError();
 

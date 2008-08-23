@@ -82,7 +82,7 @@ public:
        write()
      */
     //@{
-    bool dirty() const;
+    bool isDirty() const;
 
     void dirty( bool b );
     //@}
@@ -92,7 +92,7 @@ public:
        Every project has an associated file that contains its XML
      */
     //@{
-    void filename( QString const & name );
+    void setFilename( QString const & name );
 
     /** returns file name */
     QString filename() const;
@@ -133,14 +133,14 @@ public:
     //@}
 
 
-    /** read the layer described in the associated DOM node
+    /** read the layer described in the associated Dom node
 
-        @param layerNode   represents a QgsProject DOM node that maps to a specific layer.
+        @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
 
         QgsProject raises an exception when one of the QgsProject::read()
         implementations fails.  Since the read()s are invoked from qgisapp,
         then qgisapp handles the exception.  It prompts the user for the new
-        location of the data, if any.  If there is a new location, the DOM
+        location of the data, if any.  If there is a new location, the Dom
         node associated with the layer has its <datasource> tag corrected.
         Then that node is passed to this member function to be re-opened.
 

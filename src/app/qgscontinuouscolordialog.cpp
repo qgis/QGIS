@@ -39,7 +39,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog(QgsVectorLayer * layer)
   QObject::connect(btnMaxValue, SIGNAL(clicked()), this, SLOT(selectMaximumColor()));
 
   //find out the numerical fields of mVectorLayer
-  QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+  QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if (provider)
   {
     const QgsFieldMap & fields = provider->fields();
@@ -164,10 +164,10 @@ void QgsContinuousColorDialog::apply()
 
     //find the minimum and maximum for the classification variable
     double minimum, maximum;
-    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->getDataProvider());
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider*>(mVectorLayer->dataProvider());
     if (provider)
     {
-	minimum = provider->minValue(classfield).toDouble();
+	minimum = provider->minimumValue(classfield).toDouble();
 	maximum = provider->maxValue(classfield).toDouble();
     } 
     else

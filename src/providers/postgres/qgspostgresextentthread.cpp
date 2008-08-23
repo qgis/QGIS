@@ -134,8 +134,8 @@ void QgsPostgresExtentThread::run()
   layerExtent = new QgsRect(minx, miny, maxx, maxy);
   
 /*
-  layerExtent.setXmax(maxx);
-  layerExtent.setXmin(minx);
+  layerExtent.setXMaximum(maxx);
+  layerExtent.setXMinimum(minx);
   layerExtent.setYmax(maxy);
   layerExtent.setYmin(miny);
 */

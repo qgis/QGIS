@@ -480,7 +480,7 @@ bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
 bool QgsSymbol::readXML( QDomNode & synode )
 {
     // Legacy project file formats didn't have support for pointsymbol nor
-    // pointsize DOM elements.  Therefore we should check whether these
+    // pointsize Dom elements.  Therefore we should check whether these
     // actually exist.
 
     QDomNode lvalnode = synode.namedItem("lowervalue");

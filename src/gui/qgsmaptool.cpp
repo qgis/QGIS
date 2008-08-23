@@ -48,17 +48,17 @@ QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QPoint& point)
 
 QgsPoint QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsPoint& point)
 {
-  return mCanvas->mapRenderer()->outputCoordsToLayerCoords(layer, point);
+  return mCanvas->mapRenderer()->mapToLayerCoordinates(layer, point);
 }
 
 QgsPoint QgsMapTool::toMapCoords(QgsMapLayer* layer, const QgsPoint& point)
 {
-  return mCanvas->mapRenderer()->layerCoordsToOutputCoords(layer, point);
+  return mCanvas->mapRenderer()->layerToMapCoordinates(layer, point);
 }
 
 QgsRect QgsMapTool::toLayerCoords(QgsMapLayer* layer, const QgsRect& rect)
 {
-  return mCanvas->mapRenderer()->outputCoordsToLayerCoords(layer, rect);
+  return mCanvas->mapRenderer()->mapToLayerCoordinates(layer, rect);
 }
 
 QPoint QgsMapTool::toCanvasCoords(const QgsPoint& point)

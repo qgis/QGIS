@@ -185,10 +185,10 @@ public slots:
 
     //XML, usually connected with QgsProject::readProject and QgsProject::writeProject
 
-    //! Stores state in DOM node
+    //! Stores state in Dom node
     void writeXML(QDomDocument& doc);
 
-    //! Sets state from DOM document
+    //! Sets state from Dom document
     void readXML( const QDomDocument& doc);
 
     void setSelectionTool();

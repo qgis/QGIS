@@ -27,9 +27,9 @@ class QgsRect
     //  normalised after construction. 
     void set(double xmin, double ymin, double xmax, double ymax);
     //! Set the minimum x value
-    void setXmin(double x);
+    void setXMinimum(double x);
     //! Set the maximum x value
-    void setXmax(double x);
+    void setXMaximum(double x);
     //! Set the maximum y value
     void setYmin(double y);
     //! Set the maximum y value
@@ -68,11 +68,11 @@ class QgsRect
     //! test if rectangle is empty
     bool isEmpty() const;
     //! returns string representation in WKT form
-    QString asWKTCoords() const;
+    QString asWktCoordinates() const;
     //! returns string representation of form xmin,ymin xmax,ymax
-    QString stringRep(bool automaticPrecision = false) const;
-    //! overloaded stringRep that allows precision of numbers to be set
-    QString stringRep(int thePrecision) const;
+    QString toString(bool automaticPrecision = false) const;
+    //! overloaded toString that allows precision of numbers to be set
+    QString toString(int thePrecision) const;
     //! returns rectangle s a polygon 
     QString asPolygon() const;
     /*! Comparison operator

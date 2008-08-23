@@ -45,12 +45,12 @@ public:
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
     */
     void renderLabel ( QPainter* painter, QgsRect& viewExtent, 
-                       QgsCoordinateTransform* coordTransform,
+                       QgsCoordinateTransform* coordinateTransform,
                        QgsMapToPixel *transform,
                        QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1);
 
     /** Reads the renderer configuration from an XML file
-     @param rnode the DOM node to read 
+     @param rnode the Dom node to read 
     */
     void readXML(const QDomNode& node);
 

@@ -47,7 +47,7 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
 bool QgsPropertyValue::readXML(QDomNode & keyNode)
 {
-    // this *should* be a DOM element node
+    // this *should* be a Dom element node
     QDomElement subkeyElement = keyNode.toElement();
 
     // get the type so that we can properly parse the key value
@@ -471,15 +471,15 @@ bool QgsPropertyKey::readXML(QDomNode & keyNode)
 
 
 /**
-  Property keys will always create a DOM element for itself and then
+  Property keys will always create a Dom element for itself and then
   recursively call writeXML for any constituent properties.
 */
 bool QgsPropertyKey::writeXML(QString const &nodeName, QDomElement & element, QDomDocument & document)
 {
     // If it's an _empty_ node (i.e., one with no properties) we need to emit
-    // an empty place holder; else create new DOM elements as necessary.
+    // an empty place holder; else create new Dom elements as necessary.
 
-    QDomElement keyElement = document.createElement(nodeName); // DOM element for this property key
+    QDomElement keyElement = document.createElement(nodeName); // Dom element for this property key
 
     if ( ! mProperties.isEmpty() )
     {

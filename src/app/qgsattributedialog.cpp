@@ -42,10 +42,10 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeatu
     mLayer(vl)
 {
   setupUi(this);
-  if (mpFeature==NULL || vl->getDataProvider()==NULL )
+  if (mpFeature==NULL || vl->dataProvider()==NULL )
     return;
 
-  const QgsFieldMap &theFieldMap = vl->getDataProvider()->fields();
+  const QgsFieldMap &theFieldMap = vl->dataProvider()->fields();
 
   if (theFieldMap.isEmpty()) return;
 
@@ -154,7 +154,7 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeatu
         if( editType == QgsVectorLayer::UniqueValuesEditable )
         {
           QStringList values;
-          mLayer->getDataProvider()->getUniqueValues(it.key(), values);
+          mLayer->dataProvider()->getUniqueValues(it.key(), values);
 
           QCompleter *c = new QCompleter(values);
           c->setCompletionMode(QCompleter::PopupCompletion);
@@ -177,7 +177,7 @@ QgsAttributeDialog::QgsAttributeDialog(QgsVectorLayer *vl, QgsFeature *thepFeatu
     case QgsVectorLayer::UniqueValues:
       {
         QStringList values;
-        mLayer->getDataProvider()->getUniqueValues(it.key(), values);
+        mLayer->dataProvider()->getUniqueValues(it.key(), values);
 
         QComboBox *cb = new QComboBox();
         cb->setEditable(true);

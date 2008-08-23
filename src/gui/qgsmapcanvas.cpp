@@ -215,7 +215,7 @@ bool QgsMapCanvas::isDrawing()
 // device size
 const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
 {
-  return mMapRenderer->coordXForm();
+  return mMapRenderer->coordinateTransform();
 }
 
 void QgsMapCanvas::setLayerSet(QList<QgsMapCanvasLayer>& layers)
@@ -610,8 +610,8 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
       case Qt::Key_Left:
         QgsDebugMsg("Pan left");
 
-        currentExtent.setXmin(currentExtent.xMin() - dx);
-        currentExtent.setXmax(currentExtent.xMax() - dx);
+        currentExtent.setXMinimum(currentExtent.xMin() - dx);
+        currentExtent.setXMaximum(currentExtent.xMax() - dx);
         setExtent(currentExtent);
         refresh();
         break;
@@ -619,8 +619,8 @@ void QgsMapCanvas::keyPressEvent(QKeyEvent * e)
       case Qt::Key_Right:
         QgsDebugMsg("Pan right");
 
-        currentExtent.setXmin(currentExtent.xMin() + dx);
-        currentExtent.setXmax(currentExtent.xMax() + dx);
+        currentExtent.setXMinimum(currentExtent.xMin() + dx);
+        currentExtent.setXMaximum(currentExtent.xMax() + dx);
         setExtent(currentExtent);
         refresh();
         break;
@@ -782,7 +782,7 @@ void QgsMapCanvas::resizeEvent(QResizeEvent * e)
     //cancel current render progress
     if(mMapRenderer)
     {
-      QgsRenderContext* theRenderContext = mMapRenderer->renderContext();
+      QgsRenderContext* theRenderContext = mMapRenderer->rendererContext();
       if(theRenderContext)
       {
         theRenderContext->setRenderingStopped(true);
@@ -1063,7 +1063,7 @@ void QgsMapCanvas::setRenderFlag(bool theFlag)
   mRenderFlag = theFlag;
   if(mMapRenderer)
   {
-    QgsRenderContext* rc = mMapRenderer->renderContext();
+    QgsRenderContext* rc = mMapRenderer->rendererContext();
     if(rc)
     {
       rc->setRenderingStopped(!theFlag);
@@ -1110,13 +1110,13 @@ void QgsMapCanvas::panActionEnd(QPoint releasePoint)
 
   if (end.x() < start.x())
   {
-    r.setXmin(r.xMin() + dx);
-    r.setXmax(r.xMax() + dx);
+    r.setXMinimum(r.xMin() + dx);
+    r.setXMaximum(r.xMax() + dx);
   }
   else
   {
-    r.setXmin(r.xMin() - dx);
-    r.setXmax(r.xMax() - dx);
+    r.setXMinimum(r.xMin() - dx);
+    r.setXMaximum(r.xMax() - dx);
   }
 
   if (end.y() < start.y())

@@ -27,7 +27,8 @@ const char NS_SEPARATOR = '?';
 const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSData::QgsWFSData(
-  const QString& uri, QgsRect* extent,
+  const QString& uri,
+  QgsRect* extent,
   QgsCoordinateReferenceSystem* srs,
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,

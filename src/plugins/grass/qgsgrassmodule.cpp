@@ -642,7 +642,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
         if ( vector->providerType() != "grass" ) continue;
 
         //TODO dynamic_cast ?
-        QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+        QgsGrassProvider *provider = (QgsGrassProvider *) vector->dataProvider();
 
         // TODO add map() mapset() location() gisbase() to grass provider
         QString source = QDir::cleanPath ( provider->dataSourceUri() );
@@ -713,7 +713,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
         if ( vector->providerType() != "grass" ) continue;
 
         //TODO dynamic_cast ?
-        QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+        QgsGrassProvider *provider = (QgsGrassProvider *) vector->dataProvider();
 
         // TODO add map() mapset() location() gisbase() to grass provider
         QString source = QDir::cleanPath ( provider->dataSourceUri() );
@@ -2207,7 +2207,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       if ( vector->providerType() != "grass" ) continue;
 
       //TODO dynamic_cast ?
-      QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+      QgsGrassProvider *provider = (QgsGrassProvider *) vector->dataProvider();
 
       // Check type mask
       int geomType = provider->geometryType();
@@ -2288,7 +2288,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       mVectorLayerNames.push_back ( grassLayer );
 
       // convert from QgsFieldMap to std::vector<QgsField>
-      QgsFieldMap flds = vector->getDataProvider()->fields();
+      QgsFieldMap flds = vector->dataProvider()->fields();
       std::vector<QgsField> fields;
       for (QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it)
         fields.push_back(it.value());
@@ -2597,7 +2597,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       if ( vector->providerType() != "ogr"
         && vector->providerType() != "postgres" ) continue;
 
-      QgsDataProvider *provider = vector->getDataProvider();
+      QgsDataProvider *provider = vector->dataProvider();
 
       QString uri;
       QString ogrLayer;
@@ -2862,7 +2862,7 @@ void QgsGrassModuleSelection::updateSelection()
   if ( !layer ) return;
   QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>(layer);
 
-  QgsGrassProvider *provider = (QgsGrassProvider *) vector->getDataProvider();
+  QgsGrassProvider *provider = (QgsGrassProvider *) vector->dataProvider();
   QgsAttributeList allAttributes = provider->allAttributesList();
   const QgsFeatureIds& selected = vector->selectedFeaturesIds();
   int keyField = provider->keyField();

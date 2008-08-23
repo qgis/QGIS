@@ -254,7 +254,7 @@ const QgsNativeTypeMap &QgsVectorDataProvider::supportedNativeTypes() const
 }
 
 
-QVariant QgsVectorDataProvider::minValue(int index)
+QVariant QgsVectorDataProvider::minimumValue(int index)
 {
   if (!fields().contains(index))
   {

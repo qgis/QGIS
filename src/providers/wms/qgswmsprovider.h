@@ -611,7 +611,7 @@ private:
 */
 
   //! \return FALSE if the capabilities document could not be parsed - see errorString() for more info
-  bool parseCapabilitiesDOM(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
+  bool parseCapabilitiesDom(QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty);
 
   //! parse the WMS Service XML element
   void parseService(QDomElement const & e, QgsWmsServiceProperty& serviceProperty);
@@ -670,7 +670,7 @@ private:
    *
    * \note mErrorCaption and mError are updated to suit the results of this function.
    */
-  bool parseServiceExceptionReportDOM(QByteArray const & xml);
+  bool parseServiceExceptionReportDom(QByteArray const & xml);
 
   //! parse the WMS ServiceException XML element
   void parseServiceException(QDomElement const & e);
@@ -714,12 +714,12 @@ private:
   /**
    * Capabilities of the WMS Server
    */
-  QDomDocument capabilitiesDOM;
+  QDomDocument capabilitiesDom;
 
   /**
    * Last Service Exception Report from the WMS Server
    */
-  QDomDocument serviceExceptionReportDOM;
+  QDomDocument serviceExceptionReportDom;
 
   /**
    * Parsed capabilities of the WMS Server

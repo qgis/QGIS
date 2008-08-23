@@ -48,10 +48,10 @@ public:
   double y() const;
 
   //! String representation of the point (x,y)
-  QString stringRep() const;
+  QString toString() const;
 
   //! As above but with precision for string representaiton of a point
-  QString stringRep(int thePrecision) const;
+  QString toString(int thePrecision) const;
   
   /*! Return the well known text representation for the point.
    * The wkt is created without an SRID.

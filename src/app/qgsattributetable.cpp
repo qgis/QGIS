@@ -433,7 +433,7 @@ void QgsAttributeTable::fillTable(QgsVectorLayer *layer)
 
   const QgsFieldMap &fields = layer->pendingFields();
 
-	// set up the column headers
+  // set up the column headers
   setColumnCount(fields.size()+1);
 
   setHorizontalHeaderItem(0, new QTableWidgetItem("id")); //label for the id-column

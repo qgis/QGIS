@@ -104,7 +104,7 @@ public:
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).   
      */
-    bool draw(QgsRenderContext& renderContext);
+    bool draw(QgsRenderContext& rendererContext);
 
     /** \brief This is an overloaded version of the above function that is called by both draw above and drawThumbnail */
     void draw(QPainter * theQPainter, QgsRasterViewPort * myRasterViewPort,
@@ -430,14 +430,14 @@ public:
      *
      *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
      */
-    QgsRasterDataProvider* getDataProvider();
+    QgsRasterDataProvider* dataProvider();
 
     /** Returns the data provider in a const-correct manner
      *
      *  \retval 0 if not using the data provider model (i.e. directly using GDAL)
      */
     // PyQGIS: commented out, has the same signature as the function above
-    // const QgsRasterDataProvider* getDataProvider() const;
+    // const QgsRasterDataProvider* dataProvider() const;
 
      /** \brief Mutator for mUserDefinedRGBMinMaxFlag */
     void setUserDefinedRGBMinMax(bool theBool);
@@ -501,7 +501,7 @@ public slots:
     QgsColorTable *colorTable ( int theBandNoInt );
  protected:
 
-    /** reads vector layer specific state from project file DOM node.
+    /** reads vector layer specific state from project file Dom node.
 
         @note
 
@@ -512,7 +512,7 @@ public slots:
 
 
 
-  /** write vector layer specific state to project file DOM node.
+  /** write vector layer specific state to project file Dom node.
 
       @note
 

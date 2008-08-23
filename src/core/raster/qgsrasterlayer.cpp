@@ -480,10 +480,10 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     GDALGetRasterXSize(mGdalDataset) * mGeoTransform[4] +
     GDALGetRasterYSize(mGdalDataset) * mGeoTransform[5];
 
-  mLayerExtent.setXmax(myXMax);
+  mLayerExtent.setXMaximum(myXMax);
   // The affine transform reduces to these values at the
   // top-left corner of the raster
-  mLayerExtent.setXmin(mGeoTransform[0]);
+  mLayerExtent.setXMinimum(mGeoTransform[0]);
   mLayerExtent.setYmax(mGeoTransform[3]);
   mLayerExtent.setYmin(myYMin);
 
@@ -934,7 +934,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap()
   }
 }
 
-bool QgsRasterLayer::draw(QgsRenderContext& renderContext)
+bool QgsRasterLayer::draw(QgsRenderContext& rendererContext)
 {
   QgsDebugMsg("QgsRasterLayer::draw(4 arguments): entered.");
 
@@ -949,9 +949,9 @@ bool QgsRasterLayer::draw(QgsRenderContext& renderContext)
     return FALSE;
   }    
 
-  const QgsMapToPixel& theQgsMapToPixel = renderContext.mapToPixel();
-  const QgsRect& theViewExtent = renderContext.extent();
-  QPainter* theQPainter = renderContext.painter();
+  const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
+  const QgsRect& theViewExtent = rendererContext.extent();
+  QPainter* theQPainter = rendererContext.painter();
 
   if(!theQPainter)
     {
@@ -4923,11 +4923,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           QgsRect mbr = mDataProvider->extent();
 
           // show the extent
-          QString s = mbr.stringRep();
+          QString s = mbr.toString();
           QgsDebugMsg("QgsRasterLayer::setDataProvider: Extent of layer: " + s);
           // store the extent
-          mLayerExtent.setXmax(mbr.xMax());
-          mLayerExtent.setXmin(mbr.xMin());
+          mLayerExtent.setXMaximum(mbr.xMax());
+          mLayerExtent.setXMinimum(mbr.xMin());
           mLayerExtent.setYmax(mbr.yMax());
           mLayerExtent.setYmin(mbr.yMin());
 
@@ -5009,12 +5009,12 @@ QString QgsRasterLayer::errorString()
 }
 
 
-QgsRasterDataProvider* QgsRasterLayer::getDataProvider()
+QgsRasterDataProvider* QgsRasterLayer::dataProvider()
 {
   return mDataProvider;
 }
 
-const QgsRasterDataProvider* QgsRasterLayer::getDataProvider() const
+const QgsRasterDataProvider* QgsRasterLayer::dataProvider() const
 {
   return mDataProvider;
 }

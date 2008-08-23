@@ -73,7 +73,7 @@ void QgsMapToPixel::setYmin(double ymin)
   yMin = ymin;
 }
 
-void QgsMapToPixel::setXmin(double xmin)
+void QgsMapToPixel::setXMinimum(double xmin)
 {
   xMin = xmin;
 }

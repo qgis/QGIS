@@ -175,12 +175,12 @@ class QgsCoordinateReferenceSystem
           */
          QString toWkt() const;
 
-         /*! Restores state from the given DOM node.
+         /*! Restores state from the given Dom node.
          * @param theNode The node from which state will be restored
          * @return bool True on success, False on failure
          */
           bool readXML( QDomNode & theNode );
-        /*! Stores state to the given DOM node in the given document.
+        /*! Stores state to the given Dom node in the given document.
          * Below is an example of the generated tag.
          *  <spatialrefsys>
          *      <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>

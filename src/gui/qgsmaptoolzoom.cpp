@@ -76,16 +76,16 @@ void QgsMapToolZoom::canvasReleaseEvent(QMouseEvent * e)
     mZoomRect.setRight(e->pos().x());
     mZoomRect.setBottom(e->pos().y());
     
-    const QgsMapToPixel* coordXForm = mCanvas->getCoordinateTransform();
+    const QgsMapToPixel* coordinateTransform = mCanvas->getCoordinateTransform();
     
     // set the extent to the zoomBox  
-    QgsPoint ll = coordXForm->toMapCoordinates(mZoomRect.left(), mZoomRect.bottom());
-    QgsPoint ur = coordXForm->toMapCoordinates(mZoomRect.right(), mZoomRect.top());       
+    QgsPoint ll = coordinateTransform->toMapCoordinates(mZoomRect.left(), mZoomRect.bottom());
+    QgsPoint ur = coordinateTransform->toMapCoordinates(mZoomRect.right(), mZoomRect.top());       
         
     QgsRect r;
-    r.setXmin(ll.x());
+    r.setXMinimum(ll.x());
     r.setYmin(ll.y());
-    r.setXmax(ur.x());
+    r.setXMaximum(ur.x());
     r.setYmax(ur.y());
     r.normalize();
     

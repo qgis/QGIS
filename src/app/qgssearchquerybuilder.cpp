@@ -62,7 +62,7 @@ void QgsSearchQueryBuilder::populateFields()
 #ifdef QGISDEBUG
   std::cout << "QgsSearchQueryBuilder::populateFields" << std::endl;
 #endif
-  const QgsFieldMap& fields = mLayer->getDataProvider()->fields();
+  const QgsFieldMap& fields = mLayer->dataProvider()->fields();
   for (QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it)
   {
     QString fieldName = it->name();
@@ -98,7 +98,7 @@ void QgsSearchQueryBuilder::getFieldValues(uint limit)
   // clear the values list 
   mModelValues->clear();
   
-  QgsVectorDataProvider* provider = mLayer->getDataProvider();
+  QgsVectorDataProvider* provider = mLayer->dataProvider();
   
   // determine the field type
   QString fieldName = mModelFields->data(lstFields->currentIndex()).toString();
@@ -195,7 +195,7 @@ long QgsSearchQueryBuilder::countRecords(QString searchString)
   
   int count = 0;
   QgsFeature feat;
-  QgsVectorDataProvider* provider = mLayer->getDataProvider();
+  QgsVectorDataProvider* provider = mLayer->dataProvider();
   const QgsFieldMap& fields = provider->fields();
   QgsAttributeList allAttributes = provider->allAttributesList();
 

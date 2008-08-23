@@ -28,7 +28,7 @@ QgsPoint::QgsPoint(const QgsPoint& p)
   m_y = p.y();
 }
 
-QString QgsPoint::stringRep() const
+QString QgsPoint::toString() const
 {
   QString rep;
   QTextStream ot(&rep);
@@ -37,7 +37,7 @@ QString QgsPoint::stringRep() const
   return rep;
 }
 
-QString QgsPoint::stringRep(int thePrecision) const
+QString QgsPoint::toString(int thePrecision) const
 {
   QString rep = QString::number(m_x,'f',thePrecision) + QString(",") + 
   QString::number( m_y,'f',thePrecision);

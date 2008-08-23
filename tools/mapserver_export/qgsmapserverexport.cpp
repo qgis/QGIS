@@ -387,7 +387,7 @@ void QgsMapserverExport::writeMapFile()
             if(providerType == "postgres")
             {
               QgsDataSourceURI *dUri = 
-                dynamic_cast<QgsVectorLayer *>(lyr)->getDataProvider()->getURI();
+                dynamic_cast<QgsVectorLayer *>(lyr)->dataProvider()->getURI();
               mapFile << "CONNECTION \"user=" << dUri->username.toLocal8Bit().data();
               if(dUri->password.length() > 0)
               {

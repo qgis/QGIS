@@ -105,25 +105,25 @@ void QgsComposerMap::draw ( QPainter *painter, const QgsRect& extent, const QSiz
       return;
     }
 
-  QgsMapRenderer theMapRender;
-  theMapRender.setExtent(extent);
-  theMapRender.setOutputSize(size, dpi);
-  theMapRender.setLayerSet(mMapRenderer->layerSet());
-  theMapRender.setProjectionsEnabled(mMapRenderer->projectionsEnabled());
-  theMapRender.setDestinationSrs(mMapRenderer->destinationSrs());
+  QgsMapRenderer theMapRenderer;
+  theMapRenderer.setExtent(extent);
+  theMapRenderer.setOutputSize(size, dpi);
+  theMapRenderer.setLayerSet(mMapRenderer->layerSet());
+  theMapRenderer.setProjectionsEnabled(mMapRenderer->projectionsEnabled());
+  theMapRenderer.setDestinationSrs(mMapRenderer->destinationSrs());
   
-  QgsRenderContext* theRenderContext = theMapRender.renderContext();
-  if(theRenderContext)
+  QgsRenderContext* theRendererContext = theMapRenderer.rendererContext();
+  if(theRendererContext)
     {
-      theRenderContext->setDrawEditingInformation(false);
-      theRenderContext->setRenderingStopped(false);
+      theRendererContext->setDrawEditingInformation(false);
+      theRendererContext->setRenderingStopped(false);
     }
 
   //force composer map scale for scale dependent visibility
-  double bk_scale = theMapRender.scale();
-  theMapRender.setScale(scale());
-  theMapRender.render(painter);  
-  theMapRender.setScale(bk_scale);
+  double bk_scale = theMapRenderer.scale();
+  theMapRenderer.setScale(scale());
+  theMapRenderer.render(painter);  
+  theMapRenderer.setScale(bk_scale);
 }
 
 void QgsComposerMap::cache ( void )
@@ -263,8 +263,8 @@ void QgsComposerMap::moveContent(double dx, double dy)
   double xMoveMapCoord = mExtent.width() * xRatio;
   double yMoveMapCoord = -(mExtent.height() * yRatio);
 
-  mExtent.setXmin(mExtent.xMin() + xMoveMapCoord);
-  mExtent.setXmax(mExtent.xMax() + xMoveMapCoord);
+  mExtent.setXMinimum(mExtent.xMin() + xMoveMapCoord);
+  mExtent.setXMaximum(mExtent.xMax() + xMoveMapCoord);
   mExtent.setYmin(mExtent.yMin() + yMoveMapCoord);
   mExtent.setYmax(mExtent.yMax() + yMoveMapCoord);
   emit extentChanged();

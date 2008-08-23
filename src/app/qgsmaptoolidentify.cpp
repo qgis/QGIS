@@ -161,7 +161,7 @@ void QgsMapToolIdentify::identifyRasterLayer(const QgsPoint& point)
     mResults->addAttribute(it.key(), it.value());
   }
 
-  mResults->addAttribute( tr("(clicked coordinate)"), point.stringRep() );
+  mResults->addAttribute( tr("(clicked coordinate)"), point.toString() );
 
   mResults->showAllAttributes();
   mResults->show();
@@ -223,7 +223,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer(const QgsPoint& point)
 
   QgsMessageViewer* viewer = new QgsMessageViewer();
   viewer->setWindowTitle( layer->name() );
-  viewer->setMessageAsPlainText( QString(tr("WMS identify result for %1\n%2")).arg(point.stringRep()).arg(text) );
+  viewer->setMessageAsPlainText( QString(tr("WMS identify result for %1\n%2")).arg(point.toString()).arg(text) );
 
   viewer->showMessage(); // deletes itself on close
 }
@@ -243,8 +243,8 @@ void QgsMapToolIdentify::identifyVectorLayer(const QgsPoint& point)
   double searchRadius = mCanvas->extent().width() * (identifyValue/100.0);
 
   QgsRect r;
-  r.setXmin(point.x() - searchRadius);
-  r.setXmax(point.x() + searchRadius);
+  r.setXMinimum(point.x() - searchRadius);
+  r.setXMaximum(point.x() + searchRadius);
   r.setYmin(point.y() - searchRadius);
   r.setYmax(point.y() + searchRadius);
 

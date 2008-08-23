@@ -65,7 +65,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent(QMouseEvent * e)
     return;
   }
 
-  QgsVectorDataProvider* provider = vlayer->getDataProvider();
+  QgsVectorDataProvider* provider = vlayer->dataProvider();
 
   if(!(provider->capabilities() & QgsVectorDataProvider::AddFeatures))
   {

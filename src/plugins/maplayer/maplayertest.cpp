@@ -25,7 +25,7 @@ void MapLayerTest::setQgisMainWindow(Q3MainWindow *app){
 }
 // set the coordinate transform for drawing the layer
 void MapLayerTest::setCoordinateTransform(QgsMapToPixel *xform){
-	coordTransform = xform;
+	coordinateTransform = xform;
 }
 void MapLayerTest::initGui(){
 	// setup the menu

@@ -88,7 +88,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer * layer, bool disabl
   }
 
   // Find out the numerical fields of mVectorLayer, and populate the ComboBox
-  QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+  QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if (provider)
   {
     const QgsFieldMap & fields = provider->fields();

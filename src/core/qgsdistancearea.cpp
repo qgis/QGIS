@@ -621,12 +621,12 @@ double QgsDistanceArea::computePolygonFlatArea(const QList<QgsPoint>& points)
   // QgsDebugMsg("New area calc, nr of points: " + QString::number(size));
   for(i = 0; i < size; i++)
   {
-    // QgsDebugMsg("Area from point: " + (points[i]).stringRep(2));
+    // QgsDebugMsg("Area from point: " + (points[i]).toString(2));
     // Using '% size', so that we always end with the starting point
     // and thus close the polygon.
     area = area + points[i].x()*points[(i+1) % size].y() - points[(i+1) % size].x()*points[i].y();
   }
-  // QgsDebugMsg("Area from point: " + (points[i % size]).stringRep(2));
+  // QgsDebugMsg("Area from point: " + (points[i % size]).toString(2));
   area = area / 2.0;
   return fabs(area); // All areas are positive!
 }

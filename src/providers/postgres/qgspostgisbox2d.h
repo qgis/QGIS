@@ -60,7 +60,7 @@ public:
    */
 
   
-  QString stringRepAsBox2d();
+  QString toStringAsBox2d();
   
   
 private:

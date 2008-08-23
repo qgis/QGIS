@@ -150,7 +150,7 @@ void QgsSingleSymbolRenderer::readXML(const QDomNode& rnode, QgsVectorLayer& vl)
 
   if ( synode.isNull() )
   {
-    QgsDebugMsg("No symbol node in project file's renderitem DOM");
+    QgsDebugMsg("No symbol node in project file's renderitem Dom");
     // XXX abort?
   }
   else

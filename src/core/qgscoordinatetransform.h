@@ -202,13 +202,13 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     //!initialise is used to actually create the Transformer instance
     void initialise();
 
-    /*! Restores state from the given DOM node.
+    /*! Restores state from the given Dom node.
     * @param theNode The node from which state will be restored
     * @return bool True on success, False on failure
     */
     bool readXML( QDomNode & theNode );
 
-    /*! Stores state to the given DOM node in the given document
+    /*! Stores state to the given Dom node in the given document
     * @param theNode The node in which state will be restored
     * @param theDom The document in which state will be stored
     * @return bool True on success, False on failure

@@ -295,7 +295,7 @@ QgsVectorFileWriter::WriterError
                                           bool onlySelected)
 {
   
-  QgsVectorDataProvider* provider = layer->getDataProvider();
+  QgsVectorDataProvider* provider = layer->dataProvider();
   
   QgsVectorFileWriter* writer = new QgsVectorFileWriter(shapefileName,
       fileEncoding, provider->fields(), provider->geometryType(), &layer->srs());

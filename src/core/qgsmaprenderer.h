@@ -59,7 +59,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! returns current extent
     QgsRect extent() const;
     
-    const QgsMapToPixel* coordXForm() { return &(mRenderContext.mapToPixel()); }
+    const QgsMapToPixel* coordinateTransform() { return &(mRenderContext.mapToPixel()); }
     
     double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This 
@@ -92,13 +92,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsRect layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent);
     
     //! transform coordinates from layer's CRS to output CRS
-    QgsPoint layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point);
+    QgsPoint layerToMapCoordinates(QgsMapLayer* theLayer, QgsPoint point);
     
     //! transform coordinates from output CRS to layer's CRS
-    QgsPoint outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point);
+    QgsPoint mapToLayerCoordinates(QgsMapLayer* theLayer, QgsPoint point);
 
     //! transform rect's coordinates from output CRS to layer's CRS
-    QgsRect outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect);
+    QgsRect mapToLayerCoordinates(QgsMapLayer* theLayer, QgsRect rect);
     
     //! sets whether to use projections for this layer set
     void setProjectionsEnabled(bool enabled);
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     bool writeXML(QDomNode & theNode, QDomDocument & theDoc);
 
     //! Accessor for render context
-    QgsRenderContext* renderContext(){return &mRenderContext;}
+    QgsRenderContext* rendererContext(){return &mRenderContext;}
 
   signals:
     

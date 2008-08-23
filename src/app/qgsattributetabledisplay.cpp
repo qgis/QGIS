@@ -62,7 +62,7 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay(QgsVectorLayer* layer)
   restorePosition();
   setTheme();
 
-  mToggleEditingButton->setEnabled( layer->getDataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mToggleEditingButton->setEnabled( layer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
   mToggleEditingButton->setChecked( layer->isEditable() );
 
   connect(mRemoveSelectionButton, SIGNAL(clicked()), this, SLOT(removeSelection()));

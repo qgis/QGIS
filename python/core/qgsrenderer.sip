@@ -18,7 +18,7 @@ class QgsRenderer
      @param scalefactor pointer to the scale factor for the marker image*/
 	virtual void renderFeature(QPainter* p, QgsFeature& f,QImage* pic, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0)=0;
     /**Reads the renderer configuration from an XML file
-     @param rnode the DOM node to read 
+     @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl)=0;
     /**Writes the contents of the renderer to a configuration file
