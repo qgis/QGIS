@@ -186,11 +186,11 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMuppDouble = std::abs(qGisInterface->getMapCanvas()->mupp());
+  double myMapUnitsPerPixelDouble = std::abs(qGisInterface->getMapCanvas()->mapUnitsPerPixel());
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount=qGisInterface->getMapCanvas()->layerCount();
-  if (!myLayerCount || !myCanvasWidth || !myMuppDouble) return;
+  if (!myLayerCount || !myCanvasWidth || !myMapUnitsPerPixelDouble) return;
 
   //Large if statement which determines whether to render the scale bar
   if (mEnabled)
@@ -202,13 +202,13 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     int myMargin=20;
 
     //Calculate size of scale bar for preferred number of map units
-    double myScaleBarWidth = mPreferredSize / myMuppDouble;
+    double myScaleBarWidth = mPreferredSize / myMapUnitsPerPixelDouble;
 
     //If scale bar is very small reset to 1/4 of the canvas wide
     if (myScaleBarWidth < 30)
     {
       myScaleBarWidth = myCanvasWidth / 4; // pixels
-      myActualSize = myScaleBarWidth * myMuppDouble; // map units
+      myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble; // map units
     };
 
     //if scale bar is more than half the canvas wide keep halving until not
@@ -216,7 +216,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     {
       myScaleBarWidth = myScaleBarWidth /3;
     };
-    myActualSize = myScaleBarWidth * myMuppDouble;
+    myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble;
 
     // Work out the exponent for the number - e.g, 1234 will give 3,
     // and .001234 will give -3
@@ -227,7 +227,7 @@ void QgsScaleBarPlugin::renderScaleBar(QPainter * theQPainter)
     {
       double scaler = pow(10.0, myPowerOf10);
       myActualSize = round(myActualSize / scaler) * scaler;
-      myScaleBarWidth = myActualSize / myMuppDouble;
+      myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
     }
 
     //Get type of map units and set scale bar unit label text

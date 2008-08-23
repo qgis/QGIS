@@ -140,21 +140,21 @@ void QgsMapRenderer::adjustExtentToSize()
   }
 
   // calculate the translation and scaling parameters
-  // mupp = map units per pixel
-  double muppY = static_cast<double>(mExtent.height()) 
+  // mapUnitsPerPixel = map units per pixel
+  double mapUnitsPerPixelY = static_cast<double>(mExtent.height()) 
                / static_cast<double>(myHeight);
-  double muppX = static_cast<double>(mExtent.width())  
+  double mapUnitsPerPixelX = static_cast<double>(mExtent.width())  
                / static_cast<double>(myWidth);
-  mMupp = muppY > muppX ? muppY : muppX;
+  mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
   // calculate the actual extent of the mapCanvas
   double dxmin, dxmax, dymin, dymax, whitespace;
 
-  if (muppY > muppX)
+  if (mapUnitsPerPixelY > mapUnitsPerPixelX)
   {
     dymin = mExtent.yMin();
     dymax = mExtent.yMax();
-    whitespace = ((myWidth * mMupp) - mExtent.width()) * 0.5;
+    whitespace = ((myWidth * mMapUnitsPerPixel) - mExtent.width()) * 0.5;
     dxmin = mExtent.xMin() - whitespace;
     dxmax = mExtent.xMax() + whitespace;
   }
@@ -162,14 +162,14 @@ void QgsMapRenderer::adjustExtentToSize()
   {
     dxmin = mExtent.xMin();
     dxmax = mExtent.xMax();
-    whitespace = ((myHeight * mMupp) - mExtent.height()) * 0.5;
+    whitespace = ((myHeight * mMapUnitsPerPixel) - mExtent.height()) * 0.5;
     dymin = mExtent.yMin() - whitespace;
     dymax = mExtent.yMax() + whitespace;
   }
 
 #ifdef QGISDEBUG
   QString myMessage = "+-------------------MapRenderer--------------------------------+\n";
-  myMessage += QString("Map units per pixel (x,y) : %1, %2\n").arg(muppX).arg(muppY);
+  myMessage += QString("Map units per pixel (x,y) : %1, %2\n").arg(mapUnitsPerPixelX).arg(mapUnitsPerPixelY);
   myMessage += QString("Pixmap dimensions (x,y) : %1, %2\n").arg(myWidth).arg(myHeight);
   myMessage += QString("Extent dimensions (x,y) : %1, %2\n").arg(mExtent.width()).arg(mExtent.height());
   myMessage += mExtent.toString();
@@ -191,7 +191,7 @@ void QgsMapRenderer::adjustExtentToSize()
   QgsLogger::debug("Scale (assuming meters as map units) = 1", mScale, 1, __FILE__, __FUNCTION__, __LINE__);
 #endif
 
-  newCoordXForm.setParameters(mMupp, dxmin, dymin, myHeight);
+  newCoordXForm.setParameters(mMapUnitsPerPixel, dxmin, dymin, myHeight);
   mRenderContext.setMapToPixel(newCoordXForm);
   mRenderContext.setExtent(mExtent);
 }

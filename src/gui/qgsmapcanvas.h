@@ -124,8 +124,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Clear the map canvas
     void clear();
 
-    //! Returns the mupp (map units per pixel) for the canvas
-    double mupp() const;
+    //! Returns the mapUnitsPerPixel (map units per pixel) for the canvas
+    double mapUnitsPerPixel() const;
 
     //! Returns the current zoom exent of the map canvas
     QgsRect extent() const;

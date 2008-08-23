@@ -31,7 +31,7 @@ class QgsMapRenderer : QObject
     const QgsMapToPixel* coordinateTransform();
     
     double scale() const;
-    double mupp() const;
+    double mapUnitsPerPixel() const;
 
     int width() const;
     int height() const;
