@@ -22,7 +22,7 @@
 /** \ingroup MapComposer
   * Double box with alternating colors
   */
-class QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
 {
  public:
   QgsDoubleBoxScaleBarStyle(const QgsComposerScaleBar* bar);

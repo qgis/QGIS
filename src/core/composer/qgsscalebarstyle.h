@@ -27,7 +27,7 @@ class QPainter;
  * Abstraction of composer scale bar style. Subclasses draw themselves, have the 
 possibility to implement custom labeling and calculate corresponding box size.
 */
-class QgsScaleBarStyle
+class CORE_EXPORT QgsScaleBarStyle
 {
  public:
   QgsScaleBarStyle(const QgsComposerScaleBar* bar);

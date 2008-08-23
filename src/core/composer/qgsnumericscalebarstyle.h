@@ -22,7 +22,7 @@
 /** \ingroup MapComposer
  * A scale bar style that draws text in the form of '1:XXXXX'
  */
-class QgsNumericScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
 {
  public:
   QgsNumericScaleBarStyle(QgsComposerScaleBar* bar);

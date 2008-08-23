@@ -22,7 +22,7 @@
 /** \ingroup MapComposer
  * A label that can be placed onto a map composition.
  */
-class QgsComposerLabel: public QgsComposerItem
+class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
  public:
   QgsComposerLabel( QgsComposition *composition);
