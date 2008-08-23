@@ -571,7 +571,7 @@ void QgsGrassProvider::reset()
   mNextCidx = 0;
 }
 
-QVariant QgsGrassProvider::minValue(int index)
+QVariant QgsGrassProvider::minimumValue(int index)
 {
   if (!fields().contains(index))
   {

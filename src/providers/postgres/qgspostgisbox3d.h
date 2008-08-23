@@ -57,7 +57,7 @@ public:
    */
 
   
-  QString stringRepAsBox3d();
+  QString toStringAsBox3d();
   
   
 protected:

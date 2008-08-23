@@ -67,10 +67,10 @@ class CORE_EXPORT QgsLine
   QgsPoint end() const;
 
   //! String representation of the line
-  QString stringRep() const;
+  QString toString() const;
 
   //! As above but with precision for string representation of a line
-  QString stringRep(int thePrecision) const;
+  QString toString(int thePrecision) const;
   
   /*! Return the well known text representation for the line.
    * The wkt is created without an SRID.
@@ -114,7 +114,7 @@ inline bool operator==(const QgsLine &l1, const QgsLine &l2)
 //! Stream operator for writing the line
 inline std::ostream& operator << (std::ostream& os, const QgsLine &l)
 {
-   os << l.stringRep().toLocal8Bit().data();
+   os << l.toString().toLocal8Bit().data();
    return os;
 }
 

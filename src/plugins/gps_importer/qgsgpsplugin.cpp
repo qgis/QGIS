@@ -444,7 +444,7 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 void QgsGPSPlugin::uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 			       QString port) {
   
-  const QString& source(gpxLayer->getDataProvider()->dataSourceUri());
+  const QString& source(gpxLayer->dataProvider()->dataSourceUri());
   
   // what kind of data does the user want to upload?
   QString typeArg, features;

@@ -350,7 +350,7 @@ void QgsLegendLayerFile::addToPopupMenu(QMenu& theMenu, QAction* toggleEditingAc
     theMenu.addAction(tr("&Open attribute table"), this, SLOT(table()));
     
     // editing
-    int cap = vlayer->getDataProvider()->capabilities();
+    int cap = vlayer->dataProvider()->capabilities();
     if ((cap & QgsVectorDataProvider::AddFeatures)
         ||(cap & QgsVectorDataProvider::DeleteFeatures))
     {

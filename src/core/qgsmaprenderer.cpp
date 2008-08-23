@@ -172,15 +172,15 @@ void QgsMapRenderer::adjustExtentToSize()
   myMessage += QString("Map units per pixel (x,y) : %1, %2\n").arg(muppX).arg(muppY);
   myMessage += QString("Pixmap dimensions (x,y) : %1, %2\n").arg(myWidth).arg(myHeight);
   myMessage += QString("Extent dimensions (x,y) : %1, %2\n").arg(mExtent.width()).arg(mExtent.height());
-  myMessage += mExtent.stringRep();
+  myMessage += mExtent.toString();
   //purposely using std::cout [TS]
   std::cout << myMessage.toLocal8Bit().constData() << std::endl;
 #endif
 
 
   // update extent
-  mExtent.setXmin(dxmin);
-  mExtent.setXmax(dxmax);
+  mExtent.setXMinimum(dxmin);
+  mExtent.setXMaximum(dxmax);
   mExtent.setYmin(dymin);
   mExtent.setYmax(dymax);
 
@@ -280,7 +280,7 @@ void QgsMapRenderer::render(QPainter* painter)
     QgsDebugMsg("  Layer minscale " + QString("%1").arg(ml->minScale()) );
     QgsDebugMsg("  Layer maxscale " + QString("%1").arg(ml->maxScale()) );
     QgsDebugMsg("  Scale dep. visibility enabled? " + QString("%1").arg(ml->scaleBasedVisibility()) );
-    QgsDebugMsg("  Input extent: " + ml->extent().stringRep());
+    QgsDebugMsg("  Input extent: " + ml->extent().toString());
 
     if ((ml->scaleBasedVisibility() && ml->minScale() < mScale && ml->maxScale() > mScale)
         || (!ml->scaleBasedVisibility()))
@@ -569,7 +569,7 @@ QgsRect QgsMapRenderer::layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect
   return extent;
 }
 
-QgsPoint QgsMapRenderer::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point)
+QgsPoint QgsMapRenderer::layerToMapCoordinates(QgsMapLayer* theLayer, QgsPoint point)
 {
   if (projectionsEnabled())
   {
@@ -590,7 +590,7 @@ QgsPoint QgsMapRenderer::layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoi
   return point;
 }
 
-QgsPoint QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point)
+QgsPoint QgsMapRenderer::mapToLayerCoordinates(QgsMapLayer* theLayer, QgsPoint point)
 {
   if (projectionsEnabled())
   {
@@ -612,7 +612,7 @@ QgsPoint QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoi
   return point;
 }
 
-QgsRect QgsMapRenderer::outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect)
+QgsRect QgsMapRenderer::mapToLayerCoordinates(QgsMapLayer* theLayer, QgsRect rect)
 {
   if (projectionsEnabled())
   {
@@ -653,13 +653,13 @@ void QgsMapRenderer::updateFullExtent()
     else
     {
       QgsDebugMsg("Updating extent using " + lyr->name());
-      QgsDebugMsg("Input extent: " + lyr->extent().stringRep());
+      QgsDebugMsg("Input extent: " + lyr->extent().toString());
       
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
       QgsRect extent = layerExtentToOutputExtent(lyr, lyr->extent());
       
-      QgsDebugMsg("Output extent: " + extent.stringRep());
+      QgsDebugMsg("Output extent: " + extent.toString());
       mFullExtent.unionRect(extent);
 
     }
@@ -690,7 +690,7 @@ void QgsMapRenderer::updateFullExtent()
     }
   }
 
-  QgsDebugMsg("Full extent: " + mFullExtent.stringRep());
+  QgsDebugMsg("Full extent: " + mFullExtent.toString());
 }
 
 QgsRect QgsMapRenderer::fullExtent()
@@ -752,7 +752,7 @@ bool QgsMapRenderer::readXML(QDomNode & theNode)
 
   QDomElement exElement = xminNode.toElement();
   double xmin = exElement.text().toDouble();
-  aoi.setXmin(xmin);
+  aoi.setXMinimum(xmin);
 
   exElement = yminNode.toElement();
   double ymin = exElement.text().toDouble();
@@ -760,7 +760,7 @@ bool QgsMapRenderer::readXML(QDomNode & theNode)
 
   exElement = xmaxNode.toElement();
   double xmax = exElement.text().toDouble();
-  aoi.setXmax(xmax);
+  aoi.setXMaximum(xmax);
 
   exElement = ymaxNode.toElement();
   double ymax = exElement.text().toDouble();

@@ -264,7 +264,7 @@ void QgsMapserverExport::writeMapFile()
             QString providerType = vlyr->providerType();
             if(providerType == "postgres")
             {
-              QgsDataSourceURI dUri(vlyr->getDataProvider()->dataSourceUri());
+              QgsDataSourceURI dUri(vlyr->dataProvider()->dataSourceUri());
               mapFile << "CONNECTION \"user=" << dUri.username.toLocal8Bit().data();
               if(dUri.password.length() > 0)
               {

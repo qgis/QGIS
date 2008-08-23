@@ -131,8 +131,8 @@ QgsRect QgsRect::intersect(QgsRect * rect) const
 {
   QgsRect intersection = QgsRect();
   
-  intersection.setXmin(xmin > rect->xMin()?xmin:rect->xMin());
-  intersection.setXmax(xmax < rect->xMax()?xmax:rect->xMax());
+  intersection.setXMinimum(xmin > rect->xMin()?xmin:rect->xMin());
+  intersection.setXMaximum(xmax < rect->xMax()?xmax:rect->xMax());
   intersection.setYmin(ymin > rect->yMin()?ymin:rect->yMin());
   intersection.setYmax(ymax < rect->yMax()?ymax:rect->yMax());
   return intersection;
@@ -183,7 +183,7 @@ bool QgsRect::isEmpty() const
   }
 }
 
-QString QgsRect::asWKTCoords() const
+QString QgsRect::asWktCoordinates() const
 {
   QString rep = 
     QString::number(xmin,'f',16) + " " +
@@ -195,7 +195,7 @@ QString QgsRect::asWKTCoords() const
 }
 
 // Return a string representation of the rectangle with automatic or high precision
-QString QgsRect::stringRep(bool automaticPrecision) const
+QString QgsRect::toString(bool automaticPrecision) const
 {
   if (automaticPrecision)
   {
@@ -207,15 +207,15 @@ QString QgsRect::stringRep(bool automaticPrecision) const
       if (precision > 20)
 	precision = 20;
     }
-    return stringRep(precision);
+    return toString(precision);
   }
   else
-    return stringRep(16);
+    return toString(16);
 }
 
 // overloaded version of above fn to allow precision to be set
 // Return a string representation of the rectangle with high precision
-QString QgsRect::stringRep(int thePrecision) const
+QString QgsRect::toString(int thePrecision) const
 {
   
   QString rep = QString::number(xmin,'f',thePrecision) + 
@@ -287,8 +287,8 @@ QgsRect & QgsRect::operator=(const QgsRect & r)
 
 void QgsRect::unionRect(const QgsRect& r)
 {
-  if (r.xMin() < xMin()) setXmin(r.xMin());
-  if (r.xMax() > xMax()) setXmax(r.xMax());
+  if (r.xMin() < xMin()) setXMinimum(r.xMin());
+  if (r.xMax() > xMax()) setXMaximum(r.xMax());
   if (r.yMin() < yMin()) setYmin(r.yMin());
   if (r.yMax() > yMax()) setYmax(r.yMax());
 }

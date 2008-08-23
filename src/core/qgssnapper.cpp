@@ -57,7 +57,7 @@ int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& sn
   QMultiMap<double, QgsSnappingResult> currentResultList; //snapping results of examined layer
 
   //start point in (output) map coordinates
-  QgsPoint mapCoordPoint = mMapRenderer->coordXForm()->toMapCoordinates(startPoint.x(), startPoint.y()); 
+  QgsPoint mapCoordPoint = mMapRenderer->coordinateTransform()->toMapCoordinates(startPoint.x(), startPoint.y()); 
   QgsPoint layerCoordPoint; //start point in layer coordinates
   QgsSnappingResult newResult;
 
@@ -65,7 +65,7 @@ int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& sn
   for(; layerIt != mLayersToSnap.end(); ++layerIt, ++toleranceIt, ++snapToIt)
     {
       //transform point from map coordinates to layer coordinates
-      layerCoordPoint = mMapRenderer->outputCoordsToLayerCoords(*layerIt, mapCoordPoint);
+      layerCoordPoint = mMapRenderer->mapToLayerCoordinates(*layerIt, mapCoordPoint);
       if( (*layerIt)->snapWithContext(layerCoordPoint, *toleranceIt, currentResultList, *snapToIt) != 0)
 	{
 	  //error
@@ -78,9 +78,9 @@ int QgsSnapper::snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& sn
 	  //for each snapping result: transform start point, snap point and other points into map coordinates to find out distance
 	  //store results in snapping result list
 	  newResult = currentResultIt.value();
-	  newResult.snappedVertex = mMapRenderer->layerCoordsToOutputCoords(*layerIt, currentResultIt.value().snappedVertex);
-	  newResult.beforeVertex = mMapRenderer->layerCoordsToOutputCoords(*layerIt, currentResultIt.value().beforeVertex);
-	  newResult.afterVertex = mMapRenderer->layerCoordsToOutputCoords(*layerIt, currentResultIt.value().afterVertex);
+	  newResult.snappedVertex = mMapRenderer->layerToMapCoordinates(*layerIt, currentResultIt.value().snappedVertex);
+	  newResult.beforeVertex = mMapRenderer->layerToMapCoordinates(*layerIt, currentResultIt.value().beforeVertex);
+	  newResult.afterVertex = mMapRenderer->layerToMapCoordinates(*layerIt, currentResultIt.value().afterVertex);
 	  snappingResultList.insert(sqrt(newResult.snappedVertex.sqrDist(mapCoordPoint)), newResult);
 	}
     }

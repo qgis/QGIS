@@ -158,7 +158,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
        * and maximal values. If provider has facilities to retrieve minimal
        * value directly, override this function.
        */
-      virtual QVariant minValue(int index);
+      virtual QVariant minimumValue(int index);
 
       /**
        * Returns the maximum value of an attributs

@@ -404,7 +404,7 @@ QgsRect QgsCoordinateTransform::transformBoundingBox(const QgsRect rect, Transfo
     bb_rect.combineExtentWith(x[i], y[i]);
   }
   
-  QgsDebugMsg("Projected extent: " + QString((bb_rect.stringRep()).toLocal8Bit().data()));
+  QgsDebugMsg("Projected extent: " + QString((bb_rect.toString()).toLocal8Bit().data()));
   
   return bb_rect;
 }

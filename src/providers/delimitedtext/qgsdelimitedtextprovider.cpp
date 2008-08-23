@@ -255,7 +255,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider(QString uri)
   {
     QgsDebugMsg("Data store is valid");
     QgsDebugMsg("Number of features " + QString::number(mNumberFeatures));
-    QgsDebugMsg("Extents " + mExtent.stringRep());
+    QgsDebugMsg("Extents " + mExtent.toString());
     
     mValid = true;
   }

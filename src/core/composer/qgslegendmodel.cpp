@@ -102,7 +102,7 @@ int QgsLegendModel::addVectorLayerItems(QStandardItem* layerItem, QgsMapLayer* v
   QSettings settings;
   if(settings.value("/qgis/showLegendClassifiers",false).toBool())
     {
-      QgsVectorDataProvider* provider = vectorLayer->getDataProvider();
+      QgsVectorDataProvider* provider = vectorLayer->dataProvider();
       
       if(provider)
 	{

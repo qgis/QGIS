@@ -179,7 +179,7 @@ public:
 
   /** Returns the minimum value of an attributs
    *  @param index the index of the attribute */
-  QVariant minValue(int index);
+  QVariant minimumValue(int index);
 
   /** Returns the maximum value of an attributs
    *  @param index the index of the attribute */

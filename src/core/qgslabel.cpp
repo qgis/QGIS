@@ -83,7 +83,7 @@ QString QgsLabel::fieldValue ( int attr, QgsFeature &feature )
 }
 
 void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
-                            const QgsCoordinateTransform* coordTransform,
+                            const QgsCoordinateTransform* coordinateTransform,
                             const QgsMapToPixel *transform,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
                             double sizeScale )
@@ -335,7 +335,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     // part.
     if (useOverridePoint)
     {
-      renderLabel(painter, overridePoint, coordTransform, 
+      renderLabel(painter, overridePoint, coordinateTransform, 
                   transform, text, font, pen, dx, dy,
                   xoffset, yoffset, ang, width, height, alignment);
     }
@@ -345,7 +345,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
       labelPoint ( points, feature );
       for (uint i = 0; i < points.size(); ++i)
       {
-        renderLabel(painter, points[i], coordTransform, 
+        renderLabel(painter, points[i], coordinateTransform, 
                     transform, text, font, pen, dx, dy,
                     xoffset, yoffset, ang, width, height, alignment);
       }
@@ -353,7 +353,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
 }
 
 void QgsLabel::renderLabel(QPainter* painter, QgsPoint point, 
-                           const QgsCoordinateTransform* coordTransform,
+                           const QgsCoordinateTransform* coordinateTransform,
                            const QgsMapToPixel* transform,
                            QString text, QFont font, QPen pen,
                            int dx, int dy, 
@@ -362,11 +362,11 @@ void QgsLabel::renderLabel(QPainter* painter, QgsPoint point,
                            int width, int height, int alignment)
 {
     // Convert point to projected units
-    if (coordTransform)
+    if (coordinateTransform)
     {
       try
       {
-        point = coordTransform->transform(point);
+        point = coordinateTransform->transform(point);
       }
       catch(QgsCsException &cse)
       {
@@ -663,7 +663,7 @@ void QgsLabel::readXML( const QDomNode& node )
 {
     QgsDebugMsg(" called for layer label properties, got node " + node.nodeName());
 
-    QDomNode scratchNode;       // DOM node re-used to get current QgsLabel attribute
+    QDomNode scratchNode;       // Dom node re-used to get current QgsLabel attribute
     QDomElement el;
     
     int red, green, blue;

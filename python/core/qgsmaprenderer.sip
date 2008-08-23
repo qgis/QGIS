@@ -28,7 +28,7 @@ class QgsMapRenderer : QObject
     //! returns current extent
     QgsRect extent();
     
-    const QgsMapToPixel* coordXForm();
+    const QgsMapToPixel* coordinateTransform();
     
     double scale() const;
     double mupp() const;
@@ -57,13 +57,13 @@ class QgsMapRenderer : QObject
     QgsRect layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent);
     
     //! transform coordinates from layer's CRS to output CRS
-    QgsPoint layerCoordsToOutputCoords(QgsMapLayer* theLayer, QgsPoint point);
+    QgsPoint layerToMapCoordinates(QgsMapLayer* theLayer, QgsPoint point);
 
     //! transform coordinates from output CRS to layer's CRS
-    QgsPoint outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsPoint point);
+    QgsPoint mapToLayerCoordinates(QgsMapLayer* theLayer, QgsPoint point);
 
     //! transform rect's coordinates from output CRS to layer's CRS
-    QgsRect outputCoordsToLayerCoords(QgsMapLayer* theLayer, QgsRect rect);
+    QgsRect mapToLayerCoordinates(QgsMapLayer* theLayer, QgsRect rect);
     
     //! sets whether to use projections for this layer set
     void setProjectionsEnabled(bool enabled);

@@ -23,14 +23,14 @@
 class QgsGeometry;
 
 /** \ingroup core
- * General purpose distance and area calculator.
- * calculations are done on ellipsoid
- * it's possible to pass points/features in any CRS, coordinates are transformed
- * There are two options to use it
- * + use measure() takes QgsGeometry as a parameter and calculates distance or area
- * + use directly measureLine(), measurePolygon() which take list of QgsPoints
- * (both cases transform the coordinates from source CRS to the ellipse coords)
- * Returned values are in meters resp. square meters
+General purpose distance and area calculator
+- calculations are done on ellipsoid
+- it's possible to pass points/features in any CRS, coordinates are transformed
+- two options how to use it
+  + use measure() takes QgsGeometry as a parameter and calculates distance or area
+  + use directly measureLine(), measurePolygon() which take list of QgsPoints
+  (both cases transform the coordinates from source CRS to the ellipse coords)
+- returned values are in meters resp. square meters
 */
 class CORE_EXPORT QgsDistanceArea
 {

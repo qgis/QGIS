@@ -57,12 +57,12 @@ public:
 
     /** Render the layer, to be overridden in child classes
      */
-    virtual bool draw(QgsRenderContext& renderContext);
+    virtual bool draw(QgsRenderContext& rendererContext);
 
     /** Draw labels
      * @TODO to be removed: used only in vector layers
      */
-    virtual void drawLabels(QgsRenderContext& renderContext);
+    virtual void drawLabels(QgsRenderContext& rendererContext);
 
     /** Return the extent of the layer as a QRect */
     const QgsRect extent();
@@ -107,15 +107,15 @@ public:
     /** True if the layer can be edited */
     virtual bool isEditable() const = 0;
 
-    /** sets state from DOM document
-       @param layer_node is DOM node corresponding to ``maplayer'' tag
+    /** sets state from Dom document
+       @param layer_node is Dom node corresponding to ``maplayer'' tag
        @note
 
-       The DOM node corresponds to a DOM document project file XML element read
+       The Dom node corresponds to a Dom document project file XML element read
        by QgsProject.
 
        This, in turn, calls readXml(), which is over-rideable by sub-classes so
-       that they can read their own specific state from the given DOM node.
+       that they can read their own specific state from the given Dom node.
 
        Invoked by QgsProject::read().
 
@@ -124,15 +124,15 @@ public:
     bool readXML(QDomNode & layer_node);
 
 
-    /** stores state in DOM node
-       @param layer_node is DOM node corresponding to ``projectlayers'' tag
+    /** stores state in Dom node
+       @param layer_node is Dom node corresponding to ``projectlayers'' tag
        @note
 
-       The DOM node corresponds to a DOM document project file XML element to be
+       The Dom node corresponds to a Dom document project file XML element to be
        written by QgsProject.
 
        This, in turn, calls writeXml(), which is over-rideable by sub-classes so
-       that they can write their own specific state to the given DOM node.
+       that they can write their own specific state to the given Dom node.
 
        Invoked by QgsProject::write().
 

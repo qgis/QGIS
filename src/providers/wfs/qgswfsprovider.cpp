@@ -302,7 +302,7 @@ int QgsWFSProvider::getFeatureGET(const QString& uri, const QString& geometryAtt
   qWarning("feature count after request is:");
   qWarning(QString::number(mFeatures.size()).toLocal8Bit().data());
   qWarning("mExtent after request is:");
-  qWarning(mExtent.stringRep().toLocal8Bit().data());
+  qWarning(mExtent.toString().toLocal8Bit().data());
 
   for(QList<QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it) {
     QgsDebugMsg("feature " + QString::number((*it)->featureId()));
@@ -619,10 +619,10 @@ int QgsWFSProvider::getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCol
 	}
       
       std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
-      extent->setXmin(it->x());
+      extent->setXMinimum(it->x());
       extent->setYmin(it->y());
       ++it;
-      extent->setXmax(it->x());
+      extent->setXMaximum(it->x());
       extent->setYmax(it->y());
       return 0;
     }
@@ -658,9 +658,9 @@ int QgsWFSProvider::getExtentFromGML2(QgsRect* extent, const QDomElement& wfsCol
 	{
 	  return 10;
 	}
-      extent->setXmin(x1);
+      extent->setXMinimum(x1);
       extent->setYmin(y1);
-      extent->setXmax(x2);
+      extent->setXMaximum(x2);
       extent->setYmax(y2);
       return 0;
     }

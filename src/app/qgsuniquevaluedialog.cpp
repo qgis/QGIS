@@ -34,7 +34,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog(QgsVectorLayer* vl): QDialog(), mVect
   setOrientation(Qt::Vertical);
   //find out the fields of mVectorLayer
   QgsVectorDataProvider *provider;
-  if ((provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider())))
+  if ((provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider())))
   {
     const QgsFieldMap & fields = provider->fields();
     QString str;
@@ -146,7 +146,7 @@ void QgsUniqueValueDialog::apply()
   }
   renderer->updateSymbolAttributes();
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
   if (provider)
   {
     int fieldIndex = provider->indexFromFieldName(mClassificationComboBox->currentText());
@@ -289,7 +289,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   }
   mOldClassificationAttribute=attributeName;
 
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
   if (provider)
   {
     int nr = provider->indexFromFieldName(attributeName);

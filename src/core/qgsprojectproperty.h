@@ -78,20 +78,20 @@ public:
     virtual bool isLeaf() const = 0;
 
     /**
-       restores property hierarchy to given DOM node
+       restores property hierarchy to given Dom node
 
        Used for restoring properties from project file
     */
     virtual bool readXML(QDomNode & keyNode) = 0;
 
     /**
-       adds property hierarchy to given DOM node
+       adds property hierarchy to given Dom node
 
        Used for saving properties to project file.
 
        @param nodeName the tag name associated with this element
        @param node     the parent (or encompassing) property node
-       @param documetn the overall project file DOM document
+       @param documetn the overall project file Dom document
     */
     virtual bool writeXML(QString const & nodeName, 
                           QDomElement   & element,

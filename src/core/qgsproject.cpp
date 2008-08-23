@@ -389,32 +389,32 @@ QgsProject * QgsProject::theProject_;
  } // QgsProject::title() const
 
 
- bool QgsProject::dirty() const
+ bool QgsProject::isDirty() const
  {
      return imp_->dirty;
- } // bool QgsProject::dirty() 
+ } // bool QgsProject::isDirty() 
 
 
  void QgsProject::dirty(bool b)
  {
      imp_->dirty = b;
- } // bool QgsProject::dirty()
+ } // bool QgsProject::isDirty()
 
 
 
- void QgsProject::filename(QString const &name)
+ void QgsProject::setFilename(QString const &name)
  {
      imp_->file.setFileName(name);
 
      dirty(true);
- } // void QgsProject::filename( QString const & name )
+ } // void QgsProject::setFilename( QString const & name )
 
 
 
  QString QgsProject::filename() const
  {
      return imp_->file.fileName();
- } // QString QgsProject::filename() const
+ } // QString QgsProject::setFilename() const
 
 
 
@@ -574,7 +574,7 @@ static void _getTitle(QDomDocument const &doc, QString & title)
 } // _getTitle
 
 
-/** return the version string found in the given DOM document
+/** return the version string found in the given Dom document
 
    @returns the version string or an empty string if none found
  */
@@ -653,7 +653,7 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers(QDomDocument const &
 
     QString wk;
 
-    std::list<QDomNode> brokenNodes; // a list of DOM nodes corresponding to layers
+    std::list<QDomNode> brokenNodes; // a list of Dom nodes corresponding to layers
                                 // that we were unable to load; this could be
                                 // because the layers were removed or
                                 // re-located after the project was last saved
@@ -700,7 +700,7 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers(QDomDocument const &
           return make_pair(false, brokenNodes);
         }
 
-        // have the layer restore state that is stored in DOM node
+        // have the layer restore state that is stored in Dom node
         if ( mapLayer->readXML(node) )
         {
             mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
@@ -894,7 +894,7 @@ bool QgsProject::read( QDomNode & layerNode )
         return false;
     }
 
-    // have the layer restore state that is stored in DOM node
+    // have the layer restore state that is stored in Dom node
     if ( mapLayer->readXML(layerNode) )
     {
         mapLayer = QgsMapLayerRegistry::instance()->addMapLayer(mapLayer);
@@ -925,7 +925,7 @@ bool QgsProject::write()
 {
   // if we have problems creating or otherwise writing to the project file,
   // let's find out up front before we go through all the hand-waving
-  // necessary to create all the DOM objects
+  // necessary to create all the Dom objects
   if (!imp_->file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
   {
     imp_->file.close();         // even though we got an error, let's make
@@ -949,10 +949,10 @@ bool QgsProject::write()
    
   }
 
-  QDomImplementation DOMImplementation;
+  QDomImplementation DomImplementation;
 
   QDomDocumentType documentType =
-      DOMImplementation.createDocumentType("qgis", "http://mrcc.com/qgis.dtd",
+      DomImplementation.createDocumentType("qgis", "http://mrcc.com/qgis.dtd",
               "SYSTEM");
   std::auto_ptr < QDomDocument > doc =
       std::auto_ptr < QDomDocument > (new QDomDocument(documentType));

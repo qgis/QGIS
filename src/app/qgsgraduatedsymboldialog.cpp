@@ -37,7 +37,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(QgsVectorLayer * layer): QDia
   setOrientation(Qt::Vertical);
 
   //find out the numerical fields of mVectorLayer
-  QgsVectorDataProvider *provider = mVectorLayer->getDataProvider();
+  QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if (provider)
   {
     const QgsFieldMap & fields = provider->fields();
@@ -230,7 +230,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 {
   mClassListWidget->clear();
   QGis::VectorType m_type = mVectorLayer->vectorType();
-  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->getDataProvider());
+  QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
   double minimum = 0;
   double maximum = 0;
 
@@ -258,7 +258,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
   {
     if (modeComboBox->currentText() == tr("Equal Interval"))
     {
-      minimum = provider->minValue(field).toDouble();
+      minimum = provider->minimumValue(field).toDouble();
       maximum = provider->maxValue(field).toDouble();
     } 
     else                    //don't waste performance if mMode is QgsGraduatedSymbolDialog::EMPTY
@@ -459,7 +459,7 @@ int QgsGraduatedSymbolDialog::quantilesFromVectorLayer(std::list<double>& result
 {
   if(mVectorLayer)
   {
-    QgsVectorDataProvider* provider = mVectorLayer->getDataProvider();
+    QgsVectorDataProvider* provider = mVectorLayer->dataProvider();
 
     if(provider)
     {

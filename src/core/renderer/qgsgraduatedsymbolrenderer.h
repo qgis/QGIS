@@ -50,7 +50,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     \param field the number of the field to classify*/
     void setClassificationField(int field);
     /**Reads the renderer configuration from an XML file
-     @param rnode the DOM node to read 
+     @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
     virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file

@@ -58,13 +58,13 @@ QgsPoint QgsLine::end() const
 }
 
 //! String representation of the line
-QString QgsLine::stringRep() const
+QString QgsLine::toString() const
 {
   return QString("Not implemented");
 }
 
 //! As above but with precision for string representaton of a line
-QString QgsLine::stringRep(int thePrecision) const
+QString QgsLine::toString(int thePrecision) const
 {
   return QString("Not implemented");
 }

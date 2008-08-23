@@ -375,7 +375,7 @@ void QgsLegendLayer::vectorLayerSymbology(const QgsVectorLayer* layer, double wi
     if(renderer->needsAttributes()) 
     {
       QgsAttributeList classfieldlist = renderer->classificationAttributes();
-      const QgsFieldMap& fields = layer->getDataProvider()->fields();
+      const QgsFieldMap& fields = layer->dataProvider()->fields();
       for(QgsAttributeList::iterator it = classfieldlist.begin(); it!=classfieldlist.end(); ++it)
       {
         const QgsField& theField = fields[*it];

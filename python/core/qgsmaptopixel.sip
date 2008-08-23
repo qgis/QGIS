@@ -73,7 +73,7 @@ class QgsMapToPixel
     //! Set minimum y value
     void setYmin(double ymin);
     //! set minimum x value
-    void setXmin(double xmin);
+    void setXMinimum(double xmin);
     /*! Set parameters for use in tranfsorming coordinates
     * @param mupp Map units per pixel
     * @param xmin Minimum x value

@@ -326,7 +326,7 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
     for ( int k = 0; k < myPolyline.size(); k++ )
     {
       QgsPoint myPoint = myPolyline.at( k );
-      qDebug( "\t\t\tPoint in ring " + QString::number( k ).toLocal8Bit() + " :" + myPoint.stringRep().toLocal8Bit() );
+      qDebug( "\t\t\tPoint in ring " + QString::number( k ).toLocal8Bit() + " :" + myPoint.toString().toLocal8Bit() );
       myPoints << QPointF(myPoint.x(),myPoint.y());
     }
   }

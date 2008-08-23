@@ -14,7 +14,7 @@ class QgsRenderContext
 
   QPainter* painter();
 
-  const QgsCoordinateTransform* coordTransform() const;
+  const QgsCoordinateTransform* coordinateTransform() const;
 
   const QgsRect& extent() const;
 

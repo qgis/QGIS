@@ -118,9 +118,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   loadRows();
 
   reset();
-  if(layer->getDataProvider())//enable spatial index button group if supported by provider
+  if(layer->dataProvider())//enable spatial index button group if supported by provider
   {
-    int capabilities=layer->getDataProvider()->capabilities();
+    int capabilities=layer->dataProvider()->capabilities();
     if(!(capabilities&QgsVectorDataProvider::CreateSpatialIndex))
     {
       pbnIndex->setEnabled(false);
@@ -234,7 +234,7 @@ void QgsVectorLayerProperties::attributeDeleted(int idx)
 
 void QgsVectorLayerProperties::addAttribute()
 {
-  QgsAddAttrDialog dialog(layer->getDataProvider(), this);
+  QgsAddAttrDialog dialog(layer->dataProvider(), this);
   if(dialog.exec()==QDialog::Accepted)
   {
     if(!addAttribute(dialog.name(),dialog.type()))
@@ -277,7 +277,7 @@ void QgsVectorLayerProperties::updateButtons()
 {
   if ( layer->isEditable() )
   {
-    int cap = layer->getDataProvider()->capabilities();
+    int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
     mToggleEditingButton->setChecked( true );
@@ -439,7 +439,7 @@ void QgsVectorLayerProperties::reset( void )
   teMetadata->setHtml(getMetadata());
   actionDialog->init();
   labelDialog->init();
-  labelCheckBox->setChecked(layer->labelOn());
+  labelCheckBox->setChecked(layer->hasLabelsEnabled());
   //set the transparency slider
   sliderTransparency->setValue(255 - layer->getTransparency());
   //update the transparency percentage label
@@ -489,7 +489,7 @@ void QgsVectorLayerProperties::apply()
   actionDialog->apply();
 
   labelDialog->apply();
-  layer->setLabelOn(labelCheckBox->isChecked());
+  layer->enableLabels(labelCheckBox->isChecked());
   layer->setLayerName(displayName());
 
   for(int i=0; i<tblAttributes->rowCount(); i++)
@@ -599,7 +599,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
   // from the provider
 
   // cast to postgres provider type 
-  QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) layer->getDataProvider() ; // FIXME use dynamic cast
+  QgsPostgresProvider * myPGProvider = (QgsPostgresProvider *) layer->dataProvider() ; // FIXME use dynamic cast
   // create the query builder object using the table name
   // and postgres connection from the provider
   QgsDataSourceURI uri(myPGProvider->dataSourceUri());
@@ -626,7 +626,7 @@ void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 
 void QgsVectorLayerProperties::on_pbnIndex_clicked()
 {
-  QgsVectorDataProvider* pr=layer->getDataProvider();
+  QgsVectorDataProvider* pr=layer->dataProvider();
   if(pr)
   {
     setCursor(Qt::WaitCursor);

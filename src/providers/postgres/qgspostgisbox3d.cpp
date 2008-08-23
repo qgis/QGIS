@@ -66,7 +66,7 @@ QgsPostGisBox3d::~QgsPostGisBox3d()
 }
 
 
-QString QgsPostGisBox3d::stringRepAsBox3d()
+QString QgsPostGisBox3d::toStringAsBox3d()
 {
 
   QString s;
@@ -77,7 +77,7 @@ QString QgsPostGisBox3d::stringRepAsBox3d()
         .arg( xmax )
         .arg( ymax );
   
-  std::cerr << "QgsPostGisBox3d: stringRepAsBox3d is returning '" << s.toLocal8Bit().data() << "'" << std::endl;
+  std::cerr << "QgsPostGisBox3d: toStringAsBox3d is returning '" << s.toLocal8Bit().data() << "'" << std::endl;
 
   return s;        
 }

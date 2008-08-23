@@ -101,10 +101,10 @@ class ProjectTest : public CppUnit::TestFixture
     void testFileName()
     {
         QgsProject::instance()->dirty( false );
-        QgsProject::instance()->filename( mFile );
+        QgsProject::instance()->setFilename( mFile );
 
         CPPUNIT_ASSERT( mFile == QgsProject::instance()->filename() );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
     } // testFileName
 
     
@@ -115,7 +115,7 @@ class ProjectTest : public CppUnit::TestFixture
         QgsProject::instance()->title( mTitle );
 
         CPPUNIT_ASSERT( mTitle == QgsProject::instance()->title() );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
     } // testTitle
 
 
@@ -124,17 +124,17 @@ class ProjectTest : public CppUnit::TestFixture
         QgsProject::instance()->dirty( false );
         QgsProject::instance()->mapUnits( QGis::METERS );
         CPPUNIT_ASSERT( QGis::METERS == QgsProject::instance()->mapUnits() );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         QgsProject::instance()->mapUnits( QGis::FEET );
         CPPUNIT_ASSERT( QGis::FEET == QgsProject::instance()->mapUnits() );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         QgsProject::instance()->mapUnits( QGis::DEGREES );
         CPPUNIT_ASSERT( QGis::DEGREES == QgsProject::instance()->mapUnits() );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
     } // testMapUnits
 
 
@@ -142,10 +142,10 @@ class ProjectTest : public CppUnit::TestFixture
     void testDirtyFlag()
     {
         QgsProject::instance()->dirty( true );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
-        CPPUNIT_ASSERT( ! QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( ! QgsProject::instance()->isDirty() );
     } // testDirtyFlag
 
     
@@ -180,23 +180,23 @@ class ProjectTest : public CppUnit::TestFixture
     {
         QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mBoolValueKey, mBoolValueConst ) );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mNumValueKey, mNumValueConst ) );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mDoubleValueKey, mDoubleValueConst ) );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringValueKey, mStringValueConst ) );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
         QgsProject::instance()->dirty( false );
         CPPUNIT_ASSERT( QgsProject::instance()->writeEntry( mScope, mStringListValueKey, mStringListValueConst ) );
-        CPPUNIT_ASSERT( QgsProject::instance()->dirty() );
+        CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );
 
 
         bool status;

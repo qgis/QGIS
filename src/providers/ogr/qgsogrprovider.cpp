@@ -1279,7 +1279,7 @@ void QgsOgrProvider::getUniqueValues(int index, QStringList &uniqueValues)
 
 
 
-QVariant QgsOgrProvider::minValue(int index)
+QVariant QgsOgrProvider::minimumValue(int index)
 {
   QgsField fld = mAttributeFields[index];
   QFileInfo fi( dataSourceUri() );

@@ -33,7 +33,7 @@ private:
 	Q3MainWindow *qgisApp;
 	QMenuBar *menu;
 	int menuId;
-	QgsMapToPixel *coordTransform;
+	QgsMapToPixel *coordinateTransform;
 };
 
 

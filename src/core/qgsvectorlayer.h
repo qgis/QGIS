@@ -101,10 +101,10 @@ public:
   const QString displayField() const;
 
   /** Returns the data provider */
-  QgsVectorDataProvider* getDataProvider();
+  QgsVectorDataProvider* dataProvider();
 
   /** Returns the data provider in a const-correct manner */
-  const QgsVectorDataProvider* getDataProvider() const;
+  const QgsVectorDataProvider* dataProvider() const;
 
   /** Sets the textencoding of the data provider */
   void setProviderEncoding(const QString& encoding);
@@ -158,12 +158,12 @@ public:
   /** Return the provider type for this layer */
   QString providerType() const;
 
-  /** reads vector layer specific state from project file DOM node.
+  /** reads vector layer specific state from project file Dom node.
    *  @note Called by QgsMapLayer::readXML().
    */
   virtual bool readXml( QDomNode & layer_node );
 
-  /** write vector layer specific state to project file DOM node.
+  /** write vector layer specific state to project file Dom node.
    *  @note Called by QgsMapLayer::writeXML().
    */
   virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
@@ -298,10 +298,10 @@ public:
   int insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults);
 
   /** Set labels on */
-  void setLabelOn( bool on );
+  void enableLabels( bool on );
 
   /** Label is on */
-  bool labelOn( void );
+  bool hasLabelsEnabled( void );
 
   /** Returns true if the provider is in editing mode */
   virtual bool isEditable() const;
@@ -329,10 +329,10 @@ public:
   /** Draws the layer
    *  @return FALSE if an error occurred during drawing
    */
-  bool draw(QgsRenderContext& renderContext);
+  bool draw(QgsRenderContext& rendererContext);
 
   /** Draws the layer labels using coordinate transformation */
-  void drawLabels(QgsRenderContext& renderContext);
+  void drawLabels(QgsRenderContext& rendererContext);
 
   /** \brief Draws the layer labels using coordinate transformation
    *  \param scale size scale, applied to all values in pixels
@@ -422,7 +422,7 @@ signals:
   void selectionChanged();
   
   /** This signal is emitted when modifications has been done on layer */
-  void wasModified(bool onlyGeometry);
+  void layerModified(bool onlyGeometry);
 
   void editingStarted();
   void editingStopped();
