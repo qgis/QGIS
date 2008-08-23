@@ -324,16 +324,16 @@ void GPSData::writeXML(QTextStream& stream) {
 }
 
 
-GPSData* GPSData::getData(const QString& filename) {
+GPSData* GPSData::getData(const QString& fileName) {
   // if the data isn't there already, try to load it
-  if (dataObjects.find(filename) == dataObjects.end()) {
-    QFile file(filename);
+  if (dataObjects.find(fileName) == dataObjects.end()) {
+    QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-      QgsLogger::warning(QObject::tr("Couldn't open the data source: ") + filename);
+      QgsLogger::warning(QObject::tr("Couldn't open the data source: ") + fileName);
       return 0;
     }
     GPSData* data = new GPSData;
-    QgsLogger::debug("Loading file " + filename);
+    QgsLogger::debug("Loading file " + fileName);
     GPXHandler handler(*data);
     bool failed = false;
     
@@ -365,27 +365,27 @@ GPSData* GPSData::getData(const QString& filename) {
 
     data->setNoDataExtent();
 
-    dataObjects[filename] = std::pair<GPSData*, unsigned>(data, 0);
+    dataObjects[fileName] = std::pair<GPSData*, unsigned>(data, 0);
   }
   else
-    QgsLogger::debug(filename + " is already loaded");
+    QgsLogger::debug(fileName + " is already loaded");
   
-  // return a pointer and increase the reference count for that filename
-  DataMap::iterator iter = dataObjects.find(filename);
+  // return a pointer and increase the reference count for that fileName
+  DataMap::iterator iter = dataObjects.find(fileName);
   ++(iter->second.second);
   return (GPSData*)(iter->second.first);
 }
 
 
-void GPSData::releaseData(const QString& filename) {
+void GPSData::releaseData(const QString& fileName) {
   
-  /* decrease the reference count for the filename (if it is used), and erase
+  /* decrease the reference count for the fileName (if it is used), and erase
      it if the reference count becomes 0 */
-  DataMap::iterator iter = dataObjects.find(filename);
+  DataMap::iterator iter = dataObjects.find(fileName);
   if (iter != dataObjects.end()) {
-    QgsLogger::debug("unrefing " + filename);
+    QgsLogger::debug("unrefing " + fileName);
     if (--(iter->second.second) == 0) {
-      QgsLogger::debug("No one's using " + filename + ", I'll erase it");
+      QgsLogger::debug("No one's using " + fileName + ", I'll erase it");
       delete iter->second.first;
       dataObjects.erase(iter);
     }

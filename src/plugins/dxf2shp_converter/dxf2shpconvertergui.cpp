@@ -119,7 +119,7 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
 {
   QString s = tr("Fields description:\n"
   "* Input DXF file: path to the DXF file to be converted\n"
-  "* Output Shp file: desired filename of the ShapeFile to be created\n"
+  "* Output Shp file: desired fileName of the ShapeFile to be created\n"
   "* Shp output file type: specifies the type of the output shapefile\n"
   "* Export text labels checkbox: if checked, an additional shp points layer will be created, "
   "  and the associated dbf table will contain informations about the \"TEXT\" fields found"
@@ -159,7 +159,7 @@ void dxf2shpConverterGui::getInputFileName()
 void dxf2shpConverterGui::getOutputDir()
 {
   QString s = QFileDialog::getSaveFileName(this,
-                                           tr("Choose a filename to save to"),
+                                           tr("Choose a fileName to save to"),
 					   "output.shp",
 					   "Shapefile (*.shp)");
 

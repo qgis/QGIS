@@ -67,9 +67,9 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
       return;
     }
 
-  //read filename
-  QString filename = mOutputFileLineEdit->text();
-  QFileInfo theFileInfo(filename);
+  //read fileName
+  QString fileName = mOutputFileLineEdit->text();
+  QFileInfo theFileInfo(fileName);
   if(!theFileInfo.dir().exists())
     {
       QMessageBox::information(0, "File name invalid", "Please enter a valid file name");
@@ -111,10 +111,10 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     }
 
   //create grid file writer
-  QgsGridFileWriter theWriter(theInterpolator, filename, theVectorLayer->extent(), mNumberOfColumnsSpinBox->value(), mNumberOfRowsSpinBox->value());
+  QgsGridFileWriter theWriter(theInterpolator, fileName, theVectorLayer->extent(), mNumberOfColumnsSpinBox->value(), mNumberOfRowsSpinBox->value());
   if(theWriter.writeFile(true) == 0)
     {
-      mIface->addRasterLayer(filename, "Interpolation");
+      mIface->addRasterLayer(fileName, "Interpolation");
       accept();
     }
 }

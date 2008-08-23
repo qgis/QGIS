@@ -225,7 +225,7 @@ void QgsSpit::addFile()
           QString featureClass = file->getFeatureClass();
           fileList.push_back( file );
 
-          QTableWidgetItem *filenameItem       = new QTableWidgetItem( name );
+          QTableWidgetItem *fileNameItem       = new QTableWidgetItem( name );
           QTableWidgetItem *featureClassItem   = new QTableWidgetItem( featureClass );
           QTableWidgetItem *featureCountItem   = new QTableWidgetItem( QString( "%1" ).arg( file->getFeatureCount() ) );
           // Sanitize the relation name to make it pg friendly
@@ -234,12 +234,12 @@ void QgsSpit::addFile()
           QTableWidgetItem *dbSchemaNameItem   = new QTableWidgetItem( cmbSchema->currentText() );
 
           // All items are editable except for these two
-          filenameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+          fileNameItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           featureCountItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
           int row = tblShapefiles->rowCount();
           tblShapefiles->insertRow( row );
-          tblShapefiles->setItem( row, ColFILENAME, filenameItem );
+          tblShapefiles->setItem( row, ColFILENAME, fileNameItem );
           tblShapefiles->setItem( row, ColFEATURECLASS, featureClassItem );
           tblShapefiles->setItem( row, ColFEATURECOUNT, featureCountItem );
           tblShapefiles->setItem( row, ColDBRELATIONNAME, dbRelationNameItem );

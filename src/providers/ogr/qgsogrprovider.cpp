@@ -715,14 +715,14 @@ bool QgsOgrProvider::changeGeometryValues(QgsGeometryMap & geometry_map)
 
 bool QgsOgrProvider::createSpatialIndex()
 {
-  QString filename=dataSourceUri().section('/',-1,-1);//find out the filename from the uri
-  QString layername=filename.section('.',0,0);
-  QString sql="CREATE SPATIAL INDEX ON "+layername;
+  QString fileName=dataSourceUri().section('/',-1,-1);//find out the fileName from the uri
+  QString layerName=fileName.section('.',0,0);
+  QString sql="CREATE SPATIAL INDEX ON "+layerName;
   OGR_DS_ExecuteSQL (ogrDataSource, sql.toAscii(), OGR_L_GetSpatialFilter(ogrLayer),"");
   //find out, if the .qix file is there
   QString indexname = dataSourceUri();
-  indexname.truncate(dataSourceUri().length()-filename.length());
-  indexname=indexname+layername+".qix";
+  indexname.truncate(dataSourceUri().length()-fileName.length());
+  indexname=indexname+layerName+".qix";
   QFile indexfile(indexname);
   if(indexfile.exists())
   {
@@ -746,9 +746,9 @@ bool QgsOgrProvider::deleteFeatures(const QgsFeatureIds & id)
   }
 
   OGR_L_SyncToDisk(ogrLayer);
-  QString filename=dataSourceUri().section('/',-1,-1);//find out the filename from the uri
-  QString layername=filename.section('.',0,0);
-  QString sql="REPACK " + layername;
+  QString fileName=dataSourceUri().section('/',-1,-1);//find out the fileName from the uri
+  QString layerName=fileName.section('.',0,0);
+  QString sql="REPACK " + layerName;
   OGR_DS_ExecuteSQL(ogrDataSource,sql.toLocal8Bit().data(), NULL, NULL);
   numberFeatures = OGR_L_GetFeatureCount(ogrLayer,TRUE); //new feature count
   return returnvalue;

@@ -57,19 +57,19 @@ public slots:
   void help();
   
   //! load a GPX file
-  void loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
+  void loadGPXFile(QString fileName, bool loadWaypoints, bool loadRoutes,
 		   bool loadTracks);
-  void importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
+  void importGPSFile(QString inputFileName, QgsBabelFormat* importer, 
 		     bool importWaypoints, bool importRoutes, 
-		     bool importTracks, QString outputFilename, 
+		     bool importTracks, QString outputFileName, 
 		     QString layerName);
-  void convertGPSFile(QString inputFilename,
+  void convertGPSFile(QString inputFileName,
                       int convertType,
-                      QString outputFilename, 
+                      QString outputFileName, 
                       QString layerName);
   void downloadFromGPS(QString device, QString port,
 		       bool downloadWaypoints, bool downloadRoutes,
-		       bool downloadTracks, QString outputFilename,
+		       bool downloadTracks, QString outputFileName,
 		       QString layerName);
   void uploadToGPS(QgsVectorLayer* gpxLayer, QString device,
 		   QString port);

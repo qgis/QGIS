@@ -804,7 +804,7 @@ void QgsRasterLayerProperties::sync()
    */
   cboxShowDebugInfo->hide();
 
-  //these properties (layername and label) are provided by the qgsmaplayer superclass
+  //these properties (layerName and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText(mRasterLayer->source());
   leDisplayName->setText(mRasterLayer->name());
 
@@ -1824,15 +1824,15 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 {
-  QString myFilename = QFileDialog::getSaveFileName(this, tr("Save file"), "/", tr("Textfile (*.txt)"));
-  if(!myFilename.isEmpty())
+  QString myFileName = QFileDialog::getSaveFileName(this, tr("Save file"), "/", tr("Textfile (*.txt)"));
+  if(!myFileName.isEmpty())
   {
-    if(!myFilename.endsWith(".txt", Qt::CaseInsensitive))
+    if(!myFileName.endsWith(".txt", Qt::CaseInsensitive))
     {
-      myFilename = myFilename + ".txt";
+      myFileName = myFileName + ".txt";
     }
 
-    QFile myOutputFile(myFilename);
+    QFile myOutputFile(myFileName);
     if (myOutputFile.open(QFile::WriteOnly))
     {
       QTextStream myOutputStream(&myOutputFile);
@@ -2307,8 +2307,8 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   int myLineCounter = 0;
   bool myImportError = false;
   QString myBadLines;
-  QString myFilename = QFileDialog::getOpenFileName(this, tr("Open file"), "/", tr("Textfile (*.txt)"));
-  QFile myInputFile(myFilename);
+  QString myFileName = QFileDialog::getOpenFileName(this, tr("Open file"), "/", tr("Textfile (*.txt)"));
+  QFile myInputFile(myFileName);
   if (myInputFile.open(QFile::ReadOnly))
   {
     QTextStream myInputStream(&myInputFile);
@@ -2383,7 +2383,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
       QMessageBox::warning(this, tr("Import Error"), tr("The following lines contained errors\n\n") + myBadLines );
     }
   }
-  else if(!myFilename.isEmpty())
+  else if(!myFileName.isEmpty())
   {
     QMessageBox::warning(this, tr("Read access denied"), tr("Read access denied. Adjust the file permissions and try again.\n\n") );
   }
@@ -2921,7 +2921,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   myFileDialog->setFileMode ( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode ( QFileDialog::AcceptOpen );
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -2936,7 +2936,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the filename
+      //ensure the user never ommitted the extension from the fileName
       if ( !myFileName.toUpper().endsWith ( ".QML" ) )
       {
         myFileName += ".qml";
@@ -2987,7 +2987,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   myFileDialog->setFileMode ( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode ( QFileDialog::AcceptSave );
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myOutputFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -3002,7 +3002,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the filename
+      //ensure the user never ommitted the extension from the fileName
       if ( !myOutputFileName.toUpper().endsWith ( ".QML" ) )
       {
         myOutputFileName += ".qml";

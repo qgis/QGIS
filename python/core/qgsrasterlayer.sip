@@ -21,7 +21,7 @@ public:
     static void buildSupportedRasterFileFilter(QString & fileFilters);
     static void registerGdalDrivers();
     
-    /** This helper checks to see whether the filename appears to be a valid
+    /** This helper checks to see whether the fileName appears to be a valid
        raster file name */
     static bool isValidRasterFileName(const QString & theFileNameQString);
 

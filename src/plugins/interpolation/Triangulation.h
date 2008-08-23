@@ -83,9 +83,9 @@ class Triangulation
   /**Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
   virtual bool pointInside(double x, double y)=0;
   /**Reads the content of a taff-file*/
-  //virtual bool readFromTAFF(QString filename)=0;
+  //virtual bool readFromTAFF(QString fileName)=0;
   /**Saves the content to a taff file*/
-  //virtual bool saveToTAFF(QString filename) const=0;
+  //virtual bool saveToTAFF(QString fileName) const=0;
   /**Swaps the edge which is closest to the point with x and y coordinates (if this is possible)*/
   virtual bool swapEdge(double x, double y)=0;
 };

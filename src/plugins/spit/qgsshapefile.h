@@ -41,7 +41,7 @@ class QgsShapeFile : public QObject
   Q_OBJECT
   public:
 
-  QgsShapeFile(QString filename, QString encoding = QString());
+  QgsShapeFile(QString fileName, QString encoding = QString());
   ~QgsShapeFile();
   int getFeatureCount();
   QString getFeatureClass();
@@ -70,7 +70,7 @@ class QgsShapeFile : public QObject
   bool isMulti;
   bool hasMoreDimensions;
   int features;
-  QString filename;
+  QString fileName;
   QString geom_type;
   QStringList geometries;
   QTextCodec* codec;

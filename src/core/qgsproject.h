@@ -92,7 +92,7 @@ public:
        Every project has an associated file that contains its XML
      */
     //@{
-    void setFilename( QString const & name );
+    void setFileName( QString const & name );
 
     /** returns file name */
     QString fileName() const;

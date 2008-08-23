@@ -101,7 +101,7 @@ class ProjectTest : public CppUnit::TestFixture
     void testFileName()
     {
         QgsProject::instance()->dirty( false );
-        QgsProject::instance()->setFilename( mFile );
+        QgsProject::instance()->setFileName( mFile );
 
         CPPUNIT_ASSERT( mFile == QgsProject::instance()->fileName() );
         CPPUNIT_ASSERT( QgsProject::instance()->isDirty() );

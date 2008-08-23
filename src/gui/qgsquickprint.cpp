@@ -122,7 +122,7 @@ void QgsQuickPrint::printMap()
   {
     return;
   }
-  //ensure the user never ommitted the extension from the filename
+  //ensure the user never ommitted the extension from the fileName
   if ( !mOutputFileName.toUpper().endsWith ( ".PDF" ) )
   {
     mOutputFileName += ".pdf";

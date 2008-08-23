@@ -196,7 +196,7 @@ bool QgsMapserverExport::write()
   {
     okToSave = QMessageBox::warning(0, tr("Overwrite File?"), txtMapFilePath->text() +
         tr(" exists. \nDo you want to overwrite it?",
-           "a filename is prepended to this text, and appears in a dialog box"),
+           "a fileName is prepended to this text, and appears in a dialog box"),
            QMessageBox::Ok | QMessageBox::Cancel);
   }
   if (okToSave == QMessageBox::Ok)

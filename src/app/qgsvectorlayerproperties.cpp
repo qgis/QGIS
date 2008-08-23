@@ -927,7 +927,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   myFileDialog->setFileMode ( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode ( QFileDialog::AcceptOpen );
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -942,7 +942,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr ( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the filename
+      //ensure the user never ommitted the extension from the fileName
       if ( !myFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
       {
         myFileName += ".qml";
@@ -992,7 +992,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   myFileDialog->setFileMode ( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode ( QFileDialog::AcceptSave );
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myOutputFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -1009,7 +1009,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
     {
       apply(); // make sure the qml to save is uptodate
 
-      //ensure the user never ommitted the extension from the filename
+      //ensure the user never ommitted the extension from the fileName
       if ( !myOutputFileName.endsWith ( ".qml", Qt::CaseInsensitive ) )
       {
         myOutputFileName += ".qml";

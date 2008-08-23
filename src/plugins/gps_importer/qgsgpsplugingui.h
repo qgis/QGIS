@@ -79,19 +79,19 @@ private slots:
 signals:
   void drawRasterLayer(QString);
   void drawVectorLayer(QString,QString,QString);
-  void loadGPXFile(QString filename, bool showWaypoints, bool showRoutes, 
+  void loadGPXFile(QString fileName, bool showWaypoints, bool showRoutes, 
 		   bool showTracks);
-  void importGPSFile(QString inputFilename, QgsBabelFormat* importer,
+  void importGPSFile(QString inputFileName, QgsBabelFormat* importer,
 		     bool importWaypoints, bool importRoutes, 
-		     bool importTracks, QString outputFilename, 
+		     bool importTracks, QString outputFileName, 
 		     QString layerName);
-  void convertGPSFile(QString inputFilename,
+  void convertGPSFile(QString inputFileName,
                       int convertType,
-                      QString outputFilename, 
+                      QString outputFileName, 
                       QString layerName);
   void downloadFromGPS(QString device, QString port, bool downloadWaypoints, 
 		       bool downloadRoutes, bool downloadTracks, 
-		       QString outputFilename, QString layerName);
+		       QString outputFileName, QString layerName);
   void uploadToGPS(QgsVectorLayer* gpxLayer, QString device, QString port);
   
 private:
