@@ -481,7 +481,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
   }
   else
   { 
-    QFileInfo project( QgsProject::instance()->setFilename() );
+    QFileInfo project( QgsProject::instance()->fileName() );
     QgsDebugMsg( QString("project filename: %1").arg( project.absoluteFilePath() ) );
 
     QString qml;
