@@ -31,7 +31,7 @@ class QgsSymbol;
  * A model that provides layers as root items. The classification items are 
  * children of the layer items.
  */
-class QgsLegendModel: public QStandardItemModel
+class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 {
   Q_OBJECT
 

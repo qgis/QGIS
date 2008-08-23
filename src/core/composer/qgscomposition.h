@@ -30,7 +30,7 @@ class QDomElement;
  * Graphics scene for map printing. It manages the paper item which always 
  * is the item in the back (z-value 0).
  * */
-class QgsComposition: public QGraphicsScene
+class CORE_EXPORT QgsComposition: public QGraphicsScene
 {
  public:
 

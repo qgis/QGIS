@@ -22,7 +22,7 @@
 /** \ingroup MapComposer
  * A scale bar that draws segments using short ticks.
  */
-class QgsTicksScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
 {
   public:
   enum TickPosition

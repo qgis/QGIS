@@ -26,7 +26,7 @@ class QgsScaleBarStyle;
  * A scale bar item that can be added to a map composition.
  */
 
-class QgsComposerScaleBar: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
 {
 
  Q_OBJECT

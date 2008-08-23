@@ -36,7 +36,7 @@ class QPainter;
  *  \brief Object representing map window. 
  */
 // NOTE: QgsComposerMapBase must be first, otherwise does not compile
-class QgsComposerMap : /*public QWidget , private Ui::QgsComposerMapBase,*/ public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerMap : /*public QWidget , private Ui::QgsComposerMapBase,*/ public QObject, public QgsComposerItem
 {
   Q_OBJECT
 

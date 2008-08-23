@@ -23,7 +23,7 @@
  * Scalebar style that draws a single box with alternating
  * color for the segments.
  */
-class QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
+class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
 {
  public:
   QgsSingleBoxScaleBarStyle(const QgsComposerScaleBar* bar);

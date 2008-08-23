@@ -30,7 +30,7 @@ QgsComposerItemWidget::QgsComposerItemWidget(): QWidget(0), mItem(0)
 
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget::~QgsComposerItemWidget()
+QgsComposerItemWidget::~QgsComposerItemWidget()
 {
   
 }

@@ -25,7 +25,7 @@
 /** \ingroup MapComposer
  * A composer class that displays svg files or raster format (jpg, png, ...)
  * */
-class QgsComposerPicture: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
 {
   Q_OBJECT
  public:

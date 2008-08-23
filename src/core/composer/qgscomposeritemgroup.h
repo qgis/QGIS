@@ -22,7 +22,7 @@
 /** \ingroup MapComposer
  * A container for grouping several QgsComposerItems
  */
-class QgsComposerItemGroup: public QObject, public QgsComposerItem
+class CORE_EXPORT QgsComposerItemGroup: public QObject, public QgsComposerItem
 {
   Q_OBJECT
  public:
