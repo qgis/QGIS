@@ -36,7 +36,7 @@
     </widget>
    </item>
    <item row="0" column="1" colspan="2" >
-    <widget class="QLineEdit" name="nomein" />
+    <widget class="QLineEdit" name="name" />
    </item>
    <item row="0" column="3" >
     <widget class="QToolButton" name="btnBrowseForFile" >
@@ -84,7 +84,7 @@ p, li { white-space: pre-wrap; }
      </property>
      <layout class="QGridLayout" >
       <item row="0" column="0" >
-       <widget class="QRadioButton" name="zero" >
+       <widget class="QRadioButton" name="polyline" >
         <property name="text" >
          <string>Polyline</string>
         </property>
@@ -94,14 +94,14 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item row="0" column="1" >
-       <widget class="QRadioButton" name="uno" >
+       <widget class="QRadioButton" name="polygon" >
         <property name="text" >
          <string>Polygon</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2" >
-       <widget class="QRadioButton" name="due" >
+       <widget class="QRadioButton" name="point" >
         <property name="text" >
          <string>Point</string>
         </property>

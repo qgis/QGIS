@@ -29,9 +29,6 @@
 
 #include "getInsertions.h"
 
-#include <iostream>
-#include <stdio.h>
-
 InsertRetrClass::InsertRetrClass()
 {
   Names = new string[MaxInserts];
@@ -69,6 +66,4 @@ void InsertRetrClass::addInsert(const DL_InsertData &data)
     YVals[countInserts] = data.ipy;
   }
   countInserts++;
-
- 
 }

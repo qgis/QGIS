@@ -32,7 +32,7 @@
 #include <QAction>
 #include <QToolBar>
 
-static const char *const sIdent = 
+static const char *const sIdent =
   "$Id: plugin.cpp 6935 2007-05-07 14:29:51Z wonder $";
 static const QString sName = QObject::tr("Dxf2Shp Converter");
 static const QString sDescription = QObject::tr(
@@ -47,7 +47,7 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 //////////////////////////////////////////////////////////////////////
 
 /**
- * Constructor for the plugin. The plugin is passed a pointer 
+ * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
@@ -60,24 +60,23 @@ dxf2shpConverter::~dxf2shpConverter(){
 }
 
 /*
- * Initialize the GUI interface for the plugin - this is only called once when the plugin is 
+ * Initialize the GUI interface for the plugin - this is only called once when the plugin is
  * added to the plugin registry in the QGIS application.
  */
 void dxf2shpConverter::initGui()
 {
-
   // Create the action for tool
-  mQActionPointer = new QAction(QIcon(":/dxf2shpconverter/dxf2shp_converter.png")
-    , "Dxf2Shp Converter", this);
+  mQActionPointer = new QAction(QIcon(":/dxf2shpconverter/dxf2shp_converter.png"), "Dxf2Shp Converter", this);
+
   // Set the what's this text
-  mQActionPointer->setWhatsThis(tr(
-    "Converts DXF files in Shapefile format"));
+  mQActionPointer->setWhatsThis(tr("Converts DXF files in Shapefile format"));
+
   // Connect the action to the run
   connect(mQActionPointer, SIGNAL(activated()), this, SLOT(run()));
+
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon(mQActionPointer);
-  mQGisIface->addPluginMenu("&Dxf2Shp", mQActionPointer);
-
+  mQGisIface->addPluginMenu(tr("&Dxf2Shp"), mQActionPointer);
 }
 
 //method defined in interface
@@ -87,16 +86,17 @@ void dxf2shpConverter::help()
 }
 
 // Slot called when the menu item is activated
-// If you created more menu items / toolbar buttons in initiGui, you should 
+// If you created more menu items / toolbar buttons in initiGui, you should
 // create a separate handler for each action - this single run() method will
 // not be enough
 void dxf2shpConverter::run()
 {
   dxf2shpConverterGui *myPluginGui =
     new dxf2shpConverterGui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
+
   myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
 
-  connect(myPluginGui, SIGNAL(createLayer(QString)), this, SLOT(addMyLayer(QString)));
+  connect(myPluginGui, SIGNAL(createLayer(QString,QString)), this, SLOT(addMyLayer(QString,QString)));
 
   myPluginGui->show();
 }
@@ -105,14 +105,14 @@ void dxf2shpConverter::run()
 void dxf2shpConverter::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu("&Dxf2Shp", mQActionPointer);
+  mQGisIface->removePluginMenu(tr("&Dxf2Shp"), mQActionPointer);
   mQGisIface->removeToolBarIcon(mQActionPointer);
   delete mQActionPointer;
 }
 
-void dxf2shpConverter::addMyLayer(QString myfname)
+void dxf2shpConverter::addMyLayer(QString myfname,QString mytitle)
 {
-  mQGisIface->addVectorLayer(myfname, "Converted_Layer", "ogr");
+  mQGisIface->addVectorLayer(myfname, mytitle, "ogr");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -126,8 +126,8 @@ void dxf2shpConverter::addMyLayer(QString myfname)
 //////////////////////////////////////////////////////////////////////////
 
 
-/** 
- * Required extern functions needed  for every plugin 
+/**
+ * Required extern functions needed for every plugin
  * These functions can be called prior to creating an instance
  * of the plugin class
  */

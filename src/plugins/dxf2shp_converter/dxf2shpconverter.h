@@ -34,8 +34,8 @@ class QgisInterface;
  */
 class dxf2shpConverter: public QObject, public QgisPlugin
 {
-  Q_OBJECT;
-  public:
+  Q_OBJECT
+public:
 
   //////////////////////////////////////////////////////////////////////
   //
@@ -62,7 +62,7 @@ class dxf2shpConverter: public QObject, public QgisPlugin
   //! show the help document
   void help();
 
-  void addMyLayer(QString);
+  void addMyLayer(QString,QString);
 
   private:
 
