@@ -1,5 +1,5 @@
 /* XPM */
-static char *mIconInterpolation[]={
+static const char *mIconInterpolation[]={
 "32 28 2 1",
 ". c None",
 "# c #000000",

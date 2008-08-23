@@ -17,8 +17,6 @@
 #ifndef NODE_H
 #define NODE_H
 
-using namespace std;
-
 #include "Point3D.h"
 #include <iostream>
 

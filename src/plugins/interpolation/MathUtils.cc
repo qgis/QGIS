@@ -25,7 +25,7 @@ bool MathUtils::calcBarycentricCoordinates(double x, double y, Point3D* p1, Poin
       double area=triArea(p1,p2,p3);
       if(area==0)//p1, p2, p3 are in a line
 	{
-	  cout << "warning, triangle area should not be 0 in MathUtils::calcBarycentricCoordinates" << endl << flush;
+    std::cout << "warning, triangle area should not be 0 in MathUtils::calcBarycentricCoordinates" << std::endl << std::flush;
 	  return false;
 	}
       double area1=triArea(&p,p2,p3);
@@ -41,7 +41,7 @@ bool MathUtils::calcBarycentricCoordinates(double x, double y, Point3D* p1, Poin
     }
   else//null pointer
     {
-      cout << "warning, null pointer in MathUtils::calcBarycentricCoordinates" << endl << flush;
+      std::cout << "warning, null pointer in MathUtils::calcBarycentricCoordinates" << std::endl << std::flush;
       return false;
     }
 }
@@ -55,7 +55,7 @@ bool MathUtils::BarycentricToXY(double u, double v, double w, Point3D* p1, Point
       
       if(area==0)
 	{
-	  cout << "warning, p1, p2 and p3 are in a line in MathUtils::BarycentricToXY" << endl << flush;
+    std::cout << "warning, p1, p2 and p3 are in a line in MathUtils::BarycentricToXY" << std::endl << std::flush;
 	  return false;
 	}
       
@@ -90,7 +90,7 @@ bool MathUtils::BarycentricToXY(double u, double v, double w, Point3D* p1, Point
     }
   else//null pointer
     {
-      cout << "warning, null pointer in MathUtils::BarycentricToXY" << endl << flush;
+      std::cout << "warning, null pointer in MathUtils::BarycentricToXY" << std::endl << std::flush;
       return false;
     }
 }
@@ -127,7 +127,7 @@ bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* res
 	//if one of the denominator is zero we will have problems
 	if(denominator==0)
 	{
-	  cout << "error in MathUtils::circumcenter, the three points are in a line" << endl << flush;
+    std::cout << "error in MathUtils::circumcenter, the three points are in a line" << std::endl << std::flush;
 	  return false;
 	}
       else
@@ -135,6 +135,7 @@ bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* res
 	  result->setX(0.5*(p1->getX()*p1->getX()*p2->getY()-p1->getX()*p1->getX()*p3->getY()-p3->getX()*p3->getX()*p2->getY()-p1->getY()*p2->getX()*p2->getX()-p1->getY()*p1->getY()*p3->getY()-p3->getY()*p3->getY()*p2->getY()+p1->getY()*p1->getY()*p2->getY()+p3->getY()*p2->getX()*p2->getX()-p1->getY()*p2->getY()*p2->getY()+p1->getY()*p3->getY()*p3->getY()+p1->getY()*p3->getX()*p3->getX()+p3->getY()*p2->getY()*p2->getY())/denominator);
 	  result->setY(-0.5*(p3->getX()*p2->getX()*p2->getX()+p2->getX()*p1->getY()*p1->getY()+p3->getX()*p2->getY()*p2->getY()-p3->getX()*p1->getX()*p1->getX()+p1->getX()*p3->getY()*p3->getY()-p3->getX()*p1->getY()*p1->getY()-p1->getX()*p2->getX()*p2->getX()-p2->getX()*p3->getY()*p3->getY()-p1->getX()*p2->getY()*p2->getY()-p2->getX()*p3->getX()*p3->getX()+p1->getX()*p3->getX()*p3->getX()+p2->getX()*p1->getX()*p1->getX())/denominator);
 
+#if 0
 	  //debugging: test, if the distances from p1, p2, p3 to result are equal
 	  double dist1=sqrt((p1->getX()-result->getX())*(p1->getX()-result->getX())+(p1->getY()-result->getY())*(p1->getY()-result->getY()));
 	  double dist2=sqrt((p2->getX()-result->getX())*(p2->getX()-result->getX())+(p2->getY()-result->getY())*(p2->getY()-result->getY()));
@@ -144,13 +145,14 @@ bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* res
 	  {
 	      bool debug=true;
 	  }
+#endif
 
 	  return true;
 	}
     }
   else
     {
-      cout << "null pointer in method MathUtils::circumcenter" << endl << flush;
+      std::cout << "null pointer in method MathUtils::circumcenter" << std::endl << std::flush;
       return false;
     }
 }
@@ -206,7 +208,7 @@ double MathUtils::distPointFromLine(Point3D* thepoint, Point3D* p1, Point3D* p2)
     }     
   else
     {
-      cout << "null pointer in method MathUtils::distPointFromLine" << endl << flush;
+      std::cout << "null pointer in method MathUtils::distPointFromLine" << std::endl << std::flush;
       return 0;
     }
 }
@@ -215,7 +217,7 @@ int MathUtils::faculty(int n)
 {
   if(n<0)//Is faculty also defined for negative integers?
     {
-      cout << "Error, faculty of a negativ integer requested!" << endl;
+      std::cout << "Error, faculty of a negativ integer requested!" << std::endl;
       return 0;
     }
   int i;
@@ -279,7 +281,7 @@ bool MathUtils::inCircle(Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3)
     }
   else
     {
-      cout << "null pointer in MathUtils::inCircle" << endl << flush;
+      std::cout << "null pointer in MathUtils::inCircle" << std::endl << std::flush;
       return false;
     }
 }
@@ -322,7 +324,7 @@ double MathUtils::leftOf(Point3D* thepoint, Point3D* p1, Point3D* p2)
     } 
   else
     {
-      cout << "Null pointer in MathUtils::leftOf" << endl << flush;
+      std::cout << "Null pointer in MathUtils::leftOf" << std::endl << std::flush;
       return 0;
     }
 }
@@ -365,7 +367,7 @@ bool MathUtils::lineIntersection(Point3D* p1, Point3D* p2, Point3D* p3, Point3D*
   
   else
     {
-      cout << "null pointer in MathUtils::lineIntersection" << endl << flush;
+      std::cout << "null pointer in MathUtils::lineIntersection" << std::endl << std::flush;
       return false;
     }
 }
@@ -418,7 +420,7 @@ bool MathUtils::lineIntersection(Point3D* p1, Point3D* p2, Point3D* p3, Point3D*
   
   else
     {
-      cout << "null pointer in MathUtils::lineIntersection" << endl << flush;
+      std::cout << "null pointer in MathUtils::lineIntersection" << std::endl << std::flush;
       return false;
     }
 }
@@ -497,7 +499,7 @@ double MathUtils::triArea(Point3D* pa, Point3D* pb, Point3D* pc)
     }
   else//null pointer
     {
-      cout << "Null pointer in MathUtils::triArea" << endl << flush;
+      std::cout << "Null pointer in MathUtils::triArea" << std::endl << std::flush;
       return 0;
     }
 }
@@ -506,7 +508,7 @@ double MathUtils::calcCubicHermitePoly(int n, int i, double t)
 {
   if(n!=3||i>n)
     {
-      cout << "error, can't calculate hermite polynom" << endl;
+      std::cout << "error, can't calculate hermite polynom" << std::endl;
     }
 
   if(n==3&&i==0)
@@ -530,7 +532,7 @@ double MathUtils::calcCubicHermitePoly(int n, int i, double t)
     }
   else//somthing went wrong
     {
-      cout << "Error in MathUtils::calcCubicHermitePoly" << endl << flush;
+      std::cout << "Error in MathUtils::calcCubicHermitePoly" << std::endl << std::flush;
       return 0;
     }
 }
@@ -539,7 +541,7 @@ double MathUtils::cFDerCubicHermitePoly(int n, int i, double t)
 {
   if(n!=3||i>n)
     {
-      cout << "error, can't calculate hermite polynom" << endl;
+      std::cout << "error, can't calculate hermite polynom" << std::endl;
     }
 
   if(n==3&&i==0)
@@ -569,7 +571,7 @@ double MathUtils::cFDerCubicHermitePoly(int n, int i, double t)
     }
   else
     {
-      cout << "Error in MathUtils::cFDerCubicHermitePoly" << endl << flush;
+      std::cout << "Error in MathUtils::cFDerCubicHermitePoly" << std::endl << std::flush;
       return 0;
     }
 }
@@ -617,7 +619,7 @@ bool MathUtils::normalLeft(Vector3D* v1, Vector3D* result, double length)
 
       if(d<0)//no solution in R
 	{
-	  cout << "Determinant Error in MathUtils::normalLeft" << endl;
+	  std::cout << "Determinant Error in MathUtils::normalLeft" << std::endl;
 	  return false;
 	}
 
@@ -674,7 +676,7 @@ bool MathUtils::normalRight(Vector3D* v1, Vector3D* result, double length)
 
       if(d<0)//no solution in R
 	{
-	  cout << "Determinant Error in MathUtils::normalLeft" << endl;
+	  std::cout << "Determinant Error in MathUtils::normalLeft" << std::endl;
 	  return false;
 	}
 
@@ -736,7 +738,7 @@ double MathUtils::crossVec(Point3D* first, Vector3D* vec1, Point3D* second, Vect
 	}
       else//if a division through zero would occur
 	{
-	  cout << "warning in MathUtils::crossVec(...): vectors parallel to each other" << endl << flush;
+	  std::cout << "warning in MathUtils::crossVec(...): vectors parallel to each other" << std::endl << std::flush;
 	  return 0;
 	}
     }
@@ -744,7 +746,7 @@ double MathUtils::crossVec(Point3D* first, Vector3D* vec1, Point3D* second, Vect
 
   else//null pointer
     {
-      cout << "warning in MathUtils::crossVec(...): null pointer" << endl << flush;
+      std::cout << "warning in MathUtils::crossVec(...): null pointer" << std::endl << std::flush;
       return 0;
     }
 }
@@ -786,7 +788,7 @@ bool MathUtils::normalMinDistance(Vector3D* tangent, Vector3D* target, Vector3D*
       double xgalpha1=1/(2*xt*xt*yw*yw*zt*zt-2*zt*zt*zt*xt*zw*xw+yt*yt*yt*yt*zw*zw+yt*yt*zw*zw*zt*zt+xt*xt*yt*yt*xw*xw+xt*xt*yw*yw*yt*yt-2*xt*xt*xt*zt*zw*xw+yt*yt*yt*yt*xw*xw+yt*yt*yw*yw*zt*zt+2*xt*xt*yt*yt*zw*zw-2*yt*yt*yt*yw*zt*zw+zt*zt*xt*xt*zw*zw+zt*zt*zt*zt*xw*xw+xt*xt*zt*zt*xw*xw+2*zt*zt*xw*xw*yt*yt-2*xt*xt*yw*zt*yt*zw-2*xt*yt*yt*yt*xw*yw-2*xt*xt*xt*yw*yt*xw-2*xt*zt*zt*xw*yt*yw-2*xt*zt*xw*yt*yt*zw-2*yw*zt*zt*zt*yt*zw+xt*xt*xt*xt*yw*yw+yw*yw*zt*zt*zt*zt+xt*xt*xt*xt*zw*zw);
       if(xgalpha1<0)
 	{
-	  cout << "warning, only complex solution of xg in MathUtils::normalMinDistance" << endl << flush;
+	  std::cout << "warning, only complex solution of xg in MathUtils::normalMinDistance" << std::endl << std::flush;
 	  return false;
 	}
       xg1=sqrt(xgalpha1)*(-yt*yw*xt+yt*yt*xw+xw*zt*zt-zt*xt*zw);
@@ -796,7 +798,7 @@ bool MathUtils::normalMinDistance(Vector3D* tangent, Vector3D* target, Vector3D*
       double ygalpha1=1/(2*xt*xt*yw*yw*zt*zt-2*zt*zt*zt*xt*zw*xw+yt*yt*yt*yt*zw*zw+yt*yt*zw*zw*zt*zt+xt*xt*yt*yt*xw*xw+xt*xt*yw*yw*yt*yt-2*xt*xt*xt*zt*zw*xw+yt*yt*yt*yt*xw*xw+yt*yt*yw*yw*zt*zt+2*xt*xt*yt*yt*zw*zw-2*yt*yt*yt*yw*zt*zw+zt*zt*xt*xt*zw*zw+zt*zt*zt*zt*xw*xw+xt*xt*zt*zt*xw*xw+2*zt*zt*xw*xw*yt*yt-2*xt*xt*yw*zt*yt*zw-2*xt*yt*yt*yt*xw*yw-2*xt*xt*xt*yw*yt*xw-2*xt*zt*zt*xw*yt*yw-2*xt*zt*xw*yt*yt*zw-2*yw*zt*zt*zt*yt*zw+xt*xt*xt*xt*yw*yw+yw*yw*zt*zt*zt*zt+xt*xt*xt*xt*zw*zw);
       if(ygalpha1<0)
 	{
-	  cout << "warning, only complex solution of yg in MathUtils::normalMinDistance" << endl << flush;
+	  std::cout << "warning, only complex solution of yg in MathUtils::normalMinDistance" << std::endl << std::flush;
 	  return false;
 	}
       yg1=-sqrt(ygalpha1)*(-yw*xt*xt-zt*zt*yw+zt*yt*zw+yt*xw*xt);
@@ -806,7 +808,7 @@ bool MathUtils::normalMinDistance(Vector3D* tangent, Vector3D* target, Vector3D*
       double zgalpha1=1/(2*xt*xt*yw*yw*zt*zt-2*zt*zt*zt*xt*zw*xw+yt*yt*yt*yt*zw*zw+yt*yt*zw*zw*zt*zt+xt*xt*yt*yt*xw*xw+xt*xt*yw*yw*yt*yt-2*xt*xt*xt*zt*zw*xw+yt*yt*yt*yt*xw*xw+yt*yt*yw*yw*zt*zt+2*xt*xt*yt*yt*zw*zw-2*yt*yt*yt*yw*zt*zw+zt*zt*xt*xt*zw*zw+zt*zt*zt*zt*xw*xw+xt*xt*zt*zt*xw*xw+2*zt*zt*xw*xw*yt*yt-2*xt*xt*yw*zt*yt*zw-2*xt*yt*yt*yt*xw*yw-2*xt*xt*xt*yw*yt*xw-2*xt*zt*zt*xw*yt*yw-2*xt*zt*xw*yt*yt*zw-2*yw*zt*zt*zt*yt*zw+xt*xt*xt*xt*yw*yw+yw*yw*zt*zt*zt*zt+xt*xt*xt*xt*zw*zw);
       if(zgalpha1<0)
 	{
-	  cout << "warning, only complex solution of zg in MathUtils::normalMinDistance" << endl << flush;
+	  std::cout << "warning, only complex solution of zg in MathUtils::normalMinDistance" << std::endl << std::flush;
 	  return false;
 	}
       zg1=-sqrt(zgalpha1)*(yt*yw*zt-yt*yt*zw+xw*zt*xt-xt*xt*zw);
@@ -832,7 +834,7 @@ bool MathUtils::normalMinDistance(Vector3D* tangent, Vector3D* target, Vector3D*
 
   else
     {
-      cout << "warning, null pointer in MathUtils::normalMinDistance" << endl << flush;
+      std::cout << "warning, null pointer in MathUtils::normalMinDistance" << std::endl << std::flush;
       return false;
     }
 }
@@ -850,7 +852,7 @@ double MathUtils::planeTest(Point3D* test, Point3D* pt1, Point3D* pt2, Point3D* 
     }
   else
     {
-      cout << "warning, null pointer in MathUtils::planeTest" << endl << flush;
+      std::cout << "warning, null pointer in MathUtils::planeTest" << std::endl << std::flush;
       return 0;
     }
 }
@@ -866,7 +868,7 @@ double MathUtils::angle(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* p4)
     }
   else
     {
-      cout << "warning, null pointer in MathUtils::angle" << endl << flush;
+      std::cout << "warning, null pointer in MathUtils::angle" << std::endl << std::flush;
       return 0;
     }
 }

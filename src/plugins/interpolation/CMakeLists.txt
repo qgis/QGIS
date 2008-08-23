@@ -47,6 +47,7 @@ ADD_LIBRARY (interpolationplugin MODULE ${INTERPOLATION_SRCS} ${INTERPOLATION_MO
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
+     ${GEOS_INCLUDE_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..

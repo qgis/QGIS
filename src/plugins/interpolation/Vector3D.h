@@ -17,8 +17,6 @@
 #ifndef VECTOR3D_H
 #define VECTOR3D_H
 
-using namespace std;
-
 #include <cmath>
 
 class Vector3D

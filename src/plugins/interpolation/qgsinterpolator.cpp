@@ -75,7 +75,7 @@ int QgsInterpolator::cacheBaseData()
       provider->select(attList);
 
       QgsFeature theFeature;
-      double attributeValue;
+      double attributeValue = 0.0;
       while(provider->getNextFeature(theFeature))
 	{
 	  if(!zCoordInterpolation)

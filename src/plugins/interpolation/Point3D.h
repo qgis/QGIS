@@ -17,8 +17,6 @@
 #ifndef POINT3D_H
 #define POINT3D_H
 
-using namespace std;
-
 #include <cmath>
 #include <iostream>
 
