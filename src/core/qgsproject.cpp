@@ -402,12 +402,12 @@ QgsProject * QgsProject::theProject_;
 
 
 
- void QgsProject::setFilename(QString const &name)
+ void QgsProject::setFileName(QString const &name)
  {
      imp_->file.setFileName(name);
 
      dirty(true);
- } // void QgsProject::setFilename( QString const & name )
+ } // void QgsProject::setFileName( QString const & name )
 
 
 
@@ -608,7 +608,7 @@ static QgsProjectVersion _getVersion(QDomDocument const &doc)
    @note XML of form:
 
    <maplayer type="vector">
-      <layername>Hydrop</layername>
+      <layerName>Hydrop</layerName>
       <datasource>/data/usgs/city_shp/hydrop.shp</datasource>
       <zorder>0</zorder>
       <provider>ogr</provider>

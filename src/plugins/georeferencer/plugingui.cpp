@@ -80,17 +80,17 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
   QString dir = settings.value("/Plugin-GeoReferencer/rasterdirectory").toString();
   if (dir.isEmpty())
     dir = ".";
-  QString filename = 
+  QString fileName = 
     QFileDialog::getOpenFileName(this,
 				 tr("Choose a raster file"),
                  dir,
 				 tr("Raster files (*.*)"));
 
-  if(filename.isNull())
+  if(fileName.isNull())
     {
       return;
     }
-  leSelectRaster->setText(filename);
+  leSelectRaster->setText(fileName);
 
   // do we think that this is a valid raster?
   if (!QgsRasterLayer::isValidRasterFileName(leSelectRaster->text())) {
@@ -149,7 +149,7 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked() {
     prj->writeEntry("SpatialRefSys", "/ProjectCRSID", mProjectCRSID);
   }
 
-  mPointDialog->openImageFile(filename);
+  mPointDialog->openImageFile(fileName);
   mPointDialog->show();
 }
 

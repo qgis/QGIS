@@ -781,7 +781,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   std::auto_ptr < QFileDialog > myQFileDialog(
       new QFileDialog(
         this,
-        tr("Choose a filename to save the map image as"),
+        tr("Choose a fileName to save the map image as"),
         file.path(),
         myFilters
         )
@@ -797,7 +797,7 @@ void QgsComposer::on_mActionExportAsImage_activated(void)
   // set the 'Open' button to something that makes more sense
   myQFileDialog->setAcceptMode(QFileDialog::AcceptSave);
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
 
   int result = myQFileDialog->exec();
@@ -876,7 +876,7 @@ void QgsComposer::on_mActionExportAsSVG_activated(void)
   }
   QString myLastUsedFile = myQSettings.value("/UI/lastSaveAsSvgFile","qgis.svg").toString();
   QFileInfo file(myLastUsedFile);
-  QFileDialog *myQFileDialog = new QFileDialog( this, tr("Choose a filename to save the map as"),
+  QFileDialog *myQFileDialog = new QFileDialog( this, tr("Choose a fileName to save the map as"),
                                                 file.path(), tr("SVG Format") + " (*.svg *SVG)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode(QFileDialog::AnyFile);

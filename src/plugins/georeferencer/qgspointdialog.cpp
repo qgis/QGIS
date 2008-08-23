@@ -186,20 +186,20 @@ void QgsPointDialog::on_pbnGenerateAndLoad_clicked()
 
 void QgsPointDialog::on_pbnSelectWorldFile_clicked()
 {
-  QString filename = QFileDialog::getSaveFileName(this,
+  QString fileName = QFileDialog::getSaveFileName(this,
               tr("Choose a name for the world file"), ".");
-  leSelectWorldFile->setText(filename);
+  leSelectWorldFile->setText(fileName);
 }
 
 
 void QgsPointDialog::on_pbnSelectModifiedRaster_clicked()
 {
-  QString filename = QFileDialog::getSaveFileName(this,
+  QString fileName = QFileDialog::getSaveFileName(this,
               tr("Choose a name for the world file"), ".");
-  if (filename.right(4) != ".tif")
-    filename += ".tif";
-  leSelectModifiedRaster->setText(filename);
-  leSelectWorldFile->setText(guessWorldFileName(filename));
+  if (fileName.right(4) != ".tif")
+    fileName += ".tif";
+  leSelectModifiedRaster->setText(fileName);
+  leSelectWorldFile->setText(guessWorldFileName(fileName));
 }
 
 void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& value)
@@ -210,20 +210,20 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged(const QString& valu
     // Make up a modified raster field name based on the layer file name
     if(mLayer)
       {
-	QString filename(mLayer->source());
+	QString fileName(mLayer->source());
 	QFileInfo file(mLayer->source());
-	int pos = filename.size()-file.suffix().size()-1;
-	filename.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given filename"));
-	pos = filename.size()-file.suffix().size();
-	filename.replace(pos, filename.size(), "tif");
+	int pos = fileName.size()-file.suffix().size()-1;
+	fileName.insert(pos, tr("-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given fileName"));
+	pos = fileName.size()-file.suffix().size();
+	fileName.replace(pos, fileName.size(), "tif");
 	
-	leSelectModifiedRaster->setText(filename);
-	leSelectWorldFile->setText(guessWorldFileName(filename));
+	leSelectModifiedRaster->setText(fileName);
+	leSelectWorldFile->setText(guessWorldFileName(fileName));
       }
   }
   else
   {
-    // Reset to the default filenames
+    // Reset to the default fileNames
     leSelectModifiedRaster->setText("");
     enableModifiedRasterControls(false);
     if(mLayer)

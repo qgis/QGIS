@@ -254,7 +254,7 @@ void QgsRasterLayer::registerGdalDrivers()
 }
 
 
-/** This helper checks to see whether the filename appears to be a valid raster file name */
+/** This helper checks to see whether the fileName appears to be a valid raster file name */
 bool QgsRasterLayer::isValidRasterFileName(QString const & theFileNameQString,
                                            QString & retErrMsg )
 {
@@ -2959,7 +2959,7 @@ QPixmap QgsRasterLayer::getLegendQPixmap(bool theWithNameFlag)
       myQPainter.drawPixmap(0,myHeight-myNoPyramidPixmap.height(),myNoPyramidPixmap);
     }
     //
-    // Overlay the layername
+    // Overlay the layerName
     //
     if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
     {
@@ -3187,7 +3187,7 @@ QPixmap QgsRasterLayer::getDetailedLegendQPixmap(int theLabelCount=3)
   QPixmap myQPixmap2 = myLegendQPixmap.transformed(myQWMatrix);
   QPainter myQPainter2(&myQPixmap2);
   //
-  // Overlay the layername
+  // Overlay the layerName
   //
   if (drawingStyle == MULTI_BAND_SINGLE_BAND_GRAY || drawingStyle == PALETTED_SINGLE_BAND_GRAY || drawingStyle == SINGLE_BAND_GRAY)
   {
@@ -4004,7 +4004,7 @@ double QgsRasterLayer::readValue ( void *data, GDALDataType type, int index )
   Raster layer project file XML of form:
 
   <maplayer type="raster" visible="1" showInOverviewFlag="1">
-  <layername>Wynoochee_dem</layername>
+  <layerName>Wynoochee_dem</layerName>
   <datasource>/home/mcoletti/mnt/MCOLETTIF8F9/c/Toolkit_Course/Answers/Training_Data/wynoochee_dem.img</datasource>
   <zorder>0</zorder>
   <transparencyLevelInt>255</transparencyLevelInt>

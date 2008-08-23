@@ -195,11 +195,11 @@ void QgsGPSPlugin::unload()
   delete mQActionPointer;
 }
 
-void QgsGPSPlugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRoutes,
+void QgsGPSPlugin::loadGPXFile(QString fileName, bool loadWaypoints, bool loadRoutes,
 			       bool loadTracks) {
 
   //check if input file is readable
-  QFileInfo fileInfo(filename);
+  QFileInfo fileInfo(fileName);
   if (!fileInfo.isReadable()) {
     QMessageBox::warning(NULL, tr("GPX Loader"),
 			 tr("Unable to read the selected file.\n")+
@@ -213,22 +213,22 @@ void QgsGPSPlugin::loadGPXFile(QString filename, bool loadWaypoints, bool loadRo
   
   // add the requested layers
   if (loadTracks)
-    emit drawVectorLayer(filename + "?type=track", 
+    emit drawVectorLayer(fileName + "?type=track", 
 			 fileInfo.baseName() + ", tracks", "gpx");
   if (loadRoutes)
-    emit drawVectorLayer(filename + "?type=route", 
+    emit drawVectorLayer(fileName + "?type=route", 
 			 fileInfo.baseName() + ", routes", "gpx");
   if (loadWaypoints)
-    emit drawVectorLayer(filename + "?type=waypoint", 
+    emit drawVectorLayer(fileName + "?type=waypoint", 
 			 fileInfo.baseName() + ", waypoints", "gpx");
   
   emit closeGui();
 }
 
 
-void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer, 
+void QgsGPSPlugin::importGPSFile(QString inputFileName, QgsBabelFormat* importer, 
 				 bool importWaypoints, bool importRoutes, 
-				 bool importTracks, QString outputFilename, 
+				 bool importTracks, QString outputFileName, 
 				 QString layerName) {
 
   // what features does the user want to import?
@@ -243,7 +243,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   // try to start the gpsbabel process
   QStringList babelArgs = 
     importer->importCommand(mBabelPath, typeArg, 
-			       inputFilename, outputFilename);
+			       inputFileName, outputFileName);
 
   QgsDebugMsg(QString("Import command: ") + babelArgs.join("|"));
 
@@ -268,7 +268,7 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   if (babelProcess.exitStatus() != 0) {
     QString babelError(babelProcess.readAllStandardError());
     QString errorMsg(tr("Could not import data from %1!\n\n")
-		     .arg(inputFilename));
+		     .arg(inputFileName));
     errorMsg += babelError;
     QMessageBox::warning(NULL, tr("Error importing data"), errorMsg);
     return;
@@ -276,22 +276,22 @@ void QgsGPSPlugin::importGPSFile(QString inputFilename, QgsBabelFormat* importer
   
   // add the layer
   if (importTracks)
-    emit drawVectorLayer(outputFilename + "?type=track", 
+    emit drawVectorLayer(outputFileName + "?type=track", 
 			 layerName, "gpx");
   if (importRoutes)
-    emit drawVectorLayer(outputFilename + "?type=route", 
+    emit drawVectorLayer(outputFileName + "?type=route", 
 			 layerName, "gpx");
   if (importWaypoints)
-    emit drawVectorLayer(outputFilename + "?type=waypoint", 
+    emit drawVectorLayer(outputFileName + "?type=waypoint", 
 			 layerName, "gpx");
   
   emit closeGui();
 }
 
 
-void QgsGPSPlugin::convertGPSFile(QString inputFilename,
+void QgsGPSPlugin::convertGPSFile(QString inputFileName,
                                   int convertType,
-				  QString outputFilename, 
+				  QString outputFileName, 
 				  QString layerName) {
 
   // what features does the user want to import?
@@ -311,8 +311,8 @@ void QgsGPSPlugin::convertGPSFile(QString inputFilename,
   
   // try to start the gpsbabel process
   QStringList babelArgs;
-  babelArgs << mBabelPath << "-i"<<"gpx"<<"-f"<< inputFilename
-            << convertStrings <<"-o"<<"gpx"<<"-F"<< outputFilename;
+  babelArgs << mBabelPath << "-i"<<"gpx"<<"-f"<< inputFileName
+            << convertStrings <<"-o"<<"gpx"<<"-F"<< outputFileName;
   QgsDebugMsg(QString("Conversion command: ") + babelArgs.join("|"));
 
   QProcess babelProcess;
@@ -336,7 +336,7 @@ void QgsGPSPlugin::convertGPSFile(QString inputFilename,
   if (babelProcess.exitStatus() != 0) {
     QString babelError(babelProcess.readAllStandardError());
     QString errorMsg(tr("Could not convert data from %1!\n\n")
-		     .arg(inputFilename));
+		     .arg(inputFileName));
     errorMsg += babelError;
     QMessageBox::warning(NULL, tr("Error converting data"), errorMsg);
     return;
@@ -346,11 +346,11 @@ void QgsGPSPlugin::convertGPSFile(QString inputFilename,
   switch ( convertType )
   {
   case 0:
-    emit drawVectorLayer(outputFilename + "?type=waypoint", 
+    emit drawVectorLayer(outputFileName + "?type=waypoint", 
 			 layerName, "gpx");
     break;
   case 1:
-    emit drawVectorLayer(outputFilename + "?type=route", 
+    emit drawVectorLayer(outputFileName + "?type=route", 
 			 layerName, "gpx");
     break;
   default:
@@ -363,7 +363,7 @@ void QgsGPSPlugin::convertGPSFile(QString inputFilename,
 
 void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
 				   bool downloadWaypoints, bool downloadRoutes,
-				   bool downloadTracks, QString outputFilename,
+				   bool downloadTracks, QString outputFileName,
 				   QString layerName) {
   
   // what does the user want to download?
@@ -384,7 +384,7 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
   // try to start the gpsbabel process
   QStringList babelArgs = 
     mDevices[device]->importCommand(mBabelPath, typeArg, 
-				    port, outputFilename);
+				    port, outputFileName);
   if (babelArgs.isEmpty()) {
     QMessageBox::warning(NULL, tr("Not supported"),
 			 QString(tr("This device does not support downloading ") +
@@ -423,13 +423,13 @@ void QgsGPSPlugin::downloadFromGPS(QString device, QString port,
   
   // add the layer
   if (downloadWaypoints)
-    emit drawVectorLayer(outputFilename + "?type=waypoint", 
+    emit drawVectorLayer(outputFileName + "?type=waypoint", 
 			 layerName, "gpx");
   if (downloadRoutes)
-    emit drawVectorLayer(outputFilename + "?type=route", 
+    emit drawVectorLayer(outputFileName + "?type=route", 
 			 layerName, "gpx");
   if (downloadTracks)
-    emit drawVectorLayer(outputFilename + "?type=track", 
+    emit drawVectorLayer(outputFileName + "?type=track", 
 			 layerName, "gpx");
   
   // everything was OK, remember the device and port for next time

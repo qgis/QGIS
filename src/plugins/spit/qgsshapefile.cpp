@@ -47,10 +47,10 @@
 
 
 QgsShapeFile::QgsShapeFile(QString name, QString encoding){
-  filename = name;
+  fileName = name;
   features = 0;
   OGRRegisterAll();
-  ogrDataSource = OGROpen(QFile::encodeName(filename).constData(),FALSE,NULL);
+  ogrDataSource = OGROpen(QFile::encodeName(fileName).constData(),FALSE,NULL);
   if (ogrDataSource != NULL){
     valid = true;
     ogrLayer = OGR_DS_GetLayer(ogrDataSource,0);
@@ -81,7 +81,7 @@ bool QgsShapeFile::scanGeometries()
   sg->setMinimum(0);
   sg->setMaximum(0);
   QString label = tr("Scanning ");
-  label += filename;
+  label += fileName;
   sg->setLabel(new QLabel(label));
   sg->show();
   qApp->processEvents();
@@ -172,7 +172,7 @@ QString QgsShapeFile::getFeatureClass(){
       QgsDebugMsg("After escaping, geom_type is : " + geom_type);
       delete[] esc_str;
       
-      QString file(filename);
+      QString file(fileName);
       file.replace(file.length()-3, 3, "dbf");
       // open the dbf file
       std::ifstream dbf(file.toUtf8(), std::ios::in | std::ios::binary);
@@ -236,7 +236,7 @@ bool QgsShapeFile::is_valid(){
 }
 
 QString QgsShapeFile::getName(){
-  return filename;
+  return fileName;
 }
 
 QString QgsShapeFile::getTable(){
@@ -250,7 +250,7 @@ void QgsShapeFile::setTable(QString new_table){
 }
 
 void QgsShapeFile::setDefaultTable(){
-  QFileInfo fi(filename);
+  QFileInfo fi(fileName);
   table_name = fi.baseName();
 }
 

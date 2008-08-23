@@ -245,10 +245,10 @@ void QgsAbout::openUrl(QString url)
  * Step 2: Replace all bytes of the UTF-8 above 0x7f with the hexcode in lower case.
  * Step 2: Replace all non [a-z][a-Z][0-9] with underscore (backward compatibility)
  */
-QString QgsAbout::fileSystemSafe(QString filename)
+QString QgsAbout::fileSystemSafe(QString fileName)
 {
   QString result;
-  QByteArray utf8 = filename.toUtf8();
+  QByteArray utf8 = fileName.toUtf8();
 
   for (int i = 0; i < utf8.size(); i++)
   {

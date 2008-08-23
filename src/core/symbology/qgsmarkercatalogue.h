@@ -50,7 +50,7 @@ public:
      */
     QPicture pictureMarker (QString fullName, double size, QPen pen, QBrush brush, bool qtBug = true );
     
-    /** Returns a pixmap given a filename of a svg marker
+    /** Returns a pixmap given a fileName of a svg marker
      *  NOTE: this method needs to be public static for QgsMarkerDialog::visualizeMarkers */
     static void svgMarker (QPainter * thepPainter, QString name, double size );
 private:

@@ -182,10 +182,10 @@ QPicture QgsMarkerCatalogue::pictureMarker ( QString fullName, double size, QPen
   return QPicture(); // empty
 }
 
-void QgsMarkerCatalogue::svgMarker ( QPainter * thepPainter, QString filename, double scaleFactor)
+void QgsMarkerCatalogue::svgMarker ( QPainter * thepPainter, QString fileName, double scaleFactor)
 {
   QSvgRenderer mySVG;
-  mySVG.load(filename);
+  mySVG.load(fileName);
   mySVG.render(thepPainter);
 }
 

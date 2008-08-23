@@ -97,9 +97,9 @@ class DualEdgeTriangulation: public Triangulation
   /**Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
   bool pointInside(double x, double y);
   /**Reads the dual edge structure of a taff file*/
-  //bool readFromTAFF(QString filename);
+  //bool readFromTAFF(QString fileName);
   /**Saves the dual edge structure to a taff file*/
-  //bool saveToTAFF(QString filename) const;
+  //bool saveToTAFF(QString fileName) const;
   /**Swaps the edge which is closest to the point with x and y coordinates (if this is possible)*/
   virtual bool swapEdge(double x, double y);
   /**Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method*/

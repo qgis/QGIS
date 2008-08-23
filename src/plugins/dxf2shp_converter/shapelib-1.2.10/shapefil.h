@@ -354,9 +354,9 @@ void    SHPAPI_CALL
       SHPDestroyTree( SHPTree * hTree );
 
 int	SHPAPI_CALL
-      SHPWriteTree( SHPTree *hTree, const char * pszFilename );
+      SHPWriteTree( SHPTree *hTree, const char * pszFileName );
 SHPTree SHPAPI_CALL
-      SHPReadTree( const char * pszFilename );
+      SHPReadTree( const char * pszFileName );
 
 int	SHPAPI_CALL
       SHPTreeAddObject( SHPTree * hTree, SHPObject * psObject );
@@ -470,7 +470,7 @@ int SHPAPI_CALL
       DBFWriteTuple(DBFHandle psDBF, int hEntity, void * pRawTuple );
 
 DBFHandle SHPAPI_CALL
-      DBFCloneEmpty(DBFHandle psDBF, const char * pszFilename );
+      DBFCloneEmpty(DBFHandle psDBF, const char * pszFileName );
  
 void	SHPAPI_CALL
       DBFClose( DBFHandle hDBF );

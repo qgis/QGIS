@@ -1975,7 +1975,7 @@ static void openFilesRememberingFilter_(QString const &filterName,
 
 
 /**
-  This method prompts the user for a list of vector filenames with a dialog.
+  This method prompts the user for a list of vector fileNames with a dialog.
   */
 void QgisApp::addVectorLayer()
 {
@@ -2074,7 +2074,7 @@ bool QgisApp::addVectorLayers(QStringList const & theLayerQStringList, const QSt
 
 
 
-/** This helper checks to see whether the filename appears to be a valid vector file name */
+/** This helper checks to see whether the fileName appears to be a valid vector file name */
 bool QgisApp::isValidVectorFileName(QString theFileNameQString)
 {
   return (theFileNameQString.toLower().endsWith(".shp"));
@@ -2527,7 +2527,7 @@ void QgisApp::fileNew(bool thePromptToSaveFlag)
 
   QgsProject* prj = QgsProject::instance();
   prj->title( QString::null );
-  prj->setFilename( QString::null );
+  prj->setFileName( QString::null );
   prj->clearProperties(); // why carry over properties from previous projects?
 
   QSettings settings;
@@ -2599,7 +2599,7 @@ void QgisApp::newVectorLayer()
   bool haveLastUsedFilter = false; // by default, there is no last
   // used filter
   QString enc;
-  QString filename;
+  QString fileName;
 
   QSettings settings;         // where we keep last used filter in
   // persistant state
@@ -2634,14 +2634,14 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  filename = openFileDialog->selectedFiles().first();
+  fileName = openFileDialog->selectedFiles().first();
   enc = openFileDialog->encoding();
 
   // If the file exists, delete it otherwise we'll end up loading that
   // file, which can cause problems (e.g., if the file contains
   // linestrings, but we're wanting to create points, we'll end up
   // with a linestring file).
-  QFile::remove(filename);
+  QFile::remove(fileName);
 
   settings.setValue("/UI/lastVectorFileFilter", openFileDialog->selectedFilter());
 
@@ -2668,20 +2668,20 @@ void QgisApp::newVectorLayer()
 #if 0
       if(geometrytype == QGis::WKBPoint)
       {
-        createEmptyDataSource(filename,fileformat, enc, QGis::WKBPoint, attributes);
+        createEmptyDataSource(fileName,fileformat, enc, QGis::WKBPoint, attributes);
       }
       else if (geometrytype == QGis::WKBLineString)
       {
-        createEmptyDataSource(filename,fileformat, enc, QGis::WKBLineString, attributes);
+        createEmptyDataSource(fileName,fileformat, enc, QGis::WKBLineString, attributes);
       }
       else if(geometrytype == QGis::WKBPolygon)
       {
-        createEmptyDataSource(filename,fileformat, enc, QGis::WKBPolygon, attributes);
+        createEmptyDataSource(fileName,fileformat, enc, QGis::WKBPolygon, attributes);
       }
 #endif
       if(geometrytype != QGis::WKBUnknown)
       {
-        createEmptyDataSource(filename,fileformat, enc, geometrytype, attributes);
+        createEmptyDataSource(fileName,fileformat, enc, geometrytype, attributes);
       }
       else
       {
@@ -2696,9 +2696,9 @@ void QgisApp::newVectorLayer()
   }
 
   //then add the layer to the view
-  QStringList filenames;
-  filenames.append(filename);
-  addVectorLayers(filenames, enc);
+  QStringList fileNames;
+  fileNames.append(fileName);
+  addVectorLayers(fileNames, enc);
 }
 
 void QgisApp::fileOpen()
@@ -2749,7 +2749,7 @@ void QgisApp::fileOpen()
     delete mComposer;
     mComposer = new QgsComposer(this);
 
-    QgsProject::instance()->setFilename( fullPath );
+    QgsProject::instance()->setFileName( fullPath );
 
     try
     {
@@ -2873,7 +2873,7 @@ bool QgisApp::fileSave()
       return false;
     }
 
-  // if we don't have a filename, then obviously we need to get one; note
+  // if we don't have a fileName, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
@@ -2917,7 +2917,7 @@ bool QgisApp::fileSave()
     }
 
 
-    QgsProject::instance()->setFilename( fullPath.filePath() );
+    QgsProject::instance()->setFileName( fullPath.filePath() );
   }
 
   try
@@ -2964,7 +2964,7 @@ void QgisApp::fileSaveAs()
   QString lastUsedDir = settings.value("/UI/lastProjectDir", ".").toString();
 
   auto_ptr<QFileDialog> saveFileDialog( new QFileDialog(this,
-      tr("Choose a filename to save the QGIS project file as"),
+      tr("Choose a fileName to save the QGIS project file as"),
       lastUsedDir, QObject::tr("QGis files (*.qgs)")) );
 
   saveFileDialog->setFileMode(QFileDialog::AnyFile);
@@ -2973,7 +2973,7 @@ void QgisApp::fileSaveAs()
 
   saveFileDialog->setConfirmOverwrite( true );
 
-  // if we don't have a filename, then obviously we need to get one; note
+  // if we don't have a fileName, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
@@ -3003,7 +3003,7 @@ void QgisApp::fileSaveAs()
 
   try
   {
-    QgsProject::instance()->setFilename( fullPath.filePath() );
+    QgsProject::instance()->setFileName( fullPath.filePath() );
 
     if ( QgsProject::instance()->write() )
     {
@@ -3205,7 +3205,7 @@ void QgisApp::saveMapAsImage()
 
   //create a file dialog using the the filter list generated above
   std::auto_ptr < QFileDialog > myQFileDialog( new QFileDialog(this,
-      tr("Choose a filename to save the map image as"),
+      tr("Choose a fileName to save the map image as"),
       myLastUsedDir, myFilters) );
 
   // allow for selection of more than one file
@@ -3222,7 +3222,7 @@ void QgisApp::saveMapAsImage()
   }
 
 
-  //prompt the user for a filename
+  //prompt the user for a fileName
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
   if (myQFileDialog->exec() == QDialog::Accepted)
   {
@@ -3233,7 +3233,7 @@ void QgisApp::saveMapAsImage()
   QgsDebugMsg("Selected filter: " + myFilterString);
   QgsDebugMsg("Image type to be passed to mapcanvas: " + myFilterMap[myFilterString]);
 
-  // Add the file type suffix to the filename if required
+  // Add the file type suffix to the fileName if required
   if (!myOutputFileNameQString.endsWith(myFilterMap[myFilterString]))
   {
     myOutputFileNameQString += "." + myFilterMap[myFilterString];
@@ -3259,7 +3259,7 @@ void QgisApp::saveMapAsImage(QString theImageFileNameQString, QPixmap * theQPixm
 {
   if ( theImageFileNameQString=="")
   {
-    //no filename chosen
+    //no fileName chosen
     return;
   }
   else

@@ -191,7 +191,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   setMaxScale(element.attribute("maxScale").toFloat());
 
   // set name
-  mnl = layer_node.namedItem("layername");
+  mnl = layer_node.namedItem("layerName");
   mne = mnl.toElement();
   setLayerName( mne.text() );
 
@@ -255,7 +255,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 
   // layer name
-  QDomElement layerName = document.createElement( "layername" );
+  QDomElement layerName = document.createElement( "layerName" );
   QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
 
@@ -482,7 +482,7 @@ QString QgsMapLayer::loadNamedStyle ( const QString theURI, bool &theResultFlag)
   else
   { 
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsg( QString("project filename: %1").arg( project.absoluteFilePath() ) );
+    QgsDebugMsg( QString("project fileName: %1").arg( project.absoluteFilePath() ) );
 
     QString qml;
     if( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ), theURI, qml ) ||
@@ -574,7 +574,7 @@ QString QgsMapLayer::saveNamedStyle ( const QString theURI, bool & theResultFlag
   QFileInfo myFileInfo ( theURI );
   if ( myFileInfo.exists() || theURI.endsWith(".qml", Qt::CaseInsensitive) )
   {
-    QFileInfo myDirInfo ( myFileInfo.path() ); //excludes filename
+    QFileInfo myDirInfo ( myFileInfo.path() ); //excludes fileName
     if ( !myDirInfo.isWritable() )
     {
       return QObject::tr( "The directory containing your dataset needs to be writeable!" );

@@ -45,7 +45,7 @@ public:
   //! get the full path name of the map file
   QString fullPathName();
   //! Set the full path to the file
-  void setFileName(QString filename);
+  void setFileName(QString fileName);
   enum ACTION {
   	SAVE,
 	SAVEAS,
