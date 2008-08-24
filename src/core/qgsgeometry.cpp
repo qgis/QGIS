@@ -109,14 +109,14 @@ static GEOSGeometry *createGeosCollection( int typeId, QVector<GEOSGeometry*> ge
 
 static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
 {
-  if ( GEOSGeomTypeId( geom ) == GEOS_MULTIPOLYGON )
+  if ( GEOSGeomTypeId(( GEOSGeometry * ) geom ) == GEOS_MULTIPOLYGON )
   {
     QVector<GEOSGeometry *> geoms;
 
     try
     {
 
-      for ( int i = 0; i < GEOSGetNumGeometries( geom ); ++i )
+      for ( int i = 0; i < GEOSGetNumGeometries(( GEOSGeometry * )geom ); ++i )
         geoms << GEOSGeom_clone(( GEOSGeometry * ) GEOSGetGeometryN(( GEOSGeometry * ) geom, i ) );
 
       return createGeosCollection( GEOS_MULTIPOLYGON, geoms );
