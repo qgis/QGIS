@@ -643,6 +643,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         refresh();
         break;
 
+	
+
       case Qt::Key_Space:
         QgsDebugMsg( "Pressing pan selector" );
 
@@ -654,6 +656,16 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         }
         break;
 
+    case Qt::Key_PageUp:
+      QgsDebugMsg("Zoom in");
+      zoom(true);
+      break;
+      
+    case Qt::Key_PageDown:
+      QgsDebugMsg("Zoom out");
+      zoom(false);
+      break;
+      
       default:
         // Pass it on
         if ( mMapTool )
@@ -798,9 +810,10 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
     int height = lastSize.height();
     lastSize = QSize( -1, -1 );
 
-    mScene->setSceneRect( QRectF( 0, 0, width, height ) );
-
+    //set map size before scene size seems to solve the white box problem
+    //when moving rubber bands
     mMap->resize( QSize( width, height ) );
+    mScene->setSceneRect( QRectF( 0, 0, width, height ) );
 
     // notify canvas items of change
     updateCanvasItemsPositions();
