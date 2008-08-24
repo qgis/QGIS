@@ -106,7 +106,7 @@ for my $file (@ARGV) {
 				    $arr[-2] =~ /^std::endl$/ ) {
 					pop @arr;
 					pop @arr;
-					$arr[-1] = "std::endl;";
+					push @arr, "std::endl;";
 				}
 
 				unless( $arr[-1] =~ /^std::endl;$/ ) {
