@@ -373,6 +373,12 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
 
   // compose the URL query string for the WMS server.
 
+  QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
+  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3")
+    {
+      crsKey = "CRS";
+    }
+
   QString url = baseUrl;
 
   url += "SERVICE=WMS";
@@ -383,7 +389,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
   url += "&";
   url += "BBOX=" + bbox;
   url += "&";
-  url += "CRS=" + imageCrs;
+  url += crsKey + "=" + imageCrs;
   url += "&";
   url += "WIDTH=" + width;
   url += "&";
@@ -412,7 +418,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "BBOX=" + bbox;
   mGetFeatureInfoUrlBase += "&";
-  mGetFeatureInfoUrlBase += "CRS=" + imageCrs;
+  mGetFeatureInfoUrlBase += crsKey + "=" + imageCrs;
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "WIDTH=" + width;
   mGetFeatureInfoUrlBase += "&";
