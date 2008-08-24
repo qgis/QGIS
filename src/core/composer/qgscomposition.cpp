@@ -190,133 +190,133 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   return true;
 }
 
-void QgsComposition::addItemToZList(QgsComposerItem* item)
+void QgsComposition::addItemToZList( QgsComposerItem* item )
 {
-  if(!item)
-    {
-      return;
-    }
-  mItemZList.push_back(item);
-  qWarning(QString::number(mItemZList.size()).toLocal8Bit().data());
-  item->setZValue(mItemZList.size());
+  if ( !item )
+  {
+    return;
+  }
+  mItemZList.push_back( item );
+  qWarning( QString::number( mItemZList.size() ).toLocal8Bit().data() );
+  item->setZValue( mItemZList.size() );
 }
 
-void QgsComposition::removeItemFromZList(QgsComposerItem* item)
+void QgsComposition::removeItemFromZList( QgsComposerItem* item )
 {
-  if(!item)
-    {
-      return;
-    }
-  mItemZList.removeAll(item);
+  if ( !item )
+  {
+    return;
+  }
+  mItemZList.removeAll( item );
 }
 
 void QgsComposition::raiseSelectedItems()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
-  for(; it != selectedItems.end(); ++it)
-    {
-      raiseItem(*it);
-    }
+  for ( ; it != selectedItems.end(); ++it )
+  {
+    raiseItem( *it );
+  }
 
   //update all positions
   updateZValues();
   update();
 }
 
-void QgsComposition::raiseItem(QgsComposerItem* item)
+void QgsComposition::raiseItem( QgsComposerItem* item )
 {
   //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it(mItemZList);
-  if(it.findNext(item))
+  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    if ( it.hasNext() )
     {
-      if(it.hasNext())
-	{
-	  it.remove();
-	  it.next();
-	  it.insert(item);
-	}
+      it.remove();
+      it.next();
+      it.insert( item );
     }
+  }
 }
 
 void QgsComposition::lowerSelectedItems()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
-  for(; it != selectedItems.end(); ++it)
-    {
-      lowerItem(*it);
-    }
+  for ( ; it != selectedItems.end(); ++it )
+  {
+    lowerItem( *it );
+  }
 
   //update all positions
   updateZValues();
   update();
 }
 
-void QgsComposition::lowerItem(QgsComposerItem* item)
+void QgsComposition::lowerItem( QgsComposerItem* item )
 {
   //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it(mItemZList);
-  if(it.findNext(item))
+  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    it.previous();
+    if ( it.hasPrevious() )
     {
+      it.remove();
       it.previous();
-      if(it.hasPrevious())
-	{
-	  it.remove();
-	  it.previous();
-	  it.insert(item);
-	}
+      it.insert( item );
     }
+  }
 }
 
 void QgsComposition::moveSelectedItemsToTop()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
-  for(; it != selectedItems.end(); ++it)
-    {
-      moveItemToTop(*it);
-    }
+  for ( ; it != selectedItems.end(); ++it )
+  {
+    moveItemToTop( *it );
+  }
 
   //update all positions
   updateZValues();
   update();
 }
 
-void QgsComposition::moveItemToTop(QgsComposerItem* item)
+void QgsComposition::moveItemToTop( QgsComposerItem* item )
 {
   //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it(mItemZList);
-  if(it.findNext(item))
-    {
-      it.remove();
-    }
-  mItemZList.push_back(item);
+  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    it.remove();
+  }
+  mItemZList.push_back( item );
 }
- 
+
 void QgsComposition::moveSelectedItemsToBottom()
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
   QList<QgsComposerItem*>::iterator it = selectedItems.begin();
-  for(; it != selectedItems.end(); ++it)
-    {
-      moveItemToBottom(*it);
-    }
+  for ( ; it != selectedItems.end(); ++it )
+  {
+    moveItemToBottom( *it );
+  }
 
   //update all positions
   updateZValues();
   update();
 }
 
-void QgsComposition::moveItemToBottom(QgsComposerItem* item)
+void QgsComposition::moveItemToBottom( QgsComposerItem* item )
 {
   //search item
-  QMutableLinkedListIterator<QgsComposerItem*> it(mItemZList);
-  if(it.findNext(item))
-    {
-      it.remove();
-    }
-  mItemZList.push_front(item);
+  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
+  if ( it.findNext( item ) )
+  {
+    it.remove();
+  }
+  mItemZList.push_front( item );
 }
 
 void QgsComposition::updateZValues()
@@ -325,79 +325,79 @@ void QgsComposition::updateZValues()
   QLinkedList<QgsComposerItem*>::iterator it = mItemZList.begin();
   QgsComposerItem* currentItem = 0;
 
-  for(; it != mItemZList.end(); ++it)
+  for ( ; it != mItemZList.end(); ++it )
+  {
+    currentItem = *it;
+    if ( currentItem )
     {
-      currentItem = *it;
-      if(currentItem)
-	{
-	  qWarning(QString::number(counter).toLocal8Bit().data());
-	  currentItem->setZValue(counter);
-	}
-      ++counter;
+      qWarning( QString::number( counter ).toLocal8Bit().data() );
+      currentItem->setZValue( counter );
     }
+    ++counter;
+  }
 }
 
 void QgsComposition::sortZList()
 {
   //debug: list before sorting
-  qWarning("before sorting");
+  qWarning( "before sorting" );
   QLinkedList<QgsComposerItem*>::iterator before_it = mItemZList.begin();
-  for(; before_it != mItemZList.end(); ++before_it)
-    {
-      qWarning(QString::number((*before_it)->zValue()).toLocal8Bit().data());
-    }
+  for ( ; before_it != mItemZList.end(); ++before_it )
+  {
+    qWarning( QString::number(( *before_it )->zValue() ).toLocal8Bit().data() );
+  }
 
-  QMutableLinkedListIterator<QgsComposerItem*> it(mItemZList);
+  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   int previousZ, afterZ; //z values of items before and after
   QgsComposerItem* previousItem;
   QgsComposerItem* afterItem;
 
-  while(it.hasNext())
+  while ( it.hasNext() )
+  {
+    previousItem = it.next();
+    if ( previousItem )
     {
-      previousItem = it.next();
-      if(previousItem)
-	{
-	  previousZ = previousItem->zValue();
-	}
-      else
-	{
-	  previousZ = -1;
-	}
-
-      if(!it.hasNext())
-	{
-	  break; //this is the end...
-	}
-      afterItem = it.peekNext();
-
-      if(afterItem)
-	{
-	  afterZ = afterItem->zValue();
-	}
-      else
-	{
-	  afterZ = -1;
-	}
-
-      if(previousZ > afterZ)
-	{
-	  //swap items
-	  if(previousItem && afterItem)
-	    {
-	      it.remove();
-	      it.next();
-	      it.insert(previousItem);
-	      it.previous();
-	    }
-	}
+      previousZ = previousItem->zValue();
     }
+    else
+    {
+      previousZ = -1;
+    }
+
+    if ( !it.hasNext() )
+    {
+      break; //this is the end...
+    }
+    afterItem = it.peekNext();
+
+    if ( afterItem )
+    {
+      afterZ = afterItem->zValue();
+    }
+    else
+    {
+      afterZ = -1;
+    }
+
+    if ( previousZ > afterZ )
+    {
+      //swap items
+      if ( previousItem && afterItem )
+      {
+        it.remove();
+        it.next();
+        it.insert( previousItem );
+        it.previous();
+      }
+    }
+  }
 
   //debug: list after sorting
   //debug: list before sorting
-  qWarning("after sorting");
+  qWarning( "after sorting" );
   QLinkedList<QgsComposerItem*>::iterator after_it = mItemZList.begin();
-  for(; after_it != mItemZList.end(); ++after_it)
-    {
-      qWarning(QString::number((*after_it)->zValue()).toLocal8Bit().data());
-    }
+  for ( ; after_it != mItemZList.end(); ++after_it )
+  {
+    qWarning( QString::number(( *after_it )->zValue() ).toLocal8Bit().data() );
+  }
 }

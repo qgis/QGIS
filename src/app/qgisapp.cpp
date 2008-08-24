@@ -4658,14 +4658,12 @@ bool QgisApp::saveDirty()
 
 void QgisApp::changeEvent( QEvent* event )
 {
-  switch ( event->type() )
-  {
-    case QEvent::WindowTitleChange:
 #ifdef Q_WS_MAC
-      mWindowAction->setText( windowTitle() );
-#endif
-      break;
+  if ( event->type() == QEvent::WindowTitleChange )
+  {
+    mWindowAction->setText( windowTitle() );
   }
+#endif
   QWidget::changeEvent( event );
 }
 

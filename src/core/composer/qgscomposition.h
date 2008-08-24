@@ -30,7 +30,7 @@ class QDomElement;
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
  * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
- * them in a list in ascending z-Order. This list can be changed to lower/raise items one position 
+ * them in a list in ascending z-Order. This list can be changed to lower/raise items one position
  * or to bring them to front/back.
  * */
 class CORE_EXPORT QgsComposition: public QGraphicsScene
@@ -93,23 +93,23 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
-    void addItemToZList(QgsComposerItem* item);
+    void addItemToZList( QgsComposerItem* item );
     /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
-    void removeItemFromZList(QgsComposerItem* item);
+    void removeItemFromZList( QgsComposerItem* item );
 
     void raiseSelectedItems();
-    void raiseItem(QgsComposerItem* item);
+    void raiseItem( QgsComposerItem* item );
     void lowerSelectedItems();
-    void lowerItem(QgsComposerItem* item);
+    void lowerItem( QgsComposerItem* item );
     void moveSelectedItemsToTop();
-    void moveItemToTop(QgsComposerItem* item);
+    void moveItemToTop( QgsComposerItem* item );
     void moveSelectedItemsToBottom();
-    void moveItemToBottom(QgsComposerItem* item);
+    void moveItemToBottom( QgsComposerItem* item );
 
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      after reading all the items from xml file*/
     void sortZList();
-    
+
 
   private:
     /**Pointer to map renderer of QGIS main map*/
