@@ -78,8 +78,7 @@ QgsAttributeTable::QgsAttributeTable( QWidget * parent ) :
     mPreviousSortIndicatorColumn( -1 )
 {
   QFont f( font() );
-  f.setFamily( "Helvetica" );
-  f.setPointSize( 9 );
+  f.setPointSize( f.pointSize() - 2 );
   setFont( f );
   mDelegate = new QgsAttributeTableItemDelegate( this );
   setItemDelegate( mDelegate );
