@@ -318,7 +318,7 @@ QString QgsGrass::getDefaultMapset( void )
 
 void QgsGrass::setLocation( QString gisdbase, QString location )
 {
-  QgsDebugMsg( QString( "QgsGrass::setLocation(): gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
   init();
 
   // Set principal GRASS variables (in memory)
@@ -337,7 +337,7 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 
 void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 {
-  QgsDebugMsg( QString( "QgsGrass::setLocation(): gisdbase = %1 location = %2 mapset = %3" ).arg( gisdbase ).arg( location ).arg( mapset ) );
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3" ).arg( gisdbase ).arg( location ).arg( mapset ) );
   init();
 
   // Set principal GRASS variables (in memory)
@@ -434,7 +434,6 @@ void GRASS_EXPORT QgsGrass::clearErrorEnv()
 
 QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, QString mapset )
 {
-  QgsDebugMsg( "QgsGrass::openMapset" );
   QgsDebugMsg( QString( "gisdbase = %1" ).arg( gisdbase.local8Bit().data() ) );
   QgsDebugMsg( QString( "location = %1" ).arg( location.local8Bit().data() ) );
   QgsDebugMsg( QString( "mapset = %1" ).arg( mapset.local8Bit().data() ) );
@@ -586,7 +585,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
 QString QgsGrass::closeMapset( )
 {
-  QgsDebugMsg( "QgsGrass::closeMapset" );
+  QgsDebugMsg( "entered." );
 
   if ( mMapsetLock.length() > 0 )
   {
@@ -638,7 +637,7 @@ QString QgsGrass::closeMapset( )
 
 QStringList GRASS_EXPORT QgsGrass::locations( QString gisbase )
 {
-  QgsDebugMsg( QString( "QgsGrass::locations gisbase = %1" ).arg( gisbase ) );
+  QgsDebugMsg( QString( "gisbase = %1" ).arg( gisbase ) );
 
   QStringList list;
 
@@ -660,7 +659,7 @@ QStringList GRASS_EXPORT QgsGrass::locations( QString gisbase )
 
 QStringList GRASS_EXPORT QgsGrass::mapsets( QString gisbase, QString locationName )
 {
-  QgsDebugMsg( QString( "QgsGrass::mapsets gisbase = %1 locationName = %2" ).arg( gisbase ).arg( locationName ) );
+  QgsDebugMsg( QString( "gisbase = %1 locationName = %2" ).arg( gisbase ).arg( locationName ) );
 
   if ( gisbase.isEmpty() || locationName.isEmpty() )
     return QStringList();
@@ -670,7 +669,7 @@ QStringList GRASS_EXPORT QgsGrass::mapsets( QString gisbase, QString locationNam
 
 QStringList GRASS_EXPORT QgsGrass::mapsets( QString locationPath )
 {
-  QgsDebugMsg( QString( "QgsGrass::mapsets locationPath = %1" ).arg( locationPath ) );
+  QgsDebugMsg( QString( "locationPath = %1" ).arg( locationPath ) );
 
   QStringList list;
 
@@ -692,7 +691,7 @@ QStringList GRASS_EXPORT QgsGrass::mapsets( QString locationPath )
 QStringList GRASS_EXPORT QgsGrass::vectors( QString gisbase, QString locationName,
     QString mapsetName )
 {
-  QgsDebugMsg( "QgsGrass::vectors()" );
+  QgsDebugMsg( "entered." );
 
   if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
     return QStringList();
@@ -728,7 +727,7 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString gisbase, QString locationNam
 
 QStringList GRASS_EXPORT QgsGrass::vectors( QString mapsetPath )
 {
-  QgsDebugMsg( QString( "QgsGrass::vectors mapsetPath = %1" ).arg( mapsetPath ) );
+  QgsDebugMsg( QString( "mapsetPath = %1" ).arg( mapsetPath ) );
 
   QStringList list;
 
@@ -753,7 +752,7 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString mapsetPath )
 QStringList GRASS_EXPORT QgsGrass::rasters( QString gisbase, QString locationName,
     QString mapsetName )
 {
-  QgsDebugMsg( "QgsGrass::rasters()" );
+  QgsDebugMsg( "entered." );
 
   if ( gisbase.isEmpty() || locationName.isEmpty() || mapsetName.isEmpty() )
     return QStringList();
@@ -790,7 +789,7 @@ QStringList GRASS_EXPORT QgsGrass::rasters( QString gisbase, QString locationNam
 
 QStringList GRASS_EXPORT QgsGrass::rasters( QString mapsetPath )
 {
-  QgsDebugMsg( QString( "QgsGrass::rasters mapsetPath = %1" ).arg( mapsetPath ) );
+  QgsDebugMsg( QString( "mapsetPath = %1" ).arg( mapsetPath ) );
 
   QStringList list;
 
@@ -818,7 +817,7 @@ QStringList GRASS_EXPORT QgsGrass::elements( QString gisbase, QString locationNa
 
 QStringList GRASS_EXPORT QgsGrass::elements( QString mapsetPath, QString element )
 {
-  QgsDebugMsg( QString( "QgsGrass::elements mapsetPath = %1" ).arg( mapsetPath ) );
+  QgsDebugMsg( QString( "mapsetPath = %1" ).arg( mapsetPath ) );
 
   QStringList list;
 
@@ -888,7 +887,7 @@ bool GRASS_EXPORT QgsGrass::writeRegion( QString gisbase,
     QString location, QString mapset,
     struct Cell_head *window )
 {
-  QgsDebugMsg( "QgsGrass::writeRegion()" );
+  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "n = %1 s = %2" ).arg( window->north ).arg( window->south ) );
   QgsDebugMsg( QString( "e = %1 w = %2" ).arg( window->east ).arg( window->west ) );
 
@@ -949,7 +948,7 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
                                        QString location, QString mapset, QString map,
                                        struct Cell_head *window )
 {
-  QgsDebugMsg( "QgsGrass::mapRegion()" );
+  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "map = %1" ).arg( map ) );
   QgsDebugMsg( QString( "mapset = %1" ).arg( mapset ) );
 

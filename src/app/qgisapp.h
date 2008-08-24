@@ -80,14 +80,14 @@ class QgisApp : public QMainWindow
     QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey );
 
     /** \brief overloaded vesion of the privat addLayer method that takes a list of
-     * fileNames instead of prompting user with a dialog.
+     * file names instead of prompting user with a dialog.
      @param enc encoding type for the layer
      @returns true if successfully added layer
      */
     bool addVectorLayers( QStringList const & theLayerQStringList, const QString& enc );
 
     /** overloaded vesion of the private addRasterLayer()
-      Method that takes a list of fileNames instead of prompting
+      Method that takes a list of file names instead of prompting
       user with a dialog.
       @returns true if successfully added layer(s)
       */
@@ -178,7 +178,7 @@ class QgisApp : public QMainWindow
   public slots:
     //! About QGis
     void about();
-    //! Add a raster layer to the map (will prompt user for fileName using dlg )
+    //! Add a raster layer to the map (will prompt user for file name using dlg )
     void addRasterLayer();
     //#ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
@@ -452,7 +452,7 @@ class QgisApp : public QMainWindow
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
     //@todo We should move these next two into vector layer class
-    /** This helper checks to see whether the fileName appears to be a valid vector file name */
+    /** This helper checks to see whether the file name appears to be a valid vector file name */
     bool isValidVectorFileName( QString theFileNameQString );
     /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
     bool isValidVectorFileName( QString * theFileNameQString );

@@ -21,9 +21,8 @@ email                : ersts@amnh.org
 
 QgsRasterShaderFunction::QgsRasterShaderFunction( double theMinimumValue, double theMaximumValue )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsRasterShaderFunction::QgsRasterShaderFunction called" );
-#endif
+  QgsDebugMsg( "entered." );
+
   mMinimumValue = theMinimumValue;
   mMaximumValue = theMaximumValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
@@ -75,9 +74,8 @@ bool QgsRasterShaderFunction::generateShadedValue( double theRedValue, double th
 */
 void QgsRasterShaderFunction::setMaximumValue( double theValue )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsRasterShaderFunction::setMaximumValue called - Value = " + QString::number( theValue ) );
-#endif
+  QgsDebugMsg( "value = " + QString::number( theValue ) );
+
   mMaximumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
@@ -89,9 +87,8 @@ void QgsRasterShaderFunction::setMaximumValue( double theValue )
 */
 void QgsRasterShaderFunction::setMinimumValue( double theValue )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsRasterShaderFunction::setMinimumValue called - Value = " + QString::number( theValue ) );
-#endif
+  QgsDebugMsg( "value = " + QString::number( theValue ) );
+
   mMinimumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }

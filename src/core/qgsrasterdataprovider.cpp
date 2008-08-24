@@ -39,8 +39,7 @@ QString QgsRasterDataProvider::capabilitiesString() const
   if ( abilities & QgsRasterDataProvider::Identify )
   {
     abilitiesList += "Identify";
-    QgsDebugMsg( "QgsRasterDataProvider::capabilitiesString Identify" );
-
+    QgsDebugMsg( "Identify" );
   }
 
   return abilitiesList.join( ", " );

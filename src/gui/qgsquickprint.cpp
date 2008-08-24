@@ -122,7 +122,7 @@ void QgsQuickPrint::printMap()
   {
     return;
   }
-  //ensure the user never ommitted the extension from the fileName
+  //ensure the user never omitted the extension from the file name
   if ( !mOutputFileName.toUpper().endsWith( ".PDF" ) )
   {
     mOutputFileName += ".pdf";
@@ -681,7 +681,7 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
 {
   if ( 0 >= theScaleFactor )
   {
-    QgsDebugMsg( "QgsQuickPrintGui::scaleTextLabels invalid scale factor" );
+    QgsDebugMsg( "invalid scale factor" );
     return;
   }
   QStringList myLayerSet = mpMapRenderer->layerSet();
@@ -721,7 +721,7 @@ void QgsQuickPrint::scalePointSymbols( int theScaleFactor, SymbolScalingType the
 {
   if ( 0 >= theScaleFactor )
   {
-    QgsDebugMsg( "QgsQuickPrintGui::scalePointSymbolsForPrint invalid scale factor" );
+    QgsDebugMsg( "invalid scale factor" );
     return;
   }
   QStringList myLayerSet = mpMapRenderer->layerSet();

@@ -83,9 +83,7 @@ void QgsMapCanvasItem::setRect( const QgsRect& rect )
   setPos( r.topLeft() );
   mItemSize = QSizeF( r.width() + 2, r.height() + 2 );
 
-#ifdef QGISDEBUG
-  // QgsDebugMsg(QString("QgsMapCanvasItem::setRect:  [%1,%2]-[%3x%4]").arg((int) r.left()).arg((int) r.top()).arg((int) r.width()).arg((int) r.height()));
-#endif
+  // QgsDebugMsg(QString("[%1,%2]-[%3x%4]").arg((int) r.left()).arg((int) r.top()).arg((int) r.width()).arg((int) r.height()));
 
   update();
 }

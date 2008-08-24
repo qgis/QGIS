@@ -138,8 +138,8 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       break;
     }
   }
-  // The slots that are called above will emit closeGui() when successfull.
-  // If not succesfull, the user will get another shot without starting from scratch
+  // The slots that are called above will emit closeGui() when successful.
+  // If not successful, the user will get another shot without starting from scratch
   // accept();
 }
 
@@ -148,7 +148,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
 {
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this, //parent dialog
-                                  tr( "Choose a fileName to save under" ),
+                                  tr( "Choose a file name to save under" ),
                                   "." , //initial dir
                                   tr( "GPS eXchange format (*.gpx)" ) );
   if ( !myFileNameQString.isEmpty() )
@@ -292,7 +292,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
 {
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this, //parent dialog
-                                  tr( "Choose a fileName to save under" ),
+                                  tr( "Choose a file name to save under" ),
                                   ".", //initial dir
                                   tr( "GPS eXchange format (*.gpx)" ) );
   if ( !myFileNameQString.isEmpty() )
@@ -516,7 +516,7 @@ void QgsGPSPluginGui::populateIMPDialog()
   QString sentence1 = tr( "QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1)." )
                       .arg( "<a href=\"http://www.gpsbabel.org\">http://www.gpsbabel.org</a>" );
   QString sentence2 = tr( "This requires that you have GPSBabel installed where QGIS can find it." );
-  QString sentence3 = tr( "Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX fileName that you want to save the converted file as, and a name for the new layer." );
+  QString sentence3 = tr( "Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer." );
   QString sentence4 = tr( "All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats." );
 
   QString text = format.arg( sentence1 ).arg( sentence2 ).arg( sentence3 ).arg( sentence4 );
@@ -536,7 +536,7 @@ void QgsGPSPluginGui::populateCONVDialog()
   QString sentence1 = tr( "QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions." )
                       .arg( "<a href=\"http://www.gpsbabel.org\">http://www.gpsbabel.org</a>" );
   QString sentence2 = tr( "This requires that you have GPSBabel installed where QGIS can find it." );
-  QString sentence3 = tr( "Select a GPX input file name, the type of conversion you want to perform, a GPX fileName that you want to save the converted file as, and a name for the new layer created from the result." );
+  QString sentence3 = tr( "Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result." );
 
   QString text = format.arg( sentence1 ).arg( sentence2 ).arg( sentence3 );
 
@@ -566,7 +566,7 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
 {
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this, //parent dialog
-                                  tr( "Choose a fileName to save under" ),
+                                  tr( "Choose a file name to save under" ),
                                   ".", //initial dir
                                   tr( "GPS eXchange format (*.gpx)" ) );
   if ( !myFileNameQString.isEmpty() )

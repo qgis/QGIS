@@ -643,7 +643,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         refresh();
         break;
 
-	
+
 
       case Qt::Key_Space:
         QgsDebugMsg( "Pressing pan selector" );
@@ -656,16 +656,16 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
         }
         break;
 
-    case Qt::Key_PageUp:
-      QgsDebugMsg("Zoom in");
-      zoom(true);
-      break;
-      
-    case Qt::Key_PageDown:
-      QgsDebugMsg("Zoom out");
-      zoom(false);
-      break;
-      
+      case Qt::Key_PageUp:
+        QgsDebugMsg( "Zoom in" );
+        zoom( true );
+        break;
+
+      case Qt::Key_PageDown:
+        QgsDebugMsg( "Zoom out" );
+        zoom( false );
+        break;
+
       default:
         // Pass it on
         if ( mMapTool )

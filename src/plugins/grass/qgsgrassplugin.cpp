@@ -271,9 +271,7 @@ void QgsGrassPlugin::mapsetChanged()
 
 void QgsGrassPlugin::saveMapset()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::addVector()");
-#endif
+// QgsDebugMsg("entered.");
 
   // Save working mapset in project file
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
@@ -289,9 +287,7 @@ void QgsGrassPlugin::saveMapset()
 // Slot called when the "Add GRASS vector layer" menu item is triggered
 void QgsGrassPlugin::addVector()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::addVector()");
-#endif
+// QgsDebugMsg("entered.");
   QString uri;
 
   QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::VECTOR );
@@ -377,12 +373,8 @@ void QgsGrassPlugin::addVector()
 // Slot called when the "Add GRASS raster layer" menu item is triggered
 void QgsGrassPlugin::addRaster()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::addRaster()");
-#endif
+// QgsDebugMsg("entered.");
   QString uri;
-
-// QgsDebugMsg("QgsGrassPlugin::addRaster");
 
   QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::RASTER );
   if ( sel->exec() )
@@ -399,9 +391,9 @@ void QgsGrassPlugin::addRaster()
 
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
   }
-#ifdef QGISDEBUG
+
 // QgsDebugMsg(QString("plugin URI: %1").arg(uri));
-#endif
+
   if ( uri.length() == 0 )
   {
 // QgsDebugMsg("Nothing was selected");
@@ -409,9 +401,9 @@ void QgsGrassPlugin::addRaster()
   }
   else
   {
-#ifdef QGISDEBUG
+
 // QgsDebugMsg("Add new raster layer");
-#endif
+
     // create raster name
     int pos = uri.findRev( '/' );
     pos = uri.findRev( '/', pos - 1 );
@@ -464,9 +456,7 @@ void QgsGrassPlugin::edit()
 
 void QgsGrassPlugin::setEditAction()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::setEditAction()");
-#endif
+// QgsDebugMsg("entered.");
 
   QgsMapLayer *layer = ( QgsMapLayer * ) qGisInterface->activeLayer();
 
@@ -482,9 +472,8 @@ void QgsGrassPlugin::setEditAction()
 
 void QgsGrassPlugin::newVector()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::newVector()");
-#endif
+// QgsDebugMsg("entered.");
+
 
   if ( QgsGrassEdit::isRunning() )
   {
@@ -560,16 +549,12 @@ void QgsGrassPlugin::newVector()
 
 void QgsGrassPlugin::postRender( QPainter *painter )
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::postRender()");
-#endif
+// QgsDebugMsg("entered.");
 }
 
 void QgsGrassPlugin::displayRegion()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::displayRegion()");
-#endif
+// QgsDebugMsg("entered.");
 
   mRegionBand->reset();
 
@@ -615,9 +600,7 @@ void QgsGrassPlugin::displayRegion()
 
 void QgsGrassPlugin::switchRegion( bool on )
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::switchRegion()");
-#endif
+// QgsDebugMsg("entered.");
 
   QSettings settings;
   settings.writeEntry( "/GRASS/region/on", on );
@@ -634,9 +617,8 @@ void QgsGrassPlugin::switchRegion( bool on )
 
 void QgsGrassPlugin::redrawRegion()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::redrawRegion()");
-#endif
+// QgsDebugMsg("entered.");
+
   if ( mRegionAction->isOn() )
   {
     displayRegion();
@@ -645,9 +627,7 @@ void QgsGrassPlugin::redrawRegion()
 
 void QgsGrassPlugin::changeRegion( void )
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::changeRegion()");
-#endif
+// QgsDebugMsg("entered.");
 
   if ( mRegion )   // running
   {
@@ -687,9 +667,7 @@ void QgsGrassPlugin::setRegionPen( QPen & pen )
 
 void QgsGrassPlugin::openMapset()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::openMapset()");
-#endif
+// QgsDebugMsg("entered.");
 
   QString element;
 
@@ -712,9 +690,7 @@ void QgsGrassPlugin::openMapset()
 
 void QgsGrassPlugin::closeMapset()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::closeMapset()");
-#endif
+// QgsDebugMsg("entered.");
 
   QString err = QgsGrass::closeMapset();
 
@@ -741,9 +717,8 @@ void QgsGrassPlugin::newMapset()
 
 void QgsGrassPlugin::projectRead()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::projectRead");
-#endif
+// QgsDebugMsg("entered.");
+
   bool ok;
   QString gisdbase = QgsProject::instance()->readEntry(
                        "GRASS", "/WorkingGisdbase", "", &ok ).trimmed();
@@ -794,9 +769,7 @@ void QgsGrassPlugin::projectRead()
 
 void QgsGrassPlugin::newProject()
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassPlugin::newProject");
-#endif
+// QgsDebugMsg("entered.");
 }
 
 // Unload the plugin by cleaning up the GUI

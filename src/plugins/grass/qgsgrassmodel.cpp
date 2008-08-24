@@ -567,7 +567,7 @@ void QgsGrassModel::removeItems( QgsGrassModelItem *item, QStringList list )
 
 void QgsGrassModel::addItems( QgsGrassModelItem *item, QStringList list, int type )
 {
-// QgsDebugMsg("QgsGrassModel::addItems");
+// QgsDebugMsg("entered.");
   QModelIndex index = QgsGrassModel::index( item );
 
   // Add new items
@@ -739,7 +739,7 @@ void QgsGrassModel::refreshItem( QgsGrassModelItem *item )
 QModelIndex QgsGrassModel::index( int row, int column,
                                   const QModelIndex & parent ) const
 {
-// QgsDebugMsg(QString("QgsGrassModel::index row = %1 column = %2").arg(row).arg(column));
+// QgsDebugMsg(QString("row = %1 column = %2").arg(row).arg(column));
 
   // It is strange(?) but Qt can call this method with row < 0
   // for example if beginInsertRows(,0,0) is called and the first
@@ -763,7 +763,7 @@ QModelIndex QgsGrassModel::index( int row, int column,
 
 QModelIndex QgsGrassModel::parent( const QModelIndex & index ) const
 {
-// QgsDebugMsg("QgsGrassModel::parent");
+// QgsDebugMsg("entered.");
 
   if ( !index.isValid() ) return QModelIndex();
 
@@ -792,7 +792,7 @@ QModelIndex QgsGrassModel::parent( const QModelIndex & index ) const
 
 int QgsGrassModel::rowCount( const QModelIndex & parent ) const
 {
-// QgsDebugMsg("QgsGrassModel::rowCount");
+// QgsDebugMsg("entered.");
   QgsGrassModelItem *item;
   if ( !parent.isValid() )
   {
@@ -811,13 +811,13 @@ int QgsGrassModel::rowCount( const QModelIndex & parent ) const
 
 int QgsGrassModel::columnCount( const QModelIndex & parent ) const
 {
-// QgsDebugMsg("QgsGrassModel::columnCount");
+// QgsDebugMsg("entered.");
   return 1;
 }
 
 QVariant QgsGrassModel::data( const QModelIndex &index, int role ) const
 {
-// QgsDebugMsg("QgsGrassModel::data");
+// QgsDebugMsg("entered.");
 
   if ( !index.isValid() ) { return QVariant(); }
   if ( role != Qt::DisplayRole && role != Qt::DecorationRole ) return QVariant();
@@ -937,7 +937,7 @@ void QgsGrassModel::setLocation( const QString &gisbase, const QString &location
 QVariant QgsGrassModel::headerData( int section,
                                     Qt::Orientation orientation, int role ) const
 {
-// QgsDebugMsg("QgsGrassModel::headerData");
+// QgsDebugMsg("entered.");
 
   //TODO
   //if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -947,7 +947,7 @@ QVariant QgsGrassModel::headerData( int section,
 
 Qt::ItemFlags QgsGrassModel::flags( const QModelIndex &index ) const
 {
-// QgsDebugMsg("QgsGrassModel::flags");
+// QgsDebugMsg("entered.");
 
   //TODO
   if ( !index.isValid() )

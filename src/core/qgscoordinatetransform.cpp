@@ -106,7 +106,7 @@ void QgsCoordinateTransform::setSourceCRS( const QgsCoordinateReferenceSystem& t
 }
 void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& theCRS )
 {
-  QgsDebugMsg( "QgsCoordinateTransform::setDestCRS called" );
+  QgsDebugMsg( "entered." );
   mDestCRS = theCRS;
   initialise();
 }
@@ -115,7 +115,7 @@ void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& the
 void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 {
   //!todo Add some logic here to determine if the srsid is a system or user one
-  QgsDebugMsg( "QgsCoordinateTransform::setDestCRSID slot called" );
+  QgsDebugMsg( "entered." );
   mDestCRS.createFromSrsId( theCRSID );
   initialise();
 }
@@ -165,7 +165,6 @@ void QgsCoordinateTransform::initialise()
   if ( mInitialisedFlag )
   {
     QgsDebugMsg( "------------------------------------------------------------" );
-    QgsDebugMsg( "QgsCoordinateTransform::initialise()" );
     QgsDebugMsg( "The OGR Coordinate transformation for this layer was set to" );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Input", mSourceCRS, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug<QgsCoordinateReferenceSystem>( "Output", mDestCRS, __FILE__, __FUNCTION__, __LINE__ );

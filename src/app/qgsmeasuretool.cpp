@@ -182,7 +182,7 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 
 void QgsMeasureTool::addPoint( QgsPoint &point )
 {
-  QgsDebugMsg( QString::number( point.x() ) + ", " + QString::number( point.y() ) );
+  QgsDebugMsg( "point=" + point.toString() );
 
   if ( mWrongProjectProjection )
   {

@@ -85,7 +85,7 @@ class QgsGrassRegionEdit : public QgsMapTool
       double x = point.x();
       double y = point.y();
 
-      QgsDebugMsg( "QgsGrassRegionEdit::canvasPressEvent()" );
+      QgsDebugMsg( "entered." );
 
       if ( !mDraw )   // first corner
       {
@@ -108,7 +108,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     {
       QgsPoint point = toMapCoords( event->pos() );
 
-      QgsDebugMsg( "QgsGrassRegionEdit::canvasMoveEvent()" );
+      QgsDebugMsg( "entered." );
 
       if ( !mDraw ) return;
       mRegion->draw( mRegion->mX, mRegion->mY, point.x(), point.y() );
@@ -266,7 +266,7 @@ QString QgsGrassRegion::formatEdge( double v )
 void QgsGrassRegion::setGuiValues( bool north, bool south, bool east, bool west,
                                    bool nsres, bool ewres, bool rows, bool cols )
 {
-  QgsDebugMsg( "QgsGrassRegion::setGuiValues()" );
+  QgsDebugMsg( "entered." );
 
   mUpdatingGui = true;
 
@@ -369,7 +369,7 @@ void QgsGrassRegion::adjust()
 
 void QgsGrassRegion::radioChanged()
 {
-  QgsDebugMsg( "QgsGrassRegion::radioChanged()" );
+  QgsDebugMsg( "entered." );
 
   if ( mRowsRadio->isChecked() )
   {
@@ -395,7 +395,7 @@ void QgsGrassRegion::radioChanged()
 
 void QgsGrassRegion::draw( double x1, double y1, double x2, double y2 )
 {
-  QgsDebugMsg( "QgsGrassRegion::draw()" );
+  QgsDebugMsg( "entered." );
 
   if ( x1 < x2 )
   {
@@ -425,7 +425,7 @@ void QgsGrassRegion::draw( double x1, double y1, double x2, double y2 )
 
 void QgsGrassRegion::displayRegion()
 {
-  QgsDebugMsg( "QgsGrassRegion::displayRegion()" );
+  QgsDebugMsg( "entered." );
 
   QgsPoint ul( mWindow.west, mWindow.north );
   QgsPoint lr( mWindow.east, mWindow.south );
@@ -437,7 +437,7 @@ void QgsGrassRegion::displayRegion()
 
 void QgsGrassRegion::postRender( QPainter *painter )
 {
-  QgsDebugMsg( "QgsGrassRegion::postRender" );
+  QgsDebugMsg( "entered." );
 
   mDisplayed = false;
   displayRegion();

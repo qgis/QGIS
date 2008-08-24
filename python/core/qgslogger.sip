@@ -3,7 +3,7 @@
 
 QGIS_DEBUG is an int describing what debug messages are written to the console. If the debug level of a message is <= QGIS_DEBUG, the message is written to the console. It the variable QGIS_DEBUG is not defined, it defaults to 1 for debug mode and to 0 for release mode
 
-QGIS_DEBUG_FILE may contain a fileName. Only the messages from this file are printed (provided they have the right debuglevel). If QGIS_DEBUG_FILE is not set, messages from all files are printed
+QGIS_DEBUG_FILE may contain a file name. Only the messages from this file are printed (provided they have the right debuglevel). If QGIS_DEBUG_FILE is not set, messages from all files are printed
 */
 
 class QgsLogger
@@ -17,7 +17,7 @@ class QgsLogger
   /**Goes to qDebug. 
   @param msg the message to be printed
   @param debuglevel 
-  @param file fileName where the message comes from
+  @param file file name where the message comes from
   @param function function where the message comes from
   @param line place in file where the message comes from*/
   static void debug(const QString& msg, int debuglevel = 1, const char* file = NULL, const char* function = NULL, int line = -1);

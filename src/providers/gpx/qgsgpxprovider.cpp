@@ -65,7 +65,7 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
   // we always use UTF-8
   mEncoding = QTextCodec::codecForName( "utf8" );
 
-  // get the fileName and the type parameter from the URI
+  // get the file name and the type parameter from the URI
   int fileNameEnd = uri.indexOf( '?' );
   if ( fileNameEnd == -1 || uri.mid( fileNameEnd + 1, 5 ) != "type=" )
   {

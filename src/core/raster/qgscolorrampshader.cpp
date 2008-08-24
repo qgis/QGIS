@@ -24,9 +24,7 @@ originally part of the larger QgsRasterLayer class
 
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsColorRampShader::QgsColorRampShader called" );
-#endif
+  QgsDebugMsg( "called." );
 }
 
 bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )

@@ -281,7 +281,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools,
 
 QgsGrassShell::~QgsGrassShell()
 {
-  QgsDebugMsg( "QgsGrassShell::~QgsGrassShell()" );
+  QgsDebugMsg( "entered." );
 
 #ifndef WIN32
   // This was old trick to write history
@@ -317,7 +317,7 @@ QgsGrassShell::~QgsGrassShell()
 
 void QgsGrassShell::keyPressEvent( QKeyEvent * e )
 {
-  QgsDebugMsg( "QgsGrassShell::keyPressEvent()" );
+  QgsDebugMsg( "entered." );
 
   char s[10];
   int length = 0;
@@ -371,7 +371,7 @@ void QgsGrassShell::keyPressEvent( QKeyEvent * e )
 void QgsGrassShell::keyReleaseEvent( QKeyEvent * e )
 {
 #ifdef QGISDEBUG
-  // QgsDebugMsg("QgsGrassShell::keyReleaseEvent()");
+  // QgsDebugMsg("entered.");
 #endif
 
   // Reset key down
@@ -384,7 +384,7 @@ void QgsGrassShell::keyReleaseEvent( QKeyEvent * e )
 void QgsGrassShell::readStdout( int socket )
 {
 #ifdef QGISDEBUG
-// QgsDebugMsg("QgsGrassShell::readStdout()");
+// QgsDebugMsg("entered.");
 #endif
 
   char buf[4097];
@@ -915,7 +915,7 @@ void QgsGrassShell::readStderr()
 
 void QgsGrassShell::closeShell()
 {
-  QgsDebugMsg( "QgsGrassShell::closeShell()" );
+  QgsDebugMsg( "entered." );
 
   mTabWidget->removePage( this );
   delete this;
@@ -933,20 +933,20 @@ QgsGrassShellText::~QgsGrassShellText() {}
 
 void QgsGrassShellText::contentsMousePressEvent( QMouseEvent* e )
 {
-  QgsDebugMsg( "contentsMousePressEvent()" );
+  QgsDebugMsg( "entered." );
   mShell->mousePressEvent( e );
   Q3TextEdit::contentsMousePressEvent( e );
 }
 
 void QgsGrassShellText::keyPressEvent( QKeyEvent * e )
 {
-  QgsDebugMsg( "QgsGrassShellText::keyPressEvent()" );
+  QgsDebugMsg( "entered." );
   mShell->keyPressEvent( e );
 }
 
 void QgsGrassShellText::keyReleaseEvent( QKeyEvent * e )
 {
-  QgsDebugMsg( "QgsGrassShellText::keyReleaseEvent()" );
+  QgsDebugMsg( "entered." );
   mShell->keyReleaseEvent( e );
 }
 

@@ -46,7 +46,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
 
   // Replace the QGis clipboard.
   mFeatureClipboard = features;
-  QgsDebugMsg( "QgsClipboard::replaceWith: replaced QGis clipboard." );
+  QgsDebugMsg( "replaced QGis clipboard." );
 
   // Replace the system clipboard.
 
@@ -76,14 +76,11 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
     else
       textFields += "NULL";
 
-#ifdef QGISDEBUG
-    // QgsDebugMsg("QgsClipboard::replaceWithCopyOf: about to traverse fields.");
-#endif
+    // QgsDebugMsg("about to traverse fields.");
+    //
     for ( QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2 )
     {
-#ifdef QGISDEBUG
-      // QgsDebugMsg(QString("QgsClipboard::replaceWithCopyOf: inspecting field '%1'.").arg(it2->toString()));
-#endif
+      // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
       textFields += it2->toString();
     }
 
@@ -108,14 +105,13 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
   cb->setText( textCopy, QClipboard::Selection );
   cb->setText( textCopy, QClipboard::Clipboard );
 
-  QgsDebugMsg( QString( "QgsClipboard::replaceWith: replaced system clipboard with: %1." ).arg( textCopy ) );
-
+  QgsDebugMsg( QString( "replaced system clipboard with: %1." ).arg( textCopy ) );
 }
 
 QgsFeatureList QgsClipboard::copyOf()
 {
 
-  QgsDebugMsg( "QgsClipboard::copyOf: returning clipboard." );
+  QgsDebugMsg( "returning clipboard." );
 
   //TODO: Slurp from the system clipboard as well.
 
@@ -129,13 +125,13 @@ void QgsClipboard::clear()
 {
   mFeatureClipboard.clear();
 
-  QgsDebugMsg( "QgsClipboard::clear: cleared clipboard." );
+  QgsDebugMsg( "cleared clipboard." );
 }
 
 void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsg( "QgsClipboard::insert: inserted " + feature.geometry()->exportToWkt() );
+  QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
 }
 

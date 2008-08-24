@@ -338,9 +338,7 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   // load the data provider
   QLibrary* myLib = new QLibrary( lib );
 
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsProviderRegistry::getRasterProvider: Library name is " + myLib->fileName() );
-#endif
+  QgsDebugMsg( "Library name is " + myLib->fileName() );
 
   bool loaded = myLib->load();
 
@@ -365,10 +363,9 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 
       if ( dataProvider )
       {
-#ifdef QGISDEBUG
         QgsDebugMsg( "Instantiated the data provider plugin" );
         QgsDebugMsg( "provider name: " + dataProvider->name() );
-#endif
+
         if ( dataProvider->isValid() )
         {
           delete myLib;

@@ -384,7 +384,7 @@ void QgsSymbol::cache( QColor selectionColor )
 
 void QgsSymbol::cache2( double widthScale, QColor selectionColor )
 {
-// QgsDebugMsg(QString("QgsSymbol::cache2 widthScale = %1").arg(widthScale));
+// QgsDebugMsg(QString("widthScale = %1").arg(widthScale));
 
   QPen pen = mPen;
   pen.setWidthF( widthScale * pen.widthF() );

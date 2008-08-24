@@ -672,7 +672,7 @@ int QgsWFSProvider::getExtentFromGML2( QgsRect* extent, const QDomElement& wfsCo
 
 int QgsWFSProvider::setCRSFromGML2( const QDomElement& wfsCollectionElement )
 {
-  QgsDebugMsg( "entering QgsWFSProvider::setCRSFromGML" );
+  QgsDebugMsg( "entering." );
   //search <gml:boundedBy>
   QDomNodeList boundedByList = wfsCollectionElement.elementsByTagNameNS( GML_NAMESPACE, "boundedBy" );
   if ( boundedByList.size() < 1 )

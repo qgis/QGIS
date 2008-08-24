@@ -79,7 +79,7 @@ void QgsPostgresExtentThread::run()
 //  // placeholders for now.
 //  QString connInfo;
 
-  QgsDebugMsg( "QgsPostgresExtentThread: Started running." );
+  QgsDebugMsg( "Started running." );
 
   // Open another connection to the database
   PGconn *connection = PQconnectdb( connInfo.toUtf8() );
@@ -103,11 +103,11 @@ void QgsPostgresExtentThread::run()
 #endif
 
 
-  QgsDebugMsg( "QgsPostgresExtentThread: About to issue query." );
+  QgsDebugMsg( "About to issue query." );
 
   PGresult *result = PQexec( connection, sql.toUtf8() );
 
-  QgsDebugMsg( "QgsPostgresExtentThread: Query completed." );
+  QgsDebugMsg( "Query completed." );
 
 
 
@@ -142,7 +142,7 @@ void QgsPostgresExtentThread::run()
   */
 
 
-  QgsDebugMsg( QString( "QgsPostgresExtentThread: Set extents to: %1, %2 %3, %4" ).arg( layerExtent->xMin() ).arg( layerExtent->yMin() ).arg( layerExtent->xMax() ).arg( layerExtent->yMax() ) );
+  QgsDebugMsg( QString( "Set extents to: %1, %2 %3, %4" ).arg( layerExtent->xMin() ).arg( layerExtent->yMin() ).arg( layerExtent->xMax() ).arg( layerExtent->yMax() ) );
 
   // clear query result
   PQclear( result );
@@ -154,22 +154,22 @@ void QgsPostgresExtentThread::run()
   // Second we tell the application that the extents have changed, so that it
   // can go on and do any visual housekeeping (e.g. update the overview window)
 
-  QgsDebugMsg( QString( "QgsPostgresExtentThread: About to create and dispatch event %1 to callback" ).arg( QGis::ProviderExtentCalcEvent ) );
+  QgsDebugMsg( QString( "About to create and dispatch event %1 to callback" ).arg( QGis::ProviderExtentCalcEvent ) );
 
   QgsProviderExtentCalcEvent * e1 = new QgsProviderExtentCalcEvent( layerExtent );
   QApplication::postEvent(( QObject * )callbackObject, e1 );
 
 //  QApplication::postEvent(qApp->mainWidget(), e1);
 
-  QgsDebugMsg( QString( "QgsPostgresExtentThread: Posted event %1 to callback" ).arg( QGis::ProviderExtentCalcEvent ) );
+  QgsDebugMsg( QString( "Posted event %1 to callback" ).arg( QGis::ProviderExtentCalcEvent ) );
 
 
-  QgsDebugMsg( "QgsPostgresExtentThread: About to finish connection." );
+  QgsDebugMsg( "About to finish connection." );
 
   // ending the thread, clean up
   PQfinish( connection );
 
-  QgsDebugMsg( "QgsPostgresExtentThread: About to complete running." );
+  QgsDebugMsg( "About to complete running." );
 
 
 }

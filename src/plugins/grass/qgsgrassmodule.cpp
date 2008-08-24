@@ -799,7 +799,7 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
 
 QStringList QgsGrassModuleStandardOptions::ready()
 {
-  QgsDebugMsg( "QgsGrassModuleStandardOptions::ready()" );
+  QgsDebugMsg( "entered." );
   QStringList list;
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )

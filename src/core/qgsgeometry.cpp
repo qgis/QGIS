@@ -3419,7 +3419,7 @@ bool QgsGeometry::contains( QgsPoint* p )
 
 QString QgsGeometry::exportToWkt()
 {
-  QgsDebugMsg( "QgsGeometry::exportToWkt: entered" );
+  QgsDebugMsg( "entered." );
 
   // TODO: implement with GEOS
   if ( mDirtyWkb )
@@ -3462,7 +3462,7 @@ QString QgsGeometry::exportToWkt()
       hasZValue = true;
     case QGis::WKBLineString:
     {
-      QgsDebugMsg( "QgsGeometry::exportToWkt: LINESTRING found" );
+      QgsDebugMsg( "LINESTRING found" );
       unsigned char *ptr;
       int *nPoints;
       int idx;
@@ -3498,7 +3498,7 @@ QString QgsGeometry::exportToWkt()
       hasZValue = true;
     case QGis::WKBPolygon:
     {
-      QgsDebugMsg( "QgsGeometry::exportToWkt: POLYGON found" );
+      QgsDebugMsg( "POLYGON found" );
       unsigned char *ptr;
       int idx, jdx;
       int *numRings, *nPoints;
@@ -3591,7 +3591,7 @@ QString QgsGeometry::exportToWkt()
       hasZValue = true;
     case QGis::WKBMultiLineString:
     {
-      QgsDebugMsg( "QgsGeometry::exportToWkt: MULTILINESTRING found" );
+      QgsDebugMsg( "MULTILINESTRING found" );
       unsigned char *ptr;
       int idx, jdx, numLineStrings;
       int *nPoints;
@@ -3637,7 +3637,7 @@ QString QgsGeometry::exportToWkt()
       hasZValue = true;
     case QGis::WKBMultiPolygon:
     {
-      QgsDebugMsg( "QgsGeometry::exportToWkt: MULTIPOLYGON found" );
+      QgsDebugMsg( "MULTIPOLYGON found" );
       unsigned char *ptr;
       int idx, jdx, kdx;
       int *numPolygons, *numRings, *nPoints;
@@ -3699,7 +3699,7 @@ QString QgsGeometry::exportToWkt()
 
 bool QgsGeometry::exportWkbToGeos()
 {
-  QgsDebugMsgLevel( "QgsGeometry::exportWkbToGeos: entered.", 3 );
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !mDirtyGeos )
   {
@@ -3782,7 +3782,7 @@ bool QgsGeometry::exportWkbToGeos()
         hasZValue = true;
       case QGis::WKBLineString:
       {
-        QgsDebugMsg( "QgsGeometry::geosGeometry: Linestring found" );
+        QgsDebugMsg( "Linestring found" );
 
         QgsPolyline sequence;
 
@@ -3950,7 +3950,7 @@ bool QgsGeometry::exportWkbToGeos()
 
 bool QgsGeometry::exportGeosToWkb()
 {
-  //QgsDebugMsg("QgsGeometry::exportGeosToWkb: entered.");
+  //QgsDebugMsg("entered.");
   if ( !mDirtyWkb )
   {
     // No need to convert again
@@ -4390,9 +4390,7 @@ double QgsGeometry::distanceSquaredPointToSegment(
   double segmentsqrdist = ( *x2 - *x1 ) * ( *x2 - *x1 ) +
                           ( *y2 - *y1 ) * ( *y2 - *y1 );
 
-#ifdef QGISDEBUG
-  // QgsDebugMsg(QString("QgsGeometry::distanceSquaredPointToSegment: Entered with (%1, %2) (%3, %4) %5.").arg(*x1).arg(*y1).arg(*x2).arg(*y2).arg(segmentsqrdist));
-#endif
+  // QgsDebugMsg(QString("Entered with (%1, %2) (%3, %4) %5.").arg(*x1).arg(*y1).arg(*x2).arg(*y2).arg(segmentsqrdist));
 
 
   if ( segmentsqrdist == 0.0 )

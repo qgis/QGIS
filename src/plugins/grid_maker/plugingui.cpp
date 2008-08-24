@@ -89,9 +89,9 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   //
   // If you have a produced a raster layer using your plugin, you can ask qgis to
   // add it to the view using:
-  // emit drawRasterLayer(QString("layerName"));
+  // emit drawRasterLayer(QString("layer name"));
   // or for a vector layer
-  //emit drawVectorLayer(QString("pathname"),QString("layerName"),QString("provider name (either ogr or postgres"));
+  //emit drawVectorLayer(QString("path name"),QString("layer name"),QString("provider name (either ogr or postgres"));
   //
 
   emit drawVectorLayer( leOutputShapeFile->text(), QString( "Graticule" ), QString( "ogr" ) );
@@ -105,7 +105,7 @@ void QgsGridMakerPluginGui::on_pbnSelectOutputFile_clicked()
   QgsLogger::debug( " Gps File Importer Gui::pbnSelectOutputFile_clicked()" );
   QString myOutputFileNameQString = QFileDialog::getSaveFileName(
                                       this,
-                                      tr( "Choose a fileName to save under" ),
+                                      tr( "Choose a file name to save under" ),
                                       ".",
                                       tr( "ESRI Shapefile (*.shp)" ) );
 

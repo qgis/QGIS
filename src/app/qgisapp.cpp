@@ -1981,7 +1981,7 @@ static void openFilesRememberingFilter_( QString const &filterName,
 
 
 /**
-  This method prompts the user for a list of vector fileNames with a dialog.
+  This method prompts the user for a list of vector file names  with a dialog.
   */
 void QgisApp::addVectorLayer()
 {
@@ -2080,7 +2080,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
 
 
-/** This helper checks to see whether the fileName appears to be a valid vector file name */
+/** This helper checks to see whether the file name appears to be a valid vector file name */
 bool QgisApp::isValidVectorFileName( QString theFileNameQString )
 {
   return ( theFileNameQString.toLower().endsWith( ".shp" ) );
@@ -2879,7 +2879,7 @@ bool QgisApp::fileSave()
     return false;
   }
 
-  // if we don't have a fileName, then obviously we need to get one; note
+  // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
@@ -2970,7 +2970,7 @@ void QgisApp::fileSaveAs()
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
 
   auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-                                        tr( "Choose a fileName to save the QGIS project file as" ),
+                                        tr( "Choose a file name to save the QGIS project file as" ),
                                         lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) ) );
 
   saveFileDialog->setFileMode( QFileDialog::AnyFile );
@@ -2979,7 +2979,7 @@ void QgisApp::fileSaveAs()
 
   saveFileDialog->setConfirmOverwrite( true );
 
-  // if we don't have a fileName, then obviously we need to get one; note
+  // if we don't have a file name, then obviously we need to get one; note
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
@@ -3211,7 +3211,7 @@ void QgisApp::saveMapAsImage()
 
   //create a file dialog using the the filter list generated above
   std::auto_ptr < QFileDialog > myQFileDialog( new QFileDialog( this,
-      tr( "Choose a fileName to save the map image as" ),
+      tr( "Choose a file name to save the map image as" ),
       myLastUsedDir, myFilters ) );
 
   // allow for selection of more than one file
@@ -3314,10 +3314,10 @@ void QgisApp::toggleFullScreen()
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
       bool renderFlag = getMapCanvas()->renderFlag();
-      getMapCanvas()->setRenderFlag(false);
+      getMapCanvas()->setRenderFlag( false );
       showNormal();
       showMaximized();
-      getMapCanvas()->setRenderFlag(renderFlag);
+      getMapCanvas()->setRenderFlag( renderFlag );
       mPrevScreenModeMaximized = false;
     }
     else

@@ -31,7 +31,7 @@ plugins at startup:
    
    export QT_PLUGIN_PATH={QGIS Install Prefix}/lib/qgis
 
-   Note that the 'designer' directory is ommitted from the path.
+   Note that the 'designer' directory is omitted from the path.
 
    Its probably a good idea to add the above export clause to 
    your ~/.bash_profile or ~/.bashrc if you plan to use the 

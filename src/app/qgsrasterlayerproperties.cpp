@@ -463,15 +463,15 @@ void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 */
 void QgsRasterLayerProperties::sync()
 {
-  QgsDebugMsg( "QgsRasterLayerProperties::sync called" );
+  QgsDebugMsg( "called." );
   cboxShowDebugInfo->hide();
 
-  QgsDebugMsg( "QgsRasterLayerProperties::sync populate symbology tab" );
+  QgsDebugMsg( "sync populate symbology tab" );
   /*
    * Symbology Tab
    */
   //decide whether user can change rgb settings
-  QgsDebugMsg( "QgsRasterLayerProperties::sync DrawingStyle = " + QString::number( mRasterLayer->getDrawingStyle() ) );
+  QgsDebugMsg( "DrawingStyle = " + QString::number( mRasterLayer->getDrawingStyle() ) );
   switch ( mRasterLayer->getDrawingStyle() )
   {
     case QgsRasterLayer::SINGLE_BAND_GRAY:
@@ -583,7 +583,7 @@ void QgsRasterLayerProperties::sync()
   //
   // Populate the various controls on the form
   //
-  QgsDebugMsg( "QgsRasterLayerProperties::sync colorShadingAlgorithm = " + QString::number( mRasterLayer->getColorShadingAlgorithm() ) );
+  QgsDebugMsg( "colorShadingAlgorithm = " + QString::number( mRasterLayer->getColorShadingAlgorithm() ) );
   if ( mRasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
        mRasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
        mRasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR )
@@ -749,7 +749,7 @@ void QgsRasterLayerProperties::sync()
 
 
 
-  QgsDebugMsg( "QgsRasterLayerProperties::sync populate transparency tab" );
+  QgsDebugMsg( "populate transparency tab" );
   /*
    * Transparent Pixel Tab
    */
@@ -784,13 +784,13 @@ void QgsRasterLayerProperties::sync()
     syncColormapTab();
   }
 
-  QgsDebugMsg( "QgsRasterLayerProperties::sync populate general tab" );
+  QgsDebugMsg( "populate general tab" );
   /*
    * General Tab
    */
   cboxShowDebugInfo->hide();
 
-  //these properties (layerName and label) are provided by the qgsmaplayer superclass
+  //these properties (layer name and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText( mRasterLayer->source() );
   leDisplayName->setText( mRasterLayer->name() );
 
@@ -834,7 +834,7 @@ void QgsRasterLayerProperties::sync()
   pixmapPalette->setScaledContents( true );
   pixmapPalette->repaint();
 
-  QgsDebugMsg( "QgsRasterLayerProperties::sync populate metadata tab" );
+  QgsDebugMsg( "populate metadata tab" );
   /*
    * Metadata Tab
    */
@@ -847,7 +847,7 @@ void QgsRasterLayerProperties::sync()
 
 void QgsRasterLayerProperties::syncColormapTab()
 {
-  QgsDebugMsg( "QgsRasterLayerProperties::sync populate color ramp tab" );
+  QgsDebugMsg( "populate color ramp tab" );
   if ( !mRasterLayerIsGdal )
   {
     return;
@@ -953,7 +953,7 @@ bool QgsRasterLayerProperties::validUserDefinedMinMax()
  */
 void QgsRasterLayerProperties::apply()
 {
-  QgsDebugMsg( "QgsRasterLayerProperties::apply processing symbology tab" );
+  QgsDebugMsg( "apply processing symbology tab" );
   /*
    * Symbology Tab
    */
@@ -968,7 +968,7 @@ void QgsRasterLayerProperties::apply()
 
       if ( cboxColorMap->currentText() != tr( "Grayscale" ) )
       {
-        QgsDebugMsg( "Setting Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" );
+        QgsDebugMsg( "Raster Drawing Style to :: SINGLE_BAND_PSEUDO_COLOR" );
 
         mRasterLayer->setDrawingStyle( QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR );
       }
@@ -1173,7 +1173,7 @@ void QgsRasterLayerProperties::apply()
 
   myQSettings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", mDefaultContrastEnhancementAlgorithm );
 
-  QgsDebugMsg( "QgsRasterLayerProperties::apply processing transparency tab" );
+  QgsDebugMsg( "processing transparency tab" );
   /*
    * Transparent Pixel Tab
    */
@@ -1367,7 +1367,7 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->getRasterTransparency()->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
   }
 
-  QgsDebugMsg( "QgsRasterLayerProperties::apply processing Colormap tab" );
+  QgsDebugMsg( "apply processing Colormap tab" );
   /*
    * ColorMap Tab
    */
@@ -1408,11 +1408,11 @@ void QgsRasterLayerProperties::apply()
     }
     else
     {
-      QgsDebugMsg( "QgsRasterLayerProperties::apply color ramp was NOT set because RasterShaderFunction was NULL" );
+      QgsDebugMsg( "color ramp was NOT set because RasterShaderFunction was NULL" );
     }
   }
 
-  QgsDebugMsg( "QgsRasterLayerProperties::apply processing general tab" );
+  QgsDebugMsg( "processing general tab" );
   /*
    * General Tab
    */
@@ -1832,7 +1832,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 {
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsDebugMsg( "QgsRasterLayerProperties::on_pbnHistRefresh_clicked" );
+  QgsDebugMsg( "entered." );
   int myBandCountInt = mRasterLayer->getBandCount();
 
   // Explanation:
@@ -2853,7 +2853,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   myFileDialog->setFileMode( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode( QFileDialog::AcceptOpen );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -2868,7 +2868,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the fileName
+      //ensure the user never omitted the extension from the file name
       if ( !myFileName.toUpper().endsWith( ".QML" ) )
       {
         myFileName += ".qml";
@@ -2919,7 +2919,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   myFileDialog->setFileMode( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myOutputFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -2934,7 +2934,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the fileName
+      //ensure the user never omitted the extension from the file name
       if ( !myOutputFileName.toUpper().endsWith( ".QML" ) )
       {
         myOutputFileName += ".qml";

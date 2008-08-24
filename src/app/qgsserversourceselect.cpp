@@ -203,10 +203,7 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider* wmsProvider )
         layer != layers.end();
         layer++ )
   {
-
-#ifdef QGISDEBUG
-    // QgsDebugMsg(QString("QgsServerSourceSelect::populateLayerList: got layer name %1 and title '%2'.").arg(layer->name).arg(layer->title));
-#endif
+    // QgsDebugMsg(QString("got layer name %1 and title '%2'.").arg(layer->name).arg(layer->title));
 
     layerAndStyleCount++;
 
@@ -220,7 +217,7 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider* wmsProvider )
     // Layer Styles
     for ( uint j = 0; j < layer->style.size(); j++ )
     {
-      QgsDebugMsg( QString( "QgsServerSourceSelect::populateLayerList: got style name %1 and title '%2'." ).arg( layer->style[j].name ).arg( layer->style[j].title ) );
+      QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style[j].name ).arg( layer->style[j].title ) );
 
       layerAndStyleCount++;
 
@@ -271,7 +268,7 @@ void QgsServerSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvi
   QList<QByteArray>::const_iterator it = qtImageFormats.begin();
   while ( it != qtImageFormats.end() )
   {
-    QgsDebugMsg( QString( "QgsServerSourceSelect::populateImageEncodingGroup: can support input of '%1'." ).arg(( *it ).data() ) );
+    QgsDebugMsg( QString( "can support input of '%1'." ).arg(( *it ).data() ) );
     ++it;
   }
 
@@ -285,7 +282,7 @@ void QgsServerSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvi
         format != formats.end();
         ++format )
   {
-    QgsDebugMsg( QString( "QgsServerSourceSelect::populateImageEncodingGroup: got image format %1." ).arg(( *format ) ) );
+    QgsDebugMsg( QString( "got image format %1." ).arg(( *format ) ) );
 
     QMap<QString, QPair<QString, int> >::const_iterator iter =
       m_PotentialFormats.find( *format );
@@ -324,7 +321,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   m_connName = cmbConnections->currentText();
   m_connInfo = connStringParts.join( " " );
 
-  QgsDebugMsg( QString( "QgsServerSourceSelect::serverConnect: Connection info: '%1'." ).arg( m_connInfo ) );
+  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( m_connInfo ) );
 
 
   // TODO: Create and bind to data provider
@@ -462,7 +459,7 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
       lstLayers->findItems( m_selectedStyleIdForLayer[layerName], Qt::MatchRecursive ).first()->setSelected( false );
     }
 
-    QgsDebugMsg( QString( "QgsServerSourceSelect::addLayers: Added %1" ).arg( item->text( 0 ) ) );
+    QgsDebugMsg( QString( "Added %1" ).arg( item->text( 0 ) ) );
 
   }
 

@@ -46,17 +46,17 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     mError( 0 )
 {
 
-  QgsDebugMsg( "QgsHttpTransaction: constructing." );
-  QgsDebugMsg( "  QgsHttpTransaction: proxyHost = " + proxyHost + "." );
-  QgsDebugMsg( "  QgsHttpTransaction: proxyPort = " + QString::number( proxyPort ) + "." );
-  QgsDebugMsg( "  QgsHttpTransaction: proxyUser = " + proxyUser + "." );
-  QgsDebugMsg( "  QgsHttpTransaction: proxyPass = " + proxyPass + "." );
-  QgsDebugMsg( "QgsHttpTransaction: exiting constructor." );
+  QgsDebugMsg( "constructing." );
+  QgsDebugMsg( "  proxyHost = " + proxyHost + "." );
+  QgsDebugMsg( "  proxyPort = " + QString::number( proxyPort ) + "." );
+  QgsDebugMsg( "  proxyUser = " + proxyUser + "." );
+  QgsDebugMsg( "  proxyPass = " + proxyPass + "." );
+  QgsDebugMsg( "exiting constructor." );
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
 {
-  QgsDebugMsg( "QgsHttpTransaction: deconstructing." );
+  QgsDebugMsg( "deconstructing." );
 }
 
 
@@ -72,8 +72,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   httpredirections = redirections;
 
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Entered." );
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Using '" + httpurl + "'." );
+  QgsDebugMsg( "Entered." );
+  QgsDebugMsg( "Using '" + httpurl + "'." );
 
   QUrl qurl( httpurl );
 
@@ -96,7 +96,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   mWatchdogTimer = new QTimer( this );
 
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: qurl.host() is '" + qurl.host() + "'." );
+  QgsDebugMsg( "qurl.host() is '" + qurl.host() + "'." );
 
   httpresponse.truncate( 0 );
 
@@ -144,8 +144,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   mWatchdogTimer->setSingleShot( TRUE );
   mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
 
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Starting get with id " + QString::number( httpid ) + "." );
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Setting httpactive = TRUE" );
+  QgsDebugMsg( "Starting get with id " + QString::number( httpid ) + "." );
+  QgsDebugMsg( "Setting httpactive = TRUE" );
 
   httpactive = TRUE;
 
@@ -156,11 +156,11 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
     qApp->processEvents();
   }
 
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Response received." );
+  QgsDebugMsg( "Response received." );
 
+#ifdef QGISDEBUG
 //  QString httpresponsestring(httpresponse);
-//  QgsDebugMsg("QgsHttpTransaction::getSynchronously: Response received; being '" + httpresponsestring + "'.");
+//  QgsDebugMsg("Response received; being '" + httpresponsestring + "'.");
 #endif
 
   delete http;
@@ -168,7 +168,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // Did we get an error? If so, bail early
   if ( !mError.isNull() )
   {
-    QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Processing an error '" + mError + "'." );
+    QgsDebugMsg( "Processing an error '" + mError + "'." );
     return FALSE;
   }
 
@@ -177,7 +177,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // TODO detect any redirection loops
   if ( !httpredirecturl.isEmpty() )
   {
-    QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Starting get of '" +  httpredirecturl + "'." );
+    QgsDebugMsg( "Starting get of '" +  httpredirecturl + "'." );
 
     QgsHttpTransaction httprecurse( httpredirecturl, httphost, httpport );
 
@@ -206,13 +206,13 @@ QString QgsHttpTransaction::responseContentType()
 
 void QgsHttpTransaction::dataStarted( int id )
 {
-  QgsDebugMsg( "QgsHttpTransaction::dataStarted with ID " + QString::number( id ) + "." );
+  QgsDebugMsg( "ID=" + QString::number( id ) + "." );
 }
 
 
 void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 {
-  QgsDebugMsg( "QgsHttpTransaction::dataHeaderReceived: statuscode " +
+  QgsDebugMsg( "statuscode " +
                QString::number( resp.statusCode() ) + ", reason '" + resp.reasonPhrase() + "', content type: '" +
                resp.value( "Content-Type" ) + "'." );
 
@@ -245,23 +245,23 @@ void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
 {
   // TODO: Match 'resp' with 'http' if we move to multiple http connections
 
-  /* Comment this out for now - leave the coding of progressive rendering to another day.
+#if 0
+  // Comment this out for now - leave the coding of progressive rendering to another day.
   char* temp;
 
-  if (  0 < http->readBlock( temp, http->bytesAvailable() )  )
+  if ( 0 < http->readBlock( temp, http->bytesAvailable() ) )
   {
-    httpresponse.append(temp);
+    httpresponse.append( temp );
   }
-  */
+#endif
 
-//  QgsDebugMsg("QgsHttpTransaction::dataReceived.");
-//  QgsDebugMsg("QgsHttpTransaction::dataReceived: received '" + data + "'.");
+//  QgsDebugMsg("received '" + data + "'.");
 }
 
 
 void QgsHttpTransaction::dataProgress( int done, int total )
 {
-//  QgsDebugMsg("QgsHttpTransaction::dataProgress: got " + QString::number(done) + " of " + QString::number(total));
+//  QgsDebugMsg("got " + QString::number(done) + " of " + QString::number(total));
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
@@ -288,7 +288,7 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
 {
 
 #ifdef QGISDEBUG
-  QgsDebugMsg( "QgsHttpTransaction::dataFinished with ID " + QString::number( id ) + "." );
+  QgsDebugMsg( "ID=" + QString::number( id ) + "." );
 
   // The signal that this slot is connected to, QHttp::requestFinished,
   // appears to get called at the destruction of the QHttp if it is
@@ -301,35 +301,34 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   // not overwritten (it should rightfully refer to the timeout event).
   if ( !httpactive )
   {
-    QgsDebugMsg( "QgsHttpTransaction::dataFinished - http activity loop already FALSE." );
+    QgsDebugMsg( "http activity loop already FALSE." );
     return;
   }
 
   if ( error )
   {
-    QgsDebugMsg( "QgsHttpTransaction::dataFinished - however there was an error." );
-    QgsDebugMsg( "QgsHttpTransaction::dataFinished - " + http->errorString() );
+    QgsDebugMsg( "however there was an error." );
+    QgsDebugMsg( "error: " + http->errorString() );
 
     mError = QString( tr( "HTTP response completed, however there was an error: %1" ) )
              .arg( http->errorString() );
   }
   else
   {
-    QgsDebugMsg( "QgsHttpTransaction::dataFinished - no error." );
+    QgsDebugMsg( "no error." );
   }
 #endif
 
 // Don't do this here as the request could have simply been
 // to set the hostname - see transactionFinished() instead
 
-//   // TODO
-//   httpresponse = http->readAll();
-//
-// #ifdef QGISDEBUG
-  // QgsDebugMsg("QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE");
-// #endif
-//   httpactive = FALSE;
+#if 0
+  // TODO
+  httpresponse = http->readAll();
 
+// QgsDebugMsg("Setting httpactive = FALSE");
+  httpactive = FALSE;
+#endif
 }
 
 
@@ -337,48 +336,50 @@ void QgsHttpTransaction::transactionFinished( bool error )
 {
 
 #ifdef QGISDEBUG
-  QgsDebugMsg( "QgsHttpTransaction::transactionFinished." );
+  QgsDebugMsg( "entered." );
 
-//   // The signal that this slot is connected to, QHttp::requestFinished,
-//   // appears to get called at the destruction of the QHttp if it is
-//   // still working at the time of the destruction.
-//   //
-//   // This situation may occur when we've detected a timeout and
-//   // we already set httpactive = FALSE.
-//   //
-//   // We have to detect this special case so that the last known error string is
-//   // not overwritten (it should rightfully refer to the timeout event).
-//   if (!httpactive)
-//   {
-  // QgsDebugMsg("QgsHttpTransaction::dataFinished - http activity loop already FALSE.");
-//     return;
-//   }
+#if 0
+  // The signal that this slot is connected to, QHttp::requestFinished,
+  // appears to get called at the destruction of the QHttp if it is
+  // still working at the time of the destruction.
+  //
+  // This situation may occur when we've detected a timeout and
+  // we already set httpactive = FALSE.
+  //
+  // We have to detect this special case so that the last known error string is
+  // not overwritten (it should rightfully refer to the timeout event).
+  if ( !httpactive )
+  {
+// QgsDebugMsg("http activity loop already FALSE.");
+    return;
+  }
+#endif
 
   if ( error )
   {
-    QgsDebugMsg( "QgsHttpTransaction::transactionFinished - however there was an error." );
-    QgsDebugMsg( "QgsHttpTransaction::transactionFinished - " + http->errorString() );
+    QgsDebugMsg( "however there was an error." );
+    QgsDebugMsg( "error: " + http->errorString() );
 
     mError = QString( tr( "HTTP transaction completed, however there was an error: %1" ) )
              .arg( http->errorString() );
   }
   else
   {
-    QgsDebugMsg( "QgsHttpTransaction::transactionFinished - no error." );
+    QgsDebugMsg( "no error." );
   }
 #endif
 
   // TODO
   httpresponse = http->readAll();
 
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE" );
+  QgsDebugMsg( "Setting httpactive = FALSE" );
   httpactive = FALSE;
 }
 
 
 void QgsHttpTransaction::dataStateChanged( int state )
 {
-  QgsDebugMsg( "QgsHttpTransaction::dataStateChanged to " + QString::number( state ) + "." );
+  QgsDebugMsg( "state " + QString::number( state ) + "." );
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
@@ -435,15 +436,15 @@ void QgsHttpTransaction::dataStateChanged( int state )
 
 void QgsHttpTransaction::networkTimedOut()
 {
-  QgsDebugMsg( "QgsHttpTransaction::networkTimedOut: entering." );
+  QgsDebugMsg( "entering." );
 
   mError = QString( tr( "Network timed out after %1 seconds of inactivity.\n"
                         "This may be a problem in your network connection or at the WMS server.", "", NETWORK_TIMEOUT_MSEC / 1000 )
                   ).arg( NETWORK_TIMEOUT_MSEC / 1000 );
 
-  QgsDebugMsg( "QgsHttpTransaction::getSynchronously: Setting httpactive = FALSE" );
+  QgsDebugMsg( "Setting httpactive = FALSE" );
   httpactive = FALSE;
-  QgsDebugMsg( "QgsHttpTransaction::networkTimedOut: exiting." );
+  QgsDebugMsg( "exiting." );
 }
 
 

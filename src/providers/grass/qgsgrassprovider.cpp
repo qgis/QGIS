@@ -218,7 +218,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
 
 void QgsGrassProvider::update( void )
 {
-  QgsDebugMsg( "*** QgsGrassProvider::update ***" );
+  QgsDebugMsg( "entered." );
 
   mValid = false;
 
@@ -260,7 +260,7 @@ void QgsGrassProvider::update( void )
 int QgsGrassProvider::allocateSelection( struct Map_info *map, char **selection )
 {
   int size;
-  QgsDebugMsg( "QgsGrassProvider::allocateSellection" );
+  QgsDebugMsg( "entered." );
 
   int nlines = Vect_get_num_lines( map );
   int nareas = Vect_get_num_areas( map );
@@ -282,7 +282,7 @@ int QgsGrassProvider::allocateSelection( struct Map_info *map, char **selection 
 
 QgsGrassProvider::~QgsGrassProvider()
 {
-  QgsDebugMsg( "QgsGrassProvider::~QgsGrassProvider()" );
+  QgsDebugMsg( "entered." );
   closeLayer( mLayerId );
 }
 
@@ -298,9 +298,7 @@ bool QgsGrassProvider::getNextFeature( QgsFeature& feature )
   unsigned char *wkb;
   int wkbsize;
 
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::getNextFeature()" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( isEdited() || isFrozen() || !mValid )
     return false;
@@ -423,7 +421,7 @@ bool QgsGrassProvider::getNextFeature( QgsFeature& feature )
 
 void QgsGrassProvider::resetSelection( bool sel )
 {
-  QgsDebugMsg( "QgsGrassProvider::resetSelection()" );
+  QgsDebugMsg( "entered." );
   if ( !mValid ) return;
   memset( mSelection, ( int ) sel, mSelectionSize );
   mNextCidx = 0;
@@ -547,7 +545,7 @@ long QgsGrassProvider::featureCount() const
 */
 uint QgsGrassProvider::fieldCount() const
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::fieldCount() return:%1" ).arg( mLayers[mLayerId].fields.size() ) );
+  QgsDebugMsg( QString( "return: %1" ).arg( mLayers[mLayerId].fields.size() ) );
   return mLayers[mLayerId].fields.size();
 }
 
@@ -609,10 +607,8 @@ QVariant QgsGrassProvider::maxValue( int index )
 
 bool QgsGrassProvider::isValid()
 {
-#ifdef QGISDEBUG
-  QString validString = mValid ? "true" : "false";
-  QgsDebugMsg( QString( "QgsGrassProvider::isValid() returned: %1" ).arg( validString ) );
-#endif
+  QgsDebugMsg( QString( "returned: %1" ).arg( mValid ? "true" : "false" ) );
+
   return mValid;
 }
 
@@ -628,7 +624,6 @@ static int cmpAtt( const void *a, const void *b )
 /* returns layerId or -1 on error */
 int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString mapset, QString mapName, int field )
 {
-  QgsDebugMsg( "QgsGrassProvider::openLayer()" );
   QgsDebugMsg( QString( "gisdbase: %1" ).arg( gisdbase ) );
   QgsDebugMsg( QString( "location: %1" ).arg( location ) );
   QgsDebugMsg( QString( "mapset: %1" ).arg( mapset ) );
@@ -684,7 +679,7 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
 
 void QgsGrassProvider::loadLayerSourcesFromMap( GLAYER &layer )
 {
-  QgsDebugMsg( "QgsGrassProvider::loadLayerSourcesFromMap" );
+  QgsDebugMsg( "entered." );
 
   // Reset and free
   layer.fields.clear();
@@ -706,7 +701,7 @@ void QgsGrassProvider::loadLayerSourcesFromMap( GLAYER &layer )
 
 void QgsGrassProvider::loadAttributes( GLAYER &layer )
 {
-  QgsDebugMsg( "QgsGrassProvider::loadLayerSourcesFromMap" );
+  QgsDebugMsg( "entered." );
 
   // TODO: free old attributes
 
@@ -961,7 +956,7 @@ void QgsGrassProvider::closeLayer( int layerId )
 /* returns mapId or -1 on error */
 int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapset, QString mapName )
 {
-  QgsDebugMsg( "QgsGrassProvider::openMap()" );
+  QgsDebugMsg( "entered." );
 
   QString tmpPath = gisdbase + "/" + location + "/" + mapset + "/" + mapName;
 
@@ -1071,7 +1066,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
 
 void QgsGrassProvider::updateMap( int mapId )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::updateMap() mapId = %1" ).arg( mapId ) );
+  QgsDebugMsg( QString( "mapId = %1" ).arg( mapId ) );
 
   /* Close map */
   GMAP *map = &( mMaps[mapId] );
@@ -1150,7 +1145,7 @@ void QgsGrassProvider::closeMap( int mapId )
 
 bool QgsGrassProvider::mapOutdated( int mapId )
 {
-  QgsDebugMsg( "QgsGrassProvider::mapOutdated()" );
+  QgsDebugMsg( "entered." );
 
   GMAP *map = &( mMaps[mapId] );
 
@@ -1169,7 +1164,7 @@ bool QgsGrassProvider::mapOutdated( int mapId )
 
 bool QgsGrassProvider::attributesOutdated( int mapId )
 {
-  QgsDebugMsg( "QgsGrassProvider::attributesOutdated()" );
+  QgsDebugMsg( "entered." );
 
   GMAP *map = &( mMaps[mapId] );
 
@@ -1349,7 +1344,7 @@ int QgsGrassProvider::grassLayerType( QString name )
 
 bool QgsGrassProvider::isGrassEditable( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::isGrassEditable" );
+  QgsDebugMsg( "entered." );
 
   if ( !isValid() )
     return false;
@@ -1365,9 +1360,7 @@ bool QgsGrassProvider::isGrassEditable( void )
 
 bool QgsGrassProvider::isEdited( void )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::isEdited" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
   return ( map->update );
@@ -1375,9 +1368,7 @@ bool QgsGrassProvider::isEdited( void )
 
 bool QgsGrassProvider::isFrozen( void )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::isFrozen" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
   return ( map->frozen );
@@ -1385,7 +1376,7 @@ bool QgsGrassProvider::isFrozen( void )
 
 void QgsGrassProvider::freeze()
 {
-  QgsDebugMsg( "QgsGrassProvider::freeze" );
+  QgsDebugMsg( "entered." );
 
   if ( !isValid() ) return;
 
@@ -1399,7 +1390,7 @@ void QgsGrassProvider::freeze()
 
 void QgsGrassProvider::thaw()
 {
-  QgsDebugMsg( "QgsGrassProvider::thaw" );
+  QgsDebugMsg( "entered." );
 
   if ( !isValid() ) return;
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
@@ -1414,7 +1405,7 @@ void QgsGrassProvider::thaw()
 
 bool QgsGrassProvider::startEdit( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::startEdit" );
+  QgsDebugMsg( "entered." );
   QgsDebugMsg( QString( "  uri = %1" ).arg( dataSourceUri() ) );
   QgsDebugMsg( QString( "  mMaps.size() = %1" ).arg( mMaps.size() ) );
 
@@ -1494,7 +1485,7 @@ bool QgsGrassProvider::startEdit( void )
 
 bool QgsGrassProvider::closeEdit( bool newMap )
 {
-  QgsDebugMsg( "QgsGrassProvider::closeEdit" );
+  QgsDebugMsg( "entered." );
 
   if ( !isValid() )
     return false;
@@ -1580,23 +1571,21 @@ bool QgsGrassProvider::reopenMap()
 
 int QgsGrassProvider::numLines( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::numLines" );
+  QgsDebugMsg( "entered." );
 
   return ( Vect_get_num_lines( mMap ) );
 }
 
 int QgsGrassProvider::numNodes( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::numNodes" );
+  QgsDebugMsg( "entered." );
 
   return ( Vect_get_num_nodes( mMap ) );
 }
 
 int QgsGrassProvider::readLine( struct line_pnts *Points, struct line_cats *Cats, int line )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::readLine" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( Points )
     Vect_reset_line( Points );
@@ -1611,9 +1600,7 @@ int QgsGrassProvider::readLine( struct line_pnts *Points, struct line_cats *Cats
 
 bool QgsGrassProvider::nodeCoor( int node, double *x, double *y )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::nodeCoor" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_node_alive( mMap, node ) )
   {
@@ -1628,9 +1615,7 @@ bool QgsGrassProvider::nodeCoor( int node, double *x, double *y )
 
 bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::lineNodes" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_line_alive( mMap, line ) )
   {
@@ -1645,7 +1630,7 @@ bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
 
 int QgsGrassProvider::writeLine( int type, struct line_pnts *Points, struct line_cats *Cats )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::writeLine n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ) );
+  QgsDebugMsg( QString( "n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ) );
 
   if ( !isEdited() )
     return -1;
@@ -1655,7 +1640,7 @@ int QgsGrassProvider::writeLine( int type, struct line_pnts *Points, struct line
 
 int QgsGrassProvider::rewriteLine( int line, int type, struct line_pnts *Points, struct line_cats *Cats )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::rewriteLine n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ) );
+  QgsDebugMsg( QString( "n_points = %1 n_cats = %2" ).arg( Points->n_points ).arg( Cats->n_cats ) );
 
   if ( !isEdited() )
     return -1;
@@ -1666,7 +1651,7 @@ int QgsGrassProvider::rewriteLine( int line, int type, struct line_pnts *Points,
 
 int QgsGrassProvider::deleteLine( int line )
 {
-  QgsDebugMsg( "QgsGrassProvider::deleteLine" );
+  QgsDebugMsg( "entered." );
 
   if ( !isEdited() )
     return -1;
@@ -1676,9 +1661,7 @@ int QgsGrassProvider::deleteLine( int line )
 
 int QgsGrassProvider::findLine( double x, double y, int type, double threshold )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::findLine" );
-#endif
+  QgsDebugMsgLevel( "entered", 3 );
 
   return ( Vect_find_line( mMap, x, y, 0, type, threshold, 0, 0 ) );
 }
@@ -1690,9 +1673,7 @@ int QgsGrassProvider::findNode( double x, double y, double threshold )
 
 bool QgsGrassProvider::lineAreas( int line, int *left, int *right )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::lineAreas" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_line_alive( mMap, line ) )
   {
@@ -1707,9 +1688,7 @@ bool QgsGrassProvider::lineAreas( int line, int *left, int *right )
 
 int QgsGrassProvider::centroidArea( int centroid )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::centroidArea" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_line_alive( mMap, centroid ) )
   {
@@ -1721,9 +1700,7 @@ int QgsGrassProvider::centroidArea( int centroid )
 
 int QgsGrassProvider::nodeNLines( int node )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::nodeNLines" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_node_alive( mMap, node ) )
   {
@@ -1735,9 +1712,7 @@ int QgsGrassProvider::nodeNLines( int node )
 
 int QgsGrassProvider::nodeLine( int node, int idx )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::nodeLine" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   if ( !Vect_node_alive( mMap, node ) )
   {
@@ -1749,41 +1724,35 @@ int QgsGrassProvider::nodeLine( int node, int idx )
 
 int QgsGrassProvider::lineAlive( int line )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::lineAlive" );
-#endif
+  QgsDebugMsgLevel( "entered.", 3 );
 
   return ( Vect_line_alive( mMap, line ) ) ;
 }
 
 int QgsGrassProvider::nodeAlive( int node )
 {
-#if QGISDEBUG > 3
-  QgsDebugMsg( "QgsGrassProvider::nodeAlive" );
-#endif
+  QgsDebugMsgLevel( "QgsGrassProvider::nodeAlive", 3 );
 
   return ( Vect_node_alive( mMap, node ) ) ;
 }
 
 int QgsGrassProvider::numUpdatedLines( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::numUpdatedLines" );
-  QgsDebugMsg( QString( "  numUpdatedLines = %1" ).arg( Vect_get_num_updated_lines( mMap ) ) );
+  QgsDebugMsg( QString( "numUpdatedLines = %1" ).arg( Vect_get_num_updated_lines( mMap ) ) );
 
   return ( Vect_get_num_updated_lines( mMap ) ) ;
 }
 
 int QgsGrassProvider::numUpdatedNodes( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::numUpdatedNodes" );
-  QgsDebugMsg( QString( "  numUpdatedNodes = %1" ).arg( Vect_get_num_updated_nodes( mMap ) ) );
+  QgsDebugMsg( QString( "numUpdatedNodes = %1" ).arg( Vect_get_num_updated_nodes( mMap ) ) );
 
   return ( Vect_get_num_updated_nodes( mMap ) ) ;
 }
 
 int QgsGrassProvider::updatedLine( int idx )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::updatedLine idx = %1" ).arg( idx ) );
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   QgsDebugMsg( QString( "  updatedLine = %1" ).arg( Vect_get_updated_line( mMap, idx ) ) );
 
   return ( Vect_get_updated_line( mMap, idx ) ) ;
@@ -1791,7 +1760,7 @@ int QgsGrassProvider::updatedLine( int idx )
 
 int QgsGrassProvider::updatedNode( int idx )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::updatedNode idx = %1" ).arg( idx ) );
+  QgsDebugMsg( QString( "idx = %1" ).arg( idx ) );
   QgsDebugMsg( QString( "  updatedNode = %1" ).arg( Vect_get_updated_node( mMap, idx ) ) );
 
   return ( Vect_get_updated_node( mMap, idx ) ) ;
@@ -1801,7 +1770,7 @@ int QgsGrassProvider::updatedNode( int idx )
 
 QString *QgsGrassProvider::key( int field )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::key() field = %1" ).arg( field ) );
+  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
   QString *key = new QString();
 
@@ -1819,7 +1788,7 @@ QString *QgsGrassProvider::key( int field )
 
 std::vector<QgsField> *QgsGrassProvider::columns( int field )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::columns() field = %1" ).arg( field ) );
+  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
   std::vector<QgsField> *col = new std::vector<QgsField>;
 
@@ -1893,7 +1862,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
 
 QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::attributes() field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QgsAttributeMap *att = new QgsAttributeMap;
 
@@ -1975,7 +1944,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
 QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &values )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::updateAttributes() field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2041,14 +2010,14 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
 
 int QgsGrassProvider::numDbLinks( void )
 {
-  QgsDebugMsg( "QgsGrassProvider::numDbLinks()" );
+  QgsDebugMsg( "entered." );
 
   return ( Vect_get_num_dblinks( mMap ) );
 }
 
 int QgsGrassProvider::dbLinkField( int link )
 {
-  QgsDebugMsg( "QgsGrassProvider::dbLinkField()" );
+  QgsDebugMsg( "entered." );
 
   struct  field_info *fi = Vect_get_dblink( mMap, link );
 
@@ -2059,7 +2028,7 @@ int QgsGrassProvider::dbLinkField( int link )
 
 QString *QgsGrassProvider::executeSql( int field, const QString &sql )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::executeSql field = %1" ).arg( field ) );
+  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2109,7 +2078,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
 
 QString *QgsGrassProvider::createTable( int field, const QString &key, const QString &columns )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::createTable() field = %1" ).arg( field ) );
+  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2184,7 +2153,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
 
 QString *QgsGrassProvider::addColumn( int field, const QString &column )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::addColumn() field = %1" ).arg( field ) );
+  QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2207,7 +2176,7 @@ QString *QgsGrassProvider::addColumn( int field, const QString &column )
 
 QString *QgsGrassProvider::insertAttributes( int field, int cat )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::insertAttributes() field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2230,7 +2199,7 @@ QString *QgsGrassProvider::insertAttributes( int field, int cat )
 
 QString *QgsGrassProvider::deleteAttributes( int field, int cat )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::deleteAttributes() field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QString *error = new QString();
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
@@ -2253,7 +2222,7 @@ QString *QgsGrassProvider::deleteAttributes( int field, int cat )
 
 QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
 {
-  QgsDebugMsg( QString( "QgsGrassProvider::isOrphan() field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   QString *error = new QString();
 

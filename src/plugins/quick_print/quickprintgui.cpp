@@ -113,7 +113,7 @@ void QuickPrintGui::on_buttonBox_accepted()
   myFileDialog->setFileMode( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myOutputFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -128,7 +128,7 @@ void QuickPrintGui::on_buttonBox_accepted()
   {
     if ( myFileDialog->selectedFilter() == tr( "Portable Document Format (*.pdf)" ) )
     {
-      //ensure the user never ommitted the extension from the fileName
+      //ensure the user never omitted the extension from the file name
       if ( !myOutputFileName.toUpper().endsWith( ".PDF" ) )
       {
         myOutputFileName += ".pdf";

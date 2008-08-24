@@ -92,7 +92,7 @@ QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,
                                         QString text, QString source, bool * ok )
 {
-  QgsDebugMsg( "QgsGrassElementDialog::getItem" );
+  QgsDebugMsg( "entered." );
   if ( ok ) *ok = false;
   mElement = element;
   mSource = source;
@@ -150,7 +150,7 @@ QString QgsGrassElementDialog::getItem( QString element,
 
 void QgsGrassElementDialog::textChanged()
 {
-  QgsDebugMsg( "QgsGrassElementDialog::textChanged" );
+  QgsDebugMsg( "entered." );
 
   QString text = mLineEdit->text().trimmed();
 
