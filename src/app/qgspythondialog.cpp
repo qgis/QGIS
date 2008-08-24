@@ -24,6 +24,10 @@ QgsPythonDialog::QgsPythonDialog( QgisInterface* pIface, QgsPythonUtils* pythonU
     : QDialog( parent )
 {
   setupUi( this );
+#ifdef Q_WS_MAC
+  // Qt4.3+ bug?: Mac window minimize control isn't enabled
+  setWindowFlags( windowFlags() | Qt::WindowMinimizeButtonHint );
+#endif
   mIface = pIface;
   mPythonUtils = pythonUtils;
 }

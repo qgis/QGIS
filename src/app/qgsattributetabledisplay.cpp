@@ -129,6 +129,13 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay( QgsVectorLayer* layer )
   }
 
   setWindowTitle( tr( "Attribute table - " ) + layer->name() );
+
+#ifdef Q_WS_MAC
+  // Create action to select this window and add it to Window menu
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  QgisApp::instance()->addWindow( mWindowAction );
+#endif
 }
 
 QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
@@ -374,7 +381,7 @@ QgsAttributeTableDisplay *QgsAttributeTableDisplay::attributeTable( QgsVectorLay
   {
     QgsAttributeTableDisplay *td = smTables[layer];
     td->setAttributeActions( *layer->actions() );
-    td->raise();
+    td->activate();
 
     return td;
   }
@@ -407,6 +414,13 @@ QgsAttributeTableDisplay *QgsAttributeTableDisplay::attributeTable( QgsVectorLay
   td->show();
 
   return td;
+}
+
+void QgsAttributeTableDisplay::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
 }
 
 void QgsAttributeTableDisplay::selectionChanged()

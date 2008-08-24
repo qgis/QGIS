@@ -61,7 +61,7 @@ class QgsVectorLayer;
 #include <QPointer>
 
 #include "qgsconfig.h"
-#include <qgspoint.h>
+#include "qgspoint.h"
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -174,8 +174,170 @@ class QgisApp : public QMainWindow
     //default theme if the active theme does not have the required
     //icon.
     static QPixmap getThemePixmap( const QString theName );
-//private slots:
+
+    /** Add a dock widget to the main window. Overloaded from QMainWindow.
+     * After adding the dock widget to the ui (by delegating to the QMainWindow
+     * parent class, it will also add it to the View menu list of docks.*/
+    void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
+    /** Add a toolbar to the main window. Overloaded from QMainWindow.
+     * After adding the toolbar to the ui (by delegating to the QMainWindow
+     * parent class, it will also add it to the View menu list of toolbars.*/
+    QToolBar *addToolBar( QString name );
+
+#ifdef Q_WS_MAC
+    //! Add window item to Window menu
+    void addWindow( QAction *action );
+#endif
+
+    //! Actions to be inserted in menus and toolbars
+    QAction *actionNewProject() { return mActionNewProject; }
+    QAction *actionOpenProject() { return mActionOpenProject; }
+    QAction *actionFileSeparator1() { return mActionFileSeparator1; }
+    QAction *actionSaveProject() { return mActionSaveProject; }
+    QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
+    QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
+    QAction *actionFileSeparator2() { return mActionFileSeparator2; }
+    QAction *actionProjectProperties() { return mActionProjectProperties; }
+    QAction *actionFileSeparator3() { return mActionFileSeparator3; }
+    QAction *actionPrintComposer() { return mActionPrintComposer; }
+    QAction *actionFileSeparator4() { return mActionFileSeparator4; }
+    QAction *actionExit() { return mActionExit; }
+
+    QAction *actionCutFeatures() { return mActionCutFeatures; }
+    QAction *actionCopyFeatures() { return mActionCopyFeatures; }
+    QAction *actionPasteFeatures() { return mActionPasteFeatures; }
+    QAction *actionEditSeparator1() { return mActionEditSeparator1; }
+    QAction *actionCapturePoint() { return mActionCapturePoint; }
+    QAction *actionCaptureLine() { return mActionCaptureLine; }
+    QAction *actionCapturePologon() { return mActionCapturePolygon; }
+    QAction *actionDeleteSelected() { return mActionDeleteSelected; }
+    QAction *actionMoveFeature() { return mActionMoveFeature; }
+    QAction *actionSplitFeatures() { return mActionSplitFeatures; }
+    QAction *actionAddVertex() { return mActionAddVertex; }
+    QAction *actionDelerteVertex() { return mActionDeleteVertex; }
+    QAction *actioMoveVertex() { return mActionMoveVertex; }
+    QAction *actionAddRing() { return mActionAddRing; }
+    QAction *actionAddIsland() { return mActionAddIsland; }
+    QAction *actionEditSeparator2() { return mActionEditSeparator2; }
+
+    QAction *actionPan() { return mActionPan; }
+    QAction *actionZoomIn() { return mActionZoomIn; }
+    QAction *actionZoomOut() { return mActionZoomOut; }
+    QAction *actionSelect() { return mActionSelect; }
+    QAction *actionIdentify() { return mActionIdentify; }
+    QAction *actionMeasure() { return mActionMeasure; }
+    QAction *actionMeasureArea() { return mActionMeasureArea; }
+    QAction *actionViewSeparator1() { return mActionViewSeparator1; }
+    QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
+    QAction *actionZoomToLayer() { return mActionZoomToLayer; }
+    QAction *actionZoomToSelected() { return mActionZoomToSelected; }
+    QAction *actionZoomLast() { return mActionZoomLast; }
+    QAction *actionZoomActualSize() { return mActionZoomActualSize; }
+    QAction *actionViewSeparator2() { return mActionViewSeparator2; }
+    QAction *actionMapTips() { return mActionMapTips; }
+    QAction *actionNewBookmark() { return mActionNewBookmark; }
+    QAction *actionShowBookmarks() { return mActionShowBookmarks; }
+    QAction *actionDraw() { return mActionDraw; }
+    QAction *actionViewSeparator3() { return mActionViewSeparator3; }
+
+    QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
+    QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
+    QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
+    QAction *actionAddPgLayer() { return mActionAddPgLayer; }
+    QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionLayerSeparator1() { return mActionLayerSeparator1; }
+    QAction *actionOpenTable() { return mActionOpenTable; }
+    QAction *actionToggleEditing() { return mActionToggleEditing; }
+    QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
+    QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
+    QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    QAction *actionLayerProperties() { return mActionLayerProperties; }
+    QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
+    QAction *actionAddToOverview() { return mActionAddToOverview; }
+    QAction *actionAddAllToOverview() { return mActionAddAllToOverview; }
+    QAction *actionRemoveAllFromOverview() { return mActionRemoveAllFromOverview; }
+    QAction *actionLayerSeparator3() { return mActionLayerSeparator3; }
+    QAction *actionHideAllLayers() { return mActionHideAllLayers; }
+    QAction *actionShowAllLayers() { return mActionShowAllLayers; }
+
+    QAction *actionManagePlugins() { return mActionManagePlugins; }
+    QAction *actionPluginSeparator1() { return mActionPluginSeparator1; }
+    QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
+
+    QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
+    QAction *actionSettingsSeparator1() { return mActionSettingsSeparator1; }
+    QAction *actionOptions() { return mActionOptions; }
+    QAction *actionCustomProjection() { return mActionCustomProjection; }
+
+#ifdef Q_WS_MAC
+    QAction *actionWindowMinimize() { return mActionWindowMinimize; }
+    QAction *actionWindowZoom() { return mActionWindowZoom; }
+    QAction *actionWindowSeparator1() { return mActionWindowSeparator1; }
+    QAction *actionWindowAllToFront() { return mActionWindowAllToFront; }
+    QAction *actionWindowSeparator2() { return mActionWindowSeparator2; }
+#endif
+
+    QAction *actionHelpContents() { return mActionHelpContents; }
+    QAction *actionHelpSeparator1() { return mActionHelpSeparator1; }
+    QAction *actionQgisHomePage() { return mActionQgisHomePage; }
+    QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
+    QAction *actionHelpSeparator2() { return mActionHelpSeparator2; }
+    QAction *actionAbout() { return mActionAbout; }
+
+    //! Menus
+    QMenu *fileMenu() { return mFileMenu; }
+    QMenu *editMenu() { return mEditMenu; }
+    QMenu *viewMenu() { return mViewMenu; }
+    QMenu *layerMenu() { return mLayerMenu; }
+    QMenu *settingsMenu() { return mSettingsMenu; }
+    QMenu *pluginMenu() { return mPluginMenu; }
+#ifdef Q_WS_MAC
+    QMenu *windowMenu() { return mWindowMenu; }
+#endif
+    QMenu *helpMenu() { return mHelpMenu; }
+
+    //! Toolbars
+    /** Get a reference to a toolbar. Mainly intended
+    *   to be used by plugins that want to specifically add
+    *   an icon into the file toolbar for consistency e.g.
+    *   addWFS and GPS plugins.
+    */
+    QToolBar *fileToolBar() { return mFileToolBar; }
+    QToolBar *layerToolBar() { return mLayerToolBar; }
+    QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
+    QToolBar *digitizeToolBar() { return mDigitizeToolBar; }
+    QToolBar *attributesToolBar() { return mAttributesToolBar; }
+    QToolBar *pluginToolBar() { return mPluginToolBar; }
+    QToolBar *helpToolBar() { return mHelpToolBar; }
+
   public slots:
+    //! Zoom to full extent
+    void zoomFull();
+    //! Zoom to the previous extent
+    void zoomPrevious();
+    //! Zoom to selected features
+    void zoomToSelected();
+
+    //! cuts selected features on the active layer to the clipboard
+    /**
+       \param layerContainingSelection  The layer that the selection will be taken from
+                                        (defaults to the active layer on the legend)
+     */
+    void editCut( QgsMapLayer * layerContainingSelection = 0 );
+    //! copies selected features on the active layer to the clipboard
+    /**
+       \param layerContainingSelection  The layer that the selection will be taken from
+                                        (defaults to the active layer on the legend)
+     */
+    void editCopy( QgsMapLayer * layerContainingSelection = 0 );
+    //! copies features on the clipboard to the active layer
+    /**
+       \param destinationLayer  The layer that the clipboard will be pasted to
+                                (defaults to the active layer on the legend)
+     */
+    void editPaste( QgsMapLayer * destinationLayer = 0 );
+
+  private slots:
     //! About QGis
     void about();
     //! Add a raster layer to the map (will prompt user for file name using dlg )
@@ -186,10 +348,6 @@ class QgisApp : public QMainWindow
     //#endif
     //! reimplements widget keyPress event so we can check if cancel was pressed
     void keyPressEvent( QKeyEvent * e );
-    /** for when a menu bar item is activated
-      Used to dynamically update pop-up menu items
-      */
-    /* virtual */ void menubar_highlighted( int i );
     /** toggles whether the current selected layer is in overview or not */
     void inOverview();
     //! Slot to show the map coordinate position of the mouse cursor
@@ -202,6 +360,8 @@ class QgisApp : public QMainWindow
     void removeLayer();
     //! zoom to extent of layer
     void zoomToLayerExtent();
+    //! zoom to actual size of raster layer
+    void zoomActualSize();
     //! load any plugins used in the last qgis session
     void restoreSessionPlugins( QString thePluginDirString );
     //! plugin manager
@@ -288,12 +448,6 @@ class QgisApp : public QMainWindow
     void showBookmarks();
     //! Create a new spatial bookmark
     void newBookmark();
-    //! Lets the user show all of the toolbars
-    void showAllToolbars();
-    //! Lets the user hide all of the toolbars
-    void hideAllToolbars();
-    //! Sets the visibility of the toolbars
-    void setToolbarVisibility( bool visibility );
     //! activates the capture point tool
     void capturePoint();
     //! activates the capture line tool
@@ -334,11 +488,6 @@ class QgisApp : public QMainWindow
     Is called from the legend when the current legend item has changed*/
     void activateDeactivateLayerRelatedActions( QgsMapLayer* layer );
 
-  public slots:
-    /** Add a dock widget to the main window. Overloaded from QMainWindow.
-     * After adding the dock widget to the ui (by delegating to the QMainWindow
-     * parent class, it will also add it to the view menu list of docks.*/
-    void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
     void showProgress( int theProgress, int theTotalSteps );
     void extentsViewToggled( bool theFlag );
     void showExtents();
@@ -357,12 +506,6 @@ class QgisApp : public QMainWindow
     void zoomOut();
     //! Set map tool to Zoom in
     void zoomIn();
-    //! Zoom to full extent
-    void zoomFull();
-    //! Zoom to the previous extent
-    void zoomPrevious();
-    //! Zoom to selected features
-    void zoomToSelected();
     //! Set map tool to pan
     void pan();
     //! Identify feature(s) on the currently selected layer
@@ -378,27 +521,15 @@ class QgisApp : public QMainWindow
     //! starts/stops editing mode of a layer
     void toggleEditing( QgsMapLayer *layer );
 
+    //! save current vector layer
+    void saveAsShapefile();
+    void saveSelectionAsShapefile();
+
+    //! open the properties dialog for the currently selected layer
+    void layerProperties();
+
     //! show python console
     void showPythonDialog();
-
-    //! cuts selected features on the active layer to the clipboard
-    /**
-       \param layerContainingSelection  The layer that the selection will be taken from
-                                        (defaults to the active layer on the legend)
-     */
-    void editCut( QgsMapLayer * layerContainingSelection = 0 );
-    //! copies selected features on the active layer to the clipboard
-    /**
-       \param layerContainingSelection  The layer that the selection will be taken from
-                                        (defaults to the active layer on the legend)
-     */
-    void editCopy( QgsMapLayer * layerContainingSelection = 0 );
-    //! copies features on the clipboard to the active layer
-    /**
-       \param destinationLayer  The layer that the clipboard will be pasted to
-                                (defaults to the active layer on the legend)
-     */
-    void editPaste( QgsMapLayer * destinationLayer = 0 );
 
     //! Shows a warning when an old project file is read.
     void warnOlderProjectVersion( QString );
@@ -412,15 +543,15 @@ class QgisApp : public QMainWindow
     //! Toggle full screen mode
     void toggleFullScreen();
 
+    //! Toggle maximized mode
+    void toggleMaximized();
+
+    //! Bring forward all open windows
+    void bringAllToFront();
+
     //! Stops rendering of the main map
     void stopRendering();
 
-    /** Get a reference to the file toolbar. Mainly intended
-    *   to be used by plugins that want to specifically add
-    *   an icon into the file toolbar for consistency e.g.
-    *   addWFS and GPS plugins.
-    */
-    QToolBar * fileToolBar();
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -465,12 +596,12 @@ class QgisApp : public QMainWindow
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
-    //! test function
-    void testButton();
     //! shows the paste-transformations dialog
     void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
+    //! Handle state changes
+    virtual void changeEvent( QEvent* event );
     //! Have some control over closing of the application
     virtual void closeEvent( QCloseEvent* event );
 
@@ -492,7 +623,8 @@ class QgisApp : public QMainWindow
     void createCanvas();
     bool createDB();
     void createMapTips();
-    //toolbars ----------------------------------------
+
+    // toolbars ---------------------------------------
     QToolBar *mFileToolBar;
     QToolBar *mLayerToolBar;
     QToolBar *mMapNavToolBar;
@@ -500,35 +632,26 @@ class QgisApp : public QMainWindow
     QToolBar *mAttributesToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
-    //
-    //toolbar buttons ---------------------------------
-    QAction *mActionFileNew;
-    QAction *mActionFileSave;
-    QAction *mActionFileSaveAs;
-    QAction *mActionFileOpen;
-    QAction *mActionFilePrint;
+
+    // actions for menus and toolbars -----------------
+
+    QAction *mActionNewProject;
+    QAction *mActionOpenProject;
+    QAction *mActionFileSeparator1;
+    QAction *mActionSaveProject;
+    QAction *mActionSaveProjectAs;
     QAction *mActionSaveMapAsImage;
-    QAction *mActionExportMapServer;
-    QAction *mActionFileExit;
-    QAction *mActionAddOgrLayer;
-    QAction *mActionAddRasterLayer;
-    QAction *mActionAddLayer;
-    QAction *mActionRemoveLayer;
-    QAction *mActionNewVectorLayer;
-    QAction *mActionAddAllToOverview;
-    QAction *mActionHideAllLayers;
-    QAction *mActionShowAllLayers;
-    QAction *mActionRemoveAllFromOverview;
-    QAction *mActionLayerProperties;
+    QAction *mActionFileSeparator2;
     QAction *mActionProjectProperties;
-    QAction *mActionShowPluginManager;
-    QAction *mActionCheckQgisVersion;
-    QAction *mActionOptions;
-    QAction *mActionHelpContents;
-    QAction *mActionQgisHomePage;
-    QAction *mActionHelpAbout;
-    QAction *mArawAction;
-    QAction *mActionToggleEditing;
+    QAction *mActionFileSeparator3;
+    QAction *mActionPrintComposer;
+    QAction *mActionFileSeparator4;
+    QAction *mActionExit;
+
+    QAction *mActionCutFeatures;
+    QAction *mActionCopyFeatures;
+    QAction *mActionPasteFeatures;
+    QAction *mActionEditSeparator1;
     QAction *mActionCapturePoint;
     QAction *mActionCaptureLine;
     QAction *mActionCapturePolygon;
@@ -540,48 +663,98 @@ class QgisApp : public QMainWindow
     QAction *mActionMoveVertex;
     QAction *mActionAddRing;
     QAction *mActionAddIsland;
-    QAction *mActionEditCut;
-    QAction *mActionEditCopy;
-    QAction *mActionEditPaste;
+    QAction *mActionEditSeparator2;
+
+    QAction *mActionPan;
     QAction *mActionZoomIn;
     QAction *mActionZoomOut;
-    QAction *mActionZoomFullExtent;
-    QAction *mActionZoomToSelected;
-    QAction *mActionPan;
-    QAction *mActionZoomLast;
-    QAction *mActionZoomToLayer;
-    QAction *mActionIdentify;
-    QAction *mActionMapTips;
     QAction *mActionSelect;
-    QAction *mActionOpenTable;
+    QAction *mActionIdentify;
     QAction *mActionMeasure;
     QAction *mActionMeasureArea;
-    QAction *mActionShowBookmarks;
+    QAction *mActionViewSeparator1;
+    QAction *mActionZoomFullExtent;
+    QAction *mActionZoomToLayer;
+    QAction *mActionZoomToSelected;
+    QAction *mActionZoomLast;
+    QAction *mActionZoomActualSize;
+    QAction *mActionViewSeparator2;
+    QAction *mActionMapTips;
     QAction *mActionNewBookmark;
-    QAction *mActionCustomProjection;
-    QAction *mActionAddWmsLayer;
-    QAction *mActionInOverview;
+    QAction *mActionShowBookmarks;
     QAction *mActionDraw;
-    QAction *mActionShowAllToolbars;
-    QAction *mActionHideAllToolbars;
-    QAction *mActionToggleFullScreen;
+    QAction *mActionViewSeparator3;
+
+    QAction *mActionNewVectorLayer;
+    QAction *mActionAddOgrLayer;
+    QAction *mActionAddRasterLayer;
+    QAction *mActionAddPgLayer;
+    QAction *mActionAddWmsLayer;
+    QAction *mActionLayerSeparator1;
+    QAction *mActionOpenTable;
+    QAction *mActionToggleEditing;
+    QAction *mActionLayerSaveAs;
+    QAction *mActionLayerSelectionSaveAs;
+    QAction *mActionRemoveLayer;
+    QAction *mActionLayerProperties;
+    QAction *mActionLayerSeparator2;
+    QAction *mActionAddToOverview;
+    QAction *mActionAddAllToOverview;
+    QAction *mActionRemoveAllFromOverview;
+    QAction *mActionLayerSeparator3;
+    QAction *mActionHideAllLayers;
+    QAction *mActionShowAllLayers;
+
+    QAction *mActionManagePlugins;
+    QAction *mActionPluginSeparator1;
     QAction *mActionShowPythonDialog;
 
-    //
-    //tool groups -------------------------------------
+    QAction *mActionToggleFullScreen;
+    QAction *mActionSettingsSeparator1;
+    QAction *mActionOptions;
+    QAction *mActionCustomProjection;
+
+#ifdef Q_WS_MAC
+    QAction *mActionWindowMinimize;
+    QAction *mActionWindowZoom;
+    QAction *mActionWindowSeparator1;
+    QAction *mActionWindowAllToFront;
+    QAction *mActionWindowSeparator2;
+    QActionGroup *mWindowActions;
+#endif
+
+    QAction *mActionHelpContents;
+    QAction *mActionHelpSeparator1;
+    QAction *mActionQgisHomePage;
+    QAction *mActionCheckQgisVersion;
+    QAction *mActionHelpSeparator2;
+    QAction *mActionAbout;
+
+    // action groups ----------------------------------
     QActionGroup *mMapToolGroup;
-    //
-    //menus   -----------------------------------------
+
+    // menus ------------------------------------------
     QMenu *mFileMenu;
+    QMenu *mEditMenu;
     QMenu *mRecentProjectsMenu;
     QMenu *mViewMenu;
+    QMenu *mPanelMenu;
     QMenu *mToolbarMenu;
     QMenu *mLayerMenu;
     QMenu *mSettingsMenu;
+#ifdef Q_WS_MAC
+    QMenu *mWindowMenu;
+#endif
     QMenu *mHelpMenu;
 
+    // docks ------------------------------------------
     QDockWidget *mLegendDock;
     QDockWidget *mOverviewDock;
+
+#ifdef Q_WS_MAC
+    //! Window menu action to select this window
+    QAction *mWindowAction;
+#endif
 
     class Tools
     {
