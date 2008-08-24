@@ -79,12 +79,20 @@ class QgsAttributeTableDisplay : public QDialog, private Ui::QgsAttributeTableBa
   signals:
     void editingToggled( QgsMapLayer * );
 
+  private slots:
+    void activate();
+
   private:
     /** Set the icon theme for this dialog */
     void setTheme();
 
     void restorePosition();
     void saveWindowLocation();
+
+#ifdef Q_WS_MAC
+    /** Window menu action to select this window */
+    QAction *mWindowAction;
+#endif
 
     QString mSearchString;
 
