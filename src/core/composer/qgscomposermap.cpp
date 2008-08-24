@@ -63,12 +63,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mExtent = mMapRenderer->extent();
   }
   setSceneRect( QRectF( x, y, width, height ) );
-
-  QGraphicsRectItem::setZValue( 20 );
-
   setToolTip( tr( "Map" ) + " " + QString::number( mId ) );
-
-  QGraphicsRectItem::show();
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
