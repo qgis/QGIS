@@ -3,6 +3,7 @@ SET(QGIS_GUI_SRCS
 qgisgui.cpp
 qgisinterface.cpp
 qgscolorbutton.cpp
+qgscomposerview.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
@@ -28,6 +29,7 @@ qgsvertexmarker.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
+qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
 qgisinterface.h
@@ -44,7 +46,7 @@ qgsquickprint.h
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ../core
-     ../core/raster ../core/renderer ../core/symbology
+     ../core/composer ../core/raster ../core/renderer ../core/symbology
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../ui
      ${GEOS_INCLUDE_DIR}
