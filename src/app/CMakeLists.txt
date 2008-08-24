@@ -63,7 +63,6 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerscalebarwidget.cpp
   composer/qgscomposerlegenditemdialog.cpp
   composer/qgscomposerlegendwidget.cpp
-  composer/qgscomposerview.cpp
   composer/qgscompositionwidget.cpp
 
   legend/qgslegendgroup.cpp
@@ -127,7 +126,6 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposermapwidget.h
   composer/qgscomposerpicturewidget.h
   composer/qgscomposerscalebarwidget.h
-  composer/qgscomposerview.h
   composer/qgscompositionwidget.h
 
   legend/qgslegend.h
