@@ -121,7 +121,7 @@
    <item row="5" column="3" >
     <widget class="QToolButton" name="mAddAttributeButton" >
      <property name="toolTip" >
-      <string>Add values manually</string>
+      <string>Add attribute</string>
      </property>
      <property name="text" >
       <string>...</string>
