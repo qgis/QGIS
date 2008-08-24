@@ -609,7 +609,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
    @note XML of form:
 
    <maplayer type="vector">
-      <layerName>Hydrop</layerName>
+      <layername>Hydrop</layername>
       <datasource>/data/usgs/city_shp/hydrop.shp</datasource>
       <zorder>0</zorder>
       <provider>ogr</provider>
