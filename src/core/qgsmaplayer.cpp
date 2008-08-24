@@ -191,7 +191,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   setMaxScale( element.attribute( "maxScale" ).toFloat() );
 
   // set name
-  mnl = layer_node.namedItem( "layerName" );
+  mnl = layer_node.namedItem( "layername" );
   mne = mnl.toElement();
   setLayerName( mne.text() );
 
@@ -255,7 +255,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 
   // layer name
-  QDomElement layerName = document.createElement( "layerName" );
+  QDomElement layerName = document.createElement( "layername" );
   QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
 
