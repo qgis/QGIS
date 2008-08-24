@@ -120,21 +120,21 @@ QgsGrassAttributes::~QgsGrassAttributes()
 
 void QgsGrassAttributes::restorePosition()
 {
-  QgsDebugMsg( "QgsGrassAttributes::restorePosition()" );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   restoreGeometry( settings.value( "/GRASS/windows/attributes/geometry" ).toByteArray() );
 }
 
 void QgsGrassAttributes::saveWindowLocation()
 {
-  QgsDebugMsg( "QgsGrassAttributes::saveWindowLocation()" );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   settings.setValue( "/GRASS/windows/attributes/geometry", saveGeometry() );
 }
 
 int QgsGrassAttributes::addTab( const QString & label )
 {
-  QgsDebugMsg( "QgsGrassAttributes::addTab()" );
+  QgsDebugMsg( "entered." );
 
   Q3Table *tb = new Q3Table( 2, 3 );
   tb->setColumnReadOnly( 0, TRUE );
@@ -177,7 +177,7 @@ int QgsGrassAttributes::addTab( const QString & label )
 
 void QgsGrassAttributes::setField( int tab, int field )
 {
-  QgsDebugMsg( "QgsGrassAttributes::setField()" );
+  QgsDebugMsg( "entered." );
 
   Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
@@ -189,7 +189,7 @@ void QgsGrassAttributes::setField( int tab, int field )
 
 void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
 {
-  QgsDebugMsg( "QgsGrassAttributes::setField()" );
+  QgsDebugMsg( "entered." );
 
   Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
@@ -204,7 +204,7 @@ void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
 void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QString &value,
                                        const QString &type )
 {
-  QgsDebugMsg( QString( "QgsGrassAttributes::addAttribute(): %1: %2" ).arg( name ).arg( value ) );
+  QgsDebugMsg( QString( "name=%1 value=%2" ).arg( name ).arg( value ) );
 
   Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
@@ -224,7 +224,7 @@ void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QStri
 
 void QgsGrassAttributes::addTextRow( int tab, const QString &text )
 {
-  QgsDebugMsg( "QgsGrassAttributes::addTextRow()" );
+  QgsDebugMsg( "entered." );
 
   Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
 
@@ -237,7 +237,7 @@ void QgsGrassAttributes::addTextRow( int tab, const QString &text )
 
 void QgsGrassAttributes::updateAttributes( )
 {
-  QgsDebugMsg( "QgsGrassAttributes::updateAttributes()" );
+  QgsDebugMsg( "entered." );
 
   if ( tabCats->count() == 0 ) return;
 
@@ -298,7 +298,7 @@ void QgsGrassAttributes::updateAttributes( )
 
 void QgsGrassAttributes::addCat( )
 {
-  QgsDebugMsg( "QgsGrassAttributes::addCat()" );
+  QgsDebugMsg( "entered." );
 
   mEdit->addCat( mLine );
 
@@ -310,7 +310,7 @@ void QgsGrassAttributes::addCat( )
 
 void QgsGrassAttributes::deleteCat( )
 {
-  QgsDebugMsg( "QgsGrassAttributes::deleteCat()" );
+  QgsDebugMsg( "entered." );
 
   if ( tabCats->count() == 0 ) return;
 
@@ -328,7 +328,7 @@ void QgsGrassAttributes::deleteCat( )
 
 void QgsGrassAttributes::clear( )
 {
-  QgsDebugMsg( "QgsGrassAttributes::clear()" );
+  QgsDebugMsg( "entered." );
 
   while ( tabCats->count() > 0 )
   {
@@ -341,7 +341,7 @@ void QgsGrassAttributes::clear( )
 
 void QgsGrassAttributes::tabChanged( QWidget *widget )
 {
-  QgsDebugMsg( "QgsGrassAttributes::tabChanged()" );
+  QgsDebugMsg( "entered." );
 
   //Q3Table *tb = (Q3Table *) tabCats->currentPage();
 

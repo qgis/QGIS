@@ -4404,7 +4404,7 @@ extern "C"
   ** Meta information is returned by writing to the memory locations passed as
   ** the 5th and subsequent parameters to this function. Any of these
   ** arguments may be NULL, in which case the corresponding element of meta
-  ** information is ommitted.
+  ** information is omitted.
   **
   ** <pre>
   ** Parameter     Output Type      Description

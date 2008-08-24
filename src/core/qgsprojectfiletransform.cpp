@@ -150,7 +150,7 @@ void QgsProjectFileTransform::transform081to090()
 
     // Set the flag 'visible' to match the status of 'checked'
     QDomNodeList legendLayerFiles = mDom.elementsByTagName( "legendlayerfile" );
-    QgsDebugMsg( QString( "Legend layer file entrie: " ) + QString::number( legendLayerFiles.count() ) );
+    QgsDebugMsg( QString( "Legend layer file entries: " ) + QString::number( legendLayerFiles.count() ) );
     for ( int i = 0; i < mapLayers.count(); i++ )
     {
       // Get one maplayer element from list

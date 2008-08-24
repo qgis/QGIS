@@ -145,7 +145,7 @@ QgsGrassBrowser::~QgsGrassBrowser() { }
 
 void QgsGrassBrowser::refresh()
 {
-  QgsDebugMsg( "QgsGrassBrowser::refresh()" );
+  QgsDebugMsg( "entered." );
 
   mModel->refresh();
   mTree->update();
@@ -153,7 +153,7 @@ void QgsGrassBrowser::refresh()
 
 void QgsGrassBrowser::addMap()
 {
-  QgsDebugMsg( "QgsGrassBrowser::addMap()" );
+  QgsDebugMsg( "entered." );
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
   bool mapSelected = false;
@@ -207,7 +207,7 @@ void QgsGrassBrowser::addMap()
 
 void QgsGrassBrowser::doubleClicked( const QModelIndex & index )
 {
-  QgsDebugMsg( "QgsGrassBrowser::doubleClicked()" );
+  QgsDebugMsg( "entered." );
 
   addMap();
 }
@@ -219,7 +219,7 @@ QString QgsGrassBrowser::formatMessage( QString msg )
 
 void QgsGrassBrowser::copyMap()
 {
-  QgsDebugMsg( "QgsGrassBrowser::copyMap()" );
+  QgsDebugMsg( "entered." );
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
@@ -291,7 +291,7 @@ void QgsGrassBrowser::copyMap()
 
 void QgsGrassBrowser::renameMap()
 {
-  QgsDebugMsg( "QgsGrassBrowser::renameMap()" );
+  QgsDebugMsg( "entered." );
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
@@ -355,7 +355,7 @@ void QgsGrassBrowser::renameMap()
 
 void QgsGrassBrowser::deleteMap()
 {
-  QgsDebugMsg( "QgsGrassBrowser::deleteMap()" );
+  QgsDebugMsg( "entered." );
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
 
@@ -408,7 +408,7 @@ void QgsGrassBrowser::deleteMap()
 
 void QgsGrassBrowser::setRegion()
 {
-  QgsDebugMsg( "QgsGrassBrowser::setRegion()" );
+  QgsDebugMsg( "entered." );
 
   struct Cell_head window;
 
@@ -442,7 +442,7 @@ void QgsGrassBrowser::writeRegion( struct Cell_head *window )
 
 bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window )
 {
-  QgsDebugMsg( "QgsGrassBrowser::setRegion()" );
+  QgsDebugMsg( "entered." );
 
   int type = mModel->itemType( index );
   QString mapset = mModel->itemMapset( index );
@@ -470,7 +470,7 @@ bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window
 
 void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
 {
-  QgsDebugMsg( "QgsGrassBrowser::selectionChanged()" );
+  QgsDebugMsg( "entered." );
 
   mActionAddMap->setEnabled( false );
   mActionCopyMap->setEnabled( false );
@@ -512,7 +512,7 @@ void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const Q
 
 void QgsGrassBrowser::currentChanged( const QModelIndex & current, const QModelIndex & previous )
 {
-  QgsDebugMsg( "QgsGrassBrowser::currentChanged()" );
+  QgsDebugMsg( "entered." );
 }
 
 void QgsGrassBrowser::setLocation( const QString &gisbase, const QString &location )

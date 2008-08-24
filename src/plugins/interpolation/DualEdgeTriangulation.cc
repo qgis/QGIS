@@ -44,7 +44,7 @@ DualEdgeTriangulation::~DualEdgeTriangulation()
 
 void DualEdgeTriangulation::performConsistencyTest()
 {
-  QgsDebugMsg( "" );
+  QgsDebugMsg( "performing consistency test" );
 
   for ( int i = 0;i < mHalfEdge.count();i++ )
   {
@@ -52,14 +52,14 @@ void DualEdgeTriangulation::performConsistencyTest()
     int b = mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getNext();
     if ( i != a )
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "warning, first test failed" );
     }
     if ( i != b )
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "warning, second test failed" );
     }
   }
-  QgsDebugMsg( "" );
+  QgsDebugMsg( "consistency test finished" );
 }
 
 void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
@@ -105,7 +105,8 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
 {
   if ( p )
   {
-// QgsDebugMsg(QString("inserting point %1,%2//%3//").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()));
+// QgsDebugMsg( QString("inserting point %1,%2//%3//").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()));
+
     //first update the bounding box
     if ( mPointVector.count() == 0 )//update bounding box when the first point is inserted
     {
@@ -154,7 +155,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
       //test, if it is the same point as the first point
       if ( p->getX() == mPointVector[0]->getX() && p->getY() == mPointVector[0]->getY() )
       {
-        QgsDebugMsg( "" );
+        QgsDebugMsg( "second point is the same as the first point, it thus has not been inserted" );
         Point3D* p = mPointVector[1];
         mPointVector.remove( 1 );
         delete p;
@@ -220,7 +221,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
       else//p is in a line with p0 and p1
       {
         mPointVector.remove( mPointVector.count() - 1 );
-        QgsDebugMsg( "" );
+        QgsDebugMsg( "error: third point is on the same line as the first and the second point. It thus has not been inserted into the triangulation" );
         return -100;
       }
     }
@@ -367,7 +368,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
 
       else if ( number == -100 || number == -5 )//this means unknown problems or a numerical error occured in 'baseEdgeOfTriangle'
       {
-// QgsDebugMsg("");
+        // QgsDebugMsg("point has not been inserted because of unknown problems");
         Point3D* p = mPointVector[mPointVector.count()-1];
         mPointVector.remove( mPointVector.count() - 1 );
         delete p;
@@ -390,7 +391,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
   }
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning: null pointer" );
     return -100;
   }
 }
@@ -418,7 +419,8 @@ int DualEdgeTriangulation::baseEdgeOfPoint( int point )
     control += 1;
     if ( control > 1000000 )
     {
-// QgsDebugMsg("");
+      // QgsDebugMsg( "warning, endless loop" );
+
       //use the secure and slow method
       for ( int i = 0;i < mHalfEdge.count();i++ )
       {
@@ -477,7 +479,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
   {
     if ( runs > nBaseOfRuns )//prevents endless loops
     {
-// QgsDebugMsg("");
+      // QgsDebugMsg("warning, probable endless loop detected");
       return -100;
     }
 
@@ -549,7 +551,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
 
   if ( numinstabs > 0 )//we hit an existing point or a numerical instability occured
   {
-// QgsDebugMsg("");
+    // QgsDebugMsg("numerical instability occured");
     mUnstableEdge = actedge;
     return -5;
   }
@@ -561,13 +563,13 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
     {
       //firstendp is the number of the point which has been inserted twice
       mTwiceInsPoint = firstendp;
-// QgsDebugMsg(QString("point nr %1").arg(firstendp));
+      // QgsDebugMsg(QString("point nr %1 already inserted").arg(firstendp));
     }
     else if ( secendp == thendp || secendp == fouendp )
     {
       //secendp is the number of the point which has been inserted twice
       mTwiceInsPoint = secendp;
-// QgsDebugMsg(QString("point nr %1").arg(secendp));
+      // QgsDebugMsg(QString("point nr %1 already inserted").arg(secendp));
     }
 
     return -25;//return the code for a point that is already contained in the triangulation
@@ -651,7 +653,7 @@ bool DualEdgeTriangulation::calcNormal( double x, double y, Vector3D* result )
   }
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -666,7 +668,7 @@ bool DualEdgeTriangulation::calcPoint( double x, double y, Point3D* result )
   }
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -729,156 +731,156 @@ void DualEdgeTriangulation::doSwap( unsigned int edge )
   checkSwap( edge5 );
 }
 
-/*
-void DualEdgeTriangulation::draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const
+#if 0
+void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height ) const
 {
   //if mPointVector is empty, there is nothing to do
-  if(mPointVector.count()==0)
-    {
-      return;
-    }
-
-  p->setPen(mEdgeColor);
-
-  bool* control=new bool[mHalfEdge.count()];//controllarray that no edge is painted twice
-  bool* control2=new bool[mHalfEdge.count()];//controllarray for the flat triangles
-
-  for(unsigned int i=0;i<=mHalfEdge.count()-1;i++)
-    {
-      control[i]=false;
-      control2[i]=false;
-    }
-
-  if(((xupright-xlowleft)/width)>((yupright-ylowleft)/height))
- {
-   double lowerborder=-(height*(xupright-xlowleft)/width-yupright);//real world coordinates of the lower widget border. This is useful to know because of the HalfEdge bounding box test
-   for(unsigned int i=0;i<mHalfEdge.count()-1;i++)
-     {
-       if(mHalfEdge[i]->getPoint()==-1||mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()==-1)
-  {continue;}
-
-       //check, if the edge belongs to a flat triangle, remove this later
-       if(control2[i]==false)
+  if ( mPointVector.count() == 0 )
   {
-    double p1,p2,p3;
-    if(mHalfEdge[i]->getPoint()!=-1&&mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()!=-1&&mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()!=-1)
+    return;
+  }
+
+  p->setPen( mEdgeColor );
+
+  bool* control = new bool[mHalfEdge.count()];//controllarray that no edge is painted twice
+  bool* control2 = new bool[mHalfEdge.count()];//controllarray for the flat triangles
+
+  for ( unsigned int i = 0;i <= mHalfEdge.count() - 1;i++ )
+  {
+    control[i] = false;
+    control2[i] = false;
+  }
+
+  if ((( xupright - xlowleft ) / width ) > (( yupright - ylowleft ) / height ) )
+  {
+    double lowerborder = -( height * ( xupright - xlowleft ) / width - yupright );//real world coordinates of the lower widget border. This is useful to know because of the HalfEdge bounding box test
+    for ( unsigned int i = 0;i < mHalfEdge.count() - 1;i++ )
+    {
+      if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
+        {continue;}
+
+      //check, if the edge belongs to a flat triangle, remove this later
+      if ( control2[i] == false )
       {
-        p1=mPointVector[mHalfEdge[i]->getPoint()]->getZ();
-        p2=mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getZ();
-        p3=mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getZ();
-        if(p1==p2&&p2==p3&&halfEdgeBBoxTest(i,xlowleft,lowerborder,xupright,yupright)&&halfEdgeBBoxTest(mHalfEdge[i]->getNext(),xlowleft,lowerborder,xupright,yupright)&&halfEdgeBBoxTest(mHalfEdge[mHalfEdge[i]->getNext()]->getNext(),xlowleft,lowerborder,xupright,yupright))//draw the triangle
-   {
-     QPointArray pa(3);
-     pa.setPoint(0,(mPointVector[mHalfEdge[i]->getPoint()]->getX()-xlowleft)/(xupright-xlowleft)*width,(yupright-mPointVector[mHalfEdge[i]->getPoint()]->getY())/(xupright-xlowleft)*width);
-     pa.setPoint(1,(mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getX()-xlowleft)/(xupright-xlowleft)*width,(yupright-mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getY())/(xupright-xlowleft)*width);
-     pa.setPoint(2,(mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getX()-xlowleft)/(xupright-xlowleft)*width,(yupright-mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getY())/(xupright-xlowleft)*width);
-     QColor c(255,0,0);
-     p->setBrush(c);
-     p->drawPolygon(pa);
-   }
+        double p1, p2, p3;
+        if ( mHalfEdge[i]->getPoint() != -1 && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 && mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint() != -1 )
+        {
+          p1 = mPointVector[mHalfEdge[i]->getPoint()]->getZ();
+          p2 = mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getZ();
+          p3 = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getZ();
+          if ( p1 == p2 && p2 == p3 && halfEdgeBBoxTest( i, xlowleft, lowerborder, xupright, yupright ) && halfEdgeBBoxTest( mHalfEdge[i]->getNext(), xlowleft, lowerborder, xupright, yupright ) && halfEdgeBBoxTest( mHalfEdge[mHalfEdge[i]->getNext()]->getNext(), xlowleft, lowerborder, xupright, yupright ) )//draw the triangle
+          {
+            QPointArray pa( 3 );
+            pa.setPoint( 0, ( mPointVector[mHalfEdge[i]->getPoint()]->getX() - xlowleft ) / ( xupright - xlowleft )*width, ( yupright - mPointVector[mHalfEdge[i]->getPoint()]->getY() ) / ( xupright - xlowleft )*width );
+            pa.setPoint( 1, ( mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getX() - xlowleft ) / ( xupright - xlowleft )*width, ( yupright - mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getY() ) / ( xupright - xlowleft )*width );
+            pa.setPoint( 2, ( mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getX() - xlowleft ) / ( xupright - xlowleft )*width, ( yupright - mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getY() ) / ( xupright - xlowleft )*width );
+            QColor c( 255, 0, 0 );
+            p->setBrush( c );
+            p->drawPolygon( pa );
+          }
+        }
+
+        control2[i] = true;
+        control2[mHalfEdge[i]->getNext()] = true;
+        control2[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()] = true;
+      }//end of the section, which has to be removed later
+
+      if ( control[i] == true )//check, if edge has already been drawn
+        {continue;}
+
+      //draw the edge;
+      if ( halfEdgeBBoxTest( i, xlowleft, lowerborder, xupright, yupright ) )//only draw the halfedge if its bounding box intersects the painted area
+      {
+        if ( mHalfEdge[i]->getBreak() )//change the color it the edge is a breakline
+        {
+          p->setPen( mBreakEdgeColor );
+        }
+        else if ( mHalfEdge[i]->getForced() )//change the color if the edge is forced
+        {
+          p->setPen( mForcedEdgeColor );
+        }
+
+
+        p->drawLine(( mPointVector[mHalfEdge[i]->getPoint()]->getX() - xlowleft ) / ( xupright - xlowleft )*width, ( yupright - mPointVector[mHalfEdge[i]->getPoint()]->getY() ) / ( xupright - xlowleft )*width, ( mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getX() - xlowleft ) / ( xupright - xlowleft )*width, ( yupright - mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getY() ) / ( xupright - xlowleft )*width );
+
+        if ( mHalfEdge[i]->getForced() )
+        {
+          p->setPen( mEdgeColor );
+        }
+
+
       }
-
-    control2[i]=true;
-    control2[mHalfEdge[i]->getNext()]=true;
-    control2[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]=true;
-  }//end of the section, which has to be removed later
-
-       if(control[i]==true)//check, if edge has already been drawn
-  {continue;}
-
-       //draw the edge;
-       if(halfEdgeBBoxTest(i,xlowleft,lowerborder,xupright,yupright))//only draw the halfedge if its bounding box intersects the painted area
-       {
-  if(mHalfEdge[i]->getBreak())//change the color it the edge is a breakline
-    {
-      p->setPen(mBreakEdgeColor);
+      control[i] = true;
+      control[mHalfEdge[i]->getDual()] = true;
     }
-  else if(mHalfEdge[i]->getForced())//change the color if the edge is forced
-    {
-      p->setPen(mForcedEdgeColor);
-    }
-
-
-  p->drawLine((mPointVector[mHalfEdge[i]->getPoint()]->getX()-xlowleft)/(xupright-xlowleft)*width,(yupright-mPointVector[mHalfEdge[i]->getPoint()]->getY())/(xupright-xlowleft)*width,(mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getX()-xlowleft)/(xupright-xlowleft)*width,(yupright-mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getY())/(xupright-xlowleft)*width);
-
-  if(mHalfEdge[i]->getForced())
-    {
-      p->setPen(mEdgeColor);
-    }
-
-
-       }
-       control[i]=true;
-       control[mHalfEdge[i]->getDual()]=true;
-     }
- }
+  }
   else
+  {
+    double rightborder = width * ( yupright - ylowleft ) / height + xlowleft;//real world coordinates of the right widget border. This is useful to know because of the HalfEdge bounding box test
+    for ( unsigned int i = 0;i < mHalfEdge.count() - 1;i++ )
     {
-      double rightborder=width*(yupright-ylowleft)/height+xlowleft;//real world coordinates of the right widget border. This is useful to know because of the HalfEdge bounding box test
-      for(unsigned int i=0;i<mHalfEdge.count()-1;i++)
- {
-   if(mHalfEdge[i]->getPoint()==-1||mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()==-1)
-  {continue;}
+      if ( mHalfEdge[i]->getPoint() == -1 || mHalfEdge[mHalfEdge[i]->getDual()]->getPoint() == -1 )
+        {continue;}
 
-   //check, if the edge belongs to a flat triangle, remove this section later
-   if(control2[i]==false)
-     {
-       double p1,p2,p3;
-       if(mHalfEdge[i]->getPoint()!=-1&&mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()!=-1&&mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()!=-1)
-  {
-    p1=mPointVector[mHalfEdge[i]->getPoint()]->getZ();
-    p2=mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getZ();
-    p3=mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getZ();
-    if(p1==p2&&p2==p3&&halfEdgeBBoxTest(i,xlowleft,ylowleft,rightborder,yupright)&&halfEdgeBBoxTest(mHalfEdge[i]->getNext(),xlowleft,ylowleft,rightborder,yupright)&&halfEdgeBBoxTest(mHalfEdge[mHalfEdge[i]->getNext()]->getNext(),xlowleft,ylowleft,rightborder,yupright))//draw the triangle
+      //check, if the edge belongs to a flat triangle, remove this section later
+      if ( control2[i] == false )
       {
-        QPointArray pa(3);
-        pa.setPoint(0,(mPointVector[mHalfEdge[i]->getPoint()]->getX()-xlowleft)/(yupright-ylowleft)*height,(yupright-mPointVector[mHalfEdge[i]->getPoint()]->getY())/(yupright-ylowleft)*height);
-        pa.setPoint(1,(mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getX()-xlowleft)/(yupright-ylowleft)*height,(yupright-mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getY())/(yupright-ylowleft)*height);
-        pa.setPoint(2,(mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getX()-xlowleft)/(yupright-ylowleft)*height,(yupright-mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getY())/(yupright-ylowleft)*height);
-        QColor c(255,0,0);
-        p->setBrush(c);
-        p->drawPolygon(pa);
-      }
-  }
+        double p1, p2, p3;
+        if ( mHalfEdge[i]->getPoint() != -1 && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 && mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint() != -1 )
+        {
+          p1 = mPointVector[mHalfEdge[i]->getPoint()]->getZ();
+          p2 = mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getZ();
+          p3 = mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getZ();
+          if ( p1 == p2 && p2 == p3 && halfEdgeBBoxTest( i, xlowleft, ylowleft, rightborder, yupright ) && halfEdgeBBoxTest( mHalfEdge[i]->getNext(), xlowleft, ylowleft, rightborder, yupright ) && halfEdgeBBoxTest( mHalfEdge[mHalfEdge[i]->getNext()]->getNext(), xlowleft, ylowleft, rightborder, yupright ) )//draw the triangle
+          {
+            QPointArray pa( 3 );
+            pa.setPoint( 0, ( mPointVector[mHalfEdge[i]->getPoint()]->getX() - xlowleft ) / ( yupright - ylowleft )*height, ( yupright - mPointVector[mHalfEdge[i]->getPoint()]->getY() ) / ( yupright - ylowleft )*height );
+            pa.setPoint( 1, ( mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getX() - xlowleft ) / ( yupright - ylowleft )*height, ( yupright - mPointVector[mHalfEdge[mHalfEdge[i]->getNext()]->getPoint()]->getY() ) / ( yupright - ylowleft )*height );
+            pa.setPoint( 2, ( mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getX() - xlowleft ) / ( yupright - ylowleft )*height, ( yupright - mPointVector[mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint()]->getY() ) / ( yupright - ylowleft )*height );
+            QColor c( 255, 0, 0 );
+            p->setBrush( c );
+            p->drawPolygon( pa );
+          }
+        }
 
-       control2[i]=true;
-       control2[mHalfEdge[i]->getNext()]=true;
-       control2[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]=true;
-     }//end of the section, which has to be removed later
+        control2[i] = true;
+        control2[mHalfEdge[i]->getNext()] = true;
+        control2[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()] = true;
+      }//end of the section, which has to be removed later
 
 
-   if(control[i]==true)//check, if edge has already been drawn
-     {continue;}
+      if ( control[i] == true )//check, if edge has already been drawn
+        {continue;}
 
-       //draw the edge
-       if(halfEdgeBBoxTest(i,xlowleft,ylowleft,rightborder,yupright))//only draw the edge if its bounding box intersects with the painted area
-  {
-    if(mHalfEdge[i]->getBreak())//change the color if the edge is a breakline
+      //draw the edge
+      if ( halfEdgeBBoxTest( i, xlowleft, ylowleft, rightborder, yupright ) )//only draw the edge if its bounding box intersects with the painted area
       {
-        p->setPen(mBreakEdgeColor);
-      }
-    else if(mHalfEdge[i]->getForced())//change the color if the edge is forced
-      {
-        p->setPen(mForcedEdgeColor);
-      }
+        if ( mHalfEdge[i]->getBreak() )//change the color if the edge is a breakline
+        {
+          p->setPen( mBreakEdgeColor );
+        }
+        else if ( mHalfEdge[i]->getForced() )//change the color if the edge is forced
+        {
+          p->setPen( mForcedEdgeColor );
+        }
 
-    p->drawLine((mPointVector[mHalfEdge[i]->getPoint()]->getX()-xlowleft)/(yupright-ylowleft)*height,(yupright-mPointVector[mHalfEdge[i]->getPoint()]->getY())/(yupright-ylowleft)*height,(mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getX()-xlowleft)/(yupright-ylowleft)*height,(yupright-mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getY())/(yupright-ylowleft)*height);
+        p->drawLine(( mPointVector[mHalfEdge[i]->getPoint()]->getX() - xlowleft ) / ( yupright - ylowleft )*height, ( yupright - mPointVector[mHalfEdge[i]->getPoint()]->getY() ) / ( yupright - ylowleft )*height, ( mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getX() - xlowleft ) / ( yupright - ylowleft )*height, ( yupright - mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()]->getY() ) / ( yupright - ylowleft )*height );
 
-  if(mHalfEdge[i]->getForced())
-      {
-        p->setPen(mEdgeColor);
+        if ( mHalfEdge[i]->getForced() )
+        {
+          p->setPen( mEdgeColor );
+        }
+
       }
-
-  }
-       control[i]=true;
-       control[mHalfEdge[i]->getDual()]=true;
- }
+      control[i] = true;
+      control[mHalfEdge[i]->getDual()] = true;
     }
+  }
 
   delete[] control;
   delete[] control2;
 }
-*/
+#endif
 
 int DualEdgeTriangulation::getOppositePoint( int p1, int p2 )
 {
@@ -905,8 +907,7 @@ int DualEdgeTriangulation::getOppositePoint( int p1, int p2 )
 
   if ( theedge == -10 )//there is no edge between p1 and p2
   {
-    QgsDebugMsg( "" );
-    QgsDebugMsg( QString( "the points are: %1 and " ).arg( p1 ) );
+    QgsDebugMsg( QString( "warning, error: the points are: %1 and %2" ).arg( p1 ).arg( p2 ) );
     return -10;
   }
 
@@ -960,7 +961,7 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, int* n
     int edge = baseEdgeOfTriangle( &point );
     if ( edge == -10 )//the point is outside the convex hull
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "edge outside the convex hull" );
       return false;
     }
 
@@ -1053,14 +1054,14 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, int* n
     }
     else//problems
     {
-      QgsDebugMsg( "problems in DualEdgeTriangulation::getTriangle, the edge is: " );
+      QgsDebugMsg( QString( "problem: the edge is: %1" ).arg( edge ) );
       return false;
     }
   }
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -1073,7 +1074,7 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, Point3
     int edge = baseEdgeOfTriangle( &point );
     if ( edge == -10 )//the point is outside the convex hull
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "edge outside the convex hull" );
       return false;
     }
     else if ( edge >= 0 )//the point is inside the convex hull
@@ -1153,14 +1154,14 @@ bool DualEdgeTriangulation::getTriangle( double x, double y, Point3D* p1, Point3
     }
     else//problems
     {
-      QgsDebugMsg( "problems in DualEdgeTriangulation::getTriangle, the edge is: " );
+      QgsDebugMsg( QString( "problems: the edge is: %1" ).arg( edge ) );
       return false;
     }
   }
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -1204,7 +1205,7 @@ int DualEdgeTriangulation::insertForcedSegment( int p1, int p2, bool breakline )
     control += 1;
     if ( control > 17000 )
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "warning, endless loop" );
       return -100;//return an error code
     }
 
@@ -1569,7 +1570,7 @@ void DualEdgeTriangulation::setTriangleInterpolator( TriangleInterpolator* inter
 
 void DualEdgeTriangulation::eliminateHorizontalTriangles()
 {
-  QgsDebugMsg( "" );
+  QgsDebugMsg( "am in eliminateHorizontalTriangles" );
   double minangle = 0;//minimum angle for swapped triangles. If triangles generated by a swap would have a minimum angle (in degrees) below that value, the swap will not be done.
 
   while ( true )
@@ -1653,8 +1654,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
     delete[] control;
   }
 
-  QgsDebugMsg( "" );
-
+  QgsDebugMsg( "end of method" );
 }
 
 void DualEdgeTriangulation::ruppertRefinement()
@@ -1735,7 +1735,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //debugging: print out all the angles below the minimum for a test
   for ( std::multimap<double, int>::const_iterator it = angle_edge.begin();it != angle_edge.end();++it )
   {
-    QgsDebugMsg( "angle: " );
+    QgsDebugMsg( QString( "angle: %1" ).arg( it->first ) );
   }
 
 
@@ -1749,7 +1749,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   while ( !edge_angle.empty() )
   {
     minangle = angle_edge.begin()->first;
-    QgsDebugMsg( "minangle: " );
+    QgsDebugMsg( QString( "minangle: %1" ).arg( minangle ) );
     minedge = angle_edge.begin()->second;
     minedgenext = mHalfEdge[minedge]->getNext();
     minedgenextnext = mHalfEdge[minedgenext]->getNext();
@@ -1757,7 +1757,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     //calculate the circumcenter
     if ( !MathUtils::circumcenter( mPointVector[mHalfEdge[minedge]->getPoint()], mPointVector[mHalfEdge[minedgenext]->getPoint()], mPointVector[mHalfEdge[minedgenextnext]->getPoint()], &circumcenter ) )
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "warning, calculation of circumcenter failed" );
       //put all three edges to dontexamine and remove them from the other maps
       dontexamine.insert( minedge );
       edge_angle.erase( minedge );
@@ -1773,7 +1773,8 @@ void DualEdgeTriangulation::ruppertRefinement()
     if ( !pointInside( circumcenter.getX(), circumcenter.getY() ) )
     {
       //put all three edges to dontexamine and remove them from the other maps
-      QgsDebugMsg( QString( "put circumcenter %1//%2" ).arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
+      QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because it is outside the convex hull" )
+                   .arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
       dontexamine.insert( minedge );
       edge_angle.erase( minedge );
       std::multimap<double, int>::iterator minedgeiter = angle_edge.find( minangle );
@@ -1789,179 +1790,180 @@ void DualEdgeTriangulation::ruppertRefinement()
 
     bool encroached = false;
 
-    //slow version
-    /*int numhalfedges=mHalfEdge.count();//begin slow version
-    for(int i=0;i<numhalfedges;i++)
+#if 0 //slow version
+    int numhalfedges = mHalfEdge.count();//begin slow version
+    for ( int i = 0;i < numhalfedges;i++ )
     {
-    if(mHalfEdge[i]->getForced()||edgeOnConvexHull(i))
-    {
-     if(MathUtils::inDiametral(mPointVector[mHalfEdge[i]->getPoint()],mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()],&circumcenter))
-     {
-    encroached=true;
-    //split segment
-    QgsDebugMsg("");
-    int pointno=splitHalfEdge(i,0.5);
-
-    //update dontexmine, angle_edge, edge_angle
-     int pointingedge=baseEdgeOfPoint(pointno);
-
-     int actedge=pointingedge;
-     int ed1,ed2,ed3;//numbers of the three edges
-     int pt1,pt2,pt3;//numbers of the three points
-     double angle1,angle2,angle3;
-
-     do
-     {
-    ed1=mHalfEdge[actedge]->getDual();
-    pt1=mHalfEdge[ed1]->getPoint();
-    ed2=mHalfEdge[ed1]->getNext();
-    pt2=mHalfEdge[ed2]->getPoint();
-    ed3=mHalfEdge[ed2]->getNext();
-    pt3=mHalfEdge[ed3]->getPoint();
-    actedge=ed3;
-
-    if(pt1==-1||pt2==-1||pt3==-1)//don't consider triangles with the virtual point
-    {
-      continue;
-    }
-
-    angle1=MathUtils::angle(mPointVector[pt3],mPointVector[pt1],mPointVector[pt2],mPointVector[pt1]);
-    angle2=MathUtils::angle(mPointVector[pt1],mPointVector[pt2],mPointVector[pt3],mPointVector[pt2]);
-    angle3=MathUtils::angle(mPointVector[pt2],mPointVector[pt3],mPointVector[pt1],mPointVector[pt3]);
-
-    //don't put the edges on the maps if two segments are forced or on a hull
-    bool twoforcededges1, twoforcededges2, twoforcededges3;//flag to indicate, if angle1, angle2 and angle3 are between forced edges or hull edges
-
-    if((mHalfEdge[ed1]->getForced()==true||edgeOnConvexHull(ed1))&&(mHalfEdge[ed2]->getForced()==true||edgeOnConvexHull(ed2)))
-    {
-      twoforcededges1=true;
-    }
-    else
-    {
-      twoforcededges1=false;
-    }
-
-    if((mHalfEdge[ed2]->getForced()==true||edgeOnConvexHull(ed2))&&(mHalfEdge[ed3]->getForced()==true||edgeOnConvexHull(ed3)))
-    {
-      twoforcededges2=true;
-    }
-    else
-    {
-      twoforcededges2=false;
-    }
-
-    if((mHalfEdge[ed3]->getForced()==true||edgeOnConvexHull(ed3))&&(mHalfEdge[ed1]->getForced()==true||edgeOnConvexHull(ed1)))
-    {
-      twoforcededges3=true;
-    }
-    else
-    {
-      twoforcededges3=false;
-    }
-
-    //update the settings related to ed1
-    std::set<int>::iterator ed1iter=dontexamine.find(ed1);
-    if(ed1iter!=dontexamine.end())
-    {
-      //edge number is on dontexamine list
-      dontexamine.erase(ed1iter);
-    }
-    else
-    {
-      //test, if it is on edge_angle and angle_edge and erase them if yes
-      std::map<int,double>::iterator tempit1;
-      tempit1=edge_angle.find(ed1);
-      if(tempit1!=edge_angle.end())
+      if ( mHalfEdge[i]->getForced() || edgeOnConvexHull( i ) )
       {
-    //erase the entries
-    double angle=tempit1->second;
-    edge_angle.erase(ed1);
-    std::multimap<double,int>::iterator tempit2=angle_edge.lower_bound(angle);
-    while(tempit2->second!=ed1)
-    {
-       ++tempit2;
-    }
-    angle_edge.erase(tempit2);
+        if ( MathUtils::inDiametral( mPointVector[mHalfEdge[i]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[i]->getDual()]->getPoint()], &circumcenter ) )
+        {
+          encroached = true;
+          //split segment
+          QgsDebugMsg( "segment split" );
+          int pointno = splitHalfEdge( i, 0.5 );
+
+          //update dontexmine, angle_edge, edge_angle
+          int pointingedge = baseEdgeOfPoint( pointno );
+
+          int actedge = pointingedge;
+          int ed1, ed2, ed3;//numbers of the three edges
+          int pt1, pt2, pt3;//numbers of the three points
+          double angle1, angle2, angle3;
+
+          do
+          {
+            ed1 = mHalfEdge[actedge]->getDual();
+            pt1 = mHalfEdge[ed1]->getPoint();
+            ed2 = mHalfEdge[ed1]->getNext();
+            pt2 = mHalfEdge[ed2]->getPoint();
+            ed3 = mHalfEdge[ed2]->getNext();
+            pt3 = mHalfEdge[ed3]->getPoint();
+            actedge = ed3;
+
+            if ( pt1 == -1 || pt2 == -1 || pt3 == -1 )//don't consider triangles with the virtual point
+            {
+              continue;
+            }
+
+            angle1 = MathUtils::angle( mPointVector[pt3], mPointVector[pt1], mPointVector[pt2], mPointVector[pt1] );
+            angle2 = MathUtils::angle( mPointVector[pt1], mPointVector[pt2], mPointVector[pt3], mPointVector[pt2] );
+            angle3 = MathUtils::angle( mPointVector[pt2], mPointVector[pt3], mPointVector[pt1], mPointVector[pt3] );
+
+            //don't put the edges on the maps if two segments are forced or on a hull
+            bool twoforcededges1, twoforcededges2, twoforcededges3;//flag to indicate, if angle1, angle2 and angle3 are between forced edges or hull edges
+
+            if (( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) )
+            {
+              twoforcededges1 = true;
+            }
+            else
+            {
+              twoforcededges1 = false;
+            }
+
+            if (( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) )
+            {
+              twoforcededges2 = true;
+            }
+            else
+            {
+              twoforcededges2 = false;
+            }
+
+            if (( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) )
+            {
+              twoforcededges3 = true;
+            }
+            else
+            {
+              twoforcededges3 = false;
+            }
+
+            //update the settings related to ed1
+            std::set<int>::iterator ed1iter = dontexamine.find( ed1 );
+            if ( ed1iter != dontexamine.end() )
+            {
+              //edge number is on dontexamine list
+              dontexamine.erase( ed1iter );
+            }
+            else
+            {
+              //test, if it is on edge_angle and angle_edge and erase them if yes
+              std::map<int, double>::iterator tempit1;
+              tempit1 = edge_angle.find( ed1 );
+              if ( tempit1 != edge_angle.end() )
+              {
+                //erase the entries
+                double angle = tempit1->second;
+                edge_angle.erase( ed1 );
+                std::multimap<double, int>::iterator tempit2 = angle_edge.lower_bound( angle );
+                while ( tempit2->second != ed1 )
+                {
+                  ++tempit2;
+                }
+                angle_edge.erase( tempit2 );
+              }
+            }
+
+            if ( angle1 < mintol && !twoforcededges1 )
+            {
+              edge_angle.insert( std::make_pair( ed1, angle1 ) );
+              angle_edge.insert( std::make_pair( angle1, ed1 ) );
+            }
+
+            //update the settings related to ed2
+            std::set<int>::iterator ed2iter = dontexamine.find( ed2 );
+            if ( ed2iter != dontexamine.end() )
+            {
+              //edge number is on dontexamine list
+              dontexamine.erase( ed2iter );
+            }
+            else
+            {
+              //test, if it is on edge_angle and angle_edge and erase them if yes
+              std::map<int, double>::iterator tempit1;
+              tempit1 = edge_angle.find( ed2 );
+              if ( tempit1 != edge_angle.end() )
+              {
+                //erase the entries
+                double angle = tempit1->second;
+                edge_angle.erase( ed2 );
+                std::multimap<double, int>::iterator tempit2 = angle_edge.lower_bound( angle );
+                while ( tempit2->second != ed2 )
+                {
+                  ++tempit2;
+                }
+                angle_edge.erase( tempit2 );
+              }
+            }
+
+            if ( angle2 < mintol && !twoforcededges2 )
+            {
+              edge_angle.insert( std::make_pair( ed2, angle2 ) );
+              angle_edge.insert( std::make_pair( angle2, ed2 ) );
+            }
+
+            //update the settings related to ed3
+            std::set<int>::iterator ed3iter = dontexamine.find( ed3 );
+            if ( ed3iter != dontexamine.end() )
+            {
+              //edge number is on dontexamine list
+              dontexamine.erase( ed3iter );
+            }
+            else
+            {
+              //test, if it is on edge_angle and angle_edge and erase them if yes
+              std::map<int, double>::iterator tempit1;
+              tempit1 = edge_angle.find( ed3 );
+              if ( tempit1 != edge_angle.end() )
+              {
+                //erase the entries
+                double angle = tempit1->second;
+                edge_angle.erase( ed3 );
+                std::multimap<double, int>::iterator tempit2 = angle_edge.lower_bound( angle );
+                while ( tempit2->second != ed3 )
+                {
+                  ++tempit2;
+                }
+                angle_edge.erase( tempit2 );
+              }
+            }
+
+            if ( angle3 < mintol && !twoforcededges3 )
+            {
+              edge_angle.insert( std::make_pair( ed3, angle3 ) );
+              angle_edge.insert( std::make_pair( angle3, ed3 ) );
+            }
+
+
+          }
+          while ( actedge != pointingedge );
+
+        }
       }
     }
-
-    if(angle1<mintol&&!twoforcededges1)
-    {
-      edge_angle.insert(std::make_pair(ed1,angle1));
-      angle_edge.insert(std::make_pair(angle1,ed1));
-    }
-
-    //update the settings related to ed2
-     std::set<int>::iterator ed2iter=dontexamine.find(ed2);
-     if(ed2iter!=dontexamine.end())
-     {
-    //edge number is on dontexamine list
-    dontexamine.erase(ed2iter);
-     }
-     else
-     {
-    //test, if it is on edge_angle and angle_edge and erase them if yes
-    std::map<int,double>::iterator tempit1;
-    tempit1=edge_angle.find(ed2);
-    if(tempit1!=edge_angle.end())
-    {
-      //erase the entries
-      double angle=tempit1->second;
-      edge_angle.erase(ed2);
-      std::multimap<double,int>::iterator tempit2=angle_edge.lower_bound(angle);
-      while(tempit2->second!=ed2)
-      {
-    ++tempit2;
-      }
-      angle_edge.erase(tempit2);
-    }
-     }
-
-     if(angle2<mintol&&!twoforcededges2)
-     {
-    edge_angle.insert(std::make_pair(ed2,angle2));
-    angle_edge.insert(std::make_pair(angle2,ed2));
-     }
-
-     //update the settings related to ed3
-     std::set<int>::iterator ed3iter=dontexamine.find(ed3);
-     if(ed3iter!=dontexamine.end())
-     {
-    //edge number is on dontexamine list
-    dontexamine.erase(ed3iter);
-     }
-     else
-     {
-    //test, if it is on edge_angle and angle_edge and erase them if yes
-    std::map<int,double>::iterator tempit1;
-    tempit1=edge_angle.find(ed3);
-    if(tempit1!=edge_angle.end())
-    {
-      //erase the entries
-      double angle=tempit1->second;
-      edge_angle.erase(ed3);
-      std::multimap<double,int>::iterator tempit2=angle_edge.lower_bound(angle);
-      while(tempit2->second!=ed3)
-      {
-    ++tempit2;
-      }
-      angle_edge.erase(tempit2);
-    }
-     }
-
-     if(angle3<mintol&&!twoforcededges3)
-     {
-    edge_angle.insert(std::make_pair(ed3,angle3));
-    angle_edge.insert(std::make_pair(angle3,ed3));
-     }
-
-
-     }
-     while(actedge!=pointingedge);
-
-     }
-    }
-    }*/ //end slow version
+#endif //end slow version
 
 
     //fast version. Maybe this does not work
@@ -2005,7 +2007,7 @@ void DualEdgeTriangulation::ruppertRefinement()
       if (( mHalfEdge[*it]->getForced() == true || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
       {
         //split segment
-        QgsDebugMsg( "" );
+        QgsDebugMsg( "segment split" );
         int pointno = splitHalfEdge( *it, 0.5 );
         encroached = true;
 
@@ -2190,11 +2192,13 @@ void DualEdgeTriangulation::ruppertRefinement()
     {
       if ( pointno == -100 )
       {
-        QgsDebugMsg( QString( "put circumcenter %1//%2" ).arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
+        QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because of numerical instabilities" )
+                     .arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
       }
       else if ( pointno == mTwiceInsPoint )
       {
-        QgsDebugMsg( QString( "put circumcenter %1//%2" ).arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
+        QgsDebugMsg( QString( "put circumcenter %1//%2 on dontexamine list because it is already inserted" )
+                     .arg( circumcenter.getX() ).arg( circumcenter.getY() ) );
         //test, if the point is present in the triangulation
         bool flag = false;
         for ( int i = 0;i < mPointVector.count();i++ )
@@ -2206,7 +2210,7 @@ void DualEdgeTriangulation::ruppertRefinement()
         }
         if ( flag == false )
         {
-          QgsDebugMsg( "" );
+          QgsDebugMsg( "point is not present in the triangulation" );
         }
       }
       //put all three edges to dontexamine and remove them from the other maps
@@ -2220,9 +2224,9 @@ void DualEdgeTriangulation::ruppertRefinement()
       angle_edge.erase( minedgeiter );
       continue;
     }
-    else//insertion successfull
+    else//insertion successful
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "circumcenter added" );
 
       //update the maps
       //go around the inserted point and make changes for every half edge
@@ -2387,11 +2391,13 @@ void DualEdgeTriangulation::ruppertRefinement()
     }
   }
 
+#if 0
   //debugging: print out all edge of dontexamine
-  /*for(std::set<int>::iterator it=dontexamine.begin();it!=dontexamine.end();++it)
+  for ( std::set<int>::iterator it = dontexamine.begin();it != dontexamine.end();++it )
   {
-      QgsDebugMsg(QString("edge nr. %1").arg(*it));
-      }*/
+    QgsDebugMsg( QString( "edge nr. %1 is in dontexamine" ).arg( *it ) );
+  }
+#endif
 }
 
 
@@ -2480,11 +2486,13 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
       }
       polya.prepend( inserta );
 
+#if 0
       //print out all the elements of polya for a test
-      /*for(iterator=polya.begin();iterator!=polya.end();++iterator)
-        {
-          QgsDebugMsg("");
-          }*/
+      for ( iterator = polya.begin();iterator != polya.end();++iterator )
+      {
+        QgsDebugMsg( *iterator );
+      }
+#endif
 
       triangulatePolygon( &polya, free, inserta );
     }
@@ -2562,7 +2570,7 @@ void DualEdgeTriangulation::triangulatePolygon( QList<int>* poly, QList<int>* fr
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
   }
 
 }
@@ -2581,7 +2589,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
   {
     if ( runs > nBaseOfRuns )//prevents endless loops
     {
-      QgsDebugMsg( QString( "warning, instability detected in DualEdgeTriangulation::pointInside. Point coordinates: %1//" ).arg( x ) );
+      QgsDebugMsg( QString( "warning, instability detected: Point coordinates: %1//%2" ).arg( x ).arg( y ) );
       return false;
     }
 
@@ -2640,7 +2648,7 @@ bool DualEdgeTriangulation::pointInside( double x, double y )
   }
   if ( numinstabs > 0 )//a numerical instability occured
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "numerical instabilities" );
     return true;
   }
 
@@ -2770,7 +2778,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
     hf2->setBreak( break2 );
     hf2->setForced( forced2 );
 
-// QgsDebugMsg("inserting half edge pair ");
+    // QgsDebugMsg( QString( "inserting half edge pair %1" ).arg( i ) );
     mHalfEdge.insert( nr1, hf1 );
     mHalfEdge.insert( nr2, hf2 );
 
@@ -2798,12 +2806,12 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
   while ( buff.mid( 0, 4 ) != "POIN" )
   {
     buff = textstream.readLine();
-    QgsDebugMsg( "" );
+    QgsDebugMsg( buff );
   }
   while ( buff.mid( 0, 4 ) != "NPTS" )
   {
     buff = textstream.readLine();
-    QgsDebugMsg( "" );
+    QgsDebugMsg( buff );
   }
   numberofpoints = buff.section( ' ', 1, 1 ).toInt();
   mPointVector.resize( numberofpoints );
@@ -2835,7 +2843,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
     Point3D* p = new Point3D( x, y, z );
 
-// QgsDebugMsg("inserting point ");
+    // QgsDebugMsg( QString( "inserting point %1" ).arg( i ) );
     mPointVector.insert( i, p );
 
     if ( i == 0 )
@@ -2984,13 +2992,13 @@ bool DualEdgeTriangulation::swapEdge( double x, double y )
     }
     else
     {
-// QgsDebugMsg("");
+      // QgsDebugMsg("warning: null pointer");
       return false;
     }
   }
   else
   {
-// QgsDebugMsg("");
+    // QgsDebugMsg("Edge number negative");
     return false;
   }
 }
@@ -3047,13 +3055,13 @@ QList<int>* DualEdgeTriangulation::getPointsAroundEdge( double x, double y )
     }
     else
     {
-      QgsDebugMsg( "" );
+      QgsDebugMsg( "warning: null pointer" );
       return 0;
     }
   }
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "Edge number negative" );
     return 0;
   }
 }
@@ -3103,7 +3111,7 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   //just a short test if position is between 0 and 1
   if ( position < 0 || position > 1 )
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, position is not between 0 and 1" );
   }
 
   //create the new point on the heap
@@ -3119,7 +3127,7 @@ int DualEdgeTriangulation::splitHalfEdge( int edge, float position )
   {
     mPointVector.resize( mPointVector.count() + 1 );
   }
-  QgsDebugMsg( QString( "inserting point nr. %1, %2//%3//" ).arg( mPointVector.count() ).arg( p->getX() ).arg( p->getY() ) );
+  QgsDebugMsg( QString( "inserting point nr. %1, %2//%3//%4" ).arg( mPointVector.count() ).arg( p->getX() ).arg( p->getY() ).arg( p->getZ() ) );
   mPointVector.insert( mPointVector.count(), p );
 
   //insert the six new halfedges

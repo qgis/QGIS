@@ -144,8 +144,10 @@ void Tools::ExternalSort::initializeRuns(
 
       m_cNumberOfSortedRecords++;
 
-      //if (m_cNumberOfSortedRecords % 1000000 == 0)
-      // QgsDebugMsg(QString("Tools::ExternalSort::initializeRuns: loaded %1 objects.").arg(m_cNumberOfSortedRecords));
+#if 0
+      if ( m_cNumberOfSortedRecords % 1000000 == 0 )
+        QgsDebugMsg( QString( "loaded %1 objects." ).arg( m_cNumberOfSortedRecords ) );
+#endif
 
       if ( m_pTemplateRecord == 0 )
         m_pTemplateRecord = o->clone();

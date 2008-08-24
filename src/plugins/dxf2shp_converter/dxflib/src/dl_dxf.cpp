@@ -435,7 +435,7 @@ bool DL_Dxf::processDXFGroup( DL_CreationInterface* creationInterface,
 {
 
 
-// QgsDebugMsg(QString("DL_Dxf::processDXFGroup: %1: %2").arg(groupCode).arg(groupValue));
+// QgsDebugMsg(QString("groupCode=%1 groupValue=%2").arg(groupCode).arg(groupValue));
 
   // Init on first call
   if ( firstCall )
@@ -1064,25 +1064,25 @@ void DL_Dxf::addSpline( DL_CreationInterface* creationInterface )
 
 
 
+#if 0
 /**
  * Adds a knot to the previously added spline.
  */
-/*
-void DL_Dxf::addKnot(DL_CreationInterface* creationInterface) {
-   QgsDebugMsg("DL_Dxf::addKnot");
+void DL_Dxf::addKnot( DL_CreationInterface* creationInterface )
+{
+  QgsDebugMsg( "entered." );
 }
-*/
+#endif
 
-
-
+#if 0
 /**
  * Adds a control point to the previously added spline.
  */
-/*
-void DL_Dxf::addControlPoint(DL_CreationInterface* creationInterface) {
-    QgsDebugMsg("DL_Dxf::addControlPoint");
+void DL_Dxf::addControlPoint( DL_CreationInterface* creationInterface )
+{
+  QgsDebugMsg( "entered." );
 }
-*/
+#endif
 
 
 
@@ -2670,7 +2670,7 @@ void DL_Dxf::writeInsert( DL_WriterA& dw,
 
   if ( data.name.empty() )
   {
-    QgsDebugMsg( "DL_Dxf::writeInsert: Block name must not be empty" );
+    QgsDebugMsg( "Block name must not be empty" );
     return;
   }
 
@@ -3416,11 +3416,13 @@ int DL_Dxf::writeImage( DL_WriterA& dw,
                         const DL_ImageData& data,
                         const DL_Attributes& attrib )
 {
-
-  /*if (data.file.empty()) {
-      QgsDebugMsg("DL_Dxf::writeImage: Image file must not be empty");
-      return;
-  }*/
+#if 0
+  if ( data.file.empty() )
+  {
+    QgsDebugMsg( "Image file must not be empty" );
+    return;
+  }
+#endif
 
   dw.entity( "IMAGE" );
 

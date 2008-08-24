@@ -38,7 +38,7 @@ QgsPasteTransformations::QgsPasteTransformations()
         it != mapLayers.end();
         ++it )
   {
-    QgsDebugMsg( QString( "QgsPasteTransformations::QgsPasteTransformations: QgsMapLayerRegistry has %1." ).arg( it.value()->name() ) );
+    QgsDebugMsg( QString( "QgsMapLayerRegistry has %1." ).arg( it.value()->name() ) );
 
     // TODO: Test if a VECTOR or DATABASE layer only (not RASTER)
 
@@ -89,7 +89,7 @@ void QgsPasteTransformations::addNewTransfer()
 
 void QgsPasteTransformations::sourceChanged( const QString& layerName )
 {
-  QgsDebugMsg( QString( "QgsPasteTransformations::sourceChanged: Source changed to %1." ).arg( layerName ) );
+  QgsDebugMsg( QString( "Source changed to %1." ).arg( layerName ) );
 
   layerChanged( layerName, &mSourceFields );
 
@@ -98,7 +98,7 @@ void QgsPasteTransformations::sourceChanged( const QString& layerName )
 
 void QgsPasteTransformations::destinationChanged( const QString& layerName )
 {
-  QgsDebugMsg( QString( "QgsPasteTransformations::destinationChanged: Destination changed to %1." ).arg( layerName ) );
+  QgsDebugMsg( QString( "Destination changed to %1." ).arg( layerName ) );
 
   layerChanged( layerName, &mDestinationFields );
 
@@ -108,7 +108,7 @@ void QgsPasteTransformations::destinationChanged( const QString& layerName )
 void QgsPasteTransformations::addTransfer( const QString& sourceSelectedFieldName,
     const QString& destinationSelectedFieldName )
 {
-  QgsDebugMsg( QString( "QgsPasteTransformations::addTransfer: From %1 to %2." ).arg( sourceSelectedFieldName ).arg( destinationSelectedFieldName ) );
+  QgsDebugMsg( QString( "From %1 to %2." ).arg( sourceSelectedFieldName ).arg( destinationSelectedFieldName ) );
 
   int newRow = gridLayout->rowCount();
 
@@ -173,7 +173,7 @@ void QgsPasteTransformations::addTransfer( const QString& sourceSelectedFieldNam
 void QgsPasteTransformations::layerChanged( const QString& layerName, std::vector<QString>* fields )
 {
   // Fetch the fields that will be populated into the Transfer rows.
-  QgsDebugMsg( QString( "QgsPasteTransformations::layerChanged: Layer changed to %1." ).arg( layerName ) );
+  QgsDebugMsg( QString( "Layer changed to %1." ).arg( layerName ) );
 
   /*
   // XXX What does this code do??? [MD]
@@ -186,7 +186,7 @@ void QgsPasteTransformations::layerChanged( const QString& layerName, std::vecto
                                          it != layerFields.end();
                                        ++it )
     {
-          QgsDebugMsg(QString("QgsPasteTransformations::layerChanged: Got field %1.").arg(it->name()));
+          QgsDebugMsg(QString("Got field %1.").arg(it->name()));
 
       fields->push_back(it->name());
     }
@@ -199,7 +199,7 @@ void QgsPasteTransformations::layerChanged( const QString& layerName, std::vecto
 void QgsPasteTransformations::restoreTransfers( const QString& sourceLayerName,
     const QString& destinationLayerName )
 {
-  QgsDebugMsg( "QgsPasteTransformations::restoreTransfers: Entered." );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
@@ -210,7 +210,7 @@ void QgsPasteTransformations::restoreTransfers( const QString& sourceLayerName,
         it != sourceLayers.end();
         ++it )
   {
-    QgsDebugMsg( QString( "QgsPasteTransformations::restoreTransfers: Testing source '%1' with '%2'." ).arg(( *it ) ).arg( sourceLayerName ) );
+    QgsDebugMsg( QString( "testing source '%1' with '%2'." ).arg(( *it ) ).arg( sourceLayerName ) );
     if (( sourceLayerName == ( *it ) ) )
     {
       // Go through destination layers defined for this source layer.
@@ -220,10 +220,10 @@ void QgsPasteTransformations::restoreTransfers( const QString& sourceLayerName,
             it2 != destinationLayers.end();
             ++it2 )
       {
-        QgsDebugMsg( QString( "QgsPasteTransformations::restoreTransfers: Testing destination '%1' with '%2'." ).arg(( *it2 ) ).arg( destinationLayerName ) );
+        QgsDebugMsg( QString( "testing destination '%1' with '%2'." ).arg(( *it2 ) ).arg( destinationLayerName ) );
         if (( destinationLayerName == ( *it2 ) ) )
         {
-          QgsDebugMsg( "QgsPasteTransformations::restoreTransfers:going through transfers." );
+          QgsDebugMsg( "going through transfers." );
           // Go through Transfers for this source/destination layer pair.
           settings.beginGroup( *it2 );
           QStringList transfers = settings.childKeys();
@@ -231,7 +231,7 @@ void QgsPasteTransformations::restoreTransfers( const QString& sourceLayerName,
                 it3 != transfers.end();
                 ++it3 )
           {
-            QgsDebugMsg( QString( "QgsPasteTransformations::restoreTransfers: setting transfer for %1." ).arg(( *it3 ) ) );
+            QgsDebugMsg( QString( "setting transfer for %1." ).arg(( *it3 ) ) );
             QString destinationField = settings.value( *it3 ).toString();
             addTransfer(( *it3 ), destinationField );
           }
@@ -253,7 +253,7 @@ QString QgsPasteTransformations::pasteTo( const QString& sourceLayerName,
 // TODO: Adjust QgsVectorLayer::addFeature to complete the usefulness of this function
 // TODO: Cache previous results as this will be called once per pasted feature.
 
-  QgsDebugMsg( "QgsPasteTransformations::pasteTo: Entered." );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   QString baseKey = "/Qgis/paste-transformations";             // TODO: promote to static member
 
@@ -265,7 +265,7 @@ QString QgsPasteTransformations::pasteTo( const QString& sourceLayerName,
     destinationField = sourceFieldName;
   }
 
-  QgsDebugMsg( QString( "QgsPasteTransformations::pasteTo: Returning '%1'." ).arg( destinationField ) );
+  QgsDebugMsg( QString( "returning '%1'." ).arg( destinationField ) );
 
   return destinationField;
 }

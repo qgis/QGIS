@@ -424,7 +424,7 @@ int QgsLabelAttributes::unitsCode( const QString &name )
 /* alignment */
 QString QgsLabelAttributes::alignmentName( int alignment )
 {
-  QgsDebugMsg( QString( "QString QgsLabelAttributes::alignmentName (%1)" ).arg( alignment ) );
+  QgsDebugMsg( QString( "alignment=%1" ).arg( alignment ) );
   if ( !alignment )                                       return  QString( "center" );
   if ( alignment == ( Qt::AlignRight | Qt::AlignBottom ) ) return  QString( "aboveleft" );
   if ( alignment == ( Qt::AlignRight | Qt::AlignTop ) ) return  QString( "belowleft" );

@@ -84,7 +84,7 @@ void usage( std::string const & appName )
             << "raster and vector data.\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"
             << "  options:\n"
-            << "\t[--snapshot fileName]\temit snapshot of loaded datasets to given file\n"
+            << "\t[--snapshot filename]\temit snapshot of loaded datasets to given file\n"
             << "\t[--lang language]\tuse language for interface text\n"
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
@@ -583,7 +583,7 @@ int main( int argc, char *argv[] )
 
 
   /////////////////////////////////////////////////////////////////////
-  // autoload any fileNames that were passed in on the command line
+  // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
   QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
   for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )

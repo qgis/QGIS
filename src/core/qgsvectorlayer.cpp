@@ -3347,7 +3347,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 
 void QgsVectorLayer::setCoordinateSystem()
 {
-  QgsDebugMsg( "QgsVectorLayer::setCoordinateSystem ----- Computing Coordinate System" );
+  QgsDebugMsg( "----- Computing Coordinate System" );
 
   //
   // Get the layers project info and set up the QgsCoordinateTransform

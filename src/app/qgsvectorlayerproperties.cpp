@@ -640,7 +640,7 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
     if ( errval )
     {
       QMessageBox::information( this, tr( "Spatial Index" ),
-                                tr( "Creation of spatial index successfull" ) );
+                                tr( "Creation of spatial index successful" ) );
     }
     else
     {
@@ -932,7 +932,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   myFileDialog->setFileMode( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode( QFileDialog::AcceptOpen );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -947,7 +947,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   {
     if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
     {
-      //ensure the user never ommitted the extension from the fileName
+      //ensure the user never omitted the extension from the file name
       if ( !myFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
       {
         myFileName += ".qml";
@@ -997,7 +997,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   myFileDialog->setFileMode( QFileDialog::AnyFile );
   myFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myOutputFileName;
   if ( myFileDialog->exec() == QDialog::Accepted )
   {
@@ -1014,7 +1014,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
     {
       apply(); // make sure the qml to save is uptodate
 
-      //ensure the user never ommitted the extension from the fileName
+      //ensure the user never ommitted the extension from the file name
       if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
       {
         myOutputFileName += ".qml";

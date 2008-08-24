@@ -61,7 +61,7 @@ QgsComposerItem::~QgsComposerItem()
 
 void QgsComposerItem::setSelected( bool s )
 {
-  QgsDebugMsg( "QgsComposerItem::setSelected" );
+  QgsDebugMsg( "entered." );
   QGraphicsRectItem::setSelected( s );
   update(); //to draw selection boxes
 }

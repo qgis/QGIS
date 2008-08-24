@@ -392,7 +392,7 @@ QString QgsCustomProjectionDialog::getEllipsoidAcronym( QString theEllipsoidName
 
 void QgsCustomProjectionDialog::on_pbnFirst_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnFirst_clicked()" );
+  QgsDebugMsg( "entered." );
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
@@ -460,7 +460,7 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
 
 void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnPrevious_clicked()" );
+  QgsDebugMsg( "entered." );
   if ( mCurrentRecordLong <= 1 )
   {
     return;
@@ -533,7 +533,7 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
 
 void QgsCustomProjectionDialog::on_pbnNext_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnNext_clicked()" );
+  QgsDebugMsg( "entered." );
   if ( mCurrentRecordLong >= mRecordCountLong )
   {
     return;
@@ -606,7 +606,7 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
 
 void QgsCustomProjectionDialog::on_pbnLast_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnLast_clicked()" );
+  QgsDebugMsg( "entered." );
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
@@ -710,7 +710,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
 
 void QgsCustomProjectionDialog::on_pbnSave_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnSave_clicked()" );
+  QgsDebugMsg( "entered." );
 
   QString myName = leName->text();
   QString myParameters = leParameters->text();
@@ -830,7 +830,7 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 /n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ) ).arg( QgsApplication::qgisUserDbFilePath() ) );
+    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ) ).arg( QgsApplication::qgisUserDbFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     assert( myResult == SQLITE_OK );
@@ -859,7 +859,7 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
 
 void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 {
-  QgsDebugMsg( "QgsCustomProjectionDialog::on_pbnCalculate_clicked()" );
+  QgsDebugMsg( "entered." );
 
 
   //

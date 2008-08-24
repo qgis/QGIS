@@ -216,7 +216,7 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged( const QString& val
       QString fileName( mLayer->source() );
       QFileInfo file( mLayer->source() );
       int pos = fileName.size() - file.suffix().size() - 1;
-      fileName.insert( pos, tr( "-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given fileName" ) );
+      fileName.insert( pos, tr( "-modified", "Georeferencer:QgsPointDialog.cpp - used to modify a user given file name" ) );
       pos = fileName.size() - file.suffix().size();
       fileName.replace( pos, fileName.size(), "tif" );
 
@@ -226,7 +226,7 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged( const QString& val
   }
   else
   {
-    // Reset to the default fileNames
+    // Reset to the default file name
     leSelectModifiedRaster->setText( "" );
     enableModifiedRasterControls( false );
     if ( mLayer )

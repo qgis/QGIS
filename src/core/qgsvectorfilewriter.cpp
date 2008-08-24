@@ -301,7 +301,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   QgsVectorFileWriter* writer = new QgsVectorFileWriter( shapefileName,
       fileEncoding, provider->fields(), provider->geometryType(), &layer->srs() );
 
-  // check whether file creation was successfull
+  // check whether file creation was successful
   WriterError err = writer->hasError();
   if ( err != NoError )
   {

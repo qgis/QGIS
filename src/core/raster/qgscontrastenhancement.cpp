@@ -28,9 +28,8 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::QgsContrastEnhancement() called" );
-#endif
+  QgsDebugMsg( "called" );
+
   mLookupTable = 0;
   mContrastEnhancementFunction = 0;
   mEnhancementDirty = false;
@@ -178,13 +177,12 @@ bool QgsContrastEnhancement::generateLookupTable()
   if ( QGS_Byte != mRasterDataType && QGS_UInt16 != mRasterDataType && QGS_Int16 != mRasterDataType ) { return false; }
   if ( !mLookupTable ) { return false; }
 
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::generateLookupTable() - building lookup table" );
+  QgsDebugMsg( "building lookup table" );
   QgsDebugMsg( "***MinimumValue : " + QString::number( mMinimumValue ) );
   QgsDebugMsg( "***MaximumValue : " + QString::number( mMaximumValue ) );
   QgsDebugMsg( "***mLookupTableOffset : " + QString::number( mLookupTableOffset ) );
   QgsDebugMsg( "***mRasterDataTypeRange : " + QString::number( mRasterDataTypeRange ) );
-#endif
+
   for ( int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++ )
   {
     mLookupTable[myIterator] = mContrastEnhancementFunction->enhanceValue(( double )myIterator - mLookupTableOffset );
@@ -217,9 +215,8 @@ bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
 */
 void QgsContrastEnhancement::setContrastEnhancementAlgorithm( CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm, bool generateTable )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::setContrastEnhancementAlgorithm() called algorithm: " + QString::number(( int )theAlgorithm ) + " generate lookup table: " + QString::number(( int )generateTable ) );
-#endif
+  QgsDebugMsg( "called algorithm: " + QString::number(( int )theAlgorithm ) + " generate lookup table: " + QString::number(( int )generateTable ) );
+
   if ( theAlgorithm != mContrastEnhancementAlgorithm )
   {
     switch ( theAlgorithm )
@@ -258,9 +255,8 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( CONTRAST_ENHANCEME
 */
 void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::setContrastEnhancementFunction() called" );
-#endif
+  QgsDebugMsg( "called" );
+
   if ( 0 != theFunction )
   {
     mContrastEnhancementFunction = theFunction;
@@ -277,9 +273,8 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 */
 void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTable )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::setMaximumValue() called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
-#endif
+  QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
+
   if ( theValue > getMaximumPossibleValue( mRasterDataType ) )
   {
     mMaximumValue = getMaximumPossibleValue( mRasterDataType );
@@ -310,9 +305,8 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
 */
 void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTable )
 {
-#ifdef QGISDEBUG
-  QgsDebugMsg( "QgsContrastEnhancement::setMinimumValue() called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
-#endif
+  QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
+
   if ( theValue < getMinimumPossibleValue( mRasterDataType ) )
   {
     mMinimumValue = getMinimumPossibleValue( mRasterDataType );

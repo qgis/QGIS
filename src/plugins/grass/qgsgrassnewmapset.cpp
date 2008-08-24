@@ -189,7 +189,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 
 QgsGrassNewMapset::~QgsGrassNewMapset()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::~QgsGrassNewMapset()" );
+  QgsDebugMsg( "entered." );
 
   mRunning = false;
 }
@@ -209,7 +209,7 @@ void QgsGrassNewMapset::browseDatabase()
 
 void QgsGrassNewMapset::databaseChanged()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::databaseChanged()" );
+  QgsDebugMsg( "entered." );
   // TODO: reset next tabs
   //
   QSettings settings;
@@ -267,14 +267,14 @@ void QgsGrassNewMapset::databaseChanged()
 /*************************** LOCATION *******************************/
 void QgsGrassNewMapset::setLocationPage( )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setLocationPage" );
+  QgsDebugMsg( "entered." );
 
   setLocations();
 }
 
 void QgsGrassNewMapset::setLocations( )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setLocations" );
+  QgsDebugMsg( "entered." );
 
   mLocationComboBox->clear();
 
@@ -379,37 +379,37 @@ void QgsGrassNewMapset::checkLocation()
 
 void QgsGrassNewMapset::existingLocationChanged( const QString &text )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::existingLocationChanged()" );
+  QgsDebugMsg( "entered." );
 }
 
 void QgsGrassNewMapset::newLocationChanged()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::newLocationChanged()" );
+  QgsDebugMsg( "entered." );
   checkLocation();
 }
 
 /************************** PROJECTION ******************************/
 void QgsGrassNewMapset::setProjectionPage()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setProjectionPage()" );
+  QgsDebugMsg( "entered." );
   setGrassProjection();
 }
 
 void QgsGrassNewMapset::sridSelected( QString theSRID )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::sridSelected()" );
+  QgsDebugMsg( "entered." );
   projectionSelected();
 }
 
 void QgsGrassNewMapset::projectionSelected()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::projectionSelected()" );
+  QgsDebugMsg( "entered." );
   setGrassProjection();
 }
 
 void QgsGrassNewMapset::projRadioSwitched()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::projRadioSwitched" );
+  QgsDebugMsg( "entered." );
   if ( mNoProjRadioButton->isChecked() )
   {
     mProjectionSelector->setEnabled( false );
@@ -424,7 +424,7 @@ void QgsGrassNewMapset::projRadioSwitched()
 
 void QgsGrassNewMapset::setGrassProjection()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setGrassProjection()" );
+  QgsDebugMsg( "entered." );
   setError( mProjErrorLabel, "" );
 
   QString proj4 = mProjectionSelector->getSelectedProj4String();
@@ -525,7 +525,7 @@ void QgsGrassNewMapset::setGrassProjection()
 /**************************** REGION ********************************/
 void QgsGrassNewMapset::setRegionPage()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setRegionPage()" );
+  QgsDebugMsg( "entered." );
 
   // Set defaults
   if ( !mRegionModified )
@@ -638,7 +638,7 @@ void QgsGrassNewMapset::setRegionPage()
 
 void QgsGrassNewMapset::setGrassRegionDefaults()
 {
-  QgsDebugMsg( QString( "QgsGrassNewMapset::setGrassRegionDefaults() mCellHead.proj = %1" ).arg( mCellHead.proj ) );
+  QgsDebugMsg( QString( "mCellHead.proj = %1" ).arg( mCellHead.proj ) );
 
   int srsid = QgsProject::instance()->readNumEntry(
                 "SpatialRefSys", "/ProjectCRSID", 0 );
@@ -690,7 +690,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
 
 void QgsGrassNewMapset::regionChanged()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::regionChanged()" );
+  QgsDebugMsg( "entered." );
 
   mRegionModified = true;
   checkRegion();
@@ -699,7 +699,7 @@ void QgsGrassNewMapset::regionChanged()
 
 void QgsGrassNewMapset::checkRegion()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::checkRegion()" );
+  QgsDebugMsg( "entered." );
 
   bool err = false;
 
@@ -760,7 +760,7 @@ void QgsGrassNewMapset::checkRegion()
 
 void QgsGrassNewMapset::loadRegions()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::loadRegions()" );
+  QgsDebugMsg( "entered." );
 
   QString path = QgsApplication::pkgDataPath() + "/grass/locations.gml";
   QgsDebugMsg( QString( "load:%1" ).arg( path.local8Bit().data() ) );
@@ -855,7 +855,7 @@ void QgsGrassNewMapset::loadRegions()
 
 void QgsGrassNewMapset::setSelectedRegion()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setSelectedRegion()" );
+  QgsDebugMsg( "entered." );
 
   // mRegionsPoints are in EPSG 4326 = LL WGS84
   int index = 2 * mRegionsComboBox->currentItem();
@@ -963,7 +963,7 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 void QgsGrassNewMapset::setCurrentRegion()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setCurrentRegion()" );
+  QgsDebugMsg( "entered." );
 
   QgsRect ext = mIface->getMapCanvas()->extent();
 
@@ -1021,7 +1021,7 @@ void QgsGrassNewMapset::setCurrentRegion()
 
 void QgsGrassNewMapset::clearRegion()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::clearRegion()" );
+  QgsDebugMsg( "entered." );
 
   QPixmap pm = mPixmap;
   mRegionMap->setPixmap( pm );
@@ -1029,7 +1029,7 @@ void QgsGrassNewMapset::clearRegion()
 
 void QgsGrassNewMapset::drawRegion()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::drawRegion()" );
+  QgsDebugMsg( "entered." );
 
   QPixmap pm = mPixmap;
   mRegionMap->setPixmap( pm );
@@ -1176,7 +1176,7 @@ void QgsGrassNewMapset::drawRegion()
 /**************************** MAPSET ********************************/
 void QgsGrassNewMapset::setMapsets()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setMapsets" );
+  QgsDebugMsg( "entered." );
   mMapsetsListView->clear();
 
   if ( mCreateLocationRadioButton->isChecked() )
@@ -1212,7 +1212,7 @@ void QgsGrassNewMapset::setMapsets()
 
 void QgsGrassNewMapset::mapsetChanged()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::mapsetChanged()" );
+  QgsDebugMsg( "entered." );
 
   setNextEnabled( page( MAPSET ), false );
   setError( mMapsetErrorLabel, "" );
@@ -1259,7 +1259,7 @@ void QgsGrassNewMapset::mapsetChanged()
 /**************************** FINISH ********************************/
 void QgsGrassNewMapset::setFinishPage()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setFinish()" );
+  QgsDebugMsg( "entered." );
 
   mDatabaseLabel->setText( tr( "Database: " ) + mDatabaseLineEdit->text() );
 
@@ -1281,7 +1281,7 @@ void QgsGrassNewMapset::setFinishPage()
 
 void QgsGrassNewMapset::createMapset()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::createMapset()" );
+  QgsDebugMsg( "entered." );
 
   // TODO: handle all possible errors better, especially
   //       half created location/mapset
@@ -1396,7 +1396,7 @@ void QgsGrassNewMapset::createMapset()
 
 void QgsGrassNewMapset::accept()
 {
-  QgsDebugMsg( "QgsGrassNewMapset::accept()" );
+  QgsDebugMsg( "entered." );
 
   createMapset();
 }
@@ -1404,7 +1404,7 @@ void QgsGrassNewMapset::accept()
 /********************************************************************/
 void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::setError(): " );
+  QgsDebugMsg( "entered." );
 
   if ( err.length() > 0 )
   {
@@ -1422,14 +1422,12 @@ void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
 // to next page if Key_Enter is pressed
 void QgsGrassNewMapset::keyPressEvent( QKeyEvent * e )
 {
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("QgsGrassNewMapset::keyPressEvent() key = %1").arg(e->key()));
-#endif
+// QgsDebugMsg(QString("key = %1").arg(e->key()));
 }
 
 void QgsGrassNewMapset::pageSelected( const QString & title )
 {
-  QgsDebugMsg( QString( "QgsGrassNewMapset::pageSelected(): %1" ).arg( title.local8Bit().data() ) );
+  QgsDebugMsg( QString( "title = %1" ).arg( title ) );
 
   int index = indexOf( currentPage() );
 
@@ -1515,7 +1513,7 @@ bool QgsGrassNewMapset::isRunning( void )
 
 void QgsGrassNewMapset::close( void )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::close()" );
+  QgsDebugMsg( "entered." );
 
   hide();
   mRunning = false;
@@ -1524,7 +1522,7 @@ void QgsGrassNewMapset::close( void )
 
 void QgsGrassNewMapset::closeEvent( QCloseEvent *e )
 {
-  QgsDebugMsg( "QgsGrassNewMapset::closeEvent()" );
+  QgsDebugMsg( "entered." );
 
   e->accept();
   close();

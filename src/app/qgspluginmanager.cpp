@@ -115,14 +115,14 @@ void QgsPluginManager::setTable()
 void QgsPluginManager::resizeColumnsToContents()
 {
   // Resize columns to contents.
-  QgsDebugMsg( "QgsPluginManager::resizeColumnsToContents\n" );
+  QgsDebugMsg( "entered." );
 }
 
 void QgsPluginManager::sortModel( int column )
 {
   // Sort column ascending.
   mModelPlugins->sort( column );
-  QgsDebugMsg( "QgsPluginManager::sortModel\n" );
+  QgsDebugMsg( "entered." );
 }
 
 void QgsPluginManager::getPythonPluginDescriptions()

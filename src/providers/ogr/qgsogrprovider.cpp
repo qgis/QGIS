@@ -720,7 +720,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 bool QgsOgrProvider::createSpatialIndex()
 {
-  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the fileName from the uri
+  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the file name from the uri
   QString layerName = fileName.section( '.', 0, 0 );
   QString sql = "CREATE SPATIAL INDEX ON " + layerName;
   OGR_DS_ExecuteSQL( ogrDataSource, sql.toAscii(), OGR_L_GetSpatialFilter( ogrLayer ), "" );
@@ -751,7 +751,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   }
 
   OGR_L_SyncToDisk( ogrLayer );
-  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the fileName from the uri
+  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the file name from the uri
   QString layerName = fileName.section( '.', 0, 0 );
   QString sql = "REPACK " + layerName;
   OGR_DS_ExecuteSQL( ogrDataSource, sql.toLocal8Bit().data(), NULL, NULL );
@@ -1229,7 +1229,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
 
 QgsCoordinateReferenceSystem QgsOgrProvider::getCRS()
 {
-  QgsDebugMsg( "QgsOgrProvider::getCRS()" );
+  QgsDebugMsg( "entering." );
 
   QgsCoordinateReferenceSystem srs;
 

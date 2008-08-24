@@ -631,7 +631,7 @@ QgsRect QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRect re
 
 void QgsMapRenderer::updateFullExtent()
 {
-  QgsDebugMsg( "QgsMapRenderer::updateFullExtent() called !" );
+  QgsDebugMsg( "called." );
   QgsMapLayerRegistry* registry = QgsMapLayerRegistry::instance();
 
   // reset the map canvas extent since the extent may now be smaller

@@ -59,7 +59,7 @@ QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
 
 void QgsSearchQueryBuilder::populateFields()
 {
-  QgsDebugMsg( "QgsSearchQueryBuilder::populateFields" );
+  QgsDebugMsg( "entering." );
   const QgsFieldMap& fields = mLayer->dataProvider()->fields();
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
@@ -73,7 +73,7 @@ void QgsSearchQueryBuilder::populateFields()
 
 void QgsSearchQueryBuilder::setupListViews()
 {
-  QgsDebugMsg( "QgsSearchQueryBuilder::setupListViews" );
+  QgsDebugMsg( "entering." );
   //Models
   mModelFields = new QStandardItemModel();
   mModelValues = new QStandardItemModel();

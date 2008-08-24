@@ -119,7 +119,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
 void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
 {
-  //QgsDebugMsg("QgsMapToolMoveFeature::canvasReleaseEvent");
+  //QgsDebugMsg("entering.");
   if ( !mRubberBand )
   {
     return;

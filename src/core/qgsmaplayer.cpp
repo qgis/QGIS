@@ -50,13 +50,13 @@ QgsMapLayer::QgsMapLayer( int type,
     mLayerType( type )
 
 {
-  QgsDebugMsg( "QgsMapLayer::QgsMapLayer - lyrname is '" + lyrname + "'" );
+  QgsDebugMsg( "lyrname is '" + lyrname + "'" );
 
   mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
   mLayerName = capitaliseLayerName( lyrname );
-  QgsDebugMsg( "QgsMapLayer::QgsMapLayer - layerName is '" + mLayerName + "'" );
+  QgsDebugMsg( "layerName is '" + mLayerName + "'" );
 
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
@@ -96,7 +96,7 @@ QString QgsMapLayer::getLayerID() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName( const QString & _newVal )
 {
-  QgsDebugMsg( "QgsMapLayer::setLayerName: new name is '" + _newVal + "'" );
+  QgsDebugMsg( "new name is '" + _newVal + "'" );
   mLayerName = capitaliseLayerName( _newVal );
   emit layerNameChanged();
 }
@@ -104,7 +104,7 @@ void QgsMapLayer::setLayerName( const QString & _newVal )
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsg( "QgsMapLayer::name: returning name '" + mLayerName + "'" );
+  QgsDebugMsg( "returning name '" + mLayerName + "'" );
   return mLayerName;
 }
 
@@ -135,7 +135,7 @@ bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
 
 void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 {
-  // QgsDebugMsg("In QgsMapLayer::draw");
+  // QgsDebugMsg("entered.");
 }
 
 bool QgsMapLayer::readXML( QDomNode & layer_node )
@@ -577,7 +577,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   QFileInfo myFileInfo( theURI );
   if ( myFileInfo.exists() || theURI.endsWith( ".qml", Qt::CaseInsensitive ) )
   {
-    QFileInfo myDirInfo( myFileInfo.path() );  //excludes fileName
+    QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
       return QObject::tr( "The directory containing your dataset needs to be writeable!" );

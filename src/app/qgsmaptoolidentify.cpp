@@ -111,7 +111,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       }
       else
       {
-        QgsDebugMsg( "QgsMapToolIdentify::canvasReleaseEvent: unknown layer type!" );
+        QgsDebugMsg( "unknown layer type!" );
       }
     }
 

@@ -67,7 +67,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
     return;
   }
 
-  //read fileName
+  //read file name
   QString fileName = mOutputFileLineEdit->text();
   QFileInfo theFileInfo( fileName );
   if ( !theFileInfo.dir().exists() )

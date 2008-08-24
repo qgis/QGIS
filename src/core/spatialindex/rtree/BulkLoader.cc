@@ -256,7 +256,7 @@ void BulkLoader::bulkLoadUsingSTR(
   unsigned long cTotalData = 0;
 
 #ifdef DEBUG
-  QgsDebugMsg( "RTree::BulkLoader: Building level 0" );
+  QgsDebugMsg( "Building level 0" );
 #endif
 
   createLevel( pTree, stream, pTree->m_dimension, pTree->m_dimension, bleaf, 0, bufferSize, *tmpFile, cNodes, cTotalData );
@@ -274,7 +274,7 @@ void BulkLoader::bulkLoadUsingSTR(
     TmpFile* pTF = new TmpFile();
 
 #ifndef NDEBUG
-    QgsDebugMsg( QString( "RTree::BulkLoader: Building level %1" ).arg( level ) );
+    QgsDebugMsg( QString( "Building level %1" ).arg( level ) );
 #endif
     pTree->m_stats.m_nodesInLevel.push_back( 0 );
 

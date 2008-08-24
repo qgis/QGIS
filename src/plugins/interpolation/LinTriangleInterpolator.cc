@@ -39,7 +39,7 @@ bool LinTriangleInterpolator::calcFirstDerX( double x, double y, Vector3D* vec )
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -65,7 +65,7 @@ bool LinTriangleInterpolator::calcFirstDerY( double x, double y, Vector3D* vec )
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 }
@@ -91,7 +91,7 @@ bool LinTriangleInterpolator::calcNormVec( double x, double y, Vector3D* vec )
 
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 
@@ -122,7 +122,7 @@ bool LinTriangleInterpolator::calcPoint( double x, double y, Point3D* point )
   }
   else
   {
-    QgsDebugMsg( "" );
+    QgsDebugMsg( "warning, null pointer" );
     return false;
   }
 

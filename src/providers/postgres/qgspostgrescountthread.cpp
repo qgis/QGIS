@@ -109,22 +109,22 @@ void QgsPostgresCountThread::run()
   // Second we tell the application that the extents have changed, so that it
   // can go on and do any visual housekeeping (e.g. update the overview window)
 
-  QgsDebugMsg( QString( "QgsPostgresCountThread: About to create and dispatch event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
+  QgsDebugMsg( QString( "About to create and dispatch event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
 
   QgsProviderCountCalcEvent* e1 = new QgsProviderCountCalcEvent( numberFeatures );
   QApplication::postEvent(( QObject * )callbackObject, e1 );
 
 //  QApplication::postEvent(qApp->mainWidget(), e1);
 
-  QgsDebugMsg( QString( "QgsPostgresCountThread: Posted event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
+  QgsDebugMsg( QString( "Posted event %1 to callback" ).arg( QGis::ProviderCountCalcEvent ) );
 
 
-  QgsDebugMsg( "QgsPostgresCountThread: About to finish connection." );
+  QgsDebugMsg( "About to finish connection." );
 
   // ending the thread, clean up
   PQfinish( connection );
 
-  QgsDebugMsg( "QgsPostgresCountThread: About to complete running." );
+  QgsDebugMsg( "About to complete running." );
 
 
 }

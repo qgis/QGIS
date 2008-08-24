@@ -181,8 +181,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     static void buildSupportedRasterFileFilter( QString & fileFilters );
     static void registerGdalDrivers();
 
-    /** This helper checks to see whether the fileName appears to be a valid
-       raster file name.  If the fileName looks like it could be valid,
+    /** This helper checks to see whether the file name appears to be a valid
+       raster file name.  If the file name looks like it could be valid,
        but some sort of error occurs in processing the file, the error is
        returned in retError. */
     static bool isValidRasterFileName( const QString & theFileNameQString,

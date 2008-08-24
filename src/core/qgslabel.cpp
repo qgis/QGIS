@@ -374,8 +374,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse ); // unused otherwise
-      QgsDebugMsg( "Caught transform error in QgsLabel::renderLabel(). "
-                   "Skipping rendering this label" );
+      QgsDebugMsg( "Caught transform error. Skipping rendering this label" );
       return;
     }
   }

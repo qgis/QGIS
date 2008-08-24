@@ -140,7 +140,7 @@ void QgsGrassEditNewLine::deactivate()
 
 void QgsGrassEditNewLine::activate()
 {
-  QgsDebugMsg( "QgsGrassEditNewLine::activate()" );
+  QgsDebugMsg( "entered." );
 
   // Display dynamic segment
   if ( e->mEditPoints->n_points > 0 )

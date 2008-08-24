@@ -104,7 +104,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   mQgis = qgis;
   mFirstTime = true;
 
-  QgsDebugMsg( "QgsComposer::QgsComposer" );
+  QgsDebugMsg( "entered." );
 
   setMouseTracking( true );
   //mSplitter->setMouseTracking(true);
@@ -788,7 +788,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   std::auto_ptr < QFileDialog > myQFileDialog(
     new QFileDialog(
       this,
-      tr( "Choose a fileName to save the map image as" ),
+      tr( "Choose a file name to save the map image as" ),
       file.path(),
       myFilters
     )
@@ -804,7 +804,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   // set the 'Open' button to something that makes more sense
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
-  //prompt the user for a fileName
+  //prompt the user for a file name
   QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
 
   int result = myQFileDialog->exec();
@@ -881,7 +881,7 @@ void QgsComposer::on_mActionExportAsSVG_activated( void )
   }
   QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
   QFileInfo file( myLastUsedFile );
-  QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a fileName to save the map as" ),
+  QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
       file.path(), tr( "SVG Format" ) + " (*.svg *SVG)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
@@ -1074,7 +1074,7 @@ void QgsComposer::on_closePButton_clicked()
 
 void QgsComposer::projectRead( void )
 {
-  QgsDebugMsg( "QgsComposer::projectRead" );
+  QgsDebugMsg( "entered." );
   //if ( mComposition ) delete mComposition;
   //mComposition  = new QgsComposition( this, 1 );
 
@@ -1115,7 +1115,7 @@ void QgsComposer::projectRead( void )
 
 void QgsComposer::newProject( void )
 {
-  QgsDebugMsg( "QgsComposer::newProject" );
+  QgsDebugMsg( "entered." );
   //if ( mComposition ) delete mComposition;
 
   //mComposition  = new QgsComposition( this, 1 );

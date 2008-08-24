@@ -175,7 +175,7 @@ bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
 
 void QgsGrassEdit::keyPress( QKeyEvent *e )
 {
-  QgsDebugMsg( "QgsGrassEdit::keyPress" );
+  QgsDebugMsg( "entered." );
   // This does not work:
   //keyPressEvent(e);
 
@@ -544,7 +544,7 @@ void QgsGrassEdit::init()
 
 void QgsGrassEdit::attributeTableFieldChanged( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::attributeTableFieldChanged" );
+  QgsDebugMsg( "entered." );
   int field = mTableField->currentText().toInt();
 
   setAttributeTable( field );
@@ -605,7 +605,7 @@ void QgsGrassEdit::setAttributeTable( int field )
 
 void QgsGrassEdit::addColumn( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::addColumn()" );
+  QgsDebugMsg( "entered." );
   int r = mAttributeTable->numRows();
   mAttributeTable->setNumRows( r + 1 );
   mAttributeTable->setRowReadOnly( r, false );
@@ -634,7 +634,7 @@ void QgsGrassEdit::addColumn( void )
 
 void QgsGrassEdit::columnTypeChanged( int row, int col )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::columnChanged() row = %1 col = %2" ).arg( row ).arg( col ) );
+  QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
 
   if ( col != 1 ) return;
 
@@ -661,7 +661,7 @@ void QgsGrassEdit::columnTypeChanged( int row, int col )
 
 void QgsGrassEdit::alterTable( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::alterTable()" );
+  QgsDebugMsg( "entered." );
 
   // Create new table if first column name is editable otherwise alter table
   int field = mTableField->currentText().toInt();
@@ -733,7 +733,7 @@ void QgsGrassEdit::alterTable( void )
 
 void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::changeSymbology() col = %1" ).arg( col ) );
+  QgsDebugMsg( QString( "col = %1" ).arg( col ) );
 
   QSettings settings;
 
@@ -777,7 +777,7 @@ void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, i
 
 void QgsGrassEdit::lineWidthChanged()
 {
-  QgsDebugMsg( "QgsGrassEdit::lineWidthChanged()" );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   mLineWidth = mLineWidthSpinBox->value();
 
@@ -792,7 +792,7 @@ void QgsGrassEdit::lineWidthChanged()
 
 void QgsGrassEdit::markerSizeChanged()
 {
-  QgsDebugMsg( "QgsGrassEdit::markerSizeChanged()" );
+  QgsDebugMsg( "entered." );
   QSettings settings;
   mSize = mMarkerSizeSpinBox->value();
   QString spath = "/GRASS/edit/symb/";
@@ -813,7 +813,7 @@ void QgsGrassEdit::saveWindowLocation()
 
 void QgsGrassEdit::updateSymb( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::updateSymb" );
+  QgsDebugMsg( "entered." );
 
   // Set lines symbology from map
   unsigned int nlines = mProvider->numLines();
@@ -846,7 +846,7 @@ void QgsGrassEdit::updateSymb( void )
 
 int QgsGrassEdit::nodeSymbFromMap( int node )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::nodeSymbFromMap() node = %1" ).arg( node ) );
+  QgsDebugMsg( QString( "node = %1" ).arg( node ) );
 
   int nlines = mProvider->nodeNLines( node );
 
@@ -871,7 +871,7 @@ int QgsGrassEdit::nodeSymbFromMap( int node )
 
 int QgsGrassEdit::lineSymbFromMap( int line )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::lineSymbFromMap() line = %1" ).arg( line ) );
+  QgsDebugMsg( QString( "line = %1" ).arg( line ) );
 
   int type = mProvider->readLine( NULL, NULL, line );
 
@@ -914,7 +914,7 @@ int QgsGrassEdit::lineSymbFromMap( int line )
 
 QgsGrassEdit::~QgsGrassEdit()
 {
-  QgsDebugMsg( "QgsGrassEdit::~QgsGrassEdit()" );
+  QgsDebugMsg( "entered." );
 
   // we can only call some methods if init was complete,
   // note that we cannot use mValid because it is disabled before
@@ -952,7 +952,7 @@ bool QgsGrassEdit::isValid( void )
 
 void QgsGrassEdit::closeEdit( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::close()" );
+  QgsDebugMsg( "entered." );
 
   // Disconnect signals
   // Warning: it seems that slots (postRender) can be called even
@@ -995,7 +995,7 @@ void QgsGrassEdit::closeEdit( void )
 
 void QgsGrassEdit::closeEvent( QCloseEvent *e )
 {
-  QgsDebugMsg( "QgsGrassEdit::closeEvent()" );
+  QgsDebugMsg( "entered." );
 
   e->accept();
 
@@ -1004,7 +1004,7 @@ void QgsGrassEdit::closeEvent( QCloseEvent *e )
 
 void QgsGrassEdit::catModeChanged( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::catModeChanged()" );
+  QgsDebugMsg( "entered." );
   int mode = mCatModeBox->currentItem();
 
   int field = mFieldBox->currentText().toInt();
@@ -1039,7 +1039,7 @@ void QgsGrassEdit::catModeChanged( void )
 
 void QgsGrassEdit::fieldChanged( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::fieldChanged()" );
+  QgsDebugMsg( "entered." );
   int mode = mCatModeBox->currentItem();
   int field = mFieldBox->currentText().toInt();
 
@@ -1235,13 +1235,13 @@ void QgsGrassEdit::newPoint( void )
 
 void QgsGrassEdit::newLine( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::newLine" );
+  QgsDebugMsg( "entered." );
   startTool( QgsGrassEdit::NEW_LINE );
 }
 
 void QgsGrassEdit::newBoundary( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::newBoundary" );
+  QgsDebugMsg( "entered." );
   startTool( QgsGrassEdit::NEW_BOUNDARY );
 }
 
@@ -1292,7 +1292,7 @@ void QgsGrassEdit::editAttributes( void )
 
 void QgsGrassEdit::startTool( int tool )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::startTool() tool = %1" ).arg( tool ) );
+  QgsDebugMsg( QString( "tool = %1" ).arg( tool ) );
 
   // Delete last dynamic drawing from canvas
   eraseDynamic();
@@ -1393,7 +1393,7 @@ void QgsGrassEdit::startTool( int tool )
 
 void QgsGrassEdit::checkOrphan( int field, int cat )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::checkOrphan field = %1 cat = %2" ).arg( field ).arg( cat ) );
+  QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   int orphan;
   QString *error = mProvider->isOrphan( field, cat, &orphan );
@@ -1532,7 +1532,7 @@ void QgsGrassEdit::addCat( int line )
 
 void QgsGrassEdit::deleteCat( int line, int field, int cat )
 {
-  QgsDebugMsg( "QgsGrassEdit::deleteCat" );
+  QgsDebugMsg( "entered." );
 
   int type = mProvider->readLine( mPoints, mCats, line );
   Vect_field_cat_del( mCats, field, cat );
@@ -1550,7 +1550,7 @@ void QgsGrassEdit::deleteCat( int line, int field, int cat )
 
 void QgsGrassEdit::postRender( QPainter * )
 {
-  QgsDebugMsg( "QgsGrassEdit::postRender" );
+  QgsDebugMsg( "entered." );
 
   // Warning: it seems that this slot can be called even
   //          after disconnect (is it a queue?)
@@ -1569,7 +1569,7 @@ void QgsGrassEdit::postRender( QPainter * )
 
 void QgsGrassEdit::displayMap()
 {
-  QgsDebugMsg( "QgsGrassEdit::displayMap" );
+  QgsDebugMsg( "entered." );
 
   mTransform = mCanvas->getCoordinateTransform();
 
@@ -1616,7 +1616,7 @@ void QgsGrassEdit::displayMap()
 
 void QgsGrassEdit::displayUpdated( void )
 {
-  QgsDebugMsg( "QgsGrassEdit::displayUpdated" );
+  QgsDebugMsg( "entered." );
 
   mTransform = mCanvas->getCoordinateTransform();
   mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
@@ -1656,7 +1656,7 @@ void QgsGrassEdit::displayUpdated( void )
 
 void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainter *painter )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::displayElement() line = %1" ).arg( line ) );
+  QgsDebugMsg( QString( "line = %1" ).arg( line ) );
 
   // is it a valid line?
   if ( line == 0 )
@@ -1711,7 +1711,7 @@ void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainte
 
 void QgsGrassEdit::eraseElement( int line )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::eraseElement() line = %1" ).arg( line ) );
+  QgsDebugMsg( QString( "line = %1" ).arg( line ) );
 
   int type = mProvider->readLine( NULL, NULL, line );
   if ( type < 0 ) return;
@@ -1746,14 +1746,14 @@ void QgsGrassEdit::displayDynamic( struct line_pnts *Points )
 
 void QgsGrassEdit::displayDynamic( double x, double y, int type, int size )
 {
-  QgsDebugMsg( "QgsGrassEdit::displayDynamic icon" );
+  QgsDebugMsg( "entered." );
 
   displayDynamic( 0, x, y, type, size );
 }
 
 void QgsGrassEdit::displayDynamic( struct line_pnts *Points, double x, double y, int type, int size )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::displayDynamic Points = %1 type = %2" ).arg( QString::number(( qulonglong )Points, 16 ).toLocal8Bit().constData() ).arg( type ) );
+  QgsDebugMsg( QString( "Points = %1 type = %2" ).arg( QString::number(( qulonglong )Points, 16 ).toLocal8Bit().constData() ).arg( type ) );
   QgsPoint point;
 
   //mTransform = mCanvas->getCoordinateTransform();
@@ -1786,7 +1786,7 @@ void QgsGrassEdit::displayDynamic( struct line_pnts *Points, double x, double y,
 
 void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *painter )
 {
-  QgsDebugMsg( QString( "QgsGrassEdit::displayNode() node = %1" ).arg( node ) );
+  QgsDebugMsg( QString( "node = %1" ).arg( node ) );
 
   if ( !mSymbDisplay[mNodeSymb[node]] ) return;
 
@@ -1811,7 +1811,7 @@ QgsPoint QgsGrassEdit::transformLayerToMap( QgsPoint point )
 void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
                                 int type, int size, QPainter *painter )
 {
-  QgsDebugMsg( "QgsGrassEdit::displayIcon()" );
+  QgsDebugMsg( "entered." );
 
   QgsPoint point;
   Q3PointArray pointArray( 2 );
@@ -1880,7 +1880,7 @@ void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
 
 void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString right )
 {
-  QgsDebugMsg( "QgsGrassEdit::setCanvasPropmt" );
+  QgsDebugMsg( "entered." );
   mCanvasPrompt = "";
   if ( left.length() > 0 ) mCanvasPrompt.append( tr( "Left: " ) + left + "   " );
   if ( mid.length() > 0 ) mCanvasPrompt.append( tr( "Middle: " ) + mid + "   " );

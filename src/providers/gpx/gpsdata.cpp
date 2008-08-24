@@ -415,7 +415,7 @@ GPSData* GPSData::getData( const QString& fileName )
   else
     QgsLogger::debug( fileName + " is already loaded" );
 
-  // return a pointer and increase the reference count for that fileName
+  // return a pointer and increase the reference count for that file name
   DataMap::iterator iter = dataObjects.find( fileName );
   ++( iter->second.second );
   return ( GPSData* )( iter->second.first );
@@ -425,7 +425,7 @@ GPSData* GPSData::getData( const QString& fileName )
 void GPSData::releaseData( const QString& fileName )
 {
 
-  /* decrease the reference count for the fileName (if it is used), and erase
+  /* decrease the reference count for the file name (if it is used), and erase
      it if the reference count becomes 0 */
   DataMap::iterator iter = dataObjects.find( fileName );
   if ( iter != dataObjects.end() )

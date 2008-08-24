@@ -36,7 +36,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
     mFont( "Helvetica" )
 {
   setupUi( this );
-  QgsDebugMsg( QString( "%1:%2QgsLabelDialog::QgsLabelDialog()" ).arg( __FILE__ ).arg( __LINE__ ) );
+  QgsDebugMsg( "entering." );
 
   Q_ASSERT( label );
 
@@ -53,7 +53,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
 
 void QgsLabelDialog::init( )
 {
-  QgsDebugMsg( QString( "%1:%2QgsLabelDialog::init()" ).arg( __FILE__ ).arg( __LINE__ ) );
+  QgsDebugMsg( "entering." );
   QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
   //populate a string list with all the field names which will be used to set up the
   //data bound combos
@@ -248,7 +248,8 @@ void QgsLabelDialog::init( )
 
 void QgsLabelDialog::changeFont( void )
 {
-  QgsDebugMsg( "QgsLabelDialog::changeFont()" );
+  QgsDebugMsg( "entering." );
+
   bool resultFlag;
   mFont = QFontDialog::getFont( &resultFlag, mFont, this );
   if ( resultFlag )
@@ -265,7 +266,8 @@ void QgsLabelDialog::changeFont( void )
 
 void QgsLabelDialog::changeFontColor( void )
 {
-  QgsDebugMsg( "QgsLabelDialog::changeFontColor()" );
+  QgsDebugMsg( "entering." );
+
   mFontColor = QColorDialog::getColor( mFontColor );
   QPalette palette = lblSample->palette();
   palette.setColor( lblSample->foregroundRole(), mFontColor );
@@ -274,7 +276,8 @@ void QgsLabelDialog::changeFontColor( void )
 
 void QgsLabelDialog::changeBufferColor( void )
 {
-  QgsDebugMsg( "QgsLabelDialog::changeBufferColor()" );
+  QgsDebugMsg( "entering." );
+
   mBufferColor = QColorDialog::getColor( mBufferColor );
   QPalette palette = lblSample->palette();
   palette.setColor( lblSample->backgroundRole(), mBufferColor );
@@ -296,12 +299,12 @@ int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldLi
 
 QgsLabelDialog::~QgsLabelDialog()
 {
-  QgsDebugMsg( "QgsLabelDialog::~QgsLabelDialog()" );
+  QgsDebugMsg( "entering." );
 }
 
 void QgsLabelDialog::apply()
 {
-  QgsDebugMsg( "QgsLabelDialog::apply()" );
+  QgsDebugMsg( "entering." );
 
   //set the label props that are NOT bound to a field in the attributes tbl
   //All of these are set in the layerAttributes member of the layer

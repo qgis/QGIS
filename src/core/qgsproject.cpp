@@ -1025,7 +1025,7 @@ bool QgsProject::write()
 
 void QgsProject::clearProperties()
 {
-  //QgsDebugMsg("Clearing project properties QgsProject::clearProperties()");
+  //QgsDebugMsg("entered.");
 
   imp_->clear();
 

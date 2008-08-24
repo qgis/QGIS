@@ -37,7 +37,7 @@ bool compareRampSearch( const RAMP &a, const RAMP &b )
 
 QgsColorTable::QgsColorTable( int interp )
 {
-  QgsDebugMsg( "QgsColorTable::QgsColorTable()" );
+  QgsDebugMsg( "entered." );
   mInterp = interp;
 }
 
@@ -47,9 +47,7 @@ QgsColorTable::~QgsColorTable()
 
 void QgsColorTable::add( int index, unsigned char c1, unsigned char c2, unsigned char c3, unsigned char c4 )
 {
-#ifdef QGISDEBUG
-  QgsLogger::debug( "QgsColorTable::add() index", ( int )index, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+  QgsDebugMsg( QString( "index = %1" ).arg( index ) );
 
   if ( mDiscrete.size() == 0 )
   {
@@ -75,7 +73,7 @@ void QgsColorTable::add( int index, unsigned char c1, unsigned char c2, unsigned
 
 void QgsColorTable::clear()
 {
-  QgsDebugMsg( "QgsColorTable::clear() called " );
+  QgsDebugMsg( "entered." );
   mDiscrete.clear();
   mRamp.clear();
   mMax = 0;

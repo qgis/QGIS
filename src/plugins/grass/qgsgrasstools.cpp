@@ -175,7 +175,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
 
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
-  QgsDebugMsg( "QgsGrassTools::moduleClicked()" );
+  QgsDebugMsg( "entered." );
   if ( !item ) return;
 
   QString name = item->text( 1 );
@@ -289,7 +289,7 @@ void QgsGrassTools::runModule( QString name )
 
 bool QgsGrassTools::loadConfig( QString filePath )
 {
-  QgsDebugMsg( QString( "QgsGrassTools::loadConfig(): %1" ).arg( filePath ) );
+  QgsDebugMsg( filePath );
   mModulesTree->clear();
   mModulesTree->setIconSize( QSize( 80, 22 ) );
 
@@ -423,7 +423,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
 
 void QgsGrassTools::mapsetChanged()
 {
-  QgsDebugMsg( "QgsGrassTools::mapsetChanged()" );
+  QgsDebugMsg( "entered." );
 
   QString title = tr( "GRASS Tools: " ) + QgsGrass::getDefaultLocation()
                   + "/" + QgsGrass::getDefaultMapset();
@@ -435,7 +435,7 @@ void QgsGrassTools::mapsetChanged()
 
 QgsGrassTools::~QgsGrassTools()
 {
-  QgsDebugMsg( "QgsGrassTools::~QgsGrassTools()" );
+  QgsDebugMsg( "entered." );
   saveWindowLocation();
 }
 
@@ -475,13 +475,13 @@ void QgsGrassTools::saveWindowLocation()
 
 void QgsGrassTools::emitRegionChanged()
 {
-  QgsDebugMsg( "QgsGrassTools::emitRegionChanged()" );
+  QgsDebugMsg( "entered." );
   emit regionChanged();
 }
 
 void QgsGrassTools::closeTools()
 {
-  QgsDebugMsg( "QgsGrassTools::closeTools()" );
+  QgsDebugMsg( "entered." );
 
   for ( int i = mTabWidget->count() - 1; i > 1; i-- )
   {

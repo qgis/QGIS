@@ -353,7 +353,7 @@ void QgsMapserverExport::on_btnChooseFile_clicked()
 {
   QString s = QFileDialog::getSaveFileName(
                 this,
-                "Choose a fileName for the exported map file",
+                "Choose a file name for the exported map file",
                 "./",
                 "Mapserver files (*.map)" );
   txtMapFilePath->setText( s );
