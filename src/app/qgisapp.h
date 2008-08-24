@@ -698,8 +698,12 @@ class QgisApp : public QMainWindow
     // Flag to indicate if maptips are on or off
     bool mMapTipsVisible;
 
-    //!flag to indicat wehter we are in fullscreen mode or not
+    //!flag to indicate whether we are in fullscreen mode or not
     bool mFullScreenMode;
+
+    //!flag to indicate that the previous screen mode was 'maximised'
+    bool mPrevScreenModeMaximized;
+
     QgsPythonDialog* mPythonConsole;
     QgsPythonUtils* mPythonUtils;
 

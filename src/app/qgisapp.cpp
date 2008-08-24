@@ -433,6 +433,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   setAcceptDrops( true );
 
   mFullScreenMode = false;
+  mPrevScreenModeMaximized = false;
   show();
   qApp->processEvents();
   //finally show all the application settings as initialised above
@@ -3305,11 +3306,32 @@ void QgisApp::toggleFullScreen()
 {
   if ( true == mFullScreenMode )
   {
-    showNormal();
+    if ( true == mPrevScreenModeMaximized )
+    {
+      // Change to maximized state. Just calling showMaximized() results in
+      // the window going to the normal state. Calling showNormal() then
+      // showMaxmized() is a work-around. Turn off rendering for this as it
+      // would otherwise cause two re-renders of the map, which can take a
+      // long time.
+      bool renderFlag = getMapCanvas()->renderFlag();
+      getMapCanvas()->setRenderFlag(false);
+      showNormal();
+      showMaximized();
+      getMapCanvas()->setRenderFlag(renderFlag);
+      mPrevScreenModeMaximized = false;
+    }
+    else
+    {
+      showNormal();
+    }
     mFullScreenMode = false;
   }
   else
   {
+    if ( isMaximized() )
+    {
+      mPrevScreenModeMaximized = true;
+    }
     showFullScreen();
     mFullScreenMode = true;
   }
