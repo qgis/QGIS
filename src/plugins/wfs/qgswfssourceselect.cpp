@@ -184,22 +184,22 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
       abstract = abstractList.at( 0 ).toElement().text();
     }
 
-    //DefaultCRS is always the first entry in the feature crs list
-    QDomNodeList defaultCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "DefaultCRS" );
+    //DefaultSRS is always the first entry in the feature srs list
+    QDomNodeList defaultCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "DefaultSRS" );
     if ( defaultCRSList.length() > 0 )
     {
       featureCRSList.push_back( defaultCRSList.at( 0 ).toElement().text() );
     }
 
-    //OtherCRS
-    QDomNodeList otherCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "OtherCRS" );
+    //OtherSRS
+    QDomNodeList otherCRSList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "OtherSRS" );
     for ( unsigned int i = 0; i < otherCRSList.length(); ++i )
     {
       featureCRSList.push_back( otherCRSList.at( i ).toElement().text() );
     }
 
-    //Support <CRS> for compatibility with older versions
-    QDomNodeList srsList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "CRS" );
+    //Support <SRS> for compatibility with older versions
+    QDomNodeList srsList = featureTypeElem.elementsByTagNameNS( WFS_NAMESPACE, "SRS" );
     for ( unsigned int i = 0; i < srsList.length(); ++i )
     {
       featureCRSList.push_back( srsList.at( i ).toElement().text() );
@@ -358,7 +358,7 @@ void QgsWFSSourceSelect::addLayer()
     long epsgNr = mProjectionSelector->getSelectedEpsg();
     if ( epsgNr != 0 )
     {
-      crsString = "&CRSNAME=EPSG:" + QString::number( epsgNr );
+      crsString = "&SRSNAME=EPSG:" + QString::number( epsgNr );
     }
   }
   //add a wfs layer to the map
