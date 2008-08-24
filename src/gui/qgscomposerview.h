@@ -36,7 +36,7 @@ class QgsComposerScaleBar;
  * Creates the composer items according to the current map tools and keeps track
  * of the rubber band item.
  */
-class QgsComposerView: public QGraphicsView
+class GUI_EXPORT QgsComposerView: public QGraphicsView
 {
     Q_OBJECT
 
