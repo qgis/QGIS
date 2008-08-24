@@ -37,6 +37,12 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectIt
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidth( 1 );
   setPen( defaultPen );
+
+  //let z-Value be managed by composition
+  if(mComposition)
+    {
+      mComposition->addItemToZList(this);
+    }
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
@@ -53,10 +59,20 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidth( 1 );
   setPen( defaultPen );
+
+ //let z-Value be managed by composition
+  if(mComposition)
+    {
+      mComposition->addItemToZList(this);
+    }
 }
 
 QgsComposerItem::~QgsComposerItem()
 {
+  if(mComposition)
+    {
+      mComposition->removeItemFromZList(this);
+    }
 }
 
 void QgsComposerItem::setSelected( bool s )

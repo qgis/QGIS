@@ -101,7 +101,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       emit composerLabelAdded( newLabelItem );
       scene()->clearSelection();
       newLabelItem->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
-      newLabelItem->setZValue( 60 );
       newLabelItem->setSelected( true );
       emit selectedItemChanged( newLabelItem );
       emit actionFinished();
@@ -124,7 +123,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newScaleBar );
       emit composerScaleBarAdded( newScaleBar );
       scene()->clearSelection();
-      newScaleBar->setZValue( 60 );
       newScaleBar->setSelected( true );
       emit selectedItemChanged( newScaleBar );
       emit actionFinished();
@@ -137,7 +135,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newLegend );
       emit composerLegendAdded( newLegend );
       scene()->clearSelection();
-      newLegend->setZValue( 60 );
       newLegend->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
       newLegend->setSelected( true );
       emit selectedItemChanged( newLegend );
@@ -150,7 +147,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newPicture );
       emit composerPictureAdded( newPicture );
       scene()->clearSelection();
-      newPicture->setZValue( 60 );
       newPicture->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), 30, 30 ) );
       newPicture->setSelected( true );
       emit selectedItemChanged( newPicture );
@@ -212,8 +208,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       composerMap->setPreviewMode( QgsComposerMap::Rectangle );
 
       emit composerMapAdded( composerMap );
-
-      composerMap->setZValue( 50 );
       scene()->addItem( composerMap );
       scene()->clearSelection();
 

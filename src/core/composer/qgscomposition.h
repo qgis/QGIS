@@ -17,6 +17,7 @@
 #define QGSCOMPOSITION_H
 
 #include <QGraphicsScene>
+#include <QLinkedList>
 
 class QgsComposerItem;
 class QgsComposerMap;
@@ -27,8 +28,10 @@ class QDomDocument;
 class QDomElement;
 
 /** \ingroup MapComposer
- * Graphics scene for map printing. It manages the paper item which always
- * is the item in the back (z-value 0).
+ * Graphics scene for map printing. The class manages the paper item which always
+ * is the item in the back (z-value 0). It maintains the z-Values of the items and stores
+ * them in a list in ascending z-Order. This list can be changed to lower/raise items one position 
+ * or to bring them to front/back.
  * */
 class CORE_EXPORT QgsComposition: public QGraphicsScene
 {
@@ -89,16 +92,41 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
+    /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
+    void addItemToZList(QgsComposerItem* item);
+    /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
+    void removeItemFromZList(QgsComposerItem* item);
+
+    void raiseSelectedItems();
+    void raiseItem(QgsComposerItem* item);
+    void lowerSelectedItems();
+    void lowerItem(QgsComposerItem* item);
+    void moveSelectedItemsToTop();
+    void moveItemToTop(QgsComposerItem* item);
+    void moveSelectedItemsToBottom();
+    void moveItemToBottom(QgsComposerItem* item);
+
+    /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
+     after reading all the items from xml file*/
+    void sortZList();
+    
+
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
     QgsComposition::PlotStyle mPlotStyle;
     QGraphicsRectItem* mPaperItem;
 
+    /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
+    QLinkedList<QgsComposerItem*> mItemZList;
+
     /**Dpi for printout*/
     int mPrintoutResolution;
 
     QgsComposition(); //default constructor is forbidden
+
+    /**Reset z-values of items based on position in z list*/
+    void updateZValues();
 };
 
 #endif

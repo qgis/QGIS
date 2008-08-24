@@ -147,6 +147,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Ungroup selected item group
     void ungroupItems( void );
 
+    //! Move selected items one position up
+    void raiseSelectedItems();
+
+    //!Move selected items one position down
+    void lowerSelectedItems();
+
+    //!Move selected items to top
+    void moveSelectedItemsToTop();
+
+    //!Move selected items to bottom
+    void moveSelectedItemsToBottom();
+
     //! read project
     void projectRead();
 

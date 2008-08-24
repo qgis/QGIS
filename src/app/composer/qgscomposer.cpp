@@ -76,6 +76,10 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
   toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionGroupItems.png" ) ), tr( "&Group Items" ), this, SLOT( groupItems() ) );
   toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionUngroupItems.png" ) ), tr( "&Ungroup Items" ), this, SLOT( ungroupItems() ) );
+  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionRaiseItems.png")), tr("Raise selected items"), this, SLOT(raiseSelectedItems()));
+  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionLowerItems.png")), tr("Lower selected items"), this, SLOT(lowerSelectedItems()));
+  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToTop.png")), tr("Move selected items to top"), this, SLOT(moveSelectedItemsToTop()));
+  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToBottom.png")), tr("Move selected items to bottom"), this, SLOT(moveSelectedItemsToBottom()));
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( moveItemContentAction );
@@ -1028,6 +1032,38 @@ void QgsComposer::ungroupItems( void )
   }
 }
 
+void QgsComposer::raiseSelectedItems()
+{
+  if(mComposition)
+    {
+      mComposition->raiseSelectedItems();
+    }
+}
+
+void QgsComposer::lowerSelectedItems()
+{
+  if(mComposition)
+    {
+      mComposition->lowerSelectedItems();
+    }
+}
+
+void QgsComposer::moveSelectedItemsToTop()
+{
+  if(mComposition)
+    {
+      mComposition->moveSelectedItemsToTop();
+    }
+}
+
+void QgsComposer::moveSelectedItemsToBottom()
+{
+  if(mComposition)
+    {
+      mComposition->moveSelectedItemsToBottom();
+    }
+}
+
 void QgsComposer::moveEvent( QMoveEvent *e ) { saveWindowState(); }
 
 void QgsComposer::resizeEvent( QResizeEvent *e )
@@ -1305,6 +1341,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->update();
   }
 
+  mComposition->sortZList();
   mView->setComposition( mComposition );
 }
 
