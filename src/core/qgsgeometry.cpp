@@ -42,22 +42,6 @@ email                : morb at ozemail dot com dot au
     throw; \
   }
 
-#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
-#define GEOSGeom_clone(g) GEOSGeom_clone( (GEOSGeometry *) g )
-#define GEOSGeom_getCoordSeq(g) GEOSGeom_getCoordSeq( (GEOSGeometry *) g )
-#define GEOSGetExteriorRing(g) GEOSGetExteriorRing( (GEOSGeometry *)g )
-#define GEOSGetNumInteriorRings(g) GEOSGetNumInteriorRings( (GEOSGeometry *)g )
-#define GEOSGetInteriorRingN(g,i) GEOSGetInteriorRingN( (GEOSGeometry *)g, i )
-#define GEOSDisjoint(g0,g1) GEOSDisjoint( (GEOSGeometry *)g0, (GEOSGeometry*)g1 )
-#define GEOSIntersection(g0,g1) GEOSIntersection( (GEOSGeometry*) g0, (GEOSGeometry*)g1 )
-#define GEOSBuffer(g, d, s) GEOSBuffer( (GEOSGeometry*) g, d, s)
-#define GEOSArea(g, a) GEOSArea( (GEOSGeometry*) g, a)
-
-#define GEOSCoordSeq_getSize(cs,n) GEOSCoordSeq_getSize( (GEOSCoordSequence *) cs, n )
-#define GEOSCoordSeq_getX(cs,i,x) GEOSCoordSeq_getX( (GEOSCoordSequence *)cs, i, x )
-#define GEOSCoordSeq_getY(cs,i,y) GEOSCoordSeq_getY( (GEOSCoordSequence *)cs, i, y )
-#endif
-
 class GEOSException
 {
   public:
@@ -107,6 +91,53 @@ void printGEOSNotice( const char *fmt, ... )
 #endif
 }
 
+#if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
+#define GEOSGeom_getCoordSeq(g) GEOSGeom_getCoordSeq( (GEOSGeometry *) g )
+#define GEOSGetExteriorRing(g) GEOSGetExteriorRing( (GEOSGeometry *)g )
+#define GEOSGetNumInteriorRings(g) GEOSGetNumInteriorRings( (GEOSGeometry *)g )
+#define GEOSGetInteriorRingN(g,i) GEOSGetInteriorRingN( (GEOSGeometry *)g, i )
+#define GEOSDisjoint(g0,g1) GEOSDisjoint( (GEOSGeometry *)g0, (GEOSGeometry*)g1 )
+#define GEOSIntersection(g0,g1) GEOSIntersection( (GEOSGeometry*) g0, (GEOSGeometry*)g1 )
+#define GEOSBuffer(g, d, s) GEOSBuffer( (GEOSGeometry*) g, d, s)
+#define GEOSArea(g, a) GEOSArea( (GEOSGeometry*) g, a)
+
+#define GEOSCoordSeq_getSize(cs,n) GEOSCoordSeq_getSize( (GEOSCoordSequence *) cs, n )
+#define GEOSCoordSeq_getX(cs,i,x) GEOSCoordSeq_getX( (GEOSCoordSequence *)cs, i, x )
+#define GEOSCoordSeq_getY(cs,i,y) GEOSCoordSeq_getY( (GEOSCoordSequence *)cs, i, y )
+
+static GEOSGeometry *createGeosCollection( int typeId, QVector<GEOSGeometry*> geoms );
+
+static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
+{
+  if ( GEOSGeomTypeId( geom ) == GEOS_MULTIPOLYGON )
+  {
+    QVector<GEOSGeometry *> geoms;
+
+    try
+    {
+
+      for ( int i = 0; i < GEOSGetNumGeometries( geom ); ++i )
+        geoms << GEOSGeom_clone(( GEOSGeometry * ) GEOSGetGeometryN(( GEOSGeometry * ) geom, i ) );
+
+      return createGeosCollection( GEOS_MULTIPOLYGON, geoms );
+    }
+    catch ( GEOSException &e )
+    {
+      Q_UNUSED( e );
+      for ( int i = 0; i < geoms.count(); i++ )
+        GEOSGeom_destroy( geoms[i] );
+
+      return 0;
+    }
+  }
+  else
+  {
+    return GEOSGeom_clone(( GEOSGeometry * ) geom );
+  }
+}
+
+#define GEOSGeom_clone(g) cloneGeosGeom(g)
+#endif
 
 int QgsGeometry::refcount = 0;
 
