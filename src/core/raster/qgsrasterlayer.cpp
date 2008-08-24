@@ -4006,7 +4006,7 @@ double QgsRasterLayer::readValue( void *data, GDALDataType type, int index )
   Raster layer project file XML of form:
 
   <maplayer type="raster" visible="1" showInOverviewFlag="1">
-  <layerName>Wynoochee_dem</layerName>
+  <layername>Wynoochee_dem</layername>
   <datasource>/home/mcoletti/mnt/MCOLETTIF8F9/c/Toolkit_Course/Answers/Training_Data/wynoochee_dem.img</datasource>
   <zorder>0</zorder>
   <transparencyLevelInt>255</transparencyLevelInt>
