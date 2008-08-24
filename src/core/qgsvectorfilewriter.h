@@ -88,7 +88,7 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QgsFieldMap mFields;
 
-    /** contains error value if construction was not successfull */
+    /** contains error value if construction was not successful */
     WriterError mError;
 
     QTextCodec* mCodec;
