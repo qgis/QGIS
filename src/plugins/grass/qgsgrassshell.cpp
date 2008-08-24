@@ -159,7 +159,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools,
   QgsDebugMsg( QString( "master ttyname = %1" ).arg( ttyname( mFdMaster ) ) );
   QgsDebugMsg( QString( "slave ttyname = %1" ).arg( ttyname( fdSlave ) ) );
 
-  //close ( fdSlave ); // -> crash
+  //::close( fdSlave ); // -> crash
 
   // Fork slave and open shell
   int pid = fork();
@@ -176,12 +176,9 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools,
     QgsDebugMsg( "child ->" );
 
     // TODO close all opened file descriptors - close(0)???
-#ifndef Q_OS_DARWIN
-    // Makes child process unusable on Mac
-    close( mFdMaster );
-#endif
+    ::close( mFdMaster );
 
-    //close ( fdSlave ); // -> freeze
+    //::close( fdSlave ); // -> freeze
 
     setsid();
     seteuid( 0 );
