@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label="Prints vector map attribute" module="v.db.select">
 	<option key="map" layeroption="layer" />
-	<option key="column" />
+	<field key="column" layer="map" type="integer,double,varchar"/>
 	<option key="fs" answer="|" hidden="yes" />
 </qgisgrassmodule>
