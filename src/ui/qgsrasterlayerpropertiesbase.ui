@@ -1199,44 +1199,6 @@
        <string>Colormap</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
-        <number>11</number>
-       </property>
-       <item row="0" column="2" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>71</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" colspan="3" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>61</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="0" colspan="2" >
         <layout class="QHBoxLayout" >
          <property name="leftMargin" >
@@ -1270,56 +1232,20 @@
          </item>
         </layout>
        </item>
-       <item row="2" column="2" colspan="2" >
+       <item row="0" column="2" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>341</width>
+           <width>71</width>
            <height>20</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="2" column="1" >
-        <widget class="QPushButton" name="mDeleteEntryButton" >
-         <property name="text" >
-          <string>Delete entry</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QPushButton" name="mClassifyButton" >
-         <property name="text" >
-          <string>Classify</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0" colspan="4" >
-        <widget class="QTreeWidget" name="mColormapTreeWidget" >
-         <property name="columnCount" >
-          <number>3</number>
-         </property>
-         <column>
-          <property name="text" >
-           <string>1</string>
-          </property>
-         </column>
-         <column>
-          <property name="text" >
-           <string>1</string>
-          </property>
-         </column>
-         <column>
-          <property name="text" >
-           <string>2</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-       <item row="0" column="3" >
+       <item row="0" column="3" colspan="3" >
         <layout class="QHBoxLayout" >
          <property name="leftMargin" >
           <number>11</number>
@@ -1345,7 +1271,20 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="3" >
+       <item row="1" column="0" colspan="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>61</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="3" colspan="3" >
         <layout class="QHBoxLayout" >
          <property name="leftMargin" >
           <number>11</number>
@@ -1370,6 +1309,81 @@
           <widget class="QComboBox" name="cboxClassificationMode" />
          </item>
         </layout>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QPushButton" name="mClassifyButton" >
+         <property name="text" >
+          <string>Classify</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QPushButton" name="mDeleteEntryButton" >
+         <property name="text" >
+          <string>Delete entry</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2" colspan="2" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>281</width>
+           <height>27</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="4" >
+        <widget class="QToolButton" name="pbtnLoadColorMapFromFile" >
+         <property name="toolTip" >
+          <string>Load color map from file</string>
+         </property>
+         <property name="text" >
+          <string>...</string>
+         </property>
+         <property name="icon" >
+          <iconset>../../images/themes/default/mActionFolder.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5" >
+        <widget class="QToolButton" name="pbtnExportColorMapToFile" >
+         <property name="toolTip" >
+          <string>Export color map to file</string>
+         </property>
+         <property name="text" >
+          <string>...</string>
+         </property>
+         <property name="icon" >
+          <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="6" >
+        <widget class="QTreeWidget" name="mColormapTreeWidget" >
+         <property name="columnCount" >
+          <number>3</number>
+         </property>
+         <column>
+          <property name="text" >
+           <string>1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>2</string>
+          </property>
+         </column>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -1798,8 +1812,8 @@
          <property name="html" >
           <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>

@@ -106,6 +106,10 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_mDeleteEntryButton_clicked();
     /**Callback for double clicks on the colormap entry widget*/
     void handleColormapTreeWidgetDoubleClick( QTreeWidgetItem* item, int column );
+    /**This slots saves the current color map to a file */
+    void on_pbtnExportColorMapToFile_clicked();
+    /**This slots saves the current color map to a file */
+    void on_pbtnLoadColorMapFromFile_clicked();
     /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
     void on_pbtnLoadMinMax_clicked();
     /**This slot sets the default band combination varaible to current band combination */

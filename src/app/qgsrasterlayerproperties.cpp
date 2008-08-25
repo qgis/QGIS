@@ -134,9 +134,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
 
   //setup custom colormap tab
   cboxColorInterpolation->addItem( tr( "Discrete" ) );
-  cboxColorInterpolation->addItem( tr( "Linearly" ) );
+  cboxColorInterpolation->addItem( tr( "Linear" ) );
+  cboxColorInterpolation->addItem( tr( "Exact") );
   cboxClassificationMode->addItem( tr( "Equal interval" ) );
-  cboxClassificationMode->addItem( tr( "Quantiles" ) );
+  //cboxClassificationMode->addItem( tr( "Quantiles" ) );
 
   QStringList headerLabels;
   headerLabels << "Value";
@@ -291,6 +292,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   pbtnMakeBandCombinationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnMakeContrastEnhancementAlgorithmDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
 
+  pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
+  pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
+  
   // Only do pyramids if dealing directly with GDAL.
   if ( mRasterLayerIsGdal )
   {
@@ -886,13 +890,17 @@ void QgsRasterLayerProperties::syncColormapTab()
   sboxNumberOfEntries->setValue( myColorRampList.size() );
 
   //restor state of 'color interpolation' combo box
-  if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->getColorRampType() )
+  if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->getColorRampType() )
+  {
+    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+  }
+  else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->getColorRampType() )
   {
     cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
   }
   else
   {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linearly" ) ) );
+    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
   }
 
 }
@@ -1397,13 +1405,17 @@ void QgsRasterLayerProperties::apply()
       }
       myRasterShaderFunction->setColorRampItemList( mColorRampItems );
 
-      if ( cboxColorInterpolation->currentText() == tr( "Discrete" ) )
+      if ( cboxColorInterpolation->currentText() == tr( "Linear" ) )
+      {
+        myRasterShaderFunction->setColorRampType( QgsColorRampShader::INTERPOLATED );
+      }
+      else if ( cboxColorInterpolation->currentText() == tr( "Discrete" ) )
       {
         myRasterShaderFunction->setColorRampType( QgsColorRampShader::DISCRETE );
       }
       else
       {
-        myRasterShaderFunction->setColorRampType( QgsColorRampShader::INTERPOLATED );
+        myRasterShaderFunction->setColorRampType( QgsColorRampShader::EXACT );
       }
     }
     else
@@ -2575,10 +2587,10 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
       currentValue += intervalDiff;
     }
   }
-  else if ( cboxClassificationMode->currentText() == tr( "Quantiles" ) )
-  {
+  //else if ( cboxClassificationMode->currentText() == tr( "Quantiles" ) )
+  //{
     //todo
-  }
+  //}
 
   //hard code color range from blue -> red for now. Allow choice of ramps in future
   int colorDiff = 0;
@@ -2634,6 +2646,149 @@ void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick( QTreeWidgetI
     {
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
     }
+  }
+}
+
+void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
+{
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), "/", tr( "Textfile (*.txt)" ) );
+  if ( !myFileName.isEmpty() )
+  {
+    if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    {
+      myFileName = myFileName + ".txt";
+    }
+
+    QFile myOutputFile( myFileName );
+    if ( myOutputFile.open( QFile::WriteOnly ) )
+    {
+      QTextStream myOutputStream( &myOutputFile );
+      myOutputStream << "# " << tr( "QGIS Generated Color Map Export File" ) << "\n";
+      myOutputStream << "INTERPOLATION:";
+      if ( cboxColorInterpolation->currentText() == tr( "Linear" ) )
+      {
+        myOutputStream << "INTERPOLATED\n";
+      }
+      else if ( cboxColorInterpolation->currentText() == tr( "Discrete" ) )
+      {
+        myOutputStream << "DISCRETE\n";
+      }
+      else
+      {
+        myOutputStream << "EXACT\n";
+      }
+      
+      int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+      QTreeWidgetItem* myCurrentItem;
+      QColor myColor;
+      for ( int i = 0; i < myTopLevelItemCount; ++i )
+      {
+        myCurrentItem = mColormapTreeWidget->topLevelItem( i );
+        if ( !myCurrentItem )
+        {
+          continue;
+        }
+        myColor = myCurrentItem->background( 1 ).color();
+        myOutputStream << myCurrentItem->text( 0 ).toDouble() << ",";
+        myOutputStream << myColor.red() << "," << myColor.green() << "," << myColor.blue() << "," << myColor.alpha() << ",";
+        if(myCurrentItem->text(2) == "")
+        {
+          myOutputStream << "Color entry " << i+1 << "\n";
+        }
+        else
+        {
+          myOutputStream << myCurrentItem->text( 2 ) << "\n";
+        }
+      }
+      myOutputStream.flush();
+      myOutputFile.close();
+    }
+    else
+    {
+      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+    }
+  }
+}
+
+void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
+{
+  int myLineCounter = 0;
+  bool myImportError = false;
+  QString myBadLines;
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), "/", tr( "Textfile (*.txt)" ) );
+  QFile myInputFile( myFileName );
+  if ( myInputFile.open( QFile::ReadOnly ) )
+  {
+    //clear the current tree
+    mColormapTreeWidget->clear();
+ 
+    QTextStream myInputStream( &myInputFile );
+    QString myInputLine;
+    QStringList myInputStringComponents;
+    
+    //read through the input looking for valid data
+    while ( !myInputStream.atEnd() )
+    {
+      myLineCounter++;
+      myInputLine = myInputStream.readLine();
+      if ( !myInputLine.isEmpty() )
+      {
+        if ( !myInputLine.simplified().startsWith( "#" ) )
+        {
+          if(myInputLine.contains("INTERPOLATION", Qt::CaseInsensitive))
+          {
+            myInputStringComponents = myInputLine.split(":");
+            if(myInputStringComponents.size() == 2)
+            {
+              if(myInputStringComponents[1].trimmed().toUpper().compare ("INTERPOLATED", Qt::CaseInsensitive) == 0)
+              {
+                cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+              }
+              else if(myInputStringComponents[1].trimmed().toUpper().compare ("DISCRETE", Qt::CaseInsensitive) == 0)
+              {
+                cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
+              }
+              else
+              {
+                cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+              }
+            }
+            else
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number( myLineCounter ) + ":\t[" + myInputLine + "]\n";
+            }
+          }
+          else
+          {
+            myInputStringComponents = myInputLine.split(",");
+            if(myInputStringComponents.size() == 6)
+            {
+              QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+              newItem->setText( 0, myInputStringComponents[0] );
+              newItem->setBackground( 1, QBrush( QColor::fromRgb(myInputStringComponents[1].toInt(), myInputStringComponents[2].toInt(), myInputStringComponents[3].toInt(), myInputStringComponents[4].toInt()) ) );
+              newItem->setText( 2, myInputStringComponents[5] );
+            }
+            else
+            {
+              myImportError = true;
+              myBadLines = myBadLines + QString::number( myLineCounter ) + ":\t[" + myInputLine + "]\n";
+            }
+          }
+        }
+      }
+      myLineCounter++;
+    }
+      
+
+    if ( myImportError )
+    {
+      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n" ) + myBadLines );
+    }
+  }
+  else if ( !myFileName.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
 }
 

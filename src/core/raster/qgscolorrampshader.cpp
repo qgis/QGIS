@@ -29,12 +29,16 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
 
 bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-  if ( QgsColorRampShader::DISCRETE == mColorRampType )
+  if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
+  {
+    return getInterpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  }
+  else if ( QgsColorRampShader::DISCRETE == mColorRampType )
   {
     return getDiscreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
   }
 
-  return getInterpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  return getExactColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
 }
 
 bool QgsColorRampShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
@@ -86,6 +90,27 @@ bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedVal
       }
     }
     last_it = it;
+  }
+
+  return false; // value not found
+}
+
+bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+{
+  if ( mColorRampItemList.count() <= 0 )
+  {
+    return false;
+  }
+  QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
+  for ( it = mColorRampItemList.begin(); it != mColorRampItemList.end(); ++it )
+  {
+    if ( theValue == it->value )
+    {
+      *theReturnRedValue = it->color.red();
+      *theReturnGreenValue = it->color.green();
+      *theReturnBlueValue = it->color.blue();
+      return true;
+    }
   }
 
   return false; // value not found

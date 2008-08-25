@@ -73,6 +73,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
   private:
     /**Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the lower class for every pixel between two class breaks.*/
     bool getDiscreteColor( double, int*, int*, int* );
+    /**Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the exact matching value in the color ramp item list */
+    bool getExactColor( double, int*, int*, int* );
     /**Gets the color for a pixel value from the classification vector mValueClassification. Interpolates the color between two class breaks linearly.*/
     bool getInterpolatedColor( double, int*, int*, int* );
 
