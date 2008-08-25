@@ -1746,31 +1746,11 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   mRasterShader->setMinimumValue( myMinimumValue );
   mRasterShader->setMaximumValue( myMaximumValue );
 
-  QgsColorTable *myColorTable = &( myRasterBandStats.colorTable );
-  int myRedLUTValue = 0;
-  int myGreenLUTValue = 0;
-  int myBlueLUTValue;
-
   double myPixelValue = 0.0;
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
   int myAlphaValue = 0;
-
-  //Set a pointer to the LUT color channel
-  int* myGrayValue;
-  if ( theColorQString == mRedBandName )
-  {
-    myGrayValue = &myRedLUTValue;
-  }
-  else if ( theColorQString == mGreenBandName )
-  {
-    myGrayValue = &myGreenLUTValue;
-  }
-  else
-  {
-    myGrayValue = &myBlueLUTValue;
-  }
 
   for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
   {
@@ -1793,11 +1773,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
         continue;
       }
 
-      bool found = myColorTable->color( myPixelValue, &myRedLUTValue, &myGreenLUTValue, &myBlueLUTValue );
-      if ( !found ) continue;
-
-
-      if ( !mRasterShader->generateShadedValue(( double )*myGrayValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->generateShadedValue(myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }
