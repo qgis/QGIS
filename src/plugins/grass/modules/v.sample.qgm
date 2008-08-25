@@ -6,6 +6,6 @@
 	<field key="column" layer="vector" type="integer,double"/>
 	<option key="raster"/>
 	<option key="output"/>
-	<flag key="B" answer="off" hidden="no" />
-	<flag key="C" answer="off" hidden="no" />
+	<flag key="b" answer="off" hidden="no" />
+	<flag key="c" answer="off" hidden="no" />
 </qgisgrassmodule>

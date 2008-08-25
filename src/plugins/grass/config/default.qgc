@@ -22,6 +22,8 @@
 			<section label="Import vector">
 				<grass name="v.in.ogr"/>
 				<grass name="v.in.ogr.loc"/>
+                                <grass name="v.in.ogr.all"/> 
+                                <grass name="v.in.ogr.all.loc"/> 
 				<grass name="v.in.dxf"/>
 				<grass name="v.in.e00"/>
 				<grass name="v.in.mapgen"/>
@@ -46,6 +48,7 @@
 			</section>
 			<section label="Export vector">
 				<grass name="v.out.ogr"/>
+				<grass name="v.out.ogr.postgis"/>
 				<grass name="v.out.ogr.gml"/>
 				<grass name="v.out.ogr.mapinfo"/>
 				<grass name="v.out.ascii"/>
@@ -71,19 +74,21 @@
 	<section label="Config">
 		<section label="Region">
 			<section label="Region settings">
-				<grass name="g.region"/>
-			</section>
+                                <grass name="g.region.save"/> 
+                                <grass name="g.region.zoom"/> 
+                                <grass name="g.region.multiple.raster"/> 
+                                <grass name="g.region.multiple.vector"/> 			</section>
 			<section label="Projection management">
-				<section label="Print projection info of current Location">
-					<grass name="g.proj.print"/>
+                                <section label="Print projection information of the current location"> 					<grass name="g.proj.print"/>
 				</section>
-				<section label="Print projection info from a file">
+                                <section label="Print projection information from a georeferenced file"> 
 					<grass name="g.proj.geo"/>
+                                        <grass name="g.proj.ascii"/> 
 					<grass name="g.proj.proj"/>
 				</section>
-				<section label="Print projection info from a file to create new location">
+                                <section label="Print projection information from a georeferenced file and create a new location based on it"> 
+                                        <grass name="g.proj.geo.new"/> 
 					<grass name="g.proj.ascii.new"/>
-					<grass name="g.proj.geo.new"/>
 					<grass name="g.proj.proj.new"/>
 				</section>
 			</section>
@@ -151,6 +156,9 @@
 				<grass name="v.neighbors"/>
 			</section>
 			<section label="Overlay maps">
+                                <grass name="r.cross"/> 
+                                <grass name="r.series"/> 
+                                <grass name="r.patch"/> 
 				<grass name="r.statistics"/>
 			</section>
 			<section label="Terrain analysis">
@@ -278,6 +286,12 @@
 				<grass name="v.transform"/>
 				<grass name="v.proj"/>
 			</section>
+			<section label="Metadata support">
+				<grass name="v.support"/>
+			</section>
+			<section label="Generalization">
+				<grass name="v.generalize"/>
+			</section>
 		</section>
 		<section label="Database connection">
 			<grass name="v.db.connect"/>
@@ -304,6 +318,7 @@
 				<grass name="v.net.steiner"/>
 			</section>
 			<section label="Overlay">
+                                <grass name="v.patch"/> 
 				<grass name="v.overlay.or"/>
 				<grass name="v.overlay.and"/>
 				<grass name="v.overlay.not"/>
@@ -329,6 +344,10 @@
 			<section label="Create points">
 				<grass name="v.in.db"/>
 				<grass name="v.random"/>
+			</section>
+			<section label="Manage training dataset">
+				<grass name="v.kcv"/>
+				<grass name="v.outlier"/>
 			</section>
 			<section label="Delaunay triangulation, Voronoi diagram and convex hull">
 				<grass name="v.hull"/>
@@ -393,6 +412,7 @@
 		<section label="Database management">
 			<grass name="db.connect"/>
 			<grass name="db.connect.schema"/>
+			<grass name="v.db.reconnect.all"/>
 			<grass name="db.login"/>
 			<grass name="db.in.ogr"/>
 		</section>
@@ -409,6 +429,9 @@
 			<grass name="v.db.dropcol"/>
 			<grass name="v.db.renamecol"/>
 			<grass name="db.execute"/>
+			<grass name="db.select"/>
+			<grass name="v.db.select"/>
+			<grass name="v.db.select.where"/>
 		</section>
 		<section label="Others">
 			<grass name="v.db.join"/>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Randomly partition points into test/train sets" module="v.kcv">
+	<option key="input" />
+	<option key="k" />
+	<option key="column" ansewr="part" />
+	<option key="output" />
+</qgisgrassmodule>
