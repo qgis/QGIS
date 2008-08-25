@@ -2,7 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Remove existing attribute table of a vector map" module="v.db.droptable">
-	<option key="map" />
+	<option key="map"  layeroption="layer"/>
 	<option key="table" />
-	<option key="layer" answer="1" hidden="no" />
 </qgisgrassmodule>

@@ -5,8 +5,7 @@
 	<flag key="o" answer="on" hidden="yes" />
 	<flag key="z" answer="off" hidden="no" />
 	<flag key="r" answer="off" hidden="no" />
-	<option key="dsn" label="Path to the OGR data source" />
-	<option key="layer" label="OGR layer name" />
+	<file key="dsn" type="old" label="OGR file" />
 	<option key="output" />	
 	<option key="type" />
 </qgisgrassmodule>
