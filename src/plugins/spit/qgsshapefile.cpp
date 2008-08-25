@@ -18,6 +18,7 @@
 
 #include <QApplication>
 #include <ogr_api.h>
+#include <cpl_conv.h>
 #include <string>
 #include <fstream>
 #include <cstdio>
@@ -406,14 +407,14 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
                 .arg( QgsPgUtil::quotedIdentifier( table_name ) )
                 .arg( m );
 
-        int num = OGR_G_WkbSize( geom );
-        char * geo_temp = new char[num*3];
+        char *geo_temp;
         // 'GeometryFromText' supports only 2D coordinates
         // TODO for proper 2.5D support we would need to use 'GeomFromEWKT'
         if ( hasMoreDimensions )
           OGR_G_SetCoordinateDimension( geom, 2 );
         OGR_G_ExportToWkt( geom, &geo_temp );
         QString geometry( geo_temp );
+        CPLFree(geo_temp);
 
         for ( uint n = 0; n < column_types.size(); n++ )
         {
@@ -462,7 +463,6 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
 
         pro.setValue( pro.value() + 1 );
         qApp->processEvents();
-        delete[] geo_temp;
       }
       OGR_F_Destroy( feat );
     }
