@@ -78,7 +78,13 @@ QgsAttributeTable::QgsAttributeTable( QWidget * parent ) :
     mPreviousSortIndicatorColumn( -1 )
 {
   QFont f( font() );
-  f.setPointSize( f.pointSize() - 2 );
+#ifdef Q_WS_MAC
+  // The default application font for OS X is Lucida Grande 13 point; for small, use 11 point
+  f.setPointSize( 11 );
+#else
+  f.setFamily( "Helvetica" );
+  f.setPointSize( 9 );
+#endif
   setFont( f );
   mDelegate = new QgsAttributeTableItemDelegate( this );
   setItemDelegate( mDelegate );
