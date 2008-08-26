@@ -69,9 +69,9 @@ class QgsMapToPixel
     double mapUnitsPerPixel();
 
     //! Set maximum y value
-    void setYmax(double ymax);
+    void setYMaximum(double ymax);
     //! Set minimum y value
-    void setYmin(double ymin);
+    void setYMinimum(double ymin);
     //! set minimum x value
     void setXMinimum(double xmin);
     /*! Set parameters for use in tranfsorming coordinates
