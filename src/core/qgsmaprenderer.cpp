@@ -182,8 +182,8 @@ void QgsMapRenderer::adjustExtentToSize()
   // update extent
   mExtent.setXMinimum( dxmin );
   mExtent.setXMaximum( dxmax );
-  mExtent.setYmin( dymin );
-  mExtent.setYmax( dymax );
+  mExtent.setYMinimum( dymin );
+  mExtent.setYMaximum( dymax );
 
   // update the scale
   updateScale();
@@ -326,7 +326,7 @@ void QgsMapRenderer::render( QPainter* painter )
         bk_mapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel = mRenderContext.mapToPixel();
         rasterMapToPixel.setMapUnitsPerPixel( mRenderContext.mapToPixel().mapUnitsPerPixel() / rasterScaleFactor );
-        rasterMapToPixel.setYmax( mSize.height() * rasterScaleFactor );
+        rasterMapToPixel.setYMaximum( mSize.height() * rasterScaleFactor );
         mRenderContext.setMapToPixel( rasterMapToPixel );
         mRenderContext.painter()->save();
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
@@ -754,7 +754,7 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
 
   exElement = yminNode.toElement();
   double ymin = exElement.text().toDouble();
-  aoi.setYmin( ymin );
+  aoi.setYMinimum( ymin );
 
   exElement = xmaxNode.toElement();
   double xmax = exElement.text().toDouble();
@@ -762,7 +762,7 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
 
   exElement = ymaxNode.toElement();
   double ymax = exElement.text().toDouble();
-  aoi.setYmax( ymax );
+  aoi.setYMaximum( ymax );
 
   setExtent( aoi );
 

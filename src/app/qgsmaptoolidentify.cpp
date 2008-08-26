@@ -244,8 +244,8 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   QgsRect r;
   r.setXMinimum( point.x() - searchRadius );
   r.setXMaximum( point.x() + searchRadius );
-  r.setYmin( point.y() - searchRadius );
-  r.setYmax( point.y() + searchRadius );
+  r.setYMinimum( point.y() - searchRadius );
+  r.setYMaximum( point.y() + searchRadius );
 
   r = toLayerCoords( layer, r );
 

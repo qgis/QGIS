@@ -628,8 +628,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Up:
         QgsDebugMsg( "Pan up" );
 
-        currentExtent.setYmax( currentExtent.yMax() + dy );
-        currentExtent.setYmin( currentExtent.yMin() + dy );
+        currentExtent.setYMaximum( currentExtent.yMax() + dy );
+        currentExtent.setYMinimum( currentExtent.yMin() + dy );
         setExtent( currentExtent );
         refresh();
         break;
@@ -637,8 +637,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Down:
         QgsDebugMsg( "Pan down" );
 
-        currentExtent.setYmax( currentExtent.yMax() - dy );
-        currentExtent.setYmin( currentExtent.yMin() - dy );
+        currentExtent.setYMaximum( currentExtent.yMax() - dy );
+        currentExtent.setYMinimum( currentExtent.yMin() - dy );
         setExtent( currentExtent );
         refresh();
         break;
@@ -1134,14 +1134,14 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
   if ( end.y() < start.y() )
   {
-    r.setYmax( r.yMax() + dy );
-    r.setYmin( r.yMin() + dy );
+    r.setYMaximum( r.yMax() + dy );
+    r.setYMinimum( r.yMin() + dy );
 
   }
   else
   {
-    r.setYmax( r.yMax() - dy );
-    r.setYmin( r.yMin() - dy );
+    r.setYMaximum( r.yMax() - dy );
+    r.setYMinimum( r.yMin() - dy );
 
   }
 

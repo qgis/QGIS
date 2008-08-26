@@ -92,8 +92,8 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, Qgs
     QgsRect r;
     r.setXMinimum( mapPosition.x() - searchRadius );
     r.setXMaximum( mapPosition.x() + searchRadius );
-    r.setYmin( mapPosition.y() - searchRadius );
-    r.setYmax( mapPosition.y() + searchRadius );
+    r.setYMinimum( mapPosition.y() - searchRadius );
+    r.setYMaximum( mapPosition.y() + searchRadius );
 
     // Get the data provider
     QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*>( layer )->dataProvider();

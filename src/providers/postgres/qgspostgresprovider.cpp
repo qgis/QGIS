@@ -698,8 +698,8 @@ void QgsPostgresProvider::setExtent( QgsRect& newExtent )
 {
   layerExtent.setXMaximum( newExtent.xMax() );
   layerExtent.setXMinimum( newExtent.xMin() );
-  layerExtent.setYmax( newExtent.yMax() );
-  layerExtent.setYmin( newExtent.yMin() );
+  layerExtent.setYMaximum( newExtent.yMax() );
+  layerExtent.setYMinimum( newExtent.yMin() );
 }
 
 // TODO - make this function return the real extent_
@@ -2388,8 +2388,8 @@ void QgsPostgresProvider::calculateExtents()
 
       layerExtent.setXMaximum( maxx );
       layerExtent.setXMinimum( minx );
-      layerExtent.setYmax( maxy );
-      layerExtent.setYmin( miny );
+      layerExtent.setYMaximum( maxy );
+      layerExtent.setYMinimum( miny );
     }
   }
   else

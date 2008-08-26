@@ -1535,8 +1535,8 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
 
   if ( boundingBoxFromPointList( ring, xMin, yMin, xMax, yMax ) == 0 )
   {
-    bBox.setXMinimum( xMin ); bBox.setYmin( yMin );
-    bBox.setXMaximum( xMax ); bBox.setYmax( yMax );
+    bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
+    bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
   }
   else
   {
@@ -1661,8 +1661,8 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   {
     if ( boundingBoxFromPointList( splitLine, xMin, yMin, xMax, yMax ) == 0 )
     {
-      bBox.setXMinimum( xMin ); bBox.setYmin( yMin );
-      bBox.setXMaximum( xMax ); bBox.setYmax( yMax );
+      bBox.setXMinimum( xMin ); bBox.setYMinimum( yMin );
+      bBox.setXMaximum( xMax ); bBox.setYMaximum( yMax );
     }
     else
     {
@@ -1679,8 +1679,8 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
       }
       else if ( bBox.height() == 0.0 && bBox.width() > 0 )
       {
-        bBox.setYmin( bBox.yMin() - bBox.width() / 2 );
-        bBox.setYmax( bBox.yMax() + bBox.width() / 2 );
+        bBox.setYMinimum( bBox.yMin() - bBox.width() / 2 );
+        bBox.setYMaximum( bBox.yMax() + bBox.width() / 2 );
       }
       else
       {
@@ -2176,8 +2176,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       // store the extent
       mLayerExtent.setXMaximum( mbr.xMax() );
       mLayerExtent.setXMinimum( mbr.xMin() );
-      mLayerExtent.setYmax( mbr.yMax() );
-      mLayerExtent.setYmin( mbr.yMin() );
+      mLayerExtent.setYMaximum( mbr.yMax() );
+      mLayerExtent.setYMinimum( mbr.yMin() );
 
       // get and store the feature type
       mGeometryType = mDataProvider->geometryType();
