@@ -135,8 +135,8 @@ QgsRect QgsRect::intersect( QgsRect * rect ) const
 
   intersection.setXMinimum( xmin > rect->xMin() ? xmin : rect->xMin() );
   intersection.setXMaximum( xmax < rect->xMax() ? xmax : rect->xMax() );
-  intersection.setYmin( ymin > rect->yMin() ? ymin : rect->yMin() );
-  intersection.setYmax( ymax < rect->yMax() ? ymax : rect->yMax() );
+  intersection.setYMinimum( ymin > rect->yMin() ? ymin : rect->yMin() );
+  intersection.setYMaximum( ymax < rect->yMax() ? ymax : rect->yMax() );
   return intersection;
 }
 
@@ -292,8 +292,8 @@ void QgsRect::unionRect( const QgsRect& r )
 {
   if ( r.xMin() < xMin() ) setXMinimum( r.xMin() );
   if ( r.xMax() > xMax() ) setXMaximum( r.xMax() );
-  if ( r.yMin() < yMin() ) setYmin( r.yMin() );
-  if ( r.yMax() > yMax() ) setYmax( r.yMax() );
+  if ( r.yMin() < yMin() ) setYMinimum( r.yMin() );
+  if ( r.yMax() > yMax() ) setYMaximum( r.yMax() );
 }
 
 bool QgsRect::isFinite() const
