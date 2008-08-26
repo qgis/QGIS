@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>367</width>
-    <height>428</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -31,6 +31,9 @@
    </item>
    <item row="0" column="2" >
     <widget class="QDoubleSpinBox" name="mSegmentSizeSpinBox" >
+     <property name="decimals" >
+      <number>4</number>
+     </property>
      <property name="maximum" >
       <double>9999999999999.000000000000000</double>
      </property>
