@@ -100,6 +100,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRect& extent, const QSize
     return;
   }
 
+  if ( mDrawing )
+  {
+    return;
+  }
+
+  mDrawing = true;
+
   QgsMapRenderer theMapRenderer;
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
@@ -119,6 +126,8 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRect& extent, const QSize
   theMapRenderer.setScale( scale() );
   theMapRenderer.render( painter );
   theMapRenderer.setScale( bk_scale );
+
+  mDrawing = false;
 }
 
 void QgsComposerMap::cache( void )
@@ -158,17 +167,10 @@ void QgsComposerMap::cache( void )
 
 void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
-  if ( mDrawing )
-  {
-    return;
-  }
-
   if ( !mComposition || !painter )
   {
     return;
   }
-
-  mDrawing = true;
 
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
   painter->save();
@@ -218,7 +220,6 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   painter->restore();
 
   mLastScaleFactorX =  currentScaleFactorX;
-  mDrawing = false;
 }
 
 void QgsComposerMap::mapCanvasChanged( void )
@@ -251,20 +252,23 @@ void QgsComposerMap::resize( double dx, double dy )
 
 void QgsComposerMap::moveContent( double dx, double dy )
 {
-  QRectF itemRect = rect();
-  double xRatio = dx / itemRect.width();
-  double yRatio = dy / itemRect.height();
-
-  double xMoveMapCoord = mExtent.width() * xRatio;
-  double yMoveMapCoord = -( mExtent.height() * yRatio );
-
-  mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
-  mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
-  mExtent.setYmin( mExtent.yMin() + yMoveMapCoord );
-  mExtent.setYmax( mExtent.yMax() + yMoveMapCoord );
-  emit extentChanged();
-  cache();
-  update();
+  if(!mDrawing)
+    {
+      QRectF itemRect = rect();
+      double xRatio = dx / itemRect.width();
+      double yRatio = dy / itemRect.height();
+      
+      double xMoveMapCoord = mExtent.width() * xRatio;
+      double yMoveMapCoord = -( mExtent.height() * yRatio );
+      
+      mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
+      mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
+      mExtent.setYmin( mExtent.yMin() + yMoveMapCoord );
+      mExtent.setYmax( mExtent.yMax() + yMoveMapCoord );
+      emit extentChanged();
+      cache();
+      update();
+    }
 }
 
 void QgsComposerMap::setSceneRect( const QRectF& rectangle )

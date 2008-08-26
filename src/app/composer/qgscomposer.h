@@ -212,13 +212,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /**Etablishes the signal slot connection for the class*/
     void connectSlots();
 
-    /** \brief move up the content of the file
-        \param file file
-    \param from starting position
-    \param shift shift in bytes
-    */
-    bool shiftFileContent( QFile *file, qint64 start, int shift );
-
     //! Set buttons up
     void setToolActionsOff( void );
 

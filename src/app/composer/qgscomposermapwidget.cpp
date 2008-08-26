@@ -98,6 +98,11 @@ void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
     return;
   }
 
+  if(mComposerMap->isDrawing())
+    {
+      return;
+    }
+
   QString comboText = mPreviewModeComboBox->currentText();
   if ( comboText == tr( "Cache" ) )
   {

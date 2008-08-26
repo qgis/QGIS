@@ -189,7 +189,6 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         double moveX = scenePoint.x() - mMoveContentStartPos.x();
         double moveY = scenePoint.y() - mMoveContentStartPos.y();
         mMoveContentItem->moveContent( -moveX, -moveY );
-        mMoveContentItem->update();
         mMoveContentItem = 0;
       }
       break;
