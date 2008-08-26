@@ -291,10 +291,10 @@ void QgsComposer::on_mActionZoomOut_activated( void )
 
 void QgsComposer::on_mActionRefreshView_activated( void )
 {
-  /*
-  mComposition->refresh();
-  mView->update();
-  */
+  if(mComposition)
+    {
+      mComposition->update();
+    }
 }
 
 void QgsComposer::on_mActionPrint_activated( void )
