@@ -80,7 +80,7 @@ QString QgsNumericScaleBarStyle::scaleText() const
     if ( composerMap )
     {
       double scaleDenominator = composerMap->scale();
-      scaleBarText = "1:" + QString::number( scaleDenominator );
+      scaleBarText = "1:" + QString::number(scaleDenominator, 'f', 0);
     }
   }
   return scaleBarText;

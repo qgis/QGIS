@@ -200,7 +200,7 @@ void QgsComposerMapWidget::updateGuiElements()
     QRectF composerMapRect = mComposerMap->rect();
     mWidthLineEdit->setText( QString::number( composerMapRect.width() ) );
     mHeightLineEdit->setText( QString::number( composerMapRect.height() ) );
-    mScaleLineEdit->setText( QString::number( mComposerMap->scale() ) );
+    mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0) );
 
     //preview mode
     QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();
