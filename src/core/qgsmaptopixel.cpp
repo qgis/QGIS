@@ -64,12 +64,12 @@ double QgsMapToPixel::mapUnitsPerPixel() const
   return mMapUnitsPerPixel;
 }
 
-void QgsMapToPixel::setYmax( double ymax )
+void QgsMapToPixel::setYMaximum( double ymax )
 {
   yMax = ymax;
 }
 
-void QgsMapToPixel::setYmin( double ymin )
+void QgsMapToPixel::setYMinimum( double ymin )
 {
   yMin = ymin;
 }

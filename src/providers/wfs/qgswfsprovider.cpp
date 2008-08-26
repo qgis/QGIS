@@ -620,10 +620,10 @@ int QgsWFSProvider::getExtentFromGML2( QgsRect* extent, const QDomElement& wfsCo
 
     std::list<QgsPoint>::const_iterator it = boundingPoints.begin();
     extent->setXMinimum( it->x() );
-    extent->setYmin( it->y() );
+    extent->setYMinimum( it->y() );
     ++it;
     extent->setXMaximum( it->x() );
-    extent->setYmax( it->y() );
+    extent->setYMaximum( it->y() );
     return 0;
   }
   else if ( coordinatesNode.localName() == "coord" )
@@ -659,9 +659,9 @@ int QgsWFSProvider::getExtentFromGML2( QgsRect* extent, const QDomElement& wfsCo
       return 10;
     }
     extent->setXMinimum( x1 );
-    extent->setYmin( y1 );
+    extent->setYMinimum( y1 );
     extent->setXMaximum( x2 );
-    extent->setYmax( y2 );
+    extent->setYMaximum( y2 );
     return 0;
   }
   else

@@ -483,8 +483,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   // The affine transform reduces to these values at the
   // top-left corner of the raster
   mLayerExtent.setXMinimum( mGeoTransform[0] );
-  mLayerExtent.setYmax( mGeoTransform[3] );
-  mLayerExtent.setYmin( myYMin );
+  mLayerExtent.setYMaximum( mGeoTransform[3] );
+  mLayerExtent.setYMinimum( myYMin );
 
   //
   // Set up the x and y dimensions of this raster layer
@@ -4864,8 +4864,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           // store the extent
           mLayerExtent.setXMaximum( mbr.xMax() );
           mLayerExtent.setXMinimum( mbr.xMin() );
-          mLayerExtent.setYmax( mbr.yMax() );
-          mLayerExtent.setYmin( mbr.yMin() );
+          mLayerExtent.setYMaximum( mbr.yMax() );
+          mLayerExtent.setYMinimum( mbr.yMin() );
 
           // upper case the first letter of the layer name
           QgsDebugMsg( "mLayerName: " + name() );

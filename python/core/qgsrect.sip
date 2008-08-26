@@ -31,9 +31,9 @@ class QgsRect
     //! Set the maximum x value
     void setXMaximum(double x);
     //! Set the maximum y value
-    void setYmin(double y);
+    void setYMinimum(double y);
     //! Set the maximum y value
-    void setYmax(double y);
+    void setYMaximum(double y);
     //! Set a rectangle so that min corner is at max
     // and max corner is at min. It is NOT normalized.
     void setMinimal();

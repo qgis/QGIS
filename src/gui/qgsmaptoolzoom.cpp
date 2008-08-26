@@ -85,9 +85,9 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
 
     QgsRect r;
     r.setXMinimum( ll.x() );
-    r.setYmin( ll.y() );
+    r.setYMinimum( ll.y() );
     r.setXMaximum( ur.x() );
-    r.setYmax( ur.y() );
+    r.setYMaximum( ur.y() );
     r.normalize();
 
     // prevent zooming to an empty extent

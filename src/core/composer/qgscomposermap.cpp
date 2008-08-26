@@ -263,8 +263,8 @@ void QgsComposerMap::moveContent( double dx, double dy )
       
       mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
       mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
-      mExtent.setYmin( mExtent.yMin() + yMoveMapCoord );
-      mExtent.setYmax( mExtent.yMax() + yMoveMapCoord );
+      mExtent.setYMinimum( mExtent.yMin() + yMoveMapCoord );
+      mExtent.setYMaximum( mExtent.yMax() + yMoveMapCoord );
       emit extentChanged();
       cache();
       update();

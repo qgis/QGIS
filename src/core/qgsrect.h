@@ -145,12 +145,12 @@ inline void QgsRect::setXMaximum( double x )
   xmax = x;
 }
 
-inline void QgsRect::setYmin( double y )
+inline void QgsRect::setYMinimum( double y )
 {
   ymin = y;
 }
 
-inline void QgsRect::setYmax( double y )
+inline void QgsRect::setYMaximum( double y )
 {
   ymax = y;
 }
