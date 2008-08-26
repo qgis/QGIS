@@ -108,7 +108,7 @@
    <item row="5" column="2" >
     <widget class="QToolButton" name="mRemoveAttributeButton" >
      <property name="toolTip" >
-      <string>Remove selected row</string>
+      <string>Delete selected attribute</string>
      </property>
      <property name="text" >
       <string>...</string>
