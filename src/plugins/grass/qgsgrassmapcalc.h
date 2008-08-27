@@ -378,7 +378,7 @@ class QgsGrassMapcalcObject: public Q3CanvasRectangle, public QgsGrassMapcalcIte
     bool tryConnect( QgsGrassMapcalcConnector *, int );
 
     // Get socket coordinates
-    QPoint socketPoint( int direction , int socket );
+    QPoint socketPoint( int direction, int socket );
 
     // Set socket's connector
     void setConnector( int direction, int socket,

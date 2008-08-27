@@ -215,9 +215,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString theURI , bool & theResultFlag );
+    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag );
 
-    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI , QString &qml );
+    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
 
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @return a QString with any status messages
      * @see also saveDefaultStyle ();
      */
-    virtual QString saveNamedStyle( const QString theURI , bool & theResultFlag );
+    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
 
   public slots:
 

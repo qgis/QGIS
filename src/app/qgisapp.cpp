@@ -3439,7 +3439,7 @@ void QgisApp::saveMapAsImage()
     myOutputFileNameQString += "." + myFilterMap[myFilterString];
   }
 
-  myQSettings.setValue( "/UI/lastSaveAsImageFilter" , myFilterString );
+  myQSettings.setValue( "/UI/lastSaveAsImageFilter", myFilterString );
   myQSettings.setValue( "/UI/lastSaveAsImageDir", myQFileDialog->directory().absolutePath() );
 
   if ( myOutputFileNameQString != "" )

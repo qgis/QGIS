@@ -22,7 +22,7 @@
 #include <QIcon>
 
 QgsLegendPropertyItem::QgsLegendPropertyItem( QTreeWidgetItem * theItem, QString theString )
-    : QgsLegendItem( theItem , theString )
+    : QgsLegendItem( theItem, theString )
 {
   mType = LEGEND_PROPERTY_ITEM;
   QIcon myIcon( QgsApplication::pkgDataPath() + QString( "/images/icons/property_item.png" ) );

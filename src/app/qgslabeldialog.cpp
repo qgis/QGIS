@@ -320,7 +320,7 @@ void QgsLabelDialog::apply()
   {
     myTypeInt = QgsLabelAttributes::MapUnits;
   }
-  myLabelAttributes->setSize( mFont.pointSize() , myTypeInt );
+  myLabelAttributes->setSize( mFont.pointSize(), myTypeInt );
   myLabelAttributes->setBold( mFont.bold() );
   myLabelAttributes->setItalic( mFont.italic() );
   myLabelAttributes->setUnderline( mFont.underline() );
@@ -334,7 +334,7 @@ void QgsLabelDialog::apply()
   {
     myTypeInt = QgsLabelAttributes::MapUnits;
   }
-  myLabelAttributes->setOffset( spinXOffset->value() , spinYOffset->value(), myTypeInt );
+  myLabelAttributes->setOffset( spinXOffset->value(), spinYOffset->value(), myTypeInt );
   myLabelAttributes->setAngle( spinAngle->value() );
 
   //the values here may seem a bit counterintuitive - basically everything

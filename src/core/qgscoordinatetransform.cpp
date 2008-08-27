@@ -284,7 +284,7 @@ QgsRect QgsCoordinateTransform::transform( const QgsRect theRect, TransformDirec
   QgsLogger::debug( "Ymax : ", theRect.yMax(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", y2, 1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
-  return QgsRect( x1, y1, x2 , y2 );
+  return QgsRect( x1, y1, x2, y2 );
 }
 
 void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
@@ -450,24 +450,24 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   int projResult;
   if ( direction == INVERSE )
   {
-    /*
-    QgsDebugMsg("!!!! INVERSE PROJ4 TRANSFORM !!!!");
-    QgsDebugMsg(QString("     numPoint: %1").arg(numPoints));
-    QgsDebugMsg(QString("     x       : %1").arg(x));
-    QgsDebugMsg(QString("     y       : %1").arg(y));
-    */
-    projResult = pj_transform( mDestinationProjection, mSourceProjection , numPoints, 0, x, y, z );
+#if 0
+    QgsDebugMsg( "!!!! INVERSE PROJ4 TRANSFORM !!!!" );
+    QgsDebugMsg( QString( "     numPoint: %1" ).arg( numPoints ) );
+    QgsDebugMsg( QString( "     x       : %1" ).arg( x ) );
+    QgsDebugMsg( QString( "     y       : %1" ).arg( y ) );
+#endif
+    projResult = pj_transform( mDestinationProjection, mSourceProjection, numPoints, 0, x, y, z );
     dir = "inverse";
   }
   else
   {
-    /*
-    QgsDebugMsg("!!!! FORWARD PROJ4 TRANSFORM !!!!");
-    QgsDebugMsg(QString("     numPoint: %1").arg(numPoints));
-    QgsDebugMsg(QString("     x       : %1").arg(x));
-    QgsDebugMsg(QString("     y       : %1").arg(y));
-    QgsDebugMsg(QString("     z       : %1").arg(z));
-    */
+#if 0
+    QgsDebugMsg( "!!!! FORWARD PROJ4 TRANSFORM !!!!" );
+    QgsDebugMsg( QString( "     numPoint: %1" ).arg( numPoints ) );
+    QgsDebugMsg( QString( "     x       : %1" ).arg( x ) );
+    QgsDebugMsg( QString( "     y       : %1" ).arg( y ) );
+    QgsDebugMsg( QString( "     z       : %1" ).arg( z ) );
+#endif
     assert( mSourceProjection != 0 );
     assert( mDestinationProjection != 0 );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );

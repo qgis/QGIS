@@ -37,18 +37,13 @@
 QgsSingleSymbolDialog::QgsSingleSymbolDialog(): QDialog(), mVectorLayer( 0 )
 {
   setupUi( this );
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsSingleSymbolDialog called WITHOUT a layer" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disabled ): QDialog(), mVectorLayer( layer )
 {
   setupUi( this );
-
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsSingleSymbolDialog called WITH a layer" );
-#endif
+  QgsDebugMsg( "entered." );
 
   //
   //set point symbol list
@@ -110,7 +105,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   }
   else
   {
-    qWarning( "Warning, data provider is null in QgsSingleSymbolDialog::QgsSingleSymbolDialog(...)" );
+    QgsDebugMsg( "Warning, data provider is null" );
     return;
   }
   //
@@ -173,8 +168,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
     }
     else
     {
-      qWarning( "Warning, layer is a null pointer in "
-                "QgsSingleSymbolDialog::QgsSingleSymbolDialog(QgsVectorLayer)" );
+      QgsDebugMsg( "Warning, layer is a null pointer" );
     }
   }
 
@@ -183,8 +177,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
   connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
-  connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem * , QListWidgetItem * ) ),
-           this, SLOT( symbolChanged( QListWidgetItem * , QListWidgetItem * ) ) );
+  connect( lstSymbols, SIGNAL( currentItemChanged( QListWidgetItem *, QListWidgetItem * ) ),
+           this, SLOT( symbolChanged( QListWidgetItem *, QListWidgetItem * ) ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mRotationClassificationComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
            this, SLOT( resendSettingsChanged() ) );
@@ -203,9 +197,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
 
 QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
 {
-#ifdef QGISDEBUG
-  qWarning( "destructor QgsSingleSymbolDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 void QgsSingleSymbolDialog::selectOutlineColor()
@@ -508,9 +500,8 @@ void QgsSingleSymbolDialog::setFillColor( QColor& c )
 
 void QgsSingleSymbolDialog::setFillStyle( Qt::BrushStyle fstyle )
 {
-#ifdef QGISDEBUG
-  qWarning(( "Setting fill style: " + QgsSymbologyUtils::brushStyle2QString( fstyle ) ).toLocal8Bit().data() );
-#endif
+  QgsDebugMsg( QString( "Setting fill style: %1" ).arg( QgsSymbologyUtils::brushStyle2QString( fstyle ) ) );
+
   QString myFillStyle =  QgsSymbologyUtils::brushStyle2QString( fstyle );
   for ( int i = 0; i < cboFillStyle->count(); ++i )
   {
@@ -587,7 +578,7 @@ void QgsSingleSymbolDialog::fillStyleChanged( int theIndex )
   //if the new style is texture we need to enable the texture
   //selection button, otherwise disable it
   QString myFillStyle =
-    cboFillStyle->itemData( theIndex , Qt::UserRole ).toString();
+    cboFillStyle->itemData( theIndex, Qt::UserRole ).toString();
   if ( "TexturePattern" == myFillStyle )
   {
     toolSelectTexture->setEnabled( true );

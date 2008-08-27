@@ -41,10 +41,11 @@ void MapLayerTest::initGui()
   menu = (( Q3MainWindow * )qgisApp )->menuBar();
 
   menuId = menu->insertItem( "&PluginMenu", mapLayerPluginMenu );
-  //QAction *zoomPreviousAction = new QAction( "Zoom Previous",QIconSet(icon_matrix), "&Zoom Previous", CTRL+Key_S, qgisMainWindow, "zoomFull" );
 
-  //   connect( zoomPreviousAction, SIGNAL( triggered() ) , this, SLOT( zoomPrevious() ) );
-
+#if 0
+  QAction *zoomPreviousAction = new QAction( "Zoom Previous", QIconSet( icon_matrix ), "&Zoom Previous", CTRL + Key_S, qgisMainWindow, "zoomFull" );
+  connect( zoomPreviousAction, SIGNAL( triggered() ), this, SLOT( zoomPrevious() ) );
+#endif
 }
 void MapLayerTest::unload()
 {

@@ -99,7 +99,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools,
 
   QGridLayout *layout = new QGridLayout( mTextFrame, 1, 1 );
   mText = new QgsGrassShellText( this, mTextFrame );
-  layout->addWidget( mText, 0 , 0 );
+  layout->addWidget( mText, 0, 0 );
   mText->show();
 
   connect( mCloseButton, SIGNAL( clicked() ), this, SLOT( closeShell() ) );

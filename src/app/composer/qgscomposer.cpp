@@ -291,10 +291,10 @@ void QgsComposer::on_mActionZoomOut_activated( void )
 
 void QgsComposer::on_mActionRefreshView_activated( void )
 {
-  if(mComposition)
-    {
-      mComposition->update();
-    }
+  if ( mComposition )
+  {
+    mComposition->update();
+  }
 }
 
 void QgsComposer::on_mActionPrint_activated( void )
@@ -821,7 +821,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
 
-  myQSettings.writeEntry( "/UI/lastSaveAsImageFormat" , myFilterMap[myFilterString] );
+  myQSettings.writeEntry( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
   myQSettings.writeEntry( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
 
   if ( myOutputFileNameQString == "" ) return;

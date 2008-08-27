@@ -187,7 +187,7 @@ inline double QgsRect::height() const
 
 inline QgsPoint QgsRect::center() const
 {
-  return QgsPoint( xmin + width() / 2 ,  ymin + height() / 2 );
+  return QgsPoint( xmin + width() / 2,  ymin + height() / 2 );
 }
 inline std::ostream& operator << ( std::ostream& os, const QgsRect &r )
 {

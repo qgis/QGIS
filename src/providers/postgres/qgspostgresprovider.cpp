@@ -2245,17 +2245,17 @@ void QgsPostgresProvider::calculateExtents()
                  "xmin(extent(%1)) as xmin,"
                  "ymax(extent(%1)) as ymax,"
                  "ymin(extent(%1)) as ymin"
-                 " from %2" ).arg( quotedIdentifier( geometryColumn ).arg( mSchemaTableName );
+                 " from %2" ).arg( quotedIdentifier( geometryColumn ) ).arg( mSchemaTableName );
 #endif
 
-                                   QgsDebugMsg( "Getting approximate extent using: '" + sql + "'" );
+  QgsDebugMsg( "Getting approximate extent using: '" + sql + "'" );
 
-                                   Result result = connectionRO->PQexec( sql );
+  Result result = connectionRO->PQexec( sql );
 
-                                   // TODO: Guard against the result having no rows
-                                   for ( int i = 0; i < PQntuples( result ); i++ )
-{
-  QString box3d = PQgetvalue( result, i, 0 );
+  // TODO: Guard against the result having no rows
+  for ( int i = 0; i < PQntuples( result ); i++ )
+  {
+    QString box3d = PQgetvalue( result, i, 0 );
 
     if ( 0 == i )
     {

@@ -19,7 +19,7 @@ public:
     {
       NoCapabilities =              0,
       Identify =                    1
-//      Capability2 =           1 <<  1,    , etc
+//      Capability2 =           1 <<  1, etc
     };
 
 

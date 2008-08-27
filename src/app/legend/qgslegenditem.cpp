@@ -23,7 +23,7 @@
 #include "qgslogger.h"
 
 
-QgsLegendItem::QgsLegendItem( QTreeWidgetItem * theItem , QString theName )
+QgsLegendItem::QgsLegendItem( QTreeWidgetItem * theItem, QString theName )
     : QTreeWidgetItem( theItem )
 {
   setText( 0, theName );

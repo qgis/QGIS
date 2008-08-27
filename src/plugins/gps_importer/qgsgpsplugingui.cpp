@@ -149,7 +149,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
   QString myFileNameQString =
     QFileDialog::getSaveFileName( this, //parent dialog
                                   tr( "Choose a file name to save under" ),
-                                  "." , //initial dir
+                                  ".", //initial dir
                                   tr( "GPS eXchange format (*.gpx)" ) );
   if ( !myFileNameQString.isEmpty() )
     leDLOutput->setText( myFileNameQString );

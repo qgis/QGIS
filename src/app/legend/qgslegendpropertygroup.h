@@ -30,7 +30,7 @@ container for layer properties  (e.g. projection, scale dependent view)
 class QgsLegendPropertyGroup : public QgsLegendItem
 {
   public:
-    QgsLegendPropertyGroup( QTreeWidgetItem * , QString );
+    QgsLegendPropertyGroup( QTreeWidgetItem *, QString );
 
     ~QgsLegendPropertyGroup();
 

@@ -45,8 +45,8 @@ class QgsLegendLayer : public QgsLegendItem
     Q_OBJECT
 
   public:
-    QgsLegendLayer( QTreeWidgetItem * , QString );
-    QgsLegendLayer( QTreeWidget* , QString );
+    QgsLegendLayer( QTreeWidgetItem *, QString );
+    QgsLegendLayer( QTreeWidget*, QString );
     QgsLegendLayer( QString name );
     ~QgsLegendLayer();
     /**Sets an icon characterising the type of layer(s) it contains.

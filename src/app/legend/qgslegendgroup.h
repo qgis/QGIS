@@ -33,7 +33,7 @@ This is a specialised version of QLegendItem that specifies that the items below
 class QgsLegendGroup : public QgsLegendItem
 {
   public:
-    QgsLegendGroup( QTreeWidgetItem * , QString );
+    QgsLegendGroup( QTreeWidgetItem *, QString );
     QgsLegendGroup( QTreeWidget*, QString );
     QgsLegendGroup( QString name );
     ~QgsLegendGroup();

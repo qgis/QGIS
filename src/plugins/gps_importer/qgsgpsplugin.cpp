@@ -157,7 +157,9 @@ void QgsGPSPlugin::createGPX()
 {
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->getMainWindow(),
-                                  tr( "Save new GPX file as..." ), "." , tr( "GPS eXchange file (*.gpx)" ) );
+                                  tr( "Save new GPX file as..." ),
+                                  ".",
+                                  tr( "GPS eXchange file (*.gpx)" ) );
   if ( !fileName.isEmpty() )
   {
     QFileInfo fileInfo( fileName );

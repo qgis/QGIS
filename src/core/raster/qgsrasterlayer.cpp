@@ -1357,7 +1357,7 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
   }
 
   QgsDebugMsg( "Starting main render loop" );
-  // print each point in myGdalScanData with equal parts R, G ,B o make it show as gray
+  // print each point in myGdalScanData with equal parts R, G, B or make it show as gray
   double myGrayValue = 0.0;
   int myGrayVal = 0;
   int myAlphaValue = 0;
@@ -4686,8 +4686,8 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
      */
     double myerval = ( myRasterBandStats.maxVal - myRasterBandStats.minVal ) / theBinCount;
     GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minVal - 0.1*myerval,
-                            myRasterBandStats.maxVal + 0.1*myerval, theBinCount, myHistogramArray
-                            , theIgnoreOutOfRangeFlag , theHistogramEstimatedFlag , progressCallback,
+                            myRasterBandStats.maxVal + 0.1*myerval, theBinCount, myHistogramArray,
+                            theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
                             this ); //this is the arg for our custome gdal progress callback
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
