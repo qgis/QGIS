@@ -16,6 +16,9 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include <algorithm>
+#include <cmath>
+
 #include "qgsgraduatedsymboldialog.h"
 #include "qgsfield.h"
 #include "qgsgraduatedsymbolrenderer.h"
@@ -23,16 +26,12 @@
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include <algorithm>
-#include <cmath>
-
+#include "qgslogger.h"
 
 QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QDialog(), mVectorLayer( layer ), sydialog( layer )
 {
   setupUi( this );
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsGraduatedSymbolDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 
   setOrientation( Qt::Vertical );
 
@@ -57,7 +56,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
   }
   else
   {
-    qWarning( "Warning, data provider is null in QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(...)" );
+    QgsDebugMsg( "Warning, data provider is null" );
     return;
   }
 
@@ -120,16 +119,12 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
 QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog(): QDialog(), mVectorLayer( 0 ), sydialog( 0 )
 {
   setupUi( this );
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsGraduatedSymbolDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 QgsGraduatedSymbolDialog::~QgsGraduatedSymbolDialog()
 {
-#ifdef QGISDEBUG
-  qWarning( "destructor QgsGraduatedSymbolDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 void QgsGraduatedSymbolDialog::adjustNumberOfClasses()
@@ -307,7 +302,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     std::list<double>::const_iterator it;
     std::list<double>::const_iterator last_it = quantileBorders.end();
     std::list<QgsSymbol*>::const_iterator symbol_it = symbolList.begin();
-    for ( it = quantileBorders.begin(); it != quantileBorders.end(); ++it )
+    for ( it = quantileBorders.begin(); symbol_it != symbolList.end() && it != quantileBorders.end(); ++it )
     {
       if ( last_it != quantileBorders.end() )
       {
@@ -440,17 +435,16 @@ void QgsGraduatedSymbolDialog::deleteCurrentClass()
   int currentIndex = mClassListWidget->currentRow();
   mEntries.erase( classValue );
   delete( mClassListWidget->takeItem( currentIndex ) );
-  qWarning( "numRows: " );
-  qWarning( QString::number( mClassListWidget->count() ).toUtf8() );
+  QgsDebugMsg( QString("numRows: %1").arg( mClassListWidget->count() ) );
   //
   if ( mClassListWidget->count() < ( currentIndex + 1 ) )
   {
-    qWarning( "selecting numRows - 1" );
+    QgsDebugMsg( "selecting numRows - 1" );
     mClassListWidget->setCurrentRow( mClassListWidget->count() - 1 );
   }
   else
   {
-    qWarning( "selecting currentIndex" );
+    QgsDebugMsg( "selecting currentIndex" );
     mClassListWidget->setCurrentRow( currentIndex );
   }
 }
