@@ -1134,6 +1134,9 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
       f.changeAttribute( it.key(), it.value() );
   }
+
+  for ( QgsAttributeList::const_iterator it = mFetchNullAttributes.begin(); it != mFetchNullAttributes.end(); it++ )
+    f.changeAttribute( *it, QVariant( QString::null ) );
 }
 
 void QgsVectorLayer::updateFeatureGeometry( QgsFeature &f )
@@ -1165,7 +1168,27 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRect rect, bool fet
   //look in the normal features of the provider
   if ( mFetchAttributes.size() > 0 )
   {
-    mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
+    mFetchNullAttributes.clear();
+
+    if ( mEditable )
+    {
+      // fetch only available field from provider
+      QgsAttributeList provAttributes;
+      for ( QgsAttributeList::iterator it = mFetchAttributes.begin(); it != mFetchAttributes.end(); it++ )
+      {
+        if ( !mUpdatedFields.contains( *it ) )
+          continue;
+
+        if ( !mDeletedAttributeIds.contains( *it ) && !mAddedAttributeIds.contains( *it ) )
+          provAttributes << *it;
+        else
+          mFetchNullAttributes << *it;
+      }
+
+      mDataProvider->select( provAttributes, rect, fetchGeometries, useIntersect );
+    }
+    else
+      mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
   }
   else
   {
@@ -1957,6 +1980,7 @@ bool QgsVectorLayer::startEditing()
   mEditable = true;
 
   mUpdatedFields = mDataProvider->fields();
+
   mMaxUpdatedIndex = -1;
 
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
@@ -2049,7 +2073,7 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
           mValueMaps[ name ].insert( value.attribute( "key" ), value.attribute( "value" ) );
         }
       }
-      else if ( editType == Range )
+      else if ( editType == EditRange || editType == SliderRange )
       {
         QVariant min = editTypeElement.attribute( "min" );
         QVariant max = editTypeElement.attribute( "max" );
@@ -2295,7 +2319,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
           }
         }
       }
-      else if ( it.value() == Range )
+      else if ( it.value() == EditRange || it.value() == SliderRange )
       {
         if ( mRanges.contains( it.key() ) )
         {
@@ -3265,8 +3289,6 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 
         if ( wkbType == QGis::WKBMultiPoint25D ) // ignore Z value
           ptr += sizeof( double );
-
-        QgsDebugMsg( QString( "...WKBMultiPoint (%1, %2)" ).arg( x ).arg( y ) );
 
         transformPoint( x, y, theMapToPixelTransform, ct );
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
