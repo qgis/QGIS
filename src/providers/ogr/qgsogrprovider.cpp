@@ -62,7 +62,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     ogrLayer( 0 ),
     ogrDriver( 0 )
 {
-  OGRRegisterAll();
+  QgsApplication::registerOgrDrivers();
 
   // set the selection rectangle pointer to 0
   mSelectionRectangle = 0;
@@ -434,7 +434,7 @@ void QgsOgrProvider::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, in
   {
     switch ( mAttributeFields[attindex].type() )
     {
-      case QVariant::String: value = QVariant( mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet,attindex ) ) ); break;
+      case QVariant::String: value = QVariant( mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
       case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
       case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
         //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
@@ -924,7 +924,7 @@ QGISEXTERN QString fileVectorFilters()
   }
 
   // register ogr plugins
-  OGRRegisterAll();
+  QgsApplication::registerOgrDrivers();
 
   // first get the GDAL driver manager
 
@@ -1117,7 +1117,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        const std::list<std::pair<QString, QString> >& attributes )
 {
   OGRSFDriverH driver;
-  OGRRegisterAll();
+  QgsApplication::registerOgrDrivers();
   driver = OGRGetDriverByName( format.toAscii() );
   if ( driver == NULL )
   {

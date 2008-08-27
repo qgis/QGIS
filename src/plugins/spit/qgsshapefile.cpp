@@ -30,6 +30,7 @@
 #include <QTextCodec>
 #include <QFileInfo>
 
+#include "qgsapplication.h"
 #include "qgsdbfbase.h"
 #include "cpl_error.h"
 #include "qgsshapefile.h"
@@ -51,7 +52,7 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
 {
   fileName = name;
   features = 0;
-  OGRRegisterAll();
+  QgsApplication::registerOgrDrivers();
   ogrDataSource = OGROpen( QFile::encodeName( fileName ).constData(), FALSE, NULL );
   if ( ogrDataSource != NULL )
   {
@@ -206,7 +207,7 @@ QString QgsShapeFile::getFeatureClass()
         dbf.read(( char * )&fda, sizeof( fda ) );
         switch ( fda.field_type )
         {
-          case 'N': if (( int )fda.field_decimal>0 )
+          case 'N': if (( int )fda.field_decimal > 0 )
               column_types.push_back( "float" );
             else
               column_types.push_back( "int" );

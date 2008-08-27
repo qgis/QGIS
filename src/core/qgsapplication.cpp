@@ -32,6 +32,8 @@
 #include <netinet/in.h>
 #endif
 
+#include <ogr_api.h>
+
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
@@ -314,4 +316,10 @@ QString QgsApplication::reportStyleSheet()
   return myStyle;
 }
 
-
+void QgsApplication::registerOgrDrivers()
+{
+  if ( 0 >= OGRGetDriverCount() )
+  {
+    OGRRegisterAll();
+  }
+}
