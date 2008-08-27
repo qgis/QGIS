@@ -700,7 +700,31 @@ void QgsAttributeTable::attributeValueChanged( int fid, int idx, const QVariant 
   if ( !mAttrIdxMap.contains( idx ) )
     return;
 
-  item( rowIdMap[fid], mAttrIdxMap[idx] )->setText( value.toString() );
+  QTableWidgetItem *twi = horizontalHeaderItem( mAttrIdxMap[ idx ] );
+  if ( !twi )
+  {
+    QgsDebugMsg( "header item not found." );
+    return;
+  }
+
+  int type = twi->data( AttributeType ).toInt();
+  bool isNum = ( type == QVariant::Double || type == QVariant::Int );
+
+  QString v;
+  // get the field values
+  if ( value.isNull() )
+  {
+    if ( isNum )
+      v = "";
+    else
+      v = "NULL";
+  }
+  else
+  {
+    v = value.toString();
+  }
+
+  item( rowIdMap[fid], mAttrIdxMap[idx] )->setText( v );
 }
 
 void QgsAttributeTable::featureDeleted( int fid )
