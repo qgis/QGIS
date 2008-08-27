@@ -134,7 +134,7 @@ class CORE_EXPORT QgsLabel
                       int dx, int dy,
                       double xoffset, double yoffset,
                       double ang,
-                      int width, int height, int alignment );
+                      int width, int height, int alignment, double sizeScale=1.0 );
 
     /** Get label point for simple feature in map units */
     void labelPoint( std::vector<QgsPoint>&, QgsFeature &feature );

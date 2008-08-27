@@ -150,12 +150,15 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
   {
     size *= scale;
   }
-  else
+  else //point units
   {
-    size *= sizeScale;
+    double sizeMM = size * 0.3527;
+    size = sizeMM * sizeScale;
   }
   if ( size > 0.0 )
-    font.setPointSizeF( size );
+    {
+      font.setPixelSize(size);
+    }
 
   value = fieldValue( Color, feature );
   if ( value.isEmpty() )
@@ -237,6 +240,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     width = fm.width( text );
     height = fm.height();
   }
+
   int dx = 0;
   int dy = 0;
 
@@ -313,12 +317,17 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     yoffset = value.toDouble();
   }
 
-  // recalc offset to points
+  // recalc offset to pixels
   if ( mLabelAttributes->offsetType() == QgsLabelAttributes::MapUnits )
   {
     xoffset *= scale;
     yoffset *= scale;
   }
+  else
+    {
+      xoffset = xoffset * 0.3527 * sizeScale;
+      yoffset = yoffset * 0.3527 * sizeScale;
+    }
 
   // Angle
   double ang;
@@ -340,7 +349,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
   {
     renderLabel( painter, overridePoint, coordinateTransform,
                  transform, text, font, pen, dx, dy,
-                 xoffset, yoffset, ang, width, height, alignment );
+                 xoffset, yoffset, ang, width, height, alignment, sizeScale );
   }
   else
   {
@@ -350,7 +359,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     {
       renderLabel( painter, points[i], coordinateTransform,
                    transform, text, font, pen, dx, dy,
-                   xoffset, yoffset, ang, width, height, alignment );
+                   xoffset, yoffset, ang, width, height, alignment, sizeScale );
     }
   }
 }
@@ -362,7 +371,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
                             int dx, int dy,
                             double xoffset, double yoffset,
                             double ang,
-                            int width, int height, int alignment )
+                            int width, int height, int alignment, double sizeScale )
 {
   // Convert point to projected units
   if ( coordinateTransform )
@@ -399,23 +408,36 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   //
   if ( mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled() )
   {
-    int myBufferSize = static_cast<int>( mLabelAttributes->bufferSize() );
+    int myBufferSize = static_cast<int>( mLabelAttributes->bufferSize() * 0.3527 * sizeScale);
+    QPen bufferPen;
     if ( mLabelAttributes->bufferColorIsSet() )
     {
-      painter->setPen( mLabelAttributes->bufferColor() );
+      bufferPen.setColor( mLabelAttributes->bufferColor());
     }
     else //default to a white buffer
     {
-      painter->setPen( Qt::white );
+      bufferPen.setColor( Qt::white );
     }
-    for ( int i = dx - myBufferSize; i <= dx + myBufferSize; i++ )
+    painter->setPen(bufferPen);
+
+    double bufferStepSize; //hack to distinguish pixel devices from logical devices
+    if((sizeScale - 1) > 1.5)
+      {
+	bufferStepSize = 1;
+      }
+    else //draw more dense in case of logical devices
+      {
+	bufferStepSize = 0.25;
+      }
+
+    for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i+= 0.25)
     {
-      for ( int j = dy - myBufferSize; j <= dy + myBufferSize; j++ )
+      for ( double j = dy - myBufferSize; j <= dy + myBufferSize; j+= 0.25 )
       {
         if ( mLabelAttributes->multilineEnabled() )
-          painter->drawText( i , j - height, width, height, alignment, text );
+          painter->drawText( QRectF(i , j - height, width, height), alignment, text );
         else
-          painter->drawText( i , j, text );
+          painter->drawText( QPointF(i , j), text );
       }
     }
   }
