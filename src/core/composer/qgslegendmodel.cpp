@@ -230,6 +230,7 @@ void QgsLegendModel::removeAllSymbols()
   mSymbols.clear();
 }
 
+#if 0
 void QgsLegendModel::updateLayerEntries( const QStringList& newLayerIds )
 {
   if ( !invisibleRootItem() )
@@ -275,6 +276,57 @@ void QgsLegendModel::updateLayerEntries( const QStringList& newLayerIds )
 
 
   mLayerIds = newLayerIds;
+}
+#endif //0
+
+void QgsLegendModel::updateLayer(const QString& layerId)
+{
+  //find layer item
+  QStandardItem* layerItem = 0;
+  QStandardItem* currentLayerItem = 0;
+  
+  int numRootItems = rowCount();
+  for ( int i = 0; i < numRootItems ; ++i )
+    {
+    currentLayerItem = item( i );
+    if ( !currentLayerItem )
+    {
+      continue;
+    }
+
+    QString currentId = currentLayerItem->data().toString();
+    if ( currentId == layerId )
+      {
+	layerItem = currentLayerItem;
+	break;
+      }
+    }
+
+  if(layerItem)
+    {
+      QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer(layerId);
+      if(mapLayer)
+	{
+	  //delete all the entries under layer item
+	  for(int i = rowCount() - 1; i >= 0; --i)
+	    {
+	      layerItem->removeRow(i);
+	    }
+      
+	  //and add the new ones...
+	  switch(mapLayer->type())
+	    {
+	    case QgsMapLayer::VECTOR:
+	      addVectorLayerItems(layerItem, mapLayer);
+	      break;
+	    case QgsMapLayer::RASTER:
+	      addRasterLayerItem(layerItem, mapLayer);
+	      break;
+	    default:
+	      break;
+	    }
+	}
+    }
 }
 
 void QgsLegendModel::removeLayer( const QString& layerId )
