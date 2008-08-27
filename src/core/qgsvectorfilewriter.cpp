@@ -17,6 +17,7 @@
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
@@ -48,7 +49,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
   // find driver in OGR
   OGRSFDriverH poDriver;
-  OGRRegisterAll();
+  QgsApplication::registerOgrDrivers();
   poDriver = OGRGetDriverByName( driverName.toLocal8Bit().data() );
 
   if ( poDriver == NULL )

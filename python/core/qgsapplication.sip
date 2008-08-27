@@ -191,5 +191,13 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * application instance useful for debugging mainly.*/
     static QString showSettings();
 
+    /** Register OGR drivers ensuring this only happens once.
+     * This is a workaround for an issue with older gdal versions that
+     * caused duplicate driver name entries to appear in the list 
+     * of registered drivers when QgsApplication::registerOgrDrivers was called multiple 
+     * times.
+     */
+    static void registerOgrDrivers();
+
 };
 
