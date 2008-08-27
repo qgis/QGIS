@@ -23,9 +23,21 @@
 
 #include <QSet>
 
-/**
- * \class QgsGenericProjectionSelector
- * \brief A generic dialog to prompt the user for a Coordinate Reference System
+/** 
+ * \ingroup gui
+ * A generic dialog to prompt the user for a Coordinate Reference System.
+ *
+ * Typically you will use this when you want to prompt the user for 
+ * a coordinate system identifier e.g. from a plugin you might do this 
+ * to get an epsg code:
+ * \code
+ * QgsGenericProjectionSelector mySelector( mQGisIface->getMainWindow() );
+ * mySelector.setSelectedEpsg( mEpsgId );
+ * if ( mySelector.exec() )
+ * {
+ *   mEpsgId = mySelector.getSelectedEpsg();
+ * }
+ * \endcode
  */
 
 class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsGenericProjectionSelectorBase
