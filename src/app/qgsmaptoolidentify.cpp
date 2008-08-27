@@ -14,7 +14,6 @@
  ***************************************************************************/
 /* $Id$ */
 
-//#include "qgsattributedialog.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -491,7 +490,7 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
     {
       if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
-        layer->changeAttributeValue( f.featureId(), it.key(), it.value().toString() );
+        layer->changeAttributeValue( f.featureId(), it.key(), it.value() );
     }
   }
   delete ad;
