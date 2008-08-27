@@ -98,10 +98,10 @@ void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
     return;
   }
 
-  if(mComposerMap->isDrawing())
-    {
-      return;
-    }
+  if ( mComposerMap->isDrawing() )
+  {
+    return;
+  }
 
   QString comboText = mPreviewModeComboBox->currentText();
   if ( comboText == tr( "Cache" ) )
@@ -205,7 +205,7 @@ void QgsComposerMapWidget::updateGuiElements()
     QRectF composerMapRect = mComposerMap->rect();
     mWidthLineEdit->setText( QString::number( composerMapRect.width() ) );
     mHeightLineEdit->setText( QString::number( composerMapRect.height() ) );
-    mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0) );
+    mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0 ) );
 
     //preview mode
     QgsComposerMap::PreviewMode previewMode = mComposerMap->previewMode();
