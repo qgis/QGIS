@@ -32,3 +32,4 @@ usr/lib/qgis/libwmsprovider.so
 usr/lib/qgis/libmemoryprovider.so
 usr/lib/qgis/libdxf2shpconverterplugin.so
 usr/lib/qgis/libinterpolationplugin.so 
+usr/lib/qgis/libogrconverterplugin.so
