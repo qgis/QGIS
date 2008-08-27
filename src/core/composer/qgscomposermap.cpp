@@ -252,23 +252,23 @@ void QgsComposerMap::resize( double dx, double dy )
 
 void QgsComposerMap::moveContent( double dx, double dy )
 {
-  if(!mDrawing)
-    {
-      QRectF itemRect = rect();
-      double xRatio = dx / itemRect.width();
-      double yRatio = dy / itemRect.height();
-      
-      double xMoveMapCoord = mExtent.width() * xRatio;
-      double yMoveMapCoord = -( mExtent.height() * yRatio );
-      
-      mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
-      mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
-      mExtent.setYMinimum( mExtent.yMin() + yMoveMapCoord );
-      mExtent.setYMaximum( mExtent.yMax() + yMoveMapCoord );
-      emit extentChanged();
-      cache();
-      update();
-    }
+  if ( !mDrawing )
+  {
+    QRectF itemRect = rect();
+    double xRatio = dx / itemRect.width();
+    double yRatio = dy / itemRect.height();
+
+    double xMoveMapCoord = mExtent.width() * xRatio;
+    double yMoveMapCoord = -( mExtent.height() * yRatio );
+
+    mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
+    mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
+    mExtent.setYMinimum( mExtent.yMin() + yMoveMapCoord );
+    mExtent.setYMaximum( mExtent.yMax() + yMoveMapCoord );
+    emit extentChanged();
+    cache();
+    update();
+  }
 }
 
 void QgsComposerMap::setSceneRect( const QRectF& rectangle )

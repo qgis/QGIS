@@ -105,7 +105,7 @@ int DualEdgeTriangulation::addPoint( Point3D* p )
 {
   if ( p )
   {
-// QgsDebugMsg( QString("inserting point %1,%2//%3//").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()));
+// QgsDebugMsg( QString("inserting point %1,%2//%3//%4").arg(mPointVector.count()).arg(p->getX()).arg(p->getY()).arg(p->getZ()));
 
     //first update the bounding box
     if ( mPointVector.count() == 0 )//update bounding box when the first point is inserted
