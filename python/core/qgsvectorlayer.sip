@@ -11,7 +11,8 @@ public:
     UniqueValuesEditable,
     ValueMap,
     Classification,
-    Range,
+    EditRange,
+    SliderRange
   };
    
   struct RangeData {

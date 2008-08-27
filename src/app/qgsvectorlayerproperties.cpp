@@ -166,7 +166,8 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
   cb->addItem( tr( "unique values (editable)" ), QgsVectorLayer::UniqueValuesEditable );
   cb->addItem( tr( "value map" ), QgsVectorLayer::ValueMap );
   cb->addItem( tr( "classification" ), QgsVectorLayer::Classification );
-  cb->addItem( tr( "range" ), QgsVectorLayer::Range );
+  cb->addItem( tr( "range (editable)" ), QgsVectorLayer::EditRange );
+  cb->addItem( tr( "range (slider)" ), QgsVectorLayer::SliderRange );
   cb->setSizeAdjustPolicy( QComboBox::AdjustToContentsOnFirstShow );
   cb->setCurrentIndex( layer->editType( idx ) );
 
@@ -188,7 +189,8 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
 
     tblAttributes->setItem( row, 7, new QTableWidgetItem( mapList.join( ";" ) ) );
   }
-  else if ( layer->editType( idx ) == QgsVectorLayer::Range )
+  else if ( layer->editType( idx ) == QgsVectorLayer::EditRange ||
+            layer->editType( idx ) == QgsVectorLayer::SliderRange )
   {
     tblAttributes->setItem(
       row, 7,
@@ -538,7 +540,8 @@ void QgsVectorLayerProperties::apply()
         }
       }
     }
-    else if ( editType == QgsVectorLayer::Range )
+    else if ( editType == QgsVectorLayer::EditRange ||
+              editType == QgsVectorLayer::SliderRange )
     {
       QStringList values = tblAttributes->item( i, 7 )->text().split( ";" );
 

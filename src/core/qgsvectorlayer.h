@@ -66,7 +66,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       UniqueValuesEditable,
       ValueMap,
       Classification,
-      Range
+      EditRange,
+      SliderRange
     };
 
     struct RangeData
@@ -341,7 +342,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void drawLabels( QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* cXf, const QgsCoordinateTransform* ct, double scale );
 
-    /** returns fields list which are not commited */
+    /** returns field list in the to-be-committed state */
     const QgsFieldMap &pendingFields();
 
     /** returns list of attributes */
@@ -608,6 +609,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mFetching;
     QgsRect mFetchRect;
     QgsAttributeList mFetchAttributes;
+    QgsAttributeList mFetchNullAttributes;
     bool mFetchGeometry;
 
     QSet<int> mFetchConsidered;

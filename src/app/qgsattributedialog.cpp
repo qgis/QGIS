@@ -32,6 +32,7 @@
 #include <QFrame>
 #include <QScrollArea>
 #include <QCompleter>
+#include <QSlider>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
@@ -45,7 +46,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   if ( mpFeature == NULL || vl->dataProvider() == NULL )
     return;
 
-  const QgsFieldMap &theFieldMap = vl->dataProvider()->fields();
+  const QgsFieldMap &theFieldMap = vl->pendingFields();
 
   if ( theFieldMap.isEmpty() ) return;
 
@@ -161,7 +162,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       }
       break;
 
-      case QgsVectorLayer::Range:
+      case QgsVectorLayer::SliderRange:
+      case QgsVectorLayer::EditRange:
       {
         if ( myFieldType == QVariant::Int )
         {
@@ -169,13 +171,26 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
           int max = vl->range( it.key() ).mMax.toInt();
           int step = vl->range( it.key() ).mStep.toInt();
 
-          QSpinBox *sb = new QSpinBox();
-          sb->setMinimum( min );
-          sb->setMaximum( max );
-          sb->setSingleStep( step );
-          sb->setValue( it.value().toInt() );
+          if ( editType == QgsVectorLayer::EditRange )
+          {
+            QSpinBox *sb = new QSpinBox();
 
-          myWidget = sb;
+            sb->setRange( min, max );
+            sb->setSingleStep( step );
+            sb->setValue( it.value().toInt() );
+
+            myWidget = sb;
+          }
+          else
+          {
+            QSlider *sl = new QSlider( Qt::Horizontal );
+
+            sl->setRange( min, max );
+            sl->setSingleStep( step );
+            sl->setValue( it.value().toInt() );
+
+            myWidget = sl;
+          }
           break;
         }
         else if ( myFieldType == QVariant::Double )
@@ -185,16 +200,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
           double step = vl->range( it.key() ).mStep.toDouble();
           QDoubleSpinBox *dsb = new QDoubleSpinBox();
 
-          dsb->setMinimum( min );
-          dsb->setMaximum( max );
+          dsb->setRange( min, max );
           dsb->setSingleStep( step );
           dsb->setValue( it.value().toDouble() );
 
           myWidget = dsb;
-
           break;
         }
-
       }
 
       // fall-through
@@ -292,11 +304,16 @@ void QgsAttributeDialog::accept()
       }
     }
 
-
     QSpinBox *sb = dynamic_cast<QSpinBox *>( mpWidgets.value( myIndex ) );
     if ( sb )
     {
       myFieldValue = QString::number( sb->value() );
+    }
+
+    QSlider *slider = dynamic_cast<QSlider *>( mpWidgets.value( myIndex ) );
+    if ( slider )
+    {
+      myFieldValue = QString::number( slider->value() );
     }
 
     QDoubleSpinBox *dsb = dynamic_cast<QDoubleSpinBox *>( mpWidgets.value( myIndex ) );
