@@ -1773,7 +1773,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
         continue;
       }
 
-      if ( !mRasterShader->generateShadedValue(myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }

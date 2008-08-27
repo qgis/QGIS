@@ -414,7 +414,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
           OGR_G_SetCoordinateDimension( geom, 2 );
         OGR_G_ExportToWkt( geom, &geo_temp );
         QString geometry( geo_temp );
-        CPLFree(geo_temp);
+        CPLFree( geo_temp );
 
         for ( uint n = 0; n < column_types.size(); n++ )
         {

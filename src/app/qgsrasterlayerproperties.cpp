@@ -135,7 +135,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   //setup custom colormap tab
   cboxColorInterpolation->addItem( tr( "Discrete" ) );
   cboxColorInterpolation->addItem( tr( "Linear" ) );
-  cboxColorInterpolation->addItem( tr( "Exact") );
+  cboxColorInterpolation->addItem( tr( "Exact" ) );
   cboxClassificationMode->addItem( tr( "Equal interval" ) );
   //cboxClassificationMode->addItem( tr( "Quantiles" ) );
 
@@ -294,7 +294,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
 
   pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
-  
+
   // Only do pyramids if dealing directly with GDAL.
   if ( mRasterLayerIsGdal )
   {
@@ -2587,10 +2587,12 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
       currentValue += intervalDiff;
     }
   }
-  //else if ( cboxClassificationMode->currentText() == tr( "Quantiles" ) )
-  //{
+#if 0
+  else if ( cboxClassificationMode->currentText() == tr( "Quantiles" ) )
+  {
     //todo
-  //}
+  }
+#endif
 
   //hard code color range from blue -> red for now. Allow choice of ramps in future
   int colorDiff = 0;
@@ -2677,7 +2679,7 @@ void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
       {
         myOutputStream << "EXACT\n";
       }
-      
+
       int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
       QTreeWidgetItem* myCurrentItem;
       QColor myColor;
@@ -2691,9 +2693,9 @@ void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
         myColor = myCurrentItem->background( 1 ).color();
         myOutputStream << myCurrentItem->text( 0 ).toDouble() << ",";
         myOutputStream << myColor.red() << "," << myColor.green() << "," << myColor.blue() << "," << myColor.alpha() << ",";
-        if(myCurrentItem->text(2) == "")
+        if ( myCurrentItem->text( 2 ) == "" )
         {
-          myOutputStream << "Color entry " << i+1 << "\n";
+          myOutputStream << "Color entry " << i + 1 << "\n";
         }
         else
         {
@@ -2721,11 +2723,11 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
   {
     //clear the current tree
     mColormapTreeWidget->clear();
- 
+
     QTextStream myInputStream( &myInputFile );
     QString myInputLine;
     QStringList myInputStringComponents;
-    
+
     //read through the input looking for valid data
     while ( !myInputStream.atEnd() )
     {
@@ -2735,16 +2737,16 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
       {
         if ( !myInputLine.simplified().startsWith( "#" ) )
         {
-          if(myInputLine.contains("INTERPOLATION", Qt::CaseInsensitive))
+          if ( myInputLine.contains( "INTERPOLATION", Qt::CaseInsensitive ) )
           {
-            myInputStringComponents = myInputLine.split(":");
-            if(myInputStringComponents.size() == 2)
+            myInputStringComponents = myInputLine.split( ":" );
+            if ( myInputStringComponents.size() == 2 )
             {
-              if(myInputStringComponents[1].trimmed().toUpper().compare ("INTERPOLATED", Qt::CaseInsensitive) == 0)
+              if ( myInputStringComponents[1].trimmed().toUpper().compare( "INTERPOLATED", Qt::CaseInsensitive ) == 0 )
               {
                 cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
               }
-              else if(myInputStringComponents[1].trimmed().toUpper().compare ("DISCRETE", Qt::CaseInsensitive) == 0)
+              else if ( myInputStringComponents[1].trimmed().toUpper().compare( "DISCRETE", Qt::CaseInsensitive ) == 0 )
               {
                 cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
               }
@@ -2761,12 +2763,12 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
           }
           else
           {
-            myInputStringComponents = myInputLine.split(",");
-            if(myInputStringComponents.size() == 6)
+            myInputStringComponents = myInputLine.split( "," );
+            if ( myInputStringComponents.size() == 6 )
             {
               QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
               newItem->setText( 0, myInputStringComponents[0] );
-              newItem->setBackground( 1, QBrush( QColor::fromRgb(myInputStringComponents[1].toInt(), myInputStringComponents[2].toInt(), myInputStringComponents[3].toInt(), myInputStringComponents[4].toInt()) ) );
+              newItem->setBackground( 1, QBrush( QColor::fromRgb( myInputStringComponents[1].toInt(), myInputStringComponents[2].toInt(), myInputStringComponents[3].toInt(), myInputStringComponents[4].toInt() ) ) );
               newItem->setText( 2, myInputStringComponents[5] );
             }
             else
@@ -2779,7 +2781,7 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
       }
       myLineCounter++;
     }
-      
+
 
     if ( myImportError )
     {

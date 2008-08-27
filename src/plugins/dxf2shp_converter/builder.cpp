@@ -512,7 +512,7 @@ void Builder::print_shpObjects()
   int dim = shpObjects.size();
   int dimTexts = textObjects.size();
 
-  QgsDebugMsg( QString( "Number pf primitives: %1" ).arg( dim ) );
+  QgsDebugMsg( QString( "Number of primitives: %1" ).arg( dim ) );
   QgsDebugMsg( QString( "Number of text fields: %1" ).arg( dimTexts ) );
 
   SHPHandle hSHP;
