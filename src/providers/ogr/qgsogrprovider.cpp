@@ -1256,7 +1256,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::getCRS()
   return srs;
 }
 
-void QgsOgrProvider::getUniqueValues( int index, QStringList &uniqueValues )
+void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
 {
   QgsField fld = mAttributeFields[index];
   QFileInfo fi( dataSourceUri() );
@@ -1274,7 +1274,7 @@ void QgsOgrProvider::getUniqueValues( int index, QStringList &uniqueValues )
   OGRFeatureH f;
   while ( 0 != ( f = OGR_L_GetNextFeature( lyr ) ) )
   {
-    uniqueValues.append( mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+    uniqueValues << convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
     OGR_F_Destroy( f );
   }
 
@@ -1304,26 +1304,15 @@ QVariant QgsOgrProvider::minimumValue( int index )
     return QVariant();
   }
 
-  QString str = mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
+  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
   OGR_F_Destroy( f );
-
-  QVariant value;
-
-  switch ( fld.type() )
-  {
-    case QVariant::String: value = QVariant( str ); break;
-    case QVariant::Int: value = QVariant( str.toInt() ); break;
-    case QVariant::Double: value = QVariant( str.toDouble() ); break;
-      //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
-    default: assert( NULL && "unsupported field type" );
-  }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
 
   return value;
 }
 
-QVariant QgsOgrProvider::maxValue( int index )
+QVariant QgsOgrProvider::maximumValue( int index )
 {
   QgsField fld = mAttributeFields[index];
   QFileInfo fi( dataSourceUri() );
@@ -1343,19 +1332,8 @@ QVariant QgsOgrProvider::maxValue( int index )
     return QVariant();
   }
 
-  QString str = mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) );
+  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
   OGR_F_Destroy( f );
-
-  QVariant value;
-
-  switch ( fld.type() )
-  {
-    case QVariant::String: value = QVariant( str ); break;
-    case QVariant::Int: value = QVariant( str.toInt() ); break;
-    case QVariant::Double: value = QVariant( str.toDouble() ); break;
-      //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
-    default: assert( NULL && "unsupported field type" );
-  }
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
 

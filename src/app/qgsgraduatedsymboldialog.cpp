@@ -254,7 +254,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     if ( modeComboBox->currentText() == tr( "Equal Interval" ) )
     {
       minimum = provider->minimumValue( field ).toDouble();
-      maximum = provider->maxValue( field ).toDouble();
+      maximum = provider->maximumValue( field ).toDouble();
     }
     else                    //don't waste performance if mMode is QgsGraduatedSymbolDialog::EMPTY
     {
@@ -435,7 +435,7 @@ void QgsGraduatedSymbolDialog::deleteCurrentClass()
   int currentIndex = mClassListWidget->currentRow();
   mEntries.erase( classValue );
   delete( mClassListWidget->takeItem( currentIndex ) );
-  QgsDebugMsg( QString("numRows: %1").arg( mClassListWidget->count() ) );
+  QgsDebugMsg( QString( "numRows: %1" ).arg( mClassListWidget->count() ) );
   //
   if ( mClassListWidget->count() < ( currentIndex + 1 ) )
   {

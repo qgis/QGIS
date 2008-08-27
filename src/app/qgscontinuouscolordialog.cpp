@@ -23,6 +23,7 @@
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QColorDialog>
 
@@ -168,11 +169,11 @@ void QgsContinuousColorDialog::apply()
   if ( provider )
   {
     minimum = provider->minimumValue( classfield ).toDouble();
-    maximum = provider->maxValue( classfield ).toDouble();
+    maximum = provider->maximumValue( classfield ).toDouble();
   }
   else
   {
-    qWarning( "Warning, provider is null in QgsGraSyExtensionWidget::QgsGraSyExtensionWidget(...)" );
+    QgsDebugMsg( "Warning, provider is null" );
     return;
   }
 

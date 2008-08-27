@@ -494,30 +494,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
 
       if ( !PQgetisnull( queryResult, row, col ) )
       {
-        QString val = QString::fromUtf8( PQgetvalue( queryResult, row, col ) );
-
-        switch ( fld.type() )
-        {
-          case QVariant::LongLong:
-            feature.addAttribute( *it, val.toLongLong() );
-            break;
-          case QVariant::Int:
-            feature.addAttribute( *it, val.toInt() );
-            break;
-          case QVariant::Double:
-            feature.addAttribute( *it, val.toDouble() );
-            break;
-          case QVariant::String:
-            feature.addAttribute( *it, val );
-            break;
-          default:
-            QgsDebugMsg( QString( "feature %1, field %2, value '%3': unexpected variant type %4 considered as NULL" )
-                         .arg( oid )
-                         .arg( fld.name() )
-                         .arg( val )
-                         .arg( fld.type() ) );
-            feature.addAttribute( *it, QVariant( QString::null ) );
-        }
+        feature.addAttribute( *it, convertValue( fld.type(), QString::fromUtf8( PQgetvalue( queryResult, row, col ) ) ) );
       }
       else
       {
@@ -1540,8 +1517,7 @@ QVariant QgsPostgresProvider::minimumValue( int index )
             .arg( sqlWhereClause );
     }
     Result rmin = connectionRO->PQexec( sql );
-    QString minimumValue = QString::fromUtf8( PQgetvalue( rmin, 0, 0 ) );
-    return minimumValue.toDouble();
+    return convertValue( fld.type(), QString::fromUtf8( PQgetvalue( rmin, 0, 0 ) ) );
   }
   catch ( PGFieldNotFound )
   {
@@ -1550,7 +1526,7 @@ QVariant QgsPostgresProvider::minimumValue( int index )
 }
 
 // Returns the list of unique values of an attribute
-void QgsPostgresProvider::getUniqueValues( int index, QStringList &uniqueValues )
+void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
 {
   uniqueValues.clear();
 
@@ -1586,8 +1562,7 @@ void QgsPostgresProvider::getUniqueValues( int index, QStringList &uniqueValues 
 }
 
 // Returns the maximum value of an attribute
-
-QVariant QgsPostgresProvider::maxValue( int index )
+QVariant QgsPostgresProvider::maximumValue( int index )
 {
   try
   {
@@ -1608,8 +1583,7 @@ QVariant QgsPostgresProvider::maxValue( int index )
             .arg( sqlWhereClause );
     }
     Result rmax = connectionRO->PQexec( sql );
-    QString maxValue = QString::fromUtf8( PQgetvalue( rmax, 0, 0 ) );
-    return maxValue.toDouble();
+    return convertValue( fld.type(), QString::fromUtf8( PQgetvalue( rmax, 0, 0 ) ) );
   }
   catch ( PGFieldNotFound )
   {

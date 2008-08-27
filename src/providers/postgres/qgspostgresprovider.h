@@ -184,12 +184,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maxValue( int index );
+    QVariant maximumValue( int index );
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void getUniqueValues( int index, QStringList &uniqueValues );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
 
     /**Returns true if layer is valid
     */
