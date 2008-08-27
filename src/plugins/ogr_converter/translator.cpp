@@ -316,10 +316,7 @@ namespace qgis
 
       OGRSFDriverH Translator::findDriver( QString const& name )
       {
-        if ( OGRGetDriverCount() <= 0 )
-        {
-          QgsApplication::registerOgrDrivers();
-        }
+        QgsApplication::registerOgrDrivers();
         int const drvCount = OGRGetDriverCount();
 
         OGRSFDriverH drv = 0;
