@@ -273,7 +273,7 @@ QVariant QgsVectorDataProvider::minimumValue( int index )
   return mCacheMinValues[index];
 }
 
-QVariant QgsVectorDataProvider::maxValue( int index )
+QVariant QgsVectorDataProvider::maximumValue( int index )
 {
   if ( !fields().contains( index ) )
   {
@@ -292,19 +292,24 @@ QVariant QgsVectorDataProvider::maxValue( int index )
   return mCacheMaxValues[index];
 }
 
-void QgsVectorDataProvider::getUniqueValues( int index, QStringList &values )
+void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values )
 {
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
   select( keys, QgsRect(), false );
 
-  QMap<QString, int> map;
+  QSet<QString> set;
+  values.clear();
 
   while ( getNextFeature( f ) )
-    map.insert( f.attributeMap()[index].toString(), 1 );
-
-  values = map.keys();
+  {
+    if ( set.contains( f.attributeMap()[index].toString() ) )
+    {
+      values.append( f.attributeMap()[index] );
+      set.insert( f.attributeMap()[index].toString() );
+    }
+  }
 }
 
 void QgsVectorDataProvider::fillMinMaxCache()
@@ -355,4 +360,14 @@ void QgsVectorDataProvider::fillMinMaxCache()
   }
 
   mCacheMinMaxDirty = FALSE;
+}
+
+QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value )
+{
+  QVariant v( value );
+
+  if ( !v.convert( type ) )
+    v = QVariant( QString::null );
+
+  return v;
 }

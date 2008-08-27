@@ -112,12 +112,14 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     {
       case QgsVectorLayer::UniqueValues:
       {
-        QStringList values;
-        mLayer->dataProvider()->getUniqueValues( it.key(), values );
+        QList<QVariant> values;
+        mLayer->dataProvider()->uniqueValues( it.key(), values );
 
         QComboBox *cb = new QComboBox();
         cb->setEditable( true );
-        cb->addItems( values );
+
+        for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
+          cb->addItem( it->toString() );
 
         int idx = cb->findText( myFieldValue.toString() );
         if ( idx >= 0 )
@@ -219,10 +221,14 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
         if ( editType == QgsVectorLayer::UniqueValuesEditable )
         {
-          QStringList values;
-          mLayer->dataProvider()->getUniqueValues( it.key(), values );
+          QList<QVariant> values;
+          mLayer->dataProvider()->uniqueValues( it.key(), values );
 
-          QCompleter *c = new QCompleter( values );
+          QStringList svalues;
+          for ( QList<QVariant>::const_iterator it = values.begin(); it != values.end(); it++ )
+            svalues << it->toString();
+
+          QCompleter *c = new QCompleter( svalues );
           c->setCompletionMode( QCompleter::PopupCompletion );
           le->setCompleter( c );
         }

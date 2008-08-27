@@ -298,13 +298,13 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
       return;
     }
 
-    QStringList values;
-    provider->getUniqueValues( nr, values );
+    QList<QVariant> values;
+    provider->uniqueValues( nr, values );
 
     for ( int i = 0; i < values.size(); i++ )
     {
-      if ( !mValues.contains( values[i] ) )
-        addClass( values[i] );
+      if ( !mValues.contains( values[i].toString() ) )
+        addClass( values[i].toString() );
     }
   }
 }

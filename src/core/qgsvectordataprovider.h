@@ -168,7 +168,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * and maximal values. If provider has facilities to retrieve maximal
      * value directly, override this function.
      */
-    virtual QVariant maxValue( int index );
+    virtual QVariant maximumValue( int index );
 
     /**
      * Return unique values of an attribute
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *
      * Default implementation simply iterates the features
      */
-    virtual void getUniqueValues( int index, QStringList &uniqueValues );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
 
     /**
      * Adds a list of features
@@ -274,6 +274,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     void setFetchFeaturesWithoutGeom( bool fetch );
 
   protected:
+    QVariant convertValue( QVariant::Type type, QString value );
 
     void fillMinMaxCache();
 

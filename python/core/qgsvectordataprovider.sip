@@ -132,7 +132,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * and maximal values. If provider has facilities to retrieve maximal
        * value directly, override this function.
        */
-      virtual QVariant maxValue(int index);
+      virtual QVariant maximumValue(int index);
 
      /**
        * Return unique values of an attribute
@@ -141,7 +141,7 @@ class QgsVectorDataProvider : QgsDataProvider
        *
        * Default implementation simply iterates the features 
        */
-      virtual void getUniqueValues(int index, QStringList &uniqueValues);
+      virtual void uniqueValues(int index, QList<QVariant> &uniqueValues);
 
       /**
        * Adds a list of features
