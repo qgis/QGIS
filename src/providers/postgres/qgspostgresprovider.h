@@ -197,18 +197,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList allAttributesList();
 
-    //! get postgis version string
-    QString postgisVersion( PGconn * );
-
-    //! get status of GEOS capability
-    bool hasGEOS( PGconn * );
-
-    //! get status of GIST capability
-    bool hasGIST( PGconn * );
-
-    //! get status of PROJ4 capability
-    bool hasPROJ( PGconn * );
-
     /**Returns the default value for field specified by @c fieldId */
     QVariant getDefaultValue( int fieldId );
 
@@ -401,21 +389,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Geometry type
      */
     QGis::WKBTYPE geomType;
-    /**
-     * Connection pointer
-     */
-    PGconn *connectionRO;
-    PGconn *connectionRW;
-
-    bool connectRW()
-    {
-      if ( connectionRW )
-        return connectionRW;
-
-      connectionRW = connectDb( mUri.connInfo(), false );
-
-      return connectionRW;
-    }
 
     /**
      * Spatial reference id of the layer
@@ -456,8 +429,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     bool deduceEndian();
     bool getGeometryDetails();
-
-    PGresult* executeDbCommand( PGconn* connection, const QString& sql );
 
     // Produces a QMessageBox with the given title and text. Doesn't
     // return until the user has dismissed the dialog box.
@@ -556,27 +527,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     int SRCFromViewColumn( const QString& ns, const QString& relname, const QString& attname_table,
                            const QString& attname_view, const QString& viewDefinition, SRC& result ) const;
 
-    //! PostGIS version string
-    QString postgisVersionInfo;
-
-    //! Are postgisVersionMajor, postgisVersionMinor, geosAvailable, gistAvailable, projAvailable valid?
-    bool gotPostgisVersion;
-
-    //! PostGIS major version
-    int postgisVersionMajor;
-
-    //! PostGIS minor version
-    int postgisVersionMinor;
-
-    //! GEOS capability
-    bool geosAvailable;
-
-    //! GIST capability
-    bool gistAvailable;
-
-    //! PROJ4 capability
-    bool projAvailable;
-
     int enabledCapabilities;
 
     /**Returns the maximum value of the primary key attribute
@@ -597,29 +547,129 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void customEvent( QEvent *e );
 
-    PGconn *connectDb( const QString &conninfo, bool readonly = true );
-    void disconnectDb();
-
-    bool useWkbHex;
-
     void appendGeomString( QgsGeometry *geom, QString &geomParam ) const;
     QByteArray paramValue( QString fieldvalue, const QString &defaultValue ) const;
 
-    // run a query and check for errors
-    static PGresult *PQexec( PGconn *conn, const char *query );
-
-    // run a query and free result buffer
-    static bool PQexecNR( PGconn *conn, const char *query );
-
-    struct Conn
+    class Conn
     {
-      Conn( PGconn *connection ) : ref( 1 ), conn( connection ) {}
+      public:
+        Conn( PGconn *connection ) :
+            ref( 1 ),
+            openCursors( 0 ),
+            conn( connection ),
+            gotPostgisVersion( false )
+        {
+        }
 
-      int ref;
-      PGconn *conn;
+        //! get postgis version string
+        QString postgisVersion();
+
+        //! get status of GEOS capability
+        bool hasGEOS();
+
+        //! get status of GIST capability
+        bool hasGIST();
+
+        //! get status of PROJ4 capability
+        bool hasPROJ();
+
+        //! encode wkb in hex
+        bool useWkbHex() { return mUseWkbHex; }
+
+        //! major PostgreSQL version
+        int majorVersion() { return postgisVersionMajor; }
+
+        // run a query and free result buffer
+        bool PQexecNR( QString query );
+
+        // cursor handling
+        bool openCursor( QString cursorName, QString declare );
+        bool closeCursor( QString cursorName );
+
+        PGconn *pgConnection() { return conn; }
+
+        //
+        // libpq wrapper
+        //
+
+        // run a query and check for errors
+        PGresult *PQexec( QString query );
+        void PQfinish();
+        int PQsendQuery( QString query );
+        PGresult *PQgetResult();
+        PGresult *PQprepare( QString stmtName, QString query, int nParams, const Oid *paramTypes );
+        PGresult *PQexecPrepared( QString stmtName, const QStringList &params );
+
+        static Conn *connectDb( const QString &conninfo, bool readonly );
+        static void disconnectRW( Conn *&conn );
+        static void disconnectRO( Conn *&conn );
+        static void disconnect( QMap<QString, Conn *> &connections, Conn *&conn );
+
+      private:
+        int ref;
+        int openCursors;
+        PGconn *conn;
+
+        //! GEOS capability
+        bool geosAvailable;
+
+        //! PostGIS version string
+        QString postgisVersionInfo;
+
+        //! Are postgisVersionMajor, postgisVersionMinor, geosAvailable, gistAvailable, projAvailable valid?
+        bool gotPostgisVersion;
+
+        //! PostGIS major version
+        int postgisVersionMajor;
+
+        //! PostGIS minor version
+        int postgisVersionMinor;
+
+        //! GIST capability
+        bool gistAvailable;
+
+        //! PROJ4 capability
+        bool projAvailable;
+
+        //! encode wkb in hex
+        bool mUseWkbHex;
+
+        static QMap<QString, Conn *> connectionsRW;
+        static QMap<QString, Conn *> connectionsRO;
     };
-    static QMap<QString, Conn *> connectionsRW;
-    static QMap<QString, Conn *> connectionsRO;
+
+    class Result
+    {
+      public:
+        Result( PGresult *theRes = 0 ) : res( theRes ) {}
+        ~Result() { if ( res ) PQclear( res ); }
+
+        operator PGresult *() { return res; }
+
+        Result &operator=( PGresult *theRes ) { if ( res ) PQclear( res ); res = theRes;  return *this; }
+
+      private:
+        PGresult *res;
+    };
+
+    /**
+     * Connection pointers
+     */
+    Conn *connectionRO;
+    Conn *connectionRW;
+
+    bool connectRW()
+    {
+      if ( connectionRW )
+        return connectionRW;
+
+      connectionRW = Conn::connectDb( mUri.connInfo(), false );
+
+      return connectionRW;
+    }
+
+    void disconnectDb();
+
     static int providerIds;
 };
 
