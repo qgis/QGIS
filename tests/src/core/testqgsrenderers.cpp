@@ -24,9 +24,9 @@
 
 #include <iostream>
 //qgis includes...
-#include <qgsmaprenderer.h> 
-#include <qgsmaplayer.h> 
-#include <qgsvectorlayer.h> 
+#include <qgsmaprenderer.h>
+#include <qgsmaplayer.h>
+#include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
@@ -38,20 +38,20 @@
  */
 class TestQgsRenderers: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(){};// will be called before each testfunction is executed.
-    void cleanup(){};// will be called after every testfunction.
+    void init() {};// will be called before each testfunction is executed.
+    void cleanup() {};// will be called after every testfunction.
 
     void singleSymbol();
     void uniqueValue();
     void graduatedSymbol();
     void continuousSymbol();
   private:
-    bool setQml (QString theType); //uniquevalue / continuous / single / 
-    bool imageCheck(QString theType); //as above
+    bool setQml( QString theType ); //uniquevalue / continuous / single /
+    bool imageCheck( QString theType ); //as above
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
@@ -64,11 +64,11 @@ class TestQgsRenderers: public QObject
 void TestQgsRenderers::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance(QgsApplication::pluginPath());
+  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
 
@@ -80,34 +80,34 @@ void TestQgsRenderers::initTestCase()
   //
   //create a point layer that will be used in all tests...
   //
-  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + QDir::separator();
   QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo ( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer ( myPointFileInfo.filePath(),
-            myPointFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myPointFileInfo( myPointsFileName );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                      myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpPointsLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo ( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer ( myPolyFileInfo.filePath(),
-            myPolyFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myPolyFileInfo( myPolysFileName );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
+                                     myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpPolysLayer);
-  
+  QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+
   //
   // Create a line layer that will be used in all tests...
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo ( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer ( myLineFileInfo.filePath(),
-            myLineFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myLineFileInfo( myLinesFileName );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
+                                     myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpLinesLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -118,103 +118,103 @@ void TestQgsRenderers::initTestCase()
   myLayers << mpPointsLayer->getLayerID();
   myLayers << mpPolysLayer->getLayerID();
   myLayers << mpLinesLayer->getLayerID();
-  mpMapRenderer->setLayerSet(myLayers);
-  mReport+= "<h1>Vector Renderer Tests</h1>\n";
+  mpMapRenderer->setLayerSet( myLayers );
+  mReport += "<h1>Vector Renderer Tests</h1>\n";
 }
 void TestQgsRenderers::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + QDir::separator() + "renderertest.html";
-  QFile myFile ( myReportFile);
-  if ( myFile.open ( QIODevice::WriteOnly ) )
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
-    QTextStream myQTextStream ( &myFile );
+    QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl("file://"+myReportFile);
+    QDesktopServices::openUrl( "file://" + myReportFile );
   }
-  
+
 }
 
 void TestQgsRenderers::singleSymbol()
 {
-  mReport+= "<h2>Single symbol renderer test</h2>\n";
-  QVERIFY ( setQml("single") );
-  QVERIFY ( imageCheck("single"));
+  mReport += "<h2>Single symbol renderer test</h2>\n";
+  QVERIFY( setQml( "single" ) );
+  QVERIFY( imageCheck( "single" ) );
 }
 
 void TestQgsRenderers::uniqueValue()
 {
-  mReport+= "<h2>Unique value symbol renderer test</h2>\n";
-  QVERIFY ( setQml("uniquevalue") );
-  QVERIFY ( imageCheck("uniquevalue"));
+  mReport += "<h2>Unique value symbol renderer test</h2>\n";
+  QVERIFY( setQml( "uniquevalue" ) );
+  QVERIFY( imageCheck( "uniquevalue" ) );
 }
 
 void TestQgsRenderers::graduatedSymbol()
 {
-  mReport+= "<h2>Graduated symbol renderer test</h2>\n";
-  QVERIFY ( setQml("graduated") );
-  QVERIFY ( imageCheck("graduated"));
+  mReport += "<h2>Graduated symbol renderer test</h2>\n";
+  QVERIFY( setQml( "graduated" ) );
+  QVERIFY( imageCheck( "graduated" ) );
 }
 
 void TestQgsRenderers::continuousSymbol()
 {
-  mReport+= "<h2>Continuous symbol renderer test</h2>\n";
-  QVERIFY ( setQml("continuous") );
-  QVERIFY ( imageCheck("continuous"));
+  mReport += "<h2>Continuous symbol renderer test</h2>\n";
+  QVERIFY( setQml( "continuous" ) );
+  QVERIFY( imageCheck( "continuous" ) );
 }
 //
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsRenderers::setQml (QString theType)
+bool TestQgsRenderers::setQml( QString theType )
 {
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  if (! mpPointsLayer->isValid() )
+  if ( ! mpPointsLayer->isValid() )
   {
     return false;
   }
   QString myFileName = mTestDataDir + "points_" + theType + "_symbol.qml";
-  bool myStyleFlag=false;
-  mpPointsLayer->loadNamedStyle ( myFileName , myStyleFlag );
-  if (!myStyleFlag)
+  bool myStyleFlag = false;
+  mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
+  if ( !myStyleFlag )
   {
     return false;
   }
   else
   {
-    myStyleFlag=false; //ready for next test
+    myStyleFlag = false; //ready for next test
   }
   myFileName = mTestDataDir + "polys_" + theType + "_symbol.qml";
-  mpPolysLayer->loadNamedStyle ( myFileName , myStyleFlag );
-  if (!myStyleFlag)
+  mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  if ( !myStyleFlag )
   {
     return false;
   }
   else
   {
-    myStyleFlag=false; //ready for next test
+    myStyleFlag = false; //ready for next test
   }
   myFileName = mTestDataDir + "lines_" + theType + "_symbol.qml";
-  mpLinesLayer->loadNamedStyle ( myFileName , myStyleFlag );
+  mpLinesLayer->loadNamedStyle( myFileName, myStyleFlag );
   return myStyleFlag;
 }
 
-bool TestQgsRenderers::imageCheck(QString theTestType)
+bool TestQgsRenderers::imageCheck( QString theTestType )
 {
-  //use the QgsRenderChecker test utility class to 
+  //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mpMapRenderer->setExtent(mpPointsLayer->extent());
+  mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QString myExpectedImage = mTestDataDir + "expected_" + theTestType + ".png";
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage ( myExpectedImage );
-  myChecker.setMapRenderer ( mpMapRenderer );
+  myChecker.setExpectedImage( myExpectedImage );
+  myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN(TestQgsRenderers)
+QTEST_MAIN( TestQgsRenderers )
 #include "moc_testqgsrenderers.cxx"
 

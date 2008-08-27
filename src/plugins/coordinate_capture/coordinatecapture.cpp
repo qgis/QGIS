@@ -106,7 +106,7 @@ void CoordinateCapture::initGui()
   QToolButton * mypUserCrsToolButton = new QToolButton( mypWidget );
   mypUserCrsToolButton->setIcon( QIcon( ":/coordinatecapture/geographic.png" ) );
   mypUserCrsToolButton->setToolTip( tr( "Click to select the CRS to use for coordinate display" ) );
-  connect( mypUserCrsToolButton , SIGNAL( clicked() ), this, SLOT( setCRS() ) );
+  connect( mypUserCrsToolButton, SIGNAL( clicked() ), this, SLOT( setCRS() ) );
 
   QLabel * mypCRSLabel = new QLabel( mypWidget );
   mypCRSLabel->setPixmap( QPixmap( ":/coordinatecapture/transformed.png" ) );

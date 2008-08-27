@@ -70,8 +70,8 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
     {
       QMessageBox::critical( 0, tr( "Action" ),
-                             tr( "Unable to run command" ) + "\n" + action
-                             , QMessageBox::Ok, Qt::NoButton );
+                             tr( "Unable to run command" ) + "\n" + action,
+                             QMessageBox::Ok, Qt::NoButton );
     }
     // We're not capturing the output from the process, so we don't
     // need to exist anymore.

@@ -25,7 +25,7 @@
 #include <QCoreApplication>
 #include <QIcon>
 
-QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem , QString theName )
+QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
     : QgsLegendItem( theItem, theName )
 {
   mType = LEGEND_GROUP;

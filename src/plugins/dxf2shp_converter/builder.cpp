@@ -142,9 +142,8 @@ void Builder::addPoint( const DL_PointData& data )
 
 void Builder::addLine( const DL_LineData& data )
 {
-
-  //data.x1 , data.y1, data.z1
-  //data.x2 , data.y2, data.z2
+  //data.x1, data.y1, data.z1
+  //data.x2, data.y2, data.z2
 
   if ( shapefileType != SHPT_ARC )
   {

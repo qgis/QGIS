@@ -155,9 +155,8 @@ void QgsLegend::removeLayer( QString layer_key )
   }
 
   QTreeWidgetItem* theItem = firstItem();
-#ifdef QGISDEBUG
-  qWarning( "in QgsLegend::removeLayer" );
-#endif
+  QgsDebugMsg( "called." )
+
   while ( theItem )
   {
     QgsLegendItem *li = dynamic_cast<QgsLegendItem*>( theItem );
@@ -236,9 +235,8 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
       if ( action == QgsLegendItem::REORDER )
       {
-#ifdef QGISDEBUG
-        qWarning( "mouseMoveEvent::REORDER" );
-#endif
+        QgsDebugMsg( "mouseMoveEvent::REORDER" );
+
         if ( !yCoordAboveCenter( dest, e->y() ) ) //over bottom of item
         {
           if ( origin->nextSibling() != dest )
@@ -266,9 +264,8 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       }
       else if ( action == QgsLegendItem::INSERT )
       {
-#ifdef QGISDEBUG
-        qWarning( "mouseMoveEvent::INSERT" );
-#endif
+        QgsDebugMsg( "mouseMoveEvent::INSERT" );
+
         setCursor( QCursor( Qt::PointingHandCursor ) );
         if ( origin->parent() != dest )
         {
@@ -278,9 +275,8 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
       }
       else//no action
       {
-#ifdef QGISDEBUG
-        qWarning( "mouseMoveEvent::NO_ACTION" );
-#endif
+        QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+
         if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
         {
           resetToInitialPosition( mItemBeingMoved );
@@ -1121,17 +1117,15 @@ void QgsLegend::resetToInitialPosition( QTreeWidgetItem* li )
   QgsLegendItem* formerParent = dynamic_cast<QgsLegendItem*>( li->parent() ); //todo: make sure legend layers are updated
   if ( mRestoreInformation == FIRST_ITEM )
   {
-#ifdef QGISDEBUG
-    qWarning( "FIRST_ITEM" );
-#endif
+    QgsDebugMsg( "FIRST_ITEM" );
+
     removeItem( li );
     insertTopLevelItem( 0, li );
   }
   else if ( mRestoreInformation == FIRST_CHILD )
   {
-#ifdef QGISDEBUG
-    qWarning( "FIRST_CHILD" );
-#endif
+    QgsDebugMsg( "FIRST_CHILD" );
+
     removeItem( li );
     if ( formerParent )
     {
@@ -1142,9 +1136,8 @@ void QgsLegend::resetToInitialPosition( QTreeWidgetItem* li )
   }
   else if ( mRestoreInformation == YOUNGER_SIBLING )
   {
-#ifdef QGISDEBUG
-    qWarning( "YOUNGER_SIBLING" );
-#endif
+    QgsDebugMsg( "YOUNGER_SIBLING" );
+
     if ( formerParent )
     {
       formerParent->release(( QgsLegendItem* )li );
@@ -1439,10 +1432,10 @@ std::deque<QString> QgsLegend::layerIDs()
   }
 
 #ifdef QGISDEBUG
-  qWarning( "QgsLegend::layerIDs()" );
+  QgsDebugMsg( "QgsLegend::layerIDs()" );
   for ( std::deque<QString>::iterator it = layers.begin(); it != layers.end(); ++it )
   {
-    qWarning(( *it ).toUtf8() );
+    QgsDebugMsg( *it );
   }
 #endif
 
@@ -1596,15 +1589,15 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int row )
 #ifdef QGISDEBUG
       if ( item->checkState( 0 ) == Qt::Checked )
       {
-        qWarning( "item checked" );
+        QgsDebugMsg( "item checked" );
       }
       else if ( item->checkState( 0 ) == Qt::Unchecked )
       {
-        qWarning( "item unchecked" );
+        QgsDebugMsg( "item unchecked" );
       }
       else if ( item->checkState( 0 ) == Qt::PartiallyChecked )
       {
-        qWarning( "item partially checked" );
+        QgsDebugMsg( "item partially checked" );
       }
 #endif
       blockSignals( true );

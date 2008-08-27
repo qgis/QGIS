@@ -600,8 +600,8 @@ void QgsQuickPrint::printMap()
   myLogo1 = myLogo1.scaled( myLogoXDim, myLogoYDim, Qt::KeepAspectRatio );
   myOriginX = myPrinter.pageRect().left() + myHorizontalSpacing;
   myOriginY += myVerticalSpacing ;
-  myPrintPainter.drawPixmap( myOriginX ,
-                             myOriginY ,
+  myPrintPainter.drawPixmap( myOriginX,
+                             myOriginY,
                              myLogo1 );
 
   //
@@ -623,10 +623,9 @@ void QgsQuickPrint::printMap()
   myLogo2.load( mLogo2File );
   myLogo2 = myLogo2.scaled( myLogoXDim, myLogoYDim, Qt::KeepAspectRatio );
   myOriginX += myHorizontalSpacing + myLogoXDim;
-  myPrintPainter.drawPixmap( myOriginX ,
-                             myOriginY ,
+  myPrintPainter.drawPixmap( myOriginX,
+                             myOriginY,
                              myLogo2 );
-
 
   //
   // Draw the north arrow
@@ -639,8 +638,8 @@ void QgsQuickPrint::printMap()
   QPainter myNorthPainter( &myNorthArrow );
   QSvgRenderer mySvgRenderer( mNorthArrowFile );
   mySvgRenderer.render( &myNorthPainter );
-  myPrintPainter.drawPixmap( myOriginX + (( myLogoXDim / 2 ) ) ,
-                             myOriginY ,
+  myPrintPainter.drawPixmap( myOriginX + (( myLogoXDim / 2 ) ),
+                             myOriginY,
                              myNorthArrow );
 
   //
@@ -703,13 +702,13 @@ void QgsQuickPrint::scaleTextLabels( int theScaleFactor, SymbolScalingType theDi
         if ( theDirection == ScaleUp )
         {
           mypLabelAttributes->setSize(
-            mypLabelAttributes->size() * theScaleFactor ,
+            mypLabelAttributes->size() * theScaleFactor,
             mypLabelAttributes->sizeType() );
         }
         else //scale down
         {
           mypLabelAttributes->setSize(
-            mypLabelAttributes->size() / theScaleFactor ,
+            mypLabelAttributes->size() / theScaleFactor,
             mypLabelAttributes->sizeType() );
         }
       } //if vectorlayer

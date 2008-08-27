@@ -433,7 +433,7 @@ void QgsGrassEdit::init()
   symbologyList->setColumnWidth( 0, 50 );
   symbologyList->addColumn( tr( "Type", "Column title" ) );
   symbologyList->setColumnWidthMode( 2, Q3ListView::Maximum );
-  symbologyList->addColumn( tr( "Index", "Column title" ) , 0 );
+  symbologyList->addColumn( tr( "Index", "Column title" ), 0 );
   symbologyList->clear();
   symbologyList->setSorting( -1 );
 
@@ -449,13 +449,13 @@ void QgsGrassEdit::init()
 
     if ( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC )
     {
-      Q3ListViewItem *lvi = new Q3ListViewItem( symbologyList , "", "", mSymbName[i] );
+      Q3ListViewItem *lvi = new Q3ListViewItem( symbologyList, "", "", mSymbName[i] );
       lvi->setPixmap( 1, pm );
       lvi->setText( 3, index );
     }
     else
     {
-      Q3CheckListItem *clvi = new Q3CheckListItem( symbologyList , "", Q3CheckListItem::CheckBox );
+      Q3CheckListItem *clvi = new Q3CheckListItem( symbologyList, "", Q3CheckListItem::CheckBox );
       clvi->setText( 2, mSymbName[i] );
       clvi->setPixmap( 1, pm );
       clvi->setOn( mSymbDisplay[i] );

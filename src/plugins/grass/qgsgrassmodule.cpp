@@ -864,7 +864,7 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
       continue;
     }
 
-    if ( G_window_overlap( &currentWindow ,
+    if ( G_window_overlap( &currentWindow,
                            window.north, window.south, window.east, window.west ) == 0 )
     {
       list.append( item->currentMap() );

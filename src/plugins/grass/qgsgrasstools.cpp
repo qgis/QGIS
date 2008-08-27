@@ -398,7 +398,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
         QStandardItem * mypDetailItem = new QStandardItem( name );
         mypDetailItem->setData( name, Qt::UserRole + 1 ); //for calling runModule later
         QString mySearchText = name + " - " + label;
-        mypDetailItem->setData( mySearchText , Qt::UserRole + 2 ); //for filtering later
+        mypDetailItem->setData( mySearchText, Qt::UserRole + 2 ); //for filtering later
         mypDetailItem->setData( pixmap, Qt::DecorationRole );
         mypDetailItem->setCheckable( false );
         mypDetailItem->setEditable( false );

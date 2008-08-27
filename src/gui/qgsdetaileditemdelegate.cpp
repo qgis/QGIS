@@ -150,8 +150,8 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
   //
   myTextStartY += myHeight / 2;
   thepPainter->setFont( titleFont( theOption ) );
-  thepPainter->drawText( myTextStartX ,
-                         myTextStartY ,
+  thepPainter->drawText( myTextStartX,
+                         myTextStartY,
                          theData.title() );
   //
   // Draw the description with word wrapping if needed

@@ -28,12 +28,12 @@
 
 
 //qgis includes...
-#include <qgsrasterlayer.h> 
+#include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
-#include <qgsrasterbandstats.h> 
-#include <qgsmaplayerregistry.h> 
+#include <qgsrasterbandstats.h>
+#include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
-#include <qgsmaprenderer.h> 
+#include <qgsmaprenderer.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -44,22 +44,22 @@
  */
 class TestQgsRasterLayer: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(){};// will be called before each testfunction is executed.
-    void cleanup(){};// will be called after every testfunction.
+    void init() {};// will be called before each testfunction is executed.
+    void cleanup() {};// will be called after every testfunction.
 
     void isValid();
     void pseudoColor();
     void landsatBasic();
     void landsatBasic875Qml();
-    void checkDimensions(); 
+    void checkDimensions();
     void buildExternalOverviews();
   private:
-    bool render(QString theFileName);
-    bool setQml (QString theType);
+    bool render( QString theFileName );
+    bool setQml( QString theType );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
@@ -71,89 +71,89 @@ class TestQgsRasterLayer: public QObject
 void TestQgsRasterLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString(TEST_DATA_DIR) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
-  QFileInfo myRasterFileInfo ( myFileName );
-  mpRasterLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
-            myRasterFileInfo.completeBaseName() );
-  QFileInfo myLandsatRasterFileInfo ( myLandsatFileName );
-  mpLandsatRasterLayer = new QgsRasterLayer ( myLandsatRasterFileInfo.filePath(),
-            myLandsatRasterFileInfo.completeBaseName() );
+  QFileInfo myRasterFileInfo( myFileName );
+  mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+                                      myRasterFileInfo.completeBaseName() );
+  QFileInfo myLandsatRasterFileInfo( myLandsatFileName );
+  mpLandsatRasterLayer = new QgsRasterLayer( myLandsatRasterFileInfo.filePath(),
+      myLandsatRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpRasterLayer);
-  QgsMapLayerRegistry::instance()->addMapLayer(mpLandsatRasterLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
+  QgsMapLayerRegistry::instance()->addMapLayer( mpLandsatRasterLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
   myLayers << mpRasterLayer->getLayerID();
-  mpMapRenderer->setLayerSet(myLayers);
+  mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Raster Layer Tests</h1>\n";
 }
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + QDir::separator() + "rastertest.html";
-  QFile myFile ( myReportFile);
-  if ( myFile.open ( QIODevice::WriteOnly ) )
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
-    QTextStream myQTextStream ( &myFile );
+    QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl("file://"+myReportFile);
+    QDesktopServices::openUrl( "file://" + myReportFile );
   }
-  
+
 }
 
 void TestQgsRasterLayer::isValid()
 {
-  QVERIFY ( mpRasterLayer->isValid() );
-  mpMapRenderer->setExtent(mpRasterLayer->extent());
-  QVERIFY ( render("raster") );
+  QVERIFY( mpRasterLayer->isValid() );
+  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  QVERIFY( render( "raster" ) );
 }
 
 void TestQgsRasterLayer::pseudoColor()
 {
-  mpRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
-  mpRasterLayer->setColorShadingAlgorithm(QgsRasterLayer::PSEUDO_COLOR);  
+  mpRasterLayer->setDrawingStyle( QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR );
+  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PSEUDO_COLOR );
   mpRasterLayer->setContrastEnhancementAlgorithm(
-      QgsContrastEnhancement::STRETCH_TO_MINMAX, false);
-  mpRasterLayer->setMinimumValue(mpRasterLayer->getGrayBandName(),0.0, false);
-  mpRasterLayer->setMaximumValue(mpRasterLayer->getGrayBandName(),10.0);
-  mpMapRenderer->setExtent(mpRasterLayer->extent());
-  QVERIFY(render("raster_pseudo"));
+    QgsContrastEnhancement::STRETCH_TO_MINMAX, false );
+  mpRasterLayer->setMinimumValue( mpRasterLayer->getGrayBandName(), 0.0, false );
+  mpRasterLayer->setMaximumValue( mpRasterLayer->getGrayBandName(), 10.0 );
+  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  QVERIFY( render( "raster_pseudo" ) );
 }
 
 void TestQgsRasterLayer::landsatBasic()
 {
   QStringList myLayers;
   myLayers << mpLandsatRasterLayer->getLayerID();
-  mpMapRenderer->setLayerSet(myLayers);
-  mpMapRenderer->setExtent(mpLandsatRasterLayer->extent());
-  QVERIFY(render("landsat_basic"));
+  mpMapRenderer->setLayerSet( myLayers );
+  mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
+  QVERIFY( render( "landsat_basic" ) );
 }
 void TestQgsRasterLayer::landsatBasic875Qml()
 {
   //a qml that orders the rgb bands as 8,7,5
   QStringList myLayers;
   myLayers << mpLandsatRasterLayer->getLayerID();
-  mpMapRenderer->setLayerSet(myLayers);
-  mpMapRenderer->setExtent(mpLandsatRasterLayer->extent());
-  QVERIFY(setQml("875"));
-  QVERIFY(render("landsat_875"));
+  mpMapRenderer->setLayerSet( myLayers );
+  mpMapRenderer->setExtent( mpLandsatRasterLayer->extent() );
+  QVERIFY( setQml( "875" ) );
+  QVERIFY( render( "landsat_875" ) );
 }
 void TestQgsRasterLayer::checkDimensions()
 {
-   QVERIFY ( mpRasterLayer->getRasterXDim() == 10 );
-   QVERIFY ( mpRasterLayer->getRasterYDim() == 10 );
-   // regression check for ticket #832
-   // note getRasterBandStats call is base 1
-   QVERIFY ( mpRasterLayer->getRasterBandStats(1).elementCount == 100 );
+  QVERIFY( mpRasterLayer->getRasterXDim() == 10 );
+  QVERIFY( mpRasterLayer->getRasterYDim() == 10 );
+  // regression check for ticket #832
+  // note getRasterBandStats call is base 1
+  QVERIFY( mpRasterLayer->getRasterBandStats( 1 ).elementCount == 100 );
 }
 
 void TestQgsRasterLayer::buildExternalOverviews()
@@ -163,10 +163,10 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
   QString myTempPath = QDir::tempPath() + QDir::separator();
   QFile::remove( myTempPath + "landsat.tif.ovr" );
-  QFile::copy( mTestDataDir + "landsat.tif" , myTempPath + "landsat.tif" );
-  QFileInfo myRasterFileInfo ( myTempPath + "landsat.tif" );
-  QgsRasterLayer * mypLayer = new QgsRasterLayer ( myRasterFileInfo.filePath(),
-            myRasterFileInfo.completeBaseName() );
+  QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" );
+  QFileInfo myRasterFileInfo( myTempPath + "landsat.tif" );
+  QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+      myRasterFileInfo.completeBaseName() );
 
 
   //
@@ -178,15 +178,15 @@ void TestQgsRasterLayer::buildExternalOverviews()
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
-    myPyramidList[myCounterInt].existsFlag=true;
+    myPyramidList[myCounterInt].existsFlag = true;
   }
   //now actually make the pyramids
   QString myResult = mypLayer->buildPyramids(
-        myPyramidList,
-        "NEAREST",
-        myInternalFlag
-        );
-  qDebug (myResult.toLocal8Bit());
+                       myPyramidList,
+                       "NEAREST",
+                       myInternalFlag
+                     );
+  qDebug( myResult.toLocal8Bit() );
   //
   // Lets verify we have pyramids now...
   //
@@ -194,30 +194,30 @@ void TestQgsRasterLayer::buildExternalOverviews()
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
-    QVERIFY(myPyramidList.at(myCounterInt).existsFlag);
+    QVERIFY( myPyramidList.at( myCounterInt ).existsFlag );
   }
 
   //
   // And that they were indeed in an external file...
   //
-  QVERIFY(QFile::exists(myTempPath + "landsat.tif.ovr"));
+  QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
   //cleanup
   delete mypLayer;
 }
-bool TestQgsRasterLayer::render(QString theTestType)
+bool TestQgsRasterLayer::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
-  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage ( myTestDataDir + "expected_" + theTestType + ".png" );
-  myChecker.setMapRenderer ( mpMapRenderer );
-  bool myResultFlag = myChecker.runTest(theTestType);
+  myChecker.setExpectedImage( myTestDataDir + "expected_" + theTestType + ".png" );
+  myChecker.setMapRenderer( mpMapRenderer );
+  bool myResultFlag = myChecker.runTest( theTestType );
   mReport += "\n\n\n" + myChecker.report();
   return myResultFlag;
 }
 
-bool TestQgsRasterLayer::setQml (QString theType)
+bool TestQgsRasterLayer::setQml( QString theType )
 {
   //load a qml style and apply to our layer
   // huh? this is failing but shouldnt!
@@ -227,16 +227,16 @@ bool TestQgsRasterLayer::setQml (QString theType)
   //  return false;
   //}
   QString myFileName = mTestDataDir + "landsat_" + theType + ".qml";
-  bool myStyleFlag=false;
-  mpLandsatRasterLayer->loadNamedStyle ( myFileName , myStyleFlag );
-  if (!myStyleFlag)
+  bool myStyleFlag = false;
+  mpLandsatRasterLayer->loadNamedStyle( myFileName, myStyleFlag );
+  if ( !myStyleFlag )
   {
-    qDebug(" **** setQml -> mpLandsatRasterLayer is invalid");
-    qDebug("Qml File :" +  myFileName.toLocal8Bit());
+    qDebug( " **** setQml -> mpLandsatRasterLayer is invalid" );
+    qDebug( "Qml File :" +  myFileName.toLocal8Bit() );
   }
   return myStyleFlag;
 }
 
-QTEST_MAIN(TestQgsRasterLayer)
+QTEST_MAIN( TestQgsRasterLayer )
 #include "moc_testqgsrasterlayer.cxx"
 

@@ -111,7 +111,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
     // proportion of scale factor as in oritignal SVG TS XXX
     if ( size < 1 ) size = 1;
     //QPixmap myPixmap = QPixmap(width,height);
-    myImage = QImage( size , size , QImage::Format_ARGB32_Premultiplied );
+    myImage = QImage( size, size, QImage::Format_ARGB32_Premultiplied );
   }
 
   // starting with transparent QImage

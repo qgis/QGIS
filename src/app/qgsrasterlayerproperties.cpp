@@ -2123,9 +2123,9 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
             {
               myPainter.setPen( Qt::gray );
             }
-#ifdef QGISDEBUG
-            // QgsDebugMsg(QString("myPainter.fillRect(QRect(%1,%2,%3,%2) , myBrush );").arg(myX).arg(myY).arg(myBarWidth));
-#endif
+
+            // QgsDebugMsg(QString("myPainter.fillRect(QRect(%1,%2,%3,%2), myBrush );").arg(myX).arg(myY).arg(myBarWidth));
+
             myPainter.drawRect( myX + myYGutterWidth, myImageHeight - ( myY + myXGutterHeight ), myBarWidth, myY );
           }
           else //line graph
@@ -2209,10 +2209,10 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   for ( int i = 0;i < myXDivisions;++i )
   {
     QPolygon myPolygon;
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth , myImageHeight - myXGutterHeight );
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth , myImageHeight - ( myXGutterHeight - 5 ) );
-    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth , myImageHeight - myXGutterHeight );
-    myPolygon << QPoint((( i + 1 )*myXDivisions ) + myYGutterWidth , myImageHeight - myXGutterHeight );
+    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
+    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - ( myXGutterHeight - 5 ) );
+    myPolygon << QPoint(( i*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
+    myPolygon << QPoint((( i + 1 )*myXDivisions ) + myYGutterWidth, myImageHeight - myXGutterHeight );
     myPainter.drawPolyline( myPolygon );
   }
   //
@@ -2235,7 +2235,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   //now draw the axis labels onto the graph
   myPainter.drawText( 1, 12, myYMaxLabel );
   myPainter.drawText( 1, myImageHeight - myXGutterHeight, QString::number( static_cast < unsigned int >( myYAxisMin ) ) );
-  myPainter.drawText( myYGutterWidth, myImageHeight - 1 , myXMinLabel );
+  myPainter.drawText( myYGutterWidth, myImageHeight - 1, myXMinLabel );
   myPainter.drawText( myImageWidth - myXGutterWidth, myImageHeight - 1, myXMaxLabel );
 
   //
@@ -2604,7 +2604,7 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
   for ( int i = 0; i < numberOfEntries; ++i )
   {
     QColor currentColor;
-    currentColor.setRgb( colorDiff*i , 0, 255 - colorDiff * i );
+    currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
     entryColors.push_back( currentColor );
   }
 

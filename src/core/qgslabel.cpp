@@ -156,9 +156,9 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     size = sizeMM * sizeScale;
   }
   if ( size > 0.0 )
-    {
-      font.setPixelSize(size);
-    }
+  {
+    font.setPixelSize( size );
+  }
 
   value = fieldValue( Color, feature );
   if ( value.isEmpty() )
@@ -324,10 +324,10 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     yoffset *= scale;
   }
   else
-    {
-      xoffset = xoffset * 0.3527 * sizeScale;
-      yoffset = yoffset * 0.3527 * sizeScale;
-    }
+  {
+    xoffset = xoffset * 0.3527 * sizeScale;
+    yoffset = yoffset * 0.3527 * sizeScale;
+  }
 
   // Angle
   double ang;
@@ -408,36 +408,36 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   //
   if ( mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled() )
   {
-    int myBufferSize = static_cast<int>( mLabelAttributes->bufferSize() * 0.3527 * sizeScale);
+    int myBufferSize = static_cast<int>( mLabelAttributes->bufferSize() * 0.3527 * sizeScale );
     QPen bufferPen;
     if ( mLabelAttributes->bufferColorIsSet() )
     {
-      bufferPen.setColor( mLabelAttributes->bufferColor());
+      bufferPen.setColor( mLabelAttributes->bufferColor() );
     }
     else //default to a white buffer
     {
       bufferPen.setColor( Qt::white );
     }
-    painter->setPen(bufferPen);
+    painter->setPen( bufferPen );
 
     double bufferStepSize; //hack to distinguish pixel devices from logical devices
-    if((sizeScale - 1) > 1.5)
-      {
-	bufferStepSize = 1;
-      }
-    else //draw more dense in case of logical devices
-      {
-	bufferStepSize = 0.25;
-      }
-
-    for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i+= 0.25)
+    if (( sizeScale - 1 ) > 1.5 )
     {
-      for ( double j = dy - myBufferSize; j <= dy + myBufferSize; j+= 0.25 )
+      bufferStepSize = 1;
+    }
+    else //draw more dense in case of logical devices
+    {
+      bufferStepSize = 0.25;
+    }
+
+    for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i += 0.25 )
+    {
+      for ( double j = dy - myBufferSize; j <= dy + myBufferSize; j += 0.25 )
       {
         if ( mLabelAttributes->multilineEnabled() )
-          painter->drawText( QRectF(i , j - height, width, height), alignment, text );
+          painter->drawText( QRectF( i, j - height, width, height ), alignment, text );
         else
-          painter->drawText( QPointF(i , j), text );
+          painter->drawText( QPointF( i, j ), text );
       }
     }
   }
