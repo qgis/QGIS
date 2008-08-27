@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>496</width>
-    <height>626</height>
+    <width>560</width>
+    <height>537</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -183,19 +183,20 @@
        </widget>
       </item>
       <item row="0" column="4" >
-       <spacer>
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
+       <widget class="QPushButton" name="mUpdatePushButton" >
+        <property name="text" >
+         <string>update</string>
         </property>
-        <property name="sizeHint" >
-         <size>
-          <width>121</width>
-          <height>33</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="1" column="0" colspan="5" >
+      <item row="0" column="5" >
+       <widget class="QPushButton" name="mUpdateAllPushButton" >
+        <property name="text" >
+         <string>update all</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="6" >
        <widget class="QTreeView" name="mItemTreeView" >
         <property name="headerHidden" stdset="0" >
          <bool>true</bool>

@@ -438,6 +438,13 @@ QFont QgsComposerLegend::itemFont() const
   return mItemFont;
 }
 
+void QgsComposerLegend::updateLegend()
+{
+  mLegendModel.setLayerSet(layerIdList());
+  adjustBoxSize();
+  update();
+}
+
 bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc )
 {
   if ( elem.isNull() )

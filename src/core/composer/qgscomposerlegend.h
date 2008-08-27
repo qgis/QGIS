@@ -78,6 +78,9 @@ class CORE_EXPORT QgsComposerLegend: public QObject, public QgsComposerItem
     double symbolHeight() const {return mSymbolHeight;}
     void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
+    /**Updates the model and all legend entries*/
+    void updateLegend();
+
     /** stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param temp write template file

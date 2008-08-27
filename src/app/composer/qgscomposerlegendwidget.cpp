@@ -340,3 +340,42 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
     mLegend->update();
   }
 }
+
+void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
+{
+  //get current item
+  QStandardItemModel* itemModel = dynamic_cast<QStandardItemModel*>( mItemTreeView->model() );
+  if ( !itemModel )
+  {
+    return;
+  }
+
+  //get current item
+  QModelIndex currentIndex = mItemTreeView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QStandardItem* currentItem = itemModel->itemFromIndex( currentIndex );
+  if ( !currentItem )
+  {
+    return;
+  }
+  
+  QModelIndex parentIndex = currentIndex.parent();
+  if ( !parentIndex.isValid() ) // a layer item
+    {
+      QString mapLayerId = currentItem->data().toString();
+      mLegend->model()->updateLayer(mapLayerId);
+      mLegend->update();
+    }
+}
+
+void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
+{
+  if(mLegend)
+    {
+      mLegend->updateLegend();
+    }
+}

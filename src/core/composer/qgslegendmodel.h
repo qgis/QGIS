@@ -41,7 +41,10 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
     void setLayerSet( const QStringList& layerIds );
     /**Apply added or removed layers to the model*/
-    void updateLayerEntries( const QStringList& newLayerIds );
+    //void updateLayerEntries( const QStringList& newLayerIds );
+
+    /**Updates the symbology of a single layer*/
+    void updateLayer(const QString& layerId);
 
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc );
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
