@@ -138,10 +138,7 @@ namespace qgis
         QStringList drvDstList;
         QString drvName;
 
-        if ( 0 >= OGRGetDriverCount() )
-        {
-          QgsApplication::registerOgrDrivers();
-        }
+        QgsApplication::registerOgrDrivers();
         int const drvCount = OGRGetDriverCount();
 
         for ( int i = 0; i < drvCount; ++i )
