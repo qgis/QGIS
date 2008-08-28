@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>596</width>
-    <height>610</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -1199,56 +1199,7 @@
        <string>Colormap</string>
       </attribute>
       <layout class="QGridLayout" >
-       <item row="0" column="0" colspan="2" >
-        <layout class="QHBoxLayout" >
-         <property name="leftMargin" >
-          <number>11</number>
-         </property>
-         <property name="topMargin" >
-          <number>11</number>
-         </property>
-         <property name="rightMargin" >
-          <number>11</number>
-         </property>
-         <property name="bottomMargin" >
-          <number>11</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="mNumberOfEntriesLabel" >
-           <property name="text" >
-            <string>Number of entries</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="sboxNumberOfEntries" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximum" >
-            <number>256</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="2" >
-        <spacer>
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" >
-          <size>
-           <width>71</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="3" colspan="4" >
+       <item row="0" column="0" colspan="3" >
         <layout class="QHBoxLayout" >
          <property name="leftMargin" >
           <number>11</number>
@@ -1274,73 +1225,54 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="0" colspan="3" >
+       <item row="0" column="3" colspan="6" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>61</width>
-           <height>20</height>
+           <width>321</width>
+           <height>45</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="1" column="3" colspan="4" >
-        <layout class="QHBoxLayout" >
-         <property name="leftMargin" >
-          <number>11</number>
-         </property>
-         <property name="topMargin" >
-          <number>11</number>
-         </property>
-         <property name="rightMargin" >
-          <number>11</number>
-         </property>
-         <property name="bottomMargin" >
-          <number>11</number>
-         </property>
-         <item>
-          <widget class="QLabel" name="mClassificationModeLabel" >
-           <property name="text" >
-            <string>Classification mode</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cboxClassificationMode" />
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0" >
-        <widget class="QPushButton" name="mClassifyButton" >
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="pbtnAddColorMapEntry" >
          <property name="text" >
-          <string>Classify</string>
+          <string>Add entry</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1" >
+       <item row="1" column="1" >
         <widget class="QPushButton" name="mDeleteEntryButton" >
          <property name="text" >
           <string>Delete entry</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="2" >
+       <item row="1" column="2" colspan="2" >
+        <widget class="QPushButton" name="pbtnSortColorMap" >
+         <property name="text" >
+          <string>Sort</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>211</width>
+           <width>41</width>
            <height>27</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="2" column="3" >
+       <item row="1" column="5" >
         <layout class="QHBoxLayout" >
          <property name="leftMargin" >
           <number>11</number>
@@ -1363,10 +1295,13 @@
          </item>
         </layout>
        </item>
-       <item row="2" column="4" >
+       <item row="1" column="6" >
         <spacer>
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Minimum</enum>
          </property>
          <property name="sizeHint" >
           <size>
@@ -1376,7 +1311,7 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="5" >
+       <item row="1" column="7" >
         <widget class="QToolButton" name="pbtnLoadColorMapFromFile" >
          <property name="toolTip" >
           <string>Load color map from file</string>
@@ -1389,7 +1324,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="6" >
+       <item row="1" column="8" >
         <widget class="QToolButton" name="pbtnExportColorMapToFile" >
          <property name="toolTip" >
           <string>Export color map to file</string>
@@ -1402,7 +1337,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0" colspan="7" >
+       <item row="2" column="0" colspan="9" >
         <widget class="QTreeWidget" name="mColormapTreeWidget" >
          <property name="columnCount" >
           <number>3</number>
@@ -1422,6 +1357,84 @@
            <string>2</string>
           </property>
          </column>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="9" >
+        <widget class="QGroupBox" name="groupBox_9" >
+         <property name="title" >
+          <string>Generate new color map</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="leftMargin" >
+             <number>11</number>
+            </property>
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>11</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mNumberOfEntriesLabel" >
+              <property name="text" >
+               <string>Number of entries</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="sboxNumberOfEntries" >
+              <property name="sizePolicy" >
+               <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximum" >
+               <number>256</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="leftMargin" >
+             <number>11</number>
+            </property>
+            <property name="topMargin" >
+             <number>11</number>
+            </property>
+            <property name="rightMargin" >
+             <number>11</number>
+            </property>
+            <property name="bottomMargin" >
+             <number>11</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="mClassificationModeLabel" >
+              <property name="text" >
+               <string>Classification mode</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cboxClassificationMode" />
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mClassifyButton" >
+            <property name="text" >
+             <string>Classify</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
