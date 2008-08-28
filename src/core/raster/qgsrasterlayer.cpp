@@ -537,8 +537,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "STRETCH_TO_MINMAX" ).toString() );
 
   //decide what type of layer this is...
-  //note that multiband images can have one or more 'undefindd' bands,
-  //so we must do this check first!
+  //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
   if (( GDALGetRasterCount( mGdalDataset ) > 1 ) )
   {
     rasterLayerType = MULTIBAND;
@@ -554,13 +553,23 @@ bool QgsRasterLayer::readFile( QString const & fileName )
 
   if ( rasterLayerType == PALETTE )
   {
-    mRedBandName = "Red"; // sensible default
-    mGreenBandName = "Green"; // sensible default
-    mBlueBandName = "Blue";// sensible default
+    mRedBandName = TRSTRING_NOT_SET; // sensible default
+    mGreenBandName = TRSTRING_NOT_SET; // sensible default
+    mBlueBandName = TRSTRING_NOT_SET;// sensible default
     mTransparencyBandName = TRSTRING_NOT_SET; // sensible default
-    mGrayBandName = TRSTRING_NOT_SET;  //sensible default
-    drawingStyle = PALETTED_MULTI_BAND_COLOR; //sensible default
-    setContrastEnhancementAlgorithm( QgsContrastEnhancement::NO_STRETCH );
+    mGrayBandName = getRasterBandName(1);  //sensible default
+    QgsDebugMsg(mGrayBandName);
+    
+    drawingStyle = PALETTED_SINGLE_BAND_PSEUDO_COLOR; //sensible default
+    
+    //Load the color table from the band
+    QList<QgsColorRampShader::ColorRampItem> myColorRampList;
+    readColorTable(1, &myColorRampList);
+    //Set up a new color ramp shader
+    setColorShadingAlgorithm(COLOR_RAMP);
+    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
+    myColorRampShader->setColorRampType(QgsColorRampShader::EXACT);
+    myColorRampShader->setColorRampItemList(myColorRampList);
   }
   else if ( rasterLayerType == MULTIBAND )
   {
@@ -583,14 +592,12 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   }
   else                        //GRAY_OR_UNDEFINED
   {
-    //Disabled automatically generating stats to improve initial load speed.
-    //getRasterBandStats(1);
     mRedBandName = TRSTRING_NOT_SET; //sensible default
     mGreenBandName = TRSTRING_NOT_SET; //sensible default
     mBlueBandName = TRSTRING_NOT_SET;  //sensible default
     mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
     drawingStyle = SINGLE_BAND_GRAY;  //sensible default
-    mGrayBandName = getRasterBandName( 1 ); // usually gdal will return gray or undefined
+    mGrayBandName = getRasterBandName( 1 );
   }
 
   //mark the layer as valid
@@ -1710,7 +1717,12 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
     return;
   }
 
-  QgsRasterBandStats myRasterBandStats = getRasterBandStats( theBandNo );
+  QgsRasterBandStats myRasterBandStats;
+  //If there is a color ramp, i.e., a paletted layer, then no need to generate stats
+  if(COLOR_RAMP != mColorShadingAlgorithm)
+  {
+    myRasterBandStats = getRasterBandStats( theBandNo );
+  }
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
   void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
@@ -2186,7 +2198,7 @@ int QgsRasterLayer::getRasterBandNumber( QString const & theBandName )
 // get the name of a band given its number
 const QString QgsRasterLayer::getRasterBandName( int theBandNo )
 {
-
+  QgsDebugMsg("entered.");
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
     //vector starts at base 0, band counts at base1 !
@@ -2239,7 +2251,6 @@ That this is a cpu intensive and slow task!
 
 */
 //TODO: This method needs some cleaning up PJE 2007-12-30
-//TODO: Values that are only used in debug should be totally wrapped in debug ifdefs
 const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
 {
   // check if we have received a valid band number
@@ -2277,40 +2288,6 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
   //declare a colorTable to hold a palette - will only be used if the layer color interp is palette ???
   //get the palette colour table
   QgsColorTable *myColorTable = &( myRasterBandStats.colorTable );
-  if ( rasterLayerType == PALETTE )
-  {
-
-    //override the band name - palette images are really only one band
-    //so we are faking three band behaviour
-    switch ( theBandNo )
-    {
-        // a "Red" layer
-      case 1:
-        myRasterBandStats.bandName = mRedBandName;
-        break;
-      case 2:
-        myRasterBandStats.bandName = mBlueBandName;
-        break;
-      case 3:
-        myRasterBandStats.bandName = mGreenBandName;
-        break;
-      default:
-        //invalid band id so return
-        QgsRasterBandStats myNullReturnStats;
-        return myNullReturnStats;
-        break;
-    }
-  }
-  else if ( rasterLayerType == GRAY_OR_UNDEFINED )
-  {
-    //PJE 2008-01-14 This function should not be changing the band name,
-    //The format below is not the same as the constructor
-    //myRasterBandStats.bandName = myColorerpretation;
-  }
-  else //rasterLayerType is MULTIBAND
-  {
-    //do nothing
-  }
 
   // XXX this sets the element count to a sensible value; but then you ADD to
   // XXX it later while iterating through all the pixels?
@@ -2559,36 +2536,29 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
 
 QString QgsRasterLayer::validateBandName( QString const & theBandName )
 {
-  QgsDebugMsg( "validateBandName :  Checking..." );
+  QgsDebugMsg( "Checking..." );
   //check if the band is unset
   if ( theBandName == TRSTRING_NOT_SET || theBandName == QSTRING_NOT_SET )
   {
-    QgsDebugMsg( "validateBandName :  Band name is '" + QSTRING_NOT_SET + "'. Nothing to do." );
+    QgsDebugMsg( "Band name is '" + QSTRING_NOT_SET + "'. Nothing to do." );
     // Use translated name internally
     return TRSTRING_NOT_SET;
   }
 
-  //check if the image is paletted
-  if ( rasterLayerType == PALETTE && ( theBandName == "Red" || theBandName == "Green" || theBandName == "Blue" ) )
-  {
-    QgsDebugMsg( "validateBandName :  Paletted image valid faux RGB band name" );
-    return theBandName;
-  }
-
   //check that a valid band name was passed
-  QgsDebugMsg( "validateBandName :  Looking through raster band stats for matching band name" );
+  QgsDebugMsg( "Looking through raster band stats for matching band name" );
   for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
   {
     //find out the name of this band
     if ( mRasterStatsList[myIterator].bandName == theBandName )
     {
-      QgsDebugMsg( "validateBandName :  Matching band name found" );
+      QgsDebugMsg( "Matching band name found" );
       return theBandName;
     }
   }
-  QgsDebugMsg( "validateBandName :  No matching band name found in raster band stats" );
+  QgsDebugMsg( "No matching band name found in raster band stats" );
 
-  QgsDebugMsg( "validateBandName :  Testing older naming format" );
+  QgsDebugMsg( "Testing older naming format" );
   //See of the band in an older format #:something.
   //TODO Remove test in v2.0
   if ( theBandName.contains( ':' ) )
@@ -2599,14 +2569,14 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
       int myBandNumber = myBandNameComponents.at( 0 ).toInt();
       if ( myBandNumber > 0 )
       {
-        QgsDebugMsg( "validateBandName :  Transformed older name format to current format" );
+        QgsDebugMsg( "Transformed older name format to current format" );
         return "Band " + QString::number( myBandNumber );
       }
     }
   }
 
   //if no matches were found default to not set
-  QgsDebugMsg( "validateBandName :  All checks failed, returning '" + QSTRING_NOT_SET + "'" );
+  QgsDebugMsg( "All checks failed, returning '" + QSTRING_NOT_SET + "'" );
   return TRSTRING_NOT_SET;
 }
 
@@ -3792,8 +3762,89 @@ bool QgsRasterLayer::isEditable() const
   return false;
 }
 
+bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList)
+{
+  QgsDebugMsg( "entered." );
+  //Invalid band number, segfault prevention
+  if (0 >= theBandNumber || 0 == theList)
+  {
+    QgsDebugMsg("Invalid paramter");
+    return false;
+  }
+  
+  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset, theBandNumber);
+  GDALColorTableH myGdalColorTable = GDALGetRasterColorTable(myGdalBand);
 
-
+  if (myGdalColorTable)
+  {
+    QgsDebugMsg("Color table found");
+    int myEntryCount = GDALGetColorEntryCount(myGdalColorTable);
+    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation(myGdalBand);
+    QgsDebugMsg("Color Interpretation: " + QString::number((int)myColorInterpretation));
+    GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation(myGdalColorTable);
+    QgsDebugMsg("Palette Interpretation: " + QString::number((int)myPaletteInterpretation));
+    
+    const GDALColorEntry* myColorEntry = 0;
+    for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
+    {
+      myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
+      
+      if ( !myColorEntry ) 
+      {
+        continue;
+      }
+      else
+      {
+        //Branch on the color interpretation type
+        if(myColorInterpretation == GCI_GrayIndex)
+        {
+          QgsColorRampShader::ColorRampItem myColorRampItem;
+          myColorRampItem.label = "";
+          myColorRampItem.value = (double)myIterator;
+          myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4);
+          theList->append(myColorRampItem);
+        }
+        else if(myColorInterpretation = GCI_PaletteIndex)
+        {
+          QgsColorRampShader::ColorRampItem myColorRampItem;
+          myColorRampItem.label = "";
+          myColorRampItem.value = (double)myIterator;
+          //Branch on palette interpretation
+          if(myPaletteInterpretation  == GPI_RGB)
+          {
+            myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4); 
+          }
+          else if(myPaletteInterpretation  == GPI_CMYK)
+          {
+            myColorRampItem.color = QColor::fromCmyk(myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4); 
+          }
+          else if(myPaletteInterpretation  == GPI_HLS)
+          {
+            myColorRampItem.color = QColor::fromHsv(myColorEntry->c1, myColorEntry->c3, myColorEntry->c2, myColorEntry->c4); 
+          }
+          else
+          {
+            myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4);  
+          }
+          theList->append(myColorRampItem);
+        }
+        else
+        {
+          QgsDebugMsg("Color interpretation type not supported yet");
+          return false;
+        }
+      }
+    }
+  }
+  else
+  {
+    QgsDebugMsg("No color table found for band " + QString::number(theBandNumber));
+    return false;
+  }
+  
+  QgsDebugMsg("Color table loaded sucessfully");
+  return true;
+}
 
 void QgsRasterLayer::readColorTable( GDALRasterBandH gdalBand, QgsColorTable *theColorTable )
 {

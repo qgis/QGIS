@@ -136,6 +136,7 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgsrastershader.h"
+#include "qgscolorrampshader.h"
 #include "qgsrastershaderfunction.h"
 #include "qgsrasterdataprovider.h"
 
@@ -629,7 +630,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       }
     }
 
-
+    /** \brief Read color table from GDAL raster band */
+    bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList);
+    
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
     {
@@ -638,8 +641,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       SINGLE_BAND_PSEUDO_COLOR,// a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
       PALETTED_COLOR, //a "Palette" image drawn using color table
       PALETTED_SINGLE_BAND_GRAY,// a "Palette" layer drawn in gray scale (using only one of the color components)
-      PALETTED_SINGLE_BAND_PSEUDO_COLOR, // a "Palette" layer having only one of its color components rendered as psuedo color
-      PALETTED_MULTI_BAND_COLOR, // a "Palette" image is decomposed to 3 channels (RGB) and drawn
+      PALETTED_SINGLE_BAND_PSEUDO_COLOR, // a "Palette" layer having only one of its color components rendered as psuedo color --PJE20080827 this is no longer accurate as it is used to shade the color ramp as well
+      PALETTED_MULTI_BAND_COLOR, // a "Palette" image is decomposed to 3 channels (RGB) and drawn --PJE20080827 this is no longer accurate
       // as multiband
       MULTI_BAND_SINGLE_BAND_GRAY, // a layer containing 2 or more bands, but using only one band to produce a grayscale image
       MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR, //a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
