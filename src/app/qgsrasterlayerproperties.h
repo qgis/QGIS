@@ -108,6 +108,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_mDeleteEntryButton_clicked();
     /**Callback for double clicks on the colormap entry widget*/
     void handleColormapTreeWidgetDoubleClick( QTreeWidgetItem* item, int column );
+    /**This slot adds a new row to the color map table */
+    void on_pbtnAddColorMapEntry_clicked();
     /**This slots saves the current color map to a file */
     void on_pbtnExportColorMapToFile_clicked();
     /**This slots loads the current color map from a band */
@@ -120,7 +122,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbtnMakeBandCombinationDefault_clicked();
     /**This slot sets the default contrast enhancement varaible  to current contrast enhancement algorithm */
     void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
-
+    /**This slot will sort the color map  in ascending order*/
+    void on_pbtnSortColorMap_clicked();
     /** Load the default style when appriate button is pressed. */
     void on_pbnLoadDefaultStyle_clicked();
     /** Save the default style when appriate button is pressed. */
