@@ -3725,7 +3725,7 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
           myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4);
           theList->append(myColorRampItem);
         }
-        else if(myColorInterpretation = GCI_PaletteIndex)
+        else if(myColorInterpretation == GCI_PaletteIndex)
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
           myColorRampItem.label = "";
