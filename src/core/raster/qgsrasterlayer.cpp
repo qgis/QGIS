@@ -560,7 +560,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mGrayBandName = getRasterBandName(1);  //sensible default
     QgsDebugMsg(mGrayBandName);
     
-    drawingStyle = PALETTED_SINGLE_BAND_PSEUDO_COLOR; //sensible default
+    drawingStyle = PALETTED_COLOR; //sensible default
     
     //Load the color table from the band
     QList<QgsColorRampShader::ColorRampItem> myColorRampList;
@@ -783,6 +783,10 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   else if ( theDrawingStyleQString == "SINGLE_BAND_PSEUDO_COLOR" )//no need to tr() this its not shown in ui
   {
     drawingStyle = SINGLE_BAND_PSEUDO_COLOR;
+  }
+  else if ( theDrawingStyleQString == "PALETTED_COLOR" )//no need to tr() this its not shown in ui
+  {
+    drawingStyle = PALETTED_COLOR;
   }
   else if ( theDrawingStyleQString == "PALETTED_SINGLE_BAND_GRAY" )//no need to tr() this its not shown in ui
   {
@@ -1221,6 +1225,22 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
                                    theQgsMapToPixel, getRasterBandNumber( mGrayBandName ) );
         break;
       }
+      // a single band with a color map
+    case PALETTED_COLOR:
+      //check the band is set!
+      if ( mGrayBandName == TRSTRING_NOT_SET )
+      {
+        break;
+      }
+      else
+      {
+        QgsDebugMsg( "PALETTED_COLOR drawing type detected..." );
+
+        drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
+                                    theQgsMapToPixel, getRasterBandNumber(mGrayBandName ));
+
+        break;
+      }
       // a "Palette" layer drawn in gray scale (using only one of the color components)
     case PALETTED_SINGLE_BAND_GRAY:
       //check the band is set!
@@ -1520,7 +1540,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
 }
 
 /**
- * This method is used to render a paletted raster layer as a colour image.
+ * This method is used to render a single band with a color map.
  * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
  * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
  * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
@@ -1535,6 +1555,11 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
     return;
   }
 
+  if ( NULL == mRasterShader )
+  {
+    return;
+  }
+
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
   void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
@@ -1545,8 +1570,6 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
     return;
   }
 
-  QgsColorTable *myColorTable = colorTable( theBandNo );
-
   QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
   myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
 
@@ -1554,17 +1577,15 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
-  bool found = false;
   int myAlphaValue = 0;
+
   for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
   {
     for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
     {
-      //Reinitalize values;
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
-      found = false;
       myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
                                 myColumn * theRasterViewPort->drawableAreaXDim + myRow );
 
@@ -1579,19 +1600,23 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
         continue;
       }
 
-      found = myColorTable->color( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue );
-      if ( !found ) continue;
+      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      {
+        continue;
+      }
 
       if ( mInvertPixelsFlag )
       {
-        myRedValue = 255 - myRedValue;
-        myGreenValue = 255 - myGreenValue;
-        myBlueValue = 255 - myBlueValue;
+        //Invert flag, flip blue and read
+        myQImage.setPixel( myRow, myColumn, qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue ) );
       }
-      myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
+      else
+      {
+        //Normal
+        myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
+      }
     }
   }
-
   CPLFree( myGdalScanData );
 
   //render any inline filters
@@ -1717,12 +1742,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
     return;
   }
 
-  QgsRasterBandStats myRasterBandStats;
-  //If there is a color ramp, i.e., a paletted layer, then no need to generate stats
-  if(COLOR_RAMP != mColorShadingAlgorithm)
-  {
-    myRasterBandStats = getRasterBandStats( theBandNo );
-  }
+  QgsRasterBandStats myRasterBandStats = getRasterBandStats( theBandNo );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
   void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
@@ -1811,7 +1831,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 }
 
 /**
- * This method is used to render a paletted raster layer as a colour image.
+ * This method is used to render a paletted raster layer as a colour image -- currently not supported
  * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
  * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
  * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
@@ -1819,106 +1839,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 void QgsRasterLayer::drawPalettedMultiBandColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
-  QgsDebugMsg( "entered." );
-  //Invalid band number, segfault prevention
-  if ( 0 >= theBandNo )
-  {
-    return;
-  }
-
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
-
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
-
-  QgsColorTable *myColorTable = colorTable( theBandNo );
-
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
-  myQImage.fill( qRgba( 255, 255, 255, 0 ) ); // fill transparent
-
-  double myPixelValue = 0.0;
-  int myRedLUTValue = 0;
-  int myGreenLUTValue = 0;
-  int myBlueLUTValue = 0;
-
-  int myRedValue = 0;  //color 1 int
-  int myGreenValue = 0;  //color 2 int
-  int myBlueValue = 0; //color 3 int
-  int myAlphaValue = 0;
-  for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
-  {
-    for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaXDim; ++myRow )
-    {
-      myRedLUTValue = 0;
-      myGreenLUTValue = 0;
-      myBlueLUTValue = 0;
-
-      myRedValue = 0;
-      myGreenValue = 0;
-      myBlueValue = 0;
-      myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myColumn * theRasterViewPort->drawableAreaXDim + myRow );
-
-      if ( mValidNoDataValue && ( myPixelValue == mNoDataValue || myPixelValue != myPixelValue ) )
-      {
-        continue;
-      }
-
-      myAlphaValue = mRasterTransparency.getAlphaValue( myPixelValue, mTransparencyLevel );
-      if ( 0 == myAlphaValue )
-      {
-        continue;
-      }
-
-      bool found = myColorTable->color( myPixelValue, &myRedLUTValue, &myGreenLUTValue, &myBlueLUTValue );
-      if ( !found ) continue;
-
-      //check for alternate color mappings
-      if ( mRedBandName == "Red" )
-        myRedValue = myRedLUTValue;
-      else if ( mRedBandName == "Green" )
-        myRedValue = myGreenLUTValue;
-      else if ( mRedBandName == "Blue" )
-        myRedValue = myBlueLUTValue;
-
-      if ( mGreenBandName == "Red" )
-        myGreenValue = myRedLUTValue;
-      else if ( mGreenBandName == "Green" )
-        myGreenValue = myGreenLUTValue;
-      else if ( mGreenBandName == "Blue" )
-
-        myGreenValue = myBlueLUTValue;
-
-      if ( mBlueBandName == "Red" )
-        myBlueValue = myRedLUTValue;
-      else if ( mBlueBandName == "Green" )
-        myBlueValue = myGreenLUTValue;
-      else if ( mBlueBandName == "Blue" )
-        myBlueValue = myBlueLUTValue;
-
-      if ( mInvertPixelsFlag )
-      {
-        myRedValue = 255 - myRedValue;
-        myGreenValue = 255 - myGreenValue;
-        myBlueValue = 255 - myBlueValue;
-
-      }
-
-      myQImage.setPixel( myRow, myColumn, qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue ) );
-    }
-  }
-
-  CPLFree( myGdalScanData );
-
-  //render any inline filters
-  filterLayer( &myQImage );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
+  QgsDebugMsg( "Not supported at this time" );
 }
 
 

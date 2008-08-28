@@ -480,6 +480,16 @@ void QgsRasterLayerProperties::sync()
       cboxContrastEnhancementAlgorithm->setEnabled( false );
       labelContrastEnhancement->setEnabled( false );
       break;
+    case QgsRasterLayer::PALETTED_COLOR:
+      rbtnThreeBand->setEnabled( false );
+      rbtnSingleBand->setEnabled( true );
+      rbtnSingleBand->setChecked( true );
+      rbtnThreeBandMinMax->setEnabled( false );
+      rbtnThreeBandStdDev->setEnabled( false );
+      pbtnLoadMinMax->setEnabled( false );
+      cboxContrastEnhancementAlgorithm->setEnabled( false );
+      labelContrastEnhancement->setEnabled( false );
+      break;
     case QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY:
       rbtnThreeBand->setEnabled( true );
       rbtnSingleBand->setEnabled( true );
@@ -575,6 +585,7 @@ void QgsRasterLayerProperties::sync()
   //
   QgsDebugMsg( "colorShadingAlgorithm = " + QString::number( mRasterLayer->getColorShadingAlgorithm() ) );
   if ( mRasterLayer->getDrawingStyle() == QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR ||
+       mRasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_COLOR ||
        mRasterLayer->getDrawingStyle() == QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR ||
        mRasterLayer->getDrawingStyle() == QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR )
   {
@@ -963,23 +974,29 @@ void QgsRasterLayerProperties::apply()
     //
     else if ( mRasterLayer->getRasterLayerType() == QgsRasterLayer::PALETTE )
     {
-      if ( cboxColorMap->currentText() != tr( "Grayscale" ) )
+      if ( cboxColorMap->currentText() == tr( "Grayscale" ) )
+      {
+        QgsDebugMsg( "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" );
+        QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
+                     getGrayBandName() ) );
+                     
+        mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY );
+      }
+      else if ( cboxColorMap->currentText() == tr( "Colormap" ) )
+      {
+        QgsDebugMsg( "Setting Raster Drawing Style to :: PALETTED_COLOR" );
+        QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
+                     getGrayBandName() ) );
+
+        mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_COLOR );
+      }
+      else
       {
         QgsDebugMsg( "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_PSEUDO_COLOR" );
 
         mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR );
       }
-      else
-      {
-        QgsDebugMsg( "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" );
-#ifdef QGISDEBUG
-
-        QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
-                     getGrayBandName() ) );
-#endif
-
-        mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY );
-      }
+      
     }
     //
     // Mutltiband
