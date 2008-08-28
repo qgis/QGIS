@@ -13,7 +13,12 @@ include /usr/share/dpatch/dpatch.make
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
-CMAKE_OPTS = -Wno-dev -D CMAKE_INSTALL_PREFIX=/usr -D CMAKE_SKIP_RPATH=TRUE -D BINDINGS_GLOBAL_INSTALL=TRUE -D PEDANTIC=TRUE
+CMAKE_OPTS = \
+	-Wno-dev \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_SKIP_RPATH=TRUE \
+	-D BINDINGS_GLOBAL_INSTALL=TRUE \
+	-D PEDANTIC=TRUE \
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -86,6 +91,13 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 	dh_install --sourcedir=debian/tmp
+
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin
+
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
+	
 	dh_pycentral
 	dh_installmenu
 	dh_icons
@@ -99,7 +111,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass/lib dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
