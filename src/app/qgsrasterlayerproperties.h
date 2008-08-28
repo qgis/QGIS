@@ -22,6 +22,8 @@
 
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
+#include "qgscolorrampshader.h"
+
 class QgsMapLayer;
 class QgsRasterLayer;
 
@@ -108,7 +110,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void handleColormapTreeWidgetDoubleClick( QTreeWidgetItem* item, int column );
     /**This slots saves the current color map to a file */
     void on_pbtnExportColorMapToFile_clicked();
-    /**This slots saves the current color map to a file */
+    /**This slots loads the current color map from a band */
+    void on_pbtnLoadColorMapFromBand_clicked();
+    /**This slots loads the current color map from a file */
     void on_pbtnLoadColorMapFromFile_clicked();
     /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
     void on_pbtnLoadMinMax_clicked();
@@ -172,6 +176,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         included or not
      */
     bool mRasterLayerIsWms;
+    
+    /** \brief Clear current color map table and population with values from new list */
+    void populateColorMapTable(const QList<QgsColorRampShader::ColorRampItem>&);
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable();

@@ -29,7 +29,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
-#include "qgscolorrampshader.h"
+
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -56,6 +56,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
     mRasterLayer( dynamic_cast<QgsRasterLayer*>( lyr ) )
 {
+
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayActualMinimumMaximum = false;
   mRGBActualMinimumMaximum = false;
@@ -102,7 +103,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   cboxColorMap->addItem( tr( "Grayscale" ) );
   cboxColorMap->addItem( tr( "Pseudocolor" ) );
   cboxColorMap->addItem( tr( "Freak Out" ) );
-  cboxColorMap->addItem( tr( "Custom Colormap" ) );
+  cboxColorMap->addItem( tr( "Colormap" ) );
 
   //add items to the color stretch combo box
   cboxContrastEnhancementAlgorithm->addItem( tr( "No Stretch" ) );
@@ -145,138 +146,107 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   headerLabels << "Label";
   mColormapTreeWidget->setHeaderLabels( headerLabels );
 
-  //disable Custom colormap tab completely until 'Custom Colormap' is selected (and only for type GRAY_OR_UNDEFINED)
+  //disable colormap tab completely until 'Colormap' is selected (and only for type GRAY_OR_UNDEFINED)
   tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), FALSE );
 
   //
   // Set up the combo boxes that contain band lists using the qstring list generated above
   //
 
-  if ( mRasterLayer->getRasterLayerType()
-       == QgsRasterLayer::PALETTE ) //paletted layers have hard coded color entries
+  QgsDebugMsg( "Populating band combo boxes" );
+
+  //
+  // Get a list of band names
+  //
+  QStringList myBandNameList;
+
+  int myBandCountInt = mRasterLayer->getBandCount();
+
+  QgsDebugMsg( QString( "Looping though %1 image layers to get their names " ).arg( myBandCountInt ) );
+
+  for ( int myIteratorInt = 1;
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt )
   {
-    cboRed->addItem( tr( "Red" ) );
-    cboGreen->addItem( tr( "Red" ) );
-    cboBlue->addItem( tr( "Red" ) );
+    //find out the name of this band
+    QString myRasterBandNameQString = mRasterLayer->getRasterBandName( myIteratorInt ) ;
+    
+    //add the band to the histogram tab
+    //
+    QPixmap myPixmap( 10, 10 );
 
-    cboRed->addItem( tr( "Green" ) );
-    cboGreen->addItem( tr( "Green" ) );
-    cboBlue->addItem( tr( "Green" ) );
-
-    cboRed->addItem( tr( "Blue" ) );
-    cboGreen->addItem( tr( "Blue" ) );
-    cboBlue->addItem( tr( "Blue" ) );
-
-    cboRed->addItem( TRSTRING_NOT_SET );
-    cboGreen->addItem( TRSTRING_NOT_SET );
-    cboBlue->addItem( TRSTRING_NOT_SET );
-
-    cboGray->addItem( tr( "Red" ) );
-    cboGray->addItem( tr( "Green" ) );
-    cboGray->addItem( tr( "Blue" ) );
-    cboGray->addItem( TRSTRING_NOT_SET );
-
-    lstHistogramLabels->addItem( tr( "Palette" ) );
+    if ( myBandCountInt == 1 ) //draw single band images with black
+    {
+      myPixmap.fill( Qt::black );
+    }
+    else if ( myIteratorInt == 1 )
+    {
+      myPixmap.fill( Qt::red );
+    }
+    else if ( myIteratorInt == 2 )
+    {
+      myPixmap.fill( Qt::green );
+    }
+    else if ( myIteratorInt == 3 )
+    {
+      myPixmap.fill( Qt::blue );
+    }
+    else if ( myIteratorInt == 4 )
+    {
+      myPixmap.fill( Qt::magenta );
+    }
+    else if ( myIteratorInt == 5 )
+    {
+      myPixmap.fill( Qt::darkRed );
+    }
+    else if ( myIteratorInt == 6 )
+    {
+      myPixmap.fill( Qt::darkGreen );
+    }
+    else if ( myIteratorInt == 7 )
+    {
+      myPixmap.fill( Qt::darkBlue );
+    }
+    else
+    {
+      myPixmap.fill( Qt::gray );
+    }
+    lstHistogramLabels->addItem( new QListWidgetItem( myPixmap, myRasterBandNameQString ) );
+    mGradientHeight = pixHistogram->height() / 2;
+    mGradientWidth = pixHistogram->width() / 2;
+    //keep a list of band names for later use
+    //! @note band names should not be translated!
+    myBandNameList.append( myRasterBandNameQString );
   }
-  else                   // all other layer types use band name entries only
+
+  //select all histogram layers list items by default
+  for ( int myIteratorInt = 1;
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt )
   {
-    QgsDebugMsg( "Populating combos for non paletted layer" );
-
-    //
-    // Get a list of band names
-    //
-    QStringList myBandNameList;
-
-    int myBandCountInt = mRasterLayer->getBandCount();
-#ifdef QGISDEBIG
-    QgsDebugMsg( QString( "Looping though %1 image layers to get their names " ).arg( myBandCountInt ) );
-#endif
-    for ( int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt )
-    {
-      //find out the name of this band
-      QString myRasterBandNameQString = mRasterLayer->getRasterBandName( myIteratorInt ) ;
-
-      //
-      //add the band to the histogram tab
-      //
-      QPixmap myPixmap( 10, 10 );
-
-      if ( myBandCountInt == 1 ) //draw single band images with black
-      {
-        myPixmap.fill( Qt::black );
-      }
-      else if ( myIteratorInt == 1 )
-      {
-        myPixmap.fill( Qt::red );
-      }
-      else if ( myIteratorInt == 2 )
-      {
-        myPixmap.fill( Qt::green );
-      }
-      else if ( myIteratorInt == 3 )
-      {
-        myPixmap.fill( Qt::blue );
-      }
-      else if ( myIteratorInt == 4 )
-      {
-        myPixmap.fill( Qt::magenta );
-      }
-      else if ( myIteratorInt == 5 )
-      {
-        myPixmap.fill( Qt::darkRed );
-      }
-      else if ( myIteratorInt == 6 )
-      {
-        myPixmap.fill( Qt::darkGreen );
-      }
-      else if ( myIteratorInt == 7 )
-      {
-        myPixmap.fill( Qt::darkBlue );
-      }
-      else
-      {
-        myPixmap.fill( Qt::gray );
-      }
-      lstHistogramLabels->addItem( new QListWidgetItem( myPixmap, myRasterBandNameQString ) );
-      mGradientHeight = pixHistogram->height() / 2;
-      mGradientWidth = pixHistogram->width() / 2;
-      //keep a list of band names for later use
-      //! @note band names should not be translated!
-      myBandNameList.append( myRasterBandNameQString );
-    }
-
-    //select all histogram layers list items by default
-    for ( int myIteratorInt = 1;
-          myIteratorInt <= myBandCountInt;
-          ++myIteratorInt )
-    {
-      QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
-      myItem->setSelected( true );
-    }
-
-    for ( QStringList::Iterator myIterator = myBandNameList.begin();
-          myIterator != myBandNameList.end();
-          ++myIterator )
-    {
-      QString myQString = *myIterator;
-#ifdef QGISDEBUG
-
-      QgsDebugMsg( QString( "Inserting : %1" ).arg( myQString ) );
-#endif
-
-      cboGray->addItem( myQString );
-      cboRed->addItem( myQString );
-      cboGreen->addItem( myQString );
-      cboBlue->addItem( myQString );
-    }
-
-    cboRed->addItem( TRSTRING_NOT_SET );
-    cboGreen->addItem( TRSTRING_NOT_SET );
-    cboBlue->addItem( TRSTRING_NOT_SET );
-    cboGray->addItem( TRSTRING_NOT_SET );
+    QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
+    myItem->setSelected( true );
   }
+
+  for ( QStringList::Iterator myIterator = myBandNameList.begin();
+        myIterator != myBandNameList.end();
+        ++myIterator )
+  {
+    QString myQString = *myIterator;
+
+    QgsDebugMsg( QString( "Inserting : %1" ).arg( myQString ) );
+
+    cboGray->addItem( myQString );
+    cboRed->addItem( myQString );
+    cboGreen->addItem( myQString );
+    cboBlue->addItem( myQString );
+    cboxColorMapBand->addItem( myQString );
+  }
+
+  cboRed->addItem( TRSTRING_NOT_SET );
+  cboGreen->addItem( TRSTRING_NOT_SET );
+  cboBlue->addItem( TRSTRING_NOT_SET );
+  cboGray->addItem( TRSTRING_NOT_SET );
 
   cboxTransparencyBand->addItem( TRSTRING_NOT_SET );
 
@@ -292,6 +262,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   pbtnMakeBandCombinationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnMakeContrastEnhancementAlgorithmDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
 
+  pbtnLoadColorMapFromBand->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnLoadColorMapFromFile->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
 
@@ -357,6 +328,21 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
  * PUBLIC METHODS
  *
  */
+void QgsRasterLayerProperties::populateColorMapTable(const QList<QgsColorRampShader::ColorRampItem>& theColorRampList)
+{
+  if ( theColorRampList.size() > 0 )
+  {
+    mColormapTreeWidget->clear();
+    QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
+    for ( it = theColorRampList.begin(); it != theColorRampList.end(); ++it )
+    {
+      QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+      newItem->setText( 0, QString::number( it->value, 'f' ) );
+      newItem->setBackground( 1, QBrush( it->color ) );
+      newItem->setText( 2, it->label );
+    }
+  }
+} 
 void QgsRasterLayerProperties::populateTransparencyTable()
 {
   //Clear existsing color transparency list
@@ -505,7 +491,7 @@ void QgsRasterLayerProperties::sync()
       labelContrastEnhancement->setEnabled( false );
       break;
     case QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR:
-      rbtnThreeBand->setEnabled( true );
+      rbtnThreeBand->setEnabled( false );
       rbtnSingleBand->setEnabled( true );
       rbtnSingleBand->setChecked( true );
       rbtnThreeBandMinMax->setEnabled( false );
@@ -602,7 +588,7 @@ void QgsRasterLayerProperties::sync()
     }
     else if ( mRasterLayer->getColorShadingAlgorithm() == QgsRasterLayer::COLOR_RAMP )
     {
-      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Custom Colormap" ) ) );
+      cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Colormap" ) ) );
     }
     else if ( mRasterLayer->getColorShadingAlgorithm() == QgsRasterLayer::USER_DEFINED )
     {
@@ -783,10 +769,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   //restore colormap tab if the layer has custom classification
-  if ( cboxColorMap->currentText() == tr( "Custom Colormap" ) )
-  {
-    syncColormapTab();
-  }
+  syncColormapTab();
 
   QgsDebugMsg( "populate general tab" );
   /*
@@ -873,21 +856,9 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
   //restore the colormap tab if layer has custom symbology
-  QList<QgsColorRampShader::ColorRampItem> myColorRampList = myRasterShaderFunction->getColorRampItemList();
-  if ( myColorRampList.size() > 0 )
-  {
-    QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
-    for ( it = myColorRampList.begin(); it != myColorRampList.end(); ++it )
-    {
-      //restore state of colormap tab
-      QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-      newItem->setText( 0, QString::number( it->value, 'f' ) );
-      newItem->setBackground( 1, QBrush( it->color ) );
-      newItem->setText( 2, it->label );
-    }
-  }
+  populateColorMapTable(myRasterShaderFunction->getColorRampItemList());
 
-  sboxNumberOfEntries->setValue( myColorRampList.size() );
+  sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
 
   //restor state of 'color interpolation' combo box
   if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->getColorRampType() )
@@ -1082,7 +1053,7 @@ void QgsRasterLayerProperties::apply()
   {
     mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::FREAK_OUT );
   }
-  else if ( cboxColorMap->currentText() == tr( "Custom Colormap" ) )
+  else if ( cboxColorMap->currentText() == tr( "Colormap" ) )
   {
     mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::COLOR_RAMP );
   }
@@ -1379,7 +1350,7 @@ void QgsRasterLayerProperties::apply()
   /*
    * ColorMap Tab
    */
-  if ( cboxColorMap->currentText() == tr( "Custom Colormap" ) )
+  if ( cboxColorMap->currentText() == tr( "Colormap" ) )
   {
     QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->getRasterShaderFunction();
     if ( myRasterShaderFunction )
@@ -1700,7 +1671,7 @@ void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QStrin
     cboxContrastEnhancementAlgorithm->setEnabled( false );
     labelContrastEnhancement->setEnabled( false );
   }
-  else if ( mRasterLayerIsGdal && theText == tr( "Custom Colormap" ) )
+  else if ( mRasterLayerIsGdal && theText == tr( "Colormap" ) )
   {
     tabBar->setTabEnabled( tabBar->indexOf( tabPageColormap ), TRUE );
     rbtnSingleBandMinMax->setEnabled( false );
@@ -2709,6 +2680,22 @@ void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
     {
       QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
+  }
+}
+
+void QgsRasterLayerProperties::on_pbtnLoadColorMapFromBand_clicked()
+{
+  QList<QgsColorRampShader::ColorRampItem> myColorRampList;
+  if(mRasterLayer->readColorTable(cboxColorMapBand->currentIndex()+1, &myColorRampList))
+  {
+    populateColorMapTable(myColorRampList);
+    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+    QgsDebugMsg("Color map loaded");
+  }
+  else
+  {
+    QMessageBox::warning(this, tr("Load Color Map"), tr("The color map for Band %n failed to load", "", cboxColorMapBand->currentIndex()+1));
+    QgsDebugMsg("Color map failed to load");
   }
 }
 
