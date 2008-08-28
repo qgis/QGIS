@@ -39,7 +39,6 @@ namespace qgis
 
 // GDAL/OGR loaded into private namespace
 #include <ogr_api.h>
-#include <ogrsf_frmts.h>
 
       Dialog::Dialog( QWidget* parent, Qt::WFlags fl )
           : QDialog( parent, fl )
