@@ -266,7 +266,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   layer->select( layer->pendingAllAttributesList(), r, true, true );
   QgsFeature f;
   while ( layer->getNextFeature( f ) )
-    mFeatureList << QgsFeature(f);
+    mFeatureList << QgsFeature( f );
 
   QApplication::restoreOverrideCursor();
 
@@ -334,15 +334,18 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
       double dist = calc.measure( f_it->geometry() );
       QString str = calc.textUnit( dist, 3, mCanvas->mapUnits(), false );
       mResults->addDerivedAttribute( featureNode, QObject::tr( "Length" ), str );
-      // Add the start and end points in as derived attributes
-      str.setNum( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "startX", str );
-      str.setNum( f_it->geometry()->asPolyline().first().y(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "startY", str );
-      str.setNum( f_it->geometry()->asPolyline().last().x(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "endX", str );
-      str.setNum( f_it->geometry()->asPolyline().last().y(), 'g', 10 );
-      mResults->addDerivedAttribute( featureNode, "endY", str );
+      if ( f_it->geometry()->wkbType() == QGis::WKBLineString )
+      {
+        // Add the start and end points in as derived attributes
+        str.setNum( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
+        mResults->addDerivedAttribute( featureNode, "startX", str );
+        str.setNum( f_it->geometry()->asPolyline().first().y(), 'g', 10 );
+        mResults->addDerivedAttribute( featureNode, "startY", str );
+        str.setNum( f_it->geometry()->asPolyline().last().x(), 'g', 10 );
+        mResults->addDerivedAttribute( featureNode, "endX", str );
+        str.setNum( f_it->geometry()->asPolyline().last().y(), 'g', 10 );
+        mResults->addDerivedAttribute( featureNode, "endY", str );
+      }
     }
     else if ( layer->vectorType() == QGis::Polygon )
     {
