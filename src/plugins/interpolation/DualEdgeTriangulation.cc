@@ -19,7 +19,7 @@
 #include <map>
 #include "qgslogger.h"
 
-double leftOfTresh = 0.00001;
+double leftOfTresh = 0.00000001;
 
 DualEdgeTriangulation::~DualEdgeTriangulation()
 {
