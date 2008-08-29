@@ -164,8 +164,7 @@ void QgsIdentifyResults::addDerivedAttribute( QTreeWidgetItem * fnode, QString f
 {
   QTreeWidgetItem * daRootNode;
 
-  // Determine if this is the first derived attribute for this
-  // feature or not
+  // Determine if this is the first derived attribute for this feature or not
   if ( mDerivedAttributeRootNodes.find( fnode ) != mDerivedAttributeRootNodes.end() )
   {
     // Reuse existing derived-attribute root node
@@ -243,6 +242,7 @@ void QgsIdentifyResults::expandColumnsToFit()
 
 void QgsIdentifyResults::clear()
 {
+  mDerivedAttributeRootNodes.clear();
   lstResults->clear();
 }
 
