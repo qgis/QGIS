@@ -1715,7 +1715,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
     QgsFeature f;
     while ( getNextFeature( f ) )
-      featureList << f;
+      featureList << QgsFeature(f);
   }
 
   QgsFeatureList::iterator select_it = featureList.begin();

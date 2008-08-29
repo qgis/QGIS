@@ -263,10 +263,10 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   mFeatureList.clear();
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  layer->select( layer->pendingAllAttributesList(), r, true );
+  layer->select( layer->pendingAllAttributesList(), r, true, true );
   QgsFeature f;
   while ( layer->getNextFeature( f ) )
-    mFeatureList << f;
+    mFeatureList << QgsFeature(f);
 
   QApplication::restoreOverrideCursor();
 
