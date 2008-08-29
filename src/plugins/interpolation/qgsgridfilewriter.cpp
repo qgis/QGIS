@@ -52,6 +52,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   }
 
   QTextStream outStream( &outputFile );
+  outStream.setRealNumberPrecision(8);
   writeHeader( outStream );
 
   double currentYValue = mInterpolationExtent.yMax();
