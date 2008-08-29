@@ -74,6 +74,8 @@ void throwGEOSException( const char *fmt, ... )
   vsnprintf( msg, buflen + 1, fmt, ap );
   va_end( ap );
 
+  QgsDebugMsg( QString( "GEOS exception encountered: " ).arg( msg ) );
+
   throw GEOSException( msg );
 }
 
@@ -628,7 +630,7 @@ void QgsGeometry::setGeos( GEOSGeometry* geos )
   }
   if ( mGeometry )
   {
-    delete mGeometry;
+    delete [] mGeometry;
     mGeometry = 0;
   }
 
@@ -1756,7 +1758,7 @@ bool QgsGeometry::deleteVertexAt( int atVertex )
   }
   if ( success )
   {
-    delete mGeometry;
+    delete [] mGeometry;
     mGeometry = newbuffer;
     mGeometrySize -= ( 2 * sizeof( double ) );
     if ( hasZValue )
@@ -2060,7 +2062,7 @@ bool QgsGeometry::insertVertexBefore( double x, double y, int beforeVertex )
 
   if ( success )
   {
-    delete mGeometry;
+    delete [] mGeometry;
     mGeometry = newbuffer;
     mGeometrySize += 2 * sizeof( double );
     if ( hasZValue )
@@ -4531,7 +4533,7 @@ bool QgsGeometry::convertToMultiType()
   //copy the existing single geometry
   memcpy( &newGeometry[currentWkbPosition], mGeometry, mGeometrySize );
 
-  delete mGeometry;
+  delete [] mGeometry;
   mGeometry = newGeometry;
   mGeometrySize = newGeomSize;
   mDirtyGeos = true;
