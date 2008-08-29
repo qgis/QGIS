@@ -80,7 +80,7 @@ Description: Plugin for accessing GRASS data from Quantum GIS
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: python-qt4 (>=4.1.0), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
