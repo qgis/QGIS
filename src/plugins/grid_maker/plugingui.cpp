@@ -56,6 +56,14 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
 
   double myXInterval =  leXInterval->text().toDouble();
   double myYInterval =  leYInterval->text().toDouble();
+
+  if( myXInterval==0.0 || myYInterval==0.0 )
+  {
+    QMessageBox::warning( 0, tr( "QGIS - Grid Maker" ),
+                          QString( tr( "Please enter intervals before pressing OK!" ) ) );
+    return;
+  }
+
   double myXOrigin =  leXLowerLeft->text().toDouble();
   double myYOrigin =  leYLowerLeft->text().toDouble();
   double myEndPointX = leXUpperRight->text().toDouble();
