@@ -165,18 +165,18 @@ public:
    *  in the given ring, item (first number is index 0), and feature
    *  Not meaningful for Point geometries
    */
-  bool insertVertexBefore(double x, double y, int atFeatureId, int beforeVertex);
+  bool insertVertex(double x, double y, int atFeatureId, int beforeVertex);
 
   /** Moves the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
    *  to the given coordinates
    */
-  bool moveVertexAt(double x, double y, int atFeatureId, int atVertex);
+  bool moveVertex(double x, double y, int atFeatureId, int atVertex);
 
   /** Deletes the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
    */
-  bool deleteVertexAt(int atFeatureId, int atVertex);
+  bool deleteVertex(int atFeatureId, int atVertex);
 
   /** Deletes the selected features
    *  @return true in case of success and false otherwise

@@ -221,7 +221,7 @@ class QgsVectorDataProvider : QgsDataProvider
       /**
        * Returns the index of a field name or -1 if the field does not exist
        */
-      int indexFromFieldName(const QString& fieldName) const;
+      int fieldNameIndex(const QString& fieldName) const;
       
       /**
        * Return list of indexes to fetch all attributes in getNextFeature()
@@ -235,6 +235,6 @@ class QgsVectorDataProvider : QgsDataProvider
        * Set whether provider should return also features that don't have
        * associated geometry. FALSE by default
        */
-      void setFetchFeaturesWithoutGeom(bool fetch);
+      void enableGeometrylessFeatures(bool fetch);
 
 };

@@ -149,7 +149,7 @@ void QgsUniqueValueDialog::apply()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
-    int fieldIndex = provider->indexFromFieldName( mClassificationComboBox->currentText() );
+    int fieldIndex = provider->fieldNameIndex( mClassificationComboBox->currentText() );
     if ( fieldIndex != -1 )
     {
       renderer->setClassificationField( fieldIndex );
@@ -292,7 +292,7 @@ void QgsUniqueValueDialog::changeClassificationAttribute()
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   if ( provider )
   {
-    int nr = provider->indexFromFieldName( attributeName );
+    int nr = provider->fieldNameIndex( attributeName );
     if ( nr == -1 )
     {
       return;

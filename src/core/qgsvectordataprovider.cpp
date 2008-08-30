@@ -218,7 +218,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
 }
 
 
-int QgsVectorDataProvider::indexFromFieldName( const QString& fieldName ) const
+int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
   const QgsFieldMap &theFields = fields();
 
@@ -243,7 +243,7 @@ QgsAttributeList QgsVectorDataProvider::allAttributesList()
   return list;
 }
 
-void QgsVectorDataProvider::setFetchFeaturesWithoutGeom( bool fetch )
+void QgsVectorDataProvider::enableGeometrylessFeatures( bool fetch )
 {
   mFetchFeaturesWithoutGeom = fetch;
 }

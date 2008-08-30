@@ -1433,7 +1433,7 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 }
 
 
-bool QgsVectorLayer::insertVertexBefore( double x, double y, int atFeatureId, int beforeVertex )
+bool QgsVectorLayer::insertVertex( double x, double y, int atFeatureId, int beforeVertex )
 {
   if ( !mEditable )
   {
@@ -1453,7 +1453,7 @@ bool QgsVectorLayer::insertVertexBefore( double x, double y, int atFeatureId, in
       mChangedGeometries[atFeatureId] = mCachedGeometries[atFeatureId];
     }
 
-    mChangedGeometries[atFeatureId].insertVertexBefore( x, y, beforeVertex );
+    mChangedGeometries[atFeatureId].insertVertex( x, y, beforeVertex );
 
     setModified( true, true ); // only geometry was changed
 
@@ -1463,7 +1463,7 @@ bool QgsVectorLayer::insertVertexBefore( double x, double y, int atFeatureId, in
 }
 
 
-bool QgsVectorLayer::moveVertexAt( double x, double y, int atFeatureId, int atVertex )
+bool QgsVectorLayer::moveVertex( double x, double y, int atFeatureId, int atVertex )
 {
   if ( !mEditable )
   {
@@ -1482,7 +1482,7 @@ bool QgsVectorLayer::moveVertexAt( double x, double y, int atFeatureId, int atVe
       mChangedGeometries[atFeatureId] = mCachedGeometries[atFeatureId];
     }
 
-    mChangedGeometries[atFeatureId].moveVertexAt( x, y, atVertex );
+    mChangedGeometries[atFeatureId].moveVertex( x, y, atVertex );
 
     setModified( true, true ); // only geometry was changed
 
@@ -1492,7 +1492,7 @@ bool QgsVectorLayer::moveVertexAt( double x, double y, int atFeatureId, int atVe
 }
 
 
-bool QgsVectorLayer::deleteVertexAt( int atFeatureId, int atVertex )
+bool QgsVectorLayer::deleteVertex( int atFeatureId, int atVertex )
 {
   if ( !mEditable )
   {
@@ -1511,7 +1511,7 @@ bool QgsVectorLayer::deleteVertexAt( int atFeatureId, int atVertex )
       mChangedGeometries[atFeatureId] = mCachedGeometries[atFeatureId];
     }
 
-    mChangedGeometries[atFeatureId].deleteVertexAt( atVertex );
+    mChangedGeometries[atFeatureId].deleteVertex( atVertex );
 
     setModified( true, true ); // only geometry was changed
 
@@ -3167,7 +3167,7 @@ int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>
     if ( it->snappedVertexNr == -1 ) // segment snap
     {
       layerPoint = it->snappedVertex;
-      if ( !insertVertexBefore( layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr ) )
+      if ( !insertVertex( layerPoint.x(), layerPoint.y(), it->snappedAtGeometry, it->afterVertexNr ) )
       {
         returnval = 3;
       }

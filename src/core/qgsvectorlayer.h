@@ -51,8 +51,8 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
-/*! \class QgsVectorLayer
- * \brief Vector layer backed by a data source provider
+/** \ingroup core
+ * Vector layer backed by a data source provider.
  */
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 {
@@ -115,6 +115,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Setup the coordinate system tranformation for the layer */
     void setCoordinateSystem();
 
+    /** Get the label object associated with this layer */
     QgsLabel *label();
 
     QgsAttributeAction* actions() { return mActions; }
@@ -222,17 +223,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
-    bool insertVertexBefore( double x, double y, int atFeatureId, int beforeVertex );
+    bool insertVertex( double x, double y, int atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
-    bool moveVertexAt( double x, double y, int atFeatureId, int atVertex );
+    bool moveVertex( double x, double y, int atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
      */
-    bool deleteVertexAt( int atFeatureId, int atVertex );
+    bool deleteVertex( int atFeatureId, int atVertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
@@ -295,7 +296,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int addTopologicalPoints( const QgsPoint& p );
 
     /**Inserts vertices to the snapped segments.
-    This is usefull for topological editing if snap to segment is enabled.
+    This is useful for topological editing if snap to segment is enabled.
     @param snapResults results collected from the snapping operation
     @return 0 in case of success*/
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
@@ -326,8 +327,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        @param snap_to to segment / to vertex
        @return 0 in case of success
     */
-    int snapWithContext( const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults,
-                         QgsSnapper::SNAP_TO snap_to );
+    int snapWithContext( const QgsPoint& startPoint, 
+        double snappingTolerance, 
+        QMultiMap<double, 
+        QgsSnappingResult>& snappingResults,
+        QgsSnapper::SNAP_TO snap_to );
 
     /** Draws the layer
      *  @return FALSE if an error occurred during drawing
@@ -340,7 +344,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** \brief Draws the layer labels using coordinate transformation
      *  \param scale size scale, applied to all values in pixels
      */
-    void drawLabels( QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* cXf, const QgsCoordinateTransform* ct, double scale );
+    void drawLabels( QPainter * p, const QgsRect& viewExtent, 
+        const QgsMapToPixel* cXf, 
+        const QgsCoordinateTransform* ct, 
+        double scale );
 
     /** returns field list in the to-be-committed state */
     const QgsFieldMap &pendingFields();
@@ -382,7 +389,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       again.
 
       The commits occur in distinct stages,
-      (add attributes, add features, change attribute values, change geometries, delete features, delete attributes)
+      (add attributes, add features, change attribute values, change
+      geometries, delete features, delete attributes)
       so if a stage fails, it's difficult to roll back cleanly.
       Therefore any error message also includes which stage failed so
       that the user has some chance of repairing the damage cleanly.
@@ -457,7 +465,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool setDataProvider( QString const & provider );
 
     /** Draws features. May cause projections exceptions to be generated
-     *  (i.e., code that calls this function needs to catch them
+     *  (i.e., code that calls this function needs to catch them)
      */
     void drawFeature( QPainter* p,
                       QgsFeature& fet,

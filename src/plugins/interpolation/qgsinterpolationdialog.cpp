@@ -106,7 +106,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   }
   else
   {
-    int attributeIndex = theProvider->indexFromFieldName( mInterpolationAttributeComboBox->currentText() );
+    int attributeIndex = theProvider->fieldNameIndex( mInterpolationAttributeComboBox->currentText() );
     theInterpolator->enableAttributeValueInterpolation( attributeIndex );
   }
 

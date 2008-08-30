@@ -164,7 +164,7 @@ class CORE_EXPORT QgsGeometry
      *  these error conditions.  (Or maybe we add another method to this
      *  object to help make the distinction?)
      */
-    bool insertVertexBefore( double x, double y, int beforeVertex );
+    bool insertVertex( double x, double y, int beforeVertex );
 
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsGeometry
      *  Returns FALSE if atVertex does not correspond to a valid vertex
      *  on this geometry
      */
-    bool moveVertexAt( double x, double y, int atVertex );
+    bool moveVertex( double x, double y, int atVertex );
 
     /** Deletes the vertex at the given position number and item
      *  (first number is index 0)
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsGeometry
      *  these error conditions.  (Or maybe we add another method to this
      *  object to help make the distinction?)
      */
-    bool deleteVertexAt( int atVertex );
+    bool deleteVertex( int atVertex );
 
     /**
      *  Returns coordinates of a vertex.
@@ -362,7 +362,7 @@ class CORE_EXPORT QgsGeometry
      *  Returns FALSE if beforeVertex does not correspond to a valid vertex number
      *  on the Coordinate Sequence.
      */
-    bool insertVertexBefore( double x, double y,
+    bool insertVertex( double x, double y,
                              int beforeVertex,
                              const GEOSCoordSequence*  old_sequence,
                              GEOSCoordSequence** new_sequence );

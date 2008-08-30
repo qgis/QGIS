@@ -98,7 +98,7 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
       QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
       for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
       {
-        vlayer->insertVertexBefore( snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->afterVertexNr );
+        vlayer->insertVertex( snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->afterVertexNr );
       }
     }
   }
