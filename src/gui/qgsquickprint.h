@@ -29,9 +29,8 @@
 #include <qgsmapcanvas.h>
 
 
-/**
-* \class QgsQgsQuickPrint
-* \brief A convenience class for quickly printing a map.
+/** \ingroup gui
+* A convenience class for quickly printing a map.
 * Prints a map with a map title, scale bar, north arrow, legend etc.
 */
 class GUI_EXPORT QgsQuickPrint: public QObject

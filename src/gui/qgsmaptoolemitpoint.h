@@ -22,6 +22,11 @@
 class QgsMapCanvas;
 
 
+/** \ingroup gui
+ * A map tool that simple emits a point when clicking on the map.
+ * Connecting a slot to its gotPoint() signal will 
+ * let you implement custom behaviour for the passed in point.
+ */
 class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
 {
     Q_OBJECT

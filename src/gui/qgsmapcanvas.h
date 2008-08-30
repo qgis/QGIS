@@ -55,8 +55,10 @@ class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
 
-/** \class QgsMapCanvasLayer
-  \brief class that stores additional layer's flags together with pointer to the layer
+/** \ingroup gui
+  * A class that stores visibility and presence in overview flags together 
+  * with pointer to the layer.
+  *
 */
 class GUI_EXPORT QgsMapCanvasLayer
 {

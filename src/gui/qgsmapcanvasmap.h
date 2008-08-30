@@ -24,6 +24,9 @@
 class QgsMapRenderer;
 class QgsMapCanvas;
 
+/** \ingroup gui
+ * A rectangular graphics item representing the map on the canvas.
+ */
 class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
 {
   public:

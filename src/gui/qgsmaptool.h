@@ -31,6 +31,12 @@ class QPoint;
 class QAction;
 class QAbstractButton;
 
+/** \ingroup gui
+ * Abstract base class for all map tools.
+ * Map tools are user interactive tools for manipulating the 
+ * map canvas. For example map pan and zoom features are 
+ * implemented as map tools.
+ */
 class GUI_EXPORT QgsMapTool : public QObject
 {
   public:

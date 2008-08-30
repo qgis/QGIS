@@ -24,6 +24,10 @@
 
 #include <QString>
 
+
+/** \ingroup gui
+ * A generic message view for displaying QGIS messages.
+ */
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
 {
     Q_OBJECT

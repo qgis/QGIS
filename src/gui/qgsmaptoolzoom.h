@@ -23,6 +23,10 @@
 
 class QRubberBand;
 
+/** \ingroup gui
+ * A map tool for zooming into the map.
+ * @see QgsMapTool
+ */
 class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 {
   public:

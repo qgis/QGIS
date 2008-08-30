@@ -19,7 +19,9 @@
 #include <QFileDialog>
 class QComboBox;
 
-/**A file dialog which lets the user select the prefered encoding type for a data provider*/
+/** \ingroup gui
+ * A file dialog which lets the user select the prefered encoding type for a data provider.
+ **/
 class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
 {
     Q_OBJECT

@@ -23,7 +23,8 @@
 #include <QString>
 #include <QPixmap>
 
-/** This class is the data only representation of a
+/** \ingroup gui
+ * This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
 class GUI_EXPORT QgsDetailedItemData

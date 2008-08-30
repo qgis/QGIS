@@ -18,9 +18,9 @@
 
 #include <Qt>
 
-/*!
+/** \ingroup gui
  * /namespace QgisGui
- * /brief The QgisGui namespace contains constants used throughout the QGIS GUI.
+ * The QgisGui namespace contains constants used throughout the QGIS GUI.
  */
 namespace QgisGui
 {

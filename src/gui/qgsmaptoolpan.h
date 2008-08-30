@@ -21,6 +21,10 @@
 class QgsMapCanvas;
 
 
+/** \ingroup gui
+ * A map tool for panning the map.
+ * @see QgsMapTool
+ */
 class GUI_EXPORT QgsMapToolPan : public QgsMapTool
 {
   public:
