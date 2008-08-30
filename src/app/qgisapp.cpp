@@ -185,7 +185,6 @@
 #include <windows.h>
 #endif
 
-using namespace std;
 class QTreeWidgetItem;
 
 /* typedefs for plugins */
@@ -2664,10 +2663,10 @@ findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
 */
 static
 void
-findLayers_( QString const & fileFilters, list<QDomNode> const & layerNodes )
+findLayers_( QString const & fileFilters, std::list<QDomNode> const & layerNodes )
 {
 
-  for ( list<QDomNode>::const_iterator i = layerNodes.begin();
+  for ( std::list<QDomNode>::const_iterator i = layerNodes.begin();
         i != layerNodes.end();
         ++i )
   {
@@ -3163,9 +3162,9 @@ void QgisApp::fileSaveAs()
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
 
-  auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-                                        tr( "Choose a file name to save the QGIS project file as" ),
-                                        lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) ) );
+  std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
+      tr( "Choose a file name to save the QGIS project file as" ),
+      lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) ) );
 
   saveFileDialog->setFileMode( QFileDialog::AnyFile );
 
