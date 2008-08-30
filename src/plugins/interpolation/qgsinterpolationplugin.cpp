@@ -19,8 +19,6 @@
 #include "qgisinterface.h"
 #include "qgsinterpolationdialog.h"
 
-#include "mIconInterpolation.xpm"
-
 static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
 static const QString version_ = QObject::tr( "Version 0.001" );
@@ -39,7 +37,7 @@ void QgsInterpolationPlugin::initGui()
 {
   if ( mIface )
   {
-    mInterpolationAction = new QAction( QIcon( mIconInterpolation ), tr( "&Interpolation" ), 0 );
+    mInterpolationAction = new QAction( QIcon( ":/interpolator/interpolation.png"), tr( "&Interpolation" ), 0 );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addToolBarIcon( mInterpolationAction );
     mIface->addPluginMenu( tr( "&Interpolation" ), mInterpolationAction );
