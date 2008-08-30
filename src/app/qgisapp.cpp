@@ -3300,7 +3300,7 @@ bool QgisApp::openLayer( const QString & fileName )
   QgsMapLayer* ok = NULL;
   CPLPushErrorHandler( CPLQuietErrorHandler );
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
-    ok = addRasterLayer( fileName, false );
+    ok = addRasterLayer( fileName, fileInfo.completeBaseName() );
   else // nope - try to load it as a shape/ogr
     ok = addVectorLayer( fileName, fileName, "ogr" );
   CPLPopErrorHandler();
