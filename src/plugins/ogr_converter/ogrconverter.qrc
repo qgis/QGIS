@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/ogrconverter/" >
-        <file>ogrconverter.png</file>
+        <file>ogr_converter.png</file>
     </qresource>
 </RCC>

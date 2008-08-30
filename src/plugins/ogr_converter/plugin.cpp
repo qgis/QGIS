@@ -57,7 +57,7 @@ OgrPlugin::~OgrPlugin()
 void OgrPlugin::initGui()
 {
     // Create the action for tool
-    mQActionPointer = new QAction(QIcon(":/ogrconverter/ogrconverter.png"), tr("Run OGR Layer Converter"), this);
+    mQActionPointer = new QAction(QIcon(":/ogrconverter/ogr_converter.png"), tr("Run OGR Layer Converter"), this);
 
     // Set the what's this text
     mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
