@@ -126,7 +126,7 @@ class QgsGeometry
      *  these error conditions.  (Or maybe we add another method to this
      *  object to help make the distinction?)
      */
-	bool insertVertexBefore(double x, double y, int beforeVertex);
+	bool insertVertex(double x, double y, int beforeVertex);
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0)
@@ -134,7 +134,7 @@ class QgsGeometry
      *  Returns FALSE if atVertex does not correspond to a valid vertex
      *  on this geometry 
      */
-	bool moveVertexAt(double x, double y, int atVertex);
+	bool moveVertex(double x, double y, int atVertex);
     
 	/** Deletes the vertex at the given position number,
      *  ring and item (first number is index 0)
@@ -146,7 +146,7 @@ class QgsGeometry
      *  these error conditions.  (Or maybe we add another method to this
      *  object to help make the distinction?)
      */
-	bool deleteVertexAt(int atVertex);
+	bool deleteVertex(int atVertex);
 
     /**
      *  Returns coordinates of a vertex.

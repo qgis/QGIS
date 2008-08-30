@@ -81,7 +81,7 @@ void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent * e )
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      vlayer->deleteVertexAt( sr_it->snappedAtGeometry, sr_it->snappedVertexNr );
+      vlayer->deleteVertex( sr_it->snappedAtGeometry, sr_it->snappedVertexNr );
     }
   }
 

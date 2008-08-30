@@ -168,7 +168,7 @@ void QgsMapToolMoveVertex::canvasReleaseEvent( QMouseEvent * e )
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      if ( !vlayer->moveVertexAt( snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->snappedVertexNr ) )
+      if ( !vlayer->moveVertex( snappedPointLayerCoord.x(), snappedPointLayerCoord.y(), sr_it->snappedAtGeometry, sr_it->snappedVertexNr ) )
       {
         //error
       }

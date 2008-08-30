@@ -32,7 +32,7 @@ $ARTISTIC_STYLE_OPTIONS \
 --unpad=paren"
 
 for f in "$@"; do
-	flip -ub "$f" 
+	#flip -ub "$f" 
     	#qgsloggermig.pl "$f"
 	astyle $ARTISTIC_STYLE_OPTIONS "$f"
 done

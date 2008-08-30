@@ -1147,7 +1147,7 @@ void QgsGeometry::adjacentVerticies( int atVertex, int& beforeVertex, int& after
 
 
 
-bool QgsGeometry::insertVertexBefore( double x, double y,
+bool QgsGeometry::insertVertex( double x, double y,
                                       int beforeVertex,
                                       const GEOSCoordSequence*  old_sequence,
                                       GEOSCoordSequence** new_sequence )
@@ -1199,7 +1199,7 @@ bool QgsGeometry::insertVertexBefore( double x, double y,
   return inserted;
 }
 
-bool QgsGeometry::moveVertexAt( double x, double y, int atVertex )
+bool QgsGeometry::moveVertex( double x, double y, int atVertex )
 {
   int vertexnr = atVertex;
 
@@ -1448,7 +1448,7 @@ bool QgsGeometry::moveVertexAt( double x, double y, int atVertex )
   }
 }
 
-bool QgsGeometry::deleteVertexAt( int atVertex )
+bool QgsGeometry::deleteVertex( int atVertex )
 {
   int vertexnr = atVertex;
   bool success = false;
@@ -1775,7 +1775,7 @@ bool QgsGeometry::deleteVertexAt( int atVertex )
   }
 }
 
-bool QgsGeometry::insertVertexBefore( double x, double y, int beforeVertex )
+bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
 {
   int vertexnr = beforeVertex;
   bool success = false;

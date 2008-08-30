@@ -32,7 +32,13 @@ class QTextCodec;
 typedef QMap<QString, QString> QgsNewAttributesMap;
 typedef QMap<QString, QVariant::Type> QgsNativeTypeMap;
 
-/** Base class for vector data providers
+/** \ingroup core
+ * This is the base class for vector data providers.
+ *
+ * Data providers abstract the retrieval and writing (where supported) 
+ * of feature and attrubute information from a spatial datasource.
+ *
+ *
  */
 class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 {
@@ -95,9 +101,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
+     * @param featureId of the feature to be returned
+     * @param feature which will receive the data
+     * @param fetchGeometry flag which if true, will cause the geometry to be fetched from the provider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      *
@@ -138,6 +144,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
+     * @see QgsFieldMap
      */
     virtual const QgsFieldMap &fields() const = 0;
 
@@ -151,7 +158,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual void reset() = 0;
 
     /**
-     * Returns the minimum value of an attributs
+     * Returns the minimum value of an attribute
      * @param index the index of the attribute
      *
      * Default implementation walks all numeric attributes and caches minimal
@@ -161,7 +168,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QVariant minimumValue( int index );
 
     /**
-     * Returns the maximum value of an attributs
+     * Returns the maximum value of an attribute
      * @param index the index of the attribute
      *
      * Default implementation walks all numeric attributes and caches minimal
@@ -186,7 +193,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual bool addFeatures( QgsFeatureList &flist );
 
     /**
-     * Deletes a feature
+     * Deletes one or more features
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
@@ -220,9 +227,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A std::map containing the feature IDs to change the geometries of.
-     *                       the second map parameter being the new geometries themselves
-     * @return               true in case of success and false in case of failure
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs 
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return               True in case of success and false in case of failure
      */
     virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
@@ -257,7 +265,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the index of a field name or -1 if the field does not exist
      */
-    int indexFromFieldName( const QString& fieldName ) const;
+    int fieldNameIndex( const QString& fieldName ) const;
 
     /**
      * Return list of indexes to fetch all attributes in getNextFeature()
@@ -268,10 +276,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     const QgsNativeTypeMap &supportedNativeTypes() const;
 
     /**
-     * Set whether provider should return also features that don't have
+     * Set whether provider should also return features that don't have
      * associated geometry. FALSE by default
      */
-    void setFetchFeaturesWithoutGeom( bool fetch );
+    void enableGeometrylessFeatures( bool fetch );
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
