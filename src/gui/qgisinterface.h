@@ -34,9 +34,9 @@ class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsVectorLayer;
 
-/**
- * \class QgisInterface
- * \brief Abstract base class defining interfaces exposed by QgisApp and
+/** \ingroup gui
+ * QgisInterface
+ * Abstract base class defining interfaces exposed by QgisApp and
  * made available to plugins.
  *
  * Only functionality exposed by QgisInterface can be used in plugins.

@@ -18,6 +18,9 @@
 
 #include <QToolButton>
 
+/** \ingroup gui
+ * A cross platform button subclass for selecting colors.
+ */
 class GUI_EXPORT QgsColorButton: public QToolButton
 {
   public:

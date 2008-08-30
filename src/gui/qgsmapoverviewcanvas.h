@@ -32,6 +32,9 @@ class QgsMapRenderer;
 class QgsPanningWidget; // defined in .cpp
 class QgsRect;
 
+/** \ingroup gui
+ * A widget that displays an overview map.
+ */
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 {
     Q_OBJECT

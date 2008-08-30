@@ -38,6 +38,9 @@
  *   mEpsgId = mySelector.getSelectedEpsg();
  * }
  * \endcode
+ *
+ * If you wish to embed the projection selector into an existing dialog 
+ * the you probably want to look at QgsProjectionSelector rather.
  */
 
 class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsGenericProjectionSelectorBase

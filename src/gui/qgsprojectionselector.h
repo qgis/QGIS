@@ -17,7 +17,9 @@
 
 class QResizeEvent;
 
-/**
+/** \ingroup gui
+ * A widget for selecting a Coordinate reference system from a tree.
+ * @see QgsGenericProjectionSelector.
   @author Tim Sutton
   */
 class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectionSelectorBase
