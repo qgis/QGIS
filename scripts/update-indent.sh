@@ -1,7 +1,11 @@
 #!/bin/bash
 
-if ! [ -x astyle.sh ]; then
-	PATH=$PATH:$(dirname $0)
+PATH=$PATH:$(dirname $0)
+
+if ! type -p colordiff >/dev/null; then
+	colordiff() {
+		cat "$@"
+	}
 fi
 
 set -e
@@ -23,7 +27,6 @@ echo "Checking changes between $REV0 and $REV1"
 ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
 >$ASTYLEDIFF
 
-
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
@@ -34,6 +37,11 @@ for f in $MODIFIED; do
                 continue
                 ;;
         esac
+
+	if ! [ -s $f ]; then
+		# deleted
+	 	continue
+	fi
 
         m=$f.r$REV1.prepare
 

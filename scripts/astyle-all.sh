@@ -1,9 +1,6 @@
 #!/bin/bash
 
-if ! astyle.sh >/dev/null 2>&1; then
-	echo astyle.sh not found in path >&2
-	exit 1
-fi
+PATH=$PATH:$(dirname $0)
 
 set -e
 
