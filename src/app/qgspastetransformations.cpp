@@ -175,23 +175,6 @@ void QgsPasteTransformations::layerChanged( const QString& layerName, std::vecto
   // Fetch the fields that will be populated into the Transfer rows.
   QgsDebugMsg( QString( "Layer changed to %1." ).arg( layerName ) );
 
-  /*
-  // XXX What does this code do??? [MD]
-    std::vector<QgsField> layerFields =
-      (mMapNameLookup[ layerName ])->fields();
-
-    fields->clear();
-
-    for (std::vector<QgsField>::iterator it  = layerFields.begin();
-                                         it != layerFields.end();
-                                       ++it )
-    {
-          QgsDebugMsg(QString("Got field %1.").arg(it->name()));
-
-      fields->push_back(it->name());
-    }
-  */
-
   restoreTransfers( sourceLayerComboBox     ->currentText(),
                     destinationLayerComboBox->currentText() );
 }

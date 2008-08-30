@@ -100,14 +100,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
     // get the extent_ (envelope) of the layer
 
-    QgsDebugMsg( "Starting get extent\n" );
+    QgsDebugMsg( "Starting get extent" );
 
     // TODO: This can be expensive, do we really need it!
 
     extent_ = calloc( sizeof( OGREnvelope ), 1 );
     OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, TRUE );
 
-    QgsDebugMsg( "Finished get extent\n" );
+    QgsDebugMsg( "Finished get extent" );
 
     // getting the total number of features in the layer
     // TODO: This can be expensive, do we really need it!
@@ -115,9 +115,9 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
     // check the validity of the layer
 
-    QgsDebugMsg( "checking validity\n" );
+    QgsDebugMsg( "checking validity" );
     loadFields();
-    QgsDebugMsg( "Done checking validity\n" );
+    QgsDebugMsg( "Done checking validity" );
   }
   else
   {

@@ -15,9 +15,6 @@
 // Qt4
 #include <QString>
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
-// GDAL/OGR loaded into private namespace
 #include <ogr_api.h>
 
 class Translator
@@ -75,7 +72,5 @@ private:
     OGRDataSourceH openDataTarget(QString const& url, bool update);
 
 };
-
-}}} // namespace qgis::plugin::ogrconv
 
 #endif // QGIS_PLUGIN_OGRCONV_TRANSLATOR_H_INCLUDED

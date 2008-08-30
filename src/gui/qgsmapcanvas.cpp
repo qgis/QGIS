@@ -1004,9 +1004,11 @@ void QgsMapCanvas::setCanvasColor( const QColor & theColor )
   // background of the QGraphicsView
   QBrush bgBrush( theColor );
   setBackgroundBrush( bgBrush );
-  /*QPalette palette;
-  palette.setColor(backgroundRole(), theColor);
-  setPalette(palette);*/
+#if 0
+  QPalette palette;
+  palette.setColor( backgroundRole(), theColor );
+  setPalette( palette );
+#endif
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );

@@ -2150,14 +2150,14 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     enableLabels( true );
   }
 
-  QgsDebugMsg( "Testing if qgsvectorlayer can call label readXML routine" )
+  QgsDebugMsg( "Testing if qgsvectorlayer can call label readXML routine" );
 
 
   QDomNode labelattributesnode = layer_node.namedItem( "labelattributes" );
 
   if ( !labelattributesnode.isNull() )
   {
-    QgsDebugMsg( "qgsvectorlayer calling label readXML routine" )
+    QgsDebugMsg( "qgsvectorlayer calling label readXML routine" );
     mLabel->readXML( labelattributesnode );
   }
 

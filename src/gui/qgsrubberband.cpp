@@ -319,7 +319,7 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    QgsRect r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY, \
+    QgsRect r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY,
                it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
 
     for ( int i = 0; i < mPoints.size(); ++i )

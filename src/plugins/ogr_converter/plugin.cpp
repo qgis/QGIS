@@ -27,9 +27,6 @@
 // std
 #include <cassert>
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
-// GDAL/OGR loaded into private namesapce
 #include <ogr_api.h>
 
 static const char * const sIdent = "$Id$";
@@ -144,6 +141,3 @@ QGISEXTERN void unload(QgisPlugin * thePluginPointer)
 {
   delete thePluginPointer;
 }
-
-}}} // namespace qgis::plugin::ogrconv
-

@@ -110,7 +110,8 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     cXf->transform( &ll );
     cXf->transform( &ur );
   }
-  /*
+
+#if 0 
   // test whether panning widget should be drawn
   bool show = false;
   if (ur.x() >= 0 && ur.x() < width())  show = true;
@@ -122,7 +123,8 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     QgsDebugMsg("panning: extent out of overview area");
     mPanningWidget->hide();
     return;
-  }*/
+  }
+#endif
 
   // round values
   int x1 = static_cast<int>( ur.x() + 0.5 ), x2 = static_cast<int>( ll.x() + 0.5 );

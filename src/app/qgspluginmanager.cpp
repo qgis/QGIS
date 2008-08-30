@@ -272,7 +272,7 @@ void QgsPluginManager::getPluginDescriptions()
     }
     else
     {
-      QgsDebugMsg( "Plugin name not returned when queried\n" );
+      QgsDebugMsg( "Plugin name not returned when queried" );
     }
     if ( pDesc )
     {
@@ -280,7 +280,7 @@ void QgsPluginManager::getPluginDescriptions()
     }
     else
     {
-      QgsDebugMsg( "Plugin description not returned when queried\n" );
+      QgsDebugMsg( "Plugin description not returned when queried" );
     }
     if ( pVersion )
     {
@@ -288,7 +288,7 @@ void QgsPluginManager::getPluginDescriptions()
     }
     else
     {
-      QgsDebugMsg( "Plugin version not returned when queried\n" );
+      QgsDebugMsg( "Plugin version not returned when queried" );
     }
 
     if ( !pName || !pDesc || !pVersion )

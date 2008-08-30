@@ -35,13 +35,6 @@ email                : morb at ozemail dot com dot au
     return r; \
   }
 
-#define RELAY_GEOS() \
-  catch (GEOSException &e) \
-  { \
-    Q_UNUSED(e); \
-    throw; \
-  }
-
 class GEOSException
 {
   public:
@@ -4479,8 +4472,8 @@ bool QgsGeometry::convertToMultiType()
 
   QGis::WKBTYPE geomType = wkbType();
 
-  if ( geomType == QGis::WKBMultiPoint || geomType == QGis::WKBMultiPoint25D || \
-       geomType == QGis::WKBMultiLineString || geomType == QGis::WKBMultiLineString25D || \
+  if ( geomType == QGis::WKBMultiPoint || geomType == QGis::WKBMultiPoint25D ||
+       geomType == QGis::WKBMultiLineString || geomType == QGis::WKBMultiLineString25D ||
        geomType == QGis::WKBMultiPolygon || geomType == QGis::WKBMultiPolygon25D || geomType == QGis::WKBUnknown )
   {
     return false; //no need to convert

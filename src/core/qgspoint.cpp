@@ -98,7 +98,7 @@ int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
 {
   //algorithm from 'graphics GEMS', A. Paeth: 'A Fast 2D Point-on-line test'
   if (
-    fabs(( b.y() - a.y() ) * ( m_x - a.x() ) - ( m_y - a.y() ) * ( b.x() - a.x() ) ) \
+    fabs(( b.y() - a.y() ) * ( m_x - a.x() ) - ( m_y - a.y() ) * ( b.x() - a.x() ) )
     >= qMax( fabs( b.x() - a.x() ), fabs( b.y() - a.y() ) )
   )
   {

@@ -26,8 +26,6 @@ class QAction;
 class QToolBar;
 class QgisInterface;
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
 /**
 * \class OgrPlugin
 * \brief Translates vector layers between formats supported by OGR library.
@@ -97,7 +95,5 @@ private:
     //////////////////////////////////////////////////////////////////////////
 
 }; // OgrPlugin
-
-}}} // namespace qgis::plugin::ogrconv
 
 #endif // QGIS_PLUGIN_OGRCONV_PLUGIN_H_INCLUDED

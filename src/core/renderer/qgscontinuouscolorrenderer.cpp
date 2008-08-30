@@ -144,7 +144,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       }
       brush.setStyle( Qt::SolidPattern );
 
-      *img = QgsMarkerCatalogue::instance()->imageMarker( mMinimumSymbol->pointSymbolName(), \
+      *img = QgsMarkerCatalogue::instance()->imageMarker( mMinimumSymbol->pointSymbolName(),
              mMinimumSymbol->pointSize() * widthScale * rasterScaleFactor, pen, brush );
     }
     else if ( mVectorType == QGis::Line )

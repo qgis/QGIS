@@ -15,8 +15,6 @@
 // Qt4
 #include <QString>
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
 Format::Format()
 {
 }
@@ -112,6 +110,3 @@ void FormatsRegistry::init()
     add(Format("VRT", "Virtual Datasource", Format::eFile));
     add(Format("XPLANE", "X-Plane/Flighgear Aeronautical Data", Format::eFile));
 }
-
-}}} // namespace qgis::plugin::ogrconv
-

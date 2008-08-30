@@ -121,7 +121,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // row for this ellipsoid wasn't found?
   if ( radius.isEmpty() || parameter2.isEmpty() )
   {
-    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '" ) + ellipsoid.toLocal8Bit().data() + "'" )
+    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '" ) + ellipsoid.toLocal8Bit().data() + "'" );
     return false;
   }
 
@@ -130,7 +130,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     mSemiMajor = radius.mid( 2 ).toDouble();
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '" ) + radius.toLocal8Bit().data() + "'" )
+    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '" ) + radius.toLocal8Bit().data() + "'" );
     return false;
   }
 
@@ -149,11 +149,11 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   }
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '" ) + parameter2.toLocal8Bit().data() + "'" )
+    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '" ) + parameter2.toLocal8Bit().data() + "'" );
     return false;
   }
 
-  QgsDebugMsg( QString( "setEllipsoid: a=" ) + mSemiMajor + ", b=" + mSemiMinor + ", 1/f=" + mInvFlattening )
+  QgsDebugMsg( QString( "setEllipsoid: a=" ) + mSemiMajor + ", b=" + mSemiMinor + ", 1/f=" + mInvFlattening );
 
 
   // get spatial ref system for ellipsoid

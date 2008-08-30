@@ -60,7 +60,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
     /**Makes a GetCapabilities and returns the typenamse and crs supported by the server.
        @param typenames a list of layers provided by the server
-       @param crs a list of crs supported by the server. The place in the list corresponds to the \
+       @param crs a list of crs supported by the server. The place in the list corresponds to the
        typenames list (means that the crs list at position 0 is a crs for typename at position 0 etc.)
        @param title title list
        @param abstract textual descriptions for the types

@@ -140,11 +140,11 @@ void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const Q
 
   //find out if the layer has 25D type
   QGis::WKBTYPE geomType = provider->geometryType();
-  if ( geomType == QGis::WKBPoint25D || \
-       geomType == QGis::WKBLineString25D || \
-       geomType == QGis::WKBPolygon25D ||  \
-       geomType == QGis::WKBMultiPoint25D || \
-       geomType == QGis::WKBMultiLineString25D || \
+  if ( geomType == QGis::WKBPoint25D ||
+       geomType == QGis::WKBLineString25D ||
+       geomType == QGis::WKBPolygon25D ||
+       geomType == QGis::WKBMultiPoint25D ||
+       geomType == QGis::WKBMultiLineString25D ||
        geomType == QGis::WKBMultiPolygon25D )
   {
     mUseZCoordCheckBox->setEnabled( true );

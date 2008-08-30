@@ -565,9 +565,9 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
     }
 
     attributeChildLocalName = attributeChildElement.localName();
-    if ( attributeChildLocalName == "Point" || attributeChildLocalName == "LineString" || \
-         attributeChildLocalName == "Polygon" || attributeChildLocalName == "MultiPoint" || \
-         attributeChildLocalName == "MultiLineString" || attributeChildLocalName == "MultiPolygon" || \
+    if ( attributeChildLocalName == "Point" || attributeChildLocalName == "LineString" ||
+         attributeChildLocalName == "Polygon" || attributeChildLocalName == "MultiPoint" ||
+         attributeChildLocalName == "MultiLineString" || attributeChildLocalName == "MultiPolygon" ||
          attributeChildLocalName == "Surface" || attributeChildLocalName == "MultiSurface" )
     {
       geometryAttribute = attributeNode.toElement().localName(); //a geometry attribute
