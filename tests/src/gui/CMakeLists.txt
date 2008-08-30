@@ -71,24 +71,24 @@ ENDIF (APPLE)
 #
 # QgsQuickPrint test
 #
-SET(qgis_quickprinttest_SRCS testqgsquickprint.cpp ${util_SRCS})
-SET(qgis_quickprinttest_MOC_CPPS testqgsquickprint.cpp)
-QT4_WRAP_CPP(qgis_quickprinttest_MOC_SRCS ${qgis_quickprinttest_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_quickprinttestmoc ALL DEPENDS ${qgis_quickprinttest_MOC_SRCS})
-ADD_EXECUTABLE(qgis_quickprinttest ${qgis_quickprinttest_SRCS})
-ADD_DEPENDENCIES(qgis_quickprinttest qgis_quickprinttestmoc)
-TARGET_LINK_LIBRARIES(qgis_quickprinttest ${QT_LIBRARIES} qgis_core qgis_gui)
-SET_TARGET_PROPERTIES(qgis_quickprinttest 
-  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
-  INSTALL_RPATH_USE_LINK_PATH true)
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  INSTALL(TARGETS qgis_quickprinttest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/qgis_quickprinttest)
-ELSE (APPLE)
-  INSTALL(TARGETS qgis_quickprinttest RUNTIME DESTINATION ${QGIS_BIN_DIR})
-  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/bin/qgis_quickprinttest)
-ENDIF (APPLE)
+#SET(qgis_quickprinttest_SRCS testqgsquickprint.cpp ${util_SRCS})
+#SET(qgis_quickprinttest_MOC_CPPS testqgsquickprint.cpp)
+#QT4_WRAP_CPP(qgis_quickprinttest_MOC_SRCS ${qgis_quickprinttest_MOC_CPPS})
+#ADD_CUSTOM_TARGET(qgis_quickprinttestmoc ALL DEPENDS ${qgis_quickprinttest_MOC_SRCS})
+#ADD_EXECUTABLE(qgis_quickprinttest ${qgis_quickprinttest_SRCS})
+#ADD_DEPENDENCIES(qgis_quickprinttest qgis_quickprinttestmoc)
+#TARGET_LINK_LIBRARIES(qgis_quickprinttest ${QT_LIBRARIES} qgis_core qgis_gui)
+#SET_TARGET_PROPERTIES(qgis_quickprinttest 
+#  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+#  INSTALL_RPATH_USE_LINK_PATH true)
+#IF (APPLE)
+#  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+#  INSTALL(TARGETS qgis_quickprinttest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+#  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/qgis_quickprinttest)
+#ELSE (APPLE)
+#  INSTALL(TARGETS qgis_quickprinttest RUNTIME DESTINATION ${QGIS_BIN_DIR})
+#  ADD_TEST(qgis_quickprinttest ${CMAKE_INSTALL_PREFIX}/bin/qgis_quickprinttest)
+#ENDIF (APPLE)
 
 
 
