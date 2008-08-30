@@ -50,7 +50,7 @@ GraticuleCreator::~GraticuleCreator()
 {
 }
 
-//TODO: check for rediculous intervals!
+//TODO: check for ridiculous intervals!
 void GraticuleCreator::generatePointGraticule(
   double theXInterval,
   double theYInterval,
@@ -68,6 +68,10 @@ void GraticuleCreator::generatePointGraticule(
                                 mFields,
                                 QGis::WKBPoint,
                                 &mCRS );
+
+  if( theXInterval==0.0 || theYInterval==0.0 )
+    return;
+
   //
   // Order our loop so that it goes from smallest to biggest
   //
