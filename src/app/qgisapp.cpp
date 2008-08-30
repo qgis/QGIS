@@ -2859,7 +2859,7 @@ void QgisApp::newVectorLayer()
   {
     QgsDebugMsg( "ogr provider loaded" );
 
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WKBTYPE, \
+    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WKBTYPE,
         const std::list<std::pair<QString, QString> >& );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )

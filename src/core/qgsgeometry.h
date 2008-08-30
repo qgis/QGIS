@@ -132,7 +132,7 @@ class CORE_EXPORT QgsGeometry
     double distance( QgsGeometry& geom );
 
     /**
-       Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target pointand \
+       Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
     and the indices of the vertices before/after. The vertices before/after are -1 if not present
     */
     QgsPoint closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist );
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsGeometry
     double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
-     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed, \
+     @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     int addRing( const QList<QgsPoint>& ring );
 

@@ -241,7 +241,7 @@ QString QgsWmsProvider::imageEncoding() const
 
 void QgsWmsProvider::setImageEncoding( QString const & mimeType )
 {
-  QgsDebugMsg( "Setting image encoding to " + mimeType + "." )
+  QgsDebugMsg( "Setting image encoding to " + mimeType + "." );
   imageMimeType = mimeType;
 }
 
@@ -276,10 +276,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
 
   QgsDebugMsg( "pixelWidth = "  + QString( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString( pixelHeight ) );
-
-#ifdef QGISDEBUG
-  QgsLogger::debug<QgsRect>( "viewExtent: ", viewExtent, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
 
   // Can we reuse the previously cached image?
   if (
@@ -1376,11 +1373,12 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
       }
       else if ( e1.tagName() == "LatLonBoundingBox" )      // legacy from earlier versions of WMS
       {
-
-//            QgsDebugMsg("      LLBB is: '"  + e1.attribute("minx")  + "'.");
-//            QgsDebugMsg("      LLBB is: '"  + e1.attribute("miny")  + "'.");
-//            QgsDebugMsg("      LLBB is: '"  + e1.attribute("maxx")  + "'.");
-//            QgsDebugMsg("      LLBB is: '"  + e1.attribute("maxy")  + "'.");
+#if 0
+        QgsDebugMsg( "      LLBB is: '"  + e1.attribute( "minx" )  + "'." );
+        QgsDebugMsg( "      LLBB is: '"  + e1.attribute( "miny" )  + "'." );
+        QgsDebugMsg( "      LLBB is: '"  + e1.attribute( "maxx" )  + "'." );
+        QgsDebugMsg( "      LLBB is: '"  + e1.attribute( "maxy" )  + "'." );
+#endif
 
         layerProperty.ex_GeographicBoundingBox = QgsRect(
               e1.attribute( "minx" ).toDouble(),
@@ -1595,9 +1593,9 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   {
     mError = tr( "Request contains a CRS not offered by the server for one or more of the Layers in the request." );
   }
-  else if ( seCode == "InvalidCRS" )  // legacy WMS < 1.3.0
+  else if ( seCode == "InvalidSRS" )  // legacy WMS < 1.3.0
   {
-    mError = tr( "Request contains a CRS not offered by the server for one or more of the Layers in the request." );
+    mError = tr( "Request contains a SRS not offered by the server for one or more of the Layers in the request." );
   }
   else if ( seCode == "LayerNotDefined" )
   {

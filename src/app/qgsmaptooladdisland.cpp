@@ -40,7 +40,7 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, QObject::tr( "Not a vector layer" ), \
+    QMessageBox::information( 0, QObject::tr( "Not a vector layer" ),
                               QObject::tr( "The current layer is not a vector layer" ) );
     return;
   }
@@ -63,7 +63,7 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
   else if ( error == 2 )
   {
     //problem with coordinate transformation
-    QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ), \
+    QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
                               QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
     return;
   }

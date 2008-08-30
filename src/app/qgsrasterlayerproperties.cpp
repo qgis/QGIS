@@ -2561,7 +2561,7 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
     {
       //because the highest value is also an entry, there are (numberOfEntries - 1)
       //intervals
-      intervalDiff = ( myRasterBandStats.maxVal - myRasterBandStats.minVal ) / \
+      intervalDiff = ( myRasterBandStats.maxVal - myRasterBandStats.minVal ) /
                      ( numberOfEntries - 1 );
     }
     else

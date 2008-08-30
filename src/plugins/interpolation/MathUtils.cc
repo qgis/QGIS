@@ -157,7 +157,8 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
   }
 }
 
-/*bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result)//version imitating the geometric construction
+#if 0
+bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result)//version imitating the geometric construction
 {
   if(p1&&p2&&p3&&result)
     {
@@ -191,7 +192,8 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
       cout << "null pointer in method MathUtils::circumcenter" << endl << flush;
       return false;
     }
-}*/
+}
+#endif // 0
 
 double MathUtils::distPointFromLine( Point3D* thepoint, Point3D* p1, Point3D* p2 )
 {
@@ -291,7 +293,8 @@ bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
   return angle( p1, point, p2, point ) > 90;
 }
 
-/*bool MathUtils::inDiametral(Point3D* p1, Point3D* p2, Point3D* point)
+#if 0
+bool MathUtils::inDiametral(Point3D* p1, Point3D* p2, Point3D* point)
 {
   if(p1&&p2&&point)
     {
@@ -308,7 +311,8 @@ bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
       cout << "null pointer in MathUtils::inDiametral" << endl << flush;
       return false;
     }
-}*/
+}
+#endif // 0
 
 double MathUtils::leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 )
 {

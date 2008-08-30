@@ -86,7 +86,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
      results. Posibilities are GET, POST, SOAP*/
     void setEncoding( QgsWFSProvider::REQUEST_ENCODING e ) {mEncoding = e;}
 
-    /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and \
+    /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and
        stores them in a vector*/
     int getFeature( const QString& uri );
 
@@ -95,7 +95,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     void dataReadProgressMessage( QString message );
 
   private slots:
-    /**Receives the progress signals from QgsWFSData::dataReadProgress, generates a string \
+    /**Receives the progress signals from QgsWFSData::dataReadProgress, generates a string
      and emits the dataReadProgressMessage signal*/
     void handleWFSProgressMessage( int done, int total );
 

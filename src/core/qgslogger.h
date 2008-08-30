@@ -23,9 +23,9 @@
 #include <QString>
 
 #ifdef QGISDEBUG
-#define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__);
+#define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__)
 #define QgsDebugMsgLevel(str, level) QgsLogger::debug(QString(str), level,\
-    __FILE__, __FUNCTION__, __LINE__);
+    __FILE__, __FUNCTION__, __LINE__)
 #else
 #define QgsDebugMsg(str)
 #define QgsDebugMsgLevel(str, level)
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLogger
     static void fatal( const QString& msg );
 
   private:
-    /**Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,\
+    /**Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
      the function returns 1 if QGISDEBUG is defined and 0 if not*/
     static int debugLevel();
 

@@ -18,8 +18,6 @@
 // Qt4
 #include <QDialog>
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
 /**
 @author Mateusz Loskot
 */
@@ -63,7 +61,5 @@ private slots:
     void on_comboSrcFormats_currentIndexChanged(int index);
     void on_comboDstFormats_currentIndexChanged(int index);
 };
-
-}}} // namespace qgis::plugin::ogrconv
 
 #endif // QGIS_PLUGIN_OGRCONV_DIALOG_H_INCLUDED

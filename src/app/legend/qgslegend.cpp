@@ -155,7 +155,7 @@ void QgsLegend::removeLayer( QString layer_key )
   }
 
   QTreeWidgetItem* theItem = firstItem();
-  QgsDebugMsg( "called." )
+  QgsDebugMsg( "called." );
 
   while ( theItem )
   {
@@ -1255,7 +1255,7 @@ QTreeWidgetItem* QgsLegend::nextItem( QTreeWidgetItem* item )
   {
     return ( dynamic_cast<QgsLegendItem*>( litem->parent()->parent() )->nextSibling() );
   }
-  else if ( litem->parent() && litem->parent()->parent() && litem->parent()->parent()->parent() && \
+  else if ( litem->parent() && litem->parent()->parent() && litem->parent()->parent()->parent() &&
             (( QgsLegendItem* )( litem->parent()->parent()->parent() ) )->nextSibling() )//maximum four nesting states in the current legend
   {
     return ( dynamic_cast<QgsLegendItem*>( litem->parent()->parent()->parent() )->nextSibling() );

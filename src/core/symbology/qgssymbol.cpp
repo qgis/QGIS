@@ -192,7 +192,7 @@ void QgsSymbol::setNamedPointSymbol( QString name )
   QFile myFile( myTempName );
   if ( !myFile.exists() )
   {
-    QgsDebugMsg( "\n\n\n *** Svg Symbol not found on fs ***" )
+    QgsDebugMsg( "\n\n\n *** Svg Symbol not found on fs ***" );
     QgsDebugMsg( "Name: " + name );
     //see if we can resolve the problem...
     //by using the qgis svg dir from this local machine

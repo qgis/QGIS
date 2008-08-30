@@ -43,7 +43,7 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, LayerEntry >& settings );
     ~QgsSnappingDialog();
 
-    /**Returns the snapping settings per layer. Key of the map is the layer id and value the \
+    /**Returns the snapping settings per layer. Key of the map is the layer id and value the
      corresponding layer entry*/
     void layerSettings( QMap<QString, LayerEntry>& settings ) const;
 

@@ -30,14 +30,6 @@
 #include <QStringList>
 #include <QVariant>
 
-namespace qgis
-{
-  namespace plugin
-  {
-    namespace ogrconv
-    {
-
-// GDAL/OGR loaded into private namespace
 #include <ogr_api.h>
 
       Dialog::Dialog( QWidget* parent, Qt::WFlags fl )
@@ -449,9 +441,3 @@ namespace qgis
 
         inputDstDataset->setText( dst );
       }
-
-
-    }
-  }
-} // namespace qgis::plugin::ogrconv
-

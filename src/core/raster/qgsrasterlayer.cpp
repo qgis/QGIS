@@ -2098,12 +2098,12 @@ int QgsRasterLayer::getRasterBandNumber( QString const & theBandName )
   {
     //find out the name of this band
     QgsRasterBandStats myRasterBandStats = mRasterStatsList[myIterator];
-    QgsDebugMsg( "myRasterBandStats.bandName: " + myRasterBandStats.bandName + "  :: theBandName: "\
+    QgsDebugMsg( "myRasterBandStats.bandName: " + myRasterBandStats.bandName + "  :: theBandName: "
                  + theBandName );
 
     if ( myRasterBandStats.bandName == theBandName )
     {
-      QgsDebugMsg( "********** band " + QString::number( myRasterBandStats.bandNo ) + \
+      QgsDebugMsg( "********** band " + QString::number( myRasterBandStats.bandNo ) +
                    " was found in getRasterBandNumber " + theBandName );
 
       return myRasterBandStats.bandNo;
@@ -3646,8 +3646,8 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
         // here is where we check if its a near match:
         // we will see if its within 5 cells either side of
         //
-        QgsDebugMsg( "Checking whether " + QString::number( myRasterPyramid.xDim ) + " x " + \
-                     QString::number( myRasterPyramid.yDim ) + " matches " + \
+        QgsDebugMsg( "Checking whether " + QString::number( myRasterPyramid.xDim ) + " x " +
+                     QString::number( myRasterPyramid.yDim ) + " matches " +
                      QString::number( myOverviewXDim ) + " x " + QString::number( myOverviewYDim ) );
 
 
@@ -3838,12 +3838,12 @@ void *QgsRasterLayer::readData( GDALRasterBandH gdalBand, QgsRasterViewPort *vie
   GDALDataType type = GDALGetRasterDataType( gdalBand );
   int size = GDALGetDataTypeSize( type ) / 8;
 
-  QgsDebugMsg( "calling RasterIO with " + \
-               QString( ", source NW corner: " ) + QString::number( viewPort->rectXOffset ) + \
-               ", " + QString::number( viewPort->rectYOffset ) + \
-               ", source size: " + QString::number( viewPort->clippedWidth ) + \
-               ", " + QString::number( viewPort->clippedHeight ) + \
-               ", dest size: " + QString::number( viewPort->drawableAreaXDim ) + \
+  QgsDebugMsg( "calling RasterIO with " +
+               QString( ", source NW corner: " ) + QString::number( viewPort->rectXOffset ) +
+               ", " + QString::number( viewPort->rectYOffset ) +
+               ", source size: " + QString::number( viewPort->clippedWidth ) +
+               ", " + QString::number( viewPort->clippedHeight ) +
+               ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 
   void *data = VSIMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
@@ -4669,7 +4669,7 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
     }
 
   }
-  QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( myRasterBandStats.histogramVector->size() ) + \
+  QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( myRasterBandStats.histogramVector->size() ) +
                " elements" );
 }
 
@@ -4703,8 +4703,8 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     mModified( false )
 
 {
-  QgsDebugMsg( "(8 arguments) starting. with layer list of " + \
-               layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " + \
+  QgsDebugMsg( "(8 arguments) starting. with layer list of " +
+               layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
                format +  " and CRS of " + crs );
 
   mRasterShader = new QgsRasterShader();
@@ -4816,8 +4816,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
       if ( mDataProvider )
       {
-        QgsDebugMsg( "Instantiated the data provider plugin" + \
-                     QString( " with layer list of " ) + layers.join( ", " ) + " and style list of " + styles.join( ", " ) + \
+        QgsDebugMsg( "Instantiated the data provider plugin" +
+                     QString( " with layer list of " ) + layers.join( ", " ) + " and style list of " + styles.join( ", " ) +
                      " and format of " + format +  " and CRS of " + crs );
         if ( mDataProvider->isValid() )
         {

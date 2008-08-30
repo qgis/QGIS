@@ -60,7 +60,7 @@ bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
 
 void QgsProjectFileTransform::dump()
 {
-  QgsDebugMsg( QString( "Current project file version is %1.%2.%3\n" )
+  QgsDebugMsg( QString( "Current project file version is %1.%2.%3" )
                .arg( mCurrentVersion.majorVersion() )
                .arg( mCurrentVersion.minorVersion() )
                .arg( mCurrentVersion.subVersion() ) );

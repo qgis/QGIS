@@ -935,10 +935,10 @@ void QgsGrassNewMapset::setSelectedRegion()
 
     if ( n > 90 ) n = 90;
     if ( s < -90 ) s = -90;
-    /*
+#if 0
     if ( e > 180 ) e = 180;
     if ( w < -180 ) w = 180;
-    */
+#endif
   }
   else
   {

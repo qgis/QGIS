@@ -18,14 +18,6 @@
 // Qt4
 #include <QString>
 
-namespace qgis
-{
-  namespace plugin
-  {
-    namespace ogrconv
-    {
-
-// GDAL/OGR loaded into private namespace
 #include <ogr_api.h>
 
       Translator::Translator()
@@ -417,8 +409,3 @@ namespace qgis
 
         return ds;
       }
-
-    }
-  }
-} // namespace qgis::plugin::ogrconv
-

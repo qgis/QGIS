@@ -16,8 +16,6 @@
 #include <QMap>
 #include <QString>
 
-namespace qgis { namespace plugin { namespace ogrconv {
-
 class Format
 {
 public:
@@ -69,8 +67,5 @@ private:
     QMap<QString, Format> mFrmts;
     Format mCache;
 };
-
-
-}}} // namespace qgis::plugin::ogrconv
 
 #endif // QGIS_PLUGIN_OGRCONV_FORMATS_H_INCLUDED

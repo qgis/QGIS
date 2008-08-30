@@ -53,7 +53,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   QGis::WKBTYPE layerWKBType = vlayer->geometryType();
 
   //no support for adding features to 2.5D types yet
-  if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D || \
+  if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D ||
        layerWKBType == QGis::WKBMultiLineString25D || layerWKBType == QGis::WKBPoint25D || layerWKBType == QGis::WKBMultiPoint25D )
   {
     QMessageBox::critical( 0, QObject::tr( "2.5D shape type not supported" ), QObject::tr( "Adding features to 2.5D shapetypes is not supported yet" ) );
@@ -109,7 +109,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ), \
+        QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
                                   QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
         return;
       }
@@ -219,7 +219,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ), \
+      QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
                                 QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
       return;
     }
