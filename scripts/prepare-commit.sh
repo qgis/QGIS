@@ -1,7 +1,17 @@
 #!/bin/bash
 
-if ! [ -x astyle.sh ]; then
-	PATH=$PATH:$(dirname $0)
+PATH=$PATH:$(dirname $0)
+
+if ! type -p astyle.sh >/dev/null; then
+	echo astyle.sh not found
+	exit 1
+fi
+
+if ! type -p colordiff >/dev/null; then
+	colordiff()
+	{
+		cat "$@"
+	}
 fi
 
 set -e
