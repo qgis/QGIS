@@ -92,11 +92,23 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Restore the window and toolbar state
     void restoreWindowState();
 
+  protected:
     //! Move event
-    void moveEvent( QMoveEvent * );
+    virtual void moveEvent( QMoveEvent * );
 
     //! Resize event
-    void resizeEvent( QResizeEvent * );
+    virtual void resizeEvent( QResizeEvent * );
+
+#ifdef Q_WS_MAC
+    //! Change event (update window menu on ActivationChange)
+    virtual void changeEvent( QEvent * );
+
+    //! Close event (remove window from menu)
+    virtual void closeEvent( QCloseEvent * );
+
+    //! Show event (add window to menu)
+    virtual void showEvent( QShowEvent * );
+#endif
 
   public slots:
     //! Zoom to full extent of the paper
@@ -205,11 +217,15 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void setSelectionTool();
 
+  private slots:
+
+    //! Raise, unminimize and activate this window
+    void activate();
 
   private:
-    //! Set teh pixmap / icons on the toolbar buttons
+    //! Set the pixmap / icons on the toolbar buttons
     void setupTheme();
-    /**Etablishes the signal slot connection for the class*/
+    /**Establishes the signal slot connection for the class*/
     void connectSlots();
 
     //! Set buttons up
@@ -244,6 +260,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! To know which item to show if selection changes
     QMap<QgsComposerItem*, QWidget*> mItemWidgetMap;
+
+#ifdef Q_WS_MAC
+    //! Window menu action to select this window
+    QAction *mWindowAction;
+#endif
 
     //! Help context id
     static const int context_id = 985715179;

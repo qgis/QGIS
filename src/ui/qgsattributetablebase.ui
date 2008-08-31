@@ -101,7 +101,7 @@
    <item row="0" column="4" >
     <widget class="QToolButton" name="mZoomMapToSelectedRowsButton" >
      <property name="toolTip" >
-      <string>Zoom map to the selected rows (Ctrl-F)</string>
+      <string>Zoom map to the selected rows (Ctrl-J)</string>
      </property>
      <property name="whatsThis" >
       <string>Zoom map to the selected rows</string>
@@ -110,7 +110,7 @@
       <string/>
      </property>
      <property name="shortcut" >
-      <string>Ctrl+F</string>
+      <string>Ctrl+J</string>
      </property>
     </widget>
    </item>

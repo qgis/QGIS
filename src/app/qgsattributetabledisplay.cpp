@@ -32,6 +32,7 @@
 #include "qgscontexthelp.h"
 
 #include <QCloseEvent>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QIcon>
 #include <QPixmap>
@@ -131,6 +132,51 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay( QgsVectorLayer* layer )
   setWindowTitle( tr( "Attribute table - " ) + layer->name() );
 
 #ifdef Q_WS_MAC
+  QMenuBar *menuBar = new QMenuBar( this );
+
+  QMenu *appMenu = menuBar->addMenu( tr( "QGIS" ) );
+  appMenu->addAction( QgisApp::instance()->actionAbout() );
+  appMenu->addAction( QgisApp::instance()->actionOptions() );
+
+  QMenu *fileMenu = menuBar->addMenu( tr( "File" ) );
+  QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
+
+  QMenu *editMenu = menuBar->addMenu( tr( "Edit" ) );
+  QAction *undoAction = editMenu->addAction( tr( "&Undo" ), this, SLOT( undo() ), tr( "Ctrl+Z" ) );
+  undoAction->setEnabled( false );
+  editMenu->addSeparator();
+  QAction *cutAction = editMenu->addAction( tr( "Cu&t" ), this, SLOT( cut() ), tr( "Ctrl+X" ) );
+  cutAction->setEnabled( false );
+  QAction *copyAction = editMenu->addAction(
+    mCopySelectedRowsButton->icon(), tr( "&Copy" ), this, SLOT( copySelectedRowsToClipboard() ), tr( "Ctrl+C" ) );
+  QAction *pasteAction = editMenu->addAction( tr( "&Paste" ), this, SLOT( paste() ), tr( "Ctrl+V" ) );
+  pasteAction->setEnabled( false );
+  QAction *deleteAction = editMenu->addAction(
+    mRemoveSelectionButton->icon(), tr( "Delete" ), this, SLOT( removeSelection() ) );
+
+  QMenu *layerMenu = menuBar->addMenu( tr( "Layer" ) );
+  QAction *zoomToSelectedAction = layerMenu->addAction(
+    mZoomMapToSelectedRowsButton->icon(), tr( "Zoom to Selection" ), this, SLOT( zoomMapToSelectedRows() ), tr( "Ctrl+J" ) );
+  layerMenu->addSeparator();
+  QAction *toggleEditingAction = layerMenu->addAction(
+    mToggleEditingButton->icon(), tr( "Toggle Editing" ), this, SLOT( toggleEditing() ) );
+  toggleEditingAction->setEnabled( mToggleEditingButton->isEnabled() );
+  toggleEditingAction->setCheckable( true );
+  toggleEditingAction->setChecked( mToggleEditingButton->isChecked() );
+  connect( mToggleEditingButton, SIGNAL( toggled( bool ) ), toggleEditingAction, SLOT( setChecked( bool ) ) );
+
+  QMenu *tableMenu = menuBar->addMenu( tr( "Table" ) );
+  QAction *moveToTopAction = tableMenu->addAction(
+    mSelectedToTopButton->icon(), tr( "Move to Top" ), this, SLOT( selectedToTop() ) );
+  QAction *invertAction = tableMenu->addAction(
+    mInvertSelectionButton->icon(), tr( "Invert" ), this, SLOT( invertSelection() ) );
+  
+#ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
+  menuBar->addMenu( QgisApp::instance()->windowMenu() );
+
+  menuBar->addMenu( QgisApp::instance()->helpMenu() );
+#endif
+
   // Create action to select this window and add it to Window menu
   mWindowAction = new QAction( windowTitle(), this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
@@ -143,12 +189,32 @@ QgsAttributeTableDisplay::~QgsAttributeTableDisplay()
   smTables.remove( mLayer );
 }
 
+#ifdef Q_WS_MAC
+void QgsAttributeTableDisplay::changeEvent( QEvent* event )
+{
+  QDialog::changeEvent( event );
+  switch ( event->type() )
+  {
+  case QEvent::ActivationChange:
+    if ( QApplication::activeWindow() == this )
+    {
+      mWindowAction->setChecked( true );
+    }
+    break;
+
+  default:
+    break;
+  }
+}
+#endif
+
 void QgsAttributeTableDisplay::closeEvent( QCloseEvent *ev )
 {
+  QDialog::closeEvent( ev );
+
   if ( mDock == NULL )
     saveWindowLocation();
 
-  ev->ignore();
   deleteLater();
 }
 
