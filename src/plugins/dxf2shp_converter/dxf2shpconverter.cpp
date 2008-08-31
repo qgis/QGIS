@@ -77,7 +77,7 @@ void dxf2shpConverter::initGui()
 
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Dxf2Shp" ), mQActionPointer );
 }
 
 //method defined in interface
@@ -93,7 +93,7 @@ void dxf2shpConverter::help()
 void dxf2shpConverter::run()
 {
   dxf2shpConverterGui *myPluginGui =
-    new dxf2shpConverterGui( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
+    new dxf2shpConverterGui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
 
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 

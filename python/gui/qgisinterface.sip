@@ -72,13 +72,13 @@ class QgisInterface : QObject
     virtual void openURL(QString url, bool useQgisDocDirectory=true)=0;
 
     /** Return a pointer to the map canvas */
-    virtual QgsMapCanvas * getMapCanvas()=0;
+    virtual QgsMapCanvas * mapCanvas()=0;
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
-    virtual QWidget * getMainWindow()=0;
+    virtual QWidget * mainWindow()=0;
 
     /** Add action to the plugins menu */
-    virtual void addPluginMenu(QString name, QAction* action)=0;
+    virtual void addPluginToMenu(QString name, QAction* action)=0;
     /** Remove action from the plugins menu */
     virtual void removePluginMenu(QString name, QAction* action)=0;
 

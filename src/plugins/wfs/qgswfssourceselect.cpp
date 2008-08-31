@@ -355,7 +355,7 @@ void QgsWFSSourceSelect::addLayer()
   QString crsString;
   if ( mProjectionSelector )
   {
-    long epsgNr = mProjectionSelector->getSelectedEpsg();
+    long epsgNr = mProjectionSelector->selectedEpsg();
     if ( epsgNr != 0 )
     {
       crsString = "&SRSNAME=EPSG:" + QString::number( epsgNr );
@@ -373,7 +373,7 @@ void QgsWFSSourceSelect::changeCRS()
 {
   if ( mProjectionSelector->exec() )
   {
-    QString crsString = "EPSG: " + QString::number( mProjectionSelector->getSelectedEpsg() );
+    QString crsString = "EPSG: " + QString::number( mProjectionSelector->selectedEpsg() );
     labelCoordRefSys->setText( crsString );
   }
 }
@@ -407,7 +407,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
         if ( preferredCRS != -1 )
         {
           QgsCoordinateReferenceSystem refSys( preferredCRS );
-          mProjectionSelector->setSelectedCRSID( refSys.srsid() );
+          mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
           labelCoordRefSys->setText( "EPSG: " + QString::number( preferredCRS ) );
         }

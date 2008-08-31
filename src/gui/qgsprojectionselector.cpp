@@ -76,12 +76,12 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
 
   if ( !mProjListDone )
   {
-    applyProjList( &mCrsFilter );
+    loadCrsList( &mCrsFilter );
   }
 
   if ( !mUserProjListDone )
   {
-    applyUserProjList( &mCrsFilter );
+    loadUserCrsList( &mCrsFilter );
   }
 
   // check if a paricular projection is waiting
@@ -163,7 +163,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 }
 
 
-void QgsProjectionSelector::setSelectedCRSName( QString theCRSName )
+void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
 {
   mCRSNameSelection = theCRSName;
   mCRSNameSelectionPending = TRUE;
@@ -179,7 +179,7 @@ void QgsProjectionSelector::setSelectedCRSName( QString theCRSName )
 }
 
 
-void QgsProjectionSelector::setSelectedCRSID( long theCRSID )
+void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 {
   mCRSIDSelection = theCRSID;
   mCRSIDSelectionPending = TRUE;
@@ -255,7 +255,7 @@ void QgsProjectionSelector::applyCRSIDSelection()
 
 
 //note this line just returns the projection name!
-QString QgsProjectionSelector::getSelectedName()
+QString QgsProjectionSelector::selectedName()
 {
   // return the selected wkt name from the list view
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
@@ -269,7 +269,7 @@ QString QgsProjectionSelector::getSelectedName()
   }
 }
 // Returns the whole proj4 string for the selected projection node
-QString QgsProjectionSelector::getSelectedProj4String()
+QString QgsProjectionSelector::selectedProj4String()
 {
   // Only return the projection if there is a node in the tree
   // selected that has an srid. This prevents error if the user
@@ -443,19 +443,19 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
 }
 
 
-long QgsProjectionSelector::getSelectedSRID()
+long QgsProjectionSelector::selectedPostgresSrId()
 {
   return getSelectedLongAttribute( "srid" );
 }
 
 
-long QgsProjectionSelector::getSelectedEpsg()
+long QgsProjectionSelector::selectedEpsg()
 {
   return getSelectedLongAttribute( "epsg" );
 }
 
 
-long QgsProjectionSelector::getSelectedCRSID()
+long QgsProjectionSelector::selectedCrsId()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
 
@@ -479,7 +479,7 @@ void QgsProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
 }
 
 
-void QgsProjectionSelector::applyUserProjList( QSet<QString> * crsFilter )
+void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
 {
   QgsDebugMsg( "Fetching user projection list..." );
 
@@ -554,7 +554,7 @@ void QgsProjectionSelector::applyUserProjList( QSet<QString> * crsFilter )
   mUserProjListDone = TRUE;
 }
 
-void QgsProjectionSelector::applyProjList( QSet<QString> * crsFilter )
+void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
 {
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -710,8 +710,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
   {
     // Found a real CRS
     QString myDescription;
-    emit sridSelected( QString::number( getSelectedCRSID() ) );
-    QString myProjString = getSelectedProj4String();
+    emit sridSelected( QString::number( selectedCrsId() ) );
+    QString myProjString = selectedProj4String();
     lstCoordinateSystems->scrollToItem( theItem );
     teProjection->setText( myProjString );
   }
@@ -728,7 +728,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
 
   QgsDebugMsg( "pbnFind..." );
 
-  QString mySearchString( stringSQLSafe( leSearch->text() ) );
+  QString mySearchString( sqlSafeString( leSearch->text() ) );
   // Set up the query to retreive the projection information needed to populate the list
   QString mySql;
   if ( radEPSGID->isChecked() )
@@ -745,7 +745,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
     // each time the find button is pressed. This means we can loop through all matches.
-    if ( myLargestSrsId <= getSelectedCRSID() )
+    if ( myLargestSrsId <= selectedCrsId() )
     {
       //roll search around to the beginning
       mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
@@ -755,7 +755,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     {
       // search ahead of the current postion
       mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
-              " and srs_id > " + QString::number( getSelectedCRSID() ) + " order by srs_id limit 1";
+              " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
     }
   }
   QgsDebugMsg( QString( " Search sql: %1" ).arg( mySql ) );
@@ -788,7 +788,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if ( myResult == SQLITE_ROW )
     {
       QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCRSID( mySrsId.toLong() );
+      setSelectedCrsId( mySrsId.toLong() );
       // close the sqlite3 statement
       sqlite3_finalize( myPreparedStatement );
       sqlite3_close( myDatabase );
@@ -821,7 +821,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if ( myResult == SQLITE_ROW )
     {
       QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCRSID( mySrsId.toLong() );
+      setSelectedCrsId( mySrsId.toLong() );
       // close the sqlite3 statement
       sqlite3_finalize( myPreparedStatement );
       sqlite3_close( myDatabase );
@@ -914,7 +914,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
 * \arg const QString in The input string to make safe.
 * \return The string made safe for SQL statements.
 */
-const QString QgsProjectionSelector::stringSQLSafe( const QString theSQL )
+const QString QgsProjectionSelector::sqlSafeString( const QString theSQL )
 {
   QString myRetval = theSQL;
   myRetval.replace( "\\", "\\\\" );

@@ -96,12 +96,12 @@ void QgsNorthArrowPlugin::initGui()
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   //render the arrow each time the map is rendered
-  connect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderNorthArrow( QPainter * ) ) );
+  connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderNorthArrow( QPainter * ) ) );
   //this resets this plugin up if a project is loaded
-  connect( qGisInterface->getMainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   // Add the icon to the toolbar & appropriate menu
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginMenu( tr( "&Decorations" ), myQActionPointer );
+  qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
 
   projectRead();
   refreshCanvas();
@@ -127,7 +127,7 @@ void QgsNorthArrowPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsNorthArrowPlugin::run()
 {
-  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui( qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //overides function by the same name created in .ui
   myPluginGui->setRotation( mRotationInt );
@@ -148,7 +148,7 @@ void QgsNorthArrowPlugin::run()
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void QgsNorthArrowPlugin::refreshCanvas()
 {
-  qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->mapCanvas()->refresh();
 }
 
 void QgsNorthArrowPlugin::renderNorthArrow( QPainter * theQPainter )
@@ -254,7 +254,7 @@ void QgsNorthArrowPlugin::unload()
   qGisInterface->removePluginMenu( tr( "&Decorations" ), myQActionPointer );
   qGisInterface->removeToolBarIcon( myQActionPointer );
   // remove the northarrow from the canvas
-  disconnect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
+  disconnect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
               this, SLOT( renderNorthArrow( QPainter * ) ) );
   refreshCanvas();
 
@@ -291,7 +291,7 @@ void QgsNorthArrowPlugin::setAutomatic( bool theBool )
 
 bool QgsNorthArrowPlugin::calculateNorthDirection()
 {
-  QgsMapCanvas& mapCanvas = *( qGisInterface->getMapCanvas() );
+  QgsMapCanvas& mapCanvas = *( qGisInterface->mapCanvas() );
 
   bool goodDirn = false;
 

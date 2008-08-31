@@ -133,8 +133,8 @@ void QgsGrassPlugin::initGui()
 
   QgsGrass::init();
 
-  mCanvas = qGisInterface->getMapCanvas();
-  QWidget* qgis = qGisInterface->getMainWindow();
+  mCanvas = qGisInterface->mapCanvas();
+  QWidget* qgis = qGisInterface->mainWindow();
 
   // Connect project
   connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -186,16 +186,16 @@ void QgsGrassPlugin::initGui()
   connect( mCloseMapsetAction, SIGNAL( triggered() ), this, SLOT( closeMapset() ) );
 
   // Add actions to a GRASS plugin menu
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mOpenMapsetAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mNewMapsetAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mCloseMapsetAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mAddVectorAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mAddRasterAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mNewVectorAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mEditAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mOpenToolsAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mRegionAction );
-  qGisInterface->addPluginMenu( tr( "&GRASS" ), mEditRegionAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenMapsetAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mNewMapsetAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mCloseMapsetAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mAddVectorAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mAddRasterAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mNewVectorAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mEditAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenToolsAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mRegionAction );
+  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mEditRegionAction );
 
   // Add the toolbar to the main window
   toolBarPointer = qGisInterface->addToolBar( tr( "GRASS" ) );
@@ -419,7 +419,7 @@ void QgsGrassPlugin::openTools()
 {
   if ( !mTools )
   {
-    mTools = new QgsGrassTools( qGisInterface, qGisInterface->getMainWindow(), 0, Qt::WType_Dialog );
+    mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow(), 0, Qt::WType_Dialog );
 
     connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion() ) );
   }
@@ -439,7 +439,7 @@ void QgsGrassPlugin::edit()
 
   mEditAction->setEnabled( false );
   QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qGisInterface->activeLayer(), false,
-                                       qGisInterface->getMainWindow(), Qt::WType_Dialog );
+                                       qGisInterface->mainWindow(), Qt::WType_Dialog );
 
   if ( ed->isValid() )
   {
@@ -527,7 +527,7 @@ void QgsGrassPlugin::newVector()
   }
 
   QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, layer, true,
-                                       qGisInterface->getMainWindow(), Qt::WType_Dialog );
+                                       qGisInterface->mainWindow(), Qt::WType_Dialog );
 
   if ( ed->isValid() )
   {
@@ -636,7 +636,7 @@ void QgsGrassPlugin::changeRegion( void )
   }
 
   // Warning: don't use Qt::WType_Dialog, it would ignore restorePosition
-  mRegion = new QgsGrassRegion( this, qGisInterface, qGisInterface->getMainWindow(), Qt::Window );
+  mRegion = new QgsGrassRegion( this, qGisInterface, qGisInterface->mainWindow(), Qt::Window );
 
   connect( mRegion, SIGNAL( destroyed( QObject * ) ), this, SLOT( regionClosed() ) );
 
@@ -709,7 +709,7 @@ void QgsGrassPlugin::newMapset()
   if ( !QgsGrassNewMapset::isRunning() )
   {
     mNewMapset = new QgsGrassNewMapset( qGisInterface,
-                                        this, qGisInterface->getMainWindow() );
+                                        this, qGisInterface->mainWindow() );
   }
   mNewMapset->show();
   mNewMapset->raise();
@@ -809,7 +809,7 @@ void QgsGrassPlugin::unload()
   disconnect( qGisInterface, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
               this, SLOT( setEditAction() ) );
 
-  QWidget* qgis = qGisInterface->getMainWindow();
+  QWidget* qgis = qGisInterface->mainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
 }

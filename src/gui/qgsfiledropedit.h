@@ -28,11 +28,11 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
     QgsFileDropEdit( QWidget *parent = 0 );
     virtual ~QgsFileDropEdit();
 
-    bool dirOnly() const { return mDirOnly; }
-    void setDirOnly( bool dirOnly );
+    bool isDirOnly() const { return mDirOnly; }
+    void setDirOnly( bool isDirOnly );
 
-    bool fileOnly() const { return mFileOnly; }
-    void setFileOnly( bool fileOnly );
+    bool isFileOnly() const { return mFileOnly; }
+    void setFileOnly( bool isFileOnly );
 
     const QString& suffixFilter() const { return mSuffix; }
     void setSuffixFilter( const QString& suffix );

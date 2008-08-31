@@ -96,8 +96,8 @@ void QgsGPSPlugin::initGui()
   connect( mCreateGPXAction, SIGNAL( activated() ), this, SLOT( createGPX() ) );
 
   mQGisInterface->fileToolBar()->addAction( mQActionPointer );
-  mQGisInterface->addPluginMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->addPluginMenu( tr( "&Gps" ), mCreateGPXAction );
+  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
+  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
 }
 
 //method defined in interface
@@ -125,7 +125,7 @@ void QgsGPSPlugin::run()
   }
 
   QgsGPSPluginGui *myPluginGui =
-    new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->getMainWindow(),
+    new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
                          QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
@@ -156,7 +156,7 @@ void QgsGPSPlugin::run()
 void QgsGPSPlugin::createGPX()
 {
   QString fileName =
-    QFileDialog::getSaveFileName( mQGisInterface->getMainWindow(),
+    QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
                                   ".",
                                   tr( "GPS eXchange file (*.gpx)" ) );

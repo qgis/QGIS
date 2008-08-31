@@ -204,7 +204,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   mView = new QgsComposerView( mViewFrame );
   connectSlots();
 
-  mComposition  = new QgsComposition( mQgis->getMapCanvas()->mapRenderer() );
+  mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
   mView->setComposition( mComposition );
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
@@ -382,7 +382,7 @@ void QgsComposer::showItemOptions( const QgsComposerItem* item )
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
 {
-  return mQgis->getMapCanvas();
+  return mQgis->mapCanvas();
 }
 
 QgsComposerView *QgsComposer::view( void )
@@ -1395,7 +1395,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
   mView = new QgsComposerView( mViewFrame );
   connectSlots();
 
-  mComposition = new QgsComposition( mQgis->getMapCanvas()->mapRenderer() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
   mComposition->readXML( compositionElem, doc );
 
   QGridLayout *l = new QGridLayout( mViewFrame );

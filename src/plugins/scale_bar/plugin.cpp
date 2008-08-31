@@ -102,12 +102,12 @@ void QgsScaleBarPlugin::initGui()
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   //render the scale bar each time the map is rendered
-  connect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderScaleBar( QPainter * ) ) );
+  connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderScaleBar( QPainter * ) ) );
   //this resets this plugin up if a project is loaded
-  connect( qGisInterface->getMainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginMenu( tr( "&Decorations" ), myQActionPointer );
+  qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
 }
 
 void QgsScaleBarPlugin::projectRead()
@@ -134,7 +134,7 @@ void QgsScaleBarPlugin::help()
 // Slot called when the  menu item is activated
 void QgsScaleBarPlugin::run()
 {
-  QgsScaleBarPluginGui *myPluginGui = new QgsScaleBarPluginGui( qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  QgsScaleBarPluginGui *myPluginGui = new QgsScaleBarPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   myPluginGui->setPreferredSize( mPreferredSize );
   myPluginGui->setSnapping( mSnapping );
@@ -154,7 +154,7 @@ void QgsScaleBarPlugin::run()
   connect( myPluginGui, SIGNAL( refreshCanvas() ), this, SLOT( refreshCanvas() ) );
   myPluginGui->show();
   //set the map units in the spin box
-  int myUnits = qGisInterface->getMapCanvas()->mapUnits();
+  int myUnits = qGisInterface->mapCanvas()->mapUnits();
   switch ( myUnits )
   {
     case 0: myPluginGui->getSpinSize()->setSuffix( tr( " metres/km" ) ); break;
@@ -168,7 +168,7 @@ void QgsScaleBarPlugin::run()
 
 void QgsScaleBarPlugin::refreshCanvas()
 {
-  qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->mapCanvas()->refresh();
 }
 
 
@@ -185,10 +185,10 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMapUnitsPerPixelDouble = std::abs( qGisInterface->getMapCanvas()->mapUnitsPerPixel() );
+  double myMapUnitsPerPixelDouble = std::abs( qGisInterface->mapCanvas()->mapUnitsPerPixel() );
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  int myLayerCount = qGisInterface->getMapCanvas()->layerCount();
+  int myLayerCount = qGisInterface->mapCanvas()->layerCount();
   if ( !myLayerCount || !myCanvasWidth || !myMapUnitsPerPixelDouble ) return;
 
   //Large if statement which determines whether to render the scale bar
@@ -230,7 +230,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
     }
 
     //Get type of map units and set scale bar unit label text
-    QGis::units myMapUnits = qGisInterface->getMapCanvas()->mapUnits();
+    QGis::units myMapUnits = qGisInterface->mapCanvas()->mapUnits();
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {
@@ -540,7 +540,7 @@ void QgsScaleBarPlugin::unload()
   qGisInterface->removeToolBarIcon( myQActionPointer );
 
   // remove the northarrow from the canvas
-  disconnect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
+  disconnect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
               this, SLOT( renderScaleBar( QPainter * ) ) );
   refreshCanvas();
 

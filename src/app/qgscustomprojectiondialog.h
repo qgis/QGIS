@@ -70,7 +70,7 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     //so that we can return to it if the record insert is aborted
     long mLastRecordLong;
     long mRecordCountLong;
-    const QString stringSQLSafe( const QString theSQL );
+    const QString sqlSafeString( const QString theSQL );
 
 };
 

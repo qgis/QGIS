@@ -56,7 +56,7 @@ QuickPrintPlugin::QuickPrintPlugin( QgisInterface * theQgisInterface ):
     QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
-  mpMapCanvas = mQGisIface->getMapCanvas();
+  mpMapCanvas = mQGisIface->mapCanvas();
 }
 
 QuickPrintPlugin::~QuickPrintPlugin()
@@ -79,7 +79,7 @@ void QuickPrintPlugin::initGui()
   connect( mQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "&Quick Print" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Quick Print" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -96,7 +96,7 @@ void QuickPrintPlugin::run()
 {
   QuickPrintGui *mypPluginGui = new QuickPrintGui(
     mpMapCanvas,
-    mQGisIface->getMainWindow(),
+    mQGisIface->mainWindow(),
     QgisGui::ModalDialogFlags );
   mypPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   mypPluginGui->exec(); //gui will decide when to call print

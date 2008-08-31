@@ -87,17 +87,17 @@ class QgisAppInterface : public QgisInterface
     void openURL( QString url, bool useQgisDocDirectory = true );
 
     /** Return a pointer to the map canvas used by qgisapp */
-    QgsMapCanvas * getMapCanvas();
+    QgsMapCanvas * mapCanvas();
 
     /** Gives access to main QgisApp object
 
         Plugins don't need to know about QgisApp, as we pass it as QWidget,
         it can be used for connecting slots and using as widget's parent
     */
-    QWidget * getMainWindow();
+    QWidget * mainWindow();
 
     /** Add action to the plugins menu */
-    void addPluginMenu( QString name, QAction* action );
+    void addPluginToMenu( QString name, QAction* action );
     /** Remove action from the plugins menu */
     void removePluginMenu( QString name, QAction* action );
 

@@ -861,10 +861,10 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  mySelector->setSelectedCRSID( layer->srs().srsid() );
+  mySelector->setSelectedCrsId( layer->srs().srsid() );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs( mySelector->getSelectedCRSID(), QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID );
     layer->setSrs( srs );
   }
   else

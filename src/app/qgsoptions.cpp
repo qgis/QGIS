@@ -370,14 +370,14 @@ void QgsOptions::on_pbnSelectProjection_clicked()
   QgsCoordinateReferenceSystem refSys;
   if ( refSys.createFromProj4( txtGlobalWKT->toPlainText() ) )
   {
-    mySelector->setSelectedCRSID( refSys.srsid() );
+    mySelector->setSelectedCrsId( refSys.srsid() );
   }
 
   if ( mySelector->exec() )
   {
     QgsDebugMsg( "------ Global Default Projection Selection Set ----------" );
     //! @todo changes this control name in gui to txtGlobalProjString
-    txtGlobalWKT->setText( mySelector->getSelectedProj4String() );
+    txtGlobalWKT->setText( mySelector->selectedProj4String() );
     QgsDebugMsg( QString( "------ Global Default Projection now set to ----------\n%1" ).arg( mGlobalCRSID ) );
   }
   else

@@ -56,7 +56,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
  */
 QgsPgGeoprocessing::QgsPgGeoprocessing( QgisInterface * _qI )
     : QgisPlugin( name_, description_, version_, type_ ),
-    qgisMainWindow( _qI->getMainWindow() ),
+    qgisMainWindow( _qI->mainWindow() ),
     qI( _qI )
 {
 }
@@ -81,7 +81,7 @@ void QgsPgGeoprocessing::initGui()
 
   // Add the icon to the toolbar
   qI->addToolBarIcon( bufferAction );
-  qI->addPluginMenu( tr( "&Geoprocessing" ), bufferAction );
+  qI->addPluginToMenu( tr( "&Geoprocessing" ), bufferAction );
 
 }
 

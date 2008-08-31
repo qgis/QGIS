@@ -135,7 +135,7 @@ class QgisApp : public QMainWindow
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( QString, QPixmap * );
     /** Get the mapcanvas object from the app */
-    QgsMapCanvas * getMapCanvas() { return mMapCanvas; };
+    QgsMapCanvas * mapCanvas() { return mMapCanvas; };
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
     //! Setup the toolbar popup menus for a given theme
@@ -384,7 +384,7 @@ class QgisApp : public QMainWindow
     //! Find the QMenu with the given name (ie the user visible text on the menu item)
     QMenu* getPluginMenu( QString menuName );
     //! Add the action to the submenu with the given name under the plugin menu
-    void addPluginMenu( QString name, QAction* action );
+    void addPluginToMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the plugin menu
     void removePluginMenu( QString name, QAction* action );
     //! Add an icon to the plugin toolbar

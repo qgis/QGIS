@@ -49,7 +49,7 @@ static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 */
 QgsSpitPlugin::QgsSpitPlugin( QgisInterface * _qI )
     : QgisPlugin( name_, description_, version_, type_ ),
-    qgisMainWindow( _qI->getMainWindow() ),
+    qgisMainWindow( _qI->mainWindow() ),
     qI( _qI )
 {
 }
@@ -72,7 +72,7 @@ void QgsSpitPlugin::initGui()
   connect( spitAction, SIGNAL( triggered() ), this, SLOT( spit() ) );
   // Add the icon to the toolbar and to the plugin menu
   qI->addToolBarIcon( spitAction );
-  qI->addPluginMenu( tr( "&Spit" ), spitAction );
+  qI->addPluginToMenu( tr( "&Spit" ), spitAction );
 
 }
 

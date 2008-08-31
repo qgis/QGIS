@@ -105,7 +105,7 @@ void QgsDelimitedTextPlugin::initGui()
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginMenu( tr( "&Delimited text" ), myQActionPointer );
+  qGisInterface->addPluginToMenu( tr( "&Delimited text" ), myQActionPointer );
 
 }
 
@@ -114,7 +114,7 @@ void QgsDelimitedTextPlugin::run()
 {
   QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui =
     new QgsDelimitedTextPluginGui( qGisInterface,
-                                   qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+                                   qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   myQgsDelimitedTextPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
   connect( myQgsDelimitedTextPluginGui,

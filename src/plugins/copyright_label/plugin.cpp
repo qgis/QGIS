@@ -79,13 +79,13 @@ void QgsCopyrightLabelPlugin::initGui()
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
   // This calls the renderer everytime the cnavas has drawn itself
-  connect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderLabel( QPainter * ) ) );
+  connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderLabel( QPainter * ) ) );
   //this resets this plugin up if a project is loaded
-  connect( qGisInterface->getMainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
 
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginMenu( tr( "&Decorations" ), myQActionPointer );
+  qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
   //initialise default values in the gui
   projectRead();
 }
@@ -118,7 +118,7 @@ void QgsCopyrightLabelPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsCopyrightLabelPlugin::run()
 {
-  QgsCopyrightLabelPluginGui *myPluginGui = new QgsCopyrightLabelPluginGui( qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  QgsCopyrightLabelPluginGui *myPluginGui = new QgsCopyrightLabelPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
   //connect(myPluginGui, SIGNAL(drawRasterLayer(QString)), this, SLOT(drawRasterLayer(QString)));
@@ -139,7 +139,7 @@ void QgsCopyrightLabelPlugin::run()
 //! Refresh the map display using the mapcanvas exported via the plugin interface
 void QgsCopyrightLabelPlugin::refreshCanvas()
 {
-  qGisInterface->getMapCanvas()->refresh();
+  qGisInterface->mapCanvas()->refresh();
 }
 
 void QgsCopyrightLabelPlugin::renderLabel( QPainter * theQPainter )
@@ -202,7 +202,7 @@ void QgsCopyrightLabelPlugin::unload()
   qGisInterface->removePluginMenu( tr( "&Decorations" ), myQActionPointer );
   qGisInterface->removeToolBarIcon( myQActionPointer );
   // remove the copyright from the canvas
-  disconnect( qGisInterface->getMapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
+  disconnect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
               this, SLOT( renderLabel( QPainter * ) ) );
   refreshCanvas();
 

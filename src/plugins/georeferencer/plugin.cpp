@@ -95,7 +95,7 @@ void QgsGeorefPlugin::initGui()
 
   // Add to the toolbar & menu
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "&Georeferencer" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
 
 }
 //method defined in interface

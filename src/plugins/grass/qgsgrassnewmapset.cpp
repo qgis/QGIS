@@ -427,7 +427,7 @@ void QgsGrassNewMapset::setGrassProjection()
   QgsDebugMsg( "entered." );
   setError( mProjErrorLabel, "" );
 
-  QString proj4 = mProjectionSelector->getSelectedProj4String();
+  QString proj4 = mProjectionSelector->selectedProj4String();
 
   // Not defined
   if ( mNoProjRadioButton->isChecked() )
@@ -537,11 +537,11 @@ void QgsGrassNewMapset::setRegionPage()
   QgsCoordinateReferenceSystem newSrs;
   if ( mProjRadioButton->isChecked() )
   {
-    QgsDebugMsg( QString( "getSelectedCRSID() = %1" ).arg( mProjectionSelector->getSelectedCRSID() ) );
+    QgsDebugMsg( QString( "selectedCrsId() = %1" ).arg( mProjectionSelector->selectedCrsId() ) );
 
-    if ( mProjectionSelector->getSelectedCRSID() > 0 )
+    if ( mProjectionSelector->selectedCrsId() > 0 )
     {
-      newSrs.createFromSrsId( mProjectionSelector->getSelectedCRSID() );
+      newSrs.createFromSrsId( mProjectionSelector->selectedCrsId() );
       if ( ! newSrs.isValid() )
       {
         QMessageBox::warning( 0, tr( "Warning" ),
@@ -620,7 +620,7 @@ void QgsGrassNewMapset::setRegionPage()
     mRegionButton->show();
     mSetRegionFrame->show();
 
-    QgsRect ext = mIface->getMapCanvas()->extent();
+    QgsRect ext = mIface->mapCanvas()->extent();
 
     if ( ext.xMin() >= ext.xMax() || ext.yMin() >= ext.yMax() )
     {
@@ -645,7 +645,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
 
   QgsDebugMsg( QString( "current project srsid = %1" ).arg( srsid ) );
 
-  QgsRect ext = mIface->getMapCanvas()->extent();
+  QgsRect ext = mIface->mapCanvas()->extent();
   bool extSet = false;
   if ( ext.xMin() < ext.xMax() && ext.yMin() < ext.yMax() )
   {
@@ -655,7 +655,7 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
   if ( extSet &&
        ( mNoProjRadioButton->isChecked() ||
          ( mProjRadioButton->isChecked()
-           && srsid == mProjectionSelector->getSelectedCRSID() )
+           && srsid == mProjectionSelector->selectedCrsId() )
        )
      )
   {
@@ -873,7 +873,7 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->getSelectedCRSID() != 2585 )
+  if ( mProjectionSelector->selectedCrsId() != 2585 )
   {
     // Warning: QgsCoordinateReferenceSystem::EPSG is broken (using epsg_id)
     //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EPSG );
@@ -886,7 +886,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest( mProjectionSelector->getSelectedCRSID(),
+    QgsCoordinateReferenceSystem dest( mProjectionSelector->selectedCrsId(),
                                        QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !dest.isValid() )
@@ -965,7 +965,7 @@ void QgsGrassNewMapset::setCurrentRegion()
 {
   QgsDebugMsg( "entered." );
 
-  QgsRect ext = mIface->getMapCanvas()->extent();
+  QgsRect ext = mIface->mapCanvas()->extent();
 
   int srsid = QgsProject::instance()->readNumEntry(
                 "SpatialRefSys", "/ProjectCRSID", 0 );
@@ -1085,9 +1085,9 @@ void QgsGrassNewMapset::drawRegion()
   points.push_back( QgsPoint( points[0] ) ); // close polygon
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->getSelectedCRSID() != 2585 )
+  if ( mProjectionSelector->selectedCrsId() != 2585 )
   {
-    QgsCoordinateReferenceSystem source( mProjectionSelector->getSelectedCRSID(),
+    QgsCoordinateReferenceSystem source( mProjectionSelector->selectedCrsId(),
                                          QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !source.isValid() )
@@ -1466,7 +1466,7 @@ void QgsGrassNewMapset::pageSelected( const QString & title )
         QgsDebugMsg( QString( "srs.isValid() = %1" ).arg( srs.isValid() ) );
         if ( srs.isValid() )
         {
-          mProjectionSelector->setSelectedCRSID( srsid );
+          mProjectionSelector->setSelectedCrsId( srsid );
           mProjRadioButton->setChecked( true );
           projRadioSwitched();
         }

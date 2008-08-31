@@ -41,7 +41,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *
      * \todo Should this be public?
      */
-    void applyUserProjList( QSet<QString> * crsFilter = 0 );
+    void loadUserCrsList( QSet<QString> * crsFilter = 0 );
 
     /**
      * \brief Populate the proj tree view with system projection names...
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *
      * \todo Should this be public?
      */
-    void applyProjList( QSet<QString> * crsFilter = 0 );
+    void loadCrsList( QSet<QString> * crsFilter = 0 );
 
 
     /*!
@@ -64,27 +64,27 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      * \arg const QString in The input string to make safe.
      * \return The string made safe for SQL statements.
      */
-    const QString stringSQLSafe( const QString theSQL );
+    const QString sqlSafeString( const QString theSQL );
 
     //! Gets the current EPSG-style projection identifier
-    long getSelectedEpsg();
+    long selectedEpsg();
 
   public slots:
-    void setSelectedCRSName( QString theCRSName );
+    void setSelectedCrsName( QString theCRSName );
 
-    QString getSelectedName();
+    QString selectedName();
 
-    void setSelectedCRSID( long theCRSID );
+    void setSelectedCrsId( long theCRSID );
 
     void setSelectedEpsg( long epsg );
 
-    QString getSelectedProj4String();
+    QString selectedProj4String();
 
     //! Gets the current PostGIS-style projection identifier
-    long getSelectedSRID();
+    long selectedPostgresSrId();
 
     //! Gets the current QGIS projection identfier
-    long getSelectedCRSID();
+    long selectedCrsId();
 
     /**
      * \brief filters this widget by the given CRSs
