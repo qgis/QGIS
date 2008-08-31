@@ -43,13 +43,13 @@ void QgsMapCanvasItem::paint( QPainter * painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoords( const QPoint& point )
+QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point )
 {
   return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
 }
 
 
-QPointF QgsMapCanvasItem::toCanvasCoords( const QgsPoint& point )
+QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point )
 {
   double x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
@@ -71,8 +71,8 @@ void QgsMapCanvasItem::setRect( const QgsRect& rect )
   QRectF r; // empty rect by default
   if ( !mRect.isEmpty() )
   {
-    r.setTopLeft( toCanvasCoords( QgsPoint( mRect.xMin(), mRect.yMin() ) ) );
-    r.setBottomRight( toCanvasCoords( QgsPoint( mRect.xMax(), mRect.yMax() ) ) );
+    r.setTopLeft( toCanvasCoordinates( QgsPoint( mRect.xMin(), mRect.yMin() ) ) );
+    r.setBottomRight( toCanvasCoordinates( QgsPoint( mRect.xMax(), mRect.yMax() ) ) );
     r = r.normalized();
   }
 

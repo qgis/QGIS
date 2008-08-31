@@ -39,7 +39,7 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
 {
   if ( mRubberBand )
   {
-    QgsPoint pointCanvasCoords = toMapCoords( e->pos() );
+    QgsPoint pointCanvasCoords = toMapCoordinates( e->pos() );
     double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
     double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mRubberBand->setTranslationOffset( offsetX, offsetY );
@@ -69,7 +69,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   }
 
   //find first geometry under mouse cursor and store iterator to it
-  QgsPoint layerCoords = toLayerCoords(( QgsMapLayer* )vlayer, e->pos() );
+  QgsPoint layerCoords = toLayerCoordinates(( QgsMapLayer* )vlayer, e->pos() );
   QSettings settings;
   double searchRadius = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
   QgsRect selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
@@ -106,7 +106,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
     return;
   }
 
-  mStartPointMapCoords = toMapCoords( e->pos() );
+  mStartPointMapCoords = toMapCoordinates( e->pos() );
   mMovedFeature = cf.featureId(); //todo: take the closest feature, not the first one...
   mRubberBand = createRubberBand();
   mRubberBand->setToGeometry( cf.geometry(), *vlayer );
@@ -131,8 +131,8 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  QgsPoint startPointLayerCoords = toLayerCoords(( QgsMapLayer* )vlayer, mStartPointMapCoords );
-  QgsPoint stopPointLayerCoords = toLayerCoords(( QgsMapLayer* )vlayer, e->pos() );
+  QgsPoint startPointLayerCoords = toLayerCoordinates(( QgsMapLayer* )vlayer, mStartPointMapCoords );
+  QgsPoint stopPointLayerCoords = toLayerCoordinates(( QgsMapLayer* )vlayer, e->pos() );
 
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();

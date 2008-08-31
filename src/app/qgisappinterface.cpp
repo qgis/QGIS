@@ -47,9 +47,9 @@ void QgisAppInterface::zoomFull()
   qgis->zoomFull();
 }
 
-void QgisAppInterface::zoomPrevious()
+void QgisAppInterface::zoomToPrevious()
 {
-  qgis->zoomPrevious();
+  qgis->zoomToPrevious();
 }
 
 void QgisAppInterface::zoomActiveLayer()

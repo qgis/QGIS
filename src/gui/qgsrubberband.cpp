@@ -294,7 +294,7 @@ void QgsRubberBand::paint( QPainter* p )
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
         //QgsDebugMsg("Drawing rubberband vertex: " + QString::number(it->x() + mTranslationOffsetX) + "//" + QString::number(it->y() + mTranslationOffsetY));
-        pts.append( toCanvasCoords( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos() );
+        pts.append( toCanvasCoordinates( QgsPoint( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY ) ) - pos() );
       }
 
       if ( mIsPolygon )

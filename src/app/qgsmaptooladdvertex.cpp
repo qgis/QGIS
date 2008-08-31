@@ -92,7 +92,7 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
     if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
     {
       snappedPointMapCoord = snapPointFromResults( snapResults, e->pos() );
-      snappedPointLayerCoord = toLayerCoords( vlayer, snappedPointMapCoord );
+      snappedPointLayerCoord = toLayerCoordinates( vlayer, snappedPointMapCoord );
 
       //and change the feature points
       QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();

@@ -47,7 +47,7 @@ int QgsMapToolEdit::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>
   QList<QgsSnappingResult>::iterator it = transformedSnapResults.begin();
   for ( ; it != transformedSnapResults.constEnd(); ++it )
   {
-    QgsPoint layerPoint = toLayerCoords( editedLayer, it->snappedVertex );
+    QgsPoint layerPoint = toLayerCoordinates( editedLayer, it->snappedVertex );
     it->snappedVertex = layerPoint;
   }
 
@@ -58,7 +58,7 @@ QgsPoint QgsMapToolEdit::snapPointFromResults( const QList<QgsSnappingResult>& s
 {
   if ( snapResults.size() < 1 )
   {
-    return toMapCoords( screenCoords );
+    return toMapCoordinates( screenCoords );
   }
   else
   {

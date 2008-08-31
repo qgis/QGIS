@@ -11,13 +11,13 @@ class QgsMapCanvasLayer
 %End
 
 public:
-  QgsMapCanvasLayer(QgsMapLayer* layer, bool visible = TRUE, bool inOverview = FALSE);
+  QgsMapCanvasLayer(QgsMapLayer* layer, bool visible = TRUE, bool isInOverview = FALSE);
   
   void setVisible(bool visible);
-  void setInOverview(bool inOverview);
+  void setInOverview(bool isInOverview);
   
   bool isVisible() const;
-  bool inOverview() const;
+  bool isInOverview() const;
   
   QgsMapLayer* layer();
   //const QgsMapLayer* layer() const;
@@ -68,7 +68,7 @@ class QgsMapCanvas : QGraphicsView
     QPixmap& canvasPixmap();
 
     //! Get the last reported scale of the canvas
-    double getScale();
+    double scale();
 
     //! Clear the map canvas
     void clear();
@@ -85,10 +85,10 @@ class QgsMapCanvas : QGraphicsView
     void setExtent(const QgsRect & r);
 
     //! Zoom to the full extent of all layers
-    void zoomFullExtent();
+    void zoomToFullExtent();
 
     //! Zoom to the previous extent (view)
-    void zoomPreviousExtent();
+    void zoomToPreviousExtent();
 
     /**Zooms to the extend of the selected features*/
     void zoomToSelected();
@@ -165,7 +165,7 @@ class QgsMapCanvas : QGraphicsView
     void enableAntiAliasing(bool theFlag);
     
     //! Select which Qt class to render with
-    void useQImageToRender(bool theFlag);
+    void useImageToRender(bool theFlag);
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -272,7 +272,7 @@ class QgsMapCanvas : QGraphicsView
     void moveCanvasContents(bool reset = FALSE);
 
     //! called on resize or changed extent to notify canvas items to change their rectangle
-    void updateCanvasItemsPositions();
+    void updateCanvasItemPositions();
 
  
 }; // class QgsMapCanvas

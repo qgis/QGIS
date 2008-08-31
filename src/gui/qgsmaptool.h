@@ -83,7 +83,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     /** Check whether this MapTool performs a zoom or pan operation.
      * If it does, we will be able to perform the zoom  and then
      * resume operations with the original / previously used tool.*/
-    virtual bool isZoomTool();
+    virtual bool isTransient();
 
     /** Check whether this MapTool performs an edit operation.
      * If it does, we will deactivate it when editing is turned off
@@ -105,22 +105,22 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsMapTool( QgsMapCanvas* canvas );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoords( const QPoint& point );
+    QgsPoint toMapCoordinates( const QPoint& point );
 
     //! transformation from screen coordinates to layer's coordinates
-    QgsPoint toLayerCoords( QgsMapLayer* layer, const QPoint& point );
+    QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QPoint& point );
 
     //! trasformation from map coordinates to layer's coordinates
-    QgsPoint toLayerCoords( QgsMapLayer* layer, const QgsPoint& point );
+    QgsPoint toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-    QgsPoint toMapCoords( QgsMapLayer* layer, const QgsPoint& point );
+    QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
-    QgsRect toLayerCoords( QgsMapLayer* layer, const QgsRect& rect );
+    QgsRect toLayerCoordinates( QgsMapLayer* layer, const QgsRect& rect );
 
     //! transformation from map coordinates to screen coordinates
-    QPoint toCanvasCoords( const QgsPoint& point );
+    QPoint toCanvasCoordinates( const QgsPoint& point );
 
     //! pointer to map canvas
     QgsMapCanvas* mCanvas;

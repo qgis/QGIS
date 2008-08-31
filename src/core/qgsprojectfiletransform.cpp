@@ -171,7 +171,7 @@ void QgsProjectFileTransform::transform081to090()
           legendLayerFile.setAttribute( "visible", mapLayer.attribute( "visible" ) );
 
           // Set overview flag from maplayer to legendlayer
-          legendLayerFile.setAttribute( "inOverview", mapLayer.attribute( "showInOverviewFlag" ) );
+          legendLayerFile.setAttribute( "isInOverview", mapLayer.attribute( "showInOverviewFlag" ) );
         }
       }
     }

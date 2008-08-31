@@ -246,7 +246,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   r.setYMinimum( point.y() - searchRadius );
   r.setYMaximum( point.y() + searchRadius );
 
-  r = toLayerCoords( layer, r );
+  r = toLayerCoordinates( layer, r );
 
   int featureCount = 0;
   //QgsFeature feat;

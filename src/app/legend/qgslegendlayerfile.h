@@ -46,7 +46,7 @@ class QgsLegendLayerFile : public QgsLegendItem
 
     QPixmap getOriginalPixmap() const;
 
-    void setIconAppearance( bool inOverview, bool editable );
+    void setIconAppearance( bool isInOverview, bool editable );
 
     /**Returns a label for a layer. Is static such that
      the name can be passed to the constructor of QgsLegendLayerFile*/
@@ -55,7 +55,7 @@ class QgsLegendLayerFile : public QgsLegendItem
     void setVisible( bool visible = TRUE );
     bool isVisible();
 
-    void setInOverview( bool inOverview = TRUE );
+    void setInOverview( bool isInOverview = TRUE );
     bool isInOverview();
 
     /** called to add appropriate menu items to legend's popup menu */

@@ -47,7 +47,7 @@ class QgsGeorefTool : public QgsMapTool
     //! Mouse press event for overriding
     virtual void canvasPressEvent( QMouseEvent * e )
     {
-      QgsPoint pnt = toMapCoords( e->pos() );
+      QgsPoint pnt = toMapCoordinates( e->pos() );
 
       if ( mAddPoint )
         mDlg->showCoordDialog( pnt );

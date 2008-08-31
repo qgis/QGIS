@@ -39,7 +39,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
 
     void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
 
-    void useQImageToRender( bool flag ) { mUseQImageToRender = flag; }
+    void useImageToRender( bool flag ) { mUseQImageToRender = flag; }
 
     //! renders map using QgsMapRenderer to mPixmap
     void render();

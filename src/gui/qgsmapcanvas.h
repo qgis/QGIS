@@ -63,14 +63,14 @@ class QgsMapTool;
 class GUI_EXPORT QgsMapCanvasLayer
 {
   public:
-    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = TRUE, bool inOverview = FALSE )
-        : mLayer( layer ), mVisible( visible ), mInOverview( inOverview ) {}
+    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = TRUE, bool isInOverview = FALSE )
+        : mLayer( layer ), mVisible( visible ), mInOverview( isInOverview ) {}
 
     void setVisible( bool visible ) { mVisible = visible; }
-    void setInOverview( bool inOverview ) { mInOverview = inOverview; }
+    void setInOverview( bool isInOverview ) { mInOverview = isInOverview; }
 
     bool isVisible() const { return mVisible; }
-    bool inOverview() const { return mInOverview; }
+    bool isInOverview() const { return mInOverview; }
 
     QgsMapLayer* layer() { return mLayer; }
     const QgsMapLayer* layer() const { return mLayer; }
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QPixmap& canvasPixmap();
 
     //! Get the last reported scale of the canvas
-    double getScale();
+    double scale();
 
     //! Clear the map canvas
     void clear();
@@ -138,10 +138,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setExtent( QgsRect const & r );
 
     //! Zoom to the full extent of all layers
-    void zoomFullExtent();
+    void zoomToFullExtent();
 
     //! Zoom to the previous extent (view)
-    void zoomPreviousExtent();
+    void zoomToPreviousExtent();
 
     /**Zooms to the extend of the selected features*/
     void zoomToSelected();
@@ -221,7 +221,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void enableAntiAliasing( bool theFlag );
 
     //! Select which Qt class to render with
-    void useQImageToRender( bool theFlag );
+    void useImageToRender( bool theFlag );
 
     // following 2 methods should be moved elsewhere or changed to private
     // currently used by pan map tool
@@ -333,7 +333,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void moveCanvasContents( bool reset = FALSE );
 
     //! called on resize or changed extent to notify canvas items to change their rectangle
-    void updateCanvasItemsPositions();
+    void updateCanvasItemPositions();
 
     /// implementation struct
     class CanvasProperties;

@@ -511,7 +511,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
   // first layer?
   if ( mMapCanvas->layerCount() == 1 )
-    mMapCanvas->zoomFullExtent();
+    mMapCanvas->zoomToFullExtent();
   setCurrentItem( llayer );
   //make the QTreeWidget item up-to-date
   doItemsLayout();
@@ -910,7 +910,7 @@ bool QgsLegend::writeXML( QDomNode & legendnode, QDomDocument & document )
             legendlayerfilenode.setAttribute( "visible", llf->isVisible() );
 
             // show in overview flag
-            legendlayerfilenode.setAttribute( "inOverview", llf->isInOverview() );
+            legendlayerfilenode.setAttribute( "isInOverview", llf->isInOverview() );
           }
           break;
 
@@ -1035,7 +1035,7 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 
           // load layer's visibility and 'show in overview' flag
           theLegendLayerFile->setVisible( atoi( childelem.attribute( "visible", "1" ).toUtf8() ) ); //Default is visible
-          theLegendLayerFile->setInOverview( atoi( childelem.attribute( "inOverview" ).toUtf8() ) );
+          theLegendLayerFile->setInOverview( atoi( childelem.attribute( "isInOverview" ).toUtf8() ) );
 
           // set the check state
           blockSignals( true );
@@ -1399,7 +1399,7 @@ void QgsLegend::updateOverview()
   mMapCanvas->updateOverview();
 }
 
-void QgsLegend::setOverviewAllLayers( bool inOverview )
+void QgsLegend::setOverviewAllLayers( bool isInOverview )
 {
   QTreeWidgetItem* theItem = firstItem();
   while ( theItem )
@@ -1407,7 +1407,7 @@ void QgsLegend::setOverviewAllLayers( bool inOverview )
     QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( theItem );
     if ( llf )
     {
-      llf->setInOverview( inOverview );
+      llf->setInOverview( isInOverview );
     }
     theItem = nextItem( theItem );
   }

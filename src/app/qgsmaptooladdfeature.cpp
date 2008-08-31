@@ -103,7 +103,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       idPoint = snapPointFromResults( snapResults, e->pos() );
       try
       {
-        savePoint = toLayerCoords( vlayer, idPoint );
+        savePoint = toLayerCoordinates( vlayer, idPoint );
         QgsDebugMsg( "savePoint = " + savePoint.toString() );
       }
       catch ( QgsCsException &cse )

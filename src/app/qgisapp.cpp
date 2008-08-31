@@ -728,7 +728,7 @@ void QgisApp::createActions()
   mActionZoomLast = new QAction( getThemeIcon( "mActionZoomLast.png" ), tr( "Zoom Last" ), this );
   //mActionZoomLast->setShortcut(tr("Ctrl+O","Zoom to Last Extent"));
   mActionZoomLast->setStatusTip( tr( "Zoom to Last Extent" ) );
-  connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomPrevious() ) );
+  connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomToPrevious() ) );
 
   mActionZoomActualSize = new QAction( tr( "Zoom Actual Size" ), this );
   mActionZoomActualSize->setStatusTip( tr( "Zoom to Actual Size" ) );
@@ -825,7 +825,7 @@ void QgisApp::createActions()
   mActionAddToOverview = new QAction( getThemeIcon( "mActionInOverview.png" ), tr( "Add to Overview" ), this );
   mActionAddToOverview->setShortcut( tr( "O", "Add current layer to overview map" ) );
   mActionAddToOverview->setStatusTip( tr( "Add current layer to overview map" ) );
-  connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( inOverview() ) );
+  connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
   mActionAddToOverview->setEnabled( false );
 
   mActionAddAllToOverview = new QAction( getThemeIcon( "mActionAddAllToOverview.png" ), tr( "Add All to Overview" ), this );
@@ -1596,7 +1596,7 @@ void QgisApp::createOverview()
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
   mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", false ).toBool() );
-  mMapCanvas->useQImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
+  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
 
   int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
@@ -3650,15 +3650,15 @@ void QgisApp::pan()
 
 void QgisApp::zoomFull()
 {
-  mMapCanvas->zoomFullExtent();
+  mMapCanvas->zoomToFullExtent();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 
 }
 
-void QgisApp::zoomPrevious()
+void QgisApp::zoomToPrevious()
 {
-  mMapCanvas->zoomPreviousExtent();
+  mMapCanvas->zoomToPreviousExtent();
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
 
@@ -4078,7 +4078,7 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  double currentScale = mMapCanvas->getScale();
+  double currentScale = mMapCanvas->scale();
 
   QStringList parts = mScaleEdit->text().split( ':' );
   if ( parts.size() == 2 )
@@ -4096,7 +4096,7 @@ void QgisApp::userScale()
 
 
 // toggle overview status
-void QgisApp::inOverview()
+void QgisApp::isInOverview()
 {
   mMapLegend->legendLayerShowInOverview();
 }
@@ -4477,7 +4477,7 @@ void QgisApp::options()
 
     QSettings mySettings;
     mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing" ).toBool() );
-    mMapCanvas->useQImageToRender( mySettings.value( "/qgis/use_qimage_to_render" ).toBool() );
+    mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render" ).toBool() );
 
     int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();

@@ -312,7 +312,7 @@ class QgisApp : public QMainWindow
     //! Zoom to full extent
     void zoomFull();
     //! Zoom to the previous extent
-    void zoomPrevious();
+    void zoomToPrevious();
     //! Zoom to selected features
     void zoomToSelected();
 
@@ -358,7 +358,7 @@ class QgisApp : public QMainWindow
     void addDatabaseLayer();
     //#endif
     /** toggles whether the current selected layer is in overview or not */
-    void inOverview();
+    void isInOverview();
     //! Slot to show the map coordinate position of the mouse cursor
     void showMouseCoordinate( QgsPoint & );
     //! Slot to show current map scale;
