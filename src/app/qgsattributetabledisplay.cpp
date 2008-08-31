@@ -148,18 +148,18 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay( QgsVectorLayer* layer )
   QAction *cutAction = editMenu->addAction( tr( "Cu&t" ), this, SLOT( cut() ), tr( "Ctrl+X" ) );
   cutAction->setEnabled( false );
   QAction *copyAction = editMenu->addAction(
-    mCopySelectedRowsButton->icon(), tr( "&Copy" ), this, SLOT( copySelectedRowsToClipboard() ), tr( "Ctrl+C" ) );
+                          mCopySelectedRowsButton->icon(), tr( "&Copy" ), this, SLOT( copySelectedRowsToClipboard() ), tr( "Ctrl+C" ) );
   QAction *pasteAction = editMenu->addAction( tr( "&Paste" ), this, SLOT( paste() ), tr( "Ctrl+V" ) );
   pasteAction->setEnabled( false );
   QAction *deleteAction = editMenu->addAction(
-    mRemoveSelectionButton->icon(), tr( "Delete" ), this, SLOT( removeSelection() ) );
+                            mRemoveSelectionButton->icon(), tr( "Delete" ), this, SLOT( removeSelection() ) );
 
   QMenu *layerMenu = menuBar->addMenu( tr( "Layer" ) );
   QAction *zoomToSelectedAction = layerMenu->addAction(
-    mZoomMapToSelectedRowsButton->icon(), tr( "Zoom to Selection" ), this, SLOT( zoomMapToSelectedRows() ), tr( "Ctrl+J" ) );
+                                    mZoomMapToSelectedRowsButton->icon(), tr( "Zoom to Selection" ), this, SLOT( zoomMapToSelectedRows() ), tr( "Ctrl+J" ) );
   layerMenu->addSeparator();
   QAction *toggleEditingAction = layerMenu->addAction(
-    mToggleEditingButton->icon(), tr( "Toggle Editing" ), this, SLOT( toggleEditing() ) );
+                                   mToggleEditingButton->icon(), tr( "Toggle Editing" ), this, SLOT( toggleEditing() ) );
   toggleEditingAction->setEnabled( mToggleEditingButton->isEnabled() );
   toggleEditingAction->setCheckable( true );
   toggleEditingAction->setChecked( mToggleEditingButton->isChecked() );
@@ -167,10 +167,10 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay( QgsVectorLayer* layer )
 
   QMenu *tableMenu = menuBar->addMenu( tr( "Table" ) );
   QAction *moveToTopAction = tableMenu->addAction(
-    mSelectedToTopButton->icon(), tr( "Move to Top" ), this, SLOT( selectedToTop() ) );
+                               mSelectedToTopButton->icon(), tr( "Move to Top" ), this, SLOT( selectedToTop() ) );
   QAction *invertAction = tableMenu->addAction(
-    mInvertSelectionButton->icon(), tr( "Invert" ), this, SLOT( invertSelection() ) );
-  
+                            mInvertSelectionButton->icon(), tr( "Invert" ), this, SLOT( invertSelection() ) );
+
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
   menuBar->addMenu( QgisApp::instance()->windowMenu() );
 
@@ -195,15 +195,15 @@ void QgsAttributeTableDisplay::changeEvent( QEvent* event )
   QDialog::changeEvent( event );
   switch ( event->type() )
   {
-  case QEvent::ActivationChange:
-    if ( QApplication::activeWindow() == this )
-    {
-      mWindowAction->setChecked( true );
-    }
-    break;
+    case QEvent::ActivationChange:
+      if ( QApplication::activeWindow() == this )
+      {
+        mWindowAction->setChecked( true );
+      }
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 }
 #endif

@@ -18,27 +18,27 @@
 
 class Format
 {
-public:
+  public:
 
     enum Type
     {
-        eUnknown = 0,
-        eFile = 1,
-        eDirectory = 2,
-        eProtocol = 4
+      eUnknown = 0,
+      eFile = 1,
+      eDirectory = 2,
+      eProtocol = 4
     };
 
     Format();
-    Format(QString const& c, QString const& n);
-    Format(QString const& c, QString const& n, unsigned char const& t);
-    Format(QString const& c, QString const& n, QString const& p, unsigned char const& t);
+    Format( QString const& c, QString const& n );
+    Format( QString const& c, QString const& n, unsigned char const& t );
+    Format( QString const& c, QString const& n, QString const& p, unsigned char const& t );
 
     QString const& code() const;
     QString const& name() const;
     QString const& protocol() const;
     unsigned char const& type() const;
 
-private:
+  private:
 
     QString mCode;
     QString mName;
@@ -46,21 +46,21 @@ private:
     unsigned char mTypeFlags;
 };
 
-inline bool isFormatType(unsigned char const& frmt, Format::Type const& type)
+inline bool isFormatType( unsigned char const& frmt, Format::Type const& type )
 {
-    return ((frmt & type) == type);
+  return (( frmt & type ) == type );
 }
 
 class FormatsRegistry
 {
-public:
+  public:
 
     FormatsRegistry();
 
-    void add(Format const& frmt);
-    Format const&  find(QString const& code);
+    void add( Format const& frmt );
+    Format const&  find( QString const& code );
 
-private:
+  private:
 
     void init();
 

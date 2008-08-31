@@ -19,7 +19,7 @@
 #include <QLineEdit>
 
 /** \ingroup gui
- * A line edit for capturing file names that can have files dropped onto 
+ * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  */
 class GUI_EXPORT QgsFileDropEdit: public QLineEdit

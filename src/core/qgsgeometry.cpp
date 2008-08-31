@@ -1141,9 +1141,9 @@ void QgsGeometry::adjacentVerticies( int atVertex, int& beforeVertex, int& after
 
 
 bool QgsGeometry::insertVertex( double x, double y,
-                                      int beforeVertex,
-                                      const GEOSCoordSequence*  old_sequence,
-                                      GEOSCoordSequence** new_sequence )
+                                int beforeVertex,
+                                const GEOSCoordSequence*  old_sequence,
+                                GEOSCoordSequence** new_sequence )
 
 {
   // Bounds checking

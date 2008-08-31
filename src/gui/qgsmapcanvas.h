@@ -56,7 +56,7 @@ class QgsMapOverviewCanvas;
 class QgsMapTool;
 
 /** \ingroup gui
-  * A class that stores visibility and presence in overview flags together 
+  * A class that stores visibility and presence in overview flags together
   * with pointer to the layer.
   *
 */

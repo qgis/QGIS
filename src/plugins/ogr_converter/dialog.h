@@ -25,12 +25,12 @@ class Dialog : public QDialog, private Ui::OgrConverterGuiBase
 {
     Q_OBJECT
 
-public:
+  public:
 
-    Dialog(QWidget* parent = 0, Qt::WFlags fl = 0);
+    Dialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~Dialog();
 
-private:
+  private:
 
     static const int context_id = 0;
 
@@ -40,26 +40,26 @@ private:
 
     void resetSrcUi();
     void resetDstUi();
-    void setButtonState(QPushButton* btn, bool isProtocol);
+    void setButtonState( QPushButton* btn, bool isProtocol );
 
     void populateFormats();
-    void populateLayers(QString const& url);
-    bool testConnection(QString const& url);
+    void populateLayers( QString const& url );
+    bool testConnection( QString const& url );
     QString openFile();
     QString openDirectory();
 
-private slots:
+  private slots:
 
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
-    void on_radioSrcFile_toggled(bool checked);
-    void on_radioSrcDirectory_toggled(bool checked);
-    void on_radioSrcProtocol_toggled(bool checked);
+    void on_radioSrcFile_toggled( bool checked );
+    void on_radioSrcDirectory_toggled( bool checked );
+    void on_radioSrcProtocol_toggled( bool checked );
     void on_buttonSelectSrc_clicked();
     void on_buttonSelectDst_clicked();
-    void on_comboSrcFormats_currentIndexChanged(int index);
-    void on_comboDstFormats_currentIndexChanged(int index);
+    void on_comboSrcFormats_currentIndexChanged( int index );
+    void on_comboDstFormats_currentIndexChanged( int index );
 };
 
 #endif // QGIS_PLUGIN_OGRCONV_DIALOG_H_INCLUDED

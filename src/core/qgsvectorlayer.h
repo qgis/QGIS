@@ -327,11 +327,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        @param snap_to to segment / to vertex
        @return 0 in case of success
     */
-    int snapWithContext( const QgsPoint& startPoint, 
-        double snappingTolerance, 
-        QMultiMap<double, 
-        QgsSnappingResult>& snappingResults,
-        QgsSnapper::SNAP_TO snap_to );
+    int snapWithContext( const QgsPoint& startPoint,
+                         double snappingTolerance,
+                         QMultiMap < double,
+                         QgsSnappingResult > & snappingResults,
+                         QgsSnapper::SNAP_TO snap_to );
 
     /** Draws the layer
      *  @return FALSE if an error occurred during drawing
@@ -344,10 +344,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** \brief Draws the layer labels using coordinate transformation
      *  \param scale size scale, applied to all values in pixels
      */
-    void drawLabels( QPainter * p, const QgsRect& viewExtent, 
-        const QgsMapToPixel* cXf, 
-        const QgsCoordinateTransform* ct, 
-        double scale );
+    void drawLabels( QPainter * p, const QgsRect& viewExtent,
+                     const QgsMapToPixel* cXf,
+                     const QgsCoordinateTransform* ct,
+                     double scale );
 
     /** returns field list in the to-be-committed state */
     const QgsFieldMap &pendingFields();

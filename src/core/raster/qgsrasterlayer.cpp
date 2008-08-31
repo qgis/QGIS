@@ -557,19 +557,19 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     mGreenBandName = TRSTRING_NOT_SET; // sensible default
     mBlueBandName = TRSTRING_NOT_SET;// sensible default
     mTransparencyBandName = TRSTRING_NOT_SET; // sensible default
-    mGrayBandName = getRasterBandName(1);  //sensible default
-    QgsDebugMsg(mGrayBandName);
-    
+    mGrayBandName = getRasterBandName( 1 );  //sensible default
+    QgsDebugMsg( mGrayBandName );
+
     drawingStyle = PALETTED_COLOR; //sensible default
-    
+
     //Load the color table from the band
     QList<QgsColorRampShader::ColorRampItem> myColorRampList;
-    readColorTable(1, &myColorRampList);
+    readColorTable( 1, &myColorRampList );
     //Set up a new color ramp shader
-    setColorShadingAlgorithm(COLOR_RAMP);
+    setColorShadingAlgorithm( COLOR_RAMP );
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
-    myColorRampShader->setColorRampType(QgsColorRampShader::EXACT);
-    myColorRampShader->setColorRampItemList(myColorRampList);
+    myColorRampShader->setColorRampType( QgsColorRampShader::EXACT );
+    myColorRampShader->setColorRampItemList( myColorRampList );
   }
   else if ( rasterLayerType == MULTIBAND )
   {
@@ -1237,7 +1237,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         QgsDebugMsg( "PALETTED_COLOR drawing type detected..." );
 
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
-                                    theQgsMapToPixel, getRasterBandNumber(mGrayBandName ));
+                                     theQgsMapToPixel, getRasterBandNumber( mGrayBandName ) );
 
         break;
       }
@@ -2119,7 +2119,7 @@ int QgsRasterLayer::getRasterBandNumber( QString const & theBandName )
 // get the name of a band given its number
 const QString QgsRasterLayer::getRasterBandName( int theBandNo )
 {
-  QgsDebugMsg("entered.");
+  QgsDebugMsg( "entered." );
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
     //vector starts at base 0, band counts at base1 !
@@ -3683,75 +3683,75 @@ bool QgsRasterLayer::isEditable() const
   return false;
 }
 
-bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList)
+bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList )
 {
   QgsDebugMsg( "entered." );
   //Invalid band number, segfault prevention
-  if (0 >= theBandNumber || 0 == theList)
+  if ( 0 >= theBandNumber || 0 == theList )
   {
-    QgsDebugMsg("Invalid paramter");
+    QgsDebugMsg( "Invalid paramter" );
     return false;
   }
-  
-  GDALRasterBandH myGdalBand = GDALGetRasterBand(mGdalDataset, theBandNumber);
-  GDALColorTableH myGdalColorTable = GDALGetRasterColorTable(myGdalBand);
 
-  if (myGdalColorTable)
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNumber );
+  GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
+
+  if ( myGdalColorTable )
   {
-    QgsDebugMsg("Color table found");
-    int myEntryCount = GDALGetColorEntryCount(myGdalColorTable);
-    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation(myGdalBand);
-    QgsDebugMsg("Color Interpretation: " + QString::number((int)myColorInterpretation));
-    GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation(myGdalColorTable);
-    QgsDebugMsg("Palette Interpretation: " + QString::number((int)myPaletteInterpretation));
-    
+    QgsDebugMsg( "Color table found" );
+    int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
+    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
+    QgsDebugMsg( "Color Interpretation: " + QString::number(( int )myColorInterpretation ) );
+    GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
+    QgsDebugMsg( "Palette Interpretation: " + QString::number(( int )myPaletteInterpretation ) );
+
     const GDALColorEntry* myColorEntry = 0;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
     {
       myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
-      
-      if ( !myColorEntry ) 
+
+      if ( !myColorEntry )
       {
         continue;
       }
       else
       {
         //Branch on the color interpretation type
-        if(myColorInterpretation == GCI_GrayIndex)
+        if ( myColorInterpretation == GCI_GrayIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
           myColorRampItem.label = "";
-          myColorRampItem.value = (double)myIterator;
-          myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4);
-          theList->append(myColorRampItem);
+          myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
+          theList->append( myColorRampItem );
         }
-        else if(myColorInterpretation == GCI_PaletteIndex)
+        else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
           myColorRampItem.label = "";
-          myColorRampItem.value = (double)myIterator;
+          myColorRampItem.value = ( double )myIterator;
           //Branch on palette interpretation
-          if(myPaletteInterpretation  == GPI_RGB)
+          if ( myPaletteInterpretation  == GPI_RGB )
           {
-            myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4); 
+            myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
           }
-          else if(myPaletteInterpretation  == GPI_CMYK)
+          else if ( myPaletteInterpretation  == GPI_CMYK )
           {
-            myColorRampItem.color = QColor::fromCmyk(myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4); 
+            myColorRampItem.color = QColor::fromCmyk( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
           }
-          else if(myPaletteInterpretation  == GPI_HLS)
+          else if ( myPaletteInterpretation  == GPI_HLS )
           {
-            myColorRampItem.color = QColor::fromHsv(myColorEntry->c1, myColorEntry->c3, myColorEntry->c2, myColorEntry->c4); 
+            myColorRampItem.color = QColor::fromHsv( myColorEntry->c1, myColorEntry->c3, myColorEntry->c2, myColorEntry->c4 );
           }
           else
           {
-            myColorRampItem.color = QColor::fromRgb(myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4);  
+            myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
           }
-          theList->append(myColorRampItem);
+          theList->append( myColorRampItem );
         }
         else
         {
-          QgsDebugMsg("Color interpretation type not supported yet");
+          QgsDebugMsg( "Color interpretation type not supported yet" );
           return false;
         }
       }
@@ -3759,11 +3759,11 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   }
   else
   {
-    QgsDebugMsg("No color table found for band " + QString::number(theBandNumber));
+    QgsDebugMsg( "No color table found for band " + QString::number( theBandNumber ) );
     return false;
   }
-  
-  QgsDebugMsg("Color table loaded sucessfully");
+
+  QgsDebugMsg( "Color table loaded sucessfully" );
   return true;
 }
 

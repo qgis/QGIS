@@ -153,13 +153,13 @@ void QgsGrassSelect::setLocations()
 #if 0
     if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
     {
-    if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
+      if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
     }
     else
     {
 #endif
-    QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-    if ( !QFile::exists( chf ) ) continue;
+      QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
+      if ( !QFile::exists( chf ) ) continue;
 #if 0
     }
 #endif

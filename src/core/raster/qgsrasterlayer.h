@@ -638,8 +638,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Read color table from GDAL raster band */
-    bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList);
-    
+    bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
+
     /** \brief This enumerator describes the different kinds of drawing we can do.  */
     enum DRAWING_STYLE
     {

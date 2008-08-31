@@ -34,7 +34,7 @@ class OgrPlugin : public QObject, public QgisPlugin
 {
     Q_OBJECT
 
-public:
+  public:
 
     //////////////////////////////////////////////////////////////////////////
     //                MANDATORY PLUGIN METHODS FOLLOW
@@ -45,18 +45,18 @@ public:
     * QGIS when it attempts to instantiate the plugin.
     * @param theInterface Pointer to the QgisInterface object.
     */
-    OgrPlugin(QgisInterface * theInterface);
+    OgrPlugin( QgisInterface * theInterface );
 
     //! Destructor
     virtual ~OgrPlugin();
 
-public slots:
+  public slots:
 
-   /**
-    * Initialize the GUI interface for the plugin.
-    * This is only called once when the plugin is added to the plugin
-    * registry in the QGIS application.
-    */
+    /**
+     * Initialize the GUI interface for the plugin.
+     * This is only called once when the plugin is added to the plugin
+     * registry in the QGIS application.
+     */
     virtual void initGui();
 
     /**
@@ -75,7 +75,7 @@ public slots:
     //! show the help document
     void help();
 
-private:
+  private:
 
     //////////////////////////////////////////////////////////////////////////
     // MANDATORY PLUGIN PROPERTY DECLARATIONS
@@ -89,7 +89,7 @@ private:
 
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
-    
+
     //////////////////////////////////////////////////////////////////////////
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
     //////////////////////////////////////////////////////////////////////////

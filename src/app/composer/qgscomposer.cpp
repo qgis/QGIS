@@ -79,7 +79,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   // mActionSelectMoveItem
 
   QAction* moveItemContentAction = new QAction( QIcon( QPixmap( myIconPath + "mActionMoveItemContent.png" ) ),
-                                                tr( "Move Content" ), 0 );
+      tr( "Move Content" ), 0 );
   moveItemContentAction->setToolTip( tr( "Move item content" ) );
   moveItemContentAction->setCheckable( true );
   connect( moveItemContentAction, SIGNAL( triggered() ), this, SLOT( moveItemContent() ) );
@@ -87,22 +87,22 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   //toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionMoveItemContent.png")), tr("Move Item content"), this, SLOT(moveItemContent()));
 
   QAction* groupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionGroupItems.png" ) ),
-                                                  tr( "&Group" ), this, SLOT( groupItems() ) );
+                              tr( "&Group" ), this, SLOT( groupItems() ) );
   groupItemsAction->setToolTip( tr( "Group items" ) );
   QAction* ungroupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionUngroupItems.png" ) ),
-                                                    tr( "&Ungroup" ), this, SLOT( ungroupItems() ) );
+                                tr( "&Ungroup" ), this, SLOT( ungroupItems() ) );
   ungroupItemsAction->setToolTip( tr( "Ungroup items" ) );
   QAction* raiseItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionRaiseItems.png" ) ),
-                                                  tr( "Raise" ), this, SLOT( raiseSelectedItems() ) );
+                              tr( "Raise" ), this, SLOT( raiseSelectedItems() ) );
   raiseItemsAction->setToolTip( tr( "Raise selected items" ) );
   QAction* lowerItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionLowerItems.png" ) ),
-                                                  tr( "Lower" ), this, SLOT( lowerSelectedItems() ) );
+                              tr( "Lower" ), this, SLOT( lowerSelectedItems() ) );
   lowerItemsAction->setToolTip( tr( "Lower selected items" ) );
   QAction* moveItemsToTopAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToTop.png" ) ),
-                                                      tr( "Bring to Front" ), this, SLOT( moveSelectedItemsToTop() ) );
+                                  tr( "Bring to Front" ), this, SLOT( moveSelectedItemsToTop() ) );
   moveItemsToTopAction->setToolTip( tr( "Move selected items to top" ) );
   QAction* moveItemsToBottomAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToBottom.png" ) ),
-                                                         tr( "Send to Back" ), this, SLOT( moveSelectedItemsToBottom() ) );
+                                     tr( "Send to Back" ), this, SLOT( moveSelectedItemsToBottom() ) );
   moveItemsToBottomAction->setToolTip( tr( "Move selected items to bottom" ) );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
@@ -179,7 +179,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   layoutMenu->addAction( lowerItemsAction );
   layoutMenu->addAction( moveItemsToTopAction );
   layoutMenu->addAction( moveItemsToBottomAction );
-  
+
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
   menuBar()->addMenu( QgisApp::instance()->windowMenu() );
 
@@ -311,15 +311,15 @@ void QgsComposer::changeEvent( QEvent* event )
   QMainWindow::changeEvent( event );
   switch ( event->type() )
   {
-  case QEvent::ActivationChange:
-    if ( QApplication::activeWindow() == this )
-    {
-      mWindowAction->setChecked( true );
-    }
-    break;
+    case QEvent::ActivationChange:
+      if ( QApplication::activeWindow() == this )
+      {
+        mWindowAction->setChecked( true );
+      }
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 }
 
