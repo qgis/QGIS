@@ -363,13 +363,11 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
     return;
   }
 
-  QModelIndex parentIndex = currentIndex.parent();
-  if ( !parentIndex.isValid() ) // a layer item
-  {
-    QString mapLayerId = currentItem->data().toString();
-    mLegend->model()->updateLayer( mapLayerId );
-    mLegend->update();
-  }
+  if(mLegend->model())
+    {
+      mLegend->model()->updateItem(currentItem);
+    }
+  mLegend->update();
 }
 
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()

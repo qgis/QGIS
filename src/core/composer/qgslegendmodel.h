@@ -40,11 +40,14 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     ~QgsLegendModel();
 
     void setLayerSet( const QStringList& layerIds );
-    /**Apply added or removed layers to the model*/
-    //void updateLayerEntries( const QStringList& newLayerIds );
 
-    /**Updates the symbology of a single layer*/
-    void updateLayer( const QString& layerId );
+    /**Tries to automatically update a model entry (e.g. a whole layer or only a single item)*/
+    void updateItem(QStandardItem* item);
+    /**Updates the whole symbology of a layer*/
+    void updateLayer(QStandardItem* layerItem);
+    /**Tries to update a single classification item*/
+    void updateVectorClassificationItem(QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText);
+    void updateRasterClassificationItem(QStandardItem* classificationItem);
 
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc );
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
@@ -71,6 +74,9 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void removeSymbol( QgsSymbol* s );
     /**Removes and deletes all stored symbols*/
     void removeAllSymbols();
+
+    /**Creates a model item for a vector symbol. The calling function takes ownership*/
+    QStandardItem* itemFromSymbol(QgsSymbol* s);
 
     /**Keep track of copied symbols to delete them if not used anymore*/
     QSet<QgsSymbol*> mSymbols;
