@@ -103,7 +103,7 @@ void QgsGrassEditNewPoint::mouseClick( QgsPoint & point, Qt::ButtonState button 
   }
   else
   {
-    e->mAttributes = new QgsGrassAttributes( e, e->mProvider, line, e->mIface->getMainWindow() );
+    e->mAttributes = new QgsGrassAttributes( e, e->mProvider, line, e->mIface->mainWindow() );
   }
   for ( int i = 0; i < e->mCats->n_cats; i++ )
   {
@@ -209,7 +209,7 @@ void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
         }
         else
         {
-          e->mAttributes = new QgsGrassAttributes( e, e->mProvider, line, e->mIface->getMainWindow() );
+          e->mAttributes = new QgsGrassAttributes( e, e->mProvider, line, e->mIface->mainWindow() );
         }
         for ( int i = 0; i < e->mCats->n_cats; i++ )
         {
@@ -894,7 +894,7 @@ void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::ButtonState butto
 
     if ( !e->mAttributes )
     {
-      e->mAttributes = new QgsGrassAttributes( e, e->mProvider, e->mSelectedLine, e->mIface->getMainWindow() );
+      e->mAttributes = new QgsGrassAttributes( e, e->mProvider, e->mSelectedLine, e->mIface->mainWindow() );
     }
     else
     {

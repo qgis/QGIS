@@ -275,13 +275,13 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     QgsCoordinateReferenceSystem defaultCRS;
     if ( defaultCRS.createFromProj4( proj4String ) )
     {
-      mySelector->setSelectedCRSID( defaultCRS.srsid() );
+      mySelector->setSelectedCrsId( defaultCRS.srsid() );
     }
 
     if ( mySelector->exec() )
     {
-      QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->getSelectedCRSID() ) );
-      srs->createFromProj4( mySelector->getSelectedProj4String() );
+      QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
+      srs->createFromProj4( mySelector->selectedProj4String() );
       srs->debugPrint();
     }
     else
@@ -3506,11 +3506,11 @@ void QgisApp::toggleFullScreen()
       // showMaxmized() is a work-around. Turn off rendering for this as it
       // would otherwise cause two re-renders of the map, which can take a
       // long time.
-      bool renderFlag = getMapCanvas()->renderFlag();
-      getMapCanvas()->setRenderFlag( false );
+      bool renderFlag = mapCanvas()->renderFlag();
+      mapCanvas()->setRenderFlag( false );
       showNormal();
       showMaximized();
-      getMapCanvas()->setRenderFlag( renderFlag );
+      mapCanvas()->setRenderFlag( renderFlag );
       mPrevScreenModeMaximized = false;
     }
     else
@@ -4761,7 +4761,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   return menu;
 }
 
-void QgisApp::addPluginMenu( QString name, QAction* action )
+void QgisApp::addPluginToMenu( QString name, QAction* action )
 {
   QMenu* menu = getPluginMenu( name );
   menu->addAction( action );
@@ -4891,8 +4891,8 @@ void QgisApp::updateMouseCoordinatePrecision()
     // coordinates with the aim of always having enough decimal places
     // to show the difference in position between adjacent pixels.
     // Also avoid taking the log of 0.
-    if ( getMapCanvas()->mapUnitsPerPixel() != 0.0 )
-      dp = static_cast<int>( ceil( -1.0 * log10( getMapCanvas()->mapUnitsPerPixel() ) ) );
+    if ( mapCanvas()->mapUnitsPerPixel() != 0.0 )
+      dp = static_cast<int>( ceil( -1.0 * log10( mapCanvas()->mapUnitsPerPixel() ) ) );
   }
   else
     dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );

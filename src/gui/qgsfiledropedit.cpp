@@ -45,9 +45,9 @@ QgsFileDropEdit::~QgsFileDropEdit()
 /*!
   Limit drops to directories.
 */
-void QgsFileDropEdit::setDirOnly( bool dirOnly )
+void QgsFileDropEdit::setDirOnly( bool isDirOnly )
 {
-  mDirOnly = dirOnly;
+  mDirOnly = isDirOnly;
   if ( mDirOnly )
   {
     mFileOnly = false;
@@ -57,9 +57,9 @@ void QgsFileDropEdit::setDirOnly( bool dirOnly )
 /*!
   Limit drops to files.
 */
-void QgsFileDropEdit::setFileOnly( bool fileOnly )
+void QgsFileDropEdit::setFileOnly( bool isFileOnly )
 {
-  mFileOnly = fileOnly;
+  mFileOnly = isFileOnly;
   if ( mFileOnly )
   {
     mDirOnly = false;

@@ -77,7 +77,7 @@ void [pluginname]::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "&[menuname]" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&[menuname]" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -92,7 +92,7 @@ void [pluginname]::help()
 // not be enough
 void [pluginname]::run()
 {
-  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
+  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   myPluginGui->show();

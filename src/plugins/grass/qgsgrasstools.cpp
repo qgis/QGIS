@@ -111,7 +111,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   //    setupUi(this);
 
   mIface = iface;
-  mCanvas = mIface->getMapCanvas();
+  mCanvas = mIface->mapCanvas();
 
   connect( qApp, SIGNAL( aboutToQuit() ),
            this, SLOT( closeTools() ) );

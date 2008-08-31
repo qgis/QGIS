@@ -89,10 +89,10 @@ void CoordinateCapture::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Coordinate Capture" ), mQActionPointer );
 
   // create our map tool
-  mpMapTool = new CoordinateCaptureMapTool( mQGisIface->getMapCanvas() );
+  mpMapTool = new CoordinateCaptureMapTool( mQGisIface->mapCanvas() );
   connect( mpMapTool, SIGNAL( mouseMoved( QgsPoint ) ), this, SLOT( mouseMoved( QgsPoint ) ) );
   connect( mpMapTool, SIGNAL( mouseClicked( QgsPoint ) ), this, SLOT( mouseClicked( QgsPoint ) ) );
 
@@ -139,7 +139,7 @@ void CoordinateCapture::initGui()
 
 
   //create the dock widget
-  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->getMainWindow() );
+  mpDockWidget = new QDockWidget( tr( "Coordinate Capture" ), mQGisIface->mainWindow() );
   mpDockWidget->setObjectName( "CoordinateCapture" );
   mpDockWidget->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mpDockWidget );
@@ -157,11 +157,11 @@ void CoordinateCapture::help()
 
 void CoordinateCapture::setCRS()
 {
-  QgsGenericProjectionSelector mySelector( mQGisIface->getMainWindow() );
+  QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
   mySelector.setSelectedEpsg( mEpsgId );
   if ( mySelector.exec() )
   {
-    mEpsgId = mySelector.getSelectedEpsg();
+    mEpsgId = mySelector.selectedEpsg();
   }
 }
 
@@ -186,7 +186,7 @@ void CoordinateCapture::update( QgsPoint thePoint )
   //this is the coordinate resolved back to lat / lon
   QgsCoordinateReferenceSystem mySrs;
   mySrs.createFromEpsg( mEpsgId ); //geo lat lon
-  QgsCoordinateTransform myTransform( mQGisIface->getMapCanvas()->mapRenderer()->destinationSrs(), mySrs );
+  QgsCoordinateTransform myTransform( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs(), mySrs );
   QgsPoint myUserCrsPoint = myTransform.transform( thePoint );
   mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', 3 ) + "," +
                           QString::number( myUserCrsPoint.y(), 'f', 3 ) );
@@ -220,8 +220,8 @@ void CoordinateCapture::copy()
 // not be enough
 void CoordinateCapture::run()
 {
-  mQGisIface->getMapCanvas()->setMapTool( mpMapTool );
-  //CoordinateCaptureGui *myPluginGui=new CoordinateCaptureGui(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
+  mQGisIface->mapCanvas()->setMapTool( mpMapTool );
+  //CoordinateCaptureGui *myPluginGui=new CoordinateCaptureGui(mQGisIface->mainWindow(), QgisGui::ModalDialogFlags);
   //myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
 
   //myPluginGui->show();

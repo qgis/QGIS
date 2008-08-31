@@ -64,7 +64,7 @@ void OgrPlugin::initGui()
 
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginMenu( tr( "OG&R Converter" ), mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "OG&R Converter" ), mQActionPointer );
 }
 
 //method defined in interface
@@ -77,7 +77,7 @@ void OgrPlugin::run()
 {
   assert( 0 != mQGisIface );
 
-  Dialog* ogrDialog = new Dialog( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
+  Dialog* ogrDialog = new Dialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   ogrDialog->setAttribute( Qt::WA_DeleteOnClose );
   ogrDialog->show();
 }

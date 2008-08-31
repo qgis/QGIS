@@ -40,7 +40,7 @@ void QgsInterpolationPlugin::initGui()
     mInterpolationAction = new QAction( QIcon( ":/interpolator/interpolation.png" ), tr( "&Interpolation" ), 0 );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addToolBarIcon( mInterpolationAction );
-    mIface->addPluginMenu( tr( "&Interpolation" ), mInterpolationAction );
+    mIface->addPluginToMenu( tr( "&Interpolation" ), mInterpolationAction );
   }
 }
 

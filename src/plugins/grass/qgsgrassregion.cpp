@@ -151,7 +151,7 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   mPlugin = plugin;
   mInterface = iface;
-  mCanvas = mInterface->getMapCanvas();
+  mCanvas = mInterface->mapCanvas();
   restorePosition();
   mUpdatingGui = false;
   mDisplayed = false;

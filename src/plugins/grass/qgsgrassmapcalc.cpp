@@ -866,7 +866,7 @@ void QgsGrassMapcalc::updateMaps()
   mMapComboBox->clear();
   mMaps.resize( 0 );
 
-  QgsMapCanvas *canvas = mIface->getMapCanvas();
+  QgsMapCanvas *canvas = mIface->mapCanvas();
 
   int nlayers = canvas->layerCount();
   QgsDebugMsg( QString( "nlayers = %1" ).arg( nlayers ) );

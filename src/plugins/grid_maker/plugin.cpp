@@ -95,7 +95,7 @@ void QgsGridMakerPlugin::initGui()
 
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginMenu( tr( "&Graticules" ), myQActionPointer );
+  qGisInterface->addPluginToMenu( tr( "&Graticules" ), myQActionPointer );
 
 }
 //method defined in interface
@@ -107,7 +107,7 @@ void QgsGridMakerPlugin::help()
 // Slot called when the buffer menu item is activated
 void QgsGridMakerPlugin::run()
 {
-  QgsGridMakerPluginGui *myPluginGui = new QgsGridMakerPluginGui( qGisInterface->getMainWindow(), QgisGui::ModalDialogFlags );
+  QgsGridMakerPluginGui *myPluginGui = new QgsGridMakerPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
   connect( myPluginGui, SIGNAL( drawRasterLayer( QString ) ), this, SLOT( drawRasterLayer( QString ) ) );

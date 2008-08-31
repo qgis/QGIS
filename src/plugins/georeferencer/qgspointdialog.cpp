@@ -401,7 +401,7 @@ void QgsPointDialog::deletePoint()
 
 void QgsPointDialog::showCoordDialog( QgsPoint& pixelCoords )
 {
-  MapCoordsDialog* mcd = new MapCoordsDialog( pixelCoords, mIface->getMapCanvas(), this );
+  MapCoordsDialog* mcd = new MapCoordsDialog( pixelCoords, mIface->mapCanvas(), this );
   connect( mcd, SIGNAL( pointAdded( const QgsPoint&, const QgsPoint& ) ),
            this, SLOT( addPoint( const QgsPoint&, const QgsPoint& ) ) );
   mcd->show();

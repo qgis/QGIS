@@ -132,7 +132,7 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMa
 
   mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
 
-  mCanvas = mIface->getMapCanvas();
+  mCanvas = mIface->mapCanvas();
 
   if ( !isEditable( layer ) ) return;
 

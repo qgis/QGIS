@@ -58,14 +58,14 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 {}
 
-void QgsGenericProjectionSelector::setSelectedCRSName( QString theName )
+void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
 {
-  projectionSelector->setSelectedCRSName( theName );
+  projectionSelector->setSelectedCrsName( theName );
 }
 
-void QgsGenericProjectionSelector::setSelectedCRSID( long theID )
+void QgsGenericProjectionSelector::setSelectedCrsId( long theID )
 {
-  projectionSelector->setSelectedCRSID( theID );
+  projectionSelector->setSelectedCrsId( theID );
 }
 
 void QgsGenericProjectionSelector::setSelectedEpsg( long theID )
@@ -73,21 +73,21 @@ void QgsGenericProjectionSelector::setSelectedEpsg( long theID )
   projectionSelector->setSelectedEpsg( theID );
 }
 
-QString QgsGenericProjectionSelector::getSelectedProj4String()
+QString QgsGenericProjectionSelector::selectedProj4String()
 {
   //@NOTE dont use getSelectedWKT as that just returns the name part!
-  return projectionSelector->getSelectedProj4String();
+  return projectionSelector->selectedProj4String();
 }
 
-long QgsGenericProjectionSelector::getSelectedCRSID()
+long QgsGenericProjectionSelector::selectedCrsId()
 {
   //@NOTE dont use getSelectedWKT as that just returns the name part!
-  return projectionSelector->getSelectedCRSID();
+  return projectionSelector->selectedCrsId();
 }
 
-long QgsGenericProjectionSelector::getSelectedEpsg()
+long QgsGenericProjectionSelector::selectedEpsg()
 {
-  return projectionSelector->getSelectedEpsg();
+  return projectionSelector->selectedEpsg();
 }
 
 void QgsGenericProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )

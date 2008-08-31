@@ -31,11 +31,11 @@
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
  * \code
- * QgsGenericProjectionSelector mySelector( mQGisIface->getMainWindow() );
+ * QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
  * mySelector.setSelectedEpsg( mEpsgId );
  * if ( mySelector.exec() )
  * {
- *   mEpsgId = mySelector.getSelectedEpsg();
+ *   mEpsgId = mySelector.selectedEpsg();
  * }
  * \endcode
  *
@@ -61,12 +61,12 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * 'define the CRS for this layer'.
      */
     void setMessage( QString theMessage = "" );
-    QString getSelectedProj4String();
-    long getSelectedCRSID();
-    long getSelectedEpsg();
+    QString selectedProj4String();
+    long selectedCrsId();
+    long selectedEpsg();
 
-    void setSelectedCRSName( QString theName );
-    void setSelectedCRSID( long theID );
+    void setSelectedCrsName( QString theName );
+    void setSelectedCrsId( long theID );
     void setSelectedEpsg( long theID );
 
     /**

@@ -213,7 +213,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   mPath = path;
   mTools = tools;
   mIface = iface;
-  mCanvas = mIface->getMapCanvas();
+  mCanvas = mIface->mapCanvas();
   mParent = parent;
 
   /* Read module description and create options */
@@ -337,7 +337,7 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
   mTools = tools;
   mModule = module;
   mIface = iface;
-  mCanvas = mIface->getMapCanvas();
+  mCanvas = mIface->mapCanvas();
 }
 
 QgsGrassModuleOptions::~QgsGrassModuleOptions()
@@ -2232,7 +2232,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   //connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
 
   // Connect to canvas
-  QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
   connect( canvas, SIGNAL( layersChanged() ), this, SLOT( updateQgisLayers() ) );
 
   connect( mLayerComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
@@ -2290,7 +2290,7 @@ void QgsGrassModuleInput::updateQgisLayers()
   mMapLayers.resize( 0 );
   mVectorFields.resize( 0 );
 
-  QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
   // Find map option
   QString sourceMap;
@@ -2700,7 +2700,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   // connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
 
   // Connect to canvas
-  QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
   // It seems that addedLayer/removedLayer does not work
   //connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
@@ -2720,7 +2720,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   mUri.resize( 0 );
   mOgrLayers.resize( 0 );
 
-  QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
   int nlayers = canvas->layerCount();
   for ( int i = 0; i < nlayers; i++ )
@@ -2910,7 +2910,7 @@ void QgsGrassModuleField::updateFields()
   QString current = mFieldComboBox->currentText();
   mFieldComboBox->clear();
 
-  //QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  //QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
   if ( mLayerInput == 0 ) return;
 
@@ -3000,7 +3000,7 @@ void QgsGrassModuleSelection::updateSelection()
   QgsDebugMsg( "called." );
 
   mLineEdit->setText( "" );
-  //QgsMapCanvas *canvas = mModule->qgisIface()->getMapCanvas();
+  //QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
   if ( mLayerInput == 0 ) return;
 
   QgsMapLayer *layer = mLayerInput->currentLayer();

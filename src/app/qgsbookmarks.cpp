@@ -231,7 +231,7 @@ void QgsBookmarks::zoomToBookmark()
                                         xmax.toDouble(),
                                         ymax.toDouble() ) );
         // redraw the map
-        QgisApp::instance()->getMapCanvas()->refresh();
+        QgisApp::instance()->mapCanvas()->refresh();
       }
     }
 

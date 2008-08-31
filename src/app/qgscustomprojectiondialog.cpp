@@ -800,24 +800,24 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
     {
       mySql = QString( "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) " )
               + " values (" + QString::number( USER_PROJECTION_START_ID ) + ",'"
-              + stringSQLSafe( myName ) + "','" + myProjectionAcronym
-              + "','" + myEllipsoidAcronym  + "','" + stringSQLSafe( myParameters )
+              + sqlSafeString( myName ) + "','" + myProjectionAcronym
+              + "','" + myEllipsoidAcronym  + "','" + sqlSafeString( myParameters )
               + "',0)"; // <-- is_geo shamelessly hard coded for now
     }
     else
     {
       mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('"
-              + stringSQLSafe( myName ) + "','" + myProjectionAcronym
-              + "','" + myEllipsoidAcronym  + "','" + stringSQLSafe( myParameters )
+              + sqlSafeString( myName ) + "','" + myProjectionAcronym
+              + "','" + myEllipsoidAcronym  + "','" + sqlSafeString( myParameters )
               + "',0)"; // <-- is_geo shamelessly hard coded for now
     }
   }
   else //user is updating an existing record
   {
-    mySql = "update tbl_srs set description='" + stringSQLSafe( myName )
+    mySql = "update tbl_srs set description='" + sqlSafeString( myName )
             + "',projection_acronym='" + myProjectionAcronym
             + "',ellipsoid_acronym='" + myEllipsoidAcronym
-            + "',parameters='" + stringSQLSafe( myParameters ) + "' "
+            + "',parameters='" + sqlSafeString( myParameters ) + "' "
             + ",is_geo=0" // <--shamelessly hard coded for now
             + " where srs_id='" + mCurrentRecordId + "'"
             ;
@@ -1021,7 +1021,7 @@ QString QgsCustomProjectionDialog::getEllipseFromParameters()
 * \arg const QString in The input string to make safe.
 * \return The string made safe for SQL statements.
 */
-const QString QgsCustomProjectionDialog::stringSQLSafe( const QString theSQL )
+const QString QgsCustomProjectionDialog::sqlSafeString( const QString theSQL )
 {
 
   QString myRetval;

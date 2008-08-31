@@ -99,9 +99,9 @@ QgsMapLayer *QgisAppInterface::activeLayer()
   return qgis->activeLayer();
 }
 
-void QgisAppInterface::addPluginMenu( QString name, QAction* action )
+void QgisAppInterface::addPluginToMenu( QString name, QAction* action )
 {
-  qgis->addPluginMenu( name, action );
+  qgis->addPluginToMenu( name, action );
 }
 
 void QgisAppInterface::removePluginMenu( QString name, QAction* action )
@@ -131,12 +131,12 @@ void QgisAppInterface::openURL( QString url, bool useQgisDocDirectory )
   qgis->openURL( url, useQgisDocDirectory );
 }
 
-QgsMapCanvas * QgisAppInterface::getMapCanvas()
+QgsMapCanvas * QgisAppInterface::mapCanvas()
 {
-  return qgis->getMapCanvas();
+  return qgis->mapCanvas();
 }
 
-QWidget * QgisAppInterface::getMainWindow()
+QWidget * QgisAppInterface::mainWindow()
 {
   return qgis;
 }

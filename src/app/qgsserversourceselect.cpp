@@ -392,12 +392,12 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
   QgsCoordinateReferenceSystem defaultCRS;
   if ( defaultCRS.createFromProj4( myDefaultProjString ) )
   {
-    mySelector->setSelectedCRSID( defaultCRS.srsid() );
+    mySelector->setSelectedCrsId( defaultCRS.srsid() );
   }
 
   if ( mySelector->exec() )
   {
-    m_Epsg = mySelector->getSelectedEpsg();
+    m_Epsg = mySelector->selectedEpsg();
   }
   else
   {
@@ -405,7 +405,7 @@ void QgsServerSourceSelect::on_btnChangeSpatialRefSys_clicked()
   }
 
   labelCoordRefSys->setText( descriptionForEpsg( m_Epsg ) );
-//  labelCoordRefSys->setText( mySelector->getSelectedProj4String() );
+//  labelCoordRefSys->setText( mySelector->selectedProj4String() );
 
   delete mySelector;
 
