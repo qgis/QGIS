@@ -191,6 +191,27 @@ ELSE (APPLE)
   INSTALL(TARGETS qgis_rasterlayertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 ENDIF (APPLE)
 #
+# Contrast Enhancements Test
+#
+SET(qgis_contrastenhancementtest_SRCS testcontrastenhancements.cpp)
+SET(qgis_contrastenhancementtest_MOC_CPPS testcontrastenhancements.cpp)
+QT4_WRAP_CPP(qgis_contrastenhancementtest_MOC_SRCS ${qgis_contrastenhancementtest_MOC_CPPS})
+ADD_CUSTOM_TARGET(qgis_contrastenhancementtestmoc ALL DEPENDS ${qgis_contrastenhancementtest_MOC_SRCS})
+ADD_EXECUTABLE(qgis_contrastenhancementtest ${qgis_contrastenhancementtest_SRCS})
+ADD_DEPENDENCIES(qgis_contrastenhancementtest qgis_contrastenhancementtestmoc)
+TARGET_LINK_LIBRARIES(qgis_contrastenhancementtest ${QT_LIBRARIES} qgis_core)
+SET_TARGET_PROPERTIES(qgis_contrastenhancementtest
+  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true)
+IF (APPLE)
+  # For Mac OS X, the executable must be at the root of the bundle's executable folder
+  ADD_TEST(qgis_contrastenhancementtest ${CMAKE_INSTALL_PREFIX}/qgis_contrastenhancementtest)
+  INSTALL(TARGETS qgis_contrastenhancementtest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
+ELSE (APPLE)
+  ADD_TEST(qgis_contrastenhancementtest ${CMAKE_INSTALL_PREFIX}/bin/qgis_contrastenhancementtest)
+  INSTALL(TARGETS qgis_contrastenhancementtest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+ENDIF (APPLE)
+#
 # QgsMapLayer test
 #
 SET(qgis_maplayertest_SRCS testqgsmaplayer.cpp ${util_SRCS})
