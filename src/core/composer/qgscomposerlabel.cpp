@@ -48,12 +48,12 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->setFont( mFont );
 
   QFontMetricsF fontSize( mFont );
-  
+
   //support multiline labels
   double penWidth = pen().widthF();
-  QRectF painterRect(penWidth, penWidth, rect().width() - 2 * penWidth,
-		     rect().height() - 2 * penWidth);
-  painter->drawText(painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText);
+  QRectF painterRect( penWidth, penWidth, rect().width() - 2 * penWidth,
+                      rect().height() - 2 * penWidth );
+  painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
 
 
   drawFrame( painter );
@@ -86,7 +86,7 @@ void QgsComposerLabel::setFont( const QFont& f )
 void QgsComposerLabel::adjustSizeToText()
 {
   QFontMetricsF fontInfo( mFont );
-  setSceneRect( QRectF( transform().dx(), transform().dy(), fontInfo.width( mText ) + 2 * mMargin + 2 * pen().widthF(), fontInfo.ascent() + 2 * mMargin + 2 * pen().widthF()) );
+  setSceneRect( QRectF( transform().dx(), transform().dy(), fontInfo.width( mText ) + 2 * mMargin + 2 * pen().widthF(), fontInfo.ascent() + 2 * mMargin + 2 * pen().widthF() ) );
 }
 
 QFont QgsComposerLabel::font() const

@@ -35,7 +35,7 @@ typedef QMap<QString, QVariant::Type> QgsNativeTypeMap;
 /** \ingroup core
  * This is the base class for vector data providers.
  *
- * Data providers abstract the retrieval and writing (where supported) 
+ * Data providers abstract the retrieval and writing (where supported)
  * of feature and attrubute information from a spatial datasource.
  *
  *
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs 
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
      *                       that will have their geometries changed.
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure

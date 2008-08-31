@@ -69,7 +69,7 @@ void GraticuleCreator::generatePointGraticule(
                                 QGis::WKBPoint,
                                 &mCRS );
 
-  if( theXInterval==0.0 || theYInterval==0.0 )
+  if ( theXInterval == 0.0 || theYInterval == 0.0 )
     return;
 
   //

@@ -4688,25 +4688,25 @@ void QgisApp::changeEvent( QEvent* event )
 #ifdef Q_WS_MAC
   switch ( event->type() )
   {
-  case QEvent::ActivationChange:
-    if ( QApplication::activeWindow() == this )
-    {
-      mWindowAction->setChecked( true );
-    }
-    // this should not be necessary since the action is part of an action group
-    // however this check is not cleared if PrintComposer is closed and reopened
-    else
-    {
-      mWindowAction->setChecked( false );
-    }
-    break;
+    case QEvent::ActivationChange:
+      if ( QApplication::activeWindow() == this )
+      {
+        mWindowAction->setChecked( true );
+      }
+      // this should not be necessary since the action is part of an action group
+      // however this check is not cleared if PrintComposer is closed and reopened
+      else
+      {
+        mWindowAction->setChecked( false );
+      }
+      break;
 
-  case QEvent::WindowTitleChange:
-    mWindowAction->setText( windowTitle() );
-    break;
+    case QEvent::WindowTitleChange:
+      mWindowAction->setText( windowTitle() );
+      break;
 
-  default:
-    break;
+    default:
+      break;
   }
 #endif
 }

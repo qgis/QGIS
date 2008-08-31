@@ -179,9 +179,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         included or not
      */
     bool mRasterLayerIsWms;
-    
+
     /** \brief Clear current color map table and population with values from new list */
-    void populateColorMapTable(const QList<QgsColorRampShader::ColorRampItem>&);
+    void populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& );
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable();

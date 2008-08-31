@@ -170,7 +170,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   {
     //find out the name of this band
     QString myRasterBandNameQString = mRasterLayer->getRasterBandName( myIteratorInt ) ;
-    
+
     //add the band to the histogram tab
     //
     QPixmap myPixmap( 10, 10 );
@@ -328,7 +328,7 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
  * PUBLIC METHODS
  *
  */
-void QgsRasterLayerProperties::populateColorMapTable(const QList<QgsColorRampShader::ColorRampItem>& theColorRampList)
+void QgsRasterLayerProperties::populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& theColorRampList )
 {
   if ( theColorRampList.size() > 0 )
   {
@@ -342,7 +342,7 @@ void QgsRasterLayerProperties::populateColorMapTable(const QList<QgsColorRampSha
       newItem->setText( 2, it->label );
     }
   }
-} 
+}
 void QgsRasterLayerProperties::populateTransparencyTable()
 {
   //Clear existsing color transparency list
@@ -867,7 +867,7 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
   //restore the colormap tab if layer has custom symbology
-  populateColorMapTable(myRasterShaderFunction->getColorRampItemList());
+  populateColorMapTable( myRasterShaderFunction->getColorRampItemList() );
 
   sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
 
@@ -979,7 +979,7 @@ void QgsRasterLayerProperties::apply()
         QgsDebugMsg( "Setting Raster Drawing Style to :: PALETTED_SINGLE_BAND_GRAY" );
         QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
                      getGrayBandName() ) );
-                     
+
         mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_SINGLE_BAND_GRAY );
       }
       else if ( cboxColorMap->currentText() == tr( "Colormap" ) )
@@ -996,7 +996,7 @@ void QgsRasterLayerProperties::apply()
 
         mRasterLayer->setDrawingStyle( QgsRasterLayer::PALETTED_SINGLE_BAND_PSEUDO_COLOR );
       }
-      
+
     }
     //
     // Mutltiband
@@ -2642,9 +2642,9 @@ void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick( QTreeWidgetI
 void QgsRasterLayerProperties::on_pbtnAddColorMapEntry_clicked()
 {
   QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-  newItem->setText( 0, "0.0");
-  newItem->setBackground( 1, QBrush( QColor(Qt::magenta) ) );
-  newItem->setText( 2, tr("Custom color map entry"));
+  newItem->setText( 0, "0.0" );
+  newItem->setBackground( 1, QBrush( QColor( Qt::magenta ) ) );
+  newItem->setText( 2, tr( "Custom color map entry" ) );
 }
 
 void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
@@ -2711,16 +2711,16 @@ void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
 void QgsRasterLayerProperties::on_pbtnLoadColorMapFromBand_clicked()
 {
   QList<QgsColorRampShader::ColorRampItem> myColorRampList;
-  if(mRasterLayer->readColorTable(cboxColorMapBand->currentIndex()+1, &myColorRampList))
+  if ( mRasterLayer->readColorTable( cboxColorMapBand->currentIndex() + 1, &myColorRampList ) )
   {
-    populateColorMapTable(myColorRampList);
+    populateColorMapTable( myColorRampList );
     cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
-    QgsDebugMsg("Color map loaded");
+    QgsDebugMsg( "Color map loaded" );
   }
   else
   {
-    QMessageBox::warning(this, tr("Load Color Map"), tr("The color map for Band %n failed to load", "", cboxColorMapBand->currentIndex()+1));
-    QgsDebugMsg("Color map failed to load");
+    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for Band %n failed to load", "", cboxColorMapBand->currentIndex() + 1 ) );
+    QgsDebugMsg( "Color map failed to load" );
   }
 }
 
@@ -2919,41 +2919,41 @@ void QgsRasterLayerProperties::on_pbtnSortColorMap_clicked()
   {
     myCurrentItem = mColormapTreeWidget->topLevelItem( i );
     //If the item is null or does not have a pixel values set, skip
-    if(!myCurrentItem || myCurrentItem->text(0) == "")
+    if ( !myCurrentItem || myCurrentItem->text( 0 ) == "" )
     {
       continue;
     }
-    
+
     //Create a copy of the new Color ramp Item
     QgsColorRampShader::ColorRampItem myNewColorRampItem;
     myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
     myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
     myNewColorRampItem.label = myCurrentItem->text( 2 );
-    
+
     //Simple insertion sort - speed is not a huge factor here
     inserted = false;
     myCurrentIndex = 0;
-    while(!inserted)
+    while ( !inserted )
     {
-      if(0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size())
+      if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
       {
         myColorRampItems.push_back( myNewColorRampItem );
         inserted = true;
       }
-      else if(myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1)
+      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
       {
         myColorRampItems.push_back( myNewColorRampItem );
         inserted = true;
       }
-      else if(myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value)
+      else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value )
       {
-        myColorRampItems.insert(myCurrentIndex+1,myNewColorRampItem );
+        myColorRampItems.insert( myCurrentIndex + 1, myNewColorRampItem );
         inserted = true;
       }
       myCurrentIndex++;
     }
   }
-  populateColorMapTable(myColorRampItems);
+  populateColorMapTable( myColorRampItems );
 }
 
 QLinearGradient QgsRasterLayerProperties::redGradient()

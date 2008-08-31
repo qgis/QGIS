@@ -363,9 +363,9 @@ class CORE_EXPORT QgsGeometry
      *  on the Coordinate Sequence.
      */
     bool insertVertex( double x, double y,
-                             int beforeVertex,
-                             const GEOSCoordSequence*  old_sequence,
-                             GEOSCoordSequence** new_sequence );
+                       int beforeVertex,
+                       const GEOSCoordSequence*  old_sequence,
+                       GEOSCoordSequence** new_sequence );
 
     /**Converts single type geometry into multitype geometry
      e.g. a polygon into a multipolygon geometry with one polygon

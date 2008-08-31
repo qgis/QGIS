@@ -111,16 +111,16 @@ void QgsMapOverviewCanvas::reflectChangedExtent()
     cXf->transform( &ur );
   }
 
-#if 0 
+#if 0
   // test whether panning widget should be drawn
   bool show = false;
-  if (ur.x() >= 0 && ur.x() < width())  show = true;
-  if (ll.x() >= 0 && ll.x() < width())  show = true;
-  if (ur.y() >= 0 && ur.y() < height()) show = true;
-  if (ll.y() >= 0 && ll.y() < height()) show = true;
-  if (!show)
+  if ( ur.x() >= 0 && ur.x() < width() )  show = true;
+  if ( ll.x() >= 0 && ll.x() < width() )  show = true;
+  if ( ur.y() >= 0 && ur.y() < height() ) show = true;
+  if ( ll.y() >= 0 && ll.y() < height() ) show = true;
+  if ( !show )
   {
-    QgsDebugMsg("panning: extent out of overview area");
+    QgsDebugMsg( "panning: extent out of overview area" );
     mPanningWidget->hide();
     return;
   }

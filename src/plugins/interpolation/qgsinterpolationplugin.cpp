@@ -37,7 +37,7 @@ void QgsInterpolationPlugin::initGui()
 {
   if ( mIface )
   {
-    mInterpolationAction = new QAction( QIcon( ":/interpolator/interpolation.png"), tr( "&Interpolation" ), 0 );
+    mInterpolationAction = new QAction( QIcon( ":/interpolator/interpolation.png" ), tr( "&Interpolation" ), 0 );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addToolBarIcon( mInterpolationAction );
     mIface->addPluginMenu( tr( "&Interpolation" ), mInterpolationAction );

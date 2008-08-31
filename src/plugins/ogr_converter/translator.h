@@ -10,7 +10,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 #ifndef QGIS_PLUGIN_OGRCONV_TRANSLATOR_H_INCLUDED
-#define QGIS_PLUGIN_OGRCONV_TRANSLATOR_H_INCLUDED 
+#define QGIS_PLUGIN_OGRCONV_TRANSLATOR_H_INCLUDED
 
 // Qt4
 #include <QString>
@@ -19,28 +19,28 @@
 
 class Translator
 {
-public:
+  public:
 
     Translator();
-    Translator(QString const& src, QString const& dst, QString const& format);
+    Translator( QString const& src, QString const& dst, QString const& format );
 
     QString const& targetFormat() const;
-    void setTargetFormat(QString const& format);
+    void setTargetFormat( QString const& format );
 
     QString const& targetLayer() const;
-    void setTargetLayer(QString const& layer);
+    void setTargetLayer( QString const& layer );
 
     QString const& sourceLayer() const;
-    void setSourceLayer(QString const& layer);
+    void setSourceLayer( QString const& layer );
 
     QString const& targetReferenceSystem() const;
-    void setTargetReferenceSystem(QString const& srs);
+    void setTargetReferenceSystem( QString const& srs );
 
     QString const& sourceReferenceSystem() const;
-    void setSourceReferenceSystem(QString const& srs);
+    void setSourceReferenceSystem( QString const& srs );
 
     bool isTargetUpdate() const;
-    void setUpdateTarget(bool update);
+    void setUpdateTarget( bool update );
 
     bool isTargetLayerOverwrite() const;
     // TODO: Implement, currently always overwrite
@@ -48,7 +48,7 @@ public:
 
     bool translate();
 
-private:
+  private:
 
     QString mSrcUrl;
     QString mDstUrl;
@@ -62,14 +62,14 @@ private:
     // TODO: Append option not supported
     // bool mDstLayerAppend;
 
-    bool translateLayer(OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDataSourceH dstDs);
-    bool copyFields(OGRFeatureDefnH layerDefn, OGRLayerH layer);
-    bool copyFeatures(OGRLayerH srcLayer, OGRLayerH dstLayer);
+    bool translateLayer( OGRDataSourceH srcDs, OGRLayerH srcLayer, OGRDataSourceH dstDs );
+    bool copyFields( OGRFeatureDefnH layerDefn, OGRLayerH layer );
+    bool copyFeatures( OGRLayerH srcLayer, OGRLayerH dstLayer );
 
-    OGRSFDriverH findDriver(QString const& name);
-    OGRLayerH findLayer(OGRDataSourceH ds, QString const& name, int& index);
-    OGRDataSourceH openDataSource(QString const& url, bool readOnly);
-    OGRDataSourceH openDataTarget(QString const& url, bool update);
+    OGRSFDriverH findDriver( QString const& name );
+    OGRLayerH findLayer( OGRDataSourceH ds, QString const& name, int& index );
+    OGRDataSourceH openDataSource( QString const& url, bool readOnly );
+    OGRDataSourceH openDataTarget( QString const& url, bool update );
 
 };
 

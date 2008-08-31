@@ -24,7 +24,7 @@ class QgsMapCanvas;
 class QPainter;
 
 /** \ingroup gui
- * An abstract class for items that can be placed on the 
+ * An abstract class for items that can be placed on the
  * map canvas.
  */
 class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem

@@ -440,7 +440,7 @@ QFont QgsComposerLegend::itemFont() const
 
 void QgsComposerLegend::updateLegend()
 {
-  mLegendModel.setLayerSet(layerIdList());
+  mLegendModel.setLayerSet( layerIdList() );
   adjustBoxSize();
   update();
 }

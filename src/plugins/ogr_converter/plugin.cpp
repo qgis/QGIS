@@ -30,21 +30,21 @@
 #include <ogr_api.h>
 
 static const char * const sIdent = "$Id$";
-static const QString sName = QObject::tr("OGR Layer Converter");
-static const QString sDescription = QObject::tr("Translates vector layers between formats supported by OGR library");
-static const QString sPluginVersion = QObject::tr("Version 0.1");
+static const QString sName = QObject::tr( "OGR Layer Converter" );
+static const QString sDescription = QObject::tr( "Translates vector layers between formats supported by OGR library" );
+static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////////////
 // THE FOLLOWING METHODS ARE MANDATORY FOR ALL PLUGINS
 //////////////////////////////////////////////////////////////////////////////
 
-OgrPlugin::OgrPlugin(QgisInterface * theQgisInterface) :
-    QgisPlugin(sName, sDescription, sPluginVersion, sPluginType),
-    mQGisIface(theQgisInterface),
-    mQActionPointer(0)
+OgrPlugin::OgrPlugin( QgisInterface * theQgisInterface ) :
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    mQGisIface( theQgisInterface ),
+    mQActionPointer( 0 )
 {
-    assert(0 != mQGisIface);
+  assert( 0 != mQGisIface );
 }
 
 OgrPlugin::~OgrPlugin()
@@ -53,46 +53,46 @@ OgrPlugin::~OgrPlugin()
 
 void OgrPlugin::initGui()
 {
-    // Create the action for tool
-    mQActionPointer = new QAction(QIcon(":/ogrconverter/ogr_converter.png"), tr("Run OGR Layer Converter"), this);
+  // Create the action for tool
+  mQActionPointer = new QAction( QIcon( ":/ogrconverter/ogr_converter.png" ), tr( "Run OGR Layer Converter" ), this );
 
-    // Set the what's this text
-    mQActionPointer->setWhatsThis(tr("Replace this with a short description of the what the plugin does"));
+  // Set the what's this text
+  mQActionPointer->setWhatsThis( tr( "Replace this with a short description of the what the plugin does" ) );
 
-    // Connect the action to the run
-    connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
+  // Connect the action to the run
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
 
-    // Add the icon to the toolbar
-    mQGisIface->addToolBarIcon(mQActionPointer);
-    mQGisIface->addPluginMenu(tr("OG&R Converter"), mQActionPointer);
+  // Add the icon to the toolbar
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginMenu( tr( "OG&R Converter" ), mQActionPointer );
 }
 
 //method defined in interface
 void OgrPlugin::help()
 {
-    //implement me!
+  //implement me!
 }
 
 void OgrPlugin::run()
 {
-    assert(0 != mQGisIface);
+  assert( 0 != mQGisIface );
 
-    Dialog* ogrDialog = new Dialog(mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags);
-    ogrDialog->setAttribute(Qt::WA_DeleteOnClose);
-    ogrDialog->show();
+  Dialog* ogrDialog = new Dialog( mQGisIface->getMainWindow(), QgisGui::ModalDialogFlags );
+  ogrDialog->setAttribute( Qt::WA_DeleteOnClose );
+  ogrDialog->show();
 }
 
 void OgrPlugin::unload()
 {
-    assert(0 != mQGisIface);
+  assert( 0 != mQGisIface );
 
-    // TODO: Who is responsible for OGR cleanup?
-    //OGRCleanupAll();
+  // TODO: Who is responsible for OGR cleanup?
+  //OGRCleanupAll();
 
-    // remove the GUI
-    mQGisIface->removePluginMenu("&OGR Layer Converter", mQActionPointer);
-    mQGisIface->removeToolBarIcon(mQActionPointer);
-    delete mQActionPointer;
+  // remove the GUI
+  mQGisIface->removePluginMenu( "&OGR Layer Converter", mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
+  delete mQActionPointer;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -102,13 +102,13 @@ void OgrPlugin::unload()
 /////////////////////////////////////////////////////////////////////////////
 
 // Required extern functions needed  for every plugin
-// These functions can be called prior to creating an instance 
+// These functions can be called prior to creating an instance
 // of the plugin class.
 
 // Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-  return new OgrPlugin(theQgisInterfacePointer);
+  return new OgrPlugin( theQgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as
@@ -137,7 +137,7 @@ QGISEXTERN QString version()
 }
 
 // Delete ourself
-QGISEXTERN void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
   delete thePluginPointer;
 }

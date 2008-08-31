@@ -158,40 +158,40 @@ bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* re
 }
 
 #if 0
-bool MathUtils::circumcenter(Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result)//version imitating the geometric construction
+bool MathUtils::circumcenter( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )//version imitating the geometric construction
 {
-  if(p1&&p2&&p3&&result)
+  if ( p1 && p2 && p3 && result )
+  {
+    Point3D midpoint12(( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
+    Point3D midpoint23(( p2->getX() + p3->getX() ) / 2, ( p2->getY() + p3->getY() ) / 2, 0 );
+    Vector3D v12( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
+    Vector3D v23( p3->getX() - p2->getX(), p3->getY() - p2->getY(), 0 );
+    Vector3D n12;
+    MathUtils::normalLeft( &v12, &n12, 10000 );
+    Vector3D n23;
+    MathUtils::normalLeft( &v23, &n23, 10000 );
+    Point3D helppoint1( midpoint12.getX() + n12.getX(), midpoint12.getY() + n12.getY(), 0 );
+    Point3D helppoint2( midpoint23.getX() + n23.getX(), midpoint23.getY() + n23.getY(), 0 );
+    MathUtils::lineIntersection( &midpoint12, &helppoint1, &midpoint23, &helppoint2, result );
+
+    //debugging: test, if the distances from p1, p2, p3 to result are equal
+    double dist1 = sqrt(( p1->getX() - result->getX() ) * ( p1->getX() - result->getX() ) + ( p1->getY() - result->getY() ) * ( p1->getY() - result->getY() ) );
+    double dist2 = sqrt(( p2->getX() - result->getX() ) * ( p2->getX() - result->getX() ) + ( p2->getY() - result->getY() ) * ( p2->getY() - result->getY() ) );
+    double dist3 = sqrt(( p3->getX() - result->getX() ) * ( p3->getX() - result->getX() ) + ( p3->getY() - result->getY() ) * ( p3->getY() - result->getY() ) );
+
+    if ( dist1 - dist2 > 1 || dist2 - dist1 > 1 || dist1 - dist3 > 1 || dist3 - dist1 > 1 )
     {
- Point3D midpoint12((p1->getX()+p2->getX())/2,(p1->getY()+p2->getY())/2,0);
- Point3D midpoint23((p2->getX()+p3->getX())/2,(p2->getY()+p3->getY())/2,0);
- Vector3D v12(p2->getX()-p1->getX(),p2->getY()-p1->getY(),0);
- Vector3D v23(p3->getX()-p2->getX(),p3->getY()-p2->getY(),0);
- Vector3D n12;
- MathUtils::normalLeft(&v12,&n12,10000);
- Vector3D n23;
- MathUtils::normalLeft(&v23,&n23,10000);
- Point3D helppoint1(midpoint12.getX()+n12.getX(),midpoint12.getY()+n12.getY(),0);
- Point3D helppoint2(midpoint23.getX()+n23.getX(),midpoint23.getY()+n23.getY(),0);
- MathUtils::lineIntersection(&midpoint12,&helppoint1,&midpoint23,&helppoint2,result);
-
-     //debugging: test, if the distances from p1, p2, p3 to result are equal
- double dist1=sqrt((p1->getX()-result->getX())*(p1->getX()-result->getX())+(p1->getY()-result->getY())*(p1->getY()-result->getY()));
- double dist2=sqrt((p2->getX()-result->getX())*(p2->getX()-result->getX())+(p2->getY()-result->getY())*(p2->getY()-result->getY()));
- double dist3=sqrt((p3->getX()-result->getX())*(p3->getX()-result->getX())+(p3->getY()-result->getY())*(p3->getY()-result->getY()));
-
- if(dist1-dist2>1||dist2-dist1>1||dist1-dist3>1||dist3-dist1>1)
- {
-     bool debug=true;
- }
-
- return true;
-
+      bool debug = true;
     }
+
+    return true;
+
+  }
   else
-    {
-      cout << "null pointer in method MathUtils::circumcenter" << endl << flush;
-      return false;
-    }
+  {
+    cout << "null pointer in method MathUtils::circumcenter" << endl << flush;
+    return false;
+  }
 }
 #endif // 0
 
@@ -294,23 +294,23 @@ bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
 }
 
 #if 0
-bool MathUtils::inDiametral(Point3D* p1, Point3D* p2, Point3D* point)
+bool MathUtils::inDiametral( Point3D* p1, Point3D* p2, Point3D* point )
 {
-  if(p1&&p2&&point)
-    {
-      Vector3D p1p2(p2->getX()-p1->getX(),p2->getY()-p1->getY(),0);
-      Vector3D orthogonalvec;//vector orthogonal to p1p2 (length radius)
-      Point3D midpoint((p1->getX()+p2->getX())/2,(p1->getY()+p2->getY())/2,0);
-      double radius=p1p2.getLength()/2;
-      normalLeft(&p1p2,&orthogonalvec,radius);
-      Point3D p3(midpoint.getX()+orthogonalvec.getX(),midpoint.getY()+orthogonalvec.getY(),0);
-      return inCircle(point,p1,p2,&p3);
-    }
+  if ( p1 && p2 && point )
+  {
+    Vector3D p1p2( p2->getX() - p1->getX(), p2->getY() - p1->getY(), 0 );
+    Vector3D orthogonalvec;//vector orthogonal to p1p2 (length radius)
+    Point3D midpoint(( p1->getX() + p2->getX() ) / 2, ( p1->getY() + p2->getY() ) / 2, 0 );
+    double radius = p1p2.getLength() / 2;
+    normalLeft( &p1p2, &orthogonalvec, radius );
+    Point3D p3( midpoint.getX() + orthogonalvec.getX(), midpoint.getY() + orthogonalvec.getY(), 0 );
+    return inCircle( point, p1, p2, &p3 );
+  }
   else
-    {
-      cout << "null pointer in MathUtils::inDiametral" << endl << flush;
-      return false;
-    }
+  {
+    cout << "null pointer in MathUtils::inDiametral" << endl << flush;
+    return false;
+  }
 }
 #endif // 0
 
