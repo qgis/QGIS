@@ -186,7 +186,7 @@ void QgsLegendLayerFile::setVisible( bool visible )
 
 bool QgsLegendLayerFile::isVisible()
 {
-  return mLyr.visible();
+  return mLyr.isVisible();
 }
 
 void QgsLegendLayerFile::setInOverview( bool inOverview )

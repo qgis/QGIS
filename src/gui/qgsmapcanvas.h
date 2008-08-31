@@ -69,7 +69,7 @@ class GUI_EXPORT QgsMapCanvasLayer
     void setVisible( bool visible ) { mVisible = visible; }
     void setInOverview( bool inOverview ) { mInOverview = inOverview; }
 
-    bool visible() const { return mVisible; }
+    bool isVisible() const { return mVisible; }
     bool inOverview() const { return mInOverview; }
 
     QgsMapLayer* layer() { return mLayer; }
