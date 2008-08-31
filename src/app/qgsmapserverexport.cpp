@@ -238,7 +238,7 @@ void QgsMapserverExport::writeMapFile()
       mapFile << "  STATUS ";
 
       // TODO: what to do with visibility
-      //if (lyr->visible())
+      //if (lyr->isVisible())
       //{
       mapFile << "ON";
       //} else

@@ -16,7 +16,7 @@ public:
   void setVisible(bool visible);
   void setInOverview(bool inOverview);
   
-  bool visible() const;
+  bool isVisible() const;
   bool inOverview() const;
   
   QgsMapLayer* layer();

@@ -232,7 +232,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
   for ( i = 0; i < layers.size(); i++ )
   {
     QgsMapCanvasLayer& lyr = layers[i];
-    if ( lyr.visible() )
+    if ( lyr.isVisible() )
     {
       layerSet.push_back( lyr.layer()->getLayerID() );
     }
