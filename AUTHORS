@@ -5,10 +5,6 @@
 # in the format:
 # name [tab] <email>
 #
-# The name will be used to infer the image name, with spaces 
-# replaced by underscores. If no matching image is found
-# a blank image will be displayed.
-# Images are read out of $PREFIX/share/qgis/images/developers/
 # ---------------------------------------------------------
 #
 # ALWAYS USE UTF-8 WHEN WRITING THIS FILE!
