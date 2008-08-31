@@ -368,7 +368,6 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
 #ifdef Q_WS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
-  mWindowAction->setCheckable( true );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
 
   // add this window to Window menu
@@ -571,6 +570,7 @@ void QgisApp::createActions()
   mActionExit = new QAction( getThemeIcon( "mActionFileExit.png" ), tr( "Exit" ), this );
   mActionExit->setShortcut( tr( "Ctrl+Q", "Exit QGIS" ) );
   mActionExit->setStatusTip( tr( "Exit QGIS" ) );
+  mActionExit->setMenuRole( QAction::QuitRole ); // put in Application menu on Mac OS X
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
 
   // Edit Menu Items
@@ -870,14 +870,13 @@ void QgisApp::createActions()
   mActionOptions = new QAction( getThemeIcon( "mActionOptions.png" ), tr( "Options..." ), this );
   // mActionOptions->setShortcut(tr("Alt+O","Change various QGIS options"));
   mActionOptions->setStatusTip( tr( "Change various QGIS options" ) );
-  mActionOptions->setMenuRole( QAction::PreferencesRole );
+  mActionOptions->setMenuRole( QAction::PreferencesRole ); // put in application menu on Mac OS X
   connect( mActionOptions, SIGNAL( triggered() ), this, SLOT( options() ) );
 
   mActionCustomProjection = new QAction( getThemeIcon( "mActionCustomProjection.png" ), tr( "Custom CRS..." ), this );
   // mActionCustomProjection->setShortcut(tr("Alt+I","Manage custom projections"));
   mActionCustomProjection->setStatusTip( tr( "Manage custom coordinate reference systems" ) );
-  // mActionCustomProjection->setMenuRole(QAction::ApplicationSpecificRole);
-  mActionCustomProjection->setMenuRole( QAction::PreferencesRole );
+  // mActionCustomProjection->setMenuRole( QAction::ApplicationSpecificRole ); // put in application menu on Mac OS X
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
 
 #ifdef Q_WS_MAC
@@ -886,11 +885,11 @@ void QgisApp::createActions()
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
-  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showMinimized() ) );
+  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
-  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleMaximized() ) );
+  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
@@ -924,6 +923,7 @@ void QgisApp::createActions()
 
   mActionAbout = new QAction( getThemeIcon( "mActionHelpAbout.png" ), tr( "About" ), this );
   mActionAbout->setStatusTip( tr( "About QGIS" ) );
+  mActionAbout->setMenuRole( QAction::AboutRole ); // put in application menu on Mac OS X
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
 }
 
@@ -3530,10 +3530,30 @@ void QgisApp::toggleFullScreen()
   }
 }
 
-void QgisApp::toggleMaximized()
+void QgisApp::showActiveWindowMinimized()
 {
-  if ( isMaximized() ) showNormal();
-  else showMaximized();
+  QWidget *window = QApplication::activeWindow();
+  if ( window )
+  {
+    window->showMinimized();
+  }
+}
+
+void QgisApp::toggleActiveWindowMaximized()
+{
+  QWidget *window = QApplication::activeWindow();
+  if ( window )
+  {
+    if ( window->isMaximized() ) window->showNormal();
+    else window->showMaximized();
+  }
+}
+
+void QgisApp::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
 }
 
 void QgisApp::bringAllToFront()
@@ -3549,9 +3569,16 @@ void QgisApp::bringAllToFront()
 #ifdef Q_WS_MAC
 void QgisApp::addWindow( QAction *action )
 {
-  mWindowMenu->addAction( action );
   mWindowActions->addAction( action );
+  mWindowMenu->addAction( action );
+  action->setCheckable( true );
   action->setChecked( true );
+}
+
+void QgisApp::removeWindow( QAction *action )
+{
+  mWindowActions->removeAction( action );
+  mWindowMenu->removeAction( action );
 }
 #endif
 
@@ -4657,13 +4684,31 @@ bool QgisApp::saveDirty()
 
 void QgisApp::changeEvent( QEvent* event )
 {
+  QMainWindow::changeEvent( event );
 #ifdef Q_WS_MAC
-  if ( event->type() == QEvent::WindowTitleChange )
+  switch ( event->type() )
   {
+  case QEvent::ActivationChange:
+    if ( QApplication::activeWindow() == this )
+    {
+      mWindowAction->setChecked( true );
+    }
+    // this should not be necessary since the action is part of an action group
+    // however this check is not cleared if PrintComposer is closed and reopened
+    else
+    {
+      mWindowAction->setChecked( false );
+    }
+    break;
+
+  case QEvent::WindowTitleChange:
     mWindowAction->setText( windowTitle() );
+    break;
+
+  default:
+    break;
   }
 #endif
-  QWidget::changeEvent( event );
 }
 
 void QgisApp::closeEvent( QCloseEvent* event )

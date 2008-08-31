@@ -38,10 +38,12 @@
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
 
+#include <QCloseEvent>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMatrix>
+#include <QMenuBar>
 #include <QMessageBox>
 #include <QPainter>
 
@@ -68,18 +70,40 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
   QString myIconPath = QgsApplication::activeThemePath();
 
-  QAction* moveItemContentAction = new QAction( QIcon( QPixmap( myIconPath + "mActionMoveItemContent.png" ) ), tr( "Move Item content" ), 0 );
+  // Actions defined in qgscomposerbase.ui:
+  // mActionAddNewMap
+  // mActionAddNewLegend
+  // mActionAddNewLabel
+  // mActionAddNewScalebar
+  // mActionAddImage
+  // mActionSelectMoveItem
+
+  QAction* moveItemContentAction = new QAction( QIcon( QPixmap( myIconPath + "mActionMoveItemContent.png" ) ),
+                                                tr( "Move Content" ), 0 );
+  moveItemContentAction->setToolTip( tr( "Move item content" ) );
   moveItemContentAction->setCheckable( true );
   connect( moveItemContentAction, SIGNAL( triggered() ), this, SLOT( moveItemContent() ) );
   toolBar->addAction( moveItemContentAction );
   //toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionMoveItemContent.png")), tr("Move Item content"), this, SLOT(moveItemContent()));
 
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionGroupItems.png" ) ), tr( "&Group Items" ), this, SLOT( groupItems() ) );
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionUngroupItems.png" ) ), tr( "&Ungroup Items" ), this, SLOT( ungroupItems() ) );
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionRaiseItems.png" ) ), tr( "Raise selected items" ), this, SLOT( raiseSelectedItems() ) );
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionLowerItems.png" ) ), tr( "Lower selected items" ), this, SLOT( lowerSelectedItems() ) );
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToTop.png" ) ), tr( "Move selected items to top" ), this, SLOT( moveSelectedItemsToTop() ) );
-  toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToBottom.png" ) ), tr( "Move selected items to bottom" ), this, SLOT( moveSelectedItemsToBottom() ) );
+  QAction* groupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionGroupItems.png" ) ),
+                                                  tr( "&Group" ), this, SLOT( groupItems() ) );
+  groupItemsAction->setToolTip( tr( "Group items" ) );
+  QAction* ungroupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionUngroupItems.png" ) ),
+                                                    tr( "&Ungroup" ), this, SLOT( ungroupItems() ) );
+  ungroupItemsAction->setToolTip( tr( "Ungroup items" ) );
+  QAction* raiseItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionRaiseItems.png" ) ),
+                                                  tr( "Raise" ), this, SLOT( raiseSelectedItems() ) );
+  raiseItemsAction->setToolTip( tr( "Raise selected items" ) );
+  QAction* lowerItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionLowerItems.png" ) ),
+                                                  tr( "Lower" ), this, SLOT( lowerSelectedItems() ) );
+  lowerItemsAction->setToolTip( tr( "Lower selected items" ) );
+  QAction* moveItemsToTopAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToTop.png" ) ),
+                                                      tr( "Bring to Front" ), this, SLOT( moveSelectedItemsToTop() ) );
+  moveItemsToTopAction->setToolTip( tr( "Move selected items to top" ) );
+  QAction* moveItemsToBottomAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToBottom.png" ) ),
+                                                         tr( "Send to Back" ), this, SLOT( moveSelectedItemsToBottom() ) );
+  moveItemsToBottomAction->setToolTip( tr( "Move selected items to bottom" ) );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( moveItemContentAction );
@@ -104,6 +128,68 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   mActionSelectMoveItem->setCheckable( true );
   mActionAddNewScalebar->setCheckable( true );
   mActionAddImage->setCheckable( true );
+
+#ifdef Q_WS_MAC
+  QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
+  appMenu->addAction( QgisApp::instance()->actionAbout() );
+  appMenu->addAction( QgisApp::instance()->actionOptions() );
+
+  QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
+  fileMenu->addAction( mActionOpenTemplate );
+  fileMenu->addSeparator();
+  QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
+  fileMenu->addAction( mActionSaveTemplateAs );
+  fileMenu->addAction( mActionExportAsImage );
+  fileMenu->addAction( mActionExportAsSVG );
+  fileMenu->addSeparator();
+  fileMenu->addAction( mActionPrint );
+
+  QMenu *editMenu = menuBar()->addMenu( tr( "Edit" ) );
+  QAction *undoAction = editMenu->addAction( tr( "&Undo" ), this, SLOT( undo() ), tr( "Ctrl+Z" ) );
+  undoAction->setEnabled( false );
+  editMenu->addSeparator();
+  QAction *cutAction = editMenu->addAction( tr( "Cu&t" ), this, SLOT( cut() ), tr( "Ctrl+X" ) );
+  cutAction->setEnabled( false );
+  QAction *copyAction = editMenu->addAction( tr( "&Copy" ), this, SLOT( copy() ), tr( "Ctrl+C" ) );
+  copyAction->setEnabled( false );
+  QAction *pasteAction = editMenu->addAction( tr( "&Paste" ), this, SLOT( paste() ), tr( "Ctrl+V" ) );
+  pasteAction->setEnabled( false );
+  QAction *deleteAction = editMenu->addAction( tr( "Delete" ) );
+  deleteAction->setEnabled( false );
+
+  QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
+  viewMenu->addAction( mActionZoomIn );
+  viewMenu->addAction( mActionZoomOut );
+  viewMenu->addAction( mActionZoomAll );
+  viewMenu->addSeparator();
+  viewMenu->addAction( mActionRefreshView );
+
+  QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
+  layoutMenu->addAction( mActionAddNewMap );
+  layoutMenu->addAction( mActionAddNewLabel );
+  layoutMenu->addAction( mActionAddNewScalebar );
+  layoutMenu->addAction( mActionAddNewLegend );
+  layoutMenu->addAction( mActionAddImage );
+  layoutMenu->addAction( mActionSelectMoveItem );
+  layoutMenu->addAction( moveItemContentAction );
+  layoutMenu->addSeparator();
+  layoutMenu->addAction( groupItemsAction );
+  layoutMenu->addAction( ungroupItemsAction );
+  layoutMenu->addAction( raiseItemsAction );
+  layoutMenu->addAction( lowerItemsAction );
+  layoutMenu->addAction( moveItemsToTopAction );
+  layoutMenu->addAction( moveItemsToBottomAction );
+  
+#ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
+  menuBar()->addMenu( QgisApp::instance()->windowMenu() );
+
+  menuBar()->addMenu( QgisApp::instance()->helpMenu() );
+#endif
+
+  // Create action to select this window and add it to Window menu
+  mWindowAction = new QAction( windowTitle(), this );
+  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+#endif
 
   mQgis = qgis;
   mFirstTime = true;
@@ -208,9 +294,54 @@ void QgsComposer::open( void )
   {
     show(); //make sure the window is displayed - with a saved project, it's possible to not have already called show()
     //is that a bug?
-    raise(); //bring the composer window to the front
+    activate(); //bring the composer window to the front
   }
 }
+
+void QgsComposer::activate()
+{
+  raise();
+  setWindowState( windowState() & ~Qt::WindowMinimized );
+  activateWindow();
+}
+
+#ifdef Q_WS_MAC
+void QgsComposer::changeEvent( QEvent* event )
+{
+  QMainWindow::changeEvent( event );
+  switch ( event->type() )
+  {
+  case QEvent::ActivationChange:
+    if ( QApplication::activeWindow() == this )
+    {
+      mWindowAction->setChecked( true );
+    }
+    break;
+
+  default:
+    break;
+  }
+}
+
+void QgsComposer::closeEvent( QCloseEvent *event )
+{
+  QMainWindow::closeEvent( event );
+  if ( event->isAccepted() )
+  {
+    QgisApp::instance()->removeWindow( mWindowAction );
+  }
+}
+
+void QgsComposer::showEvent( QShowEvent *event )
+{
+  QMainWindow::showEvent( event );
+  // add to menu if (re)opening window (event not due to unminimize)
+  if ( !event->spontaneous() )
+  {
+    QgisApp::instance()->addWindow( mWindowAction );
+  }
+}
+#endif
 
 void QgsComposer::showCompositionOptions( QWidget *w )
 {

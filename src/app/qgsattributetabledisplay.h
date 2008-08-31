@@ -51,6 +51,11 @@ class QgsAttributeTableDisplay : public QDialog, private Ui::QgsAttributeTableBa
     void setAttributeActions( const QgsAttributeAction &actions );
     void selectRowsWithId( const QgsFeatureIds &ids );
 
+#ifdef Q_WS_MAC
+    //! Change event (update window menu on ActivationChange)
+    virtual void changeEvent( QEvent *event );
+#endif
+
     virtual void closeEvent( QCloseEvent *ev );
 
     /** array of feature IDs that match last searched condition */

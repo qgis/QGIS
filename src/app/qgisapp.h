@@ -143,10 +143,6 @@ class QgisApp : public QMainWindow
     //! Returns a pointer to the internal clipboard
     QgsClipboard * clipboard();
 
-    void dragEnterEvent( QDragEnterEvent * );
-
-    void dropEvent( QDropEvent * );
-
     /** Setup the proxy settings from the QSettings environment.
       * This is not called by default in the constructor. Rather,
       * the application must explicitly call setupProx(). If
@@ -187,6 +183,8 @@ class QgisApp : public QMainWindow
 #ifdef Q_WS_MAC
     //! Add window item to Window menu
     void addWindow( QAction *action );
+    //! Remove window item from Window menu
+    void removeWindow( QAction *action );
 #endif
 
     //! Actions to be inserted in menus and toolbars
@@ -337,6 +335,19 @@ class QgisApp : public QMainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
+  protected:
+
+    //! Handle state changes (WindowTitleChange)
+    virtual void changeEvent( QEvent * event );
+    //! Have some control over closing of the application
+    virtual void closeEvent( QCloseEvent * event );
+
+    virtual void dragEnterEvent( QDragEnterEvent * event );
+    virtual void dropEvent( QDropEvent * event );
+
+    //! reimplements widget keyPress event so we can check if cancel was pressed
+    virtual void keyPressEvent( QKeyEvent * event );
+
   private slots:
     //! About QGis
     void about();
@@ -346,8 +357,6 @@ class QgisApp : public QMainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
-    //! reimplements widget keyPress event so we can check if cancel was pressed
-    void keyPressEvent( QKeyEvent * e );
     /** toggles whether the current selected layer is in overview or not */
     void inOverview();
     //! Slot to show the map coordinate position of the mouse cursor
@@ -543,8 +552,14 @@ class QgisApp : public QMainWindow
     //! Toggle full screen mode
     void toggleFullScreen();
 
-    //! Toggle maximized mode
-    void toggleMaximized();
+    //! Set minimized mode of active window
+    void showActiveWindowMinimized();
+
+    //! Toggle maximized mode of active window
+    void toggleActiveWindowMaximized();
+
+    //! Raise, unminimize and activate this window
+    void activate();
 
     //! Bring forward all open windows
     void bringAllToFront();
@@ -600,10 +615,6 @@ class QgisApp : public QMainWindow
     void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
-    //! Handle state changes
-    virtual void changeEvent( QEvent* event );
-    //! Have some control over closing of the application
-    virtual void closeEvent( QCloseEvent* event );
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );

@@ -252,7 +252,7 @@
     <iconset>../themes/default/mActionFileOpen.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Open Template ...</string>
+    <string>&amp;Open Template...</string>
    </property>
   </action>
   <action name="mActionSaveTemplateAs" >
@@ -276,7 +276,7 @@
     <iconset>../themes/default/mActionZoomFullExtent.png</iconset>
    </property>
    <property name="text" >
-    <string>Zoom All</string>
+    <string>Zoom Full</string>
    </property>
   </action>
   <action name="mActionZoomIn" >
@@ -300,6 +300,9 @@
     <iconset>../themes/default/mActionAddRasterLayer.png</iconset>
    </property>
    <property name="text" >
+    <string>Add Map</string>
+   </property>
+   <property name="toolTip" >
     <string>Add new map</string>
    </property>
   </action>
@@ -308,6 +311,9 @@
     <iconset>../themes/default/mActionLabel.png</iconset>
    </property>
    <property name="text" >
+    <string>Add Label</string>
+   </property>
+   <property name="toolTip" >
     <string>Add new label</string>
    </property>
   </action>
@@ -316,6 +322,9 @@
     <iconset>../themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text" >
+    <string>Add Vector Legend</string>
+   </property>
+   <property name="toolTip" >
     <string>Add new vect legend</string>
    </property>
   </action>
@@ -324,6 +333,9 @@
     <iconset>../themes/default/mActionPan.png</iconset>
    </property>
    <property name="text" >
+    <string>Move Item</string>
+   </property>
+   <property name="toolTip" >
     <string>Select/Move item</string>
    </property>
   </action>
@@ -332,7 +344,7 @@
     <iconset>../themes/default/mActionExportMapServer.png</iconset>
    </property>
    <property name="text" >
-    <string>Export as image</string>
+    <string>Export as Image...</string>
    </property>
   </action>
   <action name="mActionExportAsSVG" >
@@ -340,7 +352,7 @@
     <iconset>../themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text" >
-    <string>Export as SVG</string>
+    <string>Export as SVG...</string>
    </property>
   </action>
   <action name="mActionAddNewScalebar" >
@@ -348,6 +360,9 @@
     <iconset>../../plugins/scale_bar/icon.xpm</iconset>
    </property>
    <property name="text" >
+    <string>Add Scalebar</string>
+   </property>
+   <property name="toolTip" >
     <string>Add new scalebar</string>
    </property>
   </action>
@@ -356,6 +371,9 @@
     <iconset>../themes/default/mActionDraw.png</iconset>
    </property>
    <property name="text" >
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip" >
     <string>Refresh view</string>
    </property>
   </action>
