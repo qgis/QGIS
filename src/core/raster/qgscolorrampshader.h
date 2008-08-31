@@ -25,6 +25,9 @@ originally part of the larger QgsRasterLayer class
 
 #include "qgsrastershaderfunction.h"
 
+/** \ingroup core
+ * A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
+ */
 class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 {
 

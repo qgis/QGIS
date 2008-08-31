@@ -21,6 +21,12 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancement.h"
 
+/** \ingroup core
+ * A contrast enhancement funcion is the base class for all raster contrast enhancements.
+ *
+ * The purpose of a contrast enhancement is to stretch or clip a pixel value into
+ * a specified bounding range.
+ */
 class CORE_EXPORT QgsContrastEnhancementFunction
 {
 

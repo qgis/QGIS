@@ -16,11 +16,6 @@
  ***************************************************************************/
 /* $Id: qgsrasterlayer.h 4380 2005-12-26 23:37:50Z timlinux $ */
 
-/** \file qgsrasterbandstats
- *  \brief This class provides statistics for a given raster band.
- *
- *  The qgsrasterbandstats holds various stats relating to a given raster band.
- */
 #ifndef QGSRASTERBANDSTATS
 #define QGSRASTERBANDSTATS
 
@@ -30,7 +25,8 @@
 #include <limits>
 
 #include "qgscolortable.h"
-/** \brief The RasterBandStats struct is a container for statistics about a single
+/** \ingroup core
+ * The RasterBandStats struct is a container for statistics about a single
  * raster band.
  */
 class CORE_EXPORT QgsRasterBandStats

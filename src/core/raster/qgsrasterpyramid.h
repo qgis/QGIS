@@ -17,7 +17,9 @@
  ***************************************************************************/
 #ifndef QGSRASTERPYRAMID
 #define QGSRASTERPYRAMID
-/** \brief This struct is used to store pyramid info for the raster layer. */
+/** \ingroup core
+  * This struct is used to store pyramid info for the raster layer. 
+  */
 class CORE_EXPORT QgsRasterPyramid
 {
   public:

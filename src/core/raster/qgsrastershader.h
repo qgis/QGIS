@@ -22,6 +22,9 @@ email                : ersts@amnh.org
 
 #include "qgsrastershaderfunction.h"
 
+/** \ingroup core
+ * Interface for all raster shaders.
+ */
 class CORE_EXPORT QgsRasterShader
 {
 

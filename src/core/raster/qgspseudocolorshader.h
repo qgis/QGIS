@@ -23,6 +23,9 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgsrastershaderfunction.h"
 
+/** \ingroup core
+ * A raster color shader that highlighs low values in blue and high values in red.
+ */
 class CORE_EXPORT QgsPseudoColorShader : public QgsRasterShaderFunction
 {
 

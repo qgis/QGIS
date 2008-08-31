@@ -28,8 +28,6 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
 {
-  QgsDebugMsg( "called" );
-
   mLookupTable = 0;
   mContrastEnhancementFunction = 0;
   mEnhancementDirty = false;
