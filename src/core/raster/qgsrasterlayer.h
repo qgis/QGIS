@@ -16,9 +16,61 @@
  ***************************************************************************/
 /* $Id$ */
 
-/** \file qgsrasterlayer.h
- *  \brief This class provides qgis with the ability to render raster datasets
- *  onto the mapcanvas
+
+
+#ifndef QGSRASTERLAYER_H
+#define QGSRASTERLAYER_H
+
+//
+// Includes
+//
+
+#include <QColor>
+#include <QDateTime>
+#include <QVector>
+#include <QList>
+#include <QMap>
+
+#include "qgis.h"
+#include "qgspoint.h"
+#include "qgsmaplayer.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrastertransparency.h"
+#include "qgsrastershader.h"
+#include "qgscolorrampshader.h"
+#include "qgsrastershaderfunction.h"
+#include "qgsrasterdataprovider.h"
+
+
+#define CPL_SUPRESS_CPLUSPLUS
+#include <gdal.h>
+/** \ingroup core
+ * A call back function for showing progress of gdal operations.
+ */
+int CPL_STDCALL progressCallback( double dfComplete,
+                                  const char *pszMessage,
+                                  void * pProgressArg );
+
+
+//
+// Forward declarations
+//
+class QgsColorTable;
+class QgsMapToPixel;
+class QgsRect;
+class QgsRasterBandStats;
+class QgsRasterPyramid;
+class QgsRasterLayerProperties;
+struct QgsRasterViewPort;
+class QImage;
+class QPixmap;
+class QSlider;
+class QLibrary;
+
+
+/** \ingroup core
+ *  This class provides qgis with the ability to render raster datasets
+ *  onto the mapcanvas.
  *
  *  The qgsrasterlayer class makes use of gdal for data io, and thus supports
  *  any gdal supported format. The constructor attempts to infer what type of
@@ -57,21 +109,29 @@
  *
  *  Sample usage of the QgsRasterLayer class:
  *
+ * \code
  *     QString myFileNameQString = "/path/to/file";
  *     QFileInfo myFileInfo(myFileNameQString);
  *     QString myBaseNameQString = myFileInfo.baseName();
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  *
+ * \endcode
+ *
  *  In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
  *
+ * \code
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
+ * \endcode
  *
  *  A raster layer can also export its legend as a pixmap:
  *
+ * \code
  *     QPixmap myQPixmap = myRasterLayer->legendPixmap();
+ * \endcode
  *
  * Once a layer has been created you can find out what type of layer it is (GRAY_OR_UNDEFINED, PALETTE or MULTIBAND):
  *
+ * \code
  *    if (rasterLayer->getRasterLayerType()==QgsRasterLayer::MULTIBAND)
  *    {
  *      //do something
@@ -84,10 +144,12 @@
  *    {
  *      //do something.
  *    }
+ * \endcode
  *
  * You can combine layer type detection with the setDrawingStyle method to override the default drawing style assigned
  * when a layer is loaded:
  *
+  * \code
  *    if (rasterLayer->getRasterLayerType()==QgsRasterLayer::MULTIBAND)
  *    {
  *       myRasterLayer->setDrawingStyle(QgsRasterLayer::MULTI_BAND_SINGLE_BAND_PSEUDO_COLOR);
@@ -100,6 +162,7 @@
  *    {
  *      myRasterLayer->setDrawingStyle(QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR);
  *    }
+ * \endcode
  *
  *  Raster layers can also have an arbitrary level of transparency defined, and have their
  *  color palettes inverted using the setTransparency and setInvertHistogramFlag methods.
@@ -114,62 +177,6 @@
  *  color mappings. The constructor sets sensible defaults for band mappings but these can be
  *  overridden at run time using the setRedBandName, setGreenBandName, setBlueBandName and setGrayBandName
  *  methods.
- */
-
-
-#ifndef QGSRASTERLAYER_H
-#define QGSRASTERLAYER_H
-
-//
-// Includes
-//
-
-#include <QColor>
-#include <QDateTime>
-#include <QVector>
-#include <QList>
-#include <QMap>
-
-#include "qgis.h"
-#include "qgspoint.h"
-#include "qgsmaplayer.h"
-#include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
-#include "qgsrastershader.h"
-#include "qgscolorrampshader.h"
-#include "qgsrastershaderfunction.h"
-#include "qgsrasterdataprovider.h"
-
-
-#define CPL_SUPRESS_CPLUSPLUS
-#include <gdal.h>
-
-int CPL_STDCALL progressCallback( double dfComplete,
-                                  const char *pszMessage,
-                                  void * pProgressArg );
-
-
-//
-// Forward declarations
-//
-class QgsColorTable;
-class QgsMapToPixel;
-class QgsRect;
-class QgsRasterBandStats;
-class QgsRasterPyramid;
-class QgsRasterLayerProperties;
-struct QgsRasterViewPort;
-class QImage;
-class QPixmap;
-class QSlider;
-class QLibrary;
-
-
-
-
-/*! \class QgsRasterLayer
- *  \brief This class provides qgis with the ability to render raster datasets
- *  onto the mapcanvas..
  */
 
 class CORE_EXPORT QgsRasterLayer : public QgsMapLayer

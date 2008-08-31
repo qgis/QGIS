@@ -18,6 +18,10 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERTRANSPARENCY_H
 #define QGSRASTERTRANSPARENCY_H
 
+/** \ingroup core
+ * Defines the list of pixel values to be considered as transparent or semi
+ * transparent when rendering rasters.
+ */
 class CORE_EXPORT QgsRasterTransparency
 {
 

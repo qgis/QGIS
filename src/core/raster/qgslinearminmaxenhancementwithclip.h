@@ -21,6 +21,10 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancementfunction.h"
 
+/** \ingroup core
+ * A linear stretch enhancement that first clips to min max and then stretches
+ * linearly between min and max.
+ */
 class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhancementFunction
 {
 

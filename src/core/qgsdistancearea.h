@@ -23,7 +23,7 @@
 class QgsGeometry;
 
 /** \ingroup core
-General purpose distance and area calculator
+General purpose distance and area calculator.
 - calculations are done on ellipsoid
 - it's possible to pass points/features in any CRS, coordinates are transformed
 - two options how to use it

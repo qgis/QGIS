@@ -21,6 +21,12 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancementfunction.h"
 
+/** \ingroup core
+ * A raster contrast enhancement that will clip a value to the specified min/max range.
+ * For example if a min max range of [10,240] is specified in the constructor, and 
+ * a value of 250 is called using enhanceValue(), the value will be truncated ('clipped') 
+ * to 240.
+ */
 class CORE_EXPORT QgsClipToMinMaxEnhancement : public QgsContrastEnhancementFunction
 {
 

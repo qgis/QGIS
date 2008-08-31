@@ -20,8 +20,8 @@
 
 #include <qgspoint.h>
 
-/** \file qgsrasterviewport.h
- *  \brief This class provides details of the viewable area that a raster will
+/** \ingroup core
+ *  This class provides details of the viewable area that a raster will
  *  be rendered into.
  *
  *  The qgsrasterviewport class sets up a viewport / area of interest to be used

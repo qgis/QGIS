@@ -25,6 +25,11 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 class QgsContrastEnhancementFunction;
 
+/** \ingroup core
+ * Manipulates raster pixel values so that they stretch or clip into a
+ * specified numerical range according to the specified
+ * CONTRAST_ENHANCEMENT_ALGORITHM.
+ */
 class CORE_EXPORT QgsContrastEnhancement
 {
 

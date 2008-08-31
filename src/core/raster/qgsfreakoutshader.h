@@ -23,6 +23,9 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgsrastershaderfunction.h"
 
+/** \ingroup core
+  * A colorful false color shader that will frighten your granny and make your dogs howl.
+  */
 class CORE_EXPORT QgsFreakOutShader : public QgsRasterShaderFunction
 {
 

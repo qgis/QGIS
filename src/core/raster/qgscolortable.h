@@ -19,15 +19,6 @@
 
 #include <QVector>
 
-/*
- * Because of performance, this class can store color rules in 2 forms:
- *   1) discrete - vector of descrete values and their colors; can be accessed by index (from 0)
- *   2) ramp - vector of ramps defined by min and max value and a color for min amd max value,
- *             colors between min and max are interpolated linearly.
- *
- * Only one type should be used for one instance.
- *
- */
 
 
 typedef struct
@@ -41,6 +32,18 @@ typedef struct
   unsigned char min_c1, min_c2, min_c3, min_c4;
   unsigned char max_c1, max_c2, max_c3, max_c4;
 } RAMP;
+
+/** \ingroup core
+ * A raster color table contains a list of indexed values and the color associated with each index.
+ * Because of performance, this class can store color rules in 2 forms:
+ *   1) discrete - vector of descrete values and their colors; can be accessed by index (from 0)
+ *   2) ramp - vector of ramps defined by min and max value and a color for min amd max value,
+ *             colors between min and max are interpolated linearly.
+ *
+ * Only one type should be used for one instance.
+ *
+ */
+
 class CORE_EXPORT QgsColorTable
 {
   public:

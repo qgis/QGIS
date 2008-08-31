@@ -21,6 +21,9 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancementfunction.h"
 
+/** \ingroup core
+  * A colour enhancement function that performs a linear stretch between min and max.
+  */
 class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunction
 {
 
