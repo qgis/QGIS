@@ -17,7 +17,7 @@ class QgsMapOverviewCanvas : QWidget
     void refresh();
   
     //! changes background color
-    void setbgColor(const QColor& color);
+    void setBackgroundColor(const QColor& color);
         
     //! updates layer set for overview
     void setLayerSet(const QStringList& layerSet);

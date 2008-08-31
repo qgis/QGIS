@@ -162,7 +162,7 @@ void QgsMapToolMoveVertex::canvasReleaseEvent( QMouseEvent * e )
     snappedPointMapCoord = snapPointFromResults( snapResults, e->pos() );
 
 
-    snappedPointLayerCoord = toLayerCoords( vlayer, snappedPointMapCoord );
+    snappedPointLayerCoord = toLayerCoordinates( vlayer, snappedPointMapCoord );
 
     //and change the feature points
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();

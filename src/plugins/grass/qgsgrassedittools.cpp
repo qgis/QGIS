@@ -40,7 +40,7 @@ QgsGrassEditTool::QgsGrassEditTool( QgsGrassEdit* edit )
 
 void QgsGrassEditTool::canvasPressEvent( QMouseEvent * event )
 {
-  QgsPoint point = toLayerCoords( e->layer(), event->pos() );
+  QgsPoint point = toLayerCoordinates( e->layer(), event->pos() );
   mouseClick( point,  event->button() );
 
   // Set last click
@@ -53,7 +53,7 @@ void QgsGrassEditTool::canvasPressEvent( QMouseEvent * event )
 
 void QgsGrassEditTool::canvasMoveEvent( QMouseEvent * event )
 {
-  QgsPoint point = toLayerCoords( e->layer(), event->pos() );
+  QgsPoint point = toLayerCoordinates( e->layer(), event->pos() );
   mouseMove( point );
 
   e->statusBar()->message( e->mCanvasPrompt );
@@ -147,7 +147,7 @@ void QgsGrassEditNewLine::activate()
   {
     Vect_reset_line( e->mPoints );
     Vect_append_points( e->mPoints, e->mEditPoints, GV_FORWARD );
-    QgsPoint point = toMapCoords( e->mCanvas->mouseLastXY() );
+    QgsPoint point = toMapCoordinates( e->mCanvas->mouseLastXY() );
     Vect_append_point( e->mPoints, point.x(), point.y(), 0.0 );
     e->displayDynamic( e->mPoints );
   }
@@ -181,7 +181,7 @@ void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
         e->mEditPoints->n_points--;
         Vect_reset_line( e->mPoints );
         Vect_append_points( e->mPoints, e->mEditPoints, GV_FORWARD );
-        QgsPoint point = toMapCoords( e->mCanvas->mouseLastXY() );
+        QgsPoint point = toMapCoordinates( e->mCanvas->mouseLastXY() );
         Vect_append_point( e->mPoints, point.x(), point.y(), 0.0 );
         e->displayDynamic( e->mPoints );
       }

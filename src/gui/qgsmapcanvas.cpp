@@ -157,9 +157,9 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
     mMapOverview->enableAntiAliasing( theFlag );
 } // anti aliasing
 
-void QgsMapCanvas::useQImageToRender( bool theFlag )
+void QgsMapCanvas::useImageToRender( bool theFlag )
 {
-  mMap->useQImageToRender( theFlag );
+  mMap->useImageToRender( theFlag );
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
@@ -188,10 +188,10 @@ void QgsMapCanvas::setCurrentLayer( QgsMapLayer* layer )
   mCurrentLayer = layer;
 }
 
-double QgsMapCanvas::getScale()
+double QgsMapCanvas::scale()
 {
   return mMapRenderer->scale();
-} // getScale
+} // scale
 
 void QgsMapCanvas::setDirty( bool dirty )
 {
@@ -236,7 +236,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
     {
       layerSet.push_back( lyr.layer()->getLayerID() );
     }
-    if ( lyr.inOverview() )
+    if ( lyr.isInOverview() )
     {
       layerSetOverview.push_back( lyr.layer()->getLayerID() );
     }
@@ -467,7 +467,7 @@ void QgsMapCanvas::setExtent( QgsRect const & r )
   mLastExtent = current;
 
   // notify canvas items of change
-  updateCanvasItemsPositions();
+  updateCanvasItemPositions();
 
 } // setExtent
 
@@ -489,7 +489,7 @@ void QgsMapCanvas::clear()
 
 
 
-void QgsMapCanvas::zoomFullExtent()
+void QgsMapCanvas::zoomToFullExtent()
 {
   if ( mDrawing )
   {
@@ -506,11 +506,11 @@ void QgsMapCanvas::zoomFullExtent()
   }
   refresh();
 
-} // zoomFullExtent
+} // zoomToFullExtent
 
 
 
-void QgsMapCanvas::zoomPreviousExtent()
+void QgsMapCanvas::zoomToPreviousExtent()
 {
   if ( mDrawing )
   {
@@ -521,7 +521,7 @@ void QgsMapCanvas::zoomPreviousExtent()
   setExtent( mLastExtent );
   mLastExtent = current;
   refresh();
-} // zoomPreviousExtent
+} // zoomToPreviousExtent
 
 
 bool QgsMapCanvas::projectionsEnabled()
@@ -757,7 +757,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
   if ( mMapTool )
   {
     // right button was pressed in zoom tool? return to previous non zoom tool
-    if ( e->button() == Qt::RightButton && mMapTool->isZoomTool() )
+    if ( e->button() == Qt::RightButton && mMapTool->isTransient() )
     {
       QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
                    QString( mLastNonZoomMapTool ? "not null." : "null." ) );
@@ -816,7 +816,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
     mScene->setSceneRect( QRectF( 0, 0, width, height ) );
 
     // notify canvas items of change
-    updateCanvasItemsPositions();
+    updateCanvasItemPositions();
 
     updateScale();
     refresh();
@@ -825,7 +825,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 } // resizeEvent
 
 
-void QgsMapCanvas::updateCanvasItemsPositions()
+void QgsMapCanvas::updateCanvasItemPositions()
 {
   QList<QGraphicsItem*> list = mScene->items();
   QList<QGraphicsItem*>::iterator it = list.begin();
@@ -959,7 +959,7 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
   if ( mMapTool )
     mMapTool->deactivate();
 
-  if ( tool->isZoomTool() && mMapTool && !mMapTool->isZoomTool() )
+  if ( tool->isTransient() && mMapTool && !mMapTool->isTransient() )
   {
     // if zoom or pan tool will be active, save old tool
     // to bring it back on right click
@@ -1012,7 +1012,7 @@ void QgsMapCanvas::setCanvasColor( const QColor & theColor )
 
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
-} // setbgColor
+} // setBackgroundColor
 
 QColor QgsMapCanvas::canvasColor() const
 {
@@ -1200,7 +1200,7 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
   }
 
   // show items
-  updateCanvasItemsPositions();
+  updateCanvasItemPositions();
 
 }
 

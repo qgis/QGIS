@@ -43,8 +43,8 @@ void MapLayerTest::initGui()
   menuId = menu->insertItem( "&PluginMenu", mapLayerPluginMenu );
 
 #if 0
-  QAction *zoomPreviousAction = new QAction( "Zoom Previous", QIconSet( icon_matrix ), "&Zoom Previous", CTRL + Key_S, qgisMainWindow, "zoomFull" );
-  connect( zoomPreviousAction, SIGNAL( triggered() ), this, SLOT( zoomPrevious() ) );
+  QAction *zoomToPreviousAction = new QAction( "Zoom Previous", QIconSet( icon_matrix ), "&Zoom Previous", CTRL + Key_S, qgisMainWindow, "zoomFull" );
+  connect( zoomToPreviousAction, SIGNAL( triggered() ), this, SLOT( zoomToPrevious() ) );
 #endif
 }
 void MapLayerTest::unload()

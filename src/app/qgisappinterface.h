@@ -46,7 +46,7 @@ class QgisAppInterface : public QgisInterface
     //! Zoom map to full extent
     void zoomFull();
     //! Zoom map to previous extent
-    void zoomPrevious();
+    void zoomToPrevious();
     //! Zoom to active layer
     void zoomActiveLayer();
 

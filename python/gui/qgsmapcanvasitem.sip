@@ -42,10 +42,10 @@ class QgsMapCanvasItem : QGraphicsItem
     void setRect(const QgsRect& r);
     
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoords(const QPoint& point);
+    QgsPoint toMapCoordinates(const QPoint& point);
     
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoords(const QgsPoint& point);
+    QPointF toCanvasCoordinates(const QgsPoint& point);
 
 };
 

@@ -18,7 +18,7 @@ class QgsMapToolZoom : QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent(QMouseEvent * e);
 
-    virtual bool isZoomTool();
+    virtual bool isTransient();
     
 };
 

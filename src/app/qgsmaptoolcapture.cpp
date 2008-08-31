@@ -102,7 +102,7 @@ int QgsMapToolCapture::addVertex( const QPoint& p )
   QgsPoint digitisedPoint;
   try
   {
-    digitisedPoint = toLayerCoords( vlayer, p );
+    digitisedPoint = toLayerCoordinates( vlayer, p );
   }
   catch ( QgsCsException &cse )
   {
@@ -119,7 +119,7 @@ int QgsMapToolCapture::addVertex( const QPoint& p )
     mapPoint = snapPointFromResults( snapResults, p );
     try
     {
-      layerPoint = toLayerCoords( vlayer, mapPoint ); //transform snapped point back to layer crs
+      layerPoint = toLayerCoordinates( vlayer, mapPoint ); //transform snapped point back to layer crs
     }
     catch ( QgsCsException &cse )
     {

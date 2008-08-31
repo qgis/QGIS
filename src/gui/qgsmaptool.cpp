@@ -34,34 +34,34 @@ QgsMapTool::~QgsMapTool()
 }
 
 
-QgsPoint QgsMapTool::toMapCoords( const QPoint& point )
+QgsPoint QgsMapTool::toMapCoordinates( const QPoint& point )
 {
   return mCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
-QgsPoint QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QPoint& point )
+QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QPoint& point )
 {
-  QgsPoint pt = toMapCoords( point );
-  return toLayerCoords( layer, pt );
+  QgsPoint pt = toMapCoordinates( point );
+  return toLayerCoordinates( layer, pt );
 }
 
-QgsPoint QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsPoint& point )
 {
   return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, point );
 }
 
-QgsPoint QgsMapTool::toMapCoords( QgsMapLayer* layer, const QgsPoint& point )
+QgsPoint QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point )
 {
   return mCanvas->mapRenderer()->layerToMapCoordinates( layer, point );
 }
 
-QgsRect QgsMapTool::toLayerCoords( QgsMapLayer* layer, const QgsRect& rect )
+QgsRect QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRect& rect )
 {
   return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, rect );
 }
 
-QPoint QgsMapTool::toCanvasCoords( const QgsPoint& point )
+QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )
 {
   double x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
@@ -136,7 +136,7 @@ void QgsMapTool::renderComplete()
 {
 }
 
-bool QgsMapTool::isZoomTool()
+bool QgsMapTool::isTransient()
 {
   return false;
 }

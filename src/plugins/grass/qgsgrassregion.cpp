@@ -81,7 +81,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! mouse click in map canvas
     void canvasPressEvent( QMouseEvent * event )
     {
-      QgsPoint point = toMapCoords( event->pos() );
+      QgsPoint point = toMapCoordinates( event->pos() );
       double x = point.x();
       double y = point.y();
 
@@ -106,7 +106,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! mouse movement in map canvas
     void canvasMoveEvent( QMouseEvent * event )
     {
-      QgsPoint point = toMapCoords( event->pos() );
+      QgsPoint point = toMapCoordinates( event->pos() );
 
       QgsDebugMsg( "entered." );
 
@@ -124,8 +124,8 @@ class QgsGrassRegionEdit : public QgsMapTool
 
     void setRegion( const QgsPoint& ul, const QgsPoint& lr )
     {
-      QPoint qul = toCanvasCoords( ul );
-      QPoint qlr = toCanvasCoords( lr );
+      QPoint qul = toCanvasCoordinates( ul );
+      QPoint qlr = toCanvasCoordinates( lr );
       mRubberBand->setGeometry( QRect( qul, qlr ) );
     }
 

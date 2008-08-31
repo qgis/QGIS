@@ -48,5 +48,5 @@ QRectF QgsGeorefDataPoint::boundingRect() const
 
 void QgsGeorefDataPoint::updatePosition()
 {
-  setPos( toCanvasCoords( mPixelCoords ) );
+  setPos( toCanvasCoordinates( mPixelCoords ) );
 }

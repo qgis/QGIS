@@ -74,7 +74,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   mMapRenderer = new QgsMapRenderer;
   mMapRenderer->setOverview();
 
-  setbgColor( palette().window().color() );
+  setBackgroundColor( palette().window().color() );
 }
 
 QgsMapOverviewCanvas::~QgsMapOverviewCanvas()
@@ -251,7 +251,7 @@ void QgsMapOverviewCanvas::refresh()
 }
 
 
-void QgsMapOverviewCanvas::setbgColor( const QColor& color )
+void QgsMapOverviewCanvas::setBackgroundColor( const QColor& color )
 {
   mBgColor = color;
 

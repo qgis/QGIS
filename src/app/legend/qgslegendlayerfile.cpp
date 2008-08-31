@@ -102,7 +102,7 @@ void QgsLegendLayerFile::updateLegendItem()
 {
   QPixmap pix = legend()->pixmaps().mOriginalPixmap;
 
-  if ( mLyr.inOverview() )
+  if ( mLyr.isInOverview() )
   {
     //add overview glasses to the pixmap
     QPainter p( &pix );
@@ -130,12 +130,12 @@ void QgsLegendLayerFile::updateLegendItem()
 
 }
 
-void QgsLegendLayerFile::setIconAppearance( bool inOverview,
+void QgsLegendLayerFile::setIconAppearance( bool isInOverview,
     bool editable )
 {
   QPixmap newIcon( getOriginalPixmap() );
 
-  if ( inOverview )
+  if ( isInOverview )
   {
     // Overlay the overview icon on the default icon
     QPixmap myPixmap = QgisApp::getThemePixmap( "mIconOverview.png" );
@@ -189,14 +189,14 @@ bool QgsLegendLayerFile::isVisible()
   return mLyr.isVisible();
 }
 
-void QgsLegendLayerFile::setInOverview( bool inOverview )
+void QgsLegendLayerFile::setInOverview( bool isInOverview )
 {
-  mLyr.setInOverview( inOverview );
+  mLyr.setInOverview( isInOverview );
 }
 
 bool QgsLegendLayerFile::isInOverview()
 {
-  return mLyr.inOverview();
+  return mLyr.isInOverview();
 }
 
 void QgsLegendLayerFile::showInOverview()
@@ -333,7 +333,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
   QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in overview" ), this, SLOT( showInOverview() ) );
   showInOverviewAction->setCheckable( true );
   showInOverviewAction->blockSignals( true );
-  showInOverviewAction->setChecked( mLyr.inOverview() );
+  showInOverviewAction->setChecked( mLyr.isInOverview() );
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas

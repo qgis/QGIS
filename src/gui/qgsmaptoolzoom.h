@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    virtual bool isZoomTool() { return true; }
+    virtual bool isTransient() { return true; }
 
   protected:
     //! stores actual zoom rect
