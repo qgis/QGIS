@@ -268,7 +268,6 @@ QString QgsComposerScaleBar::firstLabelString() const
 
 QFont QgsComposerScaleBar::font() const
 {
-#if 0 //needed by scale bar style, therefore don't convert back to points
   if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
   {
     double pointSize = mComposition->pointFontSize( mFont.pixelSize() );
@@ -276,7 +275,10 @@ QFont QgsComposerScaleBar::font() const
     returnFont.setPointSize( pointSize );
     return returnFont;
   }
-#endif //0
+}
+
+QFont QgsComposerScaleBar::fontPixelSize() const
+{
   return mFont;
 }
 
@@ -311,6 +313,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc )
   composerScaleBarElem.setAttribute( "numSegments", mNumSegments );
   composerScaleBarElem.setAttribute( "numSegmentsLeft", mNumSegmentsLeft );
   composerScaleBarElem.setAttribute( "numUnitsPerSegment", mNumUnitsPerSegment );
+  composerScaleBarElem.setAttribute( "segmentMM", mSegmentMM );
   composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", mNumMapUnitsPerScaleBarUnit );
   composerScaleBarElem.setAttribute( "font", mFont.toString() );
   composerScaleBarElem.setAttribute( "outlineWidth", mPen.widthF() );
@@ -353,6 +356,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mNumSegments = itemElem.attribute( "numSegments", "2" ).toInt();
   mNumSegmentsLeft = itemElem.attribute( "numSegmentsLeft", "0" ).toInt();
   mNumUnitsPerSegment = itemElem.attribute( "numUnitsPerSegment", "1.0" ).toDouble();
+  mSegmentMM = itemElem.attribute("segmentMM", "0.0").toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );

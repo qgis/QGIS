@@ -56,6 +56,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
 
     QFont font() const;
+
+    /**Returns font that has size set in pixels. Used from QgsComposerScaleBarStyle*/
+    QFont fontPixelSize() const;
+    
     void setFont( const QFont& font );
 
     QPen pen() const {return mPen;}
