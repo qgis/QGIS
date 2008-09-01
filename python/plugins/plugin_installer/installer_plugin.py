@@ -43,5 +43,5 @@ class InstallerPlugin:
   def run(self):
     # create and show a configuration dialog 
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
-    self.gui = InstallerPluginGui(self.iface.getMainWindow(),flags)
+    self.gui = InstallerPluginGui(self.iface.mainWindow(),flags)
     self.gui.show()
