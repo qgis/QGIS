@@ -25,13 +25,13 @@ class InstallerPlugin:
   # ----------------------------------------- #
   def initGui(self):
     # create action that will start plugin configuration
-    self.action = QAction(QIcon(":/plugins/installer/icon.xpm"), "Install plugins", self.iface.getMainWindow())
+    self.action = QAction(QIcon(":/plugins/installer/icon.xpm"), "Install plugins", self.iface.mainWindow())
     self.action.setWhatsThis("Plugin Installer")
     QObject.connect(self.action, SIGNAL("activated()"), self.run)
 
     # add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginMenu("&Plugin Installer", self.action)
+    self.iface.addPluginToMenu("&Plugin Installer", self.action)
 
   # ----------------------------------------- #
   def unload(self):

@@ -37,14 +37,14 @@ class MapServerExport:
   def initGui(self):  
     # Create action that will start plugin configuration
     self.action = QAction(QIcon(":/plugins/mapserver_export/icon.png"), \
-        "MapServer Export", self.iface.getMainWindow())
+        "MapServer Export", self.iface.mainWindow())
     #self.action.setWhatsThis("Configuration for Zoom To Point plugin")
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("activated()"), self.run) 
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginMenu("&MapServer Export...", self.action)
+    self.iface.addPluginToMenu("&MapServer Export...", self.action)
 
   def unload(self):
     # Remove the plugin menu item and icon
