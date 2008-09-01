@@ -1422,6 +1422,9 @@ void QgsComposer::readXML( const QDomDocument& doc )
     addComposerLabel( newLabel );
     mComposition->addItem( newLabel );
     mComposition->update();
+    mComposition->clearSelection();
+    newLabel->setSelected(true);
+    showItemOptions(newLabel);
   }
 
   //composer maps
@@ -1434,6 +1437,9 @@ void QgsComposer::readXML( const QDomDocument& doc )
     addComposerMap( newMap );
     mComposition->addItem( newMap );
     mComposition->update();
+    mComposition->clearSelection();
+    newMap->setSelected(true);
+    showItemOptions(newMap);
   }
 
   //composer scalebars
@@ -1446,6 +1452,9 @@ void QgsComposer::readXML( const QDomDocument& doc )
     addComposerScaleBar( newScaleBar );
     mComposition->addItem( newScaleBar );
     mComposition->update();
+    mComposition->clearSelection();
+    newScaleBar->setSelected(true);
+    showItemOptions(newScaleBar);
   }
 
   //composer legends
@@ -1458,6 +1467,9 @@ void QgsComposer::readXML( const QDomDocument& doc )
     addComposerLegend( newLegend );
     mComposition->addItem( newLegend );
     mComposition->update();
+    mComposition->clearSelection();
+    newLegend->setSelected(true);
+    showItemOptions(newLegend);
   }
 
   //composer pictures
@@ -1470,6 +1482,9 @@ void QgsComposer::readXML( const QDomDocument& doc )
     addComposerPicture( newPicture );
     mComposition->addItem( newPicture );
     mComposition->update();
+    mComposition->clearSelection();
+    newPicture->setSelected(true);
+    showItemOptions(newPicture);
   }
 
   mComposition->sortZList();

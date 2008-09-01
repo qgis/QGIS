@@ -51,8 +51,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   //support multiline labels
   double penWidth = pen().widthF();
-  QRectF painterRect( penWidth, penWidth, rect().width() - 2 * penWidth,
-                      rect().height() - 2 * penWidth );
+  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
+                      rect().height() - 2 * penWidth - 2 * mMargin);
   painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
 
 

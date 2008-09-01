@@ -86,7 +86,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       t.translate( scenePoint.x(), scenePoint.y() );
       mRubberBandItem->setTransform( t );
       mRubberBandItem->setZValue( 100 );
-
       scene()->addItem( mRubberBandItem );
       scene()->update();
     }

@@ -226,5 +226,5 @@ bool QgsComposerPicture::readXML( const QDomElement& itemElem, const QDomDocumen
 
   mRotation = itemElem.attribute( "rotation" ).toDouble();
 
-  return false; //soon...
+  return true;
 }

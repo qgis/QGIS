@@ -139,7 +139,7 @@ int QgsComposition::pixelFontSize( double pointSize ) const
 {
   //in QgsComposition, one unit = one mm
   double sizeMM = pointSize * 0.3527;
-  return sizeMM;
+  return (sizeMM + 0.5); //round to nearest mm
 }
 
 double QgsComposition::pointFontSize( int pixelSize ) const

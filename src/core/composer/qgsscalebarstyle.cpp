@@ -43,9 +43,9 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 
   p->save();
 
-  p->setFont( mScaleBar->font() );
+  p->setFont( mScaleBar->fontPixelSize() );
 
-  QFontMetricsF fontMetrics( mScaleBar->font() );
+  QFontMetricsF fontMetrics( mScaleBar->fontPixelSize() );
   QString firstLabel = mScaleBar->firstLabelString();
   double xOffset = fontMetrics.width( firstLabel ) / 2;
 
@@ -107,7 +107,7 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   }
 
 
-  QFontMetricsF fontMetrics( mScaleBar->font() );
+  QFontMetricsF fontMetrics( mScaleBar->fontPixelSize() );
 
   //consider centered first label
   double firstLabelLeft = fontMetrics.width( mScaleBar->firstLabelString() ) / 2;
