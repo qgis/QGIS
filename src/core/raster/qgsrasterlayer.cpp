@@ -748,6 +748,9 @@ QString QgsRasterLayer::getDrawingStyleAsQString()
     case SINGLE_BAND_PSEUDO_COLOR:
       return QString( "SINGLE_BAND_PSEUDO_COLOR" );//no need to tr() this its not shown in ui
       break;
+    case PALETTED_COLOR:
+      return QString( "PALETTED_COLOR" );//no need to tr() this its not shown in ui
+      break;
     case PALETTED_SINGLE_BAND_GRAY:
       return QString( "PALETTED_SINGLE_BAND_GRAY" );//no need to tr() this its not shown in ui
       break;
