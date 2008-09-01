@@ -1,3 +1,9 @@
+qgis (1.0preview7) experimental; urgency=low
+
+  * remove quickprint plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 01 Sep 2008 21:58:58 +0200
+
 qgis (1.0preview6) experimental; urgency=low
 
   * add missing dependency of python-qgis to python-qt4
