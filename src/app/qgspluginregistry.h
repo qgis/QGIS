@@ -47,6 +47,8 @@ class QgsPluginRegistry
     void addPythonPlugin( QString packageName, QString pluginName );
 //! Remove a plugin from the list of loaded plugins
     void removePlugin( QString name );
+//! Unload plugins
+    void unloadAll();
   protected:
 //! protected constructor
     QgsPluginRegistry();
@@ -55,4 +57,3 @@ class QgsPluginRegistry
     std::map<QString, QgsPluginMetadata*> plugins;
 };
 #endif //QgsPluginRegistry_H
-

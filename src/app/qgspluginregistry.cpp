@@ -19,6 +19,7 @@
 
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
+#include "qgisplugin.h"
 
 QgsPluginRegistry *QgsPluginRegistry::_instance = 0;
 QgsPluginRegistry *QgsPluginRegistry::instance()
@@ -84,4 +85,13 @@ void QgsPluginRegistry::addPythonPlugin( QString packageName, QString pluginName
 void QgsPluginRegistry::removePlugin( QString name )
 {
   plugins.erase( name );
+}
+
+void QgsPluginRegistry::unloadAll()
+{
+  for(std::map<QString, QgsPluginMetadata*>::iterator it=plugins.begin(); 
+      it!=plugins.end();
+      it++)
+    if( it->second->plugin() )
+      it->second->plugin()->unload();
 }
