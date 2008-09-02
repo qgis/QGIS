@@ -857,11 +857,9 @@ bool QgsComposer::shiftFileContent( QFile *file, Q_LONG start, int shift )
 
 void QgsComposer::on_mActionExportAsImage_activated( void )
 {
-
-#if 0
   // Image size
-  int width = ( int )( mComposition->resolution() * mComposition->paperWidth() / 25.4 );
-  int height = ( int )( mComposition->resolution() * mComposition->paperHeight() / 25.4 );
+  int width = ( int )( mComposition->printoutResolution() * mComposition->paperWidth() / 25.4 );
+  int height = ( int )( mComposition-> printoutResolution() * mComposition->paperHeight() / 25.4 );
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1 x %2" ).arg( width ).arg( height ) );
@@ -889,8 +887,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
 
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistant state
-  QString myLastUsedFormat = myQSettings.readEntry( "/UI/lastSaveAsImageFormat", "png" );
-  QString myLastUsedFile = myQSettings.readEntry( "/UI/lastSaveAsImageFile", "qgis.png" );
+  QString myLastUsedFormat = myQSettings.value( "/UI/lastSaveAsImageFormat", "png" ).toString();
+  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsImageFile", "qgis.png").toString();
   QFileInfo file( myLastUsedFile );
 
   // get a list of supported output image types
@@ -900,7 +898,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
   {
     QString myFormat = QString( QImageWriter::supportedImageFormats().at( myCounterInt ) );
-    QString myFilter = myFormat + " " + tr( "format" ) + " (*." + myFormat.lower() + " *." + myFormat.upper() + ")";
+    QString myFilter = myFormat + " " + tr( "format" ) + " (*." + myFormat.toLower() + " *." + myFormat.toUpper() + ")";
 
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
@@ -931,7 +929,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   myQFileDialog->selectFile( file.fileName() );
 
   // allow for selection of more than one file
-  myQFileDialog->setMode( QFileDialog::AnyFile );
+  myQFileDialog->setFileMode( QFileDialog::AnyFile );
 
   // set the filter to the last one used
   myQFileDialog->selectFilter( myLastUsedFilter );
@@ -940,43 +938,42 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   //prompt the user for a file name
-  QString myOutputFileNameQString; // = myQFileDialog->getSaveFileName(); //delete this
+  QString myOutputFileNameQString;
 
   int result = myQFileDialog->exec();
-  raise();
+  //raise();
 
-  if ( result != QDialog::Accepted ) return;
+  if ( result != QDialog::Accepted )
+    {
+      return;
+    }
 
   myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   QString myFilterString = myQFileDialog->selectedFilter();
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
 
-  myQSettings.writeEntry( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
-  myQSettings.writeEntry( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
+  myQSettings.setValue( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
+  myQSettings.setValue( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
 
   if ( myOutputFileNameQString == "" ) return;
 
-  double scale = ( double )( mComposition->resolution() / 25.4 / mComposition->scale() );
-
-  mView->setScene( 0 );
   mComposition->setPlotStyle( QgsComposition::Print );
+  mView->setScene(0);
 
-  QPixmap pixmap( width, height );
-  pixmap.fill( QColor( 255, 255, 255 ) ) ;
-  QPainter p( &pixmap );
-  p.scale( scale, scale );
-
-  QRectF renderArea( 0, 0, ( mComposition->paperWidth() * mComposition->scale() ), ( mComposition->paperHeight() * mComposition->scale() ) );
-
-  mComposition->canvas()->render( &p, renderArea );
+  QImage image( QSize(width, height), QImage::Format_ARGB32 );
+  image.setDotsPerMeterX(mComposition->printoutResolution() / 25.4 * 1000);
+  image.setDotsPerMeterY(mComposition->printoutResolution() / 25.4 * 1000);
+  image.fill(0);
+  QPainter p( &image );
+  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight());
+  QRectF targetArea(0, 0, width, height);
+  mComposition->render( &p, targetArea, sourceArea);
   p.end();
 
   mComposition->setPlotStyle( QgsComposition::Preview );
-  mView->setScene( mComposition->canvas() );
-
-  pixmap.save( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
-#endif //0
+  image.save( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
+  mView->setScene(mComposition);
 }
 
 
