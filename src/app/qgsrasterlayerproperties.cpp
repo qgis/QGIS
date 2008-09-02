@@ -828,7 +828,7 @@ void QgsRasterLayerProperties::sync()
   pixmapLegend->repaint();
 
   //set the palette pixmap
-  pixmapPalette->setPixmap( mRasterLayer->getPaletteAsPixmap() );
+  pixmapPalette->setPixmap( mRasterLayer->getPaletteAsPixmap(mRasterLayer->getRasterBandNumber(mRasterLayer->getGrayBandName())));
   pixmapPalette->setScaledContents( true );
   pixmapPalette->repaint();
 
@@ -1971,7 +1971,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
        == QgsRasterLayer::PALETTE ) //paletted layers have hard coded color entries
   {
     QPolygonF myPolygon;
-    QgsColorTable *myColorTable = mRasterLayer->colorTable( 1 );
+    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->getRasterShaderFunction();
     QgsDebugMsg( "Making paletted image histogram....computing band stats" );
     QgsDebugMsg( QString( "myLastBinWithData = %1" ).arg( myLastBinWithData ) );
 
@@ -2002,8 +2002,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 
         QgsDebugMsg( QString( "myMiddle = %1" ).arg( myMiddle ) );
 
-        bool found = myColorTable->color( myMiddle, &c1, &c2, &c3 );
-        if ( !found )
+        if ( myRasterShaderFunction->generateShadedValue(myMiddle, &c1, &c2, &c3))
         {
           QgsDebugMsg( "Color not found" );
           c1 = c2 = c3 = 180; // grey

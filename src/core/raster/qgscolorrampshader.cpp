@@ -25,10 +25,22 @@ originally part of the larger QgsRasterLayer class
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
   QgsDebugMsg( "called." );
+  mMaximumColorCacheSize = 256; //good starting value
 }
 
 bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
+  //Get the shaded from the cache if it exists already
+  QColor myColor = mColorCache.value(theValue);
+  if(myColor.isValid())
+  {
+    *theReturnRedValue = myColor.red();
+    *theReturnGreenValue = myColor.green();
+    *theReturnBlueValue = myColor.blue();
+    return true;
+  }
+  
+  //Else we have to generate the shaded value
   if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
   {
     return getInterpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
@@ -81,15 +93,16 @@ bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedVal
     myCurrentRampValue = it->value;
     if ( theValue <= myCurrentRampValue )
     {
-      if ( last_it != mColorRampItemList.end() )
+      *theReturnRedValue = it->color.red();
+      *theReturnGreenValue = it->color.green();
+      *theReturnBlueValue = it->color.blue();
+      //Cache the shaded value
+      if(mMaximumColorCacheSize <= mColorCache.size())
       {
-        *theReturnRedValue = last_it->color.red();
-        *theReturnGreenValue = last_it->color.green();
-        *theReturnBlueValue = last_it->color.blue();
-        return true;
+        mColorCache.insert(theValue, it->color);
       }
+      return true;
     }
-    last_it = it;
   }
 
   return false; // value not found
@@ -109,6 +122,11 @@ bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue,
       *theReturnRedValue = it->color.red();
       *theReturnGreenValue = it->color.green();
       *theReturnBlueValue = it->color.blue();
+      //Cache the shaded value
+      if(mMaximumColorCacheSize <= mColorCache.size())
+      {
+        mColorCache.insert(theValue, it->color);
+      }
       return true;
     }
   }
@@ -143,6 +161,11 @@ bool QgsColorRampShader::getInterpolatedColor( double theValue, int* theReturnRe
         *theReturnRedValue = ( int )(( it->color.red() * myDiffTheValueLastRampValue + last_it->color.red() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
         *theReturnGreenValue = ( int )(( it->color.green() * myDiffTheValueLastRampValue + last_it->color.green() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
         *theReturnBlueValue = ( int )(( it->color.blue() * myDiffTheValueLastRampValue + last_it->color.blue() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
+        //Cache the shaded value
+        if(mMaximumColorCacheSize <= mColorCache.size())
+        {
+          mColorCache.insert(theValue, it->color);
+        }
         return true;
       }
     }
