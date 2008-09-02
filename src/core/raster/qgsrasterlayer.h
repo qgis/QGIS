@@ -55,7 +55,6 @@ int CPL_STDCALL progressCallback( double dfComplete,
 //
 // Forward declarations
 //
-class QgsColorTable;
 class QgsMapToPixel;
 class QgsRect;
 class QgsRasterBandStats;
@@ -276,7 +275,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void drawThumbnail( QPixmap * theQPixmap );
 
     /** \brief Get an 8x8 pixmap of the color palette. If the layer has no palette a white pixmap will be returned. */
-    QPixmap getPaletteAsPixmap();
+    QPixmap getPaletteAsPixmap(int theBand=1);
 
     /** \brief This is called when the view on the raster layer needs to be refreshed (redrawn).
      */
@@ -885,7 +884,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  \param band number
      *  \return pointer to color table
      */
-    QgsColorTable *colorTable( int theBandNoInt );
+    QList<QgsColorRampShader::ColorRampItem>* getColorTable( int theBandNoInt );
   protected:
 
     /** reads vector layer specific state from project file Dom node.
@@ -947,8 +946,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void drawPalettedSingleBandGray( QPainter * theQPainter,
                                      QgsRasterViewPort * theRasterViewPort,
                                      const QgsMapToPixel* theQgsMapToPixel,
-                                     int theBandNoInt,
-                                     const QString &  theColorQString );
+                                     int theBandNoInt);
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor( QPainter * theQPainter,
@@ -987,9 +985,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Places the rendered image onto the canvas */
     void paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPort * theRasterViewPort,
                              const QgsMapToPixel* theQgsMapToPixel, QImage* theImage );
-
-    /** \brief Read color table from GDAL raster band */
-    void readColorTable( GDALRasterBandH gdalBand, QgsColorTable *theColorTable );
 
     /** \brief Allocate memory and load data to that allocated memory, data type is the same
      *         as raster band. The memory must be released later!

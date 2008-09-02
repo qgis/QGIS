@@ -100,7 +100,7 @@ public:
      void drawThumbnail(QPixmap * theQPixmap);
 
     /** \brief Get an 8x8 pixmap of the colour palette. If the layer has no palette a white pixmap will be returned. */
-     QPixmap getPaletteAsPixmap();
+     QPixmap getPaletteAsPixmap(int theBand=1);
      
     /** \brief This is called when the view on the rasterlayer needs to be refreshed (redrawn).   
      */
@@ -498,7 +498,7 @@ public slots:
      *  \param band number
      *  \return pointer to color table
      */
-    QgsColorTable *colorTable ( int theBandNoInt );
+    QList<QgsColorRampShader::ColorRampItem>* getColorTable ( int theBandNoInt );
  protected:
 
     /** reads vector layer specific state from project file Dom node.

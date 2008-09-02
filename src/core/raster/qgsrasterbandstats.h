@@ -24,7 +24,7 @@
 
 #include <limits>
 
-#include "qgscolortable.h"
+#include "qgscolorrampshader.h"
 /** \ingroup core
  * The RasterBandStats struct is a container for statistics about a single
  * raster band.
@@ -82,6 +82,6 @@ class CORE_EXPORT QgsRasterBandStats
     /** whehter histogram compuation should include out of range values */
     bool histogramOutOfRangeFlag;
     /** Color table */
-    QgsColorTable colorTable;
+    QList<QgsColorRampShader::ColorRampItem> colorTable;
 };
 #endif

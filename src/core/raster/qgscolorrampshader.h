@@ -22,6 +22,7 @@ originally part of the larger QgsRasterLayer class
 #define QGSCOLORRAMPSHADER_H
 
 #include <QColor>
+#include <QMap>
 
 #include "qgsrastershaderfunction.h"
 
@@ -62,6 +63,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     QgsColorRampShader::COLOR_RAMP_TYPE getColorRampType() {return mColorRampType;}
     QString getColorRampTypeAsQString();
 
+    /**Get the maximum size the color cache can be*/
+    int getMaximumColorCacheSize() { return mMaximumColorCacheSize; }
+
     /**Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; }
 
@@ -70,6 +74,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /**Set the color ramp type*/
     void setColorRampType( QString );
+    
+    /**Set the maximum size the color cache can be */
+    void setMaximumColorCacheSize(int theSize) { mMaximumColorCacheSize = theSize; }
 
 
 
@@ -85,6 +92,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     QList<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     QgsColorRampShader::COLOR_RAMP_TYPE mColorRampType;
+    QMap<double, QColor> mColorCache;
+    int mMaximumColorCacheSize; //The color cache could eat a ton of memory if you have 32-bit data
 };
 
 #endif
