@@ -108,7 +108,7 @@ void Builder::endBlock()
 
 void Builder::addLayer( const DL_LayerData& data )
 {
-  QgsDebugMsg( QString( "Layer: " ).arg( data.name.c_str() ) );
+  QgsDebugMsg( QString( "Layer: %1" ).arg( data.name.c_str() ) );
 }
 
 void Builder::addPoint( const DL_PointData& data )
@@ -151,7 +151,7 @@ void Builder::addLine( const DL_LineData& data )
     return;
   }
 
-  QgsDebugMsg( QString( "line 1,%2,%3 %4,%5,%6" )
+  QgsDebugMsg( QString( "line %1,%2,%3 %4,%5,%6" )
                .arg( data.x1 ).arg( data.y1 ).arg( data.z1 )
                .arg( data.x2 ).arg( data.y2 ).arg( data.z2 ) );
 
