@@ -452,6 +452,20 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   QString lock = mapsetPath + "/.gislock";
   QFile lockFile( lock );
+#if WIN32
+  // lock on Windows doesn't support locking (see #808)
+  if( lockFile.exists() )
+    return QObject::tr( "Mapset is already in use." );
+
+  lockFile.open(QIODevice::WriteOnly);
+#ifndef _MSC_VER
+  int pid = getpid();
+#else
+  int pid = GetCurrentProcessId();
+#endif
+  lockFile.write( QString("%1").arg( pid ).toLocal8Bit() );
+  lockFile.close();
+#else
   Q3Process *process = new Q3Process();
   process->addArgument( gisBase + "/etc/lock" );  // lock program
   process->addArgument( lock );  // lock file
@@ -473,17 +487,13 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   // TODO better wait
   while ( process->isRunning() ) { }
 
-#ifndef WIN32
   int status = process->exitStatus();
   QgsDebugMsg( QString( "status = %1" ).arg( status ) );
-#endif
   delete process;
 
-
-  // TODO WIN32 (lock.exe does not work properly?)
-#ifndef WIN32
-  if ( status > 0 ) return QObject::tr( "Mapset is already in use." );
-#endif
+  if ( status > 0 )
+    return QObject::tr( "Mapset is already in use." );
+#endif // !WIN32
 
   // Create temporary directory
   QFileInfo info( mapsetPath );
