@@ -43,6 +43,6 @@ class QgsRasterBandStats
     /** whehter histogram compuation should include out of range values */
     bool histogramOutOfRangeFlag;
     /** Color table */
-    QgsColorTable colorTable;
+    //QList<QgsColorRampShader::ColorRampItem> colorTable;
 };
 

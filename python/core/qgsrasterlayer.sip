@@ -498,7 +498,7 @@ public slots:
      *  \param band number
      *  \return pointer to color table
      */
-    QList<QgsColorRampShader::ColorRampItem>* getColorTable ( int theBandNoInt );
+    //QList<QgsColorRampShader::ColorRampItem>* getColorTable ( int theBandNoInt );
  protected:
 
     /** reads vector layer specific state from project file Dom node.
