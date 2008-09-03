@@ -338,14 +338,18 @@ void QgsPgQueryBuilder::on_btnOk_clicked()
     }
     else
     {
+#if 0 // when is this necessary? [jef]
       if ( numRecs == 0 )
       {
         QMessageBox::warning( this, tr( "No Records" ), tr( "The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature." ) );
       }
       else
       {
+#endif
         this->accept();
+#if 0
       }
+#endif
     }
   }
   else
