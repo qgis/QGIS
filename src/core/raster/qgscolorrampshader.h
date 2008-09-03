@@ -67,10 +67,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     int getMaximumColorCacheSize() { return mMaximumColorCacheSize; }
 
     /**Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; }
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; } //TODO: sort on set
 
     /**Set the color ramp type*/
-    void setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType ) {mColorRampType = theColorRampType;}
+    void setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType );
 
     /**Set the color ramp type*/
     void setColorRampType( QString );
@@ -93,7 +93,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     QgsColorRampShader::COLOR_RAMP_TYPE mColorRampType;
     QMap<double, QColor> mColorCache;
-    int mMaximumColorCacheSize; //The color cache could eat a ton of memory if you have 32-bit data
+    
+    /** Maximum size of the color cache. The color cache could eat a ton of memory if you have 32-bit data */
+    int mMaximumColorCacheSize;
+    /** Current index to start searching the color table*/
+    int mCurrentColorRampItemIndex;
 };
 
 #endif

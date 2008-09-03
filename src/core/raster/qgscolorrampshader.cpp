@@ -25,14 +25,16 @@ originally part of the larger QgsRasterLayer class
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
   QgsDebugMsg( "called." );
-  mMaximumColorCacheSize = 256; //good starting value
+  mMaximumColorCacheSize = 1024; //good starting value
+  mCurrentColorRampItemIndex = 0;
 }
 
 bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-  //Get the shaded from the cache if it exists already
+ 
+  //Get the shaded value from the cache if it exists already
   QColor myColor = mColorCache.value(theValue);
-  if(myColor.isValid())
+  if ( myColor.isValid() )
   {
     *theReturnRedValue = myColor.red();
     *theReturnGreenValue = myColor.green();
@@ -40,17 +42,28 @@ bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRed
     return true;
   }
   
-  //Else we have to generate the shaded value
-  if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
+  //pixel value not in cache so generate new value
+  
+  //Check to be sure mCurrentColorRampItemIndex is within the valid range.
+  if ( mCurrentColorRampItemIndex < 0 )
+  {
+    mCurrentColorRampItemIndex = 0;
+  }
+  else if ( mCurrentColorRampItemIndex >= mColorRampItemList.size() )
+  {
+    mCurrentColorRampItemIndex = mColorRampItemList.size() - 1;
+  }
+  
+  if ( QgsColorRampShader::EXACT == mColorRampType )
+  {
+    return getExactColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  }
+  else if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
   {
     return getInterpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
   }
-  else if ( QgsColorRampShader::DISCRETE == mColorRampType )
-  {
-    return getDiscreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
-  }
-
-  return getExactColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  
+  return getDiscreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
 }
 
 bool QgsColorRampShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
@@ -81,53 +94,83 @@ QString QgsColorRampShader::getColorRampTypeAsQString()
 
 bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-  if ( mColorRampItemList.count() <= 0 )
+  int myColorRampItemCount = mColorRampItemList.count();
+  if ( myColorRampItemCount <= 0 )
   {
     return false;
   }
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator last_it = mColorRampItemList.begin();
-  double myCurrentRampValue;
-  for ( it = mColorRampItemList.begin(); it != mColorRampItemList.end(); ++it )
+  
+  QgsColorRampShader::ColorRampItem myColorRampItem;
+  while ( mCurrentColorRampItemIndex >= 0 && mCurrentColorRampItemIndex < myColorRampItemCount )
   {
-    myCurrentRampValue = it->value;
-    if ( theValue <= myCurrentRampValue )
+    //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
+    myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
+    //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
+    if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
-      *theReturnRedValue = it->color.red();
-      *theReturnGreenValue = it->color.green();
-      *theReturnBlueValue = it->color.blue();
+      mCurrentColorRampItemIndex--;
+    }
+    else if ( theValue <= myColorRampItem.value )
+    {
+      *theReturnRedValue = myColorRampItem.color.red();
+      *theReturnGreenValue = myColorRampItem.color.green();
+      *theReturnBlueValue = myColorRampItem.color.blue();
       //Cache the shaded value
-      if(mMaximumColorCacheSize <= mColorCache.size())
+      if ( mMaximumColorCacheSize >= mColorCache.size() )
       {
-        mColorCache.insert(theValue, it->color);
+        mColorCache.insert( theValue, myColorRampItem.color );
       }
       return true;
     }
+    //Search deeper into the color ramp list
+    else 
+    {
+      mCurrentColorRampItemIndex++;
+    }
   }
-
+  
   return false; // value not found
 }
 
 bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-  if ( mColorRampItemList.count() <= 0 )
+  int myColorRampItemCount = mColorRampItemList.count();
+  if ( myColorRampItemCount <= 0 )
   {
     return false;
   }
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
-  for ( it = mColorRampItemList.begin(); it != mColorRampItemList.end(); ++it )
+  
+  QgsColorRampShader::ColorRampItem myColorRampItem;
+  while ( mCurrentColorRampItemIndex >= 0 && mCurrentColorRampItemIndex < myColorRampItemCount )
   {
-    if ( theValue == it->value )
+    //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
+    myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
+    if ( theValue == myColorRampItem.value )
     {
-      *theReturnRedValue = it->color.red();
-      *theReturnGreenValue = it->color.green();
-      *theReturnBlueValue = it->color.blue();
+      *theReturnRedValue = myColorRampItem.color.red();
+      *theReturnGreenValue = myColorRampItem.color.green();
+      *theReturnBlueValue = myColorRampItem.color.blue();
       //Cache the shaded value
-      if(mMaximumColorCacheSize <= mColorCache.size())
+      if ( mMaximumColorCacheSize >= mColorCache.size() )
       {
-        mColorCache.insert(theValue, it->color);
+        mColorCache.insert( theValue, myColorRampItem.color );
       }
       return true;
+    }
+    //pixel value sits between ramp entries so bail
+    else if ( mCurrentColorRampItemIndex != myColorRampItemCount - 1 && theValue > myColorRampItem.value && theValue < mColorRampItemList.at( mCurrentColorRampItemIndex + 1 ).value )
+    {
+      return false;
+    }
+    //Search deeper into the color ramp list
+    else if ( theValue > myColorRampItem.value )
+    {
+      mCurrentColorRampItemIndex++;
+    }
+    //Search back toward the begining of the list
+    else
+    {
+      mCurrentColorRampItemIndex--; 
     }
   }
 
@@ -136,47 +179,82 @@ bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue,
 
 bool QgsColorRampShader::getInterpolatedColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-  if ( mColorRampItemList.count() <= 0 )
+
+  int myColorRampItemCount = mColorRampItemList.count();
+  if ( myColorRampItemCount <= 0 )
   {
     return false;
   }
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator it;
-  QList<QgsColorRampShader::ColorRampItem>::const_iterator last_it = mColorRampItemList.end();
-  double myCurrentRampValue;
+  
   double myCurrentRampRange; //difference between two consecutive entry values
-  double myDiffTheValueLastRampValue; //difference between value and last entry value
-  double myDiffCurrentRampValueTheValue; //difference between this entry value and value
-
-  for ( it = mColorRampItemList.begin(); it != mColorRampItemList.end(); ++it )
+  double myOffsetInRange; //difference between the previous entry value and value
+  QgsColorRampShader::ColorRampItem myColorRampItem;
+  while ( mCurrentColorRampItemIndex >= 0 && mCurrentColorRampItemIndex < myColorRampItemCount )
   {
-    myCurrentRampValue = it->value;
-    if ( theValue <= myCurrentRampValue )
+    //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
+    myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
+    //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
+    if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
-      if ( last_it != mColorRampItemList.end() )
-      {
-        myCurrentRampRange = myCurrentRampValue - last_it->value;
-        myDiffTheValueLastRampValue = theValue - last_it->value;
-        myDiffCurrentRampValueTheValue = myCurrentRampValue - theValue;
-
-        *theReturnRedValue = ( int )(( it->color.red() * myDiffTheValueLastRampValue + last_it->color.red() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
-        *theReturnGreenValue = ( int )(( it->color.green() * myDiffTheValueLastRampValue + last_it->color.green() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
-        *theReturnBlueValue = ( int )(( it->color.blue() * myDiffTheValueLastRampValue + last_it->color.blue() * myDiffCurrentRampValueTheValue ) / myCurrentRampRange );
-        //Cache the shaded value
-        if(mMaximumColorCacheSize <= mColorCache.size())
-        {
-          mColorCache.insert(theValue, it->color);
-        }
-        return true;
-      }
+      mCurrentColorRampItemIndex--;
     }
-    last_it = it;
+    else if ( mCurrentColorRampItemIndex != 0 && theValue <= myColorRampItem.value )
+    {
+      QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
+      myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
+      myOffsetInRange = theValue - myPreviousColorRampItem.value;
+
+      *theReturnRedValue = ( int )(( double ) myPreviousColorRampItem.color.red() + ((( double ) (myColorRampItem.color.red() - myPreviousColorRampItem.color.red()) / myCurrentRampRange ) * myOffsetInRange ));
+      *theReturnGreenValue = ( int )(( double ) myPreviousColorRampItem.color.green() + ((( double ) (myColorRampItem.color.green() - myPreviousColorRampItem.color.green()) / myCurrentRampRange) * myOffsetInRange ));
+      *theReturnBlueValue = ( int )(( double ) myPreviousColorRampItem.color.blue() + ((( double ) (myColorRampItem.color.blue() - myPreviousColorRampItem.color.blue()) / myCurrentRampRange ) * myOffsetInRange));
+      if ( mMaximumColorCacheSize >= mColorCache.size() )
+      {
+        QColor myNewColor( *theReturnRedValue, *theReturnGreenValue, *theReturnBlueValue );
+        mColorCache.insert( theValue, myNewColor );
+      }
+      return true;
+    }
+    else if ( mCurrentColorRampItemIndex == 0 && theValue <= myColorRampItem.value )
+    {
+      QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
+      myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
+      myOffsetInRange = theValue - myPreviousColorRampItem.value;
+
+      *theReturnRedValue = myColorRampItem.color.red();
+      *theReturnGreenValue = myColorRampItem.color.green();
+      *theReturnBlueValue = myColorRampItem.color.blue();
+      if ( mMaximumColorCacheSize >= mColorCache.size() )
+      {
+        QColor myNewColor( *theReturnRedValue, *theReturnGreenValue, *theReturnBlueValue );
+        mColorCache.insert( theValue, myNewColor );
+      }
+      return true;
+    }
+    //Search deeper into the color ramp list
+    else if ( theValue > myColorRampItem.value )
+    {
+      mCurrentColorRampItemIndex++;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   return false;
 }
 
+void QgsColorRampShader::setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType ) 
+{
+  //When the ramp type changes we need to clear out the cache
+  mColorCache.clear();
+  mColorRampType = theColorRampType;
+}
+
 void QgsColorRampShader::setColorRampType( QString theType )
 {
+  //When the type of the ramp changes we need to clear out the cache
+  mColorCache.clear();
   if ( theType == "INTERPOLATED" )
   {
     mColorRampType = INTERPOLATED;
