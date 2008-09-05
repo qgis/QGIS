@@ -180,12 +180,12 @@ class QgisApp : public QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
     QToolBar *addToolBar( QString name );
 
-#ifdef Q_WS_MAC
-    //! Add window item to Window menu
+    /** Add window to Window menu. The action title is the window title
+     * and the action should raise, unminimize and activate the window. */
     void addWindow( QAction *action );
-    //! Remove window item from Window menu
+    /** Remove window from Window menu. Calling this is necessary only for
+     * windows which are hidden rather than deleted when closed. */
     void removeWindow( QAction *action );
-#endif
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -260,6 +260,9 @@ class QgisApp : public QMainWindow
 
     QAction *actionManagePlugins() { return mActionManagePlugins; }
     QAction *actionPluginSeparator1() { return mActionPluginSeparator1; }
+    QAction *actionPluginListSeparator() { return mActionPluginSeparator1; }
+    QAction *actionPluginSeparator2() { return mActionPluginSeparator2; }
+    QAction *actionPluginPythonSeparator() { return mActionPluginSeparator2; }
     QAction *actionShowPythonDialog() { return mActionShowPythonDialog; }
 
     QAction *actionToggleFullScreen() { return mActionToggleFullScreen; }
@@ -290,7 +293,11 @@ class QgisApp : public QMainWindow
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
 #ifdef Q_WS_MAC
+    QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
+#else
+    QMenu *firstRightStandardMenu() { return mHelpMenu; }
+    QMenu *windowMenu() { return NULL; }
 #endif
     QMenu *helpMenu() { return mHelpMenu; }
 
@@ -718,6 +725,7 @@ class QgisApp : public QMainWindow
 
     QAction *mActionManagePlugins;
     QAction *mActionPluginSeparator1;
+    QAction *mActionPluginSeparator2;
     QAction *mActionShowPythonDialog;
 
     QAction *mActionToggleFullScreen;
