@@ -27,6 +27,8 @@
 #include "qgsrect.h" //just for debugging
 #include "qgslogger.h"
 
+#define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
+
 QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
@@ -519,4 +521,58 @@ void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
   {
     setCursor( cursorForPosition( event->pos() ) );
   }
+}
+
+void QgsComposerItem::drawText(QPainter* p, int x, int y, const QString& text, const QFont& font)
+{
+  QFont textFont = scaledFontPixelSize(font);
+  
+  p->save();
+  p->setFont(textFont);
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  p->scale(scaleFactor, scaleFactor);
+  p->drawText(x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, text);
+  p->restore();
+}
+
+void QgsComposerItem::drawText(QPainter* p, const QRectF& rect, const QString& text, const QFont& font)
+{
+  QFont textFont = scaledFontPixelSize(font);
+
+  QRectF scaledRect(rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE, 
+		    rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE);
+
+  p->save();
+  p->setFont(textFont);
+  double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
+  p->scale(scaleFactor, scaleFactor);
+  p->drawText(scaledRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, text);
+  p->restore();
+}
+
+double QgsComposerItem::textWidthMM(const QFont& font, const QString& text) const
+{
+  QFont metricsFont = scaledFontPixelSize(font);
+  QFontMetrics fontMetrics(metricsFont);
+  return (fontMetrics.width(text) / FONT_WORKAROUND_SCALE);
+}
+
+double QgsComposerItem::fontAscentMM(const QFont& font) const
+{
+  QFont metricsFont = scaledFontPixelSize(font);
+  QFontMetrics fontMetrics(metricsFont);
+  return (fontMetrics.ascent() / FONT_WORKAROUND_SCALE);
+}
+
+double QgsComposerItem::pixelFontSize(double pointSize) const
+{
+  return (pointSize * 0.3527);
+}
+
+QFont QgsComposerItem::scaledFontPixelSize(const QFont& font) const
+{
+  QFont scaledFont = font;
+  double pixelSize = pixelFontSize(font.pointSizeF()) * FONT_WORKAROUND_SCALE + 0.5;
+  scaledFont.setPixelSize(pixelSize);
+  return scaledFont;
 }
