@@ -56,9 +56,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
 
     QFont font() const;
-
-    /**Returns font that has size set in pixels. Used from QgsComposerScaleBarStyle*/
-    QFont fontPixelSize() const;
     
     void setFont( const QFont& font );
 
@@ -95,9 +92,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     /**Returns the x - positions of the segment borders (in item coordinates) and the width
      of the segment*/
     void segmentPositions( QList<QPair<double, double> >& posWidthList ) const;
-
-    /**Returns height of mFont in points*/
-    double fontHeight() const;
 
     /**Sets box size suitable to content*/
     void adjustBoxSize();

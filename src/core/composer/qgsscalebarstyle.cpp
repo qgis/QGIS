@@ -43,11 +43,10 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 
   p->save();
 
-  p->setFont( mScaleBar->fontPixelSize() );
+  p->setFont(mScaleBar->font());
 
-  QFontMetricsF fontMetrics( mScaleBar->fontPixelSize() );
   QString firstLabel = mScaleBar->firstLabelString();
-  double xOffset = fontMetrics.width( firstLabel ) / 2;
+  double xOffset =  mScaleBar->textWidthMM(mScaleBar->font(), firstLabel) / 2;
 
   //double mCurrentXCoord = mScaleBar->pen().widthF() + mScaleBar->boxContentSpace();
   QList<QPair<double, double> > segmentInfo;
@@ -79,7 +78,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
 
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
-      p->drawText( QPointF( segmentIt->first - fontMetrics.width( currentNumericLabel ) / 2 + xOffset, mScaleBar->fontHeight() + mScaleBar->boxContentSpace() ), currentNumericLabel );
+      mScaleBar->drawText(p, segmentIt->first - mScaleBar->textWidthMM(mScaleBar->font(), currentNumericLabel) / 2 + xOffset, mScaleBar->fontAscentMM(mScaleBar->font()) + mScaleBar->boxContentSpace(), currentNumericLabel, mScaleBar->font());
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -93,7 +92,7 @@ void QgsScaleBarStyle::drawLabels( QPainter* p ) const
   if ( !segmentInfo.isEmpty() )
   {
     currentNumericLabel = QString::number( currentLabelNumber / mScaleBar->numMapUnitsPerScaleBarUnit() );
-    p->drawText( QPointF( segmentInfo.last().first + mScaleBar->segmentMM() - fontMetrics.width( currentNumericLabel ) / 2 + xOffset, mScaleBar->fontHeight() + mScaleBar->boxContentSpace() ), currentNumericLabel + " " + mScaleBar->unitLabeling() );
+    mScaleBar->drawText(p, segmentInfo.last().first + mScaleBar->segmentMM() - mScaleBar->textWidthMM(mScaleBar->font(), currentNumericLabel) / 2 + xOffset, mScaleBar->fontAscentMM(mScaleBar->font()) + mScaleBar->boxContentSpace(), currentNumericLabel + " " + mScaleBar->unitLabeling(), mScaleBar->font());
   }
 
   p->restore();
@@ -106,18 +105,15 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
     return QRectF();
   }
 
-
-  QFontMetricsF fontMetrics( mScaleBar->fontPixelSize() );
-
   //consider centered first label
-  double firstLabelLeft = fontMetrics.width( mScaleBar->firstLabelString() ) / 2;
+  double firstLabelLeft = mScaleBar->textWidthMM(mScaleBar->font(), mScaleBar->firstLabelString()) / 2;
 
   //consider last number and label
 
   double largestLabelNumber = mScaleBar->numSegments() * mScaleBar->numUnitsPerSegment() / mScaleBar->numMapUnitsPerScaleBarUnit();
   QString largestNumberLabel = QString::number( largestLabelNumber );
   QString largestLabel = QString::number( largestLabelNumber ) + " " + mScaleBar->unitLabeling();
-  double largestLabelWidth = fontMetrics.width( largestLabel ) - fontMetrics.width( largestNumberLabel ) / 2;
+  double largestLabelWidth = mScaleBar->textWidthMM(mScaleBar->font(), largestLabel) - mScaleBar->textWidthMM(mScaleBar->font(), largestNumberLabel) / 2;
 
   double totalBarLength = 0.0;
 
@@ -131,7 +127,7 @@ QRectF QgsScaleBarStyle::calculateBoxSize() const
   }
 
   double width =  firstLabelLeft + totalBarLength + 2 * mScaleBar->pen().widthF() + largestLabelWidth + 2 * mScaleBar->boxContentSpace();
-  double height = mScaleBar->height() + mScaleBar->labelBarSpace() + 2 * mScaleBar->boxContentSpace() + mScaleBar->fontHeight();
+  double height = mScaleBar->height() + mScaleBar->labelBarSpace() + 2 * mScaleBar->boxContentSpace() + mScaleBar->fontAscentMM(mScaleBar->font());
 
   return QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), width, height );
 }

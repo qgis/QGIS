@@ -53,7 +53,7 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   {
     return;
   }
-  double barTopPosition = mScaleBar->fontHeight() + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
+  double barTopPosition = mScaleBar->fontAscentMM(mScaleBar->font()) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double middlePosition = barTopPosition + mScaleBar->height() / 2.0;
   double bottomPosition = barTopPosition + mScaleBar->height();
 
