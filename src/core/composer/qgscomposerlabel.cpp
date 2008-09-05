@@ -19,17 +19,10 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 0.0 )
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 )
 {
   //default font size is 10 point
-  if ( mComposition )
-  {
-    mFont.setPixelSize( mComposition->pixelFontSize( 10 ) );
-  }
-  else
-  {
-    mFont.setPixelSize( 4 );
-  }
+  mFont.setPointSizeF(10);
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -53,8 +46,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
                       rect().height() - 2 * penWidth - 2 * mMargin);
-  painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
-
+  //painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
+  drawText(painter, painterRect, mText, mFont);
 
   drawFrame( painter );
   if ( isSelected() )
@@ -70,34 +63,20 @@ void QgsComposerLabel::setText( const QString& text )
 
 void QgsComposerLabel::setFont( const QFont& f )
 {
-  //set font size in pixels for proper preview and printout
-  if ( mComposition )
-  {
-    int pixelSize = mComposition->pixelFontSize( f.pointSizeF() );
-    mFont = f;
-    mFont.setPixelSize( pixelSize );
-  }
-  else
-  {
-    mFont = f;
-  }
+  mFont = f;
 }
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  QFontMetricsF fontInfo( mFont );
-  setSceneRect( QRectF( transform().dx(), transform().dy(), fontInfo.width( mText ) + 2 * mMargin + 2 * pen().widthF(), fontInfo.ascent() + 2 * mMargin + 2 * pen().widthF() ) );
+  double textWidth = textWidthMM(mFont, mText);
+  double fontAscent = fontAscentMM(mFont);
+
+  setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1, \
+			fontAscent + 2 * mMargin + 2 * pen().widthF() + 1) );
 }
 
 QFont QgsComposerLabel::font() const
 {
-  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
-  {
-    double pointSize = mComposition->pointFontSize( mFont.pixelSize() );
-    QFont returnFont = mFont;
-    returnFont.setPointSize( pointSize );
-    return returnFont;
-  }
   return mFont;
 }
 
