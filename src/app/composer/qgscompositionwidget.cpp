@@ -24,6 +24,10 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   setupUi( this );
   createPaperEntries();
 
+  //unit (only mm at the moment, therefore disabled)
+  mPaperUnitsComboBox->addItem("mm");
+  mPaperUnitsComboBox->setEnabled(false);
+
   //orientation
   mPaperOrientationComboBox->blockSignals( true );
   mPaperOrientationComboBox->insertItem( 0, tr( "Landscape" ) );
