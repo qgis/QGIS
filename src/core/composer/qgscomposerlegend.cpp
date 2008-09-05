@@ -270,8 +270,8 @@ void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double curre
     p->restore();
   }
 
-  currentXPosition += pointImage.width() / rasterScaleFactor;
-  symbolHeight = pointImage.height() / rasterScaleFactor;
+  currentXPosition += s->pointSize(); //pointImage.width() / rasterScaleFactor;
+  symbolHeight = s->pointSize(); //pointImage.height() / rasterScaleFactor;
 }
 
 void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const
