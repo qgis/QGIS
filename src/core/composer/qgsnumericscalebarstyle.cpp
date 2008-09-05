@@ -48,10 +48,9 @@ void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
   }
 
   p->save();
-
   p->setFont( mScaleBar->font() );
-  p->drawText( QPointF( mScaleBar->pen().widthF() + mScaleBar->boxContentSpace(), mScaleBar->boxContentSpace()
-                        + mScaleBar->fontHeight() ), scaleText() );
+
+  mScaleBar->drawText(p, mScaleBar->pen().widthF() + mScaleBar->boxContentSpace(), mScaleBar->boxContentSpace() + mScaleBar->fontAscentMM(mScaleBar->font()), scaleText(), mScaleBar->font());
 
   p->restore();
 }
@@ -64,10 +63,12 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
     return rect;
   }
 
-  QFontMetricsF fontMetrics( mScaleBar->font() );
+  double textWidth = mScaleBar->textWidthMM(mScaleBar->font(), scaleText());
+  double textHeight = mScaleBar->fontAscentMM(mScaleBar->font());
+
   return QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), 2 * mScaleBar->boxContentSpace()
-                 + 2 * mScaleBar->pen().width() + fontMetrics.width( scaleText() ),
-                 mScaleBar->fontHeight() + 2 * mScaleBar->boxContentSpace() );
+                 + 2 * mScaleBar->pen().width() + textWidth,
+                 textHeight + 2 * mScaleBar->boxContentSpace() );
 }
 
 QString QgsNumericScaleBarStyle::scaleText() const

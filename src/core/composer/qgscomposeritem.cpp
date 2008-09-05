@@ -523,7 +523,7 @@ void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
   }
 }
 
-void QgsComposerItem::drawText(QPainter* p, int x, int y, const QString& text, const QFont& font)
+void QgsComposerItem::drawText(QPainter* p, int x, int y, const QString& text, const QFont& font) const
 {
   QFont textFont = scaledFontPixelSize(font);
   
@@ -535,7 +535,7 @@ void QgsComposerItem::drawText(QPainter* p, int x, int y, const QString& text, c
   p->restore();
 }
 
-void QgsComposerItem::drawText(QPainter* p, const QRectF& rect, const QString& text, const QFont& font)
+void QgsComposerItem::drawText(QPainter* p, const QRectF& rect, const QString& text, const QFont& font) const
 {
   QFont textFont = scaledFontPixelSize(font);
 

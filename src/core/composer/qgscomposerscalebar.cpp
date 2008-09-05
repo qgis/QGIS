@@ -48,11 +48,11 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   drawBackground( painter );
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) ); //draw all text black
 
-  //calculate half of first label width as labels are drawn centered
-  QFontMetricsF fontMetrics( mFont );
+  //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
+  double firstLabelWidth = textWidthMM(mFont, firstLabel);
 
-  mStyle->draw( painter, fontMetrics.width( firstLabel ) / 2 );
+  mStyle->draw( painter, firstLabelWidth / 2 );
 
   //draw frame and selection boxes if necessary
   drawFrame( painter );
@@ -126,15 +126,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setColor( QColor( 0, 0, 0 ) );
   mBrush.setStyle( Qt::SolidPattern );
 
-  //default size 12 point
-  if ( mComposition )
-  {
-    mFont.setPixelSize( mComposition->pixelFontSize( 12 ) );
-  }
-  else
-  {
-    mFont.setPixelSize( 5 );
-  }
+  mFont.setPointSizeF(12.0);
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
@@ -171,12 +163,6 @@ void QgsComposerScaleBar::update()
 {
   adjustBoxSize();
   QgsComposerItem::update();
-}
-
-double QgsComposerScaleBar::fontHeight() const
-{
-  QFontMetricsF labelFontMetrics( mFont );
-  return labelFontMetrics.ascent();
 }
 
 void QgsComposerScaleBar::updateSegmentSize()
@@ -268,33 +254,12 @@ QString QgsComposerScaleBar::firstLabelString() const
 
 QFont QgsComposerScaleBar::font() const
 {
-  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
-  {
-    double pointSize = mComposition->pointFontSize( mFont.pixelSize() );
-    QFont returnFont = mFont;
-    returnFont.setPointSize( pointSize );
-    return returnFont;
-  }
-}
-
-QFont QgsComposerScaleBar::fontPixelSize() const
-{
   return mFont;
 }
 
 void QgsComposerScaleBar::setFont( const QFont& font )
 {
-  //set font size in pixels for proper preview and printout
-  if ( mComposition )
-  {
-    int pixelSize = mComposition->pixelFontSize( font.pointSizeF() );
-    mFont = font;
-    mFont.setPixelSize( pixelSize );
-  }
-  else
-  {
-    mFont = font;
-  }
+  mFont = font;
   adjustBoxSize();
   update();
 }
