@@ -132,7 +132,12 @@ void QgsRect::expand( double scaleFactor, const QgsPoint * cp )
 QgsRect QgsRect::intersect( QgsRect * rect ) const
 {
   QgsRect intersection = QgsRect();
-
+  //If they don't actually intersect an empty QgsRect should be returned
+  if ( !rect || !intersects( *rect ) )
+  {
+    return intersection;
+  }
+  
   intersection.setXMinimum( xmin > rect->xMin() ? xmin : rect->xMin() );
   intersection.setXMaximum( xmax < rect->xMax() ? xmax : rect->xMax() );
   intersection.setYMinimum( ymin > rect->yMin() ? ymin : rect->yMin() );
