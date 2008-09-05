@@ -565,7 +565,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     //Set up a new color ramp shader
     setColorShadingAlgorithm( COLOR_RAMP );
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
-    myColorRampShader->setColorRampType( QgsColorRampShader::EXACT );
+    myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
     myColorRampShader->setColorRampItemList( *getColorTable(1) );
   }
   else if ( rasterLayerType == MULTIBAND )
