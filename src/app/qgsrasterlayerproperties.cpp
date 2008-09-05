@@ -2713,7 +2713,7 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromBand_clicked()
   if ( mRasterLayer->readColorTable( cboxColorMapBand->currentIndex() + 1, &myColorRampList ) )
   {
     populateColorMapTable( myColorRampList );
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
     QgsDebugMsg( "Color map loaded" );
   }
   else
