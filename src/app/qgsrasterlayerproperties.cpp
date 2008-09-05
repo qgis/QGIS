@@ -454,8 +454,6 @@ void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 void QgsRasterLayerProperties::sync()
 {
   QgsDebugMsg( "called." );
-  cboxShowDebugInfo->hide();
-
   QgsDebugMsg( "sync populate symbology tab" );
   /*
    * Symbology Tab
@@ -786,14 +784,10 @@ void QgsRasterLayerProperties::sync()
   /*
    * General Tab
    */
-  cboxShowDebugInfo->hide();
 
   //these properties (layer name and label) are provided by the qgsmaplayer superclass
   leLayerSource->setText( mRasterLayer->source() );
   leDisplayName->setText( mRasterLayer->name() );
-
-  //update the debug checkbox
-  cboxShowDebugInfo->setChecked( mRasterLayer->getShowDebugOverlayFlag() );
 
   //display the raster dimensions and no data value
   if ( mRasterLayerIsGdal )
@@ -1418,15 +1412,7 @@ void QgsRasterLayerProperties::apply()
    */
   mRasterLayer->setLayerName( leDisplayName->text() );
 
-  //see if the user would like debug overlays
-  if ( cboxShowDebugInfo->isChecked() == true )
-  {
-    mRasterLayer->setShowDebugOverlayFlag( true );
-  }
-  else
-  {
-    mRasterLayer->setShowDebugOverlayFlag( false );
-  }
+  mRasterLayer->setShowDebugOverlayFlag( true );
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
