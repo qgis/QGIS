@@ -165,7 +165,7 @@ void QgsCustomProjectionDialog::getEllipsoidList()
 void QgsCustomProjectionDialog::on_pbnDelete_clicked()
 {
 
-  if ( QMessageBox::Yes != QMessageBox::warning(
+  if ( QMessageBox::Ok != QMessageBox::warning(
          this,
          tr( "Delete Projection Definition?" ),
          tr( "Deleting a projection definition is not reversable. Do you want to delete it?" ),
