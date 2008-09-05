@@ -1162,15 +1162,8 @@ void QgisApp::createMenus()
   mPluginMenu = menuBar()->addMenu( tr( "&Plugins" ) );
 
   mPluginMenu->addAction( mActionManagePlugins );
-  mActionPluginSeparator1 = mPluginMenu->addSeparator();
-
-  // Add the plugin manager action to it
-  //actionPluginManager->addTo(mPluginMenu);
-  // Add separator. Plugins will add their menus to this
-  // menu when they are loaded by the plugin manager
-  //mPluginMenu->insertSeparator();
-  // Add to the menubar
-  //menuBar()->insertItem(tr("&Plugins"), mPluginMenu, -1, menuBar()->count() - 1);
+  mActionPluginSeparator1 = NULL;  // plugin list separator will be created when the first plugin is loaded
+  mActionPluginSeparator2 = NULL;  // python separator will be created only if python is found
 
 #ifdef Q_WS_MAC
   // Window Menu
@@ -3568,21 +3561,23 @@ void QgisApp::bringAllToFront()
 #endif
 }
 
-#ifdef Q_WS_MAC
 void QgisApp::addWindow( QAction *action )
 {
+#ifdef Q_WS_MAC
   mWindowActions->addAction( action );
   mWindowMenu->addAction( action );
   action->setCheckable( true );
   action->setChecked( true );
+#endif
 }
 
 void QgisApp::removeWindow( QAction *action )
 {
+#ifdef Q_WS_MAC
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
-}
 #endif
+}
 
 void QgisApp::stopRendering()
 {
@@ -4193,9 +4188,10 @@ void QgisApp::loadPythonSupport()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    mActionShowPythonDialog = new QAction( tr( "Python console" ), this );
+    mActionShowPythonDialog = new QAction( tr( "Python Console" ), this );
     connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
 
+    mActionPluginSeparator2 = mPluginMenu->addSeparator();
     mPluginMenu->addAction( mActionShowPythonDialog );
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
 
@@ -4729,32 +4725,38 @@ void QgisApp::whatsThis()
 
 QMenu* QgisApp::getPluginMenu( QString menuName )
 {
-  // This is going to record the menu item that the potentially new
-  // menu item is going to be inserted before. A value of 0 will a new
-  // menu item to be appended.
-  QAction* before = 0;
-
-  QList<QAction*> actions = mPluginMenu->actions();
-  // Avoid 1 because the first item (number 0) is 'Plugin Manager',
-  // which we  want to stay first. Search in reverse order as that
-  // makes it easier to find out where which item a new menu item
-  // should go before (since the insertMenu() function requires a
-  // 'before' argument).
-  for ( unsigned int i = actions.count() - 1; i > 0; --i )
+  /* Plugin menu items are below the plugin separator (which may not exist yet
+   * if no plugins are loaded) and above the python separator. If python is not
+   * present, there is no python separator and the plugin list is at the bottom
+   * of the menu.
+   */
+  QAction *before = mActionPluginSeparator2;  // python separator or end of list
+  if ( !mActionPluginSeparator1 )
   {
-    if ( actions.at( i )->text() == menuName )
-    {
-      return actions.at( i )->menu();
-    }
-    // Find out where to put the menu item, assuming that it is a new one
-    //
-    // This bit of code assumes that the menu items are already in
-    // alphabetical order, which they will be if the menus are all
-    // created using this function.
-    if ( menuName.localeAwareCompare( actions.at( i )->text() ) <= 0 )
-      before = actions.at( i );
+    // First plugin - create plugin list separator
+    mActionPluginSeparator1 = mPluginMenu->insertSeparator( before );
   }
-
+  else
+  {
+    // Plugins exist - search between plugin separator and python separator or end of list
+    QList<QAction*> actions = mPluginMenu->actions();
+    int end = mActionPluginSeparator2 ? actions.indexOf( mActionPluginSeparator2 ) : actions.count();
+    for ( int i = actions.indexOf( mActionPluginSeparator1 ) + 1; i < end; i++ )
+    {
+      int comp = menuName.localeAwareCompare( actions.at( i )->text() );
+      if ( comp < 0 )
+      {
+        // Add item before this one
+        before = actions.at( i );
+        break;
+      }
+      else if ( comp == 0 )
+      {
+        // Plugin menu item already exists
+        return actions.at( i )->menu();
+      }
+    }
+  }
   // It doesn't exist, so create
   QMenu* menu = new QMenu( menuName, this );
   // Where to put it? - we worked that out above...
@@ -4776,6 +4778,14 @@ void QgisApp::removePluginMenu( QString name, QAction* action )
   if ( menu->actions().count() == 0 )
   {
     mPluginMenu->removeAction( menu->menuAction() );
+  }
+  // Remove separator above plugins in Plugin menu if no plugins remain
+  QList<QAction*> actions = mPluginMenu->actions();
+  int end = mActionPluginSeparator2 ? actions.indexOf( mActionPluginSeparator2 ) : actions.count();
+  if ( actions.indexOf( mActionPluginSeparator1 ) + 1 == end )
+  {
+    mPluginMenu->removeAction( mActionPluginSeparator1 );
+    mActionPluginSeparator1 = NULL;
   }
 }
 
