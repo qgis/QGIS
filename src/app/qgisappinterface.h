@@ -72,10 +72,6 @@ class QgisAppInterface : public QgisInterface
     void removeToolBarIcon( QAction *qAction );
     //! Add toolbar with specified name
     QToolBar* addToolBar( QString name );
-    /** Get the file toolbar - intended for use with plugins which
-     *   add a new file type handler.
-     */
-    QToolBar * fileToolBar();
 
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -105,6 +101,133 @@ class QgisAppInterface : public QgisInterface
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 
     virtual void refreshLegend( QgsMapLayer *l );
+
+    /** Add window to Window menu. The action title is the window title
+     * and the action should raise, unminimize and activate the window. */
+    virtual void addWindow( QAction *action );
+    /** Remove window from Window menu. Calling this is necessary only for
+     * windows which are hidden rather than deleted when closed. */
+    virtual void removeWindow( QAction *action );
+
+    /** Accessors for inserting items into menus and toolbars.
+     * An item can be inserted before any existing action.
+     */
+
+    //! Menus
+    virtual QMenu *fileMenu();
+    virtual QMenu *editMenu();
+    virtual QMenu *viewMenu();
+    virtual QMenu *layerMenu();
+    virtual QMenu *settingsMenu();
+    virtual QMenu *pluginMenu();
+    virtual QMenu *firstRightStandardMenu();
+    virtual QMenu *windowMenu();
+    virtual QMenu *helpMenu();
+
+    //! ToolBars
+    virtual QToolBar *fileToolBar();
+    virtual QToolBar *layerToolBar();
+    virtual QToolBar *mapNavToolToolBar();
+    virtual QToolBar *digitizeToolBar();
+    virtual QToolBar *attributesToolBar();
+    virtual QToolBar *pluginToolBar();
+    virtual QToolBar *helpToolBar();
+
+    //! File menu actions
+    virtual QAction *actionNewProject();
+    virtual QAction *actionOpenProject();
+    virtual QAction *actionFileSeparator1();
+    virtual QAction *actionSaveProject();
+    virtual QAction *actionSaveProjectAs();
+    virtual QAction *actionSaveMapAsImage();
+    virtual QAction *actionFileSeparator2();
+    virtual QAction *actionProjectProperties();
+    virtual QAction *actionFileSeparator3();
+    virtual QAction *actionPrintComposer();
+    virtual QAction *actionFileSeparator4();
+    virtual QAction *actionExit();
+
+    //! Edit menu actions
+    virtual QAction *actionCutFeatures();
+    virtual QAction *actionCopyFeatures();
+    virtual QAction *actionPasteFeatures();
+    virtual QAction *actionEditSeparator1();
+    virtual QAction *actionCapturePoint();
+    virtual QAction *actionCaptureLine();
+    virtual QAction *actionCapturePologon();
+    virtual QAction *actionDeleteSelected();
+    virtual QAction *actionMoveFeature();
+    virtual QAction *actionSplitFeatures();
+    virtual QAction *actionAddVertex();
+    virtual QAction *actionDelerteVertex();
+    virtual QAction *actioMoveVertex();
+    virtual QAction *actionAddRing();
+    virtual QAction *actionAddIsland();
+    virtual QAction *actionEditSeparator2();
+
+    //! View menu actions
+    virtual QAction *actionPan();
+    virtual QAction *actionZoomIn();
+    virtual QAction *actionZoomOut();
+    virtual QAction *actionSelect();
+    virtual QAction *actionIdentify();
+    virtual QAction *actionMeasure();
+    virtual QAction *actionMeasureArea();
+    virtual QAction *actionViewSeparator1();
+    virtual QAction *actionZoomFullExtent();
+    virtual QAction *actionZoomToLayer();
+    virtual QAction *actionZoomToSelected();
+    virtual QAction *actionZoomLast();
+    virtual QAction *actionZoomActualSize();
+    virtual QAction *actionViewSeparator2();
+    virtual QAction *actionMapTips();
+    virtual QAction *actionNewBookmark();
+    virtual QAction *actionShowBookmarks();
+    virtual QAction *actionDraw();
+    virtual QAction *actionViewSeparator3();
+
+    //! Layer menu actions
+    virtual QAction *actionNewVectorLayer();
+    virtual QAction *actionAddOgrLayer();
+    virtual QAction *actionAddRasterLayer();
+    virtual QAction *actionAddPgLayer();
+    virtual QAction *actionAddWmsLayer();
+    virtual QAction *actionLayerSeparator1();
+    virtual QAction *actionOpenTable();
+    virtual QAction *actionToggleEditing();
+    virtual QAction *actionLayerSaveAs();
+    virtual QAction *actionLayerSelectionSaveAs();
+    virtual QAction *actionRemoveLayer();
+    virtual QAction *actionLayerProperties();
+    virtual QAction *actionLayerSeparator2();
+    virtual QAction *actionAddToOverview();
+    virtual QAction *actionAddAllToOverview();
+    virtual QAction *actionRemoveAllFromOverview();
+    virtual QAction *actionLayerSeparator3();
+    virtual QAction *actionHideAllLayers();
+    virtual QAction *actionShowAllLayers();
+
+    //! Plugin menu actions
+    virtual QAction *actionManagePlugins();
+    virtual QAction *actionPluginSeparator1();
+    virtual QAction *actionPluginListSeparator();
+    virtual QAction *actionPluginSeparator2();
+    virtual QAction *actionPluginPythonSeparator();
+    virtual QAction *actionShowPythonDialog();
+
+    //! Settings menu actions
+    virtual QAction *actionToggleFullScreen();
+    virtual QAction *actionSettingsSeparator1();
+    virtual QAction *actionOptions();
+    virtual QAction *actionCustomProjection();
+
+    //! Help menu actions
+    virtual QAction *actionHelpContents();
+    virtual QAction *actionHelpSeparator1();
+    virtual QAction *actionQgisHomePage();
+    virtual QAction *actionCheckQgisVersion();
+    virtual QAction *actionHelpSeparator2();
+    virtual QAction *actionAbout();
 
   private:
 
