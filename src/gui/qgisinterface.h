@@ -90,10 +90,6 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
     //! Add toolbar with specified name
     virtual QToolBar * addToolBar( QString name ) = 0;
-    /** Get the file toolbar - intended for use with plugins which
-    *   add a new file type handler.
-    */
-    virtual QToolBar * fileToolBar() = 0;
     // TODO: is this deprecated in favour of QgsContextHelp?
     /** Open a url in the users browser. By default the QGIS doc directory is used
      * as the base for the URL. To open a URL that is not relative to the installed
@@ -120,6 +116,133 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** refresh the legend of a layer */
     virtual void refreshLegend( QgsMapLayer *l ) = 0;
+
+    /** Add window to Window menu. The action title is the window title
+     * and the action should raise, unminimize and activate the window. */
+    virtual void addWindow( QAction *action ) = 0;
+    /** Remove window from Window menu. Calling this is necessary only for
+     * windows which are hidden rather than deleted when closed. */
+    virtual void removeWindow( QAction *action ) = 0;
+
+    /** Accessors for inserting items into menus and toolbars.
+     * An item can be inserted before any existing action.
+     */
+
+    //! Menus
+    virtual QMenu *fileMenu() = 0;
+    virtual QMenu *editMenu() = 0;
+    virtual QMenu *viewMenu() = 0;
+    virtual QMenu *layerMenu() = 0;
+    virtual QMenu *settingsMenu() = 0;
+    virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *firstRightStandardMenu() = 0;
+    virtual QMenu *windowMenu() = 0;
+    virtual QMenu *helpMenu() = 0;
+
+    //! ToolBars
+    virtual QToolBar *fileToolBar() = 0;
+    virtual QToolBar *layerToolBar() = 0;
+    virtual QToolBar *mapNavToolToolBar() = 0;
+    virtual QToolBar *digitizeToolBar() = 0;
+    virtual QToolBar *attributesToolBar() = 0;
+    virtual QToolBar *pluginToolBar() = 0;
+    virtual QToolBar *helpToolBar() = 0;
+
+    //! File menu actions
+    virtual QAction *actionNewProject() = 0;
+    virtual QAction *actionOpenProject() = 0;
+    virtual QAction *actionFileSeparator1() = 0;
+    virtual QAction *actionSaveProject() = 0;
+    virtual QAction *actionSaveProjectAs() = 0;
+    virtual QAction *actionSaveMapAsImage() = 0;
+    virtual QAction *actionFileSeparator2() = 0;
+    virtual QAction *actionProjectProperties() = 0;
+    virtual QAction *actionFileSeparator3() = 0;
+    virtual QAction *actionPrintComposer() = 0;
+    virtual QAction *actionFileSeparator4() = 0;
+    virtual QAction *actionExit() = 0;
+
+    //! Edit menu actions
+    virtual QAction *actionCutFeatures() = 0;
+    virtual QAction *actionCopyFeatures() = 0;
+    virtual QAction *actionPasteFeatures() = 0;
+    virtual QAction *actionEditSeparator1() = 0;
+    virtual QAction *actionCapturePoint() = 0;
+    virtual QAction *actionCaptureLine() = 0;
+    virtual QAction *actionCapturePologon() = 0;
+    virtual QAction *actionDeleteSelected() = 0;
+    virtual QAction *actionMoveFeature() = 0;
+    virtual QAction *actionSplitFeatures() = 0;
+    virtual QAction *actionAddVertex() = 0;
+    virtual QAction *actionDelerteVertex() = 0;
+    virtual QAction *actioMoveVertex() = 0;
+    virtual QAction *actionAddRing() = 0;
+    virtual QAction *actionAddIsland() = 0;
+    virtual QAction *actionEditSeparator2() = 0;
+
+    //! View menu actions
+    virtual QAction *actionPan() = 0;
+    virtual QAction *actionZoomIn() = 0;
+    virtual QAction *actionZoomOut() = 0;
+    virtual QAction *actionSelect() = 0;
+    virtual QAction *actionIdentify() = 0;
+    virtual QAction *actionMeasure() = 0;
+    virtual QAction *actionMeasureArea() = 0;
+    virtual QAction *actionViewSeparator1() = 0;
+    virtual QAction *actionZoomFullExtent() = 0;
+    virtual QAction *actionZoomToLayer() = 0;
+    virtual QAction *actionZoomToSelected() = 0;
+    virtual QAction *actionZoomLast() = 0;
+    virtual QAction *actionZoomActualSize() = 0;
+    virtual QAction *actionViewSeparator2() = 0;
+    virtual QAction *actionMapTips() = 0;
+    virtual QAction *actionNewBookmark() = 0;
+    virtual QAction *actionShowBookmarks() = 0;
+    virtual QAction *actionDraw() = 0;
+    virtual QAction *actionViewSeparator3() = 0;
+
+    //! Layer menu actions
+    virtual QAction *actionNewVectorLayer() = 0;
+    virtual QAction *actionAddOgrLayer() = 0;
+    virtual QAction *actionAddRasterLayer() = 0;
+    virtual QAction *actionAddPgLayer() = 0;
+    virtual QAction *actionAddWmsLayer() = 0;
+    virtual QAction *actionLayerSeparator1() = 0;
+    virtual QAction *actionOpenTable() = 0;
+    virtual QAction *actionToggleEditing() = 0;
+    virtual QAction *actionLayerSaveAs() = 0;
+    virtual QAction *actionLayerSelectionSaveAs() = 0;
+    virtual QAction *actionRemoveLayer() = 0;
+    virtual QAction *actionLayerProperties() = 0;
+    virtual QAction *actionLayerSeparator2() = 0;
+    virtual QAction *actionAddToOverview() = 0;
+    virtual QAction *actionAddAllToOverview() = 0;
+    virtual QAction *actionRemoveAllFromOverview() = 0;
+    virtual QAction *actionLayerSeparator3() = 0;
+    virtual QAction *actionHideAllLayers() = 0;
+    virtual QAction *actionShowAllLayers() = 0;
+
+    //! Plugin menu actions
+    virtual QAction *actionManagePlugins() = 0;
+    virtual QAction *actionPluginSeparator1() = 0;
+    virtual QAction *actionPluginListSeparator() = 0;
+    virtual QAction *actionPluginSeparator2() = 0;
+    virtual QAction *actionPluginPythonSeparator() = 0;
+    virtual QAction *actionShowPythonDialog() = 0;
+
+    //! Settings menu actions
+    virtual QAction *actionToggleFullScreen() = 0;
+    virtual QAction *actionSettingsSeparator1() = 0;
+    virtual QAction *actionOptions() = 0;
+    virtual QAction *actionCustomProjection() = 0;
+
+    //! Help menu actions
+    virtual QAction *actionHelpContents() = 0;
+    virtual QAction *actionHelpSeparator1() = 0;
+    virtual QAction *actionQgisHomePage() = 0;
+    virtual QAction *actionCheckQgisVersion() = 0;
+    virtual QAction *actionHelpSeparator2() = 0;
+    virtual QAction *actionAbout() = 0;
 
   signals:
     /** Emited whenever current (selected) layer changes.
