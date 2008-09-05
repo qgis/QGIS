@@ -28,19 +28,10 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition ): QgsComposer
   QStringList idList = layerIdList();
   mLegendModel.setLayerSet( idList );
 
-  //default font size
-  if ( mComposition )
-  {
-    mTitleFont.setPixelSize( mComposition->pixelFontSize( 14 ) );
-    mLayerFont.setPixelSize( mComposition->pixelFontSize( 12 ) );
-    mItemFont.setPixelSize( mComposition->pixelFontSize( 12 ) );
-  }
-  else
-  {
-    mTitleFont.setPixelSize( 5 );
-    mLayerFont.setPixelSize( 4 );
-    mItemFont.setPixelSize( 3 );
-  }
+  mTitleFont.setPointSizeF(14.0);
+  mLayerFont.setPointSizeF(12.0);
+  mItemFont.setPointSizeF(12.0);
+
   mSymbolWidth = 7;
   mSymbolHeight = 4;
   adjustBoxSize();
@@ -90,18 +81,15 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   double currentYCoordinate = mBoxSpace;
 
   //font metrics
-  QFontMetricsF titleFontMetrics( mTitleFont );
-  QFontMetricsF layerFontMetrics( mLayerFont );
 
   //draw title
-  currentYCoordinate += titleFontMetrics.height();
+  currentYCoordinate += fontAscentMM(mTitleFont);
   if ( painter )
   {
-    painter->setFont( mTitleFont );
-    painter->drawText( QPointF( mBoxSpace, currentYCoordinate ), mTitle );
+    drawText(painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont);
   }
 
-  maxXCoord = 2 * mBoxSpace + titleFontMetrics.width( mTitle );
+  maxXCoord = 2 * mBoxSpace + textWidthMM(mTitleFont, mTitle);
 
   //draw layer items
   for ( int i = 0; i < numLayerItems; ++i )
@@ -110,16 +98,15 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     if ( currentLayerItem )
     {
       currentYCoordinate += mLayerSpace;
-      currentYCoordinate += layerFontMetrics.height();
+      currentYCoordinate += fontAscentMM(mLayerFont);
 
       //draw layer Item
       if ( painter )
       {
-        painter->setFont( mLayerFont );
-        painter->drawText( QPointF( mBoxSpace, currentYCoordinate ), currentLayerItem->text() );
+	drawText(painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont);
       }
 
-      maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + layerFontMetrics.width( currentLayerItem->text() ) );
+      maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMM(mLayerFont, currentLayerItem->text()));
 
       //and child items
       drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
@@ -161,19 +148,12 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     return;
   }
 
-  QFontMetricsF itemFontMetrics( mItemFont );
-
   //standerd item height
-  double itemHeight = std::max( mSymbolHeight, itemFontMetrics.ascent() );
+  double itemHeight = std::max( mSymbolHeight, fontAscentMM(mItemFont));
 
   QStandardItem* currentItem;
 
   int numChildren = layerItem->rowCount();
-
-  if ( p )
-  {
-    p->setFont( mItemFont );
-  }
 
   for ( int i = 0; i < numChildren; ++i )
   {
@@ -221,10 +201,10 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     //finally draw text
     if ( p )
     {
-      p->drawText( QPointF( currentXCoord, currentYCoord + itemFontMetrics.ascent() + ( realItemHeight - itemFontMetrics.ascent() ) / 2 ), currentItem->text() );
+      drawText(p, currentXCoord, currentYCoord + fontAscentMM(mItemFont) + ( realItemHeight - fontAscentMM(mItemFont)) / 2, currentItem->text(), mItemFont);
     }
 
-    maxXCoord = std::max( maxXCoord, currentXCoord + itemFontMetrics.width( currentItem->text() ) + mBoxSpace );
+    maxXCoord = std::max( maxXCoord, currentXCoord + textWidthMM(mItemFont, currentItem->text()) + mBoxSpace );
 
     currentYCoord += realItemHeight;
   }
@@ -353,88 +333,37 @@ void QgsComposerLegend::synchronizeWithModel()
 
 void QgsComposerLegend::setTitleFont( const QFont& f )
 {
-  if ( mComposition )
-  {
-    int pixelSize = mComposition->pixelFontSize( f.pointSizeF() );
-    mTitleFont = f;
-    mTitleFont.setPixelSize( pixelSize );
-  }
-  else
-  {
-    mTitleFont = f;
-  }
-
+  mTitleFont = f;
   adjustBoxSize();
   update();
 }
 
 void QgsComposerLegend::setLayerFont( const QFont& f )
 {
-  if ( mComposition )
-  {
-    int pixelSize = mComposition->pixelFontSize( f.pointSizeF() );
-    mLayerFont = f;
-    mLayerFont.setPixelSize( pixelSize );
-  }
-  else
-  {
-    mLayerFont = f;
-  }
-
+  mLayerFont = f;
   adjustBoxSize();
   update();
 }
 
 void QgsComposerLegend::setItemFont( const QFont& f )
 {
-  if ( mComposition )
-  {
-    int pixelSize = mComposition->pixelFontSize( f.pointSizeF() );
-    mItemFont = f;
-    mItemFont.setPixelSize( pixelSize );
-  }
-  else
-  {
-    mItemFont = f;
-  }
-
+  mItemFont = f;
   adjustBoxSize();
   update();
 }
 
 QFont QgsComposerLegend::titleFont() const
 {
-  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
-  {
-    double pointSize = mComposition->pointFontSize( mTitleFont.pixelSize() );
-    QFont returnFont = mTitleFont;
-    returnFont.setPointSize( pointSize );
-    return returnFont;
-  }
   return mTitleFont;
 }
 
 QFont QgsComposerLegend::layerFont() const
 {
-  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
-  {
-    double pointSize = mComposition->pointFontSize( mLayerFont.pixelSize() );
-    QFont returnFont = mLayerFont;
-    returnFont.setPointSize( pointSize );
-    return returnFont;
-  }
   return mLayerFont;
 }
 
 QFont QgsComposerLegend::itemFont() const
 {
-  if ( mComposition ) //make pixel to point conversion to show correct point value in dialogs
-  {
-    double pointSize = mComposition->pointFontSize( mItemFont.pixelSize() );
-    QFont returnFont = mItemFont;
-    returnFont.setPointSize( pointSize );
-    return returnFont;
-  }
   return mItemFont;
 }
 
