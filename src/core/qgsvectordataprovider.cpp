@@ -304,7 +304,7 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values )
 
   while ( getNextFeature( f ) )
   {
-    if ( set.contains( f.attributeMap()[index].toString() ) )
+    if ( !set.contains( f.attributeMap()[index].toString() ) )
     {
       values.append( f.attributeMap()[index] );
       set.insert( f.attributeMap()[index].toString() );
