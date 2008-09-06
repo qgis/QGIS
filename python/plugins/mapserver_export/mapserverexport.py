@@ -48,7 +48,7 @@ class MapServerExport:
 
   def unload(self):
     # Remove the plugin menu item and icon
-    self.iface.removePluginMenu("&Zoom to Point...",self.action)
+    self.iface.removePluginMenu("&MapServer Export...",self.action)
     self.iface.removeToolBarIcon(self.action)
 
   # run method that performs all the real work
