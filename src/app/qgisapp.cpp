@@ -4730,6 +4730,11 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
    * present, there is no python separator and the plugin list is at the bottom
    * of the menu.
    */
+#ifdef Q_WS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  // Other platforms ignore the prefix char when comparing strings.
+  menuName.remove( QChar( '&' ) );
+#endif
   QAction *before = mActionPluginSeparator2;  // python separator or end of list
   if ( !mActionPluginSeparator1 )
   {
