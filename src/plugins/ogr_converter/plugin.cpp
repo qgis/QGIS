@@ -90,7 +90,7 @@ void OgrPlugin::unload()
   //OGRCleanupAll();
 
   // remove the GUI
-  mQGisIface->removePluginMenu( "&OGR Layer Converter", mQActionPointer );
+  mQGisIface->removePluginMenu( "OG&R Converter", mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
