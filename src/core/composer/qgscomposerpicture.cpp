@@ -111,6 +111,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     {
       mMode = SVG;
       mDefaultSvgSize = validTestRenderer.defaultSize();
+      mSvgCacheUpToDate = false;
     }
     else
     {
