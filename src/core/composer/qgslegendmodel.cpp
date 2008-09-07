@@ -279,7 +279,8 @@ void QgsLegendModel::updateLayer(QStandardItem* layerItem)
   if(mapLayer)
     {
       //delete all the entries under layer item
-      for(int i = rowCount() - 1; i >= 0; --i)
+      int currentRowCount = layerItem->rowCount();
+      for(int i = currentRowCount - 1; i >= 0; --i)
 	{
 	  layerItem->removeRow(i);
 	}
