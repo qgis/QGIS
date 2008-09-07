@@ -17,7 +17,9 @@
  ***************************************************************************/
 #include "qgsrenderer.h"
 
+#include <QBrush>
 #include <QColor>
+#include <QMatrix>
 #include <QString>
 
 
@@ -47,4 +49,14 @@ bool QgsRenderer::containsPixmap() const
     default:
       return false;
   }
+}
+
+void QgsRenderer::scaleBrush(QBrush& b, double rasterScaleFactor) const
+{
+  if(rasterScaleFactor != 1.0)
+    {
+      QMatrix m;
+      m.scale(1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor);
+      b.setMatrix(m);
+    }
 }

@@ -125,7 +125,13 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
       QPen pen = mSymbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
       p->setPen( pen );
-      p->setBrush( mSymbol->brush() );
+
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = mSymbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  p->setBrush(brush);
+	}
     }
     else
     {
@@ -134,10 +140,15 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
       // We set pen color in case it is an area with no brush (transparent).
       // Previously, this was only done for lines. Why?
       pen.setColor( mSelectionColor );
-      QBrush brush = mSymbol->brush();
-      brush.setColor( mSelectionColor );
       p->setPen( pen );
-      p->setBrush( brush );
+
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = mSymbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  brush.setColor( mSelectionColor );
+	  p->setBrush( brush );
+	}
     }
   }
 }

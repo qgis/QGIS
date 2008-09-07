@@ -30,6 +30,7 @@ class QColor;
 #include <QList>
 
 class QgsSymbol;
+class QBrush;
 
 typedef QList<int> QgsAttributeList;
 
@@ -93,6 +94,9 @@ class CORE_EXPORT QgsRenderer
 
     /**Layer type*/
     QGis::VectorType mVectorType;
+
+    /**Scales a brush to a given raster scale factor (e.g. for printing)*/
+    void scaleBrush(QBrush& b, double rasterScaleFactor) const;
 };
 
 #endif // QGSRENDERER_H

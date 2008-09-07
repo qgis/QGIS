@@ -141,17 +141,28 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       QPen pen = theSymbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
       p->setPen( pen );
-      p->setBrush( theSymbol->brush() );
+
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = theSymbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  p->setBrush(brush);
+	}
     }
     else
     {
       QPen pen = theSymbol->pen();
       pen.setColor( mSelectionColor );
       pen.setWidthF( widthScale * pen.widthF() );
-      QBrush brush = theSymbol->brush();
-      brush.setColor( mSelectionColor );
       p->setPen( pen );
-      p->setBrush( brush );
+
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = theSymbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  brush.setColor( mSelectionColor );
+	  p->setBrush( brush );
+	}
     }
   }
 }
