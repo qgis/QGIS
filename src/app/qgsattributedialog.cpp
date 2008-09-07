@@ -35,6 +35,9 @@
 #include <QSlider>
 #include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QFileDialog>
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature )
     : QDialog(),
@@ -245,6 +248,22 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         myWidget = le;
       }
       break;
+
+      case QgsVectorLayer::FileName:
+      {
+        QLineEdit *le = new QLineEdit( myFieldValue.toString() );
+
+        QPushButton *pb = new QPushButton( tr("...") );
+        connect(pb, SIGNAL(clicked()), this, SLOT(selectFileName()));
+
+        QHBoxLayout *hbl = new QHBoxLayout();
+        hbl->addWidget(le);
+        hbl->addWidget(pb);
+
+        myWidget = new QWidget;
+        myWidget->setLayout(hbl);
+      }
+      break;
     }
 
     if ( myFieldType == QVariant::Int )
@@ -272,6 +291,27 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 QgsAttributeDialog::~QgsAttributeDialog()
 {
   saveGeometry();
+}
+
+void QgsAttributeDialog::selectFileName()
+{
+  QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
+  if(!pb)
+    return;
+
+  QWidget *hbox = dynamic_cast<QWidget *>( pb->parent() );
+  if(!hbox)
+    return;
+
+  QLineEdit *le = hbox->findChild<QLineEdit *>();
+  if(!le)
+    return;
+
+  QString fileName = QFileDialog::getOpenFileName(0 , tr("Select a file"));
+  if(fileName.isNull())
+    return;
+
+  le->setText(fileName);
 }
 
 void QgsAttributeDialog::accept()
@@ -326,6 +366,12 @@ void QgsAttributeDialog::accept()
     if ( dsb )
     {
       myFieldValue = QString::number( dsb->value() );
+    }
+
+    le = mpWidgets.value( myIndex )->findChild<QLineEdit *>("lineEdit");
+    if(le)
+    {
+      myFieldValue = le->text();
     }
 
     switch ( theField.type() )

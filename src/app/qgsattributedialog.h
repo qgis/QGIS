@@ -50,6 +50,9 @@ class QgsAttributeDialog: public QDialog, private Ui::QgsAttributeDialogBase
      */
     void restoreGeometry();
 
+  public slots:
+    void selectFileName();
+
   private:
     QString mSettingsPath;
     QList<QWidget *> mpWidgets;
