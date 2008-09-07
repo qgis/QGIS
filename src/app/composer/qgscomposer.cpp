@@ -399,7 +399,7 @@ void QgsComposer::zoomFull( void )
 {
   if ( mView )
   {
-    mView->fitInView( 0, 0, mComposition->paperWidth(), mComposition->paperHeight(), Qt::KeepAspectRatio );
+    mView->fitInView( 0, 0, mComposition->paperWidth() + 1, mComposition->paperHeight() + 1, Qt::KeepAspectRatio );
   }
 }
 
