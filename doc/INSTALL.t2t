@@ -736,7 +736,7 @@ make install
 
 == Building QGIS with Qt4.x ==
 
-**Requires:** Ubuntu Gutsy / Debian derived distro
+**Requires:** Ubuntu Hardy / Debian derived distro
 
 These notes are current for Ubuntu 7.10 - other versions and Debian derived 
 distros may require slight variations in package names.
@@ -832,6 +832,10 @@ python-qt4 python-qt4-dev python-sip4 sip4 python-sip4-dev
 distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
 language bindings you may need to build and install those packages from source.
 
+If you do not have cmake installed already:
+```
+sudo apt-get install cmake
+```
 
 == GRASS Specific Steps ==
 
