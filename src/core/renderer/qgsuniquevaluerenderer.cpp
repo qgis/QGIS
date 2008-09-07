@@ -150,17 +150,26 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
       QPen pen = symbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
       p->setPen( pen );
-      p->setBrush( symbol->brush() );
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = symbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  p->setBrush(brush);
+	}
     }
     else
     {
       QPen pen = symbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
       pen.setColor( mSelectionColor );
-      QBrush brush = symbol->brush();
-      brush.setColor( mSelectionColor );
       p->setPen( pen );
-      p->setBrush( brush );
+      if(mVectorType == QGis::Polygon)
+	{
+	  QBrush brush = symbol->brush();
+	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
+	  brush.setColor( mSelectionColor );
+	  p->setBrush( brush );
+	}
     }
   }
 }
