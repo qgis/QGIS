@@ -75,6 +75,8 @@ QgsComposerItem::~QgsComposerItem()
   {
     mComposition->removeItemFromZList( this );
   }
+
+  delete mBoundingResizeRectangle;
 }
 
 void QgsComposerItem::setSelected( bool s )
