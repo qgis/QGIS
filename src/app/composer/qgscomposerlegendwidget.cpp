@@ -368,6 +368,7 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
       mLegend->model()->updateItem(currentItem);
     }
   mLegend->update();
+  mLegend->adjustBoxSize();
 }
 
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
