@@ -1367,11 +1367,12 @@ void QgsRasterLayerProperties::apply()
     if ( myRasterShaderFunction )
     {
       //iterate through mColormapTreeWidget and set colormap info of layer
-      QList<QgsColorRampShader::ColorRampItem> mColorRampItems;
+      QList<QgsColorRampShader::ColorRampItem> myColorRampItems;
 
+      bool inserted = false;
+      int myCurrentIndex = 0;
       int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
       QTreeWidgetItem* myCurrentItem;
-
       for ( int i = 0; i < myTopLevelItemCount; ++i )
       {
         myCurrentItem = mColormapTreeWidget->topLevelItem( i );
@@ -1383,9 +1384,33 @@ void QgsRasterLayerProperties::apply()
         myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
         myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
         myNewColorRampItem.label = myCurrentItem->text( 2 );
-        mColorRampItems.push_back( myNewColorRampItem );
+        
+        //Simple insertion sort - speed is not a huge factor here
+        inserted = false;
+        myCurrentIndex = 0;
+        while ( !inserted )
+        {
+          if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
+          {
+            myColorRampItems.push_back( myNewColorRampItem );
+            inserted = true;
+          }
+          else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
+          {
+            myColorRampItems.push_back( myNewColorRampItem );
+            inserted = true;
+          }
+          else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value )
+          {
+            myColorRampItems.insert( myCurrentIndex + 1, myNewColorRampItem );
+            inserted = true;
+          }
+          myCurrentIndex++;
+        }
       }
-      myRasterShaderFunction->setColorRampItemList( mColorRampItems );
+      myRasterShaderFunction->setColorRampItemList( myColorRampItems );
+      //Reload table in GUI because it may have been sorted or contained invalid values
+      populateColorMapTable( myColorRampItems );
 
       if ( cboxColorInterpolation->currentText() == tr( "Linear" ) )
       {
@@ -2610,6 +2635,7 @@ void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick( QTreeWidgetI
   {
     if ( column == 1 )
     {
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       //show color dialog
       QColor newColor = QColorDialog::getColor();
       if ( newColor.isValid() )
