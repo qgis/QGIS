@@ -37,19 +37,19 @@ email                : sherman at mrcc.com
 
 
 // constructor
-QgsMapserverExport::QgsMapserverExport(QWidget * parent, Qt::WFlags fl)
-: QDialog(parent, fl)  
+QgsMapserverExport::QgsMapserverExport( QWidget * parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
-  setupUi(this);
-  connect(this, SIGNAL(accepted()), this, SLOT(apply()));
+  setupUi( this );
+  connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   // drag and drop filter
-  txtQgisFilePath->setSuffixFilter("qgs");
+  txtQgisFilePath->setSuffixFilter( "qgs" );
   // initialize python
   initPy();
-  qDebug("Reading settings");
+  qDebug( "Reading settings" );
   QSettings mySettings;
-  txtMapFilePath->setText(mySettings.value("mapserverExport/lastMapFile","").toString());
-  txtQgisFilePath->setText(mySettings.value("mapserverExport/lastQgsFile","").toString());
+  txtMapFilePath->setText( mySettings.value( "mapserverExport/lastMapFile", "" ).toString() );
+  txtQgisFilePath->setText( mySettings.value( "mapserverExport/lastQgsFile", "" ).toString() );
 
 }
 
@@ -65,122 +65,126 @@ QgsMapserverExport::~QgsMapserverExport()
 // Get the base name for the map file
 QString QgsMapserverExport::baseName()
 {
-  QFileInfo fi(txtMapFilePath->text());
-  return fi.baseName(true);
+  QFileInfo fi( txtMapFilePath->text() );
+  return fi.baseName( true );
 }
 /** Auto-connected slots are here **/
 
 // Choose the map file to create
 void QgsMapserverExport::on_btnChooseFile_clicked()
 {
-  mapFile = QFileDialog::getSaveFileName(this, tr("Name for the map file"),
-      ".", tr("MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box"));
-  txtMapFilePath->setText(mapFile);
+  mapFile = QFileDialog::getSaveFileName( this, tr( "Name for the map file" ),
+                                          ".", tr( "MapServer map files (*.map);;All files (*.*)", "Filter list for selecting files from a dialog box" ) );
+  txtMapFilePath->setText( mapFile );
 
 }
 // Chooose the project file to process
 void QgsMapserverExport::on_btnChooseProjectFile_clicked()
 {
-  qgisProjectFile = QFileDialog::getOpenFileName(this, tr("Choose the QGIS project file"),
-      ".", tr("QGIS Project Files (*.qgs);;All files (*.*)", "Filter list for selecting files from a dialog box"));
-  txtQgisFilePath->setText(qgisProjectFile);
+  qgisProjectFile = QFileDialog::getOpenFileName( this, tr( "Choose the QGIS project file" ),
+                    ".", tr( "QGIS Project Files (*.qgs);;All files (*.*)", "Filter list for selecting files from a dialog box" ) );
+  txtQgisFilePath->setText( qgisProjectFile );
 
 }
 // Toggle controls based on the "layer only" checkbox
-void QgsMapserverExport::on_chkExpLayersOnly_clicked(bool isChecked)
+void QgsMapserverExport::on_chkExpLayersOnly_clicked( bool isChecked )
 {
   // disable other sections if only layer export is desired
-    txtMapName->setEnabled(!isChecked);
-    txtMapWidth->setEnabled(!isChecked);
-    txtMapHeight->setEnabled(!isChecked);
-    cmbMapUnits->setEnabled(!isChecked);
-    cmbMapImageType->setEnabled(!isChecked);
-    //txtMinScale->setEnabled(!isChecked);
-    //txtMaxScale->setEnabled(!isChecked);
-    txtWebTemplate->setEnabled(!isChecked);
-    txtWebHeader->setEnabled(!isChecked);
-    txtWebFooter->setEnabled(!isChecked);
-    btnChooseFooterFile->setEnabled(!isChecked);
-    btnChooseHeaderFile->setEnabled(!isChecked);
-    btnChooseTemplateFile->setEnabled(!isChecked);
+  txtMapName->setEnabled( !isChecked );
+  txtMapWidth->setEnabled( !isChecked );
+  txtMapHeight->setEnabled( !isChecked );
+  cmbMapUnits->setEnabled( !isChecked );
+  cmbMapImageType->setEnabled( !isChecked );
+  //txtMinScale->setEnabled(!isChecked);
+  //txtMaxScale->setEnabled(!isChecked);
+  txtWebTemplate->setEnabled( !isChecked );
+  txtWebHeader->setEnabled( !isChecked );
+  txtWebFooter->setEnabled( !isChecked );
+  btnChooseFooterFile->setEnabled( !isChecked );
+  btnChooseHeaderFile->setEnabled( !isChecked );
+  btnChooseTemplateFile->setEnabled( !isChecked );
 }
 
 void QgsMapserverExport::apply()
 {
-  qDebug("Writing settings");
+  qDebug( "Writing settings" );
   QSettings mySettings;
-  mySettings.setValue("mapserverExport/lastMapFile",txtMapFilePath->text());
-  mySettings.setValue("mapserverExport/lastQgsFile",txtQgisFilePath->text());
-  
+  mySettings.setValue( "mapserverExport/lastMapFile", txtMapFilePath->text() );
+  mySettings.setValue( "mapserverExport/lastQgsFile", txtQgisFilePath->text() );
+
   char *cstr;
   PyObject *pstr, *pmod, *pclass, *pinst, *pmeth, *pargs;
   //TODO Need to append the path to the qgis python files using the path to the
   //     Python files in the QGIS install directory
-  PyRun_SimpleString("import sys");
+  PyRun_SimpleString( "import sys" );
 
   // Setup up path to the python script directory
   QString scriptDir = QgsApplication::pkgDataPath() + QDir::separator() + "python";
-  qDebug("Python scripts directory: " + scriptDir.toLocal8Bit());
+  qDebug( "Python scripts directory: " + scriptDir.toLocal8Bit() );
   //QString curdir = "/home/gsherman/development/qgis_qt_port/tools/mapserver_export";
-  QString sysCmd = QString("sys.path.append('%1')").arg(scriptDir);
-  PyRun_SimpleString(sysCmd.ascii());
+  QString sysCmd = QString( "sys.path.append('%1')" ).arg( scriptDir );
+  PyRun_SimpleString( sysCmd.ascii() );
 
   // Import the module
-  std::cout << "Importing module" << std::endl; 
-  pmod = PyImport_ImportModule("ms_export");
-  if(!pmod) {
-	  QMessageBox::warning(this, "Map Export Error", "ms_export python module not found");
-	  return;
+  std::cout << "Importing module" << std::endl;
+  pmod = PyImport_ImportModule( "ms_export" );
+  if ( !pmod )
+  {
+    QMessageBox::warning( this, "Map Export Error", "ms_export python module not found" );
+    return;
   }
 
-  std::cout << "Getting Qgis2Map constructor as python obj" << std::endl; 
-  pclass = PyObject_GetAttrString(pmod, "Qgis2Map");
-  Py_DECREF(pmod);
-  std::cout << "Creating args to pass to the constructor" << std::endl; 
-  pargs = Py_BuildValue("(ss)", txtQgisFilePath->text().ascii(),txtMapFilePath->text().ascii());
+  std::cout << "Getting Qgis2Map constructor as python obj" << std::endl;
+  pclass = PyObject_GetAttrString( pmod, "Qgis2Map" );
+  Py_DECREF( pmod );
+  std::cout << "Creating args to pass to the constructor" << std::endl;
+  pargs = Py_BuildValue( "(ss)", txtQgisFilePath->text().ascii(), txtMapFilePath->text().ascii() );
 //XXX for testing:  pargs = Py_BuildValue("(ss)", "foo", "bar");
 
-  pinst  = PyEval_CallObject(pclass, pargs);
+  pinst  = PyEval_CallObject( pclass, pargs );
 
-  Py_DECREF(pclass);
-  Py_DECREF(pargs);
+  Py_DECREF( pclass );
+  Py_DECREF( pargs );
 
-  // Set the various options for the conversion only if we are doing a full 
+  // Set the various options for the conversion only if we are doing a full
   // export (ie more than just layer info)
-  if(!chkExpLayersOnly->isChecked())
+  if ( !chkExpLayersOnly->isChecked() )
   {
-    std::cout << "Initializing all options" << std::endl; 
-    pmeth = PyObject_GetAttrString(pinst, "setOptions");
-    pargs = Py_BuildValue("(ssssssss)", 
-        cmbMapUnits->currentText().ascii(), cmbMapImageType->currentText().ascii(), 
-        txtMapName->text().ascii(), txtMapWidth->text().ascii(), txtMapHeight->text().ascii(), 
-        txtWebTemplate->text().ascii(), txtWebFooter->text().ascii(),txtWebHeader->text().ascii());
-    pstr = PyEval_CallObject(pmeth, pargs);
+    std::cout << "Initializing all options" << std::endl;
+    pmeth = PyObject_GetAttrString( pinst, "setOptions" );
+    pargs = Py_BuildValue( "(ssssssss)",
+                           cmbMapUnits->currentText().ascii(), cmbMapImageType->currentText().ascii(),
+                           txtMapName->text().ascii(), txtMapWidth->text().ascii(), txtMapHeight->text().ascii(),
+                           txtWebTemplate->text().ascii(), txtWebFooter->text().ascii(), txtWebHeader->text().ascii() );
+    pstr = PyEval_CallObject( pmeth, pargs );
 
-    Py_DECREF(pargs);
-    Py_DECREF(pmeth);
+    Py_DECREF( pargs );
+    Py_DECREF( pmeth );
 
   }
   // Get the writeMapFile method from the Qgis2Map class
-  pmeth = PyObject_GetAttrString(pinst, "writeMapFile");
-  pargs = Py_BuildValue("()");
+  pmeth = PyObject_GetAttrString( pinst, "writeMapFile" );
+  pargs = Py_BuildValue( "()" );
   // Execute the writeMapFile method to parse the QGIS project file and create the .map file
-  pstr = PyEval_CallObject(pmeth, pargs);
-  if(pstr) {
+  pstr = PyEval_CallObject( pmeth, pargs );
+  if ( pstr )
+  {
     // Show the return value
-    PyArg_Parse(pstr, "s", &cstr);
+    PyArg_Parse( pstr, "s", &cstr );
     std::cout << "Result: " << std::endl  << cstr << std::endl;
 
     // Show the results to the user
-    QMessageBox::information(this, "Results of Export", QString(cstr));
-    Py_DECREF(pstr);
-  } else {
-    QMessageBox::warning(this, "Mapfile Export Error", "method call failed");
+    QMessageBox::information( this, "Results of Export", QString( cstr ) );
+    Py_DECREF( pstr );
+  }
+  else
+  {
+    QMessageBox::warning( this, "Mapfile Export Error", "method call failed" );
   }
 }
 void QgsMapserverExport::on_buttonBox_helpRequested()
 {
- QgsContextHelp::run(context_id); 
+  QgsContextHelp::run( context_id );
 }
 
 /** End of Auto-connected Slots **/
@@ -192,26 +196,27 @@ bool QgsMapserverExport::write()
   //QMessageBox::information(0,"Full Path",fullPath);
   QMessageBox::StandardButton okToSave = QMessageBox::Ok;
   // Check for file and prompt for overwrite if it exists
-  if (QFile::exists(txtMapFilePath->text()))
+  if ( QFile::exists( txtMapFilePath->text() ) )
   {
-    okToSave = QMessageBox::warning(0, tr("Overwrite File?"), txtMapFilePath->text() +
-        tr(" exists. \nDo you want to overwrite it?",
-           "a fileName is prepended to this text, and appears in a dialog box"),
-           QMessageBox::Ok | QMessageBox::Cancel);
+    okToSave = QMessageBox::warning( 0, tr( "Overwrite File?" ), txtMapFilePath->text() +
+                                     tr( " exists. \nDo you want to overwrite it?",
+                                         "a fileName is prepended to this text, and appears in a dialog box" ),
+                                     QMessageBox::Ok | QMessageBox::Cancel );
   }
-  if (okToSave == QMessageBox::Ok)
+  if ( okToSave == QMessageBox::Ok )
   {
     // write the project information to the selected file
     writeMapFile();
     return true;
-  } else
+  }
+  else
   {
     return false;
   }
 }
 
 
-void QgsMapserverExport::setFileName(QString fn)
+void QgsMapserverExport::setFileName( QString fn )
 {
   //fullPath = fn;
 }
@@ -226,9 +231,9 @@ void QgsMapserverExport::writeMapFile()
 {
   /*
   // write the map file, making massive assumptions about default values
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
   std::cout << "Opening map file " << txtMapFilePath->text().toLocal8Bit().data() << std::endl;
-#endif
+  #endif
   std::ofstream mapFile(txtMapFilePath->text().toLocal8Bit().data());
   if (!mapFile.fail())
   {
@@ -283,9 +288,9 @@ void QgsMapserverExport::writeMapFile()
       // write comments about the imagepath and image url
       mapFile << "# Set IMAGEPATH to the path where mapserver should\n" <<
         "# write its output\n" <<
-        " IMAGEPATH '/tmp/'" << std::endl; 
-      mapFile << "# Set IMAGEURL to the url that points to IMAGEPATH" << std::endl; 
-      mapFile << " #IMAGEURL '/map_output/'" << std::endl; 
+        " IMAGEPATH '/tmp/'" << std::endl;
+      mapFile << "# Set IMAGEURL to the url that points to IMAGEPATH" << std::endl;
+      mapFile << " #IMAGEURL '/map_output/'" << std::endl;
       // end of web section
       mapFile << "END" << std::endl;
 
@@ -312,15 +317,15 @@ void QgsMapserverExport::writeMapFile()
       mapFile << " # Mapserver map file." << std::endl;
     }
 
-    // write layer definitions 
+    // write layer definitions
     for (int i = 0; i < map->layerCount(); i++)
     {
       bool isPolygon = false;
       bool isLine = false;
       QgsMapLayer *lyr = map->getZpos(i);
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "Mapsrver Export Processing Layer" << std::endl;
-#endif
+  #endif
       mapFile << "LAYER" << std::endl;
       QString name = lyr->name().lower();
       // MapServer NAME must be < 20 char and unique
@@ -330,9 +335,9 @@ void QgsMapserverExport::writeMapFile()
       name.replace(QRegExp("\\)"), "_");
       mapFile << "  NAME " << name.toLocal8Bit().data() << std::endl;
       // feature type
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export checking feature type" << std::endl;
-#endif
+  #endif
       mapFile << "  TYPE ";
       switch (lyr->featureType())
       {
@@ -350,7 +355,7 @@ void QgsMapserverExport::writeMapFile()
           mapFile << "POLYGON";
           isPolygon = true;
           break;
-                 
+
       }
       if(lyr->type() == QgsMapLayer::RASTER)
       {
@@ -358,9 +363,9 @@ void QgsMapserverExport::writeMapFile()
       }
       mapFile << std::endl;
 
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export checking visibility" << std::endl;
-#endif
+  #endif
       // set visibility (STATUS)
       mapFile << "  STATUS ";
       if (lyr->isVisible())
@@ -374,70 +379,70 @@ void QgsMapserverExport::writeMapFile()
 
       // data source (DATA)
       // Data source spec depends on layer type
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export checking layer type" << std::endl;
-#endif
+  #endif
       switch (lyr->type())
       {
         case QgsMapLayer::VECTOR:
           // get the provider type
           {
-            QString providerType = 
+            QString providerType =
               dynamic_cast<QgsVectorLayer*>(lyr)->providerType();
             if(providerType == "postgres")
             {
-              QgsDataSourceURI *dUri = 
+              QgsDataSourceURI *dUri =
                 dynamic_cast<QgsVectorLayer *>(lyr)->dataProvider()->getURI();
               mapFile << "CONNECTION \"user=" << dUri->username.toLocal8Bit().data();
               if(dUri->password.length() > 0)
               {
                 mapFile << " password="<< dUri->password.toLocal8Bit().data();
               }
-              mapFile  << " dbname=" << dUri->database.toLocal8Bit().data() 
+              mapFile  << " dbname=" << dUri->database.toLocal8Bit().data()
                 << " host=" << dUri->host.toLocal8Bit().data()
                 << " port=" << dUri->port.toLocal8Bit().data()
-                << "\"" << std::endl; 
-              mapFile << "CONNECTIONTYPE postgis" << std::endl; 
-              mapFile << "DATA \"" << dUri->geometryColumn.toLocal8Bit().data() << " from " 
-                << dUri->table.toLocal8Bit().data() << "\"" << std::endl; 
+                << "\"" << std::endl;
+              mapFile << "CONNECTIONTYPE postgis" << std::endl;
+              mapFile << "DATA \"" << dUri->geometryColumn.toLocal8Bit().data() << " from "
+                << dUri->table.toLocal8Bit().data() << "\"" << std::endl;
               if(dUri->sql.length() > 0)
               {
-                mapFile << "FILTER \"" << dUri->sql.toLocal8Bit().data() << "\"" << std::endl; 
+                mapFile << "FILTER \"" << dUri->sql.toLocal8Bit().data() << "\"" << std::endl;
               }
 
             }
             else
             {
 
-              // must be an ogr 
+              // must be an ogr
               mapFile << "  DATA " << lyr->source().toLocal8Bit().data() << std::endl;
             }
           }
           break;
         case QgsMapLayer::RASTER:
-          mapFile << "  DATA " << lyr->source().toLocal8Bit().data() << std::endl; 
-          
+          mapFile << "  DATA " << lyr->source().toLocal8Bit().data() << std::endl;
+
           break;
       }
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export creating symbol entries" << std::endl;
-#endif
+  #endif
       // create a simple class entry based on red fill color and black outline color
       //TODO: adapt the following section to the new symbology
 
       mapFile << "  CLASS" << std::endl;
       //QListViewItem *li = map->getLegend()->currentItem();
       //    return li->text(0);
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export symbol name" << std::endl;
-#endif
+  #endif
       mapFile << "    NAME \"" << lyr->name().toLocal8Bit().data() << "\"" << std::endl;
       mapFile << "    # TEMPLATE" << std::endl;
       if (isPolygon)
       {
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
         std::cout << "\tMapsrver Export symbol fill color" << std::endl;
-#endif
+  #endif
         // use random fill colors
         // TODO Get fill color from the renderer
         // TODO Figure out what to do for layers that are
@@ -449,9 +454,9 @@ void QgsMapserverExport::writeMapFile()
 
         mapFile << "    COLOR " << red << " " << green << " " << blue << std::endl;
       }
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export checking for line symbol " << std::endl;
-#endif
+  #endif
       if (isPolygon || isLine)
       {
         // use line color
@@ -464,9 +469,9 @@ void QgsMapserverExport::writeMapFile()
       }
       mapFile << "  END" << std::endl;
       mapFile << "END" << std::endl;
-#ifdef QGISDEBUG
+  #ifdef QGISDEBUG
       std::cout << "\tMapsrver Export layer definition done..." << std::endl;
-#endif
+  #endif
     }
     if (!chkExpLayersOnly->isChecked())
     {
@@ -477,7 +482,7 @@ void QgsMapserverExport::writeMapFile()
   } else
   {
   }
-*/
+  */
 }
 void QgsMapserverExport::showHelp()
 {
@@ -494,6 +499,6 @@ void QgsMapserverExport::initPy()
   // init the python interpreter
   Py_Initialize();
   // spit something to stdout
-  PyRun_SimpleString("print '>>>>>>>>>>>>>>>>>>> Python initialized <<<<<<<<<<<<<<<<<<<'");
+  PyRun_SimpleString( "print '>>>>>>>>>>>>>>>>>>> Python initialized <<<<<<<<<<<<<<<<<<<'" );
 }
 

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     void setUnitLabeling( const QString& label ) {mUnitLabeling = label;}
 
     QFont font() const;
-    
+
     void setFont( const QFont& font );
 
     QPen pen() const {return mPen;}

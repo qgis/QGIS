@@ -51,12 +51,12 @@ bool QgsRenderer::containsPixmap() const
   }
 }
 
-void QgsRenderer::scaleBrush(QBrush& b, double rasterScaleFactor) const
+void QgsRenderer::scaleBrush( QBrush& b, double rasterScaleFactor ) const
 {
-  if(rasterScaleFactor != 1.0)
-    {
-      QMatrix m;
-      m.scale(1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor);
-      b.setMatrix(m);
-    }
+  if ( rasterScaleFactor != 1.0 )
+  {
+    QMatrix m;
+    m.scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+    b.setMatrix( m );
+  }
 }

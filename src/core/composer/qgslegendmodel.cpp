@@ -174,11 +174,11 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 #endif //0
 
-    QStandardItem* currentSymbolItem = itemFromSymbol(*symbolIt);
-    if(!currentSymbolItem)
-      {
-	continue;
-      }
+    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt );
+    if ( !currentSymbolItem )
+    {
+      continue;
+    }
 
     layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
 
@@ -233,74 +233,74 @@ void QgsLegendModel::removeAllSymbols()
   mSymbols.clear();
 }
 
-void QgsLegendModel::updateItem(QStandardItem* item)
+void QgsLegendModel::updateItem( QStandardItem* item )
 {
-  if(!item)
-    {
-      return;
-    }
+  if ( !item )
+  {
+    return;
+  }
 
   //is it a toplevel layer item?
-  QModelIndex itemIndex = indexFromItem(item);
+  QModelIndex itemIndex = indexFromItem( item );
   QModelIndex parentIndex = itemIndex.parent();
   if ( !parentIndex.isValid() ) // a layer item?
-    {
-      updateLayer(item);
-    }
+  {
+    updateLayer( item );
+  }
 
   //take QgsSymbol* from user data
   QVariant symbolVariant = item->data();
   QgsSymbol* symbol = 0;
   if ( symbolVariant.canConvert<void*>() )
-    {
-      void* symbolData = symbolVariant.value<void*>();
-      symbol = ( QgsSymbol* )( symbolData );
-    }
+  {
+    void* symbolData = symbolVariant.value<void*>();
+    symbol = ( QgsSymbol* )( symbolData );
+  }
 
-    if ( symbol )  //vector classification item
-    {
-      updateVectorClassificationItem(item, symbol, item->text());
-    }
-    else if(!item->icon().isNull()) //raster classification item
-    {
-      updateRasterClassificationItem(item);
-    }
+  if ( symbol )  //vector classification item
+  {
+    updateVectorClassificationItem( item, symbol, item->text() );
+  }
+  else if ( !item->icon().isNull() ) //raster classification item
+  {
+    updateRasterClassificationItem( item );
+  }
 }
 
-void QgsLegendModel::updateLayer(QStandardItem* layerItem)
+void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 {
-  if(!layerItem)
-    {
-      return;
-    }
+  if ( !layerItem )
+  {
+    return;
+  }
 
   QString layerId = layerItem->data().toString();
-  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer(layerId);
-  if(mapLayer)
+  QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+  if ( mapLayer )
+  {
+    //delete all the entries under layer item
+    int currentRowCount = layerItem->rowCount();
+    for ( int i = currentRowCount - 1; i >= 0; --i )
     {
-      //delete all the entries under layer item
-      int currentRowCount = layerItem->rowCount();
-      for(int i = currentRowCount - 1; i >= 0; --i)
-	{
-	  layerItem->removeRow(i);
-	}
-      
-      //and add the new ones...
-      switch(mapLayer->type())
-	{
-	case QgsMapLayer::VECTOR:
-	  addVectorLayerItems(layerItem, mapLayer);
-	  break;
-	case QgsMapLayer::RASTER:
-	  addRasterLayerItem(layerItem, mapLayer);
-	  break;
-	default:
-	  break;
-	}
+      layerItem->removeRow( i );
     }
+
+    //and add the new ones...
+    switch ( mapLayer->type() )
+    {
+      case QgsMapLayer::VECTOR:
+        addVectorLayerItems( layerItem, mapLayer );
+        break;
+      case QgsMapLayer::RASTER:
+        addRasterLayerItem( layerItem, mapLayer );
+        break;
+      default:
+        break;
+    }
+  }
 }
 
-void QgsLegendModel::updateVectorClassificationItem(QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText)
+void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText )
 {
   //this function uses the following logic to find a classification match:
   //first test if there is a symbol where lowerbound - upperbound equels itemText
@@ -309,28 +309,28 @@ void QgsLegendModel::updateVectorClassificationItem(QStandardItem* classificatio
 
   //get parent item
   QStandardItem* parentItem = classificationItem->parent();
-  if(!parentItem)
+  if ( !parentItem )
   {
-      return;
-    }
+    return;
+  }
 
   //get maplayer object from parent item
-  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer(parentItem->data().toString());
-  if(!ml)
-    {
-      return;
-    }
-  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>(ml);
-  if(!vl)
-    {
-      return;
-    }
- 
+  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( parentItem->data().toString() );
+  if ( !ml )
+  {
+    return;
+  }
+  QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+  if ( !vl )
+  {
+    return;
+  }
+
   const QgsRenderer* layerRenderer = vl->renderer();
-  if(!layerRenderer)
-    {
-      return;
-    }
+  if ( !layerRenderer )
+  {
+    return;
+  }
 
   QList<QgsSymbol*> symbolList = layerRenderer->symbols();
   QList<QgsSymbol*>::iterator symbolIt;
@@ -338,76 +338,76 @@ void QgsLegendModel::updateVectorClassificationItem(QStandardItem* classificatio
 
   //try to find a symbol where lowerbound - upperbound matches item text
   symbolIt = symbolList.begin();
-  for(; symbolIt != symbolList.end(); ++symbolIt)
+  for ( ; symbolIt != symbolList.end(); ++symbolIt )
+  {
+    currentSymbol = *symbolIt;
+    if ( currentSymbol->lowerValue() + " - " + currentSymbol->upperValue() == itemText )
     {
-      currentSymbol = *symbolIt;
-      if(currentSymbol->lowerValue() + " - " + currentSymbol->upperValue() == itemText)
-	{ 
-	  removeSymbol(symbol);
-	  parentItem->insertRow(classificationItem->row(), itemFromSymbol(currentSymbol));
-	  parentItem->removeRow(classificationItem->row());
-	  return;
-	}
+      removeSymbol( symbol );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->removeRow( classificationItem->row() );
+      return;
     }
+  }
 
   //try to find a symbol where lower value matches item text (non-numeric classifications)
   symbolIt = symbolList.begin();
-  for(; symbolIt != symbolList.end(); ++symbolIt)
+  for ( ; symbolIt != symbolList.end(); ++symbolIt )
+  {
+    currentSymbol = *symbolIt;
+    if ( currentSymbol->lowerValue() == itemText )
     {
-      currentSymbol = *symbolIt;
-      if(currentSymbol->lowerValue() == itemText)
-	{
-	  removeSymbol(symbol);
-	  parentItem->insertRow(classificationItem->row(), itemFromSymbol(currentSymbol));
-	  parentItem->removeRow(classificationItem->row());
-	  return;
-	}
+      removeSymbol( symbol );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->removeRow( classificationItem->row() );
+      return;
     }
+  }
 
   //try to find a symbol where label matches item text
   symbolIt = symbolList.begin();
-  for(; symbolIt != symbolList.end(); ++symbolIt)
+  for ( ; symbolIt != symbolList.end(); ++symbolIt )
+  {
+    currentSymbol = *symbolIt;
+    if ( currentSymbol->label() == itemText )
     {
-      currentSymbol = *symbolIt;
-      if(currentSymbol->label() == itemText)
-	{
-	  removeSymbol(symbol);
-	  parentItem->insertRow(classificationItem->row(), itemFromSymbol(currentSymbol));
-	  parentItem->removeRow(classificationItem->row());
-	  return;
-	}
-    }
-} 
-    
-
-void QgsLegendModel::updateRasterClassificationItem(QStandardItem* classificationItem)
-{
-  if(!classificationItem)
-    {
+      removeSymbol( symbol );
+      parentItem->insertRow( classificationItem->row(), itemFromSymbol( currentSymbol ) );
+      parentItem->removeRow( classificationItem->row() );
       return;
     }
+  }
+}
+
+
+void QgsLegendModel::updateRasterClassificationItem( QStandardItem* classificationItem )
+{
+  if ( !classificationItem )
+  {
+    return;
+  }
 
   QStandardItem* parentItem = classificationItem->parent();
-  if(!parentItem)
-    {
-      return;
-    }
+  if ( !parentItem )
+  {
+    return;
+  }
 
-  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer(parentItem->data().toString());
-  if(!ml)
-    {
-      return;
-    }
+  QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( parentItem->data().toString() );
+  if ( !ml )
+  {
+    return;
+  }
 
-  QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>(ml);
-  if(!rl)
-    {
-      return;
-    }
+  QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( ml );
+  if ( !rl )
+  {
+    return;
+  }
 
   QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rl->getLegendQPixmap( true ) ), "" );
-  parentItem->insertRow(0, currentSymbolItem);
-  parentItem->removeRow(1);
+  parentItem->insertRow( 0, currentSymbolItem );
+  parentItem->removeRow( 1 );
 }
 
 void QgsLegendModel::removeLayer( const QString& layerId )
@@ -461,8 +461,8 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   }
   emit layersChanged();
 }
- 
-QStandardItem* QgsLegendModel::itemFromSymbol(QgsSymbol* s)
+
+QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
 {
   QStandardItem* currentSymbolItem = 0;
 
@@ -470,43 +470,43 @@ QStandardItem* QgsLegendModel::itemFromSymbol(QgsSymbol* s)
   QString label;
   QString lowerValue = s->lowerValue();
   QString upperValue = s->upperValue();
-  
+
   if ( lowerValue == upperValue || upperValue.isEmpty() )
-    {
-      label = lowerValue;
-    }
+  {
+    label = lowerValue;
+  }
   else
-    {
-      label = lowerValue + " - " + upperValue;
-    }
-  
+  {
+    label = lowerValue + " - " + upperValue;
+  }
+
   //icon item
-  switch (s->type())
-    {
+  switch ( s->type() )
+  {
     case QGis::Point:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(s->getPointSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPointSymbolAsImage() ) ), label );
       break;
     case QGis::Line:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(s->getLineSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getLineSymbolAsImage() ) ), label );
       break;
     case QGis::Polygon:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(s->getPolygonSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPolygonSymbolAsImage() ) ), label );
       break;
     default:
       currentSymbolItem = 0;
       break;
-    }
-  
-  if(!currentSymbolItem)
-    {
-      return 0;
-    }
-  
+  }
+
+  if ( !currentSymbolItem )
+  {
+    return 0;
+  }
+
   //Pass deep copy of QgsSymbol as user data. Cast to void* necessary such that QMetaType handles it
-  QgsSymbol* symbolCopy = new QgsSymbol(*s);
+  QgsSymbol* symbolCopy = new QgsSymbol( *s );
   currentSymbolItem->setData( QVariant::fromValue(( void* )symbolCopy ) );
   insertSymbol( symbolCopy );
-  
+
   currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   return currentSymbolItem;
 }

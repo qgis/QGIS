@@ -253,15 +253,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       {
         QLineEdit *le = new QLineEdit( myFieldValue.toString() );
 
-        QPushButton *pb = new QPushButton( tr("...") );
-        connect(pb, SIGNAL(clicked()), this, SLOT(selectFileName()));
+        QPushButton *pb = new QPushButton( tr( "..." ) );
+        connect( pb, SIGNAL( clicked() ), this, SLOT( selectFileName() ) );
 
         QHBoxLayout *hbl = new QHBoxLayout();
-        hbl->addWidget(le);
-        hbl->addWidget(pb);
+        hbl->addWidget( le );
+        hbl->addWidget( pb );
 
         myWidget = new QWidget;
-        myWidget->setLayout(hbl);
+        myWidget->setLayout( hbl );
       }
       break;
     }
@@ -296,22 +296,22 @@ QgsAttributeDialog::~QgsAttributeDialog()
 void QgsAttributeDialog::selectFileName()
 {
   QPushButton *pb = dynamic_cast<QPushButton *>( sender() );
-  if(!pb)
+  if ( !pb )
     return;
 
   QWidget *hbox = dynamic_cast<QWidget *>( pb->parent() );
-  if(!hbox)
+  if ( !hbox )
     return;
 
   QLineEdit *le = hbox->findChild<QLineEdit *>();
-  if(!le)
+  if ( !le )
     return;
 
-  QString fileName = QFileDialog::getOpenFileName(0 , tr("Select a file"));
-  if(fileName.isNull())
+  QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a file" ) );
+  if ( fileName.isNull() )
     return;
 
-  le->setText(fileName);
+  le->setText( fileName );
 }
 
 void QgsAttributeDialog::accept()
@@ -368,8 +368,8 @@ void QgsAttributeDialog::accept()
       myFieldValue = QString::number( dsb->value() );
     }
 
-    le = mpWidgets.value( myIndex )->findChild<QLineEdit *>("lineEdit");
-    if(le)
+    le = mpWidgets.value( myIndex )->findChild<QLineEdit *>( "lineEdit" );
+    if ( le )
     {
       myFieldValue = le->text();
     }

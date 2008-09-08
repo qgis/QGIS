@@ -50,7 +50,7 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
-  double firstLabelWidth = textWidthMM(mFont, firstLabel);
+  double firstLabelWidth = textWidthMM( mFont, firstLabel );
 
   mStyle->draw( painter, firstLabelWidth / 2 );
 
@@ -126,7 +126,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   mBrush.setColor( QColor( 0, 0, 0 ) );
   mBrush.setStyle( Qt::SolidPattern );
 
-  mFont.setPointSizeF(12.0);
+  mFont.setPointSizeF( 12.0 );
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
@@ -321,7 +321,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mNumSegments = itemElem.attribute( "numSegments", "2" ).toInt();
   mNumSegmentsLeft = itemElem.attribute( "numSegmentsLeft", "0" ).toInt();
   mNumUnitsPerSegment = itemElem.attribute( "numUnitsPerSegment", "1.0" ).toDouble();
-  mSegmentMM = itemElem.attribute("segmentMM", "0.0").toDouble();
+  mSegmentMM = itemElem.attribute( "segmentMM", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );

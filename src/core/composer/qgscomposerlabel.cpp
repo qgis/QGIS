@@ -22,7 +22,7 @@
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 )
 {
   //default font size is 10 point
-  mFont.setPointSizeF(10);
+  mFont.setPointSizeF( 10 );
 }
 
 QgsComposerLabel::~QgsComposerLabel()
@@ -45,9 +45,9 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   //support multiline labels
   double penWidth = pen().widthF();
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
-                      rect().height() - 2 * penWidth - 2 * mMargin);
+                      rect().height() - 2 * penWidth - 2 * mMargin );
   //painter->drawText( painterRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, mText );
-  drawText(painter, painterRect, mText, mFont);
+  drawText( painter, painterRect, mText, mFont );
 
   drawFrame( painter );
   if ( isSelected() )
@@ -68,11 +68,11 @@ void QgsComposerLabel::setFont( const QFont& f )
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  double textWidth = textWidthMM(mFont, mText);
-  double fontAscent = fontAscentMM(mFont);
+  double textWidth = textWidthMM( mFont, mText );
+  double fontAscent = fontAscentMM( mFont );
 
   setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1, \
-			fontAscent + 2 * mMargin + 2 * pen().widthF() + 1) );
+                        fontAscent + 2 * mMargin + 2 * pen().widthF() + 1 ) );
 }
 
 QFont QgsComposerLabel::font() const

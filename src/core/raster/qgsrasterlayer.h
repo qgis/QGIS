@@ -275,7 +275,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void drawThumbnail( QPixmap * theQPixmap );
 
     /** \brief Get an 8x8 pixmap of the color palette. If the layer has no palette a white pixmap will be returned. */
-    QPixmap getPaletteAsPixmap(int theBand=1);
+    QPixmap getPaletteAsPixmap( int theBand = 1 );
 
     /** \brief This is called when the view on the raster layer needs to be refreshed (redrawn).
      */
@@ -946,7 +946,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void drawPalettedSingleBandGray( QPainter * theQPainter,
                                      QgsRasterViewPort * theRasterViewPort,
                                      const QgsMapToPixel* theQgsMapToPixel,
-                                     int theBandNoInt);
+                                     int theBandNoInt );
 
     /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor.  */
     void drawPalettedSingleBandPseudoColor( QPainter * theQPainter,

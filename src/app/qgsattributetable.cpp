@@ -103,7 +103,7 @@ QgsAttributeTable::~QgsAttributeTable()
 
 void QgsAttributeTable::setReadOnly( bool b )
 {
-  blockSignals(true);
+  blockSignals( true );
 
   setEditTriggers( b ? QAbstractItemView::NoEditTriggers :
                    QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed );
@@ -112,7 +112,7 @@ void QgsAttributeTable::setReadOnly( bool b )
     setColumnReadOnly( 0, true );
   }
 
-  blockSignals(false);
+  blockSignals( false );
 }
 
 void QgsAttributeTable::setColumnReadOnly( int col, bool ro )
@@ -439,7 +439,7 @@ void QgsAttributeTable::copySelectedRows()
 
 void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
 {
-  blockSignals(true);
+  blockSignals( true );
 
   const QgsFieldMap &fields = layer->pendingFields();
 
@@ -489,7 +489,7 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
   for ( int i = 0; i < columnCount(); i++ )
     resizeColumnToContents( i );
 
-  blockSignals(false);
+  blockSignals( false );
 }
 
 void QgsAttributeTable::putFeatureInTable( int row, const QgsFeature& fet )

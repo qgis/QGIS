@@ -105,27 +105,27 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     const QgsComposition* composition() const {return mComposition;}
 
-    //functions that encapsulate the workaround for the Qt font bug (that is to scale the font size up and then scale the 
+    //functions that encapsulate the workaround for the Qt font bug (that is to scale the font size up and then scale the
     //painter down by the same factor for drawing
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work arount the Qt font bug)*/
-    void drawText(QPainter* p, int x, int y, const QString& text, const QFont& font) const;
+    void drawText( QPainter* p, int x, int y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
-    void drawText(QPainter* p, const QRectF& rect, const QString& text, const QFont& font) const;
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font ) const;
 
     /**Returns the font width in MM (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double textWidthMM(const QFont& font, const QString& text) const;
+    double textWidthMM( const QFont& font, const QString& text ) const;
 
     /**Returns the font ascent in MM (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double fontAscentMM(const QFont& font) const;
+    double fontAscentMM( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
-    double pixelFontSize(double pointSize) const;
+    double pixelFontSize( double pointSize ) const;
 
     /**Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE*/
-    QFont scaledFontPixelSize(const QFont& font) const;
+    QFont scaledFontPixelSize( const QFont& font ) const;
 
   protected:
 

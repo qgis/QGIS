@@ -89,9 +89,9 @@ void QgsPluginRegistry::removePlugin( QString name )
 
 void QgsPluginRegistry::unloadAll()
 {
-  for(std::map<QString, QgsPluginMetadata*>::iterator it=plugins.begin(); 
-      it!=plugins.end();
-      it++)
-    if( it->second->plugin() )
+  for ( std::map<QString, QgsPluginMetadata*>::iterator it = plugins.begin();
+        it != plugins.end();
+        it++ )
+    if ( it->second->plugin() )
       it->second->plugin()->unload();
 }

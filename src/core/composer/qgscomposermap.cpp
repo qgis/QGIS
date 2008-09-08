@@ -182,13 +182,13 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   double currentScaleFactorX = horizontalViewScaleFactor();
 
   if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
-    {
-      QFont messageFont("", 12);
-      painter->setFont(messageFont);
-      painter->setPen(QColor(0, 0, 0));
-      painter->drawText(thisPaintRect, tr("Map will be printed here"));
-    }
-  else if ( mComposition->plotStyle() == QgsComposition::Preview)
+  {
+    QFont messageFont( "", 12 );
+    painter->setFont( messageFont );
+    painter->setPen( QColor( 0, 0, 0 ) );
+    painter->drawText( thisPaintRect, tr( "Map will be printed here" ) );
+  }
+  else if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     //draw cached pixmap. This function does not call cache() any more because
     //Qt 4.4.0 and 4.4.1 have problems with recursive paintings

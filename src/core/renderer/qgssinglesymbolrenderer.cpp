@@ -126,12 +126,12 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
       pen.setWidthF( widthScale * pen.widthF() );
       p->setPen( pen );
 
-      if(mVectorType == QGis::Polygon)
-	{
-	  QBrush brush = mSymbol->brush();
-	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
-	  p->setBrush(brush);
-	}
+      if ( mVectorType == QGis::Polygon )
+      {
+        QBrush brush = mSymbol->brush();
+        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        p->setBrush( brush );
+      }
     }
     else
     {
@@ -142,13 +142,13 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
       pen.setColor( mSelectionColor );
       p->setPen( pen );
 
-      if(mVectorType == QGis::Polygon)
-	{
-	  QBrush brush = mSymbol->brush();
-	  scaleBrush(brush, rasterScaleFactor); //scale brush content for printout
-	  brush.setColor( mSelectionColor );
-	  p->setBrush( brush );
-	}
+      if ( mVectorType == QGis::Polygon )
+      {
+        QBrush brush = mSymbol->brush();
+        scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
+        brush.setColor( mSelectionColor );
+        p->setBrush( brush );
+      }
     }
   }
 }
