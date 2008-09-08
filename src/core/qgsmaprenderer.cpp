@@ -50,6 +50,8 @@ QgsMapRenderer::QgsMapRenderer()
 
   mProjectionsEnabled = FALSE;
   mDestCRS = new QgsCoordinateReferenceSystem( GEOEPSG_ID, QgsCoordinateReferenceSystem::EPSG ); //WGS 84
+
+  mOutputUnits = QgsMapRenderer::MM;
 }
 
 QgsMapRenderer::~QgsMapRenderer()
@@ -238,7 +240,11 @@ void QgsMapRenderer::render( QPainter* painter )
   //use the specified dpi and not those from the paint device
   //because sometimes QPainter units are in a local coord sys (e.g. in case of QGraphicsScene)
   double sceneDpi = mScaleCalculator->dpi();
-  double scaleFactor = sceneDpi / 25.4; //units should always be mm
+  double scaleFactor = 1.0;
+  if(mOutputUnits == QgsMapRenderer::MM)
+    {
+      scaleFactor = sceneDpi / 25.4;
+    }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
   mRenderContext.setScaleFactor( scaleFactor );
   mRenderContext.setRasterScaleFactor( rasterScaleFactor );
