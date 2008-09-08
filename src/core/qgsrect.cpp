@@ -137,7 +137,7 @@ QgsRect QgsRect::intersect( QgsRect * rect ) const
   {
     return intersection;
   }
-  
+
   intersection.setXMinimum( xmin > rect->xMin() ? xmin : rect->xMin() );
   intersection.setXMaximum( xmax < rect->xMax() ? xmax : rect->xMax() );
   intersection.setYMinimum( ymin > rect->yMin() ? ymin : rect->yMin() );

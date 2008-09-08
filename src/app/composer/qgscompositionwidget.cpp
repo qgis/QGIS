@@ -25,8 +25,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   createPaperEntries();
 
   //unit (only mm at the moment, therefore disabled)
-  mPaperUnitsComboBox->addItem("mm");
-  mPaperUnitsComboBox->setEnabled(false);
+  mPaperUnitsComboBox->addItem( "mm" );
+  mPaperUnitsComboBox->setEnabled( false );
 
   //orientation
   mPaperOrientationComboBox->blockSignals( true );

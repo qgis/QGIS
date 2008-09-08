@@ -888,7 +888,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   //find out the last used filter
   QSettings myQSettings;  // where we keep last used filter in persistant state
   QString myLastUsedFormat = myQSettings.value( "/UI/lastSaveAsImageFormat", "png" ).toString();
-  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsImageFile", "qgis.png").toString();
+  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsImageFile", "qgis.png" ).toString();
   QFileInfo file( myLastUsedFile );
 
   // get a list of supported output image types
@@ -944,9 +944,9 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   //raise();
 
   if ( result != QDialog::Accepted )
-    {
-      return;
-    }
+  {
+    return;
+  }
 
   myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   QString myFilterString = myQFileDialog->selectedFilter();
@@ -959,21 +959,21 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   if ( myOutputFileNameQString == "" ) return;
 
   mComposition->setPlotStyle( QgsComposition::Print );
-  mView->setScene(0);
+  mView->setScene( 0 );
 
-  QImage image( QSize(width, height), QImage::Format_ARGB32 );
-  image.setDotsPerMeterX(mComposition->printoutResolution() / 25.4 * 1000);
-  image.setDotsPerMeterY(mComposition->printoutResolution() / 25.4 * 1000);
-  image.fill(0);
+  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( mComposition->printoutResolution() / 25.4 * 1000 );
+  image.setDotsPerMeterY( mComposition->printoutResolution() / 25.4 * 1000 );
+  image.fill( 0 );
   QPainter p( &image );
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight());
-  QRectF targetArea(0, 0, width, height);
-  mComposition->render( &p, targetArea, sourceArea);
+  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  QRectF targetArea( 0, 0, width, height );
+  mComposition->render( &p, targetArea, sourceArea );
   p.end();
 
   mComposition->setPlotStyle( QgsComposition::Preview );
   image.save( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
-  mView->setScene(mComposition);
+  mView->setScene( mComposition );
 }
 
 
@@ -1420,8 +1420,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->addItem( newLabel );
     mComposition->update();
     mComposition->clearSelection();
-    newLabel->setSelected(true);
-    showItemOptions(newLabel);
+    newLabel->setSelected( true );
+    showItemOptions( newLabel );
   }
 
   //composer maps
@@ -1435,8 +1435,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->addItem( newMap );
     mComposition->update();
     mComposition->clearSelection();
-    newMap->setSelected(true);
-    showItemOptions(newMap);
+    newMap->setSelected( true );
+    showItemOptions( newMap );
   }
 
   //composer scalebars
@@ -1450,8 +1450,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->addItem( newScaleBar );
     mComposition->update();
     mComposition->clearSelection();
-    newScaleBar->setSelected(true);
-    showItemOptions(newScaleBar);
+    newScaleBar->setSelected( true );
+    showItemOptions( newScaleBar );
   }
 
   //composer legends
@@ -1465,8 +1465,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->addItem( newLegend );
     mComposition->update();
     mComposition->clearSelection();
-    newLegend->setSelected(true);
-    showItemOptions(newLegend);
+    newLegend->setSelected( true );
+    showItemOptions( newLegend );
   }
 
   //composer pictures
@@ -1480,8 +1480,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
     mComposition->addItem( newPicture );
     mComposition->update();
     mComposition->clearSelection();
-    newPicture->setSelected(true);
-    showItemOptions(newPicture);
+    newPicture->setSelected( true );
+    showItemOptions( newPicture );
   }
 
   mComposition->sortZList();

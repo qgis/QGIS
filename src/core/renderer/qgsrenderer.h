@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRenderer
     QGis::VectorType mVectorType;
 
     /**Scales a brush to a given raster scale factor (e.g. for printing)*/
-    void scaleBrush(QBrush& b, double rasterScaleFactor) const;
+    void scaleBrush( QBrush& b, double rasterScaleFactor ) const;
 };
 
 #endif // QGSRENDERER_H

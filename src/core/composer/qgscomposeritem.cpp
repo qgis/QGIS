@@ -525,58 +525,58 @@ void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
   }
 }
 
-void QgsComposerItem::drawText(QPainter* p, int x, int y, const QString& text, const QFont& font) const
+void QgsComposerItem::drawText( QPainter* p, int x, int y, const QString& text, const QFont& font ) const
 {
-  QFont textFont = scaledFontPixelSize(font);
-  
+  QFont textFont = scaledFontPixelSize( font );
+
   p->save();
-  p->setFont(textFont);
-  p->setPen(QColor(0, 0, 0)); //draw text always in black
+  p->setFont( textFont );
+  p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale(scaleFactor, scaleFactor);
-  p->drawText(x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, text);
+  p->scale( scaleFactor, scaleFactor );
+  p->drawText( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE, text );
   p->restore();
 }
 
-void QgsComposerItem::drawText(QPainter* p, const QRectF& rect, const QString& text, const QFont& font) const
+void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font ) const
 {
-  QFont textFont = scaledFontPixelSize(font);
+  QFont textFont = scaledFontPixelSize( font );
 
-  QRectF scaledRect(rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE, 
-		    rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE);
+  QRectF scaledRect( rect.x() * FONT_WORKAROUND_SCALE, rect.y() * FONT_WORKAROUND_SCALE,
+                     rect.width() * FONT_WORKAROUND_SCALE, rect.height() * FONT_WORKAROUND_SCALE );
 
   p->save();
-  p->setFont(textFont);
-  p->setPen(QColor(0, 0, 0)); //draw text always in black
+  p->setFont( textFont );
+  p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
-  p->scale(scaleFactor, scaleFactor);
-  p->drawText(scaledRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, text);
+  p->scale( scaleFactor, scaleFactor );
+  p->drawText( scaledRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextWordWrap, text );
   p->restore();
 }
 
-double QgsComposerItem::textWidthMM(const QFont& font, const QString& text) const
+double QgsComposerItem::textWidthMM( const QFont& font, const QString& text ) const
 {
-  QFont metricsFont = scaledFontPixelSize(font);
-  QFontMetrics fontMetrics(metricsFont);
-  return (fontMetrics.width(text) / FONT_WORKAROUND_SCALE);
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetrics fontMetrics( metricsFont );
+  return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerItem::fontAscentMM(const QFont& font) const
+double QgsComposerItem::fontAscentMM( const QFont& font ) const
 {
-  QFont metricsFont = scaledFontPixelSize(font);
-  QFontMetrics fontMetrics(metricsFont);
-  return (fontMetrics.ascent() / FONT_WORKAROUND_SCALE);
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetrics fontMetrics( metricsFont );
+  return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerItem::pixelFontSize(double pointSize) const
+double QgsComposerItem::pixelFontSize( double pointSize ) const
 {
-  return (pointSize * 0.3527);
+  return ( pointSize * 0.3527 );
 }
 
-QFont QgsComposerItem::scaledFontPixelSize(const QFont& font) const
+QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
 {
   QFont scaledFont = font;
-  double pixelSize = pixelFontSize(font.pointSizeF()) * FONT_WORKAROUND_SCALE + 0.5;
-  scaledFont.setPixelSize(pixelSize);
+  double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
+  scaledFont.setPixelSize( pixelSize );
   return scaledFont;
 }

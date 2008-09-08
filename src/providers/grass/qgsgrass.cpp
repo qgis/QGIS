@@ -454,16 +454,16 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   QFile lockFile( lock );
 #if WIN32
   // lock on Windows doesn't support locking (see #808)
-  if( lockFile.exists() )
+  if ( lockFile.exists() )
     return QObject::tr( "Mapset is already in use." );
 
-  lockFile.open(QIODevice::WriteOnly);
+  lockFile.open( QIODevice::WriteOnly );
 #ifndef _MSC_VER
   int pid = getpid();
 #else
   int pid = GetCurrentProcessId();
 #endif
-  lockFile.write( QString("%1").arg( pid ).toLocal8Bit() );
+  lockFile.write( QString( "%1" ).arg( pid ).toLocal8Bit() );
   lockFile.close();
 #else
   Q3Process *process = new Q3Process();

@@ -522,8 +522,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     myRasterBandStats.statsGatheredFlag = false;
     myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
     //Store the default color table
-    readColorTable(i, &myRasterBandStats.colorTable);
-    
+    readColorTable( i, &myRasterBandStats.colorTable );
+
     mRasterStatsList.push_back( myRasterBandStats );
 
     //Build a new contrast enhancement for the band and store in list
@@ -566,7 +566,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     setColorShadingAlgorithm( COLOR_RAMP );
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
     myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
-    myColorRampShader->setColorRampItemList( *getColorTable(1) );
+    myColorRampShader->setColorRampItemList( *getColorTable( 1 ) );
   }
   else if ( rasterLayerType == MULTIBAND )
   {
@@ -883,23 +883,23 @@ void QgsRasterLayer::drawThumbnail( QPixmap * theQPixmap )
 
 
 
-QPixmap QgsRasterLayer::getPaletteAsPixmap(int theBandNumber)
+QPixmap QgsRasterLayer::getPaletteAsPixmap( int theBandNumber )
 {
   QgsDebugMsg( "entered." );
 
   // Only do this for the non-provider (hard-coded GDAL) scenario...
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if (mProviderKey.isEmpty() && hasBand( "Palette" ) && theBandNumber > 0) //dont tr() this its a gdal word!
+  if ( mProviderKey.isEmpty() && hasBand( "Palette" ) && theBandNumber > 0 ) //dont tr() this its a gdal word!
   {
     QgsDebugMsg( "....found paletted image" );
     QgsColorRampShader myShader;
     QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = myShader.getColorRampItemList();
-    
-    if(readColorTable(1, &myColorRampItemList))
+
+    if ( readColorTable( 1, &myColorRampItemList ) )
     {
       QgsDebugMsg( "....got color ramp item list" );
-      myShader.setColorRampItemList(myColorRampItemList);
-      myShader.setColorRampType(QgsColorRampShader::DISCRETE);
+      myShader.setColorRampItemList( myColorRampItemList );
+      myShader.setColorRampType( QgsColorRampShader::DISCRETE );
       // Draw image
       int mySize = 100;
       QPixmap myPalettePixmap( mySize, mySize );
@@ -909,14 +909,14 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap(int theBandNumber)
       myQImage.fill( 0 );
       myPalettePixmap.fill();
 
-      double myStep = ( (double)myColorRampItemList.size() - 1 ) / (double)( mySize * mySize );
+      double myStep = (( double )myColorRampItemList.size() - 1 ) / ( double )( mySize * mySize );
       double myValue = 0.0;
       for ( int myRow = 0; myRow < mySize; myRow++ )
       {
         for ( int myCol = 0; myCol < mySize; myCol++ )
         {
 
-          myValue = myStep * (double)( myCol + myRow * mySize );
+          myValue = myStep * ( double )( myCol + myRow * mySize );
           int c1, c2, c3;
           myShader.generateShadedValue( myValue, &c1, &c2, &c3 );
           myQImage.setPixel( myCol, myRow, qRgb( c1, c2, c3 ) );
@@ -1247,7 +1247,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
         int myBandNo = 1;
         drawPalettedSingleBandGray( theQPainter, theRasterViewPort,
-                                    theQgsMapToPixel, myBandNo);
+                                    theQgsMapToPixel, myBandNo );
 
         break;
       }
@@ -1572,7 +1572,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
   int myGreenValue = 0;
   int myBlueValue = 0;
   int myAlphaValue = 0;
-  
+
   QgsDebugMsg( "Starting main render loop" );
   for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
   {
@@ -1629,7 +1629,7 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
  * @param theColorQString - QString containing either 'Red' 'Green' or 'Blue' indicating which part of the rgb triplet will be used to render gray.
  */
 void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
-    const QgsMapToPixel* theQgsMapToPixel, int theBandNo)
+    const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
   QgsDebugMsg( "entered." );
   //Invalid band number, segfault prevention
@@ -1692,14 +1692,14 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
       if ( mInvertPixelsFlag )
       {
         //Invert flag, flip blue and read
-        double myGrayValue = (0.3 * (double)myRedValue) + (0.59 * (double)myGreenValue) + (0.11 * (double)myBlueValue);
-        myQImage.setPixel( myRow, myColumn, qRgba( (int)myGrayValue, (int)myGrayValue, (int)myGrayValue, myAlphaValue ) );
+        double myGrayValue = ( 0.3 * ( double )myRedValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myBlueValue );
+        myQImage.setPixel( myRow, myColumn, qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue ) );
       }
       else
       {
         //Normal
-        double myGrayValue = (0.3 * (double)myBlueValue) + (0.59 * (double)myGreenValue) + (0.11 * (double)myRedValue);
-        myQImage.setPixel( myRow, myColumn, qRgba( (int)myGrayValue, (int)myGrayValue, (int)myGrayValue, myAlphaValue ) );
+        double myGrayValue = ( 0.3 * ( double )myBlueValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myRedValue );
+        myQImage.setPixel( myRow, myColumn, qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue ) );
       }
     }
   }
@@ -1950,7 +1950,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   QgsContrastEnhancement* myRedContrastEnhancement = getContrastEnhancement( myRedBandNo );
   QgsContrastEnhancement* myGreenContrastEnhancement = getContrastEnhancement( myGreenBandNo );
   QgsContrastEnhancement* myBlueContrastEnhancement = getContrastEnhancement( myBlueBandNo );
-  
+
   QgsDebugMsg( "Starting main render loop" );
   for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaYDim; ++myColumn )
   {

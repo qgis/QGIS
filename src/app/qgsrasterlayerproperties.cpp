@@ -822,7 +822,7 @@ void QgsRasterLayerProperties::sync()
   pixmapLegend->repaint();
 
   //set the palette pixmap
-  pixmapPalette->setPixmap( mRasterLayer->getPaletteAsPixmap(mRasterLayer->getRasterBandNumber(mRasterLayer->getGrayBandName())));
+  pixmapPalette->setPixmap( mRasterLayer->getPaletteAsPixmap( mRasterLayer->getRasterBandNumber( mRasterLayer->getGrayBandName() ) ) );
   pixmapPalette->setScaledContents( true );
   pixmapPalette->repaint();
 
@@ -1988,7 +1988,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 
         QgsDebugMsg( QString( "myMiddle = %1" ).arg( myMiddle ) );
 
-        if ( myRasterShaderFunction->generateShadedValue(myMiddle, &c1, &c2, &c3))
+        if ( myRasterShaderFunction->generateShadedValue( myMiddle, &c1, &c2, &c3 ) )
         {
           QgsDebugMsg( "Color not found" );
           c1 = c2 = c3 = 180; // grey
