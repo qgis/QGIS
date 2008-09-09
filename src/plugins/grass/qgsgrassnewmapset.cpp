@@ -360,18 +360,10 @@ void QgsGrassNewMapset::checkLocation()
     }
     else
     {
-      QDir d( mDatabaseLineEdit->text() );
-
-      for ( unsigned int i = 0; i < d.count(); i++ )
+      if ( QFile::exists( mDatabaseLineEdit->text() + "/" + location ) )
       {
-        if ( d[i] == "." || d[i] == ".." ) continue;
-
-        if ( d[i] == location )
-        {
-          setNextEnabled( page( LOCATION ), false );
-          setError( mLocationErrorLabel, tr( "The location exists!" ) );
-          break;
-        }
+        setNextEnabled( page( LOCATION ), false );
+        setError( mLocationErrorLabel, tr( "The location exists!" ) );
       }
     }
   }
@@ -1229,23 +1221,12 @@ void QgsGrassNewMapset::mapsetChanged()
   // Check if exists
   if ( mSelectLocationRadioButton->isChecked() )
   {
-    bool exists = false;
     QString locationPath = mDatabaseLineEdit->text() + "/" + mLocationComboBox->currentText();
-    QDir d( locationPath );
-
-    for ( unsigned int i = 0; i < d.count(); i++ )
+    if ( QFile::exists( locationPath + "/" + mapset ) )
     {
-      if ( d[i] == "." || d[i] == ".." ) continue;
-
-      if ( d[i] == mapset )
-      {
-        setError( mMapsetErrorLabel, tr( "The mapset already exists" ) );
-        exists = true;
-        break;
-      }
+      setError( mMapsetErrorLabel, tr( "The mapset already exists" ) );
     }
-
-    if ( !exists )
+    else
     {
       setNextEnabled( page( MAPSET ), true );
     }
