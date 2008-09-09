@@ -17,15 +17,16 @@
 #define QGSGRASSBROWSER_H
 
 #include <QMainWindow>
-class QSplitter;
 class QAction;
-class QTreeView;
+class QItemSelection;
+class QModelIndex;
+class QSplitter;
 class QTextBrowser;
-class QDirModel;
+class QTreeView;
 class QIcon;
 
 class QgisInterface;
-#include "qgsgrassmodel.h"
+class QgsGrassModel;
 
 /*! \class QgsGrassBrowser
  *  \brief Model representing GRASS location structure.
@@ -58,7 +59,7 @@ class QgsGrassBrowser: public QMainWindow
     void setRegion();
 
     // Get item's region
-    bool getItemRegion( QModelIndex index, struct Cell_head *window );
+    bool getItemRegion( const QModelIndex & index, struct Cell_head *window );
 
     // Write region
     void writeRegion( struct Cell_head *window );

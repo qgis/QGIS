@@ -1,5 +1,3 @@
-//Added by qt3to4:
-#include <QCloseEvent>
 /***************************************************************************
                               qgsgrasstools.h
                              -------------------
@@ -18,33 +16,20 @@
 #ifndef QGSGRASSTOOLS_H
 #define QGSGRASSTOOLS_H
 
-class QCloseEvent;
-class QString;
-class QTreeWidget;
-class QTreeWidgetItem;
-class QDomNode;
-class QDomElement;
-class QSize;
+#include "ui_qgsgrasstoolsbase.h"
 
 class QgisInterface;
-class QgsGrassProvider;
 class QgsGrassBrowser;
 class QgsMapCanvas;
 
-#include "ui_qgsgrasstoolsbase.h"
-
-#include <QDialog>
-#include <QTabWidget>
-#include <QDockWidget>
+class QDomElement;
 
 //
 // For experimental filterable list model by Tim
 //
-#include <QListView>
-#include <QLineEdit>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
-
+class QDockWidget;
+class QSortFilterProxyModel;
+class QStandardItemModel;
 
 
 /*! \class QgsGrassTools
@@ -116,7 +101,6 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 
     //! Browser
     QgsGrassBrowser *mBrowser;
-
 
     //
     // For experimental model & filtered model by Tim

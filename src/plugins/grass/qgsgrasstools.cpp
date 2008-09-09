@@ -14,76 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-#include <QDir>
-#include <QFile>
-#include <QSettings>
-#include <QPixmap>
-#include <QStringList>
-#include <QLabel>
-#include <QComboBox>
-#include <QSpinBox>
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QSettings>
-#include <QPainter>
-#include <QPen>
-#include <QCursor>
-//#include <qnamespace.h>
-#include <QColorDialog>
-#include <QStatusBar>
-#include <QEvent>
-#include <QPoint>
-#include <QSize>
-#include <QDomDocument>
-#include <QTabWidget>
-#include <QLayout>
-#include <QCheckBox>
-#include <QIcon>
-#include <QCloseEvent>
-#include <QTabBar>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QHeaderView>
-#include <QProcess>
-
-#include "qgis.h"
-#include "qgisinterface.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
-
-extern "C"
-{
-#include <grass/gis.h>
-#include <grass/Vect.h>
-}
-
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassattributes.h"
 #include "qgsgrasstools.h"
+#include "qgsgrassbrowser.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
-#include "qgsgrassmodel.h"
-#include "qgsgrassbrowser.h"
+#include "qgsgrass.h"
+
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+
+#include <QCloseEvent>
+#include <QDomDocument>
+#include <QFile>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QPainter>
+#include <QSettings>
 
 
 //
 // For experimental model view alternative ui by Tim
 //
 //
+#include "qgsdetaileditemdata.h"
+#include "qgsdetaileditemdelegate.h"
+#include <QSortFilterProxyModel>
 #include <QStandardItem>
-#include <QRegExp>
-#include <qgsdetaileditemdelegate.h>
-#include <qgsdetaileditemwidget.h>
-#include <qgsdetaileditemdata.h>
-#include "qgslogger.h"
-
 
 
 #if defined(WIN32)
@@ -91,11 +48,10 @@ extern "C"
 static QString getShortPath( const QString &path )
 {
   TCHAR buf[MAX_PATH];
-  GetShortPathName( path.ascii(), buf, MAX_PATH );
+  GetShortPathName( path.toAscii(), buf, MAX_PATH );
   return buf;
 }
 #endif
-
 
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface,
@@ -122,7 +78,6 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   mModulesTree->header()->hide();
   connect( mModulesTree, SIGNAL( itemClicked( QTreeWidgetItem *, int ) ),
            this, SLOT( moduleClicked( QTreeWidgetItem *, int ) ) );
-
 
   //
   // Tims experimental list view with filter
@@ -154,7 +109,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
   restorePosition();
 
-  QApplication::setOverrideCursor( Qt::waitCursor );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   loadConfig( conf );
   QApplication::restoreOverrideCursor();
   //statusBar()->hide();
@@ -162,7 +117,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   // set the dialog title
   QString title = tr( "GRASS Tools: " ) + QgsGrass::getDefaultLocation()
                   + "/" + QgsGrass::getDefaultMapset();
-  setCaption( title );
+  setWindowTitle( title );
 
 
   // Add map browser
@@ -204,14 +159,14 @@ void QgsGrassTools::runModule( QString name )
     // bash
     QString hist = "HISTFILE=" + mapsetPath + "/.bash_history";
     char *histChar = new char[hist.length()+1];
-    strcpy( histChar, const_cast<char *>( hist.ascii() ) );
+    strcpy( histChar, hist.toAscii().constData() );
     putenv( histChar );
 
     // csh/tcsh
 #ifndef WIN32
     hist = "histfile=" + mapsetPath + "/.history";
     histChar = new char[hist.length()+1];
-    strcpy( histChar, const_cast<char *>( hist.ascii() ) );
+    strcpy( histChar, hist.toAscii().constData() );
     putenv( histChar );
 #endif
 
@@ -278,7 +233,7 @@ void QgsGrassTools::runModule( QString name )
   mTabWidget->addTab( m, is, "" );
 
 
-  mTabWidget->setCurrentPage( mTabWidget->count() - 1 );
+  mTabWidget->setCurrentIndex( mTabWidget->count() - 1 );
 
   // We must call resize to reset COLUMNS enviroment variable
   // used by bash !!!
@@ -427,7 +382,7 @@ void QgsGrassTools::mapsetChanged()
 
   QString title = tr( "GRASS Tools: " ) + QgsGrass::getDefaultLocation()
                   + "/" + QgsGrass::getDefaultMapset();
-  setCaption( title );
+  setWindowTitle( title );
 
   closeTools();
   mBrowser->setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );

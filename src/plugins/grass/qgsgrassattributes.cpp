@@ -13,51 +13,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qpixmap.h>
-#include <q3listbox.h>
-#include <qstringlist.h>
-#include <qlabel.h>
-#include <QComboBox>
-#include <qspinbox.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qsettings.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qpen.h>
-#include <q3pointarray.h>
-#include <qcursor.h>
-#include <qnamespace.h>
-#include <qtabwidget.h>
-#include <q3table.h>
-#include <qsettings.h>
-#include <qevent.h>
-//Added by qt3to4:
-#include <QKeyEvent>
 
-#include "qgis.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
-#include "qgsmaptopixel.h"
-
-extern "C"
-{
-#include <grass/gis.h>
-#include <grass/Vect.h>
-}
-
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
+#include "qgsgrassedit.h"
+#include "qgsgrassprovider.h"
+
 #include "qgslogger.h"
 
-QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress( Q3Table *tab )
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QMessagebox>
+#include <QSettings>
+#include <QTableWidget>
+
+
+QgsGrassAttributesKeyPress::QgsGrassAttributesKeyPress( QTableWidget *tab )
 {
   mTable = tab;
 }
@@ -72,7 +42,7 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 
     if ( k->key() == Qt::Key_Tab )
     {
-      if ( mTable->currentRow() < mTable->numRows() - 1 )
+      if ( mTable->currentRow() < mTable->rowCount() - 1 )
       {
         mTable->setCurrentCell( mTable->currentRow() + 1, mTable->currentColumn() );
       }
@@ -99,13 +69,13 @@ QgsGrassAttributes::QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *pr
   // Remove old
   while ( tabCats->count() )
   {
-    tabCats->removePage( tabCats->currentPage() );
+    tabCats->removeTab( tabCats->currentIndex() );
   }
 
   connect( this, SIGNAL( destroyed() ), mEdit, SLOT( attributesClosed() ) );
 
   // TODO: does not work:
-  connect( tabCats, SIGNAL( void currentChanged( QWidget * ) ), this, SLOT( tabChanged( QWidget * ) ) );
+  connect( tabCats, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
 
   resetButtons();
   restorePosition();
@@ -132,24 +102,27 @@ void QgsGrassAttributes::saveWindowLocation()
   settings.setValue( "/GRASS/windows/attributes/geometry", saveGeometry() );
 }
 
+void QgsGrassAttributes::setRowReadOnly( QTableWidget* table, int row, bool ro )
+{
+  for ( int i = 0; i < table->columnCount(); ++i )
+  {
+    QTableWidgetItem *item = table->item( row, i );
+    item->setFlags( ro ? item->flags() & ~Qt::ItemIsEditable : item->flags() | Qt::ItemIsEditable );
+  }
+}
+
 int QgsGrassAttributes::addTab( const QString & label )
 {
   QgsDebugMsg( "entered." );
 
-  Q3Table *tb = new Q3Table( 2, 3 );
-  tb->setColumnReadOnly( 0, TRUE );
-  tb->setColumnReadOnly( 2, TRUE );
-  tb->setRowReadOnly( 0, TRUE );
-  tb->setRowReadOnly( 1, TRUE );
+  QTableWidget *tb = new QTableWidget( 2, 3 );
 
-  tb->horizontalHeader()->setLabel( 0, tr( "Column" ) );
-  tb->horizontalHeader()->setLabel( 1, tr( "Value" ) );
-  tb->horizontalHeader()->setLabel( 2, tr( "Type" ) );  // Internal use
+  tb->setHorizontalHeaderLabels( QStringList()
+                                 << tr( "Column" )
+                                 << tr( "Value" )
+                                 << tr( "Type" ) );  // Internal use
 
-  tb->setLeftMargin( 0 ); // hide row labels
-
-  tb->setText( 0, 0, tr( "Layer" ) );
-  tb->setText( 1, 0, "Cat" );
+  tb->verticalHeader()->hide();
 
   tabCats->addTab( tb, label );
 
@@ -164,12 +137,12 @@ int QgsGrassAttributes::addTab( const QString & label )
   QString path = "/GRASS/windows/attributes/columnWidth/";
   for ( int i = 0; i < 2; i++ )
   {
-    bool ok;
-    int cw = settings.readNumEntry( path + QString::number( i ), 30, &ok );
+    bool ok = settings.contains( path + QString::number( i ) );
+    int cw = settings.value( path + QString::number( i ), 30 ).toInt();
     if ( ok ) tb->setColumnWidth( i, cw );
   }
 
-  connect( tb->horizontalHeader(), SIGNAL( sizeChange( int, int, int ) ),
+  connect( tb->horizontalHeader(), SIGNAL( sectionResized( int, int, int ) ),
            this, SLOT( columnSizeChanged( int, int, int ) ) );
 
   return ( tabCats->count() - 1 );
@@ -179,26 +152,36 @@ void QgsGrassAttributes::setField( int tab, int field )
 {
   QgsDebugMsg( "entered." );
 
-  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->widget( tab ) );
+
+  tb->setItem( 0, 0, new QTableWidgetItem( tr( "Layer" ) ) );
 
   QString str;
   str.sprintf( "%d", field );
 
-  tb->setText( 0, 1, str );
+  tb->setItem( 0, 1, new QTableWidgetItem( str ) );
+
+  tb->setItem( 0, 2, new QTableWidgetItem() );
+
+  setRowReadOnly( tb, 0, TRUE );
 }
 
 void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
 {
   QgsDebugMsg( "entered." );
 
-  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->widget( tab ) );
 
-  tb->setText( 1, 0, name );
+  tb->setItem( 1, 0, new QTableWidgetItem( name ) );
 
   QString str;
   str.sprintf( "%d", cat );
 
-  tb->setText( 1, 1, str );
+  tb->setItem( 1, 1, new QTableWidgetItem( str ) );
+
+  tb->setItem( 1, 2, new QTableWidgetItem() );
+
+  setRowReadOnly( tb, 1, TRUE );
 }
 
 void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QString &value,
@@ -206,18 +189,16 @@ void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QStri
 {
   QgsDebugMsg( QString( "name=%1 value=%2" ).arg( name ).arg( value ) );
 
-  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->widget( tab ) );
 
-  tb->setNumRows( tb->numRows() + 1 );
+  tb->setRowCount( tb->rowCount() + 1 );
 
-  int row = tb->numRows() - 1;
-  tb->setText( row, 0, name );
-
-  // I have no rational explanation why fromLocal8Bit is necessary, value should be in unicode
-  // because QgsGrassProvider::attributes is using mEncoding->toUnicode()
-  //    tb->setText ( row, 1, QString::fromLocal8Bit(value) );
-  tb->setText( row, 1, value );
-  tb->setText( row, 2, type );
+  int row = tb->rowCount() - 1;
+  tb->setItem( row, 0, new QTableWidgetItem( name ) );
+  tb->item( row, 0 )->setFlags( tb->item( row, 0 )->flags() & ~Qt::ItemIsEditable );
+  tb->setItem( row, 1, new QTableWidgetItem( value ) );
+  tb->setItem( row, 2, new QTableWidgetItem( type ) );
+  tb->item( row, 2 )->setFlags( tb->item( row, 2 )->flags() & ~Qt::ItemIsEditable );
 
   resetButtons();
 }
@@ -226,13 +207,14 @@ void QgsGrassAttributes::addTextRow( int tab, const QString &text )
 {
   QgsDebugMsg( "entered." );
 
-  Q3Table *tb = ( Q3Table * ) tabCats->page( tab );
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->widget( tab ) );
 
-  tb->setNumRows( tb->numRows() + 1 );
+  tb->setRowCount( tb->rowCount() + 1 );
 
-  int row = tb->numRows() - 1;
-  tb->setText( row, 0, text );
-  tb->item( row, 0 )->setSpan( 1, 3 ); // must be after setText() whe item exists
+  int row = tb->rowCount() - 1;
+  tb->setItem( row, 0, new QTableWidgetItem( text ) );
+  tb->item( row, 0 )->setFlags( tb->item( row, 0 )->flags() & ~Qt::ItemIsEditable );
+  tb->setSpan( row, 0, 1, 3 );
 }
 
 void QgsGrassAttributes::updateAttributes( )
@@ -241,46 +223,43 @@ void QgsGrassAttributes::updateAttributes( )
 
   if ( tabCats->count() == 0 ) return;
 
-  Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->currentWidget() );
 
-  if ( tb->numRows() > 2 )
+  if ( tb->rowCount() > 2 )
   {
 
-    // Stop editing (trick)
-    tb->setColumnReadOnly( 1, TRUE );
-    tb->setColumnReadOnly( 1, FALSE );
-    tb->setRowReadOnly( 0, TRUE );
-    tb->setRowReadOnly( 1, TRUE );
+    // Stop editing
+    QApplication::focusWidget()->clearFocus();
 
     QString sql;
 
-    for ( int i = 2; i < tb->numRows(); i++ )
+    for ( int i = 2; i < tb->rowCount(); i++ )
     {
       if ( i > 2 ) sql.append( ", " );
 
-      QString val = tb->text( i, 1 ).stripWhiteSpace();
+      QString val = tb->item( i, 1 )->text().trimmed();
 
       if ( val.isEmpty() )
       {
-        sql.append( tb->text( i, 0 ) + " = null" );
+        sql.append( tb->item( i, 0 )->text() + " = null" );
       }
       else
       {
-        if ( tb->text( i, 2 ) == "int" || tb->text( i, 2 ) == "double" )
+        if ( tb->item( i, 2 )->text() == "int" || tb->item( i, 2 )->text() == "double" )
         {
-          sql.append( tb->text( i, 0 ) + " = " + val );
+          sql.append( tb->item( i, 0 )->text() + " = " + val );
         }
         else
         {
           val.replace( "'", "''" );
-          sql.append( tb->text( i, 0 ) + " = '" + val + "'" );
+          sql.append( tb->item( i, 0 )->text() + " = '" + val + "'" );
         }
       }
     }
 
     QgsDebugMsg( QString( "sql: %1" ).arg( sql ) );
 
-    QString *error = mProvider->updateAttributes( tb->text( 0, 1 ).toInt(), tb->text( 1, 1 ).toInt(), sql );
+    QString *error = mProvider->updateAttributes( tb->item( 0, 1 )->text().toInt(), tb->item( 1, 1 )->text().toInt(), sql );
 
     if ( !error->isEmpty() )
     {
@@ -303,7 +282,7 @@ void QgsGrassAttributes::addCat( )
   mEdit->addCat( mLine );
 
   // Select new tab
-  tabCats->setCurrentPage( tabCats->count() - 1 );
+  tabCats->setCurrentIndex( tabCats->count() - 1 );
 
   resetButtons();
 }
@@ -314,14 +293,14 @@ void QgsGrassAttributes::deleteCat( )
 
   if ( tabCats->count() == 0 ) return;
 
-  Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
+  QTableWidget *tb = static_cast<QTableWidget *>( tabCats->currentWidget() );
 
-  int field = tb->text( 0, 1 ).toInt();
-  int cat = tb->text( 1, 1 ).toInt();
+  int field = tb->item( 0, 1 )->text().toInt();
+  int cat = tb->item( 1, 1 )->text().toInt();
 
   mEdit->deleteCat( mLine, field, cat );
 
-  tabCats->removePage( tb );
+  tabCats->removeTab( tabCats->indexOf( tb ) );
   delete tb;
   resetButtons();
 }
@@ -332,18 +311,16 @@ void QgsGrassAttributes::clear( )
 
   while ( tabCats->count() > 0 )
   {
-    Q3Table *tb = ( Q3Table * ) tabCats->currentPage();
-    tabCats->removePage( tb );
+    QTableWidget *tb = static_cast<QTableWidget *>( tabCats->currentWidget() );
+    tabCats->removeTab( tabCats->indexOf( tb ) );
     delete tb;
   }
   resetButtons();
 }
 
-void QgsGrassAttributes::tabChanged( QWidget *widget )
+void QgsGrassAttributes::tabChanged( int index )
 {
   QgsDebugMsg( "entered." );
-
-  //Q3Table *tb = (Q3Table *) tabCats->currentPage();
 
   resultLabel->setText( "" );
 }
@@ -373,5 +350,5 @@ void QgsGrassAttributes::columnSizeChanged( int section, int oldSize, int newSiz
   QString path = "/GRASS/windows/attributes/columnWidth/"
                  + QString::number( section );
   QgsDebugMsg( QString( "path = %1 newSize = %2" ).arg( path ).arg( newSize ) );
-  settings.writeEntry( path, newSize );
+  settings.setValue( path, newSize );
 }

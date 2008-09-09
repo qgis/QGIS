@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>QgsGrassRegionBase</class>
- <widget class="QWidget" name="QgsGrassRegionBase" >
+ <widget class="QDialog" name="QgsGrassRegionBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -13,18 +13,28 @@
    <string>GRASS Region Settings</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
+   <property name="leftMargin" >
     <number>2</number>
    </property>
-   <property name="spacing" >
+   <property name="topMargin" >
+    <number>2</number>
+   </property>
+   <property name="rightMargin" >
+    <number>2</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>2</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>2</number>
+   </property>
+   <property name="verticalSpacing" >
     <number>2</number>
    </property>
    <item row="0" column="0" >
-    <widget class="Q3Frame" name="frame4" >
+    <widget class="QFrame" name="frame4" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>1</vsizetype>
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -48,10 +58,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>6</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>6</number>
+      </property>
+      <property name="rightMargin" >
+       <number>6</number>
+      </property>
+      <property name="bottomMargin" >
        <number>6</number>
       </property>
       <item>
@@ -100,11 +116,9 @@
     </widget>
    </item>
    <item row="1" column="0" >
-    <widget class="Q3Frame" name="frame19" >
+    <widget class="QFrame" name="frame19" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>1</vsizetype>
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -128,10 +142,19 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>2</number>
       </property>
-      <property name="spacing" >
+      <property name="leftMargin" >
+       <number>2</number>
+      </property>
+      <property name="topMargin" >
+       <number>2</number>
+      </property>
+      <property name="rightMargin" >
+       <number>2</number>
+      </property>
+      <property name="bottomMargin" >
        <number>2</number>
       </property>
       <item>
@@ -180,11 +203,9 @@
     </widget>
    </item>
    <item row="2" column="0" >
-    <widget class="Q3Frame" name="frame20" >
+    <widget class="QFrame" name="frame20" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>1</vsizetype>
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -208,10 +229,19 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>2</number>
       </property>
-      <property name="spacing" >
+      <property name="leftMargin" >
+       <number>2</number>
+      </property>
+      <property name="topMargin" >
+       <number>2</number>
+      </property>
+      <property name="rightMargin" >
+       <number>2</number>
+      </property>
+      <property name="bottomMargin" >
        <number>2</number>
       </property>
       <item>
@@ -260,7 +290,7 @@
     </widget>
    </item>
    <item row="3" column="0" >
-    <widget class="Q3Frame" name="frame5" >
+    <widget class="QFrame" name="frame5" >
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -268,10 +298,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" >
-      <property name="margin" >
+      <property name="leftMargin" >
        <number>6</number>
       </property>
-      <property name="spacing" >
+      <property name="topMargin" >
+       <number>6</number>
+      </property>
+      <property name="rightMargin" >
+       <number>6</number>
+      </property>
+      <property name="bottomMargin" >
        <number>6</number>
       </property>
       <item row="0" column="0" >
@@ -324,11 +360,9 @@
     </widget>
    </item>
    <item row="4" column="0" >
-    <widget class="Q3Frame" name="frame6" >
+    <widget class="QFrame" name="frame6" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>1</vsizetype>
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -352,10 +386,19 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>3</number>
       </property>
-      <property name="spacing" >
+      <property name="leftMargin" >
+       <number>3</number>
+      </property>
+      <property name="topMargin" >
+       <number>3</number>
+      </property>
+      <property name="rightMargin" >
+       <number>3</number>
+      </property>
+      <property name="bottomMargin" >
        <number>3</number>
       </property>
       <item>
@@ -366,14 +409,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsColorButton" name="mColorButton" >
+       <widget class="QgsColorButton" native="1" name="mColorButton" >
         <property name="minimumSize" >
          <size>
           <width>35</width>
           <height>25</height>
          </size>
         </property>
-        <property name="text" >
+        <property name="text" stdset="0" >
          <string/>
         </property>
        </widget>
@@ -408,11 +451,9 @@
     </widget>
    </item>
    <item row="5" column="0" >
-    <widget class="Q3Frame" name="frame8" >
+    <widget class="QFrame" name="frame8" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>1</vsizetype>
+      <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -436,10 +477,19 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>3</number>
       </property>
-      <property name="spacing" >
+      <property name="leftMargin" >
+       <number>3</number>
+      </property>
+      <property name="topMargin" >
+       <number>3</number>
+      </property>
+      <property name="rightMargin" >
+       <number>3</number>
+      </property>
+      <property name="bottomMargin" >
        <number>3</number>
       </property>
       <item>
@@ -510,17 +560,10 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QWidget</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>

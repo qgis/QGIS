@@ -23,6 +23,7 @@ extern "C"
 #include <grass/form.h>
 }
 
+#include <QString>
 #include <setjmp.h>
 
 /*!

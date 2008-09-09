@@ -11,31 +11,16 @@
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 *******************************************************************/
-#include <vector>
 
-#include <QApplication>
-#include <QDialog>
-#include <QLineEdit>
-#include <QLabel>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFileInfo>
-#include <QRegExpValidator>
-#include <QRegExp>
-
-extern "C"
-{
-#include <grass/gis.h>
-#include <grass/Vect.h>
-}
-
-#include "qgisinterface.h"
-
-#include "qgsgrass.h"
 #include "qgsgrassutils.h"
 #include "qgsgrassselect.h"
+#include "qgsgrass.h"
+
+#include "qgisinterface.h"
 #include "qgslogger.h"
+
+#include <QFileInfo>
+
 
 QgsGrassUtils::QgsGrassUtils() {}
 QgsGrassUtils::~QgsGrassUtils() {}
@@ -63,9 +48,9 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
     QString uri = gisbase + "/" + location + "/"
                   + mapset + "/" + map + "/" + layers[i];
 
-    QgsDebugMsg( QString( "layer = %1" ).arg( layers[i].local8Bit().data() ) );
-    QgsDebugMsg( QString( "uri = %1" ).arg( uri.local8Bit().data() ) );
-    QgsDebugMsg( QString( "name = %1" ).arg( name.local8Bit().data() ) );
+    QgsDebugMsg( QString( "layer = %1" ).arg( layers[i].toLocal8Bit().constData() ) );
+    QgsDebugMsg( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ) );
+    QgsDebugMsg( QString( "name = %1" ).arg( name.toLocal8Bit().constData() ) );
 
     iface->addVectorLayer( uri, name, "grass" );
   }

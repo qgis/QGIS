@@ -18,29 +18,27 @@
 
 /* First attribute in the table is always field, second attribute is category */
 
-//Added by qt3to4:
-#include <QEvent>
-
-class Q3Table;
+#include "ui_qgsgrassattributesbase.h"
 
 class QgsGrassProvider;
 class QgsGrassEdit;
-#include "ui_qgsgrassattributesbase.h"
-#include <QDialog>
+
+class QEvent;
+class QTableWidget;
 
 class QgsGrassAttributesKeyPress : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsGrassAttributesKeyPress( Q3Table *tab );
+    QgsGrassAttributesKeyPress( QTableWidget *tab );
     ~QgsGrassAttributesKeyPress();
 
   protected:
     bool eventFilter( QObject *o, QEvent *e );
 
   private:
-    Q3Table *mTable;
+    QTableWidget *mTable;
 };
 
 
@@ -61,6 +59,8 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
 
     //! Destructor
     ~QgsGrassAttributes();
+
+    void setRowReadOnly( QTableWidget* table, int col, bool ro );
 
     //! Add tab for one field:cat pair, returns tab id
     int addTab( const QString & label );
@@ -97,7 +97,7 @@ class QgsGrassAttributes: public QDialog, private Ui::QgsGrassAttributesBase
     void deleteCat();
 
     //! Called if tab is changed
-    void tabChanged( QWidget *widget );
+    void tabChanged( int index );
 
     //! Column size changed
     void columnSizeChanged( int section, int oldSize, int newSize );

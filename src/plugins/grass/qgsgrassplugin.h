@@ -17,21 +17,20 @@
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"
-#include <qwidget.h>
-#include <qpen.h>
-
-
-#include <vector>
-
-class QgisInterface;
-class QgsMapCanvas;
-class QgsRubberBand;
+#include <QObject>
+#include <QPen>
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
-class QToolBar;
+
+class QgsMapCanvas;
+class QgsRubberBand;
+
+class QAction;
 class QIcon;
+class QToolBar;
+
 /**
 * \class QgsGrassPlugin
 * \brief OpenModeller plugin for QGIS

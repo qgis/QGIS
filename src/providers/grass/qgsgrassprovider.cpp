@@ -15,25 +15,23 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <string.h>
-#include <vector>
-#include <cfloat>
+#include "qgsgrassprovider.h"
+#include "qgsgrass.h"
 
-#include <Q3CString>
-#include <QDir>
-#include <QString>
-#include <QDateTime>
-#include <QMessageBox>
-#include <QTextCodec>
-
-#include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsdataprovider.h"
-#include "qgsfeature.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
-#include "qgsrect.h"
-#include "qgscoordinatereferencesystem.h"
+
+#include <cfloat>
+
+#include <QByteArray>
+#include <QDir>
+#include <QMessageBox>
+#include <QTextCodec>
+//#include <QtGui/qwindowdefs.h>
+//#include <QtGui/qmacincludes_mac.h>
+//#include <ApplicationServices/ApplicationServices.h>
 
 #ifdef _MSC_VER
 // enable grass prototypes
@@ -52,9 +50,6 @@ extern "C"
 #undef __STDC__
 #endif
 
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgslogger.h"
 
 std::vector<GLAYER> QgsGrassProvider::mLayers;
 std::vector<GMAP> QgsGrassProvider::mMaps;
@@ -82,7 +77,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   QString myURI = dir.path();  // no dupl '/'
 
   mLayer = dir.dirName();
-  myURI = myURI.left( dir.path().findRev( '/' ) );
+  myURI = myURI.left( dir.path().lastIndexOf( '/' ) );
   dir = QDir( myURI );
   mMapName = dir.dirName();
   dir.cdUp();
@@ -735,7 +730,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
       QgsDebugMsg( "Database opened -> open select cursor" );
       dbString dbstr;
       db_init_string( &dbstr );
-      db_set_string( &dbstr, ( char * )"select * from " );
+      db_set_string( &dbstr, "select * from " );
       db_append_string( &dbstr, layer.fieldInfo->table );
 
       QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
@@ -990,7 +985,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
 
   // Find the vector
-  char *ms = G_find_vector2(( char * ) mapName.ascii(), ( char * ) mapset.ascii() ) ;
+  char *ms = G_find_vector2( mapName.toAscii().constData(), mapset.toAscii().constData() ) ;
 
   if ( ms == NULL )
   {
@@ -1010,7 +1005,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   int level = 2;
   QgsGrass::resetError();
   Vect_set_open_level( 2 );
-  Vect_open_old_head( map.map, ( char * ) mapName.ascii(), ( char * ) mapset.ascii() );
+  Vect_open_old_head( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
     QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( QgsGrass::getErrorMessage() ) );
@@ -1034,7 +1029,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   // Open vector
   QgsGrass::resetError(); // to "catch" error after Vect_open_old()
   Vect_set_open_level( level );
-  Vect_open_old( map.map, ( char * ) mapName.ascii(), ( char * ) mapset.ascii() );
+  Vect_open_old( map.map, mapName.toAscii().data(), mapset.toAscii().data() );
 
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
@@ -1075,11 +1070,11 @@ void QgsGrassProvider::updateMap( int mapId )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation(( char * ) map->gisdbase.ascii(), ( char * ) map->location.ascii() );
+  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
-  G__setenv(( char * )"MAPSET", ( char * ) map->mapset.ascii() );
+  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
 
   if ( closeMap ) Vect_close( map->map );
 
@@ -1092,7 +1087,7 @@ void QgsGrassProvider::updateMap( int mapId )
   // Reopen vector
   QgsGrass::resetError(); // to "catch" error after Vect_open_old()
   Vect_set_open_level( 2 );
-  Vect_open_old( map->map, ( char * ) map->mapName.ascii(), ( char * ) map->mapset.ascii() );
+  Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
 
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
@@ -1200,7 +1195,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     {
       if ( att != NULL )
       {
-        Q3CString cstr( att->values[i] );
+        QByteArray cstr( att->values[i] );
         feature->addAttribute( i, QVariant( mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
@@ -1232,7 +1227,7 @@ void QgsGrassProvider::setFeatureAttributes( int layerId, int cat, QgsFeature *f
     {
       if ( att != NULL )
       {
-        Q3CString cstr( att->values[*iter] );
+        QByteArray cstr( att->values[*iter] );
         feature->addAttribute( *iter, QVariant( mEncoding->toUnicode( cstr ) ) );
       }
       else   /* it may happen that attributes are missing -> set to empty string */
@@ -1304,7 +1299,7 @@ int QgsGrassProvider::grassLayer()
 int QgsGrassProvider::grassLayer( QString name )
 {
   // Get field number
-  int pos = name.find( '_' );
+  int pos = name.indexOf( '_' );
 
   if ( pos == -1 )
   {
@@ -1316,7 +1311,7 @@ int QgsGrassProvider::grassLayer( QString name )
 
 int QgsGrassProvider::grassLayerType( QString name )
 {
-  int pos = name.find( '_' );
+  int pos = name.indexOf( '_' );
 
   if ( pos == -1 )
   {
@@ -1350,7 +1345,7 @@ bool QgsGrassProvider::isGrassEditable( void )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G__mapset_permissions2(( char* )mGisdbase.ascii(), ( char* )mLocation.ascii(), ( char* )mMapset.ascii() ) != 1 )
+  if ( G__mapset_permissions2( mGisdbase.toAscii().constData(), mLocation.toAscii().constData(), mMapset.toAscii().constData() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -1424,18 +1419,18 @@ bool QgsGrassProvider::startEdit( void )
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
   map->valid = false;
 
-  QgsGrass::setLocation(( char * ) map->gisdbase.ascii(), ( char * ) map->location.ascii() );
+  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
-  G__setenv(( char * )"MAPSET", ( char * ) map->mapset.ascii() );
+  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
 
   Vect_close( map->map );
 
   // TODO: Catch error
 
   QgsGrass::resetError();
-  int level = Vect_open_update( map->map, ( char * ) map->mapName.ascii(), ( char * ) map->mapset.ascii() );
+  int level = Vect_open_update( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
   if ( level < 2 )
   {
     if ( QgsGrass::getError() == QgsGrass::FATAL )
@@ -1450,7 +1445,7 @@ bool QgsGrassProvider::startEdit( void )
     // reopen vector for reading
     QgsGrass::resetError();
     Vect_set_open_level( 2 );
-    level = Vect_open_old( map->map, ( char * ) map->mapName.ascii(), ( char * ) map->mapset.ascii() );
+    level = Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
 
     if ( level < 2 )
     {
@@ -1499,12 +1494,12 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   map->valid = false;
   map->version++;
 
-  QgsGrass::setLocation(( char * ) map->gisdbase.ascii(), ( char * ) map->location.ascii() );
+  QgsGrass::setLocation( map->gisdbase.toAscii().constData(), map->location.toAscii().constData() );
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for build/close ?
-  G__setenv(( char * )"MAPSET", ( char * ) map->mapset.ascii() );
+  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
 
   Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
   Vect_build( map->map, stderr );
@@ -1545,7 +1540,7 @@ bool QgsGrassProvider::reopenMap()
   QgsGrass::resetError(); // to "catch" error after Vect_open_old()
   Vect_set_open_level( 2 );
 
-  Vect_open_old( map->map, ( char * ) map->mapName.ascii(), ( char * ) map->mapset.ascii() );
+  Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
 
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
@@ -1782,7 +1777,7 @@ QString *QgsGrassProvider::key( int field )
     return key;
   }
 
-  key->setAscii( fi->key );
+  *key = QString::fromAscii( fi->key );
   return key;
 }
 
@@ -1891,7 +1886,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   db_init_string( &dbstr );
   QString query;
   query.sprintf( "select * from %s where %s = %d", fi->table, fi->key, cat );
-  db_set_string( &dbstr, ( char * )query.ascii() );
+  db_set_string( &dbstr, query.toAscii().data() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
@@ -1953,7 +1948,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   if ( fi == NULL )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    error->setLatin1( "Cannot get field info" );
+    *error = QString::fromLatin1( "Cannot get field info" );
     return error;
   }
 
@@ -1964,7 +1959,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    error->setAscii( "Cannot open database" );
+    *error = QString::fromAscii( "Cannot open database" );
     return error;
   }
 
@@ -1984,7 +1979,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   //  -> it is possible to edit only in current locales at present
   // QCString qcs = mEncoding->fromUnicode(query);
 
-  Q3CString qcs = query.toLocal8Bit().data();
+  QByteArray qcs = query.toLocal8Bit();
   QgsDebugMsg( QString( "qcs: %1" ).arg( qcs.data() ) );
 
   char *cs = new char[qcs.length() + 1];
@@ -1999,7 +1994,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error->setLatin1( db_get_error_msg() );
+    *error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
@@ -2037,7 +2032,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   if ( fi == NULL )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    error->setLatin1( "Cannot get field info" );
+    *error = QString::fromLatin1( "Cannot get field info" );
     return error;
   }
 
@@ -2049,7 +2044,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    error->setAscii( "Cannot open database" );
+    *error = QString::fromAscii( "Cannot open database" );
     return error;
   }
 
@@ -2057,7 +2052,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
 
   dbString dbstr;
   db_init_string( &dbstr );
-  db_set_string( &dbstr, ( char * )sql.latin1() );
+  db_set_string( &dbstr, sql.toLatin1().data() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
@@ -2066,7 +2061,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error->setLatin1( db_get_error_msg() );
+    *error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
@@ -2087,7 +2082,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( fi != NULL )
   {
     QgsDebugMsg( "The table for this field already exists" );
-    error->setLatin1( "The table for this field already exists" );
+    *error = QString::fromLatin1( "The table for this field already exists" );
     return error;
   }
 
@@ -2111,7 +2106,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    error->setAscii( "Cannot open database" );
+    *error = QString::fromAscii( "Cannot open database" );
     return error;
   }
 
@@ -2121,8 +2116,8 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   db_init_string( &dbstr );
   QString query;
 
-  query.sprintf( "create table %s ( %s )", fi->table, columns.latin1() );
-  db_set_string( &dbstr, ( char * )query.latin1() );
+  query.sprintf( "create table %s ( %s )", fi->table, columns.toLatin1().constData() );
+  db_set_string( &dbstr, query.toLatin1().data() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
@@ -2131,7 +2126,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    error->setLatin1( db_get_error_msg() );
+    *error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
@@ -2139,13 +2134,13 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
 
   if ( !error->isEmpty() ) return error;
 
-  ret = Vect_map_add_dblink( mMap, field, NULL, fi->table, ( char * )key.latin1(),
+  ret = Vect_map_add_dblink( mMap, field, NULL, fi->table, key.toLatin1().data(),
                              fi->database, fi->driver );
 
   if ( ret == -1 )
   {
     QgsDebugMsg( "Error: Cannot add dblink" );
-    error->setLatin1( "Cannot create link to the table. The table was created!" );
+    *error = QString::fromLatin1( "Cannot create link to the table. The table was created!" );
   }
 
   return error;
@@ -2162,13 +2157,13 @@ QString *QgsGrassProvider::addColumn( int field, const QString &column )
   if ( fi == NULL )
   {
     QgsDebugMsg( "No field info" );
-    error->setLatin1( "Cannot get field info" );
+    *error = QString::fromLatin1( "Cannot get field info" );
     return error;
   }
 
   QString query;
 
-  query.sprintf( "alter table %s add column %s", fi->table, column.latin1() );
+  query.sprintf( "alter table %s add column %s", fi->table, column.toLatin1().constData() );
 
   delete error;
   return executeSql( field, query );
@@ -2185,7 +2180,7 @@ QString *QgsGrassProvider::insertAttributes( int field, int cat )
   if ( fi == NULL )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    error->setLatin1( "Cannot get field info" );
+    *error = QString::fromLatin1( "Cannot get field info" );
     return error;
   }
 
@@ -2208,7 +2203,7 @@ QString *QgsGrassProvider::deleteAttributes( int field, int cat )
   if ( fi == NULL )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    error->setLatin1( "Cannot get field info" );
+    *error = QString::fromLatin1( "Cannot get field info" );
     return error;
   }
 
@@ -2260,7 +2255,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   if ( driver == NULL )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    error->setAscii( "Cannot open database" );
+    *error = QString::fromAscii( "Cannot open database" );
     return error;
   }
 
@@ -2271,7 +2266,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   QString query;
 
   query.sprintf( "select %s from %s where %s = %d", fi->key, fi->table, fi->key, cat );
-  db_set_string( &dbstr, ( char * )query.latin1() );
+  db_set_string( &dbstr, query.toLatin1().data() );
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 

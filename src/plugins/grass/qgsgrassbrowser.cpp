@@ -11,54 +11,31 @@
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 *******************************************************************/
-#include <vector>
-
-#include <QApplication>
-#include <QStyle>
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qstringlist.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qnamespace.h>
-#include <qevent.h>
-#include <qsize.h>
-#include <qicon.h>
-#include <QTreeView>
-#include <QHeaderView>
-#include <QMainWindow>
-#include <QActionGroup>
-#include <QToolBar>
-#include <QAction>
-#include <QTextBrowser>
-#include <QSplitter>
-#include <QProcess>
-#include <QScrollBar>
-
-#include "qgis.h"
-#include "qgisinterface.h"
-#include "qgsapplication.h"
-#include "qgsrasterlayer.h"
-
-extern "C"
-{
-#include <grass/gis.h>
-#include <grass/Vect.h>
-}
-
-#include "qgsgrass.h"
-#include "qgsgrassmodel.h"
 #include "qgsgrassbrowser.h"
+#include "qgsgrassmodel.h"
+#include "qgsgrassplugin.h"
 #include "qgsgrassselect.h"
 #include "qgsgrassutils.h"
-#include "qgsgrassplugin.h"
+#include "qgsgrass.h"
+
+#include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
+
+#include <QActionGroup>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QProcess>
+#include <QScrollBar>
+#include <QSplitter>
+#include <QTextBrowser>
+#include <QToolBar>
+#include <QTreeView>
+
 
 QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
                                   QWidget * parent, Qt::WFlags f )
-    : QMainWindow( parent, Qt::WType_Dialog ), mIface( iface )
+    : QMainWindow( parent, Qt::Dialog ), mIface( iface )
 {
   QgsDebugMsg( "QgsGrassBrowser()" );
 
@@ -120,7 +97,6 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
   mTree->setModel( mModel );
 
   mTextBrowser = new QTextBrowser( 0 );
-  mTextBrowser->setTextFormat( Qt::RichText );
   mTextBrowser->setReadOnly( TRUE );
 
   mSplitter = new QSplitter( 0 );
@@ -187,7 +163,7 @@ void QgsGrassBrowser::addMap()
                            mModel->itemMapset( *it ), map );
 
       // TODO: common method for vector names
-      QStringList split = QStringList::split( '/', uri );
+      QStringList split = uri.split( '/',  QString::SkipEmptyParts );
       QString layer = split.last();
 
       QString name = QgsGrassUtils::vectorLayerName(
@@ -440,7 +416,7 @@ void QgsGrassBrowser::writeRegion( struct Cell_head *window )
   emit regionChanged();
 }
 
-bool QgsGrassBrowser::getItemRegion( QModelIndex index, struct Cell_head *window )
+bool QgsGrassBrowser::getItemRegion( const QModelIndex & index, struct Cell_head *window )
 {
   QgsDebugMsg( "entered." );
 

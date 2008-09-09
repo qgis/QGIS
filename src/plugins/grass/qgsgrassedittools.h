@@ -32,7 +32,7 @@ class QgsGrassEditTool : public QgsMapTool
     virtual void canvasMoveEvent( QMouseEvent * e );
 
     //! functions to be overridden by grass edit tools
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button ) { }
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button ) { }
     virtual void mouseMove( QgsPoint & point ) { }
 
   protected:
@@ -47,7 +47,7 @@ class QgsGrassEditNewPoint : public QgsGrassEditTool
 {
   public:
     QgsGrassEditNewPoint( QgsGrassEdit* edit, bool newCentroid );
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
 
   private:
     //! true if creating new centroid, false if creating new point
@@ -66,7 +66,7 @@ class QgsGrassEditNewLine : public QgsGrassEditTool
     virtual void activate();
     virtual void deactivate();
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
     virtual void mouseMove( QgsPoint & point );
 
   private:
@@ -83,7 +83,7 @@ class QgsGrassEditMoveVertex : public QgsGrassEditTool
   public:
     QgsGrassEditMoveVertex( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
     virtual void mouseMove( QgsPoint & point );
 };
 
@@ -96,7 +96,7 @@ class QgsGrassEditAddVertex : public QgsGrassEditTool
   public:
     QgsGrassEditAddVertex( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
     virtual void mouseMove( QgsPoint & point );
 };
 
@@ -109,7 +109,7 @@ class QgsGrassEditDeleteVertex : public QgsGrassEditTool
   public:
     QgsGrassEditDeleteVertex( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
 };
 
 // ------------------------------------------------------------------
@@ -121,7 +121,7 @@ class QgsGrassEditMoveLine : public QgsGrassEditTool
   public:
     QgsGrassEditMoveLine( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
     virtual void mouseMove( QgsPoint & point );
 };
 
@@ -134,7 +134,7 @@ class QgsGrassEditDeleteLine : public QgsGrassEditTool
   public:
     QgsGrassEditDeleteLine( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
 };
 
 // ------------------------------------------------------------------
@@ -146,7 +146,7 @@ class QgsGrassEditSplitLine : public QgsGrassEditTool
   public:
     QgsGrassEditSplitLine( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
 };
 
 // ------------------------------------------------------------------
@@ -158,7 +158,7 @@ class QgsGrassEditAttributes : public QgsGrassEditTool
   public:
     QgsGrassEditAttributes( QgsGrassEdit* edit );
 
-    virtual void mouseClick( QgsPoint & point, Qt::ButtonState button );
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
 };
 
 #endif

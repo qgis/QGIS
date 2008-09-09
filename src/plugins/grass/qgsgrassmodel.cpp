@@ -11,43 +11,21 @@
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 *******************************************************************/
-#include <vector>
-#include <map>
 
-#include <QApplication>
-#include <QStyle>
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qstringlist.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <qnamespace.h>
-#include <qevent.h>
-#include <qsize.h>
-#include <qicon.h>
-#include <QTreeWidgetItem>
-#include <QModelIndex>
-#include <QVariant>
-#include <QRegExp>
+#include "qgsgrassmodel.h"
+#include "qgsgrassselect.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrass.h"
 
-#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsgrassplugin.h"
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/Vect.h>
 }
 
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassmodel.h"
-#include "qgsgrassselect.h"
-#include "qgslogger.h"
 
 /*
  * Internal data structure starts (at present) with LOCATION
@@ -324,7 +302,7 @@ QString QgsGrassModelItem::info()
         while ( Vect_hist_read( hbuffer, 1000, &Map ) != NULL )
         {
           QString row = QString( hbuffer );
-          if ( rx.search( row ) != -1 )
+          if ( rx.indexIn( row ) != -1 )
           {
             str += "<hr>";
           }
