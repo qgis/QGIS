@@ -32,12 +32,12 @@
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="253"/>
         <source>True</source>
-        <translation>True</translation>
+        <translation>Истина</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="254"/>
         <source>False</source>
-        <translation>False</translation>
+        <translation>Ложь</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3datatable.cpp" line="766"/>
@@ -75,7 +75,7 @@
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2470"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_mac.cpp" line="80"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2531"/>
         <source>Create New Folder</source>
-        <translation>Создать новый каталог</translation>
+        <translation>Создать папку</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="2549"/>
@@ -315,17 +315,17 @@
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4305"/>
         <source>New Folder 1</source>
-        <translation>Новый каталог 1</translation>
+        <translation>Новая папка 1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4310"/>
         <source>New Folder</source>
-        <translation>Новый каталог</translation>
+        <translation>Новая папка</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4315"/>
         <source>New Folder %1</source>
-        <translation>Новый каталог %1</translation>
+        <translation>Новая папка %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog.cpp" line="4420"/>
@@ -369,7 +369,7 @@ Check path and filename.</source>
     <message>
         <location filename="../src/qt3support/dialogs/q3filedialog_win.cpp" line="633"/>
         <source>Select a Directory</source>
-        <translation>Выбрать каталог</translation>
+        <translation>Выберите каталог</translation>
     </message>
 </context>
 <context>
@@ -378,21 +378,21 @@ Check path and filename.</source>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="113"/>
         <source>Could not read directory
 %1</source>
-        <translation>Невозможно просмотреть каталог
+        <translation>Не удалось открыть каталог
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="158"/>
         <source>Could not create directory
 %1</source>
-        <translation>Невозможно создать каталог
+        <translation>Не удалось создать каталог
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="192"/>
         <source>Could not remove file or directory
 %1</source>
-        <translation>Невозможно удалить файл или каталог
+        <translation>Не удалось удалить файл или каталог
 %1</translation>
     </message>
     <message>
@@ -401,7 +401,7 @@ Check path and filename.</source>
 %1
 to
 %2</source>
-        <translation>Невозможно переименовать
+        <translation>Не удалось переименовать
 %1
 в
 %2</translation>
@@ -410,14 +410,14 @@ to
         <location filename="../src/qt3support/network/q3localfs.cpp" line="244"/>
         <source>Could not open
 %1</source>
-        <translation>Невозможно открыть
+        <translation>Не удалось открыть
 %1</translation>
     </message>
     <message>
         <location filename="../src/qt3support/network/q3localfs.cpp" line="312"/>
         <source>Could not write
 %1</source>
-        <translation>Невозможно записать
+        <translation>Не удалось записать
 %1</translation>
     </message>
 </context>
@@ -447,7 +447,7 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3progressdialog.cpp" line="292"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -475,7 +475,7 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3tabdialog.cpp" line="755"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -645,7 +645,7 @@ to
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="145"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Отмена</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/dialogs/q3wizard.cpp" line="146"/>
@@ -673,7 +673,7 @@ to
     <message>
         <location filename="../src/network/qabstractsocket.cpp" line="703"/>
         <source>Host not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел не найден</translation>
     </message>
     <message>
         <location filename="../src/network/qhttpsocketengine.cpp" line="479"/>
@@ -730,12 +730,12 @@ to
     <message>
         <location filename="../src/gui/accessible/qaccessibleobject.cpp" line="346"/>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Активировать</translation>
     </message>
     <message>
         <location filename="../src/gui/accessible/qaccessibleobject.cpp" line="348"/>
         <source>Activates the program&apos;s main window</source>
-        <translation type="unfinished"></translation>
+        <translation>Активировать основное окно приложения</translation>
     </message>
 </context>
 <context>
@@ -753,12 +753,12 @@ to
     <message>
         <location filename="../src/activeqt/container/ui_qaxselect.h" line="125"/>
         <source>&amp;Cancel</source>
-        <translation>&amp;Отмена</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../src/activeqt/container/ui_qaxselect.h" line="126"/>
         <source>COM &amp;Object:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Объект COM:</translation>
     </message>
 </context>
 <context>
@@ -776,7 +776,7 @@ to
     <message>
         <location filename="../src/plugins/accessible/widgets/simplewidgets.cpp" line="88"/>
         <source>Toggle</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключить</translation>
     </message>
 </context>
 <context>
@@ -839,7 +839,7 @@ to
     <message>
         <location filename="../src/gui/dialogs/qcolordialog.cpp" line="1416"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qcolordialog.cpp" line="1413"/>
@@ -880,7 +880,7 @@ to
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="1153"/>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="1414"/>
@@ -890,7 +890,7 @@ to
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="1431"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="1446"/>
@@ -918,17 +918,17 @@ to
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="849"/>
         <source>Unable to fetch record %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить запись %1</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="866"/>
         <source>Unable to fetch next</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить следующую запись</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/db2/qsql_db2.cpp" line="885"/>
         <source>Unable to fetch first</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить первую запись</translation>
     </message>
 </context>
 <context>
@@ -1000,7 +1000,7 @@ to
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="534"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="537"/>
@@ -1065,7 +1065,7 @@ to
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="575"/>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="578"/>
@@ -1740,7 +1740,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qhttpsocketengine.cpp" line="492"/>
         <source>Authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Требуется авторизация</translation>
     </message>
 </context>
 <context>
@@ -1748,22 +1748,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1344"/>
         <source>Error opening database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при открытии базы данных</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1377"/>
         <source>Could not start transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1390"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1403"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
 </context>
 <context>
@@ -1791,12 +1791,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="703"/>
         <source>Could not find array</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти массив</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="546"/>
         <source>Could not get array data</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить данные массива</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="758"/>
@@ -1806,12 +1806,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="778"/>
         <source>Could not start transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="797"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="830"/>
@@ -1841,12 +1841,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="980"/>
         <source>Unable to execute query</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось выполнить запрос</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1022"/>
         <source>Could not fetch next item</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить следующий элемент</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/ibase/qsql_ibase.cpp" line="1182"/>
@@ -1864,22 +1864,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/corelib/global/qglobal.cpp" line="1985"/>
         <source>Too many open files</source>
-        <translation type="unfinished"></translation>
+        <translation>Слишком много открытых файлов</translation>
     </message>
     <message>
         <location filename="../src/corelib/global/qglobal.cpp" line="1988"/>
         <source>No such file or directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет такого файла или каталога</translation>
     </message>
     <message>
         <location filename="../src/corelib/global/qglobal.cpp" line="1991"/>
         <source>No space left on device</source>
-        <translation type="unfinished"></translation>
+        <translation>На устройстве закончилось место</translation>
     </message>
     <message>
         <location filename="../src/corelib/io/qiodevice.cpp" line="1484"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -1950,17 +1950,17 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/corelib/plugin/qlibrary.cpp" line="928"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../src/corelib/plugin/qlibrary.cpp" line="602"/>
         <source>The shared library was not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Динамическая библиотека не найдена.</translation>
     </message>
     <message>
         <location filename="../src/corelib/plugin/qlibrary.cpp" line="604"/>
         <source>The file &apos;%1&apos; is not a valid Qt plugin.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл «%1» не является действительным модулем Qt.</translation>
     </message>
     <message>
         <location filename="../src/corelib/plugin/qlibrary.cpp" line="643"/>
@@ -1973,37 +1973,37 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2489"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished">&amp;Отменить</translation>
+        <translation>&amp;Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2491"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Повторить</translation>
+        <translation>&amp;Повторить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2495"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">&amp;Вырезать</translation>
+        <translation>&amp;Вырезать</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2497"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">&amp;Копировать</translation>
+        <translation>&amp;Копировать</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2499"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished">В&amp;ставить</translation>
+        <translation>В&amp;ставить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2506"/>
         <source>Select All</source>
-        <translation type="unfinished">Выделить все</translation>
+        <translation>Выделить все</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qlineedit.cpp" line="2502"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -2011,27 +2011,27 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1077"/>
         <source>Unable to open database &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть базу данных &apos;</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1084"/>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1204"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1221"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1238"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
 </context>
 <context>
@@ -2039,17 +2039,17 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="444"/>
         <source>Unable to fetch data</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить данные</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="594"/>
         <source>Unable to execute query</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось выполнить запрос</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="600"/>
         <source>Unable to store result</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить результат</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="731"/>
@@ -2092,52 +2092,52 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="547"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="550"/>
         <source>Minimize</source>
-        <translation type="unfinished">Свернуть</translation>
+        <translation>Свернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="553"/>
         <source>Restore Down</source>
-        <translation type="unfinished">Восстановить</translation>
+        <translation>Восстановить размер</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="893"/>
         <source>&amp;Restore</source>
-        <translation type="unfinished">&amp;Восстановить</translation>
+        <translation>&amp;Восстановить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="896"/>
         <source>&amp;Move</source>
-        <translation type="unfinished">&amp;Переместить</translation>
+        <translation>&amp;Переместить</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="897"/>
         <source>&amp;Size</source>
-        <translation type="unfinished">&amp;Размер</translation>
+        <translation>&amp;Размер</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="898"/>
         <source>Mi&amp;nimize</source>
-        <translation type="unfinished">&amp;Свернуть</translation>
+        <translation>&amp;Свернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="900"/>
         <source>Ma&amp;ximize</source>
-        <translation type="unfinished">Р&amp;азвернуть</translation>
+        <translation>Р&amp;азвернуть</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="902"/>
         <source>Stay on &amp;Top</source>
-        <translation type="unfinished">Всегда &amp;наверху</translation>
+        <translation>Всегда &amp;наверху</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="905"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
 </context>
 <context>
@@ -2203,22 +2203,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="356"/>
         <source>About %1</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе %1</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="358"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О библиотеке Qt</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="360"/>
         <source>Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qmenu_mac.cpp" line="362"/>
         <source>Quit %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Выйти из %1</translation>
     </message>
 </context>
 <context>
@@ -2251,12 +2251,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qmessagebox.cpp" line="83"/>
         <source>Show Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать подробности...</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qmessagebox.cpp" line="83"/>
         <source>Hide Details...</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть подробности...</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1644"/>
@@ -2290,7 +2290,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="169"/>
         <source>The remote host closed the connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалённый узел закрыл соединение</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="172"/>
@@ -2310,7 +2310,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="181"/>
         <source>Protocol type not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип протокола не поддерживается</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="184"/>
@@ -2320,7 +2320,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="190"/>
         <source>Network unreachable</source>
-        <translation type="unfinished"></translation>
+        <translation>Сеть недоступна</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="193"/>
@@ -2335,7 +2335,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="199"/>
         <source>Connection refused</source>
-        <translation type="unfinished">Отказано в соединении</translation>
+        <translation>Отказано в соединении</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="202"/>
@@ -2345,22 +2345,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="205"/>
         <source>The address is not available</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес недоступен</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="208"/>
         <source>The address is protected</source>
-        <translation type="unfinished"></translation>
+        <translation>Адрес защищён</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="214"/>
         <source>Unable to send a message</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось послать сообщение</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="217"/>
         <source>Unable to receive a message</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось принять сообщение</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="220"/>
@@ -2370,7 +2370,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="223"/>
         <source>Network error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сети</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="226"/>
@@ -2395,7 +2395,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="187"/>
         <source>Host unreachable</source>
-        <translation type="unfinished"></translation>
+        <translation>Узел недоступен</translation>
     </message>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="211"/>
@@ -2410,7 +2410,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/network/qnativesocketengine.cpp" line="232"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
 </context>
 <context>
@@ -2475,7 +2475,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1518"/>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1525"/>
@@ -2490,17 +2490,17 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1725"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1742"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1757"/>
         <source>Unable to enable autocommit</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось включить автозавершение</translation>
     </message>
 </context>
 <context>
@@ -2518,7 +2518,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="820"/>
         <source>Unable to fetch next</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить следующую запись</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/odbc/qsql_odbc.cpp" line="1073"/>
@@ -2536,7 +2536,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/util/qdesktopservices_mac.cpp" line="147"/>
         <source>Home</source>
-        <translation type="unfinished">Home</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2544,22 +2544,22 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="548"/>
         <source>Unable to connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="587"/>
         <source>Could not begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="604"/>
         <source>Could not commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="620"/>
         <source>Could not rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
 </context>
 <context>
@@ -2567,7 +2567,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="140"/>
         <source>Unable to create query</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать запрос</translation>
     </message>
 </context>
 <context>
@@ -2575,12 +2575,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/corelib/plugin/qpluginloader.cpp" line="251"/>
         <source>Unknown error</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
     <message>
         <location filename="../src/corelib/plugin/qpluginloader.cpp" line="194"/>
         <source>The plugin was not loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль не был загружен.</translation>
     </message>
 </context>
 <context>
@@ -2608,7 +2608,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qpagesetupdialog_unix.cpp" line="156"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="460"/>
@@ -2783,12 +2783,12 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="780"/>
         <source>A4 (210 x 297 mm, 8.26 x 11.7 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>A4 (210 x 297 мм, 8.26 x 11.7 дюймов)</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="791"/>
         <source>B5 (176 x 250 mm, 6.93 x 9.84 inches)</source>
-        <translation type="unfinished"></translation>
+        <translation>B5 (176 x 250 мм, 6.93 x 9.84 дюймов)</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="799"/>
@@ -2883,7 +2883,7 @@ Do you want to delete it anyway?</source>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="368"/>
         <source>Copies</source>
-        <translation>Копий</translation>
+        <translation>Копии</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog.ui" line="423"/>
@@ -2910,17 +2910,17 @@ Please choose a different file name.</source>
         <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1182"/>
         <source>%1 already exists.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 уже существует.Вы хотите перезаписать его?</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_qws.cpp" line="118"/>
         <source>File exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл существует</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_qws.cpp" line="119"/>
         <source>&lt;qt&gt;Do you want to overwrite it?&lt;/qt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;qt&gt;Вы хотите перезаписать его?&lt;/qt&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qprintdialog_qws.cpp" line="346"/>
@@ -2957,7 +2957,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/dialogs/qprogressdialog.cpp" line="147"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -3034,17 +3034,17 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/sql/drivers/sqlite2/qsql_sqlite2.cpp" line="387"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite2/qsql_sqlite2.cpp" line="404"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite2/qsql_sqlite2.cpp" line="421"/>
         <source>Unable to rollback Transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
 </context>
 <context>
@@ -3052,7 +3052,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/sql/drivers/sqlite2/qsql_sqlite2.cpp" line="118"/>
         <source>Unable to fetch results</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить результаты</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite2/qsql_sqlite2.cpp" line="251"/>
@@ -3065,27 +3065,27 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="461"/>
         <source>Error opening database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при открытии базы данных</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="472"/>
         <source>Error closing database</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при закрытии базы данных</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="492"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="507"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось завершить транзакцию</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="522"/>
         <source>Unable to roll back transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось откатить транзакцию</translation>
     </message>
 </context>
 <context>
@@ -3093,7 +3093,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="213"/>
         <source>Unable to fetch row</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить строку</translation>
     </message>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="265"/>
@@ -3113,7 +3113,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/sql/drivers/sqlite/qsql_sqlite.cpp" line="335"/>
         <source>Parameter count mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>Несоответствие числа параметров</translation>
     </message>
 </context>
 <context>
@@ -3186,7 +3186,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/plugins/accessible/widgets/rangecontrols.cpp" line="530"/>
         <source>Line up</source>
-        <translation type="unfinished">Выровнять</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/accessible/widgets/rangecontrols.cpp" line="534"/>
@@ -3204,162 +3204,162 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="288"/>
         <source>Space</source>
-        <translation type="unfinished">Space</translation>
+        <translation>Space</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="289"/>
         <source>Esc</source>
-        <translation type="unfinished">Esc</translation>
+        <translation>Esc</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="290"/>
         <source>Tab</source>
-        <translation type="unfinished">Tab</translation>
+        <translation>Tab</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="291"/>
         <source>Backtab</source>
-        <translation type="unfinished">Backtab</translation>
+        <translation>Backtab</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="292"/>
         <source>Backspace</source>
-        <translation type="unfinished">Backspace</translation>
+        <translation>Backspace</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="293"/>
         <source>Return</source>
-        <translation type="unfinished">Return</translation>
+        <translation>Return</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="294"/>
         <source>Enter</source>
-        <translation type="unfinished">Enter</translation>
+        <translation>Enter</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="295"/>
         <source>Ins</source>
-        <translation type="unfinished">Ins</translation>
+        <translation>Ins</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="296"/>
         <source>Del</source>
-        <translation type="unfinished">Del</translation>
+        <translation>Del</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="297"/>
         <source>Pause</source>
-        <translation type="unfinished">Pause</translation>
+        <translation>Pause</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="298"/>
         <source>Print</source>
-        <translation type="unfinished">Print</translation>
+        <translation>Print</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="299"/>
         <source>SysReq</source>
-        <translation type="unfinished">SysReq</translation>
+        <translation>SysReq</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="300"/>
         <source>Home</source>
-        <translation type="unfinished">Home</translation>
+        <translation>Home</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="301"/>
         <source>End</source>
-        <translation type="unfinished">End</translation>
+        <translation>End</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="302"/>
         <source>Left</source>
-        <translation type="unfinished">Left</translation>
+        <translation>Влево</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="303"/>
         <source>Up</source>
-        <translation type="unfinished">Up</translation>
+        <translation>Вверх</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="304"/>
         <source>Right</source>
-        <translation type="unfinished">Right</translation>
+        <translation>Вправо</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="305"/>
         <source>Down</source>
-        <translation type="unfinished">Down</translation>
+        <translation>Вниз</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="306"/>
         <source>PgUp</source>
-        <translation type="unfinished">PgUp</translation>
+        <translation>PgUp</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="307"/>
         <source>PgDown</source>
-        <translation type="unfinished">PgDown</translation>
+        <translation>PgDown</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="308"/>
         <source>CapsLock</source>
-        <translation type="unfinished">CapsLock</translation>
+        <translation>CapsLock</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="309"/>
         <source>NumLock</source>
-        <translation type="unfinished">NumLock</translation>
+        <translation>NumLock</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="310"/>
         <source>ScrollLock</source>
-        <translation type="unfinished">ScrollLock</translation>
+        <translation>ScrollLock</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="311"/>
         <source>Menu</source>
-        <translation type="unfinished">Меню</translation>
+        <translation>Меню</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="312"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="315"/>
         <source>Back</source>
-        <translation type="unfinished">Назад</translation>
+        <translation>Назад</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="316"/>
         <source>Forward</source>
-        <translation type="unfinished">Вперед</translation>
+        <translation>Вперед</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="317"/>
         <source>Stop</source>
-        <translation type="unfinished">Стоп</translation>
+        <translation>Остановить</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="318"/>
         <source>Refresh</source>
-        <translation type="unfinished">Обновить</translation>
+        <translation>Обновить</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="319"/>
         <source>Volume Down</source>
-        <translation type="unfinished">Тише</translation>
+        <translation>Тише</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="320"/>
         <source>Volume Mute</source>
-        <translation type="unfinished">Выключить звук</translation>
+        <translation>Выключить звук</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="321"/>
         <source>Volume Up</source>
-        <translation type="unfinished">Громче</translation>
+        <translation>Громче</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="322"/>
@@ -3414,12 +3414,12 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="333"/>
         <source>Favorites</source>
-        <translation type="unfinished">Избранное</translation>
+        <translation>Избранное</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="334"/>
         <source>Search</source>
-        <translation type="unfinished">Поиск</translation>
+        <translation>Поиск</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="335"/>
@@ -3429,7 +3429,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="336"/>
         <source>Open URL</source>
-        <translation type="unfinished">Открыть URL</translation>
+        <translation>Открыть URL</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="337"/>
@@ -3444,137 +3444,137 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="339"/>
         <source>Launch (0)</source>
-        <translation type="unfinished">Запустить (0)</translation>
+        <translation>Запустить (0)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="340"/>
         <source>Launch (1)</source>
-        <translation type="unfinished">Запустить (1)</translation>
+        <translation>Запустить (1)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="341"/>
         <source>Launch (2)</source>
-        <translation type="unfinished">Запустить (2)</translation>
+        <translation>Запустить (2)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="342"/>
         <source>Launch (3)</source>
-        <translation type="unfinished">Запустить (3)</translation>
+        <translation>Запустить (3)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="343"/>
         <source>Launch (4)</source>
-        <translation type="unfinished">Запустить (4)</translation>
+        <translation>Запустить (4)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="344"/>
         <source>Launch (5)</source>
-        <translation type="unfinished">Запустить (5)</translation>
+        <translation>Запустить (5)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="345"/>
         <source>Launch (6)</source>
-        <translation type="unfinished">Запустить (6)</translation>
+        <translation>Запустить (6)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="346"/>
         <source>Launch (7)</source>
-        <translation type="unfinished">Запустить (7)</translation>
+        <translation>Запустить (7)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="347"/>
         <source>Launch (8)</source>
-        <translation type="unfinished">Запустить (8)</translation>
+        <translation>Запустить (8)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="348"/>
         <source>Launch (9)</source>
-        <translation type="unfinished">Запустить (9)</translation>
+        <translation>Запустить (9)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="349"/>
         <source>Launch (A)</source>
-        <translation type="unfinished">Запустить (A)</translation>
+        <translation>Запустить (A)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="350"/>
         <source>Launch (B)</source>
-        <translation type="unfinished">Запустить (B)</translation>
+        <translation>Запустить (B)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="351"/>
         <source>Launch (C)</source>
-        <translation type="unfinished">Запустить (C)</translation>
+        <translation>Запустить (C)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="352"/>
         <source>Launch (D)</source>
-        <translation type="unfinished">Запустить (D)</translation>
+        <translation>Запустить (D)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="353"/>
         <source>Launch (E)</source>
-        <translation type="unfinished">Запустить (E)</translation>
+        <translation>Запустить (E)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="354"/>
         <source>Launch (F)</source>
-        <translation type="unfinished">Запустить (F)</translation>
+        <translation>Запустить (F)</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="358"/>
         <source>Print Screen</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="359"/>
         <source>Page Up</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="360"/>
         <source>Page Down</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="361"/>
         <source>Caps Lock</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="362"/>
         <source>Num Lock</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="363"/>
         <source>Number Lock</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="364"/>
         <source>Scroll Lock</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="365"/>
         <source>Insert</source>
-        <translation type="unfinished">Вставить</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="366"/>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="367"/>
         <source>Escape</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="368"/>
         <source>System Request</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="372"/>
@@ -3584,12 +3584,12 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="373"/>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="374"/>
         <source>No</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="378"/>
@@ -3629,32 +3629,32 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="1020"/>
         <source>Ctrl</source>
-        <translation type="unfinished">Ctrl</translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="1024"/>
         <source>Shift</source>
-        <translation type="unfinished">Shift</translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="1022"/>
         <source>Alt</source>
-        <translation type="unfinished">Alt</translation>
+        <translation>Alt</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="1018"/>
         <source>Meta</source>
-        <translation type="unfinished">Meta</translation>
+        <translation>Meta</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="994"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="1039"/>
         <source>F%1</source>
-        <translation type="unfinished">F%1</translation>
+        <translation>F%1</translation>
     </message>
     <message>
         <location filename="../src/gui/kernel/qkeysequence.cpp" line="332"/>
@@ -3751,7 +3751,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/qt3support/sql/q3sqlmanager_p.cpp" line="890"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <location filename="../src/qt3support/sql/q3sqlmanager_p.cpp" line="922"/>
@@ -3917,7 +3917,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/network/qudpsocket.cpp" line="132"/>
         <source>This platform does not support IPv6</source>
-        <translation type="unfinished"></translation>
+        <translation>Эта платформа не поддерживает IPv6</translation>
     </message>
 </context>
 <context>
@@ -4078,7 +4078,7 @@ Please choose a different file name.</source>
     <message>
         <location filename="../src/gui/dialogs/qwizard.cpp" line="567"/>
         <source>Cancel</source>
-        <translation>Отмена</translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
