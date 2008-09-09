@@ -16,40 +16,25 @@
 #ifndef QGSGRASSNEWMAPSET_H
 #define QGSGRASSNEWMAPSET_H
 
-#include <vector>
-//Added by qt3to4:
-#include <QPixmap>
-#include <QKeyEvent>
-#include <QCloseEvent>
-class QString;
-class QCloseEvent;
-#include <qlabel.h>
-
-// Must be here, so that it is included to moc file
-#include "qgspoint.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsprojectionselector.h"
-class QgisInterface;
-
-class QgsGrassProvider;
-#include "qgsgrassplugin.h"
 #include "ui_qgsgrassnewmapsetbase.h"
-#include <Q3Wizard>
-#include "qgsgrassselect.h"
-#include "qgsgrassattributes.h"
+#include "qgscoordinatereferencesystem.h"
+
+class QgsGrassPlugin;
+class QgisInterface;
+class QgsPoint;
+class QgsProjectionSelector;
 
 extern "C"
 {
 #include <grass/gis.h>
-#include <grass/gprojects.h>
-#include <grass/Vect.h>
 }
+
 
 /*! \class QgsGrassNewMapset
  *  \brief GRASS vector edit.
  *
  */
-class QgsGrassNewMapset : public Q3Wizard, private Ui::QgsGrassNewMapsetBase
+class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 {
     Q_OBJECT
 
@@ -68,10 +53,13 @@ class QgsGrassNewMapset : public Q3Wizard, private Ui::QgsGrassNewMapsetBase
     //! Constructor
     QgsGrassNewMapset( QgisInterface *iface,
                        QgsGrassPlugin *plugin,
-                       QWidget * parent = 0, const char * name = "", Qt::WFlags f = 0 );
+                       QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassNewMapset();
+
+    //! Next page
+    int nextId() const;
 
     //! Is running
     static bool isRunning();
@@ -183,7 +171,7 @@ class QgsGrassNewMapset : public Q3Wizard, private Ui::QgsGrassNewMapsetBase
     void createMapset();
 
     //! New page was selected
-    void pageSelected( const QString & );
+    void pageSelected( int index );
 
     //! Close event
     void closeEvent( QCloseEvent *e );

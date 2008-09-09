@@ -1,6 +1,6 @@
 <ui version="4.0" >
  <class>QgsGrassModuleBase</class>
- <widget class="QWidget" name="QgsGrassModuleBase" >
+ <widget class="QDialog" name="QgsGrassModuleBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -13,12 +13,6 @@
    <string>GRASS Module</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item row="1" column="0" >
     <widget class="QTabWidget" name="mTabWidget" >
      <widget class="QWidget" name="options" >
@@ -31,11 +25,17 @@
        <string>Output</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>0</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <widget class="QTextBrowser" name="mOutputTextBrowser" />
@@ -47,11 +47,17 @@
        <string>Manual</string>
       </attribute>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>0</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <widget class="QTextBrowser" name="mManualTextBrowser" />
@@ -63,9 +69,7 @@
    <item row="0" column="0" >
     <widget class="QLabel" name="lblModuleName" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>5</vsizetype>
+      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -76,7 +80,7 @@
     </widget>
    </item>
    <item row="3" column="0" >
-    <widget class="Q3Frame" name="frame4" >
+    <widget class="QFrame" name="frame4" >
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -86,16 +90,10 @@
      <property name="lineWidth" >
       <number>0</number>
      </property>
-     <property name="margin" >
+     <property name="margin" stdset="0" >
       <number>0</number>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <spacer>
         <property name="orientation" >
@@ -182,25 +180,11 @@
     </widget>
    </item>
    <item row="2" column="0" >
-    <widget class="Q3ProgressBar" name="mProgressBar" />
+    <widget class="QProgressBar" name="mProgressBar" />
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3ProgressBar</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3ProgressBar</header>
-  </customwidget>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends>QFrame</extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

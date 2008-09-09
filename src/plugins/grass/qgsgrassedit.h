@@ -18,7 +18,6 @@
 
 #include <vector>
 
-#include <Q3PointArray>
 #include <QMainWindow>
 
 class QAction;
@@ -199,7 +198,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     //! Close editing
     void closeEdit();
 
-    void changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col );
+    void changeSymbology( QTreeWidgetItem * item, int col );
 
     //! width/size changed
     void lineWidthChanged();

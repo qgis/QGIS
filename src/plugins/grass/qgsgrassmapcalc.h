@@ -14,43 +14,17 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
-#include <QMouseEvent>
-#include <Q3Frame>
-#include <QKeyEvent>
-#include <QCloseEvent>
-#include <QPixmap>
-#include <QAction>
-
-class QCloseEvent;
-class QString;
-class QStringList;
-class Q3GroupBox;
-class Q3Frame;
-class Q3ListView;
-class QDomNode;
-class QDomElement;
-class QComboBox;
-class QLineEdit;
-class QPixmap;
-
-#include <vector>
-#include <q3groupbox.h>
-#include <qcheckbox.h>
-#include <q3process.h>
-#include <q3canvas.h>
-
-class QgisInterface;
-
-class QgsGrassProvider;
-class QgsGrassTools;
-class QgsGrassModuleItem;
-class QgsGrassMapcalcView;
-class QgsGrassMapcalcFunction;
-class QgsGrassMapcalcItem;
-class QgsGrassMapcalcObject;
-class QgsGrassMapcalcConnector;
 #include "ui_qgsgrassmapcalcbase.h"
 #include "qgsgrassmodule.h"
+
+#include <QGraphicsItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+
+class QgsGrassMapcalcConnector;
+class QgsGrassMapcalcFunction;
+class QgsGrassMapcalcObject;
+class QgsGrassMapcalcView;
 
 /*!
  *  \class QgsGrassMapcalc
@@ -66,7 +40,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
+      QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassMapcalc();
@@ -93,14 +67,14 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool inputRegion( struct Cell_head *window, bool all );
     QStringList output( int type );
 
-    /** \brief receives contentsMousePressEvent from view */
-    void contentsMousePressEvent( QMouseEvent* );
+    /** \brief recieves contentsMousePressEvent from view */
+    void mousePressEvent( QMouseEvent* );
 
-    /** \brief receives contentsMouseReleaseEvent from view */
-    void contentsMouseReleaseEvent( QMouseEvent* );
+    /** \brief recieves contentsMouseReleaseEvent from view */
+    void mouseReleaseEvent( QMouseEvent* );
 
-    /** \brief receives contentsMouseMoveEvent from view */
-    void contentsMouseMoveEvent( QMouseEvent* );
+    /** \brief recieves contentsMouseMoveEvent from view */
+    void mouseMoveEvent( QMouseEvent* );
 
     void keyPressEvent( QKeyEvent * e );
 
@@ -176,7 +150,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalcView *mView;
 
     // Canvas
-    Q3Canvas *mCanvas;
+    QGraphicsScene *mCanvas;
 
     // Tool
     int mTool;
@@ -216,7 +190,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     unsigned int mNextId;
 
     //! Background
-    Q3CanvasRectangle *mPaper;
+    QGraphicsRectItem *mPaper;
 
     // Actions
     QAction *mActionAddMap;
@@ -295,7 +269,8 @@ class QgsGrassMapcalcItem
 
     virtual void setSelected( bool s );
     bool selected( void );
-//    virtual void draw ( QPainter & painter );
+//    virtual void paint ( QPainter * painter,
+//      const QStyleOptionGraphicsItem * option, QWidget * widget );
 //
     int id() { return mId; }
     void setId( int id ) { mId = id; }
@@ -312,7 +287,7 @@ class QgsGrassMapcalcItem
  * All coordinates are calculated from mCenter using font size,
  * number of input and labels.
  *
- *      QCanvasRectangle.x()
+ *      QGraphicsRectItem.x()
  *      |
  *      | mRect.x()
  *      | |           mCenter.x()
@@ -334,7 +309,7 @@ class QgsGrassMapcalcItem
  *  |                   |
  *  mInputHeight        mLabelX
  */
-class QgsGrassMapcalcObject: public Q3CanvasRectangle, public QgsGrassMapcalcItem
+class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcItem
 {
   public:
     enum Type
@@ -361,7 +336,8 @@ class QgsGrassMapcalcObject: public Q3CanvasRectangle, public QgsGrassMapcalcIte
     // Set function
     void setFunction( QgsGrassMapcalcFunction f );
 
-    void draw( QPainter & painter );
+    void paint( QPainter * painter,
+                const QStyleOptionGraphicsItem * option, QWidget * widget );
 
     // Set object center
     void setCenter( int, int );
@@ -473,13 +449,14 @@ class QgsGrassMapcalcObject: public Q3CanvasRectangle, public QgsGrassMapcalcIte
  * Connector.
  * End are stored in vectors with indexes 0,1
  */
-class QgsGrassMapcalcConnector: public Q3CanvasLine, public QgsGrassMapcalcItem
+class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcConnector( Q3Canvas * );
+    QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector();
 
-    void draw( QPainter & painter );
+    void paint( QPainter * painter,
+                const QStyleOptionGraphicsItem * option, QWidget * widget );
 
     // Set connector end point coordinates
     void setPoint( int, QPoint );
@@ -509,7 +486,7 @@ class QgsGrassMapcalcConnector: public Q3CanvasLine, public QgsGrassMapcalcItem
                     int socket = 0
                   );
 
-    // Returnt pointer to object on end
+    // Return pointer to object on end
     QgsGrassMapcalcObject *object( int end );
 
     // End object direction
@@ -541,17 +518,17 @@ class QgsGrassMapcalcConnector: public Q3CanvasLine, public QgsGrassMapcalcItem
 };
 
 /******************** CANVAS VIEW ******************************/
-class QgsGrassMapcalcView: public Q3CanvasView
+class QgsGrassMapcalcView: public QGraphicsView
 {
     Q_OBJECT
 
   public:
-    QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc, QWidget* parent = 0, const char* name = 0, Qt::WFlags f = 0 );
+    QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WFlags f = 0 );
 
   protected:
-    void contentsMousePressEvent( QMouseEvent* );
-    void contentsMouseReleaseEvent( QMouseEvent* );
-    void contentsMouseMoveEvent( QMouseEvent* );
+    void mousePressEvent( QMouseEvent * e );
+    void mouseReleaseEvent( QMouseEvent * e );
+    void mouseMoveEvent( QMouseEvent * e );
     void keyPressEvent( QKeyEvent * e );
 
   private:

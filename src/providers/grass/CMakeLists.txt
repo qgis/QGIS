@@ -42,22 +42,12 @@ ELSE (WIN32)
   SET_TARGET_PROPERTIES(qgisgrass PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
 ENDIF (WIN32)
 
-SET( QT_USE_QT3SUPPORT TRUE )
-INCLUDE( ${QT_USE_FILE} )
-
 TARGET_LINK_LIBRARIES (qgisgrass
   ${QT_QTCORE_LIBRARY} 
   ${QT_QTXML_LIBRARY} 
-  ${QT_QT3SUPPORT_LIBRARY} 
   ${GRASS_LIBRARIES}
   qgis_core
 )
-#work aroud for the fact that qt3support on mac is linked to qtsql
-IF (APPLE)
-  TARGET_LINK_LIBRARIES (qgisgrass
-    ${QT_QTSQL_LIBRARY} 
-    )
-ENDIF (APPLE)
 
 ADD_LIBRARY (grassprovider MODULE ${GRASS_PROVIDER_SRCS})
 

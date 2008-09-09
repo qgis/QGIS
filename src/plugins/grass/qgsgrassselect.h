@@ -16,7 +16,7 @@
 #ifndef QGSGRASSSELECT_H
 #define QGSGRASSSELECT_H
 #include "ui_qgsgrassselectbase.h"
-#include <QDialog>
+
 /*! \class QgsGrassSelect
  * \brief Dialog to select GRASS layer.
  *

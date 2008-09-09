@@ -14,66 +14,40 @@
  *                                                                         *
  ***************************************************************************/
 
-//#include <qnamespace.h>
-#include <QtGlobal>
-#include <QColorDialog>
-#include <Q3ListBox>
-#include <Q3ListView>
-#include <Q3PointArray>
-#include <Q3Table>
-#include <QAction>
-#include <QActionGroup>
-#include <QCloseEvent>
-#include <QComboBox>
-#include <QCursor>
-#include <QDir>
-#include <QEvent>
-#include <QFile>
-#include <QInputDialog>
-#include <QLabel>
-#include <QMessageBox>
-#include <QPainter>
-#include <QPen>
-#include <QPixmap>
-#include <QSettings>
-#include <QSpinBox>
-#include <QStatusBar>
-#include <QStringList>
-#include <QToolBar>
+#include "qgsgrassedit.h"
+#include "qgsgrassattributes.h"
+#include "qgsgrassedittools.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassutils.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrass.h"
 
-
-#include "qgis.h"
 #include "qgisinterface.h"
 #include "qgsapplication.h"
-#include "qgscsexception.h"
+#include "qgsfield.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasitem.h"
 #include "qgsmaplayer.h"
 #include "qgsmaprenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmaptopixel.h"
-#include "qgsfield.h"
-#include "qgsvertexmarker.h"
-#include "qgsrubberband.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
+
+#include <QCloseEvent>
+#include <QColorDialog>
+#include <QDir>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QMessageBox>
+#include <QSettings>
+#include <QToolBar>
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/Vect.h>
 }
-
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassattributes.h"
-#include "qgsgrassedit.h"
-#include "qgsgrassedittools.h"
-#include "qgsgrassutils.h"
-#include "qgsgrassplugin.h"
-#include "qgslogger.h"
 
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
@@ -111,6 +85,66 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
 };
 
 
+#include <QItemDelegate>
+class QgsGrassEditAttributeTableItemDelegate : public QItemDelegate
+{
+  public:
+    QgsGrassEditAttributeTableItemDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+};
+
+QgsGrassEditAttributeTableItemDelegate::QgsGrassEditAttributeTableItemDelegate( QObject *parent )
+    : QItemDelegate( parent )
+{}
+
+QWidget *QgsGrassEditAttributeTableItemDelegate::createEditor( QWidget *parent,
+    const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QWidget *editor;
+  if ( index.column() == 1 )
+  {
+    QComboBox *cb = new QComboBox( parent );
+    cb->addItems( QStringList() << "integer" << "double precision" << "varchar" );
+    editor = cb;
+  }
+  else
+  {
+    editor = QItemDelegate::createEditor( parent, option, index );
+  }
+  return editor;
+}
+
+#include<QDebug>
+void QgsGrassEditAttributeTableItemDelegate::setEditorData( QWidget *editor,
+    const QModelIndex &index ) const
+{
+  if ( index.column() == 1 )
+  {
+    QComboBox *cb = static_cast<QComboBox *>( editor );
+    cb->setCurrentIndex( cb->findData( index.model()->data( index ), Qt::DisplayRole ) );
+  }
+  else
+  {
+    QItemDelegate::setEditorData( editor, index );
+  }
+}
+
+void QgsGrassEditAttributeTableItemDelegate::setModelData( QWidget *editor,
+    QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  if ( index.column() == 1 )
+  {
+    QComboBox *cb = static_cast<QComboBox *>( editor );
+    model->setData( index, cb->currentText(), Qt::EditRole );
+  }
+  else
+  {
+    QItemDelegate::setModelData( editor, model, index );
+  }
+}
+
 
 bool QgsGrassEdit::mRunning = false;
 
@@ -141,7 +175,6 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMa
 
   //TODO dynamic_cast ?
   mProvider = ( QgsGrassProvider * ) mLayer->dataProvider();
-
 
   init();
 
@@ -211,7 +244,6 @@ void QgsGrassEdit::init()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector for update." ) );
     return;
   }
-
 
   mRubberBandLine = new QgsRubberBand( mCanvas );
   mRubberBandIcon = new QgsVertexMarker( mCanvas );
@@ -390,29 +422,30 @@ void QgsGrassEdit::init()
   QString spath = "/GRASS/edit/symb/";
   QSettings settings;
 
-  mLineWidth = settings.readNumEntry(
-                 spath + "lineWidth", 1 );
-  mSize = settings.readNumEntry(
-            spath + "markerSize", 9 );
+  mLineWidth = settings.value(
+                 spath + "lineWidth", 1 ).toInt();
+  mSize = settings.value(
+            spath + "markerSize", 9 ).toInt();
   mLineWidthSpinBox->setValue( mLineWidth );
   mMarkerSizeSpinBox->setValue( mSize );
 
   for ( int i = 0; i < SYMB_COUNT; i++ )
   {
-    bool ok;
-
-
-    bool displ = settings.readBoolEntry(
+    bool ok = settings.contains(
+                spath + "display/" + QString::number( i ) );
+    bool displ = settings.value(
                    spath + "display/" + QString::number( i ),
-                   true, &ok );
+                   true ).toBool();
     if ( ok )
     {
       mSymbDisplay[i] = displ;
     }
 
-    QString colorName = settings.readEntry(
+    ok = settings.contains(
+           spath + "color/" + QString::number( i ) );
+    QString colorName = settings.value(
                           spath + "color/" + QString::number( i ),
-                          "", &ok );
+                          "" ).toString();
     if ( ok )
     {
       QColor color( colorName );
@@ -427,18 +460,11 @@ void QgsGrassEdit::init()
   }
 
   // Set Symbology in dialog
-  symbologyList->setColumnText( 0, tr( "Disp", "Column title" ) );
-  symbologyList->setColumnWidth( 0, 20 );
-  symbologyList->addColumn( tr( "Color", "Column title" ) );
-  symbologyList->setColumnWidth( 0, 50 );
-  symbologyList->addColumn( tr( "Type", "Column title" ) );
-  symbologyList->setColumnWidthMode( 2, Q3ListView::Maximum );
-  symbologyList->addColumn( tr( "Index", "Column title" ), 0 );
-  symbologyList->clear();
-  symbologyList->setSorting( -1 );
+  symbologyList->setColumnWidth( 0, 40 );
+  symbologyList->setColumnWidth( 1, 50 );
+  symbologyList->setColumnWidth( 2, 200 );
 
-
-  for ( int i = SYMB_COUNT - 1; i >= 0; i-- )
+  for ( int i = 0; i < SYMB_COUNT; i++ )
   {
     if ( i == SYMB_NODE_0 ) continue;
 
@@ -447,30 +473,22 @@ void QgsGrassEdit::init()
     QString index;
     index.sprintf( "%d", i );
 
-    if ( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC )
+    QTreeWidgetItem *item = new QTreeWidgetItem( symbologyList );
+    if ( !( i == SYMB_BACKGROUND || i == SYMB_HIGHLIGHT || i == SYMB_DYNAMIC ) )
     {
-      Q3ListViewItem *lvi = new Q3ListViewItem( symbologyList, "", "", mSymbName[i] );
-      lvi->setPixmap( 1, pm );
-      lvi->setText( 3, index );
+      item->setCheckState( 0, mSymbDisplay[i] ? Qt::Checked : Qt::Unchecked );
     }
-    else
-    {
-      Q3CheckListItem *clvi = new Q3CheckListItem( symbologyList, "", Q3CheckListItem::CheckBox );
-      clvi->setText( 2, mSymbName[i] );
-      clvi->setPixmap( 1, pm );
-      clvi->setOn( mSymbDisplay[i] );
-      clvi->setText( 3, index );
-    }
+    item->setIcon( 1, pm );
+    item->setText( 2, mSymbName[i] );
+    item->setText( 3, index );
   }
 
-  connect( symbologyList, SIGNAL( pressed( Q3ListViewItem *, const QPoint &, int ) ),
-           this, SLOT( changeSymbology( Q3ListViewItem *, const QPoint &, int ) ) );
+  connect( symbologyList, SIGNAL( itemPressed( QTreeWidgetItem *, int ) ),
+           this, SLOT( changeSymbology( QTreeWidgetItem *, int ) ) );
 
   // Init table tab
-  mAttributeTable->setLeftMargin( 0 ); // hide row labels
-  mAttributeTable->horizontalHeader()->setLabel( 0, tr( "Column" ) );
-  mAttributeTable->horizontalHeader()->setLabel( 1, tr( "Type" ) );
-  mAttributeTable->horizontalHeader()->setLabel( 2, tr( "Length" ) );
+  mAttributeTable->setItemDelegate( new QgsGrassEditAttributeTableItemDelegate( this ) );
+  mAttributeTable->verticalHeader()->hide();
 
   int ndblinks = mProvider->numDbLinks();
 
@@ -482,25 +500,25 @@ void QgsGrassEdit::init()
 
       QString str;
       str.sprintf( "%d", f );
-      mTableField->insertItem( str );
-      mFieldBox->insertItem( str );
+      mTableField->addItem( str );
+      mFieldBox->addItem( str );
       if ( i == 0 )
       {
         setAttributeTable( f );
       }
     }
-    mTableField->setCurrentItem( 0 );
-    mFieldBox->setCurrentItem( 0 );
+    mTableField->setCurrentIndex( 0 );
+    mFieldBox->setCurrentIndex( 0 );
   }
   else
   {
-    mTableField->insertItem( "1" );
+    mTableField->addItem( "1" );
     setAttributeTable( 1 );
 
-    mFieldBox->insertItem( "1" );
+    mFieldBox->addItem( "1" );
   }
 
-  connect( mAttributeTable, SIGNAL( valueChanged( int, int ) ), this, SLOT( columnTypeChanged( int, int ) ) );
+  connect( mAttributeTable, SIGNAL( cellChanged( int, int ) ), this, SLOT( columnTypeChanged( int, int ) ) );
 
   // Set variables
   mSelectedLine = 0;
@@ -526,12 +544,10 @@ void QgsGrassEdit::init()
 
   mPixmap = &mCanvasEdit->pixmap();
 
-
-
   // Init GUI values
-  mCatModeBox->insertItem( tr( "Next not used" ), CAT_MODE_NEXT );
-  mCatModeBox->insertItem( tr( "Manual entry" ), CAT_MODE_MANUAL );
-  mCatModeBox->insertItem( tr( "No category" ), CAT_MODE_NOCAT );
+  mCatModeBox->addItem( tr( "Next not used" ), CAT_MODE_NEXT );
+  mCatModeBox->addItem( tr( "Manual entry" ), CAT_MODE_MANUAL );
+  mCatModeBox->addItem( tr( "No category" ), CAT_MODE_NOCAT );
   catModeChanged( );
 
   // TODO: how to get keyboard events from canvas (shortcuts)
@@ -552,7 +568,7 @@ void QgsGrassEdit::attributeTableFieldChanged( void )
 
 void QgsGrassEdit::setAttributeTable( int field )
 {
-  mAttributeTable->setNumRows( 0 );
+  mAttributeTable->setRowCount( 0 );
 
   QString *key = mProvider->key( field );
 
@@ -560,45 +576,45 @@ void QgsGrassEdit::setAttributeTable( int field )
   {
     std::vector<QgsField> *cols = mProvider->columns( field );
 
-    mAttributeTable->setNumRows( cols->size() );
+    mAttributeTable->setRowCount( cols->size() );
 
 
     for ( unsigned int c = 0; c < cols->size(); c++ )
     {
       QgsField col = ( *cols )[c];
 
-      Q3TableItem *ti;
+      QTableWidgetItem *ti;
 
-      ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.name() );
-      ti->setEnabled( false );
+      ti = new QTableWidgetItem( col.name() );
+      ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
       mAttributeTable->setItem( c, 0, ti );
 
-      ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, col.typeName() );
-      ti->setEnabled( false );
+      ti = new QTableWidgetItem( col.typeName() );
+      ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
       mAttributeTable->setItem( c, 1, ti );
 
       QString str;
       str.sprintf( "%d", col.length() );
-      ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, str );
-      ti->setEnabled( false );
+      ti = new QTableWidgetItem( str );
+      ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
       mAttributeTable->setItem( c, 2, ti );
     }
   }
   else
   {
-    mAttributeTable->setNumRows( 1 );
+    mAttributeTable->setRowCount( 1 );
 
-    Q3TableItem *ti;
+    QTableWidgetItem *ti;
 
-    ti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, "cat" );
+    ti = new QTableWidgetItem( "cat" );
     mAttributeTable->setItem( 0, 0, ti );
 
-    ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "integer" );
-    ti->setEnabled( false );
+    ti = new QTableWidgetItem( "integer" );
+    ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
     mAttributeTable->setItem( 0, 1, ti );
 
-    ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "" );
-    ti->setEnabled( false );
+    ti = new QTableWidgetItem( "" );
+    ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
     mAttributeTable->setItem( 0, 2, ti );
   }
 }
@@ -606,29 +622,22 @@ void QgsGrassEdit::setAttributeTable( int field )
 void QgsGrassEdit::addColumn( void )
 {
   QgsDebugMsg( "entered." );
-  int r = mAttributeTable->numRows();
-  mAttributeTable->setNumRows( r + 1 );
-  mAttributeTable->setRowReadOnly( r, false );
+  int r = mAttributeTable->rowCount();
+  mAttributeTable->setRowCount( r + 1 );
 
   QString cn;
   cn.sprintf( "column%d", r + 1 );
 
-  Q3TableItem *ti;
+  QTableWidgetItem *ti;
 
-  ti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, cn );
+  ti = new QTableWidgetItem( cn );
   mAttributeTable->setItem( r, 0, ti );
 
-  QStringList types;
-  types.push_back( "integer" );
-  types.push_back( "double precision" );
-  types.push_back( "varchar" );
+  ti = new QTableWidgetItem( "integer" );
+  mAttributeTable->setItem( r, 1, ti );
 
-  Q3ComboTableItem *cti = new Q3ComboTableItem( mAttributeTable, types );
-  cti->setCurrentItem( 0 );
-  mAttributeTable->setItem( r, 1, cti );
-
-  ti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, "20" );
-  ti->setEnabled( false );
+  ti = new QTableWidgetItem( "20" );
+  ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
   mAttributeTable->setItem( r, 2, ti );
 }
 
@@ -638,25 +647,16 @@ void QgsGrassEdit::columnTypeChanged( int row, int col )
 
   if ( col != 1 ) return;
 
-  Q3ComboTableItem *cti = ( Q3ComboTableItem * ) mAttributeTable->item( row, 1 );
-
-  Q3TableItem *ti = mAttributeTable->item( row, 2 );
-
-  if ( cti->currentText().compare( "varchar" ) != 0 )
-  {
-    Q3TableItem *nti = new Q3TableItem( mAttributeTable, Q3TableItem::Never, ti->text() );
-    nti->setEnabled( false );
-    mAttributeTable->setItem( row, 2, nti );
-    //delete ti;
-  }
-  else
-  {
-    Q3TableItem *nti = new Q3TableItem( mAttributeTable, Q3TableItem::Always, ti->text() );
-    nti->setEnabled( true );
-    mAttributeTable->setItem( row, 2, nti );
-    //delete ti;
-  }
-  mAttributeTable->updateCell( row, 2 );
+  QTableWidgetItem *ti = mAttributeTable->item( row, 2 );
+  if ( ti )
+    if ( mAttributeTable->item( row, 1 )->text().compare( "varchar" ) == 0 )
+    {
+      ti->setFlags( ti->flags() | Qt::ItemIsEnabled );
+    }
+    else
+    {
+      ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
+    }
 }
 
 void QgsGrassEdit::alterTable( void )
@@ -666,23 +666,21 @@ void QgsGrassEdit::alterTable( void )
   // Create new table if first column name is editable otherwise alter table
   int field = mTableField->currentText().toInt();
 
-  Q3TableItem *ti;
-  ti = mAttributeTable->item( 0, 0 );
-
   QString sql;
+  QString type;
 
-  if ( mAttributeTable->item( 0, 0 )->isEnabled() )
+  if ( mAttributeTable->item( 0, 0 )->flags() & Qt::ItemIsEnabled )
   {
     QgsDebugMsg( "Create new table" );
 
-    for ( int i = 0; i < mAttributeTable->numRows(); i++ )
+    for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
     {
       if ( i > 0 ) sql.append( ", " );
 
+      type = mAttributeTable->item( i, 1 )->text();
+      sql.append( mAttributeTable->item( i, 0 )->text() + " " + type );
 
-      sql.append( mAttributeTable->item( i, 0 )->text() + " " + mAttributeTable->item( i, 1 )->text() );
-
-      if ( mAttributeTable->item( i, 1 )->text().compare( "varchar" ) == 0 )
+      if ( type.compare( "varchar" ) == 0 )
       {
         sql.append( " (" + mAttributeTable->item( i, 2 )->text() + ")" );
       }
@@ -699,7 +697,7 @@ void QgsGrassEdit::alterTable( void )
       QMessageBox::information( 0, tr( "Info" ), tr( "The table was created" ) );
       QString str;
       str.sprintf( "%d", field );
-      mFieldBox->insertItem( str );
+      mFieldBox->addItem( str );
     }
     delete error;
   }
@@ -707,13 +705,14 @@ void QgsGrassEdit::alterTable( void )
   {
     QgsDebugMsg( "Alter table" );
 
-    for ( int i = 0; i < mAttributeTable->numRows(); i++ )
+    for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
     {
-      if ( !( mAttributeTable->item( i, 0 )->isEnabled() ) ) continue;
+      if ( !( mAttributeTable->item( i, 0 )->flags() & Qt::ItemIsEnabled ) ) continue;
 
-      sql = mAttributeTable->item( i, 0 )->text() + " " + mAttributeTable->item( i, 1 )->text();
+      type = mAttributeTable->item( i, 1 )->text();
+      sql = mAttributeTable->item( i, 0 )->text() + " " + type;
 
-      if ( mAttributeTable->item( i, 1 )->text().compare( "varchar" ) == 0 )
+      if ( type.compare( "varchar" ) == 0 )
       {
         sql.append( " (" + mAttributeTable->item( i, 2 )->text() + ")" );
       }
@@ -731,7 +730,7 @@ void QgsGrassEdit::alterTable( void )
   setAttributeTable( field );
 }
 
-void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, int col )
+void QgsGrassEdit::changeSymbology( QTreeWidgetItem * item, int col )
 {
   QgsDebugMsg( QString( "col = %1" ).arg( col ) );
 
@@ -745,14 +744,13 @@ void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, i
   {
     if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC ) return;
 
-    Q3CheckListItem *clvi = ( Q3CheckListItem * ) item;
-    mSymbDisplay[index] = clvi->isOn();
+    mSymbDisplay[index] = item->checkState( 0 ) == Qt::Checked;
 
     //int ww = settings.readNumEntry("/GRASS/windows/edit/w", 420);
     QString sn;
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/display/%d", index );
-    settings.writeEntry( sn, mSymbDisplay[index] );
+    settings.setValue( sn, ( bool )mSymbDisplay[index] );
   }
   else if ( col == 1 )
   {
@@ -761,12 +759,12 @@ void QgsGrassEdit::changeSymbology( Q3ListViewItem * item, const QPoint & pnt, i
 
     QPixmap pm( 40, 15 );
     pm.fill( mSymb[index].color() );
-    item->setPixmap( 1, pm );
+    item->setIcon( 1, pm );
 
     QString sn;
     // TODO use a name instead of index
     sn.sprintf( "/GRASS/edit/symb/color/%d", index );
-    settings.writeEntry( sn, mSymb[index].color().name() );
+    settings.setValue( sn, mSymb[index].color().name() );
     // Use the 'dynamic' color for mRubberBand
     if ( index == SYMB_DYNAMIC )
     {
@@ -787,7 +785,7 @@ void QgsGrassEdit::lineWidthChanged()
   }
 
   QString spath = "/GRASS/edit/symb/";
-  settings.writeEntry( spath + "lineWidth", mLineWidth );
+  settings.setValue( spath + "lineWidth", mLineWidth );
 }
 
 void QgsGrassEdit::markerSizeChanged()
@@ -796,7 +794,7 @@ void QgsGrassEdit::markerSizeChanged()
   QSettings settings;
   mSize = mMarkerSizeSpinBox->value();
   QString spath = "/GRASS/edit/symb/";
-  settings.writeEntry( spath + "markerSize", mSize );
+  settings.setValue( spath + "markerSize", mSize );
 }
 
 void QgsGrassEdit::restorePosition()
@@ -973,13 +971,13 @@ void QgsGrassEdit::closeEdit( void )
   // Add new layers
   if ( mNewMap )
   {
-    QString uri = QDir::cleanDirPath( mProvider->dataSourceUri() );
+    QString uri = QDir::cleanPath( mProvider->dataSourceUri() );
     QgsDebugMsg( QString( "uri = %1" ).arg( uri ) );
     // Note: QDir::cleanPath is using '/' also on Windows
     //QChar sep = QDir::separator();
     QChar sep = '/';
 
-    QStringList split = QStringList::split( sep, uri );
+    QStringList split = uri.split( sep, QString::SkipEmptyParts );
     split.pop_back(); // layer
     QString map = split.last();
     split.pop_back(); // map
@@ -1005,7 +1003,7 @@ void QgsGrassEdit::closeEvent( QCloseEvent *e )
 void QgsGrassEdit::catModeChanged( void )
 {
   QgsDebugMsg( "entered." );
-  int mode = mCatModeBox->currentItem();
+  int mode = mCatModeBox->currentIndex();
 
   int field = mFieldBox->currentText().toInt();
 
@@ -1040,7 +1038,7 @@ void QgsGrassEdit::catModeChanged( void )
 void QgsGrassEdit::fieldChanged( void )
 {
   QgsDebugMsg( "entered." );
-  int mode = mCatModeBox->currentItem();
+  int mode = mCatModeBox->currentIndex();
   int field = mFieldBox->currentText().toInt();
 
   if ( mode == CAT_MODE_NEXT )   // Find next not used
@@ -1060,7 +1058,7 @@ void QgsGrassEdit::fieldChanged( void )
 
 int QgsGrassEdit::writeLine( int type, struct line_pnts *Points )
 {
-  int mode = mCatModeBox->currentItem();
+  int mode = mCatModeBox->currentIndex();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
@@ -1099,7 +1097,7 @@ int QgsGrassEdit::writeLine( int type, struct line_pnts *Points )
 
 void QgsGrassEdit::increaseMaxCat( void )
 {
-  int mode = mCatModeBox->currentItem();
+  int mode = mCatModeBox->currentIndex();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
@@ -1310,7 +1308,7 @@ void QgsGrassEdit::startTool( int tool )
   Vect_reset_line( mEditPoints );
   mSelectedLine = 0;
 
-  // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be received
+  // TODO: mTool != NEW_LINE is a hack for lines until more buttons can be recieved
   if ( mAttributes && mTool != QgsGrassEdit::NEW_LINE && mTool != QgsGrassEdit::NEW_BOUNDARY )
   {
     delete mAttributes;
@@ -1490,7 +1488,7 @@ void QgsGrassEdit::addAttributes( int field, int cat )
 
 void QgsGrassEdit::addCat( int line )
 {
-  int mode = mCatModeBox->currentItem();
+  int mode = mCatModeBox->currentIndex();
   int field = mFieldBox->currentText().toInt();
   int cat = mCatEntry->text().toInt();
 
@@ -1685,7 +1683,7 @@ void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainte
   else   // line
   {
     QgsPoint point;
-    Q3PointArray pointArray( mPoints->n_points );
+    QPolygon pointArray( mPoints->n_points );
 
     for ( int i = 0; i < mPoints->n_points; i++ )
     {
@@ -1814,7 +1812,7 @@ void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
   QgsDebugMsg( "entered." );
 
   QgsPoint point;
-  Q3PointArray pointArray( 2 );
+  QPolygon pointArray( 2 );
 
   point.setX( x );
   point.setY( y );

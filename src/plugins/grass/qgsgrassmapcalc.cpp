@@ -12,68 +12,34 @@
  * (at your option) any later version.                                   *
  *                                                                       *
  *************************************************************************/
-#include <typeinfo>
 
-#include <qapplication.h>
-#include <qstringlist.h>
-#include <qlabel.h>
-#include <QComboBox>
-#include <qpushbutton.h>
-#include <qmessagebox.h>
-#include <qpen.h>
-#include <q3pointarray.h>
-#include <qcursor.h>
-#include <qevent.h>
-#include <qpoint.h>
-#include <qsize.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <q3groupbox.h>
-#include <qpainter.h>
-#include <qpixmap.h>
-#include <q3picture.h>
-#include <q3canvas.h>
-#include <qstatusbar.h>
-#include <qinputdialog.h>
-#include <qdom.h>
-
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include <QGridLayout>
-#include <QTextStream>
-#include <QActionGroup>
-#include <QToolBar>
-
-#include "qgis.h"
-#include "qgisinterface.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
-#include "qgsfield.h"
-#include "qgsgrassplugin.h"
-
-extern "C"
-{
-#include <grass/gis.h>
-#include <grass/Vect.h>
-}
-
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassattributes.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrasstools.h"
 #include "qgsgrassmapcalc.h"
 #include "qgsgrassselect.h"
+#include "qgsgrass.h"
+
+#include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
+#include "qgsgrassplugin.h"
+
+#include <math.h>
+
+#include <QDir>
+#include <QDomDocument>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QTextStream>
+#include <QToolBar>
+
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
-  QWidget * parent, const char * name, Qt::WFlags f )
-    : QMainWindow( 0, Qt::WType_Dialog ),
+  QWidget * parent, Qt::WFlags f )
+    : QMainWindow( 0, Qt::Dialog ),
     QgsGrassMapcalcBase( ),
     QgsGrassModuleOptions( tools, module, iface ),
     mTool( -1 ), mObject( 0 ), mConnector( 0 )
@@ -90,20 +56,20 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   mInputFrame->setMaximumHeight( mInputFrame->height() );
 
   mView = new QgsGrassMapcalcView( this, mViewFrame );
-  QGridLayout *layout = new QGridLayout( mViewFrame, 1, 1 );
+  QGridLayout *layout = new QGridLayout( mViewFrame );
   layout->addWidget( mView, 0, 0 );
 
-  mCanvas = new Q3Canvas( 400, 300 );
-  mCanvas->setBackgroundColor( QColor( 180, 180, 180 ) );
+  mCanvas = new QGraphicsScene( 0, 0, 400, 300 );
+  mCanvas->setBackgroundBrush( QColor( 180, 180, 180 ) );
 
-  mPaper = new Q3CanvasRectangle( mCanvas );
+  mPaper = new QGraphicsRectItem();
+  mCanvas->addItem( mPaper );
   mPaper->setBrush( QBrush( QColor( 255, 255, 255 ) ) );
-  mPaper->setActive( false );
   mPaper->show();
 
   resizeCanvas( 400, 300 );
 
-  mView->setCanvas( mCanvas );
+  mView->setScene( mCanvas );
 
 
   QActionGroup *ag = new QActionGroup( this );
@@ -152,7 +118,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   tb->addAction( mActionDeleteItem );
   connect( mActionDeleteItem, SIGNAL( triggered() ), this, SLOT( deleteItem() ) );
 
-  mActionAddMap->setOn( true );
+  mActionAddMap->setChecked( true );
 
   mActionLoad = new QAction( QgsGrassPlugin::getThemeIcon( "mapcalc_open.png" ),
                              tr( "Open" ), this );
@@ -232,18 +198,18 @@ QgsGrassMapcalc::QgsGrassMapcalc(
 
   for ( unsigned int i = 0; i < mFunctions.size(); i++ )
   {
-    mFunctionComboBox->insertItem( mFunctions[i].label()
-                                   + "  " + mFunctions[i].description() );
+    mFunctionComboBox->addItem( mFunctions[i].label()
+                                + "  " + mFunctions[i].description() );
   }
 
   // Add output object
   mOutput = new QgsGrassMapcalcObject( QgsGrassMapcalcObject::Output );
   mOutput->setId( nextId() );
   mOutput->setValue( tr( "Output" ) );
-  mOutput->setCanvas( mCanvas );
-  mOutput->setCenter(( int )( mCanvas->width() - mOutput->width() ), ( int )( mCanvas->height() / 2 ) ),
+  mCanvas->addItem( mOutput );
+  mOutput->setCenter(( int )( mCanvas->width() - mOutput->rect().width() ), ( int )( mCanvas->height() / 2 ) );
   mCanvas->update();
-  mOutput->Q3CanvasRectangle::show();
+  mOutput->QGraphicsRectItem::show();
 
   // Set default tool
   updateMaps();
@@ -257,11 +223,11 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   }
 }
 
-void QgsGrassMapcalc::contentsMousePressEvent( QMouseEvent* e )
+void QgsGrassMapcalc::mousePressEvent( QMouseEvent* e )
 {
   QgsDebugMsg( QString( "mTool = %1 mToolStep = %2" ).arg( mTool ).arg( mToolStep ) );
 
-  QPoint p = mView->inverseWorldMatrix().map( e->pos() );
+  QPoint p = mView->mapToScene( e->pos() ).toPoint();
   limit( &p );
 
   switch ( mTool )
@@ -300,13 +266,14 @@ void QgsGrassMapcalc::contentsMousePressEvent( QMouseEvent* e )
       }
       showOptions( Select );
 
-      QRect r( p.x() - 5, p.y() - 5, 10, 10 );
-      Q3CanvasItemList l = mCanvas->collisions( r );
+      QRectF r( p.x() - 5, p.y() - 5, 10, 10 );
+      QList<QGraphicsItem *> l = mCanvas->items( r );
 
       // Connector precedence (reverse order - connectors are under objects)
-      for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+      QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+      while ( it != l.constBegin() )
       {
-        if ( !( *it )->isActive() ) continue;
+        --it;
 
         if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
         {
@@ -364,11 +331,11 @@ void QgsGrassMapcalc::contentsMousePressEvent( QMouseEvent* e )
   mStartMovePoint = p;
 }
 
-void QgsGrassMapcalc::contentsMouseMoveEvent( QMouseEvent* e )
+void QgsGrassMapcalc::mouseMoveEvent( QMouseEvent* e )
 {
   // QgsDebugMsg(QString("mTool = %1 mToolStep = %2").arg(mTool).arg(mToolStep));
 
-  QPoint p = mView->inverseWorldMatrix().map( e->pos() );
+  QPoint p = mView->mapToScene( e->pos() ).toPoint();
   limit( &p );
 
   switch ( mTool )
@@ -428,11 +395,11 @@ void QgsGrassMapcalc::contentsMouseMoveEvent( QMouseEvent* e )
   mLastPoint = p;
 }
 
-void QgsGrassMapcalc::contentsMouseReleaseEvent( QMouseEvent* e )
+void QgsGrassMapcalc::mouseReleaseEvent( QMouseEvent* e )
 {
   QgsDebugMsg( QString( "mTool = %1 mToolStep = %2" ).arg( mTool ).arg( mToolStep ) );
 
-  QPoint p = mView->inverseWorldMatrix().map( e->pos() );
+  QPoint p = mView->mapToScene( e->pos() ).toPoint();
   limit( &p );
 
   switch ( mTool )
@@ -508,7 +475,7 @@ QStringList QgsGrassMapcalc::checkRegion()
   QgsDebugMsg( "entered." );
   QStringList list;
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
   struct Cell_head currentWindow;
   if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
@@ -519,9 +486,10 @@ QStringList QgsGrassMapcalc::checkRegion()
     return list;
   }
 
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
 
     if ( typeid( **it ) != typeid( QgsGrassMapcalcObject ) ) continue;
 
@@ -570,12 +538,13 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
     return false;
   }
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
   int count = 0;
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
 
     if ( typeid( **it ) != typeid( QgsGrassMapcalcObject ) ) continue;
 
@@ -673,18 +642,18 @@ void QgsGrassMapcalc::setOption()
       bool found = false;
       for ( unsigned int i = 0 ; i < mMaps.size(); i++ )
       {
-        if ( mMapComboBox->text( i ) == mObject->label()
+        if ( mMapComboBox->itemText( i ) == mObject->label()
              && mMaps[i] == mObject->value() )
         {
-          mMapComboBox->setCurrentItem( i ) ;
+          mMapComboBox->setCurrentIndex( i ) ;
           found = true;
         }
       }
       if ( !found )
       {
         mMaps.push_back( mObject->value() );
-        mMapComboBox->insertItem( mObject->label() );
-        mMapComboBox->setCurrentItem( mMapComboBox->count() - 1 );
+        mMapComboBox->addItem( mObject->label() );
+        mMapComboBox->setCurrentIndex( mMapComboBox->count() - 1 );
       }
       break;
     }
@@ -699,7 +668,7 @@ void QgsGrassMapcalc::setOption()
         if ( mFunctions[i].name() != mObject->function().name() ) continue;
         if ( mFunctions[i].inputCount() != mObject->function().inputCount() ) continue;
 
-        mFunctionComboBox->setCurrentItem( i );
+        mFunctionComboBox->setCurrentIndex( i );
         break;
       }
       // TODO: if not found
@@ -738,12 +707,13 @@ void QgsGrassMapcalc::setTool( int tool )
       mObject->setId( nextId() );
 
       // TODO check if there are maps
-      mObject->setValue( mMaps[mMapComboBox->currentItem()],
+      mObject->setValue( mMaps[mMapComboBox->currentIndex()],
                          mMapComboBox->currentText() );
 
-      mObject->setCanvas( mCanvas );
-      mObject->Q3CanvasRectangle::show();
-      mActionAddMap->setOn( true );
+      mObject->setCenter( mLastPoint.x(), mLastPoint.y() );
+      mCanvas->addItem( mObject );
+      mObject->QGraphicsRectItem::show();
+      mActionAddMap->setChecked( true );
       mView->viewport()->setMouseTracking( true );
       mView->setCursor( QCursor( Qt::SizeAllCursor ) );
       break;
@@ -752,9 +722,10 @@ void QgsGrassMapcalc::setTool( int tool )
       mObject = new QgsGrassMapcalcObject( QgsGrassMapcalcObject::Constant );
       mObject->setId( nextId() );
       mObject->setValue( mConstantLineEdit->text() );
-      mObject->setCanvas( mCanvas );
-      mObject->Q3CanvasRectangle::show();
-      mActionAddConstant->setOn( true );
+      mObject->setCenter( mLastPoint.x(), mLastPoint.y() );
+      mCanvas->addItem( mObject );
+      mObject->QGraphicsRectItem::show();
+      mActionAddConstant->setChecked( true );
       mView->viewport()->setMouseTracking( true );
       mView->setCursor( QCursor( Qt::SizeAllCursor ) );
       break;
@@ -763,10 +734,11 @@ void QgsGrassMapcalc::setTool( int tool )
       mObject = new QgsGrassMapcalcObject( QgsGrassMapcalcObject::Function );
       mObject->setId( nextId() );
       //mObject->setValue ( mFunctionComboBox->currentText() );
-      mObject->setFunction( mFunctions[ mFunctionComboBox->currentItem()] );
-      mObject->setCanvas( mCanvas );
-      mObject->Q3CanvasRectangle::show();
-      mActionAddFunction->setOn( true );
+      mObject->setFunction( mFunctions[ mFunctionComboBox->currentIndex()] );
+      mObject->setCenter( mLastPoint.x(), mLastPoint.y() );
+      mCanvas->addItem( mObject );
+      mObject->QGraphicsRectItem::show();
+      mActionAddFunction->setChecked( true );
       mView->viewport()->setMouseTracking( true );
       mView->setCursor( QCursor( Qt::SizeAllCursor ) );
       break;
@@ -774,9 +746,9 @@ void QgsGrassMapcalc::setTool( int tool )
     case AddConnector:
       mConnector = new QgsGrassMapcalcConnector( mCanvas );
       mConnector->setId( nextId() );
-      mConnector->setCanvas( mCanvas );
-      mConnector->Q3CanvasLine::show();
-      mActionAddConnection->setOn( true );
+      mCanvas->addItem( mConnector );
+      mConnector->QGraphicsLineItem::show();
+      mActionAddConnection->setChecked( true );
       mView->setCursor( QCursor( Qt::CrossCursor ) );
       break;
   }
@@ -820,7 +792,7 @@ void QgsGrassMapcalc::addConnection()
 void QgsGrassMapcalc::selectItem()
 {
   setTool( Select );
-  mActionSelectItem->setOn( true );
+  mActionSelectItem->setChecked( true );
   mView->setCursor( QCursor( Qt::ArrowCursor ) );
 }
 
@@ -850,12 +822,12 @@ void QgsGrassMapcalc::keyPressEvent( QKeyEvent * e )
 
 void QgsGrassMapcalc::setToolActionsOff()
 {
-  mActionAddMap->setOn( false );
-  mActionAddConstant->setOn( false );
-  mActionAddFunction->setOn( false );
-  mActionAddConnection->setOn( false );
-  mActionSelectItem->setOn( false );
-  mActionDeleteItem->setOn( false );
+  mActionAddMap->setChecked( false );
+  mActionAddConstant->setChecked( false );
+  mActionAddFunction->setChecked( false );
+  mActionAddConnection->setChecked( false );
+  mActionSelectItem->setChecked( false );
+  mActionDeleteItem->setChecked( false );
 }
 
 void QgsGrassMapcalc::updateMaps()
@@ -877,7 +849,7 @@ void QgsGrassMapcalc::updateMaps()
     if ( layer->type() != QgsMapLayer::RASTER ) continue;
 
     // Check if it is GRASS raster
-    QString source = QDir::cleanDirPath( layer->source() );
+    QString source = QDir::cleanPath( layer->source() );
 
     // Note: QDir::cleanPath is using '/' also on Windows
     //QChar sep = QDir::separator();
@@ -886,7 +858,7 @@ void QgsGrassMapcalc::updateMaps()
     if ( source.contains( "cellhd" ) == 0 ) continue;
 
     // Most probably GRASS layer, check GISBASE and LOCATION
-    QStringList split = QStringList::split( sep, source );
+    QStringList split = source.split( sep, QString::SkipEmptyParts );
 
     if ( split.size() < 4 ) continue;
 
@@ -911,8 +883,8 @@ void QgsGrassMapcalc::updateMaps()
 
     //if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
 
-    mMapComboBox->insertItem( layer->name() );
-    if ( layer->name() == current ) mMapComboBox->setCurrentText( current );
+    mMapComboBox->addItem( layer->name() );
+    if ( layer->name() == current ) mMapComboBox->setItemText( mMapComboBox->currentIndex(), current );
     mMaps.push_back( map + "@" + mapset );
   }
 }
@@ -924,9 +896,8 @@ void QgsGrassMapcalc::mapChanged()
   if (( mTool != AddMap && mTool != Select )  || !mObject ) return;
   if ( mObject->type() != QgsGrassMapcalcObject::Map ) return;
 
-  mObject->setValue( mMaps[mMapComboBox->currentItem()],
+  mObject->setValue( mMaps[mMapComboBox->currentIndex()],
                      mMapComboBox->currentText() );
-  mObject->resetSize();
   mCanvas->update();
 }
 
@@ -938,7 +909,6 @@ void QgsGrassMapcalc::constantChanged()
   if ( mObject->type() != QgsGrassMapcalcObject::Constant ) return;
 
   mObject->setValue( mConstantLineEdit->text() );
-  mObject->resetSize();
   mCanvas->update();
 }
 
@@ -949,8 +919,7 @@ void QgsGrassMapcalc::functionChanged()
   if (( mTool != AddFunction && mTool != Select ) || !mObject ) return;
   if ( mObject->type() != QgsGrassMapcalcObject::Function ) return;
 
-  mObject->setFunction( mFunctions[ mFunctionComboBox->currentItem()] );
-  mObject->resetSize();
+  mObject->setFunction( mFunctions[ mFunctionComboBox->currentIndex()] );
   mCanvas->update();
 }
 
@@ -964,8 +933,8 @@ void QgsGrassMapcalc::limit( QPoint *point )
 
 void QgsGrassMapcalc::resizeCanvas( int width, int height )
 {
-  mCanvas->resize( width, height );
-  mPaper->setSize( width, height );
+  mCanvas->setSceneRect( 0, 0, width, height );
+  mPaper->setRect( 0, 0, width, height );
   mCanvas->update();
 }
 
@@ -978,11 +947,12 @@ void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
   int height = mCanvas->height() + top + bottom;
   resizeCanvas( width, height );
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
@@ -1022,17 +992,19 @@ void QgsGrassMapcalc::autoGrow()
   int bottom = mCanvas->height();
   QgsDebugMsg( QString( "left = %1 right = %2 top = %3 bottom = %4" ).arg( left ).arg( right ).arg( top ).arg( bottom ) );
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
+    if ( ! dynamic_cast<QgsGrassMapcalcItem *>( *it ) ) continue;
 
     // Exclude current
     if (( mTool != Select ) && ( *it == mObject || *it == mConnector ) )
       continue;
 
-    QRect r = ( *it )->boundingRect();
+    QRectF r = ( *it )->boundingRect().translated(( *it )->pos() );
 
     QgsDebugMsg( QString( "r.left = %1 r.right = %2 r.top = %3 bottom = %4" ).arg( r.left() ).arg( r.right() ).arg( r.top() ).arg( r.bottom() ) );
 
@@ -1079,10 +1051,10 @@ void QgsGrassMapcalc::saveAs()
   while ( 1 )
   {
     bool ok;
-    name = QInputDialog::getText( tr( "New mapcalc" ),
+    name = QInputDialog::getText( this, tr( "New mapcalc" ),
                                   tr( "Enter new mapcalc name:" ), QLineEdit::Normal, mFileName, &ok );
     if ( !ok ) return;
-    name = name.stripWhiteSpace();
+    name = name.trimmed();
 
     if ( name.isEmpty() )
     {
@@ -1142,11 +1114,12 @@ void QgsGrassMapcalc::save()
   + "\" height=\"" + QString::number( mCanvas->height() )
   + "\"/>\n";
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
@@ -1306,7 +1279,7 @@ void QgsGrassMapcalc::load()
     QDomElement e = node.toElement();
     if ( e.isNull() ) continue;
 
-    QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).local8Bit().data() ) );
+    QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ) );
     unsigned int id = e.attribute( "id", "0" ).toInt();
     int x = e.attribute( "x", "0" ).toInt();
     int y = e.attribute( "y", "0" ).toInt();
@@ -1340,7 +1313,7 @@ void QgsGrassMapcalc::load()
     obj->setId( id );
     obj->setValue( value );
     obj->setCenter( x, y );
-    obj->setCanvas( mCanvas );
+    mCanvas->addItem( obj );
     obj->show();
 
     switch ( type )
@@ -1386,14 +1359,14 @@ void QgsGrassMapcalc::load()
     QDomElement e = node.toElement();
     if ( e.isNull() ) continue;
 
-    QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).local8Bit().data() ) );
+    QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ) );
     unsigned int id = e.attribute( "id", "0" ).toInt();
     if ( id >= mNextId ) mNextId = id + 1;
 
     QgsGrassMapcalcConnector *con = new QgsGrassMapcalcConnector( mCanvas );
 
     con->setId( id );
-    con->setCanvas( mCanvas );
+    mCanvas->addItem( con );
     con->show();
 
     QDomNodeList endNodes = e.elementsByTagName( "end" );
@@ -1446,11 +1419,13 @@ void QgsGrassMapcalc::clear()
 
   setTool( Select );
 
-  Q3CanvasItemList l = mCanvas->allItems();
+  QList<QGraphicsItem *> l = mCanvas->items();
 
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
+    if ( ! dynamic_cast<QgsGrassMapcalcItem *>( *it ) ) continue;
 
     delete *it;
   }
@@ -1479,14 +1454,13 @@ bool QgsGrassMapcalcItem::selected()
 
 /**************************** OBJECT ************************/
 QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
-    : Q3CanvasRectangle( -1000, -1000, 50, 20, 0 ), QgsGrassMapcalcItem(),
+    : QGraphicsRectItem( -1000, -1000, 50, 20, 0 ), QgsGrassMapcalcItem(),
     mType( type ), mCenter( -1000, -1000 ), mSelectionBoxSize( 5 ),
     mOutputConnector( 0 )
 {
   QgsDebugMsg( "entered." );
 
-  Q3CanvasRectangle::setZ( 20 );
-  setActive( true );
+  QGraphicsRectItem::setZValue( 20 );
 
   mInputCount = 0;
   mOutputCount = 1;
@@ -1530,47 +1504,48 @@ int QgsGrassMapcalcObject::type()
   return mType;
 }
 
-void QgsGrassMapcalcObject::draw( QPainter & painter )
+void QgsGrassMapcalcObject::paint( QPainter * painter,
+                                   const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-  //QCanvasRectangle::draw(painter);
+  //QGraphicsRectItem::paint(painter, option, widget);
 
-  painter.setPen( QPen( QColor( 0, 0, 0 ) ) );
-  painter.setBrush( QBrush( QColor( 255, 255, 255 ) ) );
+  painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
+  painter->setBrush( QBrush( QColor( 255, 255, 255 ) ) );
   int xRound = ( int )( 100 * mRound / mRect.width() );
   int yRound = ( int )( 100 * mRound / mRect.height() );
 
-  painter.drawRoundRect( mRect, xRound, yRound );
+  painter->drawRoundRect( mRect, xRound, yRound );
 
   // Input sockets
   for ( int i = 0; i < mInputCount; i++ )
   {
     if ( mInputConnectors[i] )
-      painter.setBrush( QBrush( QColor( 180, 180, 180 ) ) );
+      painter->setBrush( QBrush( QColor( 180, 180, 180 ) ) );
     else
-      painter.setBrush( QBrush( QColor( 255, 0, 0 ) ) );
+      painter->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
 
-    painter.drawEllipse( mInputPoints[i].x() - mSocketHalf,
-                         mInputPoints[i].y() - mSocketHalf,
-                         2*mSocketHalf + 1, 2*mSocketHalf + 1 );
+    painter->drawEllipse( mInputPoints[i].x() - mSocketHalf,
+                          mInputPoints[i].y() - mSocketHalf,
+                          2*mSocketHalf + 1, 2*mSocketHalf + 1 );
   }
 
   // Output socket
   if ( mOutputCount > 0 )
   {
     if ( mOutputConnector )
-      painter.setBrush( QBrush( QColor( 180, 180, 180 ) ) );
+      painter->setBrush( QBrush( QColor( 180, 180, 180 ) ) );
     else
-      painter.setBrush( QBrush( QColor( 255, 0, 0 ) ) );
+      painter->setBrush( QBrush( QColor( 255, 0, 0 ) ) );
 
-    painter.drawEllipse( mOutputPoint.x() - mSocketHalf,
-                         mOutputPoint.y() - mSocketHalf,
-                         2*mSocketHalf + 1, 2*mSocketHalf + 1 );
+    painter->drawEllipse( mOutputPoint.x() - mSocketHalf,
+                          mOutputPoint.y() - mSocketHalf,
+                          2*mSocketHalf + 1, 2*mSocketHalf + 1 );
   }
 
   // Input labels
   if ( mType == Function && mInputTextWidth > 0 )
   {
-    painter.setFont( mFont );
+    painter->setFont( mFont );
     QFontMetrics metrics( mFont );
     for ( int i = 0; i < mFunction.inputLabels().size(); i++ )
     {
@@ -1585,29 +1560,29 @@ void QgsGrassMapcalcObject::draw( QPainter & painter )
       int ly = mRect.y() + mSpace + i * ( mTextHeight + mSpace );
       QRect lr( lx, ly, metrics.width( l ), mTextHeight ) ;
 
-      painter.drawText( lr, Qt::AlignCenter | Qt::TextSingleLine, l );
+      painter->drawText( lr, Qt::AlignCenter | Qt::TextSingleLine, l );
     }
   }
 
   // Label
   if ( mType != Function || mFunction.drawlabel() )
   {
-    painter.drawText( mLabelRect, Qt::AlignCenter | Qt::TextSingleLine, mLabel );
+    painter->drawText( mLabelRect, Qt::AlignCenter | Qt::TextSingleLine, mLabel );
   }
 
   // Selection
   if ( mSelected )
   {
-    painter.setPen( QColor( 0, 255, 255 ) );
-    painter.setBrush( QColor( 0, 255, 255 ) );
+    painter->setPen( QColor( 0, 255, 255 ) );
+    painter->setBrush( QColor( 0, 255, 255 ) );
 
     int s = mSelectionBoxSize;
 
-    painter.drawRect( mRect.x(), mRect.y(), s, s );
-    painter.drawRect( mRect.x() + mRect.width() - s, mRect.y(), s, s );
-    painter.drawRect( mRect.x() + mRect.width() - s,
-                      mRect.y() + mRect.height() - s, s, s );
-    painter.drawRect( mRect.x(), mRect.y() + mRect.height() - s, s, s );
+    painter->drawRect( mRect.x(), mRect.y(), s, s );
+    painter->drawRect( mRect.x() + mRect.width() - s, mRect.y(), s, s );
+    painter->drawRect( mRect.x() + mRect.width() - s,
+                       mRect.y() + mRect.height() - s, s, s );
+    painter->drawRect( mRect.x(), mRect.y() + mRect.height() - s, s, s );
   }
 }
 
@@ -1616,19 +1591,18 @@ void QgsGrassMapcalcObject::setCenter( int x, int y )
   // QgsDebugMsg(QString("x = %1 y = %2").arg(x).arg(y));
   mCenter.setX( x );
   mCenter.setY( y );
-  resetSize();
-  //QCanvasRectangle::update();
+  setPos( x - mRect.width() / 2 - mMargin, y - mRect.height() / 2 - mMargin );
 }
 
 void QgsGrassMapcalcObject::resetSize()
 {
+  QFontMetrics metrics( mFont );
+  mTextHeight = metrics.height();
+
   mSocketHalf = ( int )( mFont.pointSize() / 3 + 1 );
   mSpace = ( int )( 1.0 * mFont.pointSize() );
   mRound = ( int )( 1.0 * mTextHeight );
   mMargin = 2 * mSocketHalf + 1;
-
-  QFontMetrics metrics( mFont );
-  mTextHeight = metrics.height();
 
   mInputTextWidth = 0;
   if ( mType == Function )
@@ -1671,13 +1645,11 @@ void QgsGrassMapcalcObject::resetSize()
     height = 2 * mSpace + mTextHeight;
   }
 
-  mRect.setX(( int )( mCenter.x() - width / 2 ) );
-  mRect.setY(( int )( mCenter.y() - height / 2 ) );
+  mRect.setX( mMargin );
+  mRect.setY( mMargin );
   mRect.setSize( QSize( width, height ) );
 
-  Q3CanvasRectangle::setX( mRect.x() - mMargin );
-  Q3CanvasRectangle::setY( mRect.y() - mMargin );
-  Q3CanvasRectangle::setSize( width + 2*mMargin, height + 2*mMargin );
+  QGraphicsRectItem::setRect( 0, 0, width + 2*mMargin, height + 2*mMargin );
 
   // Label rectangle
   int lx = mRect.x() + mSpace;
@@ -1721,7 +1693,7 @@ void QgsGrassMapcalcObject::resetSize()
     mOutputConnector->repaint();
   }
 
-  Q3CanvasRectangle::update();
+  QGraphicsRectItem::update();
 }
 
 void QgsGrassMapcalcObject::setValue( QString value, QString lab )
@@ -1758,7 +1730,7 @@ void QgsGrassMapcalcObject::setFunction( QgsGrassMapcalcFunction f )
 void QgsGrassMapcalcObject::setSelected( bool s )
 {
   mSelected = s;
-  Q3CanvasRectangle::update();
+  QGraphicsRectItem::update();
 }
 
 bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
@@ -1775,8 +1747,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
     {
       if ( mInputConnectors[i] ) continue; // used
 
-      double d = sqrt( pow(( double )( mInputPoints[i].x() - p.x() ), 2.0 )
-                       + pow(( double )( mInputPoints[i].y() - p.y() ), 2.0 ) );
+      double d = sqrt( pow(( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
+                       + pow(( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
 
       if ( d <= mSocketHalf )
       {
@@ -1791,8 +1763,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
   // Output
   if ( !connector->connected( Out ) && !mOutputConnector )
   {
-    double d = sqrt( pow(( double )( mOutputPoint.x() - p.x() ), 2.0 )
-                     + pow(( double )( mOutputPoint.y() - p.y() ), 2.0 ) );
+    double d = sqrt( pow(( double )( mOutputPoint.x() + pos().x() - p.x() ), 2.0 )
+                     + pow(( double )( mOutputPoint.y() + pos().y() - p.y() ), 2.0 ) );
 
     if ( d <= mSocketHalf )
     {
@@ -1822,7 +1794,7 @@ void QgsGrassMapcalcObject::setConnector( int direction, int socket,
     mOutputConnectorEnd = end;
   }
 
-  Q3CanvasRectangle::update();
+  QGraphicsRectItem::update();
 }
 
 QPoint QgsGrassMapcalcObject::socketPoint( int direction, int socket )
@@ -1831,10 +1803,10 @@ QPoint QgsGrassMapcalcObject::socketPoint( int direction, int socket )
 
   if ( direction == In )
   {
-    return mInputPoints[socket];
+    return mInputPoints[socket] + pos().toPoint();
   }
 
-  return mOutputPoint;
+  return mOutputPoint + pos().toPoint();
 }
 
 QString QgsGrassMapcalcObject::expression()
@@ -1883,18 +1855,19 @@ QString QgsGrassMapcalcObject::expression()
 
   exp.append( ")" );
 
-  QgsDebugMsg( QString( "exp = %1" ).arg( exp.local8Bit().data() ) );
+  QgsDebugMsg( QString( "exp = %1" ).arg( exp.toLocal8Bit().constData() ) );
   return exp;
 }
 
 /************************* CONNECTOR **********************************/
-QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( Q3Canvas *canvas )
-    : Q3CanvasLine( canvas ), QgsGrassMapcalcItem()
+QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
+    : QGraphicsLineItem(), QgsGrassMapcalcItem()
 {
   QgsDebugMsg( "entered." );
 
-  Q3CanvasLine::setZ( 10 );
-  setActive( true );
+  canvas->addItem( this );
+
+  QGraphicsLineItem::setZValue( 10 );
 
   mPoints.resize( 2 );
   mPoints[0] = QPoint( -1000, -1000 );
@@ -1914,7 +1887,8 @@ QgsGrassMapcalcConnector::~QgsGrassMapcalcConnector()
   setSocket( 1 );
 }
 
-void QgsGrassMapcalcConnector::draw( QPainter & painter )
+void QgsGrassMapcalcConnector::paint( QPainter * painter,
+                                      const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
   for ( int i = 0; i < 2; i++ )
   {
@@ -1927,27 +1901,27 @@ void QgsGrassMapcalcConnector::draw( QPainter & painter )
 
   if ( !mSocketObjects[0] || !mSocketObjects[1] )
   {
-    painter.setPen( QPen( QColor( 255, 0, 0 ) ) );
+    painter->setPen( QPen( QColor( 255, 0, 0 ) ) );
   }
   else
   {
-    painter.setPen( QPen( QColor( 0, 0, 0 ) ) );
+    painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
   }
 
-  painter.drawLine( mPoints[0], mPoints[1] );
+  painter->drawLine( mPoints[0], mPoints[1] );
 
   if ( mSelected )
   {
-    painter.setPen( QPen( QColor( 0, 255, 255 ), 0, Qt::DotLine ) );
+    painter->setPen( QPen( QColor( 0, 255, 255 ), 0, Qt::DotLine ) );
   }
-  painter.drawLine( mPoints[0], mPoints[1] );
+  painter->drawLine( mPoints[0], mPoints[1] );
 }
 
 void QgsGrassMapcalcConnector::repaint()
 {
   setPoint( 0, point( 0 ) );
   //QCanvasLine::setX(QCanvasLine::x());
-  Q3CanvasLine::update();
+  QGraphicsLineItem::update();
 }
 
 void QgsGrassMapcalcConnector::setPoint( int index, QPoint point )
@@ -1955,9 +1929,9 @@ void QgsGrassMapcalcConnector::setPoint( int index, QPoint point )
   // QgsDebugMsg(QString("index = %1").arg(index));
 
   mPoints[index] = point;
-  Q3CanvasLine::setPoints( mPoints[0].x(), mPoints[0].y(),
-                           mPoints[1].x(), mPoints[1].y() );
-  Q3CanvasLine::update();
+  QGraphicsLineItem::setLine( mPoints[0].x(), mPoints[0].y(),
+                              mPoints[1].x(), mPoints[1].y() );
+  QGraphicsLineItem::update();
 }
 
 QPoint QgsGrassMapcalcConnector::point( int index )
@@ -1968,7 +1942,7 @@ QPoint QgsGrassMapcalcConnector::point( int index )
 void QgsGrassMapcalcConnector::setSelected( bool s )
 {
   mSelected = s;
-  Q3CanvasLine::update();
+  QGraphicsLineItem::update();
 }
 
 void QgsGrassMapcalcConnector::selectEnd( QPoint point )
@@ -2006,11 +1980,12 @@ bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
 {
   QgsDebugMsg( "entered." );
 
-  Q3CanvasItemList l = canvas()->collisions( mPoints[end] );
+  QList<QGraphicsItem *> l = scene()->items( mPoints[end] );
   QgsGrassMapcalcObject *object = 0;
-  for ( Q3CanvasItemList::Iterator it = l.fromLast(); it != l.end(); --it )
+  QList<QGraphicsItem *>::const_iterator it = l.constEnd();
+  while ( it != l.constBegin() )
   {
-    if ( !( *it )->isActive() ) continue;
+    --it;
 
     if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
     {
@@ -2097,16 +2072,17 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
 
   if ( !labels.isEmpty() )
   {
-    mInputLabels = QStringList::split( ",", labels );
+    mInputLabels = labels.split( ",", QString::SkipEmptyParts );
   }
 }
 
 /******************** CANVAS VIEW ******************************/
 
-QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc,
-    QWidget* parent, const char* name, Qt::WFlags f ) :
-    Q3CanvasView( parent, name, f | Qt::WNoAutoErase | Qt::WResizeNoErase | Qt::WStaticContents )
+QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc,
+    QWidget * parent, Qt::WFlags f ) :
+    QGraphicsView( parent )
 {
+  setAttribute( Qt::WA_StaticContents );
   mMapcalc = mapcalc;
 
   // TODO: nothing does work -> necessary to call setFocus ()
@@ -2115,21 +2091,21 @@ QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc,
   setFocusProxy( 0 );
 }
 
-void QgsGrassMapcalcView::contentsMousePressEvent( QMouseEvent* e )
+void QgsGrassMapcalcView::mousePressEvent( QMouseEvent * e )
 {
   // TODO: find how to get focus without setFocus
   setFocus();
-  mMapcalc->contentsMousePressEvent( e );
+  mMapcalc->mousePressEvent( e );
 }
 
-void QgsGrassMapcalcView::contentsMouseReleaseEvent( QMouseEvent* e )
+void QgsGrassMapcalcView::mouseReleaseEvent( QMouseEvent * e )
 {
-  mMapcalc->contentsMouseReleaseEvent( e );
+  mMapcalc->mouseReleaseEvent( e );
 }
 
-void QgsGrassMapcalcView::contentsMouseMoveEvent( QMouseEvent* e )
+void QgsGrassMapcalcView::mouseMoveEvent( QMouseEvent * e )
 {
-  mMapcalc->contentsMouseMoveEvent( e );
+  mMapcalc->mouseMoveEvent( e );
 }
 
 void QgsGrassMapcalcView::keyPressEvent( QKeyEvent * e )

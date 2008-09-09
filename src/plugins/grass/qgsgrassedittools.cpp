@@ -14,21 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisinterface.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsgrassedittools.h"
-#include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
+#include "qgsgrassedit.h"
 #include "qgsgrassprovider.h"
-#include "qgsvertexmarker.h"
-#include <QMouseEvent>
+
+#include "qgisinterface.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsvertexmarker.h"
+
+#include <QMouseEvent>
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/Vect.h>
 }
 
@@ -46,7 +45,7 @@ void QgsGrassEditTool::canvasPressEvent( QMouseEvent * event )
   // Set last click
   e->mLastPoint = point;
 
-  e->statusBar()->message( e->mCanvasPrompt );
+  e->statusBar()->showMessage( e->mCanvasPrompt );
 
   QgsDebugMsg( QString( "n_points = %1" ).arg( e->mEditPoints->n_points ) );
 }
@@ -56,7 +55,7 @@ void QgsGrassEditTool::canvasMoveEvent( QMouseEvent * event )
   QgsPoint point = toLayerCoordinates( e->layer(), event->pos() );
   mouseMove( point );
 
-  e->statusBar()->message( e->mCanvasPrompt );
+  e->statusBar()->showMessage( e->mCanvasPrompt );
 }
 
 
@@ -76,7 +75,7 @@ QgsGrassEditNewPoint::QgsGrassEditNewPoint( QgsGrassEdit* edit, bool newCentroid
 }
 
 
-void QgsGrassEditNewPoint::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditNewPoint::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   if ( button != Qt::LeftButton )
     return;
@@ -155,7 +154,7 @@ void QgsGrassEditNewLine::activate()
   QgsGrassEditTool::activate(); // call default bahivour
 }
 
-void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   switch ( button )
   {
@@ -259,7 +258,7 @@ QgsGrassEditMoveVertex::QgsGrassEditMoveVertex( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select vertex" ), "", "" );
 }
 
-void QgsGrassEditMoveVertex::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditMoveVertex::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -376,7 +375,7 @@ QgsGrassEditAddVertex::QgsGrassEditAddVertex( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select line segment" ), "", "" );
 }
 
-void QgsGrassEditAddVertex::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditAddVertex::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -511,7 +510,7 @@ QgsGrassEditDeleteVertex::QgsGrassEditDeleteVertex( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select vertex" ), "", "" );
 }
 
-void QgsGrassEditDeleteVertex::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditDeleteVertex::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -611,7 +610,7 @@ QgsGrassEditMoveLine::QgsGrassEditMoveLine( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select element" ), "", "" );
 }
 
-void QgsGrassEditMoveLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditMoveLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -704,7 +703,7 @@ QgsGrassEditDeleteLine::QgsGrassEditDeleteLine( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select element" ), "", "" );
 }
 
-void QgsGrassEditDeleteLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditDeleteLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -766,7 +765,7 @@ QgsGrassEditSplitLine::QgsGrassEditSplitLine( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select position on line" ), "", "" );
 }
 
-void QgsGrassEditSplitLine::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditSplitLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 
@@ -861,7 +860,7 @@ QgsGrassEditAttributes::QgsGrassEditAttributes( QgsGrassEdit* edit )
   e->setCanvasPropmt( QObject::tr( "Select element" ), "", "" );
 }
 
-void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::ButtonState button )
+void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
   double thresh = e->threshold();
 

@@ -16,18 +16,16 @@
 #ifndef QGSGRASSREGION_H
 #define QGSGRASSREGION_H
 
-#include <q3pointarray.h>
+#include "ui_qgsgrassregionbase.h"
 
-class QgsGrassProvider;
 class QgsGrassPlugin;
+class QgsGrassRegionEdit;
+
 class QgisInterface;
 class QgsMapCanvas;
-class Q3ButtonGroup;
-class QgsPoint;
-class QgsGrassRegionEdit;
-#include "ui_qgsgrassregionbase.h"
-#include <QDialog>
-#include <QRubberBand>
+//class QgsPoint;
+
+class QButtonGroup;
 
 extern "C"
 {
@@ -98,8 +96,8 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
 
-    Q3ButtonGroup *mNSRadioGroup;
-    Q3ButtonGroup *mEWRadioGroup;
+    QButtonGroup *mNSRadioGroup;
+    QButtonGroup *mEWRadioGroup;
 
     //! Current new region
     struct Cell_head mWindow;

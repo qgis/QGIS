@@ -13,85 +13,35 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <q3cstring.h>
-#include <q3groupbox.h>
-#include <q3listbox.h>
-#include <q3listview.h>
-#include <q3painter.h>
-#include <q3picture.h>
-#include <q3pointarray.h>
-#include <q3process.h>
-#include <q3progressbar.h>
-#include <q3stylesheet.h>
-#include <q3table.h>
-#include <q3textbrowser.h>
-#include <qapplication.h>
-#include <qcolordialog.h>
-#include <QComboBox>
-#include <qcursor.h>
-#include <qdir.h>
-#include <qdom.h>
-#include <QDoubleValidator>
-#include <qevent.h>
-#include <QFileDialog>
-#include <qfile.h>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <qimage.h>
-#include <qinputdialog.h>
-#include <QIntValidator>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qnamespace.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <qpixmap.h>
-#include <qpoint.h>
-#include <QProcess>
-#include <QPushButton>
-#include <qpushbutton.h>
-#include <qregexp.h>
-#include <QRegExpValidator>
-#include <qsettings.h>
-#include <qsize.h>
-#include <qspinbox.h>
-#include <qstatusbar.h>
-#include <qstringlist.h>
-#include <qtabwidget.h>
-#include <QUrl>
-#include <QVBoxLayout>
-#include "qgis.h"
-#include "qgslogger.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassmapcalc.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassselect.h"
+#include "qgsgrasstools.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrass.h"
+
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsdataprovider.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
-#include <qgsrasterlayer.h>
-#include "qgsdatasourceuri.h"
-#include "qgsdataprovider.h"
-#include "qgsfield.h"
-#include "qgsfeature.h"
 
-#include <typeinfo>
+#include <QComboBox>
+#include <QDomDocument>
+#include <QFileDialog>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QSvgRenderer>
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/Vect.h>
 }
-
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "qgsgrassattributes.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassmapcalc.h"
-#include "qgsgrasstools.h"
-#include "qgsgrassselect.h"
-#include "qgsgrassplugin.h"
 
 #include <gdal.h>         // to collect version information
 
@@ -203,7 +153,7 @@ QStringList QgsGrassModule::execArguments( QString module )
 }
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                                QString path, QWidget * parent, const char * name, Qt::WFlags f )
+                                QString path, QWidget * parent, Qt::WFlags f )
     : QgsGrassModuleBase( ), mSuccess( false )
 {
   QgsDebugMsg( "called" );
@@ -274,10 +224,10 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
 
   if ( xName == "r.mapcalc" )
   {
-    QGridLayout *layout = new QGridLayout( mTabWidget->page( 0 ), 1, 1 );
+    QGridLayout *layout = new QGridLayout( mTabWidget->widget( 0 ) );
 
     mOptions = new QgsGrassMapcalc( mTools, this,
-                                    mIface, mTabWidget->page( 0 ) );
+                                    mIface, mTabWidget->widget( 0 ) );
 
     QWidget *w = dynamic_cast<QWidget *>( mOptions );
 
@@ -286,7 +236,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   else
   {
     mOptions = new QgsGrassModuleStandardOptions( mTools, this,
-        mIface, mXName, qDocElem, mTabWidget->page( 0 ) );
+        mIface, mXName, qDocElem, mTabWidget->widget( 0 ) );
   }
 
   // Hide display if there is no output
@@ -322,7 +272,6 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   strcpy( envstr, env );
   putenv( envstr );
 
-  mOutputTextBrowser->setTextFormat( Qt::RichText );
   mOutputTextBrowser->setReadOnly( TRUE );
 }
 
@@ -355,9 +304,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
-  QWidget * parent, const char * name, Qt::WFlags f )
+  QWidget * parent, Qt::WFlags f )
     : QgsGrassModuleOptions( tools, module, iface ),
-    QWidget( parent, name, f )
+    QWidget( parent, f )
 {
   QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
@@ -1056,10 +1005,10 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
     QFileInfo fi( fpath );
     if ( fi.exists() )
     {
-      Q3Picture pic;
-      if ( ! pic.load( fpath, "svg" ) ) break;
+      QSvgRenderer pic;
+      if ( ! pic.load( fpath ) ) break;
 
-      QRect br = pic.boundingRect();
+      QRect br( QPoint( 0, 0 ), pic.defaultSize() );
 
       double scale = 1. * height / br.height();
 
@@ -1070,11 +1019,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       QPainter painter( &pixmap );
       painter.setRenderHint( QPainter::Antialiasing );
 
-      // I am not sure if this factor is OK
-      scale *= 72.0 / pixmap.logicalDpiX() ;
-      painter.scale( scale, scale );
-
-      painter.drawPicture( -br.x(), -br.y(), pic );
+      pic.render( &painter );
       painter.end();
 
       pixmaps.push_back( pixmap );
@@ -1093,9 +1038,9 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       double scale = 1. * height / pixmap.height();
       int width = ( int )( scale * pixmap.width() );
 
-      QImage img = pixmap.convertToImage();
-      img = img.smoothScale( width, height );
-      pixmap.convertFromImage( img );
+      QImage img = pixmap.toImage();
+      img = img.scaled( width, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+      pixmap = QPixmap::fromImage( img );
 
       pixmaps.push_back( pixmap );
     }
@@ -1144,7 +1089,7 @@ QPixmap QgsGrassModule::pixmap( QString path, int height )
       painter.setPen( QPen( color, 3 ) );
       painter.drawLine( pos, height / 2, pos + arrowWidth - arrowWidth / 2, height / 2 );
 
-      Q3PointArray pa( 3 );
+      QPolygon pa( 3 );
       pa.setPoint( 0, pos + arrowWidth / 2 + 1, height / 2 - arrowWidth / 2 );
       pa.setPoint( 1, pos + arrowWidth, height / 2 );
       pa.setPoint( 2, pos + arrowWidth / 2 + 1, height / 2 + arrowWidth / 2 );
@@ -1406,7 +1351,7 @@ void QgsGrassModule::run()
       return;
     }
 
-    mTabWidget->setCurrentPage( 1 );
+    mTabWidget->setCurrentIndex( 1 );
     mRunButton->setText( tr( "Stop" ) );
   }
 }
@@ -1421,7 +1366,7 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
     if ( exitCode == 0 )
     {
       mOutputTextBrowser->append( tr( "<B>Successfully finished</B>" ) );
-      mProgressBar->setProgress( 100, 100 );
+      mProgressBar->setValue( 100 );
       mSuccess = true;
       mViewButton->setEnabled( true );
       mOptions->thawOutput();
@@ -1450,14 +1395,14 @@ void QgsGrassModule::readStdout()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( QString( ba ).ascii() );
+    line = QString::fromLocal8Bit( QString( ba ).toAscii() );
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
     // normaly it should be printed to stderr
-    if ( rxpercent.search( line ) != -1 )
+    if ( rxpercent.indexIn( line ) != -1 )
     {
       int progress = rxpercent.cap( 1 ).toInt();
-      mProgressBar->setProgress( progress, 100 );
+      mProgressBar->setValue( progress );
     }
     else
     {
@@ -1484,31 +1429,31 @@ void QgsGrassModule::readStderr()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromLocal8Bit( QString( ba ).ascii() );
+    line = QString::fromLocal8Bit( QString( ba ).toAscii() );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
-    if ( rxpercent.search( line ) != -1 )
+    if ( rxpercent.indexIn( line ) != -1 )
     {
       int progress = rxpercent.cap( 1 ).toInt();
-      mProgressBar->setProgress( progress, 100 );
+      mProgressBar->setValue( progress );
     }
-    else if ( rxmessage.search( line ) != -1 )
+    else if ( rxmessage.indexIn( line ) != -1 )
     {
       mOutputTextBrowser->append( rxmessage.cap( 1 ) );
     }
-    else if ( rxwarning.search( line ) != -1 )
+    else if ( rxwarning.indexIn( line ) != -1 )
     {
       QString warn = rxwarning.cap( 1 );
       QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_warning.png";
       mOutputTextBrowser->append( "<img src=\"" + img + "\">" + warn );
     }
-    else if ( rxerror.search( line ) != -1 )
+    else if ( rxerror.indexIn( line ) != -1 )
     {
       QString error = rxerror.cap( 1 );
       QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
       mOutputTextBrowser->append( "<img src=\"" + img + "\">" + error );
     }
-    else if ( rxend.search( line ) != -1 )
+    else if ( rxend.indexIn( line ) != -1 )
     {
       // Do nothing
     }
@@ -1696,7 +1641,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
       }
 
       // List of values to be excluded
-      QStringList exclude = QStringList::split( ',', qdesc.attribute( "exclude" ) );
+      QStringList exclude = qdesc.attribute( "exclude" ).split( ',', QString::SkipEmptyParts );
 
       QDomNode valueNode = valuesElem.firstChild();
 
@@ -1711,7 +1656,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
           if ( !n.isNull() )
           {
             QDomElement e = n.toElement();
-            QString val = e.text().stripWhiteSpace();
+            QString val = e.text().trimmed();
 
             if ( exclude.contains( val ) == 0 )
             {
@@ -1720,17 +1665,17 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
               if ( !n.isNull() )
               {
                 e = n.toElement();
-                desc = e.text().stripWhiteSpace();
+                desc = e.text().trimmed();
               }
               else
               {
                 desc = val;
               }
-              desc.replace( 0, 1, desc.left( 1 ).upper() );
+              desc.replace( 0, 1, desc.left( 1 ).toUpper() );
 
               if ( mControlType == ComboBox )
               {
-                mComboBox->insertItem( desc );
+                mComboBox->addItem( desc );
                 if ( mAnswer.length() > 0 && desc == mAnswer )
                 {
                   mComboBox->setCurrentIndex( mComboBox->count() - 1 );
@@ -1774,7 +1719,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         if ( !n.isNull() )
         {
           QDomElement e = n.toElement();
-          QString val = e.text().stripWhiteSpace();
+          QString val = e.text().trimmed();
           minMax = val.split( "-" );
           if ( minMax.size() == 2 )
           {
@@ -1799,7 +1744,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         for ( int k = 0; k < keydescs.count(); k++ )
         {
           QDomNode nodeItem = keydescs.at( k );
-          QString itemDesc = nodeItem.toElement().text().stripWhiteSpace();
+          QString itemDesc = nodeItem.toElement().text().trimmed();
           //QString itemDesc = nodeItem.firstChild().toText().data();
           QgsDebugMsg( "keydesc item = " + itemDesc );
 
@@ -1964,7 +1909,7 @@ QString QgsGrassModuleOption::value()
   }
   else if ( mControlType == ComboBox )
   {
-    value = mValues[mComboBox->currentItem()];
+    value = mValues[mComboBox->currentIndex()];
   }
   else if ( mControlType == CheckBoxes )
   {
@@ -2126,7 +2071,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
               if ( !n.isNull() )
               {
                 QDomElement e = n.toElement();
-                QString val = e.text().stripWhiteSpace();
+                QString val = e.text().trimmed();
 
                 if ( val == "point" )
                 {
@@ -2155,15 +2100,15 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     {
       int mask = 0;
 
-      if ( opt.find( "point" ) >= 0 )
+      if ( opt.indexOf( "point" ) >= 0 )
       {
         mask |= GV_POINT;
       }
-      if ( opt.find( "line" ) >= 0 )
+      if ( opt.indexOf( "line" ) >= 0 )
       {
         mask |= GV_LINE;
       }
-      if ( opt.find( "area" ) >= 0 )
+      if ( opt.indexOf( "area" ) >= 0 )
       {
         mask |= GV_AREA;
       }
@@ -2342,7 +2287,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       QgsDebugMsg( "source = " + source );
 
       // Check GISBASE and LOCATION
-      QStringList split = QStringList::split( sep, source );
+      QStringList split = source.split( sep, QString::SkipEmptyParts );
 
       if ( split.size() < 4 ) continue;
       split.pop_back(); // layer
@@ -2404,8 +2349,8 @@ void QgsGrassModuleInput::updateQgisLayers()
       QString label = layer->name() + " ( " + map + "@" + mapset
                       + " " + grassLayer + " " + type + " )";
 
-      mLayerComboBox->insertItem( label );
-      if ( label == current ) mLayerComboBox->setCurrentText( current );
+      mLayerComboBox->addItem( label );
+      if ( label == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
 
       mMapLayers.push_back( vector );
       mVectorLayerNames.push_back( grassLayer );
@@ -2420,12 +2365,12 @@ void QgsGrassModuleInput::updateQgisLayers()
     else if ( mType == Raster && layer->type() == QgsMapLayer::RASTER )
     {
       // Check if it is GRASS raster
-      QString source = QDir::cleanDirPath( layer->source() );
+      QString source = QDir::cleanPath( layer->source() );
 
       if ( source.contains( "cellhd" ) == 0 ) continue;
 
       // Most probably GRASS layer, check GISBASE and LOCATION
-      QStringList split = QStringList::split( sep, source );
+      QStringList split = source.split( sep, QString::SkipEmptyParts );
 
       if ( split.size() < 4 ) continue;
 
@@ -2453,8 +2398,8 @@ void QgsGrassModuleInput::updateQgisLayers()
 
       QString label = layer->name() + " ( " + map + "@" + mapset + " )";
 
-      mLayerComboBox->insertItem( label );
-      if ( label == current ) mLayerComboBox->setCurrentText( current );
+      mLayerComboBox->addItem( label );
+      if ( label == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
     }
   }
 }
@@ -2464,7 +2409,7 @@ QStringList QgsGrassModuleInput::options()
   QStringList list;
   QString opt;
 
-  int c = mLayerComboBox->currentItem();
+  int c = mLayerComboBox->currentIndex();
   if ( c < 0 ) // not found
     return list;
 
@@ -2503,7 +2448,7 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
 
   std::vector<QgsField> fields;
 
-  int c = mLayerComboBox->currentItem();
+  int c = mLayerComboBox->currentIndex();
   if ( c < 0 )
     return fields;
 
@@ -2521,7 +2466,7 @@ QgsMapLayer * QgsGrassModuleInput::currentLayer()
 {
   QgsDebugMsg( "called." );
 
-  int c = mLayerComboBox->currentItem();
+  int c = mLayerComboBox->currentIndex();
   if ( c < 0 )
     return 0;
 
@@ -2539,7 +2484,7 @@ QString QgsGrassModuleInput::currentMap()
 {
   QgsDebugMsg( "called." );
 
-  int c = mLayerComboBox->currentItem();
+  int c = mLayerComboBox->currentIndex();
   if ( c < 0 )
     return QString();
 
@@ -2615,8 +2560,8 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
-      mDescription = e.text().stripWhiteSpace();
-      mDescription.replace( 0, 1, mDescription.left( 1 ).upper() );
+      mDescription = e.text().trimmed();
+      mDescription.replace( 0, 1, mDescription.left( 1 ).toUpper() );
     }
   }
 
@@ -2634,7 +2579,7 @@ QgsGrassModuleItem::~QgsGrassModuleItem() {}
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QgsGrassModule *module, int type, QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : Q3GroupBox( 1, Qt::Vertical, parent ),
+    : QGroupBox( parent ),
     QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
     mType( type ), mOgrLayerOption( 0 ), mOgrWhereOption( 0 )
 {
@@ -2761,8 +2706,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       QgsDebugMsg( "uri = " + uri );
       QgsDebugMsg( "ogrLayer = " + ogrLayer );
 
-      mLayerComboBox->insertItem( layer->name() );
-      if ( layer->name() == current ) mLayerComboBox->setCurrentText( current );
+      mLayerComboBox->addItem( layer->name() );
+      if ( layer->name() == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
 
       mUri.push_back( uri );
 
@@ -2772,8 +2717,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     else if ( mType == Gdal && layer->type() == QgsMapLayer::RASTER )
     {
       QString uri = layer->source();
-      mLayerComboBox->insertItem( layer->name() );
-      if ( layer->name() == current ) mLayerComboBox->setCurrentText( current );
+      mLayerComboBox->addItem( layer->name() );
+      if ( layer->name() == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
       mUri.push_back( uri );
     }
   }
@@ -2783,7 +2728,7 @@ QStringList QgsGrassModuleGdalInput::options()
 {
   QStringList list;
 
-  int c = mLayerComboBox->currentItem();
+  int c = mLayerComboBox->currentIndex();
   if ( c < 0 )
     return list;
 
@@ -2858,7 +2803,7 @@ QgsGrassModuleField::QgsGrassModuleField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : Q3GroupBox( 1, Qt::Vertical, parent ),
+    : QGroupBox( parent ),
     QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
     mModuleStandardOptions( options ), mLayerInput( 0 )
 {
@@ -2920,10 +2865,10 @@ void QgsGrassModuleField::updateFields()
   {
     if ( mType.contains( fields[i].typeName() ) )
     {
-      mFieldComboBox->insertItem( fields[i].name() );
+      mFieldComboBox->addItem( fields[i].name() );
       if ( fields[i].name() == current )
       {
-        mFieldComboBox->setCurrentText( current );
+        mFieldComboBox->setItemText( mFieldComboBox->currentIndex(), current );
       }
     }
   }
@@ -2949,7 +2894,7 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : Q3GroupBox( 1, Qt::Vertical, parent ),
+    : QGroupBox( parent ),
     QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
     mModuleStandardOptions( options ), mLayerInput( 0 ),
     mVectorLayer( 0 )
@@ -3106,7 +3051,7 @@ QgsGrassModuleFile::QgsGrassModuleFile(
     {
       QRegExp rx( ".*\\( *..([^ )]*).*" );
       QString ext;
-      if ( rx.search( mFilters.at( 0 ) ) == 0 )
+      if ( rx.indexIn( mFilters.at( 0 ) ) == 0 )
       {
         mSuffix = rx.cap( 1 );
       }
@@ -3139,7 +3084,7 @@ QStringList QgsGrassModuleFile::options()
   {
     QFileInfo fi( path );
 
-    QString opt( mKey + "=" + fi.dirPath() );
+    QString opt( mKey + "=" + fi.path() );
     list.push_back( opt );
 
     opt = mFileOption + "=" + fi.baseName();
@@ -3156,7 +3101,7 @@ void QgsGrassModuleFile::browse()
 
   fd->setDirectory( QDir::current() );
 
-  fd->setMode( QFileDialog::AnyFile );
+  fd->setFileMode( QFileDialog::AnyFile );
 
   if ( mType == New )
   {
@@ -3175,7 +3120,7 @@ void QgsGrassModuleFile::browse()
 
   if ( fd->exec() == QDialog::Accepted )
   {
-    mLineEdit->setText( fd->selectedFile() );
+    mLineEdit->setText( fd->selectedFiles().first() );
   }
 }
 

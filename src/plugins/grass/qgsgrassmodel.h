@@ -16,14 +16,6 @@
 #ifndef QGSGRASSMODEL_H
 #define QGSGRASSMODEL_H
 
-class QCloseEvent;
-class QString;
-class QDomNode;
-class QDomElement;
-class QModelIndex;
-class QVariant;
-
-#include <QTreeWidget>
 #include <QAbstractItemModel>
 #include <QIcon>
 

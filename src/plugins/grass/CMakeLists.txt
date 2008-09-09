@@ -93,7 +93,6 @@ ADD_LIBRARY (grassplugin MODULE
   )
 
 INCLUDE_DIRECTORIES(
-     .
      ..
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core 
@@ -115,6 +114,7 @@ TARGET_LINK_LIBRARIES(grassplugin
   qgis_core
   qgis_gui
   qgisgrass
+  ${QT_QT3SUPPORT_LIBRARY} 
   ${GRASS_LIBRARIES}
 )
 

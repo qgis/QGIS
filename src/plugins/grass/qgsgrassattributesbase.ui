@@ -1,9 +1,6 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassAttributesBase</class>
- <widget class="QWidget" name="QgsGrassAttributesBase" >
+ <widget class="QDialog" name="QgsGrassAttributesBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -13,9 +10,7 @@
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>3</hsizetype>
-    <vsizetype>1</vsizetype>
+   <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -48,18 +43,25 @@
    <string>GRASS Attributes</string>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
+   <property name="spacing" >
     <number>5</number>
    </property>
-   <property name="spacing" >
+   <property name="leftMargin" >
+    <number>5</number>
+   </property>
+   <property name="topMargin" >
+    <number>5</number>
+   </property>
+   <property name="rightMargin" >
+    <number>5</number>
+   </property>
+   <property name="bottomMargin" >
     <number>5</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabCats" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>7</vsizetype>
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -83,9 +85,7 @@
    <item>
     <widget class="QLabel" name="resultLabel" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -114,11 +114,9 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3Frame" name="buttonsFrame" >
+    <widget class="QFrame" name="buttonsFrame" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -145,18 +143,25 @@
       <number>0</number>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
+      <property name="spacing" >
        <number>5</number>
       </property>
-      <property name="spacing" >
+      <property name="leftMargin" >
+       <number>5</number>
+      </property>
+      <property name="topMargin" >
+       <number>5</number>
+      </property>
+      <property name="rightMargin" >
+       <number>5</number>
+      </property>
+      <property name="bottomMargin" >
        <number>5</number>
       </property>
       <item>
        <widget class="QPushButton" name="updateButton" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>5</vsizetype>
+         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -184,9 +189,7 @@
       <item>
        <widget class="QPushButton" name="newButton" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -214,9 +217,7 @@
       <item>
        <widget class="QPushButton" name="deleteButton" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>7</hsizetype>
-          <vsizetype>0</vsizetype>
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -247,16 +248,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

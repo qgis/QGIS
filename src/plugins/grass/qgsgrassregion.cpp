@@ -13,54 +13,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <qdir.h>
-#include <qfile.h>
-#include <qsettings.h>
-#include <qpixmap.h>
-#include <q3listbox.h>
-#include <qstringlist.h>
-#include <qlabel.h>
-#include <QComboBox>
-#include <qspinbox.h>
-#include <qmessagebox.h>
-#include <qinputdialog.h>
-#include <qpainter.h>
-#include <qpen.h>
-#include <qpoint.h>
-#include <qcursor.h>
-#include <qnamespace.h>
-#include <qsettings.h>
-#include <qvalidator.h>
-#include <q3button.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <q3buttongroup.h>
-#include <qcolordialog.h>
-#include <qspinbox.h>
-#include <qglobal.h>
 
-#include <QMouseEvent>
-#include <QRubberBand>
-
-#include <qgsrasterlayer.h>
 #include "qgis.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
+#include "qgsgrassregion.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrass.h"
+
 #include "qgisinterface.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
-#include "qgsmaptopixel.h"
-#include "qgspoint.h"
 
-extern "C"
-{
-#include <grass/gis.h>
-}
+#include <QButtonGroup>
+#include <QColorDialog>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QRubberBand>
+#include <QSettings>
 
-#include "qgsgrass.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassregion.h"
-#include "qgslogger.h"
 
 /** map tool which uses rubber band for changing grass region */
 class QgsGrassRegionEdit : public QgsMapTool
@@ -170,12 +140,12 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   mCols->setValidator( iv );
 
   // Group radio buttons
-  mNSRadioGroup = new Q3ButtonGroup();
-  mEWRadioGroup = new Q3ButtonGroup();
-  mNSRadioGroup->insert( mNSResRadio );
-  mNSRadioGroup->insert( mRowsRadio );
-  mEWRadioGroup->insert( mEWResRadio );
-  mEWRadioGroup->insert( mColsRadio );
+  mNSRadioGroup = new QButtonGroup();
+  mEWRadioGroup = new QButtonGroup();
+  mNSRadioGroup->addButton( mNSResRadio );
+  mNSRadioGroup->addButton( mRowsRadio );
+  mEWRadioGroup->addButton( mEWResRadio );
+  mEWRadioGroup->addButton( mColsRadio );
   mNSResRadio->setChecked( true );
   mEWResRadio->setChecked( true );
   mRows->setEnabled( false );
@@ -195,7 +165,7 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   }
 
   QgsGrass::setLocation( gisdbase, location );
-  char *err = G__get_window( &mWindow, ( char * )"", ( char * )"WIND", ( char * ) mapset.latin1() );
+  char *err = G__get_window( &mWindow, "", "WIND", mapset.toLatin1() );
 
   if ( err )
   {
@@ -448,7 +418,7 @@ void QgsGrassRegion::accept()
   // TODO: better repaint region
   QSettings settings;
 
-  bool on = settings.readBoolEntry( "/GRASS/region/on", true );
+  bool on = settings.value( "/GRASS/region/on", true ).toBool();
 
   if ( on )
   {
@@ -456,7 +426,7 @@ void QgsGrassRegion::accept()
   }
 
   QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  G__setenv(( char * )"MAPSET", ( char * ) QgsGrass::getDefaultMapset().latin1() );
+  G__setenv( "MAPSET", QgsGrass::getDefaultMapset().toLatin1() );
 
   if ( G_put_window( &mWindow ) == -1 )
   {

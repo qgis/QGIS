@@ -15,60 +15,37 @@
  ***************************************************************************/
 /*  $Id$ */
 
+#include "qgsgrassplugin.h"
+#include "qgis.h"
+#include "qgsgrass.h"
+
+//the gui subclass
+#include "qgsgrassedit.h"
+#include "qgsgrassnewmapset.h"
+#include "qgsgrassregion.h"
+#include "qgsgrassselect.h"
+#include "qgsgrasstools.h"
+#include "qgsgrassutils.h"
+
 // includes
-#include "qgsapplication.h"
-#include "qgsmaplayer.h"
 #include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
+#include "qgsrubberband.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsdataprovider.h"
-#include "qgsproviderregistry.h"
-#include <qgsrasterlayer.h>
 
-#include <qtoolbar.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <q3popupmenu.h>
-#include <qlineedit.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcursor.h>
-#include <QFileDialog>
-#include <qfileinfo.h>
-#include <qsettings.h>
-#include <qregexp.h>
-#include <qglobal.h>
-#include <qinputdialog.h>
-#include <QIcon>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3PointArray>
-
-//non qt includes
-
-#include <qgsproject.h>
-#include <qgsrubberband.h>
+#include <QAction>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QSettings>
+#include <QToolBar>
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/Vect.h>
 }
-
-#include "qgsgrassplugin.h"
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-
-//the gui subclass
-#include "qgsgrassutils.h"
-#include "qgsgrassattributes.h"
-#include "qgsgrassselect.h"
-#include "qgsgrassedit.h"
-#include "qgsgrasstools.h"
-#include "qgsgrassregion.h"
-#include "qgsgrassnewmapset.h"
-#include "qgslogger.h"
 
 static const QString pluginVersion = QObject::tr( "Version 0.1" );
 
@@ -203,17 +180,17 @@ void QgsGrassPlugin::initGui()
   toolBarPointer->setObjectName( "GRASS" );
 
   // Add to the toolbar
-  mOpenMapsetAction->addTo( toolBarPointer );
-  mNewMapsetAction->addTo( toolBarPointer );
-  mCloseMapsetAction->addTo( toolBarPointer );
+  toolBarPointer->addAction( mOpenMapsetAction );
+  toolBarPointer->addAction( mNewMapsetAction );
+  toolBarPointer->addAction( mCloseMapsetAction );
   toolBarPointer->addSeparator();
-  mAddVectorAction->addTo( toolBarPointer );
-  mAddRasterAction->addTo( toolBarPointer );
-  mNewVectorAction->addTo( toolBarPointer );
-  mEditAction->addTo( toolBarPointer );
-  mOpenToolsAction->addTo( toolBarPointer );
-  mRegionAction->addTo( toolBarPointer );
-  mEditRegionAction->addTo( toolBarPointer );
+  toolBarPointer->addAction( mAddVectorAction );
+  toolBarPointer->addAction( mAddRasterAction );
+  toolBarPointer->addAction( mNewVectorAction );
+  toolBarPointer->addAction( mEditAction );
+  toolBarPointer->addAction( mOpenToolsAction );
+  toolBarPointer->addAction( mRegionAction );
+  toolBarPointer->addAction( mEditRegionAction );
 
   // Connect display region
   connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
@@ -223,8 +200,8 @@ void QgsGrassPlugin::initGui()
            this, SLOT( setEditAction() ) );
 
   // Init Region symbology
-  mRegionPen.setColor( QColor( settings.readEntry( "/GRASS/region/color", "#ff0000" ) ) );
-  mRegionPen.setWidth( settings.readNumEntry( "/GRASS/region/width", 0 ) );
+  mRegionPen.setColor( QColor( settings.value( "/GRASS/region/color", "#ff0000" ).toString() ) );
+  mRegionPen.setWidth( settings.value( "/GRASS/region/width", 0 ).toInt() );
   mRegionBand->setColor( mRegionPen.color() );
   mRegionBand->setWidth( mRegionPen.width() );
 
@@ -258,8 +235,8 @@ void QgsGrassPlugin::mapsetChanged()
     mNewVectorAction->setEnabled( true );
 
     QSettings settings;
-    bool on = settings.readBoolEntry( "/GRASS/region/on", true );
-    mRegionAction->setOn( on );
+    bool on = settings.value( "/GRASS/region/on", true ).toBool();
+    mRegionAction->setChecked( on );
     switchRegion( on );
 
     if ( mTools )
@@ -295,9 +272,7 @@ void QgsGrassPlugin::addVector()
   {
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
   }
-#ifdef QGISDEBUG
 // QgsDebugMsg(QString("plugin URI: %1").arg(uri));
-#endif
   if ( uri.length() == 0 )
   {
 // QgsDebugMsg("Nothing was selected");
@@ -305,9 +280,7 @@ void QgsGrassPlugin::addVector()
   }
   else
   {
-#ifdef QGISDEBUG
 // QgsDebugMsg("Add new vector layer");
-#endif
 
     // create vector name: vector layer
     QString name = sel->map;
@@ -316,7 +289,7 @@ void QgsGrassPlugin::addVector()
     QString type;
 
     QRegExp rx( "(\\d+)_(.+)" );
-    if ( rx.search( sel->layer ) != -1 )
+    if ( rx.indexIn( sel->layer ) != -1 )
     {
       field = rx.cap( 1 );
       type = rx.cap( 2 );
@@ -329,8 +302,8 @@ void QgsGrassPlugin::addVector()
     QgsGrass::resetError();
     Vect_set_open_level( 2 );
     struct Map_info map;
-    int level = Vect_open_old_head( &map, ( char * ) sel->map.ascii(),
-                                    ( char * ) sel->mapset.ascii() );
+    int level = Vect_open_old_head( &map, sel->map.toAscii().data(),
+                                    sel->mapset.toAscii().data() );
 
     if ( QgsGrass::getError() != QgsGrass::FATAL )
     {
@@ -405,8 +378,8 @@ void QgsGrassPlugin::addRaster()
 // QgsDebugMsg("Add new raster layer");
 
     // create raster name
-    int pos = uri.findRev( '/' );
-    pos = uri.findRev( '/', pos - 1 );
+    int pos = uri.lastIndexOf( '/' );
+    pos = uri.lastIndexOf( '/', pos - 1 );
     QString name = uri.right( uri.length() - pos - 1 );
     name.replace( '/', ' ' );
 
@@ -419,7 +392,7 @@ void QgsGrassPlugin::openTools()
 {
   if ( !mTools )
   {
-    mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow(), 0, Qt::WType_Dialog );
+    mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow(), 0, Qt::Dialog );
 
     connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion() ) );
   }
@@ -439,7 +412,7 @@ void QgsGrassPlugin::edit()
 
   mEditAction->setEnabled( false );
   QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, qGisInterface->activeLayer(), false,
-                                       qGisInterface->mainWindow(), Qt::WType_Dialog );
+                                       qGisInterface->mainWindow(), Qt::Dialog );
 
   if ( ed->isValid() )
   {
@@ -497,7 +470,7 @@ void QgsGrassPlugin::newVector()
 
   QgsGrass::resetError();
   struct Map_info Map;
-  Vect_open_new( &Map, ( char * ) name.ascii(), 0 );
+  Vect_open_new( &Map, name.toAscii().data(), 0 );
 
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
@@ -527,7 +500,7 @@ void QgsGrassPlugin::newVector()
   }
 
   QgsGrassEdit *ed = new QgsGrassEdit( qGisInterface, layer, true,
-                                       qGisInterface->mainWindow(), Qt::WType_Dialog );
+                                       qGisInterface->mainWindow(), Qt::Dialog );
 
   if ( ed->isValid() )
   {
@@ -575,7 +548,7 @@ void QgsGrassPlugin::displayRegion()
   QgsGrass::setLocation( gisdbase, location );
 
   struct Cell_head window;
-  char *err = G__get_window( &window, ( char * )"", ( char * )"WIND", ( char * ) mapset.latin1() );
+  char *err = G__get_window( &window, "", "WIND", mapset.toLatin1().constData() );
 
   if ( err )
   {
@@ -603,7 +576,7 @@ void QgsGrassPlugin::switchRegion( bool on )
 // QgsDebugMsg("entered.");
 
   QSettings settings;
-  settings.writeEntry( "/GRASS/region/on", on );
+  settings.setValue( "/GRASS/region/on", on );
 
   if ( on )
   {
@@ -619,7 +592,7 @@ void QgsGrassPlugin::redrawRegion()
 {
 // QgsDebugMsg("entered.");
 
-  if ( mRegionAction->isOn() )
+  if ( mRegionAction->isChecked() )
   {
     displayRegion();
   }
@@ -661,8 +634,8 @@ void QgsGrassPlugin::setRegionPen( QPen & pen )
   mRegionBand->setWidth( mRegionPen.width() );
 
   QSettings settings;
-  settings.writeEntry( "/GRASS/region/color", mRegionPen.color().name() );
-  settings.writeEntry( "/GRASS/region/width", ( int ) mRegionPen.width() );
+  settings.setValue( "/GRASS/region/color", mRegionPen.color().name() );
+  settings.setValue( "/GRASS/region/width", ( int ) mRegionPen.width() );
 }
 
 void QgsGrassPlugin::openMapset()

@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>QgsGrassMapcalcBase</class>
  <widget class="QMainWindow" name="QgsGrassMapcalcBase" >
   <property name="geometry" >
@@ -17,20 +14,8 @@
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QGridLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
-    <property name="spacing" >
-     <number>6</number>
-    </property>
     <item row="2" column="0" >
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
       <item>
        <widget class="QLabel" name="textLabel1_2" >
         <property name="text" >
@@ -60,11 +45,9 @@
      </layout>
     </item>
     <item row="1" column="0" >
-     <widget class="Q3Frame" name="mViewFrame" >
+     <widget class="QFrame" name="mViewFrame" >
       <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>7</vsizetype>
+       <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -78,11 +61,9 @@
      </widget>
     </item>
     <item row="0" column="0" >
-     <widget class="Q3Frame" name="mInputFrame" >
+     <widget class="QFrame" name="mInputFrame" >
       <property name="sizePolicy" >
-       <sizepolicy>
-        <hsizetype>7</hsizetype>
-        <vsizetype>1</vsizetype>
+       <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -99,22 +80,26 @@
       <property name="frameShadow" >
        <enum>QFrame::Plain</enum>
       </property>
-      <property name="margin" >
+      <property name="margin" stdset="0" >
        <number>0</number>
       </property>
       <layout class="QHBoxLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
         <number>3</number>
        </property>
-       <property name="spacing" >
-        <number>6</number>
+       <property name="topMargin" >
+        <number>3</number>
+       </property>
+       <property name="rightMargin" >
+        <number>3</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>3</number>
        </property>
        <item>
         <widget class="QComboBox" name="mMapComboBox" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
+          <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -138,27 +123,8 @@
     </item>
    </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>390</y>
-     <width>525</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
  </widget>
- <pixmapfunction></pixmapfunction>
- <customwidgets>
-  <customwidget>
-   <class>Q3Frame</class>
-   <extends></extends>
-   <header>Qt3Support/Q3Frame</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
