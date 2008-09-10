@@ -1,5 +1,6 @@
 """
 Copyright (C) 2008 Matthew Perry
+Copyright (C) 2008 Borys Jurgiel
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -10,15 +11,17 @@ Copyright (C) 2008 Matthew Perry
  ***************************************************************************/
 """
 def name():
-  return "Plugin installer"
+  return "Plugin Installer"
 
 def description():
   return "Downloads and installs QGIS python plugins"
 
+def author_name():
+  return "perrygeo, borysiasty"
+
 def version():
-  return "Version 0.02"
+  return "Version 0.05.6"
 
 def classFactory(iface):
-  # load TestPlugin class from file testplugin.py
   from installer_plugin import InstallerPlugin
   return InstallerPlugin(iface)
