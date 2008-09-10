@@ -1,0 +1,433 @@
+<ui version="4.0" >
+ <author>Matthew Perry, Borys Jurgiel</author>
+ <class>QgsPluginInstallerDialog</class>
+ <widget class="QDialog" name="QgsPluginInstallerDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>769</width>
+    <height>395</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>QGIS Python Plugin Installer</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
+  </property>
+  <property name="whatsThis" >
+   <string>QGIS Plugin Installer</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="toolTip" >
+      <string/>
+     </property>
+     <property name="whatsThis" >
+      <string/>
+     </property>
+     <property name="currentIndex" >
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Plugins</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>List of available and installed plugins</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <item>
+        <layout class="QHBoxLayout" >
+         <item>
+          <widget class="QLabel" name="label_5" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="text" >
+            <string>Filter:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineFilter" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="toolTip" >
+            <string>Display only plugins containing this word in their metadata</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Display only plugins containing this word in their metadata</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboFilter1" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>Display only plugins from given repository</string>
+           </property>
+           <property name="statusTip" >
+            <string/>
+           </property>
+           <property name="whatsThis" >
+            <string>Display only plugins from given repository</string>
+           </property>
+           <item>
+            <property name="text" >
+             <string>all repositories</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboFilter2" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>Display only plugins with matching status</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Display only plugins with matching status</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeWidget" name="treePlugins" >
+         <property name="alternatingRowColors" >
+          <bool>true</bool>
+         </property>
+         <property name="rootIsDecorated" >
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable" >
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled" >
+          <bool>true</bool>
+         </property>
+         <property name="allColumnsShowFocus" >
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text" >
+           <string>Status</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Version</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Description</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Author</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Repository</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonInstall" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>160</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip" >
+            <string>Install, reinstall or upgrade the selected plugin</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Install, reinstall or upgrade the selected plugin</string>
+           </property>
+           <property name="text" >
+            <string>Install/upgrade plugin</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonUninstall" >
+           <property name="enabled" >
+            <bool>true</bool>
+           </property>
+           <property name="toolTip" >
+            <string>Uninstall the selected plugin</string>
+           </property>
+           <property name="whatsThis" >
+            <string>Uninstall the selected plugin</string>
+           </property>
+           <property name="text" >
+            <string>Uninstall plugin</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2" >
+      <attribute name="title" >
+       <string>Repositories</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>List of plugin repositories</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" colspan="7" >
+        <widget class="QTreeWidget" name="treeRepositories" >
+         <property name="rootIsDecorated" >
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable" >
+          <bool>false</bool>
+         </property>
+         <column>
+          <property name="text" >
+           <string>Status</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>URL</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QCheckBox" name="checkUpdates" >
+         <property name="toolTip" >
+          <string>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</string>
+         </property>
+         <property name="statusTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</string>
+         </property>
+         <property name="text" >
+          <string>Check for updates on startup</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>30</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="2" >
+        <widget class="QPushButton" name="buttonFetchRepositories" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="toolTip" >
+          <string>Add third party plugin repositories to the list</string>
+         </property>
+         <property name="whatsThis" >
+          <string>Add third party plugin repositories to the list</string>
+         </property>
+         <property name="text" >
+          <string>Add 3rd party repositories</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="4" >
+        <widget class="QPushButton" name="buttonAddRep" >
+         <property name="toolTip" >
+          <string>Add a new plugin repository</string>
+         </property>
+         <property name="whatsThis" >
+          <string>Add a new plugin repository</string>
+         </property>
+         <property name="text" >
+          <string>Add...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5" >
+        <widget class="QPushButton" name="buttonEditRep" >
+         <property name="toolTip" >
+          <string>Edit the selected repository</string>
+         </property>
+         <property name="whatsThis" >
+          <string>Edit the selected repository</string>
+         </property>
+         <property name="text" >
+          <string>Edit...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="6" >
+        <widget class="QPushButton" name="buttonDeleteRep" >
+         <property name="toolTip" >
+          <string>Remove the selected repository</string>
+         </property>
+         <property name="whatsThis" >
+          <string>Remove the selected repository</string>
+         </property>
+         <property name="text" >
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="label_3" >
+       <property name="whatsThis" >
+        <string/>
+       </property>
+       <property name="text" >
+        <string>The plugins will be installed to ~/.qgis/python/plugins</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClose" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip" >
+        <string>Close the Installer window</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Close the Installer window</string>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>lineFilter</tabstop>
+  <tabstop>comboFilter1</tabstop>
+  <tabstop>comboFilter2</tabstop>
+  <tabstop>treePlugins</tabstop>
+  <tabstop>buttonInstall</tabstop>
+  <tabstop>buttonUninstall</tabstop>
+  <tabstop>buttonClose</tabstop>
+  <tabstop>treeRepositories</tabstop>
+  <tabstop>buttonFetchRepositories</tabstop>
+  <tabstop>checkUpdates</tabstop>
+  <tabstop>buttonAddRep</tabstop>
+  <tabstop>buttonEditRep</tabstop>
+  <tabstop>buttonDeleteRep</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resources.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonClose</sender>
+   <signal>released()</signal>
+   <receiver>QgsPluginInstallerDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>710</x>
+     <y>447</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>380</x>
+     <y>235</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
