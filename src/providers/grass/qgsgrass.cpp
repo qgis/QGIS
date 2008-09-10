@@ -18,6 +18,7 @@
 #include "qgsgrass.h"
 
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -110,7 +111,6 @@ void GRASS_EXPORT QgsGrass::init( void )
     // Use the applicationDirPath()/grass
     gisBase = getShortPath( QCoreApplication::applicationDirPath() + "/grass" );
     QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
-
 #else
     // Use the location specified --with-grass during configure
     gisBase = GRASS_BASE;
