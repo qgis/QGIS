@@ -559,7 +559,7 @@ void QgsAttributeTable::bringSelectedToTop()
   for ( QList<QTableWidgetSelectionRange>::iterator iter = selections.begin();iter != selections.end();++iter )
   {
     removeselection = true;
-    while ( item( swaptorow, 0 )->isSelected() )//selections are not necessary stored in ascending order
+    while ( swaptorow<rowCount() && item( swaptorow, 0 )->isSelected() )//selections are not necessary stored in ascending order
     {
       ++swaptorow;
     }
