@@ -548,7 +548,7 @@ void QgsGrassPlugin::displayRegion()
   QgsGrass::setLocation( gisdbase, location );
 
   struct Cell_head window;
-  char *err = G__get_window( &window, "", "WIND", mapset.toLatin1().constData() );
+  char *err = G__get_window( &window, "", "WIND", mapset.toLatin1().data() );
 
   if ( err )
   {

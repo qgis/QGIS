@@ -20,7 +20,7 @@
 #include "qgslogger.h"
 
 #include <QFileDialog>
-#include <QMessagebox>
+#include <QMessageBox>
 #include <QSettings>
 
 extern "C"

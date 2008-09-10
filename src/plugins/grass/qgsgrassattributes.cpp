@@ -22,7 +22,7 @@
 
 #include <QHeaderView>
 #include <QKeyEvent>
-#include <QMessagebox>
+#include <QMessageBox>
 #include <QSettings>
 #include <QTableWidget>
 
