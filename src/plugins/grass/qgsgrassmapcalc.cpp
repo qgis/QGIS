@@ -24,7 +24,8 @@
 #include "qgsmaplayer.h"
 #include "qgsgrassplugin.h"
 
-#include <math.h>
+#include <cmath>
+#include <typeinfo>
 
 #include <QDir>
 #include <QDomDocument>

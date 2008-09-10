@@ -649,6 +649,7 @@ void QgsGrassEdit::columnTypeChanged( int row, int col )
 
   QTableWidgetItem *ti = mAttributeTable->item( row, 2 );
   if ( ti )
+  {
     if ( mAttributeTable->item( row, 1 )->text().compare( "varchar" ) == 0 )
     {
       ti->setFlags( ti->flags() | Qt::ItemIsEnabled );
@@ -657,6 +658,7 @@ void QgsGrassEdit::columnTypeChanged( int row, int col )
     {
       ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
     }
+  }
 }
 
 void QgsGrassEdit::alterTable( void )

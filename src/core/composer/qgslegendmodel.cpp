@@ -125,8 +125,6 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   const QList<QgsSymbol*> vectorSymbols = vectorRenderer->symbols();
   QList<QgsSymbol*>::const_iterator symbolIt = vectorSymbols.constBegin();
 
-  QStandardItem* currentSymbolItem = 0;
-
   for ( ; symbolIt != vectorSymbols.constEnd(); ++symbolIt )
   {
     if ( !( *symbolIt ) )

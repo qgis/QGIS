@@ -219,6 +219,10 @@ void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
       }
       Vect_reset_line( e->mEditPoints );
       break;
+
+    default:
+      // ignore others
+      break;
   }
 
   if ( e->mEditPoints->n_points == 0 )
@@ -324,7 +328,8 @@ void QgsGrassEditMoveVertex::mouseClick( QgsPoint & point, Qt::MouseButton butto
       e->setCanvasPropmt( QObject::tr( "Select vertex" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 
@@ -466,7 +471,8 @@ void QgsGrassEditAddVertex::mouseClick( QgsPoint & point, Qt::MouseButton button
       e->setCanvasPropmt( QObject::tr( "Select line segment" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 
@@ -595,7 +601,8 @@ void QgsGrassEditDeleteVertex::mouseClick( QgsPoint & point, Qt::MouseButton but
       e->setCanvasPropmt( QObject::tr( "Select vertex" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 }
@@ -668,7 +675,8 @@ void QgsGrassEditMoveLine::mouseClick( QgsPoint & point, Qt::MouseButton button 
       e->setCanvasPropmt( QObject::tr( "Select element" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 }
@@ -750,7 +758,8 @@ void QgsGrassEditDeleteLine::mouseClick( QgsPoint & point, Qt::MouseButton butto
       e->setCanvasPropmt( QObject::tr( "Select element" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 }
@@ -844,7 +853,8 @@ void QgsGrassEditSplitLine::mouseClick( QgsPoint & point, Qt::MouseButton button
       e->setCanvasPropmt( QObject::tr( "Select point on line" ), "", "" );
       break;
 
-    case Qt::MidButton:
+    default:
+      // ignore others
       break;
   }
 }
