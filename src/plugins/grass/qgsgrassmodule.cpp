@@ -31,6 +31,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
+#include <typeinfo>
 #include <QComboBox>
 #include <QDomDocument>
 #include <QFileDialog>

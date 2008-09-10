@@ -1256,9 +1256,9 @@ void QgsGrassNewMapset::createMapset()
     //       database path
     QgsGrass::activeMode(); // because it calls private gsGrass::init()
 #if defined(WIN32)
-    G__setenv( "GISDBASE", getShortPath( mDatabaseLineEdit->text() ).toAscii().data() );
+    G__setenv( (char *) "GISDBASE", getShortPath( mDatabaseLineEdit->text() ).toAscii().data() );
 #else
-    G__setenv( "GISDBASE", mDatabaseLineEdit->text().toAscii().data() );
+    G__setenv( (char *) "GISDBASE", mDatabaseLineEdit->text().toAscii().data() );
 #endif
 
     QgsGrass::resetError();
