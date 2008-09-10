@@ -314,11 +314,11 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().constData() );
+  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
 #else
-  G__setenv( "GISDBASE", gisdbase.toAscii().constData() );
+  G__setenv( "GISDBASE", gisdbase.toAscii().data() );
 #endif
-  G__setenv( "LOCATION_NAME", location.toAscii().constData() );
+  G__setenv( "LOCATION_NAME", location.toAscii().data() );
   G__setenv( "MAPSET", "PERMANENT" ); // PERMANENT must always exist
 
   // Add all available mapsets to search path
@@ -333,12 +333,12 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().constData() );
+  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
 #else
-  G__setenv( "GISDBASE", gisdbase.toAscii().constData() );
+  G__setenv( "GISDBASE", gisdbase.toAscii().data() );
 #endif
-  G__setenv( "LOCATION_NAME", location.toAscii().constData() );
-  G__setenv( "MAPSET", mapset.toAscii().constData() );
+  G__setenv( "LOCATION_NAME", location.toAscii().data() );
+  G__setenv( "MAPSET", mapset.toAscii().data() );
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -557,14 +557,14 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   putenv( gisrcEnvChar );
 
   // Reinitialize GRASS
-  G__setenv( "GISRC", gisrcEnv.toAscii().constData() );
+  G__setenv( "GISRC", gisrcEnv.toAscii().data() );
 #if defined(WIN32)
-  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().constData() );
+  G__setenv( "GISDBASE", getShortPath( gisdbase ).toAscii().data() );
 #else
-  G__setenv( "GISDBASE", gisdbase.toAscii().constData() );
+  G__setenv( "GISDBASE", gisdbase.toAscii().data() );
 #endif
-  G__setenv( "LOCATION_NAME", location.toAscii().constData() );
-  G__setenv( "MAPSET", mapset.toAscii().constData() );
+  G__setenv( "LOCATION_NAME", location.toAscii().data() );
+  G__setenv( "MAPSET", mapset.toAscii().data() );
   defaultGisdbase = gisdbase;
   defaultLocation = location;
   defaultMapset = mapset;
@@ -876,7 +876,7 @@ bool GRASS_EXPORT QgsGrass::region( QString gisbase,
 {
   QgsGrass::setLocation( gisbase, location );
 
-  if ( G__get_window( window, "", "WIND", mapset.toLocal8Bit().constData() ) )
+  if ( G__get_window( window, "", "WIND", mapset.toLocal8Bit().data() ) )
   {
     return false;
   }
@@ -957,8 +957,8 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   if ( type == Raster )
   {
 
-    if ( G_get_cellhd( map.toLocal8Bit().constData(),
-                       mapset.toLocal8Bit().constData(), window ) < 0 )
+    if ( G_get_cellhd( map.toLocal8Bit().data(),
+                       mapset.toLocal8Bit().data(), window ) < 0 )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot read raster map region" ) );
@@ -1010,8 +1010,8 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   else if ( type == Region )
   {
     if ( G__get_window( window, "windows",
-                        map.toLocal8Bit().constData(),
-                        mapset.toLocal8Bit().constData() ) != NULL )
+                        map.toLocal8Bit().data(),
+                        mapset.toLocal8Bit().data() ) != NULL )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot read region" ) );

@@ -29,6 +29,7 @@ class QgsRubberBand;
 
 class QAction;
 class QIcon;
+class QPainter;
 class QToolBar;
 
 /**

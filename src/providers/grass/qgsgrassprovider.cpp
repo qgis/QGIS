@@ -985,7 +985,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   QgsDebugMsg( QString( "Setting  gisdbase, location: %1, %2" ).arg( gisdbase ).arg( location ) );
 
   // Find the vector
-  char *ms = G_find_vector2( mapName.toAscii().constData(), mapset.toAscii().constData() ) ;
+  char *ms = G_find_vector2( mapName.toAscii().data(), mapset.toAscii().data() ) ;
 
   if ( ms == NULL )
   {
@@ -1074,7 +1074,7 @@ void QgsGrassProvider::updateMap( int mapId )
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
-  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
+  G__setenv( "MAPSET", map->mapset.toAscii().data() );
 
   if ( closeMap ) Vect_close( map->map );
 
@@ -1345,7 +1345,7 @@ bool QgsGrassProvider::isGrassEditable( void )
     return false;
 
   /* Check if current user is owner of mapset */
-  if ( G__mapset_permissions2( mGisdbase.toAscii().constData(), mLocation.toAscii().constData(), mMapset.toAscii().constData() ) != 1 )
+  if ( G__mapset_permissions2( mGisdbase.toAscii().data(), mLocation.toAscii().data(), mMapset.toAscii().data() ) != 1 )
     return false;
 
   // TODO: check format? (cannot edit OGR layers)
@@ -1423,7 +1423,7 @@ bool QgsGrassProvider::startEdit( void )
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
-  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
+  G__setenv( "MAPSET", map->mapset.toAscii().data() );
 
   Vect_close( map->map );
 
@@ -1499,7 +1499,7 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for build/close ?
-  G__setenv( "MAPSET", map->mapset.toAscii().constData() );
+  G__setenv( "MAPSET", map->mapset.toAscii().data() );
 
   Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
   Vect_build( map->map, stderr );
