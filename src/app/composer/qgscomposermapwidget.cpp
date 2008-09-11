@@ -230,10 +230,10 @@ void QgsComposerMapWidget::updateGuiElements()
 
     //composer map extent
     QgsRect composerMapExtent = mComposerMap->extent();
-    mXMinLineEdit->setText( QString::number( composerMapExtent.xMin() ) );
-    mXMaxLineEdit->setText( QString::number( composerMapExtent.xMax() ) );
-    mYMinLineEdit->setText( QString::number( composerMapExtent.yMin() ) );
-    mYMaxLineEdit->setText( QString::number( composerMapExtent.yMax() ) );
+    mXMinLineEdit->setText( QString::number( composerMapExtent.xMin(), 'f', 3));
+    mXMaxLineEdit->setText( QString::number( composerMapExtent.xMax(), 'f', 3));
+    mYMinLineEdit->setText( QString::number( composerMapExtent.yMin(), 'f', 3));
+    mYMaxLineEdit->setText( QString::number( composerMapExtent.yMax(), 'f', 3));
   }
 }
 
