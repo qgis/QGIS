@@ -375,10 +375,9 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 
   if ( mySelector->exec() )
   {
-    QgsDebugMsg( "------ Global Default Projection Selection Set ----------" );
     //! @todo changes this control name in gui to txtGlobalProjString
     txtGlobalWKT->setText( mySelector->selectedProj4String() );
-    QgsDebugMsg( QString( "------ Global Default Projection now set to ----------\n%1" ).arg( mGlobalCRSID ) );
+    QgsDebugMsg( QString( "------ Global Default Projection Selection set to ----------\n%1" ).arg( txtGlobalWKT->toPlainText() ) );
   }
   else
   {
