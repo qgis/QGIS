@@ -39,7 +39,7 @@ class CORE_EXPORT QgsScaleCalculator
      * @param mapUnits Units of the data on the map. Must match a value from the
      * QGis::units enum (METERS, FEET, DEGREES)
      */
-    QgsScaleCalculator( int dpi = 0,
+    QgsScaleCalculator( double dpi = 0,
                         QGis::units mapUnits = QGis::METERS );
 
     //! Destructor
@@ -49,12 +49,12 @@ class CORE_EXPORT QgsScaleCalculator
      * Set the dpi to be used in scale calculations
      * @param dpi Dots per inch of monitor resolution
      */
-    void setDpi( int dpi );
+    void setDpi( double dpi );
     /**
      * Accessor for dpi used in scale calculations
      * @return int the dpi used for scale calculations.
      */
-    int dpi();
+    double dpi();
 
     /**
      * Set the map units
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsScaleCalculator
   private:
 
     //! dpi member
-    int mDpi;
+    double mDpi;
 
     //! map unit member
     QGis::units mMapUnits;

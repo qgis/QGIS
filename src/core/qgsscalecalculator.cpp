@@ -23,18 +23,18 @@
 #include "qgsrect.h"
 #include "qgsscalecalculator.h"
 
-QgsScaleCalculator::QgsScaleCalculator( int dpi, QGis::units mapUnits )
+QgsScaleCalculator::QgsScaleCalculator( double dpi, QGis::units mapUnits )
     : mDpi( dpi ), mMapUnits( mapUnits )
 {}
 
 QgsScaleCalculator::~QgsScaleCalculator()
 {}
 
-void QgsScaleCalculator::setDpi( int dpi )
+void QgsScaleCalculator::setDpi( double dpi )
 {
   mDpi = dpi;
 }
-int QgsScaleCalculator::dpi()
+double QgsScaleCalculator::dpi()
 {
   return mDpi;
 }
