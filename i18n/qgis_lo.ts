@@ -20,6 +20,131 @@
     </message>
 </context>
 <context>
+    <name>CoordinateCapture</name>
+    <message>
+        <source>Coordinate Capture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click on the map to view coordinates and capture to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Coordinate Capture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to select the CRS to use for coordinate display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate in your selected CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate in map canvas coordinate reference system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy to clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to enable mouse tracking. Click the canvas to stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CoordinateCaptureGui</name>
+    <message>
+        <source>Welcome to your automatically generated plugin!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Documentation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You really need to read the QGIS API Documentation now at:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In particular look at the following classes:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>What are all the files in my generated plugin directory for?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This file contains the documentation you are reading now!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Getting developer help:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have fun and thank you for choosing QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CoordinateCaptureGuiBase</name>
+    <message>
+        <source>QGIS Plugin Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin Template</source>
+        <translation type="unfinished">ຕົວຢາງໂປຣກຣາມເສີມ</translation>
+    </message>
+</context>
+<context>
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
@@ -133,6 +258,70 @@
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not establish connection to: &apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open OGR file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR File Data Source (*.*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input OGR dataset is missing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input OGR layer name is missing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target OGR format not selected!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output OGR dataset is missing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output OGR layer name is missing!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully translated layer &apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to translate layer &apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully connected to: &apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save to</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui</name>
@@ -242,6 +431,64 @@
     <message>
         <source> from map canvas</source>
         <translation type="unfinished">ຈາກພາບເເຜນທີ່</translation>
+    </message>
+</context>
+<context>
+    <name>OgrConverterGuiBase</name>
+    <message>
+        <source>OGR Layer Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished">ແຫຼ່ງຂອງມູນ</translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished">ຮູບແບບ</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory</source>
+        <translation type="unfinished">ໄດເຣກທໍຣີ</translation>
+    </message>
+    <message>
+        <source>Remote source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">ລະດັບຊັ້ນ</translation>
+    </message>
+    <message>
+        <source>Target</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OgrPlugin</name>
+    <message>
+        <source>Run OGR Layer Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of the what the plugin does</source>
+        <translation type="unfinished">ປ່ຽນແທນອັນນີ້ດ້ວຍລາຍການສັ້ນໆຂອງສິ່ງທີ່ໂປຼກຼາມເສີມ (Plugin) ໄດ້ເຮັດ</translation>
+    </message>
+    <message>
+        <source>OG&amp;R Converter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1197,7 +1444,7 @@ Metadata in GRASS Browser
     </message>
     <message>
         <source>Version 0.001</source>
-        <translation type="obsolete">ລູ້ນ ໐.໐໐໐໐1 {0.001?}</translation>
+        <translation type="unfinished">ລູ້ນ ໐.໐໐໐໐1 {0.001?}</translation>
     </message>
     <message>
         <source>Quick Print</source>
@@ -1247,6 +1494,50 @@ Metadata in GRASS Browser
         <source>An error occured during execution of following code:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
+    </message>
+    <message>
+        <source>Coordinate Capture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capture mouse coordinates in different CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dxf2Shp Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converts from dxf to shp file format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolating...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A plugin for interpolation based on vertices of a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR Layer Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -1288,55 +1579,55 @@ Metadata in GRASS Browser
     </message>
     <message>
         <source>No MapLayer Plugins</source>
-        <translation>ບໍ່ມີໂປຼກຼາມເສີມຂອງລະດັບຊັ້ນແຜ່ນທີ່ (MapLayer)</translation>
+        <translation type="obsolete">ບໍ່ມີໂປຼກຼາມເສີມຂອງລະດັບຊັ້ນແຜ່ນທີ່ (MapLayer)</translation>
     </message>
     <message>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation>ບໍ່ມີໂປຼກຼາມເສີມຂອງລະດັບຊັ້ນແຜ່ນ (MapLayer) ທີ່ຢູ່ໃນ../plugins/maplayer </translation>
+        <translation type="obsolete">ບໍ່ມີໂປຼກຼາມເສີມຂອງລະດັບຊັ້ນແຜ່ນ (MapLayer) ທີ່ຢູ່ໃນ../plugins/maplayer </translation>
     </message>
     <message>
         <source>No Plugins</source>
-        <translation>ບໍ່ມີໂປຼກຼາມເສີມ (Plugins)</translation>
+        <translation type="obsolete">ບໍ່ມີໂປຼກຼາມເສີມ (Plugins)</translation>
     </message>
     <message>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation>ບໍ່ພົບໂປຼກຼາມເສີມ (plugins) ຢູ່ໃນ../plugins ເພື່ອທົດສອບໂປຼກຼາມເສີມ (Plugins)、ໃຫ້ໃຊ້ໂປຼກຼາມ qgis ຈາກ ຕູ້ເກັບແຟ້ມ src</translation>
+        <translation type="obsolete">ບໍ່ພົບໂປຼກຼາມເສີມ (plugins) ຢູ່ໃນ../plugins ເພື່ອທົດສອບໂປຼກຼາມເສີມ (Plugins)、ໃຫ້ໃຊ້ໂປຼກຼາມ qgis ຈາກ ຕູ້ເກັບແຟ້ມ src</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">ຊື່</translation>
+        <translation type="obsolete">ຊື່</translation>
     </message>
     <message>
         <source>Plugin %1 is named %2</source>
-        <translation>ໂປຼກຼາມເສີມ (Plugins) %1 ຖືກໃສ່ຊື່ໄປ່ແລ້ວ %2</translation>
+        <translation type="obsolete">ໂປຼກຼາມເສີມ (Plugins) %1 ຖືກໃສ່ຊື່ໄປ່ແລ້ວ %2</translation>
     </message>
     <message>
         <source>Plugin Information</source>
-        <translation>ຂໍ້ມູນຂອງໂປຼກຼາມເສີມ (Plugins)</translation>
+        <translation type="obsolete">ຂໍ້ມູນຂອງໂປຼກຼາມເສີມ (Plugins)</translation>
     </message>
     <message>
         <source>QGis loaded the following plugin:</source>
-        <translation>QGIS ໄດ້ໂຫຼດໂປຼກຼາມເສີມ (Plugin) ດັ່ງຕໍ່ໄປນີ້:</translation>
+        <translation type="obsolete">QGIS ໄດ້ໂຫຼດໂປຼກຼາມເສີມ (Plugin) ດັ່ງຕໍ່ໄປນີ້:</translation>
     </message>
     <message>
         <source>Name: %1</source>
-        <translation>ຊື່: %1</translation>
+        <translation type="obsolete">ຊື່: %1</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>ລຸ້ນ: %1</translation>
+        <translation type="obsolete">ລຸ້ນ: %1</translation>
     </message>
     <message>
         <source>Description: %1</source>
-        <translation type="unfinished">ລາຍການ: %1</translation>
+        <translation type="obsolete">ລາຍການ: %1</translation>
     </message>
     <message>
         <source>Unable to Load Plugin</source>
-        <translation>ບໍ່ສາມາດໂຫຼດໂປຼກຼາມເສີມ (Plugin)</translation>
+        <translation type="obsolete">ບໍ່ສາມາດໂຫຼດໂປຼກຼາມເສີມ (Plugin)</translation>
     </message>
     <message>
         <source>QGIS was unable to load the plugin from: %1</source>
-        <translation>QGIS ບໍ່ສາມາດໂຫຼດໂປຼກຼາມເສີມ (Plugin) ຈາກ: %1</translation>
+        <translation type="obsolete">QGIS ບໍ່ສາມາດໂຫຼດໂປຼກຼາມເສີມ (Plugin) ຈາກ: %1</translation>
     </message>
     <message>
         <source>There is a new version of QGIS available</source>
@@ -1392,7 +1683,7 @@ Metadata in GRASS Browser
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ໃຫ້ເປັນ</translation>
+        <translation type="obsolete">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ໃຫ້ເປັນ</translation>
     </message>
     <message>
         <source>Extents: </source>
@@ -1480,11 +1771,11 @@ Metadata in GRASS Browser
     </message>
     <message>
         <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation>ຮູບນີ້ສະເເດງໃຫ້ເຫັນວ່າ ຄາດຫມາຍການບິນທໍາງານ ຫລື ບໍ່. ຕິກໃສ່ ຮູບເພື່ອເຂົ້າໄປຫາ ໂຄງການ ຄູນລັກສະນະ ເພື່ອຈະເເປງພຶດຕິກໍາຂອງມັນ.</translation>
+        <translation type="obsolete">ຮູບນີ້ສະເເດງໃຫ້ເຫັນວ່າ ຄາດຫມາຍການບິນທໍາງານ ຫລື ບໍ່. ຕິກໃສ່ ຮູບເພື່ອເຂົ້າໄປຫາ ໂຄງການ ຄູນລັກສະນະ ເພື່ອຈະເເປງພຶດຕິກໍາຂອງມັນ.</translation>
     </message>
     <message>
         <source>Projection status - Click to open projection dialog</source>
-        <translation type="unfinished">ສະຖານະຂອງຫນ້າວຽກ-ກົດເມົາສ໌ເພື່ອເປີດກອງບັນຍາຍຫນ້າວຽກ</translation>
+        <translation type="obsolete">ສະຖານະຂອງຫນ້າວຽກ-ກົດເມົາສ໌ເພື່ອເປີດກອງບັນຍາຍຫນ້າວຽກ</translation>
     </message>
     <message>
         <source>Map Composer for creating map layouts</source>
@@ -1770,7 +2061,7 @@ Save Project under a new name
     </message>
     <message>
         <source>&amp;Print...</source>
-        <translation>&amp;ພີມ...</translation>
+        <translation type="obsolete">&amp;ພີມ...</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -1827,7 +2118,7 @@ Print</comment>
     </message>
     <message>
         <source>Print</source>
-        <translation type="unfinished">ພີມ</translation>
+        <translation type="obsolete">ພີມ</translation>
     </message>
     <message>
         <source>Save as Image...</source>
@@ -1939,7 +2230,7 @@ Exit QGIS
     </message>
     <message>
         <source>Add a Vector Layer...</source>
-        <translation type="unfinished">ເພີ້ມລະດັບຊັ້ນທີ່ມີຕົວເລກບອກຄະຫນາດແລະທິດທາງໃດຫນື່ງ</translation>
+        <translation type="obsolete">ເພີ້ມລະດັບຊັ້ນທີ່ມີຕົວເລກບອກຄະຫນາດແລະທິດທາງໃດຫນື່ງ</translation>
     </message>
     <message>
         <source>V</source>
@@ -2000,7 +2291,7 @@ Add a Vector Layer</comment>
     </message>
     <message>
         <source>Add a Raster Layer...</source>
-        <translation>ເພີ້ມລະດັບຊັ້ນຂອງ Raster</translation>
+        <translation type="obsolete">ເພີ້ມລະດັບຊັ້ນຂອງ Raster</translation>
     </message>
     <message>
         <source>R</source>
@@ -2061,7 +2352,7 @@ Add a Raster Layer</comment>
     </message>
     <message>
         <source>Add a PostGIS Layer...</source>
-        <translation>ເພີ້ມລະດັບຊັ້ນຂອງໂປຼກຼາມ PostGIS</translation>
+        <translation type="obsolete">ເພີ້ມລະດັບຊັ້ນຂອງໂປຼກຼາມ PostGIS</translation>
     </message>
     <message>
         <source>D</source>
@@ -2219,7 +2510,7 @@ Remove a Layer
     </message>
     <message>
         <source>Add All To Overview</source>
-        <translation type="unfinished">ເພີ້ມທັງຫມົດໄປໃສ່ພາບໂດຍສະຫລູບ</translation>
+        <translation type="obsolete">ເພີ້ມທັງຫມົດໄປໃສ່ພາບໂດຍສະຫລູບ</translation>
     </message>
     <message>
         <source>+</source>
@@ -2484,11 +2775,11 @@ Hide all layers</comment>
     </message>
     <message>
         <source>Custom Projection...</source>
-        <translation type="unfinished">ແກ້ໄຂຫນ້າວຽກຕາມຄວາມຕ້ອງການຂອງຕົນເອງ</translation>
+        <translation type="obsolete">ແກ້ໄຂຫນ້າວຽກຕາມຄວາມຕ້ອງການຂອງຕົນເອງ</translation>
     </message>
     <message>
         <source>Manage custom projections</source>
-        <translation type="unfinished">ຈັດການຫນ້າວຽກຕາມຄວາມຕ້ອງການຂອງຕົນເອງ</translation>
+        <translation type="obsolete">ຈັດການຫນ້າວຽກຕາມຄວາມຕ້ອງການຂອງຕົນເອງ</translation>
     </message>
     <message>
         <source>Help Contents</source>
@@ -2553,7 +2844,7 @@ Help Documentation</comment>
     </message>
     <message>
         <source>Qgis Home Page</source>
-        <translation>ໂຮມເພດ (Home Page) ຂອງ Qgis</translation>
+        <translation type="obsolete">ໂຮມເພດ (Home Page) ຂອງ Qgis</translation>
     </message>
     <message>
         <source>Ctrl+H</source>
@@ -2715,7 +3006,7 @@ Zoom to Full Extents
     </message>
     <message>
         <source>Zoom To Selection</source>
-        <translation>ຊຸມໃສ່ຈຸດທີ່ເລື້ອກໄວ້ແລ້ວ</translation>
+        <translation type="obsolete">ຊຸມໃສ່ຈຸດທີ່ເລື້ອກໄວ້ແລ້ວ</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
@@ -2747,7 +3038,7 @@ Zoom to selection
     </message>
     <message>
         <source>Zoom to selection</source>
-        <translation>ຊຸມ (Zoom) ໃສ່ຈຸດທີ່ເລື້ອກໄວ້ແລ້ວ</translation>
+        <translation type="obsolete">ຊຸມ (Zoom) ໃສ່ຈຸດທີ່ເລື້ອກໄວ້ແລ້ວ</translation>
     </message>
     <message>
         <source>Pan Map</source>
@@ -2767,7 +3058,7 @@ Zoom to selection
     </message>
     <message>
         <source>Zoom To Layer</source>
-        <translation>ຊຸມ (Zoom) ໄປຫາລະດັບຊັ້ນ</translation>
+        <translation type="obsolete">ຊຸມ (Zoom) ໄປຫາລະດັບຊັ້ນ</translation>
     </message>
     <message>
         <source>Zoom to Layer</source>
@@ -2792,7 +3083,7 @@ Zoom to selection
     </message>
     <message>
         <source>Open Table</source>
-        <translation type="unfinished">ເປີດການນຳໃຊ້ຕາຕະລາງ</translation>
+        <translation type="obsolete">ເປີດການນຳໃຊ້ຕາຕະລາງ</translation>
     </message>
     <message>
         <source>Measure Line </source>
@@ -3007,11 +3298,11 @@ Add Web Mapping Server Layer</comment>
     </message>
     <message>
         <source>Add Web Mapping Server Layer</source>
-        <translation type="unfinished">ເພີ້ມລະດັບຊັ້ນເວບໄຊ້ແຜ່ນທີ່ໃສ່</translation>
+        <translation type="obsolete">ເພີ້ມລະດັບຊັ້ນເວບໄຊ້ແຜ່ນທີ່ໃສ່</translation>
     </message>
     <message>
         <source>In Overview</source>
-        <translation type="unfinished">ພາບໂດຍສະຫຼຸບ</translation>
+        <translation type="obsolete">ພາບໂດຍສະຫຼຸບ</translation>
     </message>
     <message>
         <source>O</source>
@@ -3024,7 +3315,7 @@ Add Web Mapping Server Layer</comment>
     </message>
     <message>
         <source>Plugin Manager...</source>
-        <translation>ຕົຍຈັດການໂປຼກຼາມເສີມ (plugin)</translation>
+        <translation type="obsolete">ຕົຍຈັດການໂປຼກຼາມເສີມ (plugin)</translation>
     </message>
     <message>
         <source>Open the plugin manager</source>
@@ -3195,7 +3486,7 @@ Capture Polygons
     </message>
     <message>
         <source>Choose a filename to save the QGIS project file as</source>
-        <translation>ຈົ່ງເລືຶອກຊື່ເພື່ອຈັດເກັບແຟ້ມ QGIS</translation>
+        <translation type="obsolete">ຈົ່ງເລືຶອກຊື່ເພື່ອຈັດເກັບແຟ້ມ QGIS</translation>
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
@@ -3227,7 +3518,7 @@ Capture Polygons
     </message>
     <message>
         <source>Clipboard contents set to: </source>
-        <translation>ຊິ່ງທີ່ຢູ່ໃນໜ່ວຍຄວາມຈຳຖືກຕັ້ງໄປຫາ.</translation>
+        <translation type="obsolete">ຊິ່ງທີ່ຢູ່ໃນໜ່ວຍຄວາມຈຳຖືກຕັ້ງໄປຫາ.</translation>
     </message>
     <message>
         <source> is not a valid or recognized raster data source</source>
@@ -3270,11 +3561,11 @@ Help Documentation (Mac)
     </message>
     <message>
         <source>Show most toolbars</source>
-        <translation type="unfinished">ສະແດງເຄື່ອງມືໃຊ້ງານທັງຫມົດ</translation>
+        <translation type="obsolete">ສະແດງເຄື່ອງມືໃຊ້ງານທັງຫມົດ</translation>
     </message>
     <message>
         <source>Hide most toolbars</source>
-        <translation type="unfinished">ເຊື່ອງເຄື່ອງມືໃຊ້ງານທັງຫມົດ</translation>
+        <translation type="obsolete">ເຊື່ອງເຄື່ອງມືໃຊ້ງານທັງຫມົດ</translation>
     </message>
     <message>
         <source>Cut Features</source>
@@ -3384,7 +3675,7 @@ Compiled against Qt </source>
     <message>
         <source>T</source>
         <comment>Show most toolbars</comment>
-        <translation>T</translation>
+        <translation type="obsolete">T</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -3449,7 +3740,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Python console</source>
-        <translation>ແຜງຄວບຄຸມ (ຈໍ) Python</translation>
+        <translation type="obsolete">ແຜງຄວບຄຸມ (ຈໍ) Python</translation>
     </message>
     <message>
         <source>Python error</source>
@@ -3497,7 +3788,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Toolbar Visibility...</source>
-        <translation>ທ່ອນຄຳສັ່ງເບີ່ງເຫັນ.</translation>
+        <translation type="obsolete">ທ່ອນຄຳສັ່ງເບີ່ງເຫັນ.</translation>
     </message>
     <message>
         <source>Scale </source>
@@ -3537,17 +3828,17 @@ Hide most toolbars</comment>
     <message>
         <source>Ctrl+A</source>
         <comment>Save Project under a new name</comment>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <comment>Print</comment>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation type="obsolete">Ctrl+P</translation>
     </message>
     <message>
         <source>Ctrl+I</source>
         <comment>Save map as image</comment>
-        <translation type="unfinished">Ctrl+l</translation>
+        <translation type="obsolete">Ctrl+l</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -3588,10 +3879,6 @@ Hide most toolbars</comment>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
         <translation type="unfinished">-</translation>
-    </message>
-    <message>
-        <source>Toggle full screen mode</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl-F</source>
@@ -3650,22 +3937,22 @@ Hide most toolbars</comment>
     <message>
         <source>Ctrl+F</source>
         <comment>Zoom to selection</comment>
-        <translation type="unfinished">ctrl+F</translation>
+        <translation type="obsolete">ctrl+F</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
         <comment>Hide most toolbars</comment>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
@@ -3675,7 +3962,7 @@ Hide most toolbars</comment>
     <message>
         <source>W</source>
         <comment>Add Web Mapping Server Layer</comment>
-        <translation type="unfinished">W</translation>
+        <translation type="obsolete">W</translation>
     </message>
     <message>
         <source>/</source>
@@ -3727,7 +4014,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
@@ -3744,30 +4031,6 @@ Hide most toolbars</comment>
     <message>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release candidate includes over 120 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Imrovements to digitising capabilities.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Supporting default and defined styles (.qml) files for file based vector layers. With styles you can save the symbolisation and other settings associated with a vector layer and they will be loaded whenever you load that layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improved support for transparency and contrast stretching in raster layers. Support for color ramps in raster layers. Support for non-north up rasters. Many other raster improvements &apos;under the hood&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Updated icons for improved visual consistancy.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Support for migration of old projects to work in newer QGIS versions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3819,20 +4082,345 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <source>Stop map rendering</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Multiple Instances of QgisApp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiple instances of Quantum GIS application object detected.
+Please contact the developers.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift+Ctrl+S</source>
+        <comment>Save Project under a new name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Print Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <comment>Print Composer</comment>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Print Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo the last operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Cut the current selection&apos;s contents to the clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy the current selection&apos;s contents to the clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste the clipboard&apos;s contents into the current selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M</source>
+        <comment>Measure a Line</comment>
+        <translation type="unfinished">M</translation>
+    </message>
+    <message>
+        <source>J</source>
+        <comment>Measure an Area</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <comment>Zoom to Selection</comment>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Zoom Actual Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to Actual Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Vector Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Raster Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add PostGIS Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>W</source>
+        <comment>Add a Web Mapping Server Layer</comment>
+        <translation type="unfinished">W</translation>
+    </message>
+    <message>
+        <source>Add a Web Mapping Server Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Attribute Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as Shapefile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the current layer as a shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Selection as Shapefile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save the selection as a shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set properties of the current layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add All to Overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage Plugins...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle Full Screen Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom CRS...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manage custom coordinate reference systems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
+        <comment>Minimize Window</comment>
+        <translation type="unfinished">Ctrl+M</translation>
+    </message>
+    <message>
+        <source>Minimizes the active window to the dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom</source>
+        <translation type="unfinished">Zoom</translation>
+    </message>
+    <message>
+        <source>Toggles between a predefined size and the window size set by the user</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring All to Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring forward all open windows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toolbars</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle extents and mouse position display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS status - Click to open coordinate reference system dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Revision of all dialogs for user interface consistancy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to unique value renderer vector dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol previews when defining vector classes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Separation of python support into its own library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List view and filter for GRASS toolbox to find tools more quickly</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List view and filter for Plugin Manager to find plugins more easily</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updated Spatial Reference System definitions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QML Style support for rasters and database layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the QGIS project file as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start editing failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation type="unfinished">ຢຸດການແກ້ໄຂ</translation>
+    </message>
+    <message>
+        <source>Do you want to save the changes to layer %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit changes to layer %1
+
+Errors:  %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problems during roll back</source>
+        <translation type="unfinished">ມີປັນຫາລະຫວ່າງດຶງຂໍ້ມູນກັບມາເບິ່ງ</translation>
+    </message>
+    <message>
+        <source>Python Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
+%1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map coordinates for the current view extents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maptips require an active layer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
     <message>
         <source>MainWindow</source>
-        <translation>ວີນໂດ້ຫຼັກ (MainWindow)</translation>
+        <translation type="obsolete">ວີນໂດ້ຫຼັກ (MainWindow)</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
+        <translation type="obsolete">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
     </message>
     <message>
         <source>Map View</source>
-        <translation type="unfinished">ຮູບແຜນທີ່</translation>
+        <translation type="obsolete">ຮູບແຜນທີ່</translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4178,6 +4766,14 @@ File dialog window title
         <source> (txt)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Select a file</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeDialogBase</name>
@@ -4221,7 +4817,7 @@ File dialog window title
     </message>
     <message>
         <source>Start editing</source>
-        <translation type="unfinished">ເລີ້ມການແກ້ໄຂ້</translation>
+        <translation type="obsolete">ເລີ້ມການແກ້ໄຂ້</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -4233,11 +4829,11 @@ File dialog window title
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -4273,11 +4869,11 @@ File dialog window title
     </message>
     <message>
         <source>Stop editin&amp;g</source>
-        <translation>&amp;ຢຸດແກ້ໄຂ້</translation>
+        <translation type="obsolete">&amp;ຢຸດແກ້ໄຂ້</translation>
     </message>
     <message>
         <source>Alt+G</source>
-        <translation type="unfinished">Alt+G</translation>
+        <translation type="obsolete">Alt+G</translation>
     </message>
     <message>
         <source>Search for:</source>
@@ -4305,15 +4901,11 @@ File dialog window title
     </message>
     <message>
         <source>New column</source>
-        <translation>ຖັນໃຫມ່</translation>
+        <translation type="obsolete">ຖັນໃຫມ່</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">ລືບຖັນ</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-F)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ລືບຖັນ</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
@@ -4321,10 +4913,26 @@ File dialog window title
     </message>
     <message>
         <source>Ctrl+F</source>
-        <translation type="unfinished">ctrl+F</translation>
+        <translation type="obsolete">ctrl+F</translation>
     </message>
     <message>
         <source>Search for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-J)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4369,7 +4977,7 @@ File dialog window title
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished">ຊື່ຄັດກັນ</translation>
+        <translation type="obsolete">ຊື່ຄັດກັນ</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table</source>
@@ -4377,26 +4985,114 @@ File dialog window title
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>ຢຸດການແກ້ໄຂ</translation>
+        <translation type="obsolete">ຢຸດການແກ້ໄຂ</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">ທ່ານຕ້ອງການຈັດເກັບສີ່ງທີ່ໄດ້ແກ້ໄຂໄປບໍ່?</translation>
+        <translation type="obsolete">ທ່ານຕ້ອງການຈັດເກັບສີ່ງທີ່ໄດ້ແກ້ໄຂໄປບໍ່?</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>ຜິດພາດ</translation>
+        <translation type="obsolete">ຜິດພາດ</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
         <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳສີ່ງທີ່ໄດ້ແກ້ໄຂໄປ</translation>
     </message>
     <message>
-        <source>The attribute could not be inserted. The name already exists in the table.</source>
+        <source>Attribute table - </source>
+        <translation type="unfinished">ຕາຕະລາງຄຸນລັກສະນະ- </translation>
+    </message>
+    <message>
+        <source>QGIS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not commit changes - changes are still pending</source>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">ປິດ</translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer</source>
+        <translation type="unfinished">ລະດັບຊັ້ນ</translation>
+    </message>
+    <message>
+        <source>Zoom to Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Toggle Editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4491,11 +5187,11 @@ File dialog window title
     <name>QgsComposer</name>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="unfinished">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ໃຫ້ເປັນ</translation>
+        <translation type="obsolete">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ໃຫ້ເປັນ</translation>
     </message>
     <message>
         <source>Choose a filename to save the map as</source>
-        <translation type="unfinished">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ນື່ງໃຫ້ເປັນ</translation>
+        <translation type="obsolete">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບຮູບແຜນທີ່ນື່ງໃຫ້ເປັນ</translation>
     </message>
     <message>
         <source> for read/write</source>
@@ -4585,6 +5281,134 @@ File dialog window title
         <source>SVG Format</source>
         <translation>ຮູບແບບຂອງ SVG</translation>
     </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">ປິດ</translation>
+    </message>
+    <message>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Undo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cu&amp;t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Paste</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the map image as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save the map as</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -4602,7 +5426,7 @@ File dialog window title
     </message>
     <message>
         <source>&amp;Open Template ...</source>
-        <translation>ເ&amp;ປີດເເບບຟອມ...</translation>
+        <translation type="obsolete">ເ&amp;ປີດເເບບຟອມ...</translation>
     </message>
     <message>
         <source>Save Template &amp;As...</source>
@@ -4630,11 +5454,11 @@ File dialog window title
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished">ສົ່ງອອກເປັນແຟ້ມຮູບ</translation>
+        <translation type="obsolete">ສົ່ງອອກເປັນແຟ້ມຮູບ</translation>
     </message>
     <message>
         <source>Export as SVG</source>
-        <translation>ສົ່ງອອກເປັນຮູບ SVG</translation>
+        <translation type="obsolete">ສົ່ງອອກເປັນຮູບ SVG</translation>
     </message>
     <message>
         <source>Add new scalebar</source>
@@ -4650,7 +5474,7 @@ File dialog window title
     </message>
     <message>
         <source>Zoom All</source>
-        <translation>ຊຸມ (Zoom) ເບີ່ງທັ້ງຫມົດ</translation>
+        <translation type="obsolete">ຊຸມ (Zoom) ເບີ່ງທັ້ງຫມົດ</translation>
     </message>
     <message>
         <source>Zoom In</source>
@@ -4672,9 +5496,99 @@ File dialog window title
         <source>Help</source>
         <translation type="unfinished">ຊ່ວຍເຫຼືອ</translation>
     </message>
+    <message>
+        <source>&amp;Open Template...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom Full</source>
+        <translation type="unfinished">ຊຸມ (Zoom Full) ເຕັມຫນ້າຈໍ</translation>
+    </message>
+    <message>
+        <source>Add Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Vector Legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export as Image...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export as SVG...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Scalebar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerItemWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer item properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Opacity:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outline width: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation type="unfinished">ກອບຮູບ</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelBase</name>
+    <message>
+        <source>Label Options</source>
+        <translation type="obsolete">ທາງເລື້ອກໃສ່ຊື່</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="obsolete">ແບບຕົວຫນັງສື</translation>
+    </message>
+    <message>
+        <source>Box</source>
+        <translation type="obsolete">ກອງ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerLabelWidgetBase</name>
     <message>
         <source>Label Options</source>
         <translation type="unfinished">ທາງເລື້ອກໃສ່ຊື່</translation>
@@ -4684,58 +5598,160 @@ File dialog window title
         <translation type="unfinished">ແບບຕົວຫນັງສື</translation>
     </message>
     <message>
-        <source>Box</source>
-        <translation type="unfinished">ກອງ</translation>
+        <source>Margin (mm):</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerLegendItemDialogBase</name>
+    <message>
+        <source>Legend item properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item text:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerLegendWidgetBase</name>
+    <message>
+        <source>Barscale Options</source>
+        <translation type="unfinished">ທາງເລື້ອກຂອງທ່ອນມາດຕາສ່ວນ</translation>
+    </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished">ທົ່ວໄປ</translation>
+    </message>
+    <message>
+        <source>Title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Item...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol width: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer space: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol space:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon label space:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box space:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>update all</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMap</name>
     <message>
         <source>Extent (calculate scale)</source>
-        <translation type="unfinished">ຂອບເຂດ (ຄິດໄລ່ມາດຕາສ່ວນ)</translation>
+        <translation type="obsolete">ຂອບເຂດ (ຄິດໄລ່ມາດຕາສ່ວນ)</translation>
     </message>
     <message>
         <source>Scale (calculate extent)</source>
-        <translation>ມາດຕາສ່ວນ (ຄິດໄລຂອບເຂດ)</translation>
+        <translation type="obsolete">ມາດຕາສ່ວນ (ຄິດໄລຂອບເຂດ)</translation>
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">ແຜນທີ່ %1</translation>
+        <translation type="obsolete">ແຜນທີ່ %1</translation>
     </message>
     <message>
         <source>Cache</source>
-        <translation type="unfinished">ໜ່ວຍຄວາມຈຳຊົວຄາວ</translation>
+        <translation type="obsolete">ໜ່ວຍຄວາມຈຳຊົວຄາວ</translation>
     </message>
     <message>
         <source>Render</source>
-        <translation>ປະສົມປະສານ</translation>
+        <translation type="obsolete">ປະສົມປະສານ</translation>
     </message>
     <message>
         <source>Rectangle</source>
-        <translation type="unfinished">ຮູບສີ່ຫຼ່ຽມມຸມສາກ</translation>
+        <translation type="obsolete">ຮູບສີ່ຫຼ່ຽມມຸມສາກ</translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation type="unfinished">ແຜນທີ່</translation>
+    </message>
+    <message>
+        <source>Map will be printed here</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMapBase</name>
     <message>
         <source>Map options</source>
-        <translation type="unfinished">ທາງເລື້ອກໃນການສ້າງແຜນທີ່</translation>
+        <translation type="obsolete">ທາງເລື້ອກໃນການສ້າງແຜນທີ່</translation>
     </message>
     <message>
         <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation>&lt;b&gt;ແຜນທີ່&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;ແຜນທີ່&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Set</source>
-        <translation>ວາງ</translation>
+        <translation type="obsolete">ວາງ</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
+        <translation type="obsolete">ຄວາມກ້ວາງ</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">ຄວາມສູງ</translation>
+        <translation type="obsolete">ຄວາມສູງ</translation>
     </message>
     <message>
         <source>Scale</source>
@@ -4747,42 +5763,108 @@ File dialog window title
     </message>
     <message>
         <source>Set Extent</source>
-        <translation type="unfinished">ຕັ້ງຂອບເຂດ</translation>
+        <translation type="obsolete">ຕັ້ງຂອບເຂດ</translation>
     </message>
     <message>
         <source>Set map extent to current extent in QGIS map canvas</source>
-        <translation>ຕັ້ງຂອບເຂດຂອງແຜນທີ່ໃສ່ຂອບເຂດປະຈຸບັນໃນພື້ນແຜນທີ່ QGIS</translation>
+        <translation type="obsolete">ຕັ້ງຂອບເຂດຂອງແຜນທີ່ໃສ່ຂອບເຂດປະຈຸບັນໃນພື້ນແຜນທີ່ QGIS</translation>
     </message>
     <message>
         <source>Line width scale</source>
-        <translation type="unfinished">ມາດຕາສ່ວນຄວາມກ້ວາງຂອງເສັ້ນ</translation>
+        <translation type="obsolete">ມາດຕາສ່ວນຄວາມກ້ວາງຂອງເສັ້ນ</translation>
     </message>
     <message>
         <source>Width of one unit in millimeters</source>
-        <translation type="unfinished">ຄວາມກ້ວາງຂອງນື່ງຫົວໜ່ວຍເປັນມິລີແມັດ</translation>
+        <translation type="obsolete">ຄວາມກ້ວາງຂອງນື່ງຫົວໜ່ວຍເປັນມິລີແມັດ</translation>
     </message>
     <message>
         <source>Symbol scale</source>
-        <translation type="unfinished">ເຄື່ອງໝາຍຂອງມາດຕາສ່ວນ</translation>
+        <translation type="obsolete">ເຄື່ອງໝາຍຂອງມາດຕາສ່ວນ</translation>
     </message>
     <message>
         <source>Font size scale</source>
-        <translation type="unfinished">ມາດຕາສ່ວນຂອງຄະໜາດແບບຕົວໜັງສື</translation>
+        <translation type="obsolete">ມາດຕາສ່ວນຂອງຄະໜາດແບບຕົວໜັງສື</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished">ກອບຮູບ</translation>
+        <translation type="obsolete">ກອບຮູບ</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">ພາບກ່ອນຈັດພີມ</translation>
+        <translation type="obsolete">ພາບກ່ອນຈັດພີມ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerMapWidget</name>
+    <message>
+        <source>Cache</source>
+        <translation type="unfinished">ໜ່ວຍຄວາມຈຳຊົວຄາວ</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished">ຮູບສີ່ຫຼ່ຽມມຸມສາກ</translation>
+    </message>
+    <message>
+        <source>Render</source>
+        <translation type="unfinished">ປະສົມປະສານ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerMapWidgetBase</name>
+    <message>
+        <source>Map options</source>
+        <translation type="unfinished">ທາງເລື້ອກໃນການສ້າງແຜນທີ່</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Map&lt;/b&gt;</source>
+        <translation type="unfinished">&lt;b&gt;ແຜນທີ່&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">ຄວາມສູງ</translation>
+    </message>
+    <message>
+        <source>Scale:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>1:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Scale:</source>
+        <source>Map extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>set to map canvas extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update preview</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4790,26 +5872,26 @@ File dialog window title
     <name>QgsComposerPicture</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">ເຕືອນ</translation>
+        <translation type="obsolete">ເຕືອນ</translation>
     </message>
     <message>
         <source>Cannot load picture.</source>
-        <translation type="unfinished">ບໍ່ສາມາດໂຫຼດຮູບ</translation>
+        <translation type="obsolete">ບໍ່ສາມາດໂຫຼດຮູບ</translation>
     </message>
     <message>
         <source>Choose a file</source>
-        <translation type="unfinished">ເລື້ອກແຟ້ມ</translation>
+        <translation type="obsolete">ເລື້ອກແຟ້ມ</translation>
     </message>
     <message>
         <source>Pictures (</source>
-        <translation>ຮູບຕ່າງໆ (</translation>
+        <translation type="obsolete">ຮູບຕ່າງໆ (</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerPictureBase</name>
     <message>
         <source>Picture Options</source>
-        <translation>ທາງເລື້ອກຂອງຮູບ</translation>
+        <translation type="obsolete">ທາງເລື້ອກຂອງຮູບ</translation>
     </message>
     <message>
         <source>Picture</source>
@@ -4821,22 +5903,165 @@ File dialog window title
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished">ກອບຮູບ</translation>
+        <translation type="obsolete">ກອບຮູບ</translation>
     </message>
     <message>
         <source>Angle</source>
-        <translation type="unfinished">ມູມ</translation>
+        <translation type="obsolete">ມູມ</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
+        <translation type="obsolete">ຄວາມກ້ວາງ</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">ຄວາມສູງ</translation>
+        <translation type="obsolete">ຄວາມສູງ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerPictureWidget</name>
+    <message>
+        <source>Select svg or image file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerPictureWidgetBase</name>
+    <message>
+        <source>Picture Options</source>
+        <translation type="unfinished">ທາງເລື້ອກຂອງຮູບ</translation>
     </message>
     <message>
-        <source>Browse</source>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width:</source>
+        <translation type="unfinished">ຄວາມກ້ວາງ:</translation>
+    </message>
+    <message>
+        <source>Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerScaleBar</name>
+    <message>
+        <source>Single Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numeric</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerScaleBarWidget</name>
+    <message>
+        <source>Single Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Double Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Ticks Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numeric</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsComposerScaleBarWidgetBase</name>
+    <message>
+        <source>Barscale Options</source>
+        <translation type="unfinished">ທາງເລື້ອກຂອງທ່ອນມາດຕາສ່ວນ</translation>
+    </message>
+    <message>
+        <source>Segment size (map units):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units per bar unit:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of segments:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Segments left:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height (mm):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label space:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box space:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unit label:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4844,35 +6069,35 @@ File dialog window title
     <name>QgsComposerScalebarBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation>ທາງເລື້ອກຂອງທ່ອນມາດຕາສ່ວນ</translation>
+        <translation type="obsolete">ທາງເລື້ອກຂອງທ່ອນມາດຕາສ່ວນ</translation>
     </message>
     <message>
         <source>Segment size</source>
-        <translation>ຄະໜາດຂອງທ່ອນ</translation>
+        <translation type="obsolete">ຄະໜາດຂອງທ່ອນ</translation>
     </message>
     <message>
         <source>Number of segments</source>
-        <translation>ຈຳນວນຂອງຄະໜາດຫລາຍທ່ອນ</translation>
+        <translation type="obsolete">ຈຳນວນຂອງຄະໜາດຫລາຍທ່ອນ</translation>
     </message>
     <message>
         <source>Map units per scalebar unit</source>
-        <translation>ຫົວໜ່ວຍແຜນທີ່ຕໍ່ຫົວໜ່ວຍທ່ອນມາດຕາສ່ວນ</translation>
+        <translation type="obsolete">ຫົວໜ່ວຍແຜນທີ່ຕໍ່ຫົວໜ່ວຍທ່ອນມາດຕາສ່ວນ</translation>
     </message>
     <message>
         <source>Unit label</source>
-        <translation type="unfinished">ຊື່ຫົວໜ່ວຍ</translation>
+        <translation type="obsolete">ຊື່ຫົວໜ່ວຍ</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">ແຜນທີ່</translation>
+        <translation type="obsolete">ແຜນທີ່</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">ແບບຕົວຫນັງສື</translation>
+        <translation type="obsolete">ແບບຕົວຫນັງສື</translation>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">ຄວາມກ້ວາງຂອງເສັ້ນ</translation>
+        <translation type="obsolete">ຄວາມກ້ວາງຂອງເສັ້ນ</translation>
     </message>
 </context>
 <context>
@@ -4887,23 +6112,23 @@ File dialog window title
     </message>
     <message>
         <source>Combine selected layers</source>
-        <translation type="unfinished">ລວມລະດັບຊັ້ນທີ່ຖືກເລື້ອກໄວ້ແລ້ວ</translation>
+        <translation type="obsolete">ລວມລະດັບຊັ້ນທີ່ຖືກເລື້ອກໄວ້ແລ້ວ</translation>
     </message>
     <message>
         <source>Cache</source>
-        <translation type="unfinished">ໜ່ວຍຄວາມຈຳຊົວຄາວ</translation>
+        <translation type="obsolete">ໜ່ວຍຄວາມຈຳຊົວຄາວ</translation>
     </message>
     <message>
         <source>Render</source>
-        <translation>ປະສົມປະສານ</translation>
+        <translation type="obsolete">ປະສົມປະສານ</translation>
     </message>
     <message>
         <source>Rectangle</source>
-        <translation type="unfinished">ຮູບສີ່ຫຼ່ຽມມຸມສາກ</translation>
+        <translation type="obsolete">ຮູບສີ່ຫຼ່ຽມມຸມສາກ</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
+        <translation type="obsolete">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
     </message>
 </context>
 <context>
@@ -4951,6 +6176,142 @@ File dialog window title
 </context>
 <context>
     <name>QgsComposition</name>
+    <message>
+        <source>Custom</source>
+        <translation type="obsolete">ການຈັດການຫຼືຕັ້ງຄ່າຕາມຄວາມມັກ</translation>
+    </message>
+    <message>
+        <source>A5 (148x210 mm)</source>
+        <translation type="obsolete">A5 (148x210 mm)</translation>
+    </message>
+    <message>
+        <source>A4 (210x297 mm)</source>
+        <translation type="obsolete">A4 (210x297 mm)</translation>
+    </message>
+    <message>
+        <source>A3 (297x420 mm)</source>
+        <translation type="obsolete">A3 (297x420 mm)</translation>
+    </message>
+    <message>
+        <source>A2 (420x594 mm)</source>
+        <translation type="obsolete">A2 (420x594 mm)</translation>
+    </message>
+    <message>
+        <source>A1 (594x841 mm)</source>
+        <translation type="obsolete">A1 (594x841 mm)</translation>
+    </message>
+    <message>
+        <source>A0 (841x1189 mm)</source>
+        <translation type="obsolete">A0 (841x1189 mm)</translation>
+    </message>
+    <message>
+        <source>B5 (176 x 250 mm)</source>
+        <translation type="obsolete">B5 (176 x 250 mm)</translation>
+    </message>
+    <message>
+        <source>B4 (250 x 353 mm)</source>
+        <translation type="obsolete">B4 (250 x 353 mm)</translation>
+    </message>
+    <message>
+        <source>B3 (353 x 500 mm)</source>
+        <translation type="obsolete">B3 (353 x 500 mm)</translation>
+    </message>
+    <message>
+        <source>B2 (500 x 707 mm)</source>
+        <translation type="obsolete">B2 (500 x 707 mm)</translation>
+    </message>
+    <message>
+        <source>B1 (707 x 1000 mm)</source>
+        <translation type="obsolete">B1 (707 x 1000 mm)</translation>
+    </message>
+    <message>
+        <source>B0 (1000 x 1414 mm)</source>
+        <translation type="obsolete">B0 (1000 x 1414 mm)</translation>
+    </message>
+    <message>
+        <source>Letter (8.5x11 inches)</source>
+        <translation type="obsolete">ຫນັງສື (8.5x11 ນິ້ວ)</translation>
+    </message>
+    <message>
+        <source>Legal (8.5x14 inches)</source>
+        <translation type="obsolete">Legal (8.5x14 ນິ້ວ)</translation>
+    </message>
+    <message>
+        <source>Portrait</source>
+        <translation type="obsolete">ການຈັດພີມທາງຕັ້ງ</translation>
+    </message>
+    <message>
+        <source>Landscape</source>
+        <translation type="obsolete">ການຈັດພີມທາງຂວາງ</translation>
+    </message>
+    <message>
+        <source>Out of memory</source>
+        <translation type="obsolete">ນຳໃຊ້ຫນ່ວຍຄວາມຈຳຫມົດ</translation>
+    </message>
+    <message>
+        <source>Qgis is unable to resize the paper size due to insufficient memory.
+ It is best that you avoid using the map composer until you restart qgis.
+</source>
+        <translation type="obsolete">Qgis ບໍ່ສາມາດປັບຄະຫນາດຂອງຫນາດເຈ້ຍໄດ້ເນື່ອງຈາກຫນ່ວຍຄວາມຈຳບໍ່ພໍ.ເປັນການດີທີ່ສຸດຖ້າທ່ານຫຼີກລ້ຽງການນຳໃຊ້ຜູ້ແຕ່ງແຜນທີ່ (Map Composer)ຈັນກະທັ້ງເລີ້ມ Qgisໃຫມ່.</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="obsolete">ກາຫມາຍ</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="obsolete">ເຕືອນ</translation>
+    </message>
+    <message>
+        <source>Cannot load picture.</source>
+        <translation type="obsolete">ບໍ່ສາມາດໂຫຼດຮູບ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCompositionBase</name>
+    <message>
+        <source>Composition</source>
+        <translation type="unfinished">ສ່ວນປະກອບຕ່າງໆ</translation>
+    </message>
+    <message>
+        <source>Paper</source>
+        <translation type="unfinished">ເຈ້ຍ</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">ຄະຫນາດ</translation>
+    </message>
+    <message>
+        <source>Units</source>
+        <translation type="unfinished">ຫົວຫນ່ວຍ</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">ຄວາມສູງ</translation>
+    </message>
+    <message>
+        <source>Orientation</source>
+        <translation>ການກຳໜົດທິດທາງ</translation>
+    </message>
+    <message>
+        <source>Resolution (dpi)</source>
+        <translation type="obsolete">ຄວາມລະອຽດຂອງພາບ (dpi)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCompositionWidget</name>
+    <message>
+        <source>Landscape</source>
+        <translation type="unfinished">ການຈັດພີມທາງຂວາງ</translation>
+    </message>
+    <message>
+        <source>Portrait</source>
+        <translation type="unfinished">ການຈັດພີມທາງຕັ້ງ</translation>
+    </message>
     <message>
         <source>Custom</source>
         <translation type="unfinished">ການຈັດການຫຼືຕັ້ງຄ່າຕາມຄວາມມັກ</translation>
@@ -5005,76 +6366,46 @@ File dialog window title
     </message>
     <message>
         <source>Letter (8.5x11 inches)</source>
-        <translation>ຫນັງສື (8.5x11 ນິ້ວ)</translation>
+        <translation type="unfinished">ຫນັງສື (8.5x11 ນິ້ວ)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
-        <translation>Legal (8.5x14 ນິ້ວ)</translation>
-    </message>
-    <message>
-        <source>Portrait</source>
-        <translation type="unfinished">ການຈັດພີມທາງຕັ້ງ</translation>
-    </message>
-    <message>
-        <source>Landscape</source>
-        <translation type="unfinished">ການຈັດພີມທາງຂວາງ</translation>
-    </message>
-    <message>
-        <source>Out of memory</source>
-        <translation type="unfinished">ນຳໃຊ້ຫນ່ວຍຄວາມຈຳຫມົດ</translation>
-    </message>
-    <message>
-        <source>Qgis is unable to resize the paper size due to insufficient memory.
- It is best that you avoid using the map composer until you restart qgis.
-</source>
-        <translation>Qgis ບໍ່ສາມາດປັບຄະຫນາດຂອງຫນາດເຈ້ຍໄດ້ເນື່ອງຈາກຫນ່ວຍຄວາມຈຳບໍ່ພໍ.ເປັນການດີທີ່ສຸດຖ້າທ່ານຫຼີກລ້ຽງການນຳໃຊ້ຜູ້ແຕ່ງແຜນທີ່ (Map Composer)ຈັນກະທັ້ງເລີ້ມ Qgisໃຫມ່.</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation>ກາຫມາຍ</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="unfinished">ເຕືອນ</translation>
-    </message>
-    <message>
-        <source>Cannot load picture.</source>
-        <translation type="unfinished">ບໍ່ສາມາດໂຫຼດຮູບ</translation>
+        <translation type="unfinished">Legal (8.5x14 ນິ້ວ)</translation>
     </message>
 </context>
 <context>
-    <name>QgsCompositionBase</name>
+    <name>QgsCompositionWidgetBase</name>
     <message>
         <source>Composition</source>
-        <translation type="unfinished">ສ່ວນປະກອບຕ່າງໆ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Paper</source>
-        <translation type="unfinished">ເຈ້ຍ</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size</source>
-        <translation type="unfinished">ຄະຫນາດ</translation>
-    </message>
-    <message>
-        <source>Units</source>
-        <translation type="unfinished">ຫົວຫນ່ວຍ</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
+        <source>Orientation</source>
+        <translation type="unfinished">ການກຳໜົດທິດທາງ</translation>
     </message>
     <message>
         <source>Height</source>
         <translation type="unfinished">ຄວາມສູງ</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation>ການກຳໜົດທິດທາງ</translation>
+        <source>Width</source>
+        <translation type="unfinished">ຄວາມກ້ວາງ</translation>
     </message>
     <message>
-        <source>Resolution (dpi)</source>
-        <translation>ຄວາມລະອຽດຂອງພາບ (dpi)</translation>
+        <source>Units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print quality (dpi)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5196,15 +6527,27 @@ File dialog window title
     </message>
     <message>
         <source>The source spatial reference system (SRS) is not valid. </source>
-        <translation>ລະບົບອ້າງອີງແຫຼ່ງ (SRS) ໃຊ້ການບໍ່ໄດ້່ໄດ້່ໄດ້</translation>
+        <translation type="obsolete">ລະບົບອ້າງອີງແຫຼ່ງ (SRS) ໃຊ້ການບໍ່ໄດ້່ໄດ້່ໄດ້</translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The SRS is: </source>
-        <translation>ຕົວປະສານບໍ່ສາມາດຄາດຄະເນໄດ້.SRS ແມ່ນ:</translation>
+        <translation type="obsolete">ຕົວປະສານບໍ່ສາມາດຄາດຄະເນໄດ້.SRS ແມ່ນ:</translation>
     </message>
     <message>
         <source>The destination spatial reference system (SRS) is not valid. </source>
-        <translation>ຈຸດຫມາຍລະບົບອ້າງອີງແຫຼ່ງ (SRS) ບໍ່ໄດ້</translation>
+        <translation type="obsolete">ຈຸດຫມາຍລະບົບອ້າງອີງແຫຼ່ງ (SRS) ບໍ່ໄດ້</translation>
+    </message>
+    <message>
+        <source>The source spatial reference system (CRS) is not valid. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The coordinates can not be reprojected. The CRS is: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The destination spatial reference system (CRS) is not valid. </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5309,17 +6652,20 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message encoding="UTF-8">
-        <source>© QGIS 2008</source>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5371,7 +6717,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
-        <translation>ຂໍ້ກຳຫນົດແຜນການທີ່ມີຊົງຮູບໄຂ່ໃຊ້ບໍ່ໄດ້,ກະລຸນາເພີ້ມ ellips=clause ກ່ອນຈັດເກັບ.</translation>
+        <translation type="obsolete">ຂໍ້ກຳຫນົດແຜນການທີ່ມີຊົງຮູບໄຂ່ໃຊ້ບໍ່ໄດ້,ກະລຸນາເພີ້ມ ellips=clause ກ່ອນຈັດເກັບ.</translation>
     </message>
     <message>
         <source>Internal Error (source projection invalid?)</source>
@@ -5386,7 +6732,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Custom Projection Definition</source>
-        <translation>ຈັດຂໍ້ກຳຫນົດແຜນການຕາມຄວາມຕ້ອງການຂອງຕົນ</translation>
+        <translation type="obsolete">ຈັດຂໍ້ກຳຫນົດແຜນການຕາມຄວາມຕ້ອງການຂອງຕົນ</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -5478,10 +6824,6 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Name</source>
         <translation type="unfinished">ຊື່</translation>
     </message>
@@ -5502,19 +6844,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Projected Coordinate System</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>North</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>East</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom Coordinate Reference System Definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination CRS        </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5994,6 +7344,13 @@ p, li { white-space: pre-wrap; }
         <source>Regular expression</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextProvider</name>
@@ -6172,7 +7529,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Device name:</source>
-        <translation type="unfinished">ຊື່ອຸປະກອນ:</translation>
+        <translation type="obsolete">ຊື່ອຸປະກອນ:</translation>
     </message>
     <message>
         <source>This is the name of the device as it will appear in the lists</source>
@@ -6192,7 +7549,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">ປິດ</translation>
+        <translation type="obsolete">ປິດ</translation>
     </message>
     <message>
         <source>Commands</source>
@@ -6248,7 +7605,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Device name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;span style=&quot; font-style:italic;&quot;&gt;%babel&lt;/span&gt; - the path to GPSBabel&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%in&lt;/span&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;%out&lt;/span&gt; - the port when uploading or the GPX filename when downloading&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6391,7 +7759,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSPluginGui</name>
     <message>
         <source>Choose a filename to save under</source>
-        <translation type="unfinished">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບພາຍໃຕ້</translation>
+        <translation type="obsolete">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບພາຍໃຕ້</translation>
     </message>
     <message>
         <source>GPS eXchange format (*.gpx)</source>
@@ -6462,10 +7830,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX filename that you want to save the converted file as, and a name for the new layer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6474,7 +7838,15 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select a GPX input file name, the type of conversion you want to perform, a GPX filename that you want to save the converted file as, and a name for the new layer created from the result.</source>
+        <source>Choose a file name to save under</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6617,7 +7989,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -6638,6 +8010,21 @@ p, li { white-space: pre-wrap; }
         <source>GPX input file:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit devices...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGPXProvider</name>
@@ -6652,6 +8039,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Digitized in QGIS</source>
         <translation>ຈັດເກັບຂໍ້ມູນໃຫ້ເປັນດີຈີຕອນໃນ QGIS້</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGenericProjectionSelector</name>
+    <message>
+        <source>Define this layer&apos;s projection:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This layer appears to have no projection specification.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGenericProjectionSelectorBase</name>
+    <message>
+        <source>Projection Selector</source>
+        <translation type="unfinished">ໂຕເລື້ອກ ການຄາດຫມາຍ</translation>
     </message>
 </context>
 <context>
@@ -6732,15 +8141,15 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">ຊື່</translation>
     </message>
     <message>
-        <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <source>Add values manually</source>
+        <source>Delete selected attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add attribute</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6846,10 +8255,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsGeorefWarpOptionsDialog</name>
-    <message>
-        <source>unstable</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefWarpOptionsDialogBase</name>
@@ -7235,7 +8640,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Disp</source>
         <comment>Column title</comment>
-        <translation>ສະແດງ</translation>
+        <translation type="obsolete">ສະແດງ</translation>
     </message>
     <message>
         <source>Color</source>
@@ -7383,15 +8788,15 @@ Column title
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">ຖັນ</translation>
+        <translation type="obsolete">ຖັນ</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">ຊະນິດ</translation>
+        <translation type="obsolete">ຊະນິດ</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">ຄວາມຍາວ</translation>
+        <translation type="obsolete">ຄວາມຍາວ</translation>
     </message>
     <message>
         <source>Next not used</source>
@@ -7412,17 +8817,17 @@ Column title
     <message>
         <source>Color</source>
         <comment>Column title</comment>
-        <translation type="unfinished">ສີ</translation>
+        <translation type="obsolete">ສີ</translation>
     </message>
     <message>
         <source>Type</source>
         <comment>Column title</comment>
-        <translation type="unfinished">ຊະນິດ</translation>
+        <translation type="obsolete">ຊະນິດ</translation>
     </message>
     <message>
         <source>Index</source>
         <comment>Column title</comment>
-        <translation type="unfinished">ດັດສະນີ</translation>
+        <translation type="obsolete">ດັດສະນີ</translation>
     </message>
 </context>
 <context>
@@ -7457,7 +8862,7 @@ Column title
     </message>
     <message>
         <source>Column 1</source>
-        <translation type="unfinished">ຖັນ 1</translation>
+        <translation type="obsolete">ຖັນ 1</translation>
     </message>
     <message>
         <source>Table</source>
@@ -7482,6 +8887,30 @@ Column title
     <message>
         <source>Layer</source>
         <translation type="unfinished">ລະດັບຊັ້ນ</translation>
+    </message>
+    <message>
+        <source>Disp</source>
+        <translation type="unfinished">ສະແດງ</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">ສີ</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">ຊະນິດ</translation>
+    </message>
+    <message>
+        <source>Index</source>
+        <translation type="unfinished">ດັດສະນີ</translation>
+    </message>
+    <message>
+        <source>Column</source>
+        <translation type="unfinished">ຖັນ</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">ຄວາມຍາວ</translation>
     </message>
 </context>
 <context>
@@ -7970,6 +9399,10 @@ at line </source>
         <source>Not available, description not found (</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Please ensure you have the GRASS documentation installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassModuleBase</name>
@@ -8162,35 +9595,35 @@ at line </source>
     <name>QgsGrassNewMapset</name>
     <message>
         <source>GRASS database</source>
-        <translation>ຖານຂໍ້ມູນຂອງ GRASS</translation>
+        <translation type="obsolete">ຖານຂໍ້ມູນຂອງ GRASS</translation>
     </message>
     <message>
         <source>GRASS location</source>
-        <translation>ທີ່ຕັ້ງຂອງ GRASS</translation>
+        <translation type="obsolete">ທີ່ຕັ້ງຂອງ GRASS</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation>ຄ້າດຫມາຍ</translation>
+        <translation type="obsolete">ຄ້າດຫມາຍ</translation>
     </message>
     <message>
         <source>Default GRASS Region</source>
-        <translation>ຂົງເຂດຂອງ GRASS ຕາຍຕົວ</translation>
+        <translation type="obsolete">ຂົງເຂດຂອງ GRASS ຕາຍຕົວ</translation>
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished">ຊຸດແຜນທີ່</translation>
+        <translation type="obsolete">ຊຸດແຜນທີ່</translation>
     </message>
     <message>
         <source>Create New Mapset</source>
-        <translation type="unfinished">ສ້າງຊຸດແຜນທີ່ໃຫມ່</translation>
+        <translation type="obsolete">ສ້າງຊຸດແຜນທີ່ໃຫມ່</translation>
     </message>
     <message>
         <source>Tree</source>
-        <translation>ຕົ້ນໄມ້</translation>
+        <translation type="obsolete">ຕົ້ນໄມ້</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished">ຄຳເຫັນ</translation>
+        <translation type="obsolete">ຄຳເຫັນ</translation>
     </message>
     <message>
         <source>Database</source>
@@ -8214,7 +9647,7 @@ at line </source>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished">ເຈົ້າຂອງ</translation>
+        <translation type="obsolete">ເຈົ້າຂອງ</translation>
     </message>
     <message>
         <source>Enter path to GRASS database</source>
@@ -8297,7 +9730,7 @@ at line </source>
     </message>
     <message>
         <source>Cannot create QgsSpatialRefSys</source>
-        <translation>ບໍ່ສາມາດສ້າງ QgsSpatialRefSys</translation>
+        <translation type="obsolete">ບໍ່ສາມາດສ້າງ QgsSpatialRefSys</translation>
     </message>
     <message>
         <source>Cannot reproject selected region.</source>
@@ -8367,12 +9800,16 @@ at line </source>
         <source>Cannot create new mapset directory</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot create QgsCoordinateReferenceSystem</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
     <message>
         <source>Column 1</source>
-        <translation type="unfinished">ຖັນ 1</translation>
+        <translation type="obsolete">ຖັນ 1</translation>
     </message>
     <message>
         <source>Example directory tree:</source>
@@ -8380,7 +9817,7 @@ at line </source>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data are stored in tree directory structure.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data are stored in tree directory structure.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;GRASS data are stored in tree directory structure.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Database Error</source>
@@ -8392,7 +9829,7 @@ at line </source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
@@ -8416,7 +9853,7 @@ at line </source>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; GRASS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; GRASS&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Projection Error</source>
@@ -8436,7 +9873,7 @@ at line </source>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Set current QGIS extent</source>
@@ -8480,7 +9917,7 @@ at line </source>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The GRASS mapset is a collection of maps used by one user. &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;A user can read maps from all mapsets in the location but &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Location:</source>
@@ -8489,6 +9926,78 @@ at line </source>
     <message>
         <source>Mapset:</source>
         <translation type="unfinished">ຊຸດແຜນທີ່:</translation>
+    </message>
+    <message>
+        <source>New Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tree</source>
+        <translation type="unfinished">ຕົ້ນໄມ້</translation>
+    </message>
+    <message>
+        <source>Comment</source>
+        <translation type="unfinished">ຄຳເຫັນ</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default GRASS Region</source>
+        <translation type="unfinished">ຂົງເຂດຂອງ GRASS ຕາຍຕົວ</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished">ເຈົ້າຂອງ</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create New Mapset</source>
+        <translation type="unfinished">ສ້າງຊຸດແຜນທີ່ໃຫມ່</translation>
     </message>
 </context>
 <context>
@@ -8809,7 +10318,7 @@ at line </source>
     <name>QgsGrassTools</name>
     <message>
         <source>Modules</source>
-        <translation>ສ່ວນໂປຣກຣາມ</translation>
+        <translation type="obsolete">ສ່ວນໂປຣກຣາມ</translation>
     </message>
     <message>
         <source>Browser</source>
@@ -8864,9 +10373,20 @@ at line </source>
         <source> column </source>
         <translation>ເເຖວຕັ້ງ</translation>
     </message>
+</context>
+<context>
+    <name>QgsGrassToolsBase</name>
+    <message>
+        <source>Grass Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Modules Tree</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
     </message>
     <message>
         <source>Modules List</source>
@@ -8920,7 +10440,7 @@ at line </source>
     </message>
     <message>
         <source>Choose a filename to save under</source>
-        <translation type="unfinished">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບພາຍໃຕ້</translation>
+        <translation type="obsolete">ເລື້ອກຊື່ແຟ້ມເພື່ອຈັດເກັບພາຍໃຕ້</translation>
     </message>
     <message>
         <source>ESRI Shapefile (*.shp)</source>
@@ -8929,6 +10449,14 @@ at line </source>
     <message>
         <source>Please enter the file name before pressing OK!</source>
         <translation>ກະລູນາລົວຊື່ເເຟ້ນກ່ອນຂະກົດປຸມ ຕົກລົງ!</translation>
+    </message>
+    <message>
+        <source>Please enter intervals before pressing OK!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save under</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9028,9 +10556,9 @@ at line </source>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:10pt;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9127,6 +10655,22 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsIDWInterpolatorDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Inverse Distance Weighting&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;The only parameter for the IDW interpolation method is the coefficient that describes the decrease of weights with distance.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance coefficient P:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsIdentifyResults</name>
@@ -9172,20 +10716,68 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsInterpolationDialog</name>
+    <message>
+        <source>Triangular interpolation (TIN)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inverse Distance Weighting (IDW)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsInterpolationDialogBase</name>
     <message>
         <source>Output</source>
-        <translation type="obsolete">ຜົນຂໍ້ມູນ</translation>
+        <translation type="unfinished">ຜົນຂໍ້ມູນ</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Interpolation plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use z-Coordinate for interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation attribute </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsInterpolationPlugin</name>
+    <message>
+        <source>&amp;Interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLUDialogBase</name>
@@ -9504,31 +11096,23 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Y Coordinate</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Multiline labels?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerProjectionSelector</name>
-    <message>
-        <source>Define this layer&apos;s projection:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This layer appears to have no projection specification.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLayerProjectionSelectorBase</name>
     <message>
         <source>Layer Projection Selector</source>
-        <translation>ໂຕເລື້ອກຖານຊັ້ນຄາດຫມາຍ</translation>
+        <translation type="obsolete">ໂຕເລື້ອກຖານຊັ້ນຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ຕົກລົງ</translation>
+        <translation type="obsolete">ຕົກລົງ</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Define this layer&apos;s projection:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -9619,6 +11203,14 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
         <translation>ລາຍການນີ້ມີແຟ້ມລະດັບຊັ້ນຫຼາຍ.ໃຫ້ເຫັນລະດັບຊັ້ນຫຼາຍໆອັນໃນຮູບຂອງຕາຕະລາງບໍ່ສາມາດເຮັດໄດ້.</translation>
+    </message>
+    <message>
+        <source>Multiple layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9801,14 +11393,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>could not open user database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>style %1 not found in database</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>User database could not be opened.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9832,16 +11416,20 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>The style %1 could not be inserted into database.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>style not found in database</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
         <source>No features found</source>
-        <translation type="unfinished">ຈຸດເດັ່ນບໍ່ພົບ</translation>
+        <translation type="obsolete">ຈຸດເດັ່ນບໍ່ພົບ</translation>
     </message>
     <message>
         <source>&lt;p&gt;No features were found within the search radius. Note that it is currently not possible to use the identify tool on unsaved features.&lt;/p&gt;</source>
-        <translation>&lt;p&gt; ບໍ່ມີຈຸດເດັ່ນບໍ່ເຫັນຢູ່ໃນໂຂງເຂດລັດສະຫມີຊອກ. &lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt; ບໍ່ມີຈຸດເດັ່ນບໍ່ເຫັນຢູ່ໃນໂຂງເຂດລັດສະຫມີຊອກ. &lt;/p&gt;</translation>
     </message>
     <message>
         <source>- %1 features found</source>
@@ -9982,6 +11570,13 @@ Do you want to overwrite it?</source>
         <source> exists. 
 Do you want to overwrite it?</source>
         <comment>a filename is prepended to this text, and appears in a dialog box</comment>
+        <translation type="obsolete">ແຟ້ມເກົ່າຍັງມີຢູ່. 
+ທ່ານຢາກຂຽນທັບບໍ່?</translation>
+    </message>
+    <message>
+        <source> exists. 
+Do you want to overwrite it?</source>
+        <comment>a fileName is prepended to this text, and appears in a dialog box</comment>
         <translation type="unfinished">ແຟ້ມເກົ່າຍັງມີຢູ່. 
 ທ່ານຢາກຂຽນທັບບໍ່?</translation>
     </message>
@@ -10671,6 +12266,18 @@ Extended error information:
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -10828,11 +12435,11 @@ Extended error information:
     </message>
     <message>
         <source>Pro&amp;jection</source>
-        <translation>&amp;ຄາດຫມາຍ</translation>
+        <translation type="obsolete">&amp;ຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>When layer is loaded that has no projection information</source>
-        <translation>ເຫມື່ອລະດັບຊັ້ນໄດ້ໂລດມາທີ່ບໍ່ມີຂໍ້ມູນຄາດຫມາຍ</translation>
+        <translation type="obsolete">ເຫມື່ອລະດັບຊັ້ນໄດ້ໂລດມາທີ່ບໍ່ມີຂໍ້ມູນຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>Global default projection displa&amp;yed below will be used.</source>
@@ -11016,7 +12623,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ຄວາມກ້ວາງຂອງເສັ້ນ</translation>
     </message>
     <message>
         <source>Line width in pixels</source>
@@ -11048,18 +12655,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Marker style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prompt for projection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Project wide default projection will be used</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Global default projection displa&amp;yed below will be used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11113,6 +12708,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Password</source>
         <translation type="unfinished">ລະຫັດຜ່ານ</translation>
+    </message>
+    <message>
+        <source>Open attribute table in a dock window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When layer is loaded that has no coordinate reference system (CRS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project wide default CRS will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11465,6 +13088,214 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPluginInstallerDialog</name>
+    <message>
+        <source>QGIS Python Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugins</source>
+        <translation type="unfinished">ໂປຼກຼາມເສີມ (Plugins)</translation>
+    </message>
+    <message>
+        <source>List of available and installed plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display only plugins containing this word in their metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display only plugins from given repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>all repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display only plugins with matching status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="unfinished">ສະຖານະ</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">ຊື່</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="unfinished">ລຸ້ນ</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">ລາຍການ</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install, reinstall or upgrade the selected plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install/upgrade plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uninstall the selected plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uninstall plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List of plugin repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="unfinished">URL</translation>
+    </message>
+    <message>
+        <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for updates on startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add third party plugin repositories to the list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add 3rd party repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new plugin repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit the selected repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove the selected repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugins will be installed to ~/.qgis/python/plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close the Installer window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">ປິດ</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerInstallingDialog</name>
+    <message>
+        <source>QGIS Python Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Installing plugin:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerPluginErrorDialog</name>
+    <message>
+        <source>Error loading plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerRepositoryDetailsDialog</name>
+    <message>
+        <source>Repository details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished">ຊື່:</translation>
+    </message>
+    <message>
+        <source>Enter a name for the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable or disable the repository (disabled repositories will be omitted)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[place for a warning message]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPluginManager</name>
     <message>
         <source>Choose a directory</source>
@@ -11690,11 +13521,16 @@ Georeferencer:QgsPointDialog.cpp - used to modify a user given filename
     <message>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
-        <translation type="unfinished">-ດັດແປງ</translation>
+        <translation type="obsolete">-ດັດແປງ</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-modified</source>
+        <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given file name</comment>
+        <translation type="unfinished">-ດັດແປງ</translation>
     </message>
 </context>
 <context>
@@ -11806,13 +13642,13 @@ The error message from the database was:
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation>ບໍ່ເຂົ້າກັນກັບ GEOS!</translation>
+        <translation type="obsolete">ບໍ່ເຂົ້າກັນກັບ GEOS!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>ການຕິດຕັ້ງ PostGIS ຂອງທ່ານ  ບໍ່ເຂົ້າກັນກັບ GEOS ການເລື້ອກຈຸດເດັ່ນແລະຮູບປະພັນສັນຖານຈະບໍ່ເຮັດວຽກຢ່າງເໝາະສົມ。ກະລຸນາຕິດຕັ້ງ PostGIS ເພື່ອໃຫ້ເຂົາກັນກັບ GEOS (http://geos.refractions.net)</translation>
+        <translation type="obsolete">ການຕິດຕັ້ງ PostGIS ຂອງທ່ານ  ບໍ່ເຂົ້າກັນກັບ GEOS ການເລື້ອກຈຸດເດັ່ນແລະຮູບປະພັນສັນຖານຈະບໍ່ເຮັດວຽກຢ່າງເໝາະສົມ。ກະລຸນາຕິດຕັ້ງ PostGIS ເພື່ອໃຫ້ເຂົາກັນກັບ GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>No suitable key column in table</source>
@@ -12009,6 +13845,19 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
     </message>
 </context>
 <context>
+    <name>QgsPostgresProvider::Conn</name>
+    <message>
+        <source>No GEOS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your PostGIS installation has no GEOS support.
+Feature selection and identification will not work properly.
+Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectPropertiesBase</name>
     <message>
         <source>Project Properties</source>
@@ -12088,11 +13937,11 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
     </message>
     <message>
         <source>Projection</source>
-        <translation>ຄາດຫມາຍ</translation>
+        <translation type="obsolete">ຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>Enable on the fly projection</source>
-        <translation>ສາມາດ ຄາດຫມາຍ ຕອນບີນ</translation>
+        <translation type="obsolete">ສາມາດ ຄາດຫມາຍ ຕອນບີນ</translation>
     </message>
     <message>
         <source>Background Color:</source>
@@ -12154,27 +14003,57 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
         <source>Snapping options...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Coordinate Reference System (CRS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable &apos;on the fly&apos; CRS transformation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
         <source>QGIS SRSID: </source>
-        <translation type="unfinished">QGIS SRSID: </translation>
+        <translation type="obsolete">QGIS SRSID: </translation>
     </message>
     <message>
         <source>PostGIS SRID: </source>
-        <translation type="unfinished">PostGIS SRID: </translation>
+        <translation type="obsolete">PostGIS SRID: </translation>
+    </message>
+    <message>
+        <source>User Defined Coordinate Systems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geographic Coordinate Systems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projected Coordinate Systems</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resource Location Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading database file from: 
+ %1
+Because of this the projection selector will not work...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
-        <translation>ໂຕເລື້ອກ ການຄາດຫມາຍ</translation>
+        <translation type="obsolete">ໂຕເລື້ອກ ການຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>Projection</source>
-        <translation>ການຄາດຫມາຍ</translation>
+        <translation type="obsolete">ການຄາດຫມາຍ</translation>
     </message>
     <message>
         <source>Search</source>
@@ -12186,7 +14065,7 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
     </message>
     <message>
         <source>Postgis SRID</source>
-        <translation type="unfinished">Postgis SRID</translation>
+        <translation type="obsolete">Postgis SRID</translation>
     </message>
     <message>
         <source>EPSG ID</source>
@@ -12194,7 +14073,7 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
     </message>
     <message>
         <source>QGIS SRSID</source>
-        <translation type="unfinished">QGIS SRSID</translation>
+        <translation type="obsolete">QGIS SRSID</translation>
     </message>
     <message>
         <source>Name</source>
@@ -12202,11 +14081,27 @@ Qgis ຕ້ອງການທັງຕາຕະລາງທີ່ມີຖັນ
     </message>
     <message>
         <source>Spatial Reference System</source>
-        <translation>ລະບົບອ້າງອິງໄລຍະ</translation>
+        <translation type="obsolete">ລະບົບອ້າງອິງໄລຍະ</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation type="obsolete">Id</translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EPSG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12520,7 +14415,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Palette</source>
-        <translation type="unfinished">ຈານປະສົມສີ</translation>
+        <translation type="obsolete">ຈານປະສົມສີ</translation>
     </message>
     <message>
         <source>Not Set</source>
@@ -12558,15 +14453,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
-        <translation>ແຟ້ມນີ້ບໍ່ສາມາດຂຽນໄດ້.ຮູບແບບການຈັດລະບົບຄອມພີວເຕີບໍ່ສາມາດຖືກຂຽນລົງໄປໄດ້.ໄດ້ພ່ຽງແຕ່ອ່ານ.ທ່ານສາມາດກວດເບິ່ງການໃຫ້ອະນຸຍາດແລ້ວລອງໃໝ່.</translation>
+        <translation type="obsolete">ແຟ້ມນີ້ບໍ່ສາມາດຂຽນໄດ້.ຮູບແບບການຈັດລະບົບຄອມພີວເຕີບໍ່ສາມາດຖືກຂຽນລົງໄປໄດ້.ໄດ້ພ່ຽງແຕ່ອ່ານ.ທ່ານສາມາດກວດເບິ່ງການໃຫ້ອະນຸຍາດແລ້ວລອງໃໝ່.</translation>
     </message>
     <message>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>ການສ້າງພາບປີຣະມິດ (Pyramid) ໂດຍສະຫຼຸບບໍ່ເຂົ້າກັນກັບຊະຂອງ Raster ນີ້.</translation>
-    </message>
-    <message>
-        <source>Custom Colormap</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No Stretch</source>
@@ -12586,10 +14477,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Discrete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linearly</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12626,14 +14513,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please note that building pyramids may alter the original data file and once created they cannot be removed!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please note that building pyramids could corrupt your image - always make a backup of your data first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12712,6 +14591,50 @@ p, li { white-space: pre-wrap; }
         <source>Unknown style format: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Colormap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished">ເສັ້ນ</translation>
+    </message>
+    <message>
+        <source>Exact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom color map entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Generated Color Map Export File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Color Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved Style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -12733,7 +14656,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Legend:</source>
-        <translation type="unfinished">ຄຳບັນຍາຍບົນແຜນທີ່:</translation>
+        <translation type="obsolete">ຄຳບັນຍາຍບົນແຜນທີ່:</translation>
     </message>
     <message>
         <source>No Data:</source>
@@ -12837,7 +14760,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Palette:</source>
-        <translation>ກະດານໃສ່ສີ່ແຕ້ມຮູບ:</translation>
+        <translation type="obsolete">ກະດານໃສ່ສີ່ແຕ້ມຮູບ:</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
@@ -12893,7 +14816,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Change</source>
-        <translation type="unfinished">ປ່ຽນແປງ</translation>
+        <translation type="obsolete">ປ່ຽນແປງ</translation>
     </message>
     <message>
         <source>Display</source>
@@ -13003,10 +14926,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Std. deviation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -13174,10 +15093,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Spatial reference system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Scale dependent visibility</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13190,22 +15105,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Show debug info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -13256,6 +15160,65 @@ p, li { white-space: pre-wrap; }
         <source>Save Style ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Default R:1 G:2 B:3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load color map from band</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load color map from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export color map to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate new color map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate reference system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">ຄຳອະທິບາຍຫຼືເຄື່ອງໝາຍຂອງແຜນທີ່</translation>
+    </message>
+    <message>
+        <source>Palette</source>
+        <translation type="unfinished">ຈານປະສົມສີ</translation>
+    </message>
+    <message>
+        <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build pyramids internally if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRunProcess</name>
@@ -13271,9 +15234,10 @@ p, li { white-space: pre-wrap; }
         <source>Done</source>
         <translation type="unfinished">ທຳສຳເລັດ</translation>
     </message>
-</context>
-<context>
-    <name>QgsSOSPlugin</name>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished">ການປະຕິບັດງານ</translation>
+    </message>
 </context>
 <context>
     <name>QgsSOSSourceSelect</name>
@@ -13705,6 +15669,10 @@ is appended to a truncated SQL statement
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
         <translation type="unfinished">...(ສ່ວນທີ່ເຫຼືອຂອງ SQL ທີ່ຖືກຕັດອອກ)</translation>
+    </message>
+    <message>
+        <source>Scanning </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14164,7 +16132,7 @@ is appended to a truncated SQL statement
     </message>
     <message>
         <source>Checking to see if </source>
-        <translation type="unfinished">ກວດສອບເບິ່ງວ່າ</translation>
+        <translation type="obsolete">ກວດສອບເບິ່ງວ່າ</translation>
     </message>
     <message>
         <source>&lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;</source>
@@ -14319,9 +16287,28 @@ is appended to a truncated SQL statement
 </context>
 <context>
     <name>QgsTINInterpolatorDialog</name>
+    <message>
+        <source>Linear interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialogBase</name>
+    <message>
+        <source>Triangle based interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation method:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsUniqueValueDialog</name>
@@ -14378,35 +16365,99 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsVectorLayer</name>
     <message>
         <source>Could not commit the added features.</source>
-        <translation type="unfinished">ບໍ່ສາມາດຈົດຈຳຈຸດເດັ່ນທີ່ໄດ້ໄດ້ເພີ້ມຕື່ມ.</translation>
+        <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳຈຸດເດັ່ນທີ່ໄດ້ໄດ້ເພີ້ມຕື່ມ.</translation>
     </message>
     <message>
         <source>No other types of changes will be committed at this time.</source>
-        <translation>ບໍ່ມີການປ່ຽນແປງຊະນິດໃດໆຈະໄດ້ຖືກຈົດຈຳໃນເວລານີ້.</translation>
+        <translation type="obsolete">ບໍ່ມີການປ່ຽນແປງຊະນິດໃດໆຈະໄດ້ຖືກຈົດຈຳໃນເວລານີ້.</translation>
     </message>
     <message>
         <source>Could not commit the changed attributes.</source>
-        <translation type="unfinished">ບໍ່ສາມາດຈົດຈຳຄຸນລັກສະນະທີ່ໄດ້ປ່ຽນແປງໄດ້ເພີ້ມຕື່ມ.</translation>
+        <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳຄຸນລັກສະນະທີ່ໄດ້ປ່ຽນແປງໄດ້ເພີ້ມຕື່ມ.</translation>
     </message>
     <message>
         <source>However, the added features were committed OK.</source>
-        <translation type="unfinished">ແນວໃດກໍ່ຕາມ,ຈຸດເດັ່ນດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ງ . ຕົກລົງ .</translation>
+        <translation type="obsolete">ແນວໃດກໍ່ຕາມ,ຈຸດເດັ່ນດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ງ . ຕົກລົງ .</translation>
     </message>
     <message>
         <source>Could not commit the changed geometries.</source>
-        <translation type="unfinished">ບໍ່ສາມາດຈົດຈຳຮູບເລຂາຄະນິດທີ່ໄດ້ປ່ຽນແປງໄປດໄດມຕື່ມ.</translation>
+        <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳຮູບເລຂາຄະນິດທີ່ໄດ້ປ່ຽນແປງໄປດໄດມຕື່ມ.</translation>
     </message>
     <message>
         <source>However, the changed attributes were committed OK.</source>
-        <translation>ແນວໃດກໍ່ຕາມ,ຄຸນລັກສະນະດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ໃດ້ບໍ່.</translation>
+        <translation type="obsolete">ແນວໃດກໍ່ຕາມ,ຄຸນລັກສະນະດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ໃດ້ບໍ່.</translation>
     </message>
     <message>
         <source>Could not commit the deleted features.</source>
-        <translation type="unfinished">ບໍ່ສາມາດຈົດຈຳຈຸດເດັ່ນທີ່ໄດ້ລືບໄປ.</translation>
+        <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳຈຸດເດັ່ນທີ່ໄດ້ລືບໄປ.</translation>
     </message>
     <message>
         <source>However, the changed geometries were committed OK.</source>
-        <translation>ແນວໃດກໍ່ຕາມ,ເລຂາຄະນິດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ໃດ້ບໍ່ .</translation>
+        <translation type="obsolete">ແນວໃດກໍ່ຕາມ,ເລຂາຄະນິດທີ່ໄດ້ຮັບການປ່ຽນແປງຖືກຈົດຈຳ ໃດ້ບໍ່ .</translation>
+    </message>
+    <message>
+        <source>ERROR: no provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: layer not editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 attributes added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 new attributes not added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 attributes deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 attributes not deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: attribute %1 was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: attribute %1 not added</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 attribute values changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 attribute value changes not applied.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 features added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 features not added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 geometries were changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 geometries not changed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SUCCESS: %1 features deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: %1 features not deleted.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14445,7 +16496,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Creation of spatial index successfull</source>
-        <translation type="unfinished">ການສ້າງດັດສະນີບອກໄລຍະທາງປະສົບຜົນສຳເລັດ</translation>
+        <translation type="obsolete">ການສ້າງດັດສະນີບອກໄລຍະທາງປະສົບຜົນສຳເລັດ</translation>
     </message>
     <message>
         <source>Creation of spatial index failed</source>
@@ -14541,6 +16592,86 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unknown style format: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>precision</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>edit widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>line edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unique values (editable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>value map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>range (editable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>range (slider)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name conflict</source>
+        <translation type="unfinished">ຊື່ຄັດກັນ</translation>
+    </message>
+    <message>
+        <source>The attribute could not be inserted. The name already exists in the table.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of spatial index successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saved Style</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14663,10 +16794,6 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Change SRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Maximum</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14688,6 +16815,38 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Save Style ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attributes</source>
+        <translation type="unfinished">ຄຸນລັກສະນະ</translation>
+    </message>
+    <message>
+        <source>New column</source>
+        <translation type="unfinished">ຖັນໃຫມ່</translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>Delete column</source>
+        <translation type="unfinished">ລືບຖັນ</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14826,7 +16985,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>DOM Exception</source>
-        <translation>ຂໍ້ຍົກເວັ້ນຂອງ DOM</translation>
+        <translation type="obsolete">ຂໍ້ຍົກເວັ້ນຂອງ DOM</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
@@ -14902,7 +17061,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>This is probably due to a bug in the QGIS program.  Please report this error.</source>
-        <translation>ປັນຫານີອາດຈະເເມ່ນມາຈາກໂປຣກຣາມ QGIS້. ກະລູນາລາຍງານຄວາມຜິດພາດ.າ.</translation>
+        <translation type="obsolete">ປັນຫານີອາດຈະເເມ່ນມາຈາກໂປຣກຣາມ QGIS້. ກະລູນາລາຍງານຄວາມຜິດພາດ.າ.</translation>
     </message>
     <message>
         <source>Server Properties:</source>
@@ -15036,6 +17195,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Layer cannot be queried.</source>
         <translation type="unfinished">ລະດັບຊ້ັນບໍ່ສາມາດຕິດຕໍ່ໄດ້.</translation>
     </message>
+    <message>
+        <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QuickPrintGui</name>
@@ -15107,10 +17270,14 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="unfinished">ປ່ຽນແທນອັນນີ້ດ້ວຍລາຍການສັ້ນໆຂອງສິ່ງທີ່ໂປຼກຼາມເສີມ (Plugin) ໄດ້ເຮັດ</translation>
+        <translation type="obsolete">ປ່ຽນແທນອັນນີ້ດ້ວຍລາຍການສັ້ນໆຂອງສິ່ງທີ່ໂປຼກຼາມເສີມ (Plugin) ໄດ້ເຮັດ</translation>
     </message>
     <message>
         <source>&amp;Quick Print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provides a way to quickly produce a map with minimal user input.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15283,6 +17450,81 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugin Template</source>
         <translation type="unfinished">ຕົວຢາງໂປຣກຣາມເສີມ</translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverter</name>
+    <message>
+        <source>Converts DXF files in Shapefile format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Dxf2Shp</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>dxf2shpConverterGui</name>
+    <message>
+        <source>Dxf Importer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input Dxf file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polyline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">ຮູບຫຼາຍຫຼ່ຽມ</translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">ຈຸດ</translation>
+    </message>
+    <message>
+        <source>Export text labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a DXF file to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save to</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
