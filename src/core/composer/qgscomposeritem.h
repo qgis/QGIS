@@ -70,8 +70,16 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     /**Moves item in canvas coordinates*/
     void move( double dx, double dy );
 
-    /**Move Content of item. Does nothing per default (but implemented in composer map)*/
+    /**Move Content of item. Does nothing per default (but implemented in composer map)
+       @param dx move in x-direction (canvas coordinates)
+       @param dy move in y-direction(canvas coordinates)*/
     virtual void moveContent( double dx, double dy ) {}
+
+    /**Zoom content of item. Does nothing per default (but implemented in composer map)
+     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+    @param x x-position of mouse cursor (in item coordinates)
+    @param y y-position of mouse cursor (in item coordinates)*/
+    virtual void zoomContent( int delta, double x, double y) {}
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
