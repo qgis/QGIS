@@ -926,10 +926,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
       myFilters
     )
   );
-  myQFileDialog->selectFile( file.fileName() );
 
-  // allow for selection of more than one file
-  myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setFileMode(QFileDialog::AnyFile);
 
   // set the filter to the last one used
   myQFileDialog->selectFilter( myLastUsedFilter );
@@ -948,7 +946,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
     return;
   }
 
-  myOutputFileNameQString = myQFileDialog->selectedFiles().first();
+  myOutputFileNameQString = myQFileDialog->selectedFiles().last();
+  qWarning(myOutputFileNameQString.toLocal8Bit().data());
   QString myFilterString = myQFileDialog->selectedFilter();
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
