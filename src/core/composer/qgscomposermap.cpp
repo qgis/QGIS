@@ -35,6 +35,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
+#include <QSettings>
 #include <iostream>
 #include <cmath>
 
@@ -276,6 +277,68 @@ void QgsComposerMap::moveContent( double dx, double dy )
     cache();
     update();
   }
+}
+
+void QgsComposerMap::zoomContent( int delta, double x, double y)
+{
+  QSettings settings;
+  
+  //read zoom mode
+  //0: zoom, 1: zoom and recenter, 2: zoom to cursor, 3: nothing 
+  int zoomMode = settings.value("/qgis/wheel_action", 0 ).toInt();
+  if(zoomMode == 3) //do nothing
+    {
+      return;
+    }
+
+  double zoomFactor = settings.value("/qgis/zoom_factor", 2.0).toDouble();
+  
+  //find out new center point
+  double centerX = (mExtent.xMax() + mExtent.xMin()) / 2;
+  double centerY = (mExtent.yMax() + mExtent.yMin()) / 2;
+
+  if(zoomMode != 0)
+    {
+      //find out map coordinates of mouse position
+      double mapMouseX = mExtent.xMin() + (x / rect().width()) * (mExtent.xMax() - mExtent.xMin());
+      double mapMouseY = mExtent.yMin() + (1 - (y / rect().height())) * (mExtent.yMax() - mExtent.yMin());
+      if(zoomMode == 1) //zoom and recenter
+	{
+	  centerX = mapMouseX;
+	  centerY = mapMouseY;
+	}
+      else if(zoomMode == 2) //zoom to cursor
+	{
+	  centerX = mapMouseX + (centerX - mapMouseX) * (1.0 / zoomFactor);
+	  centerY = mapMouseY + (centerY - mapMouseY) * (1.0 / zoomFactor);
+	}
+    }
+
+  double newIntervalX, newIntervalY;
+
+  if(delta > 0)
+    {
+      newIntervalX = (mExtent.xMax() - mExtent.xMin()) / zoomFactor;
+      newIntervalY = (mExtent.yMax() - mExtent.yMin()) / zoomFactor;
+    }
+  else if(delta < 0)
+    {
+      newIntervalX = (mExtent.xMax() - mExtent.xMin()) * zoomFactor;
+      newIntervalY = (mExtent.yMax() - mExtent.yMin()) * zoomFactor;
+    }
+  else //no need to zoom
+    {
+      return;
+    }
+
+  mExtent.setXMaximum(centerX + newIntervalX / 2);
+  mExtent.setXMinimum(centerX - newIntervalX / 2);
+  mExtent.setYMaximum(centerY + newIntervalY / 2);
+  mExtent.setYMinimum(centerY - newIntervalY / 2);
+
+  emit extentChanged();
+  cache();
+  update();
 }
 
 void QgsComposerMap::setSceneRect( const QRectF& rectangle )

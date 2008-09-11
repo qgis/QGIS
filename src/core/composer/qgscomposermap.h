@@ -87,6 +87,12 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
        @param dy move in y-direction (item and canvas coordinates)*/
     void moveContent( double dx, double dy );
 
+    /**Zoom content of map
+     @param delta value from wheel event that describes magnitude and direction (positive /negative number)
+    @param x x-coordinate of mouse position in item coordinates
+    @param y y-coordinate of mouse position in item coordinates*/
+    void zoomContent( int delta, double x, double y);
+
     /**Sets new scene rectangle bounds and recalculates hight and extent*/
     void setSceneRect( const QRectF& rectangle );
 
