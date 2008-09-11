@@ -431,7 +431,7 @@ void QgsGrassNewMapset::setGrassProjection()
   }
 
   // Define projection
-  if ( !proj4.isNull() )
+  if ( !proj4.isEmpty() )
   {
     QgsDebugMsg( QString( "proj4 = %1" ).arg( proj4.toLocal8Bit().constData() ) );
 
@@ -855,11 +855,11 @@ void QgsGrassNewMapset::setSelectedRegion()
 
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->selectedCrsId() != 2585 )
+  if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
   {
     // Warning: QgsCoordinateReferenceSystem::EPSG is broken (using epsg_id)
     //QgsCoordinateReferenceSystem source ( 4326, QgsCoordinateReferenceSystem::EPSG );
-    QgsCoordinateReferenceSystem source( 2585, QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem source( GEOCRS_ID, QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !source.isValid() )
     {
@@ -1067,7 +1067,7 @@ void QgsGrassNewMapset::drawRegion()
   points.push_back( QgsPoint( points[0] ) ); // close polygon
 
   // Warning: seems that crashes if source == dest
-  if ( mProjectionSelector->selectedCrsId() != 2585 )
+  if ( mProjectionSelector->selectedCrsId() != GEOCRS_ID )
   {
     QgsCoordinateReferenceSystem source( mProjectionSelector->selectedCrsId(),
                                          QgsCoordinateReferenceSystem::QGIS_CRSID );
@@ -1079,7 +1079,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateReferenceSystem dest( 2585, QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem dest( GEOCRS_ID, QgsCoordinateReferenceSystem::QGIS_CRSID );
 
     if ( !dest.isValid() )
     {
