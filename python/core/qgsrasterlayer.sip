@@ -216,14 +216,6 @@ public:
     
     /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName(const QString & theBandNameQString);
-    // 
-    // Accessor and mutator for mDebugOverlayFlag
-    // 
-    /** \brief Accessor for a flag that determines whether to show some debug info on the image.  */
-    bool getShowDebugOverlayFlag();
-    
-    /** \brief Mutator for a flag that determines whether to show some debug info on the image.  */
-    void setShowDebugOverlayFlag(bool theFlag);
     
     // Accessor and mutator for min max values 
     double getMinimumValue(unsigned int theBand);
