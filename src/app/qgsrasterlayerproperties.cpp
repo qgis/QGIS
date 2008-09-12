@@ -1437,7 +1437,6 @@ void QgsRasterLayerProperties::apply()
    */
   mRasterLayer->setLayerName( leDisplayName->text() );
 
-  mRasterLayer->setShowDebugOverlayFlag( true );
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
