@@ -15,13 +15,14 @@ Copyright (C) 2008 Borys Jurgiel
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsApplication, QgsContextHelp
-import sys
+import sys, time
 from fetchingbase import Ui_QgsPluginInstallerFetchingDialog
 from installingbase import Ui_QgsPluginInstallerInstallingDialog
 from repositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialog
 from pluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialog
 from guibase import Ui_QgsPluginInstallerDialog
 from installer_data import *
+
 
 
 # --- common functions ------------------------------------------------------------------- #
@@ -44,11 +45,15 @@ def removeDir(path):
       iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
       while iterator.hasNext():
         item = iterator.next()
-        if QDir(item).rmpath("."):
+        if QDir().rmpath(item):
           #print " Directory removing successfull: %s" % item
           pass
     if QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Failed to remove directory")+" "+path+" \n"+QCoreApplication.translate("QgsPluginInstaller","Check permissions or remove it manually")
+    # restore plugin directory if removed by QDir().rmpath()
+    pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins")
+    if not QDir(pluginDir).exists():
+      QDir().mkpath(pluginDir)
     return result
 # --- /common functions ------------------------------------------------------------------ #
 
@@ -189,23 +194,18 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
     # make sure that the parent directory exists
     if not QDir(pluginDir).exists():
-      QDir(pluginDir).mkpath(".")
-
+      QDir().mkpath(pluginDir)
     #print "Extracting to plugin directory (%s)" % pluginDir
-    #try:
-      
-      
-    un = unzip()
-    un.extract(tmpPath, pluginDir) # test extract. If fails, then exception will be raised and no removing occurs
-    #print "Removing old plugin files if exist"
-    removeDir(QDir.cleanPath(pluginDir+"/"+self.plugin["localdir"])) # remove old plugin if exists
-    un.extract(tmpPath, pluginDir) # final extract.
-    
-    
-    #except:
-      #self.mResult = self.tr("Failed to unzip file to ") + pluginDir + "\n" + self.tr("check permissions")
-      #self.reject()
-      #return
+    try:
+      un = unzip()
+      un.extract(tmpPath, pluginDir) # test extract. If fails, then exception will be raised and no removing occurs
+      #print "Removing old plugin files if exist"
+      removeDir(QDir.cleanPath(pluginDir+"/"+self.plugin["localdir"])) # remove old plugin if exists
+      un.extract(tmpPath, pluginDir) # final extract.
+    except:
+      self.mResult = self.tr("Failed to unzip file to ") + pluginDir + "\n" + self.tr("check permissions")
+      self.reject()
+      return
 
     try:
       #print "Cleaning: removing the zip file (%s)" % tmpPath
@@ -414,13 +414,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
           p["desc_local"] = self.tr("This plugin seems to be invalid or have unfulfilled dependencies")
           p["desc_repo"] = self.tr("This plugin seems to be invalid or have unfulfilled dependencies\nIt has been installed, but can't be loaded")
         if p["status"] == "orphan":
-          if p["read-only"]:
-            url = unicode(QgsApplication.pkgDataPath(),'utf-8') + "/python/plugins/" + p["localdir"]
-          else:
-            url = unicode(QgsApplication.qgisSettingsDirPath(),'utf-8') + "/python/plugins/" + p["localdir"]
           repository = self.tr("only locally available")
         else:
-          url = p["url"]
           repository = p["repository"]
         if not p["desc_local"]:
           p["desc_local"] = p["desc_repo"]
@@ -438,7 +433,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         else:
           a.setToolTip(4,"")
         a.setText(5,repository)
-        a.setToolTip(5,url)
+        a.setToolTip(5,p["url"])
         # set fonts and colours
         for i in [0,1,2,3,4,5]:
           if p["status"] == "invalid":
@@ -483,7 +478,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     item = self.treePlugins.currentItem()
     if not item:
       return
-    key = plugins.firstByName(item.text(1))
+    key = plugins.keyByUrl(item.toolTip(5))
     if not key:
       return
     plugin = plugins.all()[key]
@@ -501,7 +496,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     """ install currently selected plugin """
     if not self.treePlugins.currentItem():
       return
-    key = plugins.firstByName(self.treePlugins.currentItem().text(1))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
     plugin = plugins.all()[key]
     if not plugin:
       return
@@ -547,7 +542,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     """ uninstall currently selected plugin """
     if not self.treePlugins.currentItem():
       return
-    key = plugins.firstByName(self.treePlugins.currentItem().text(1))
+    key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
     plugin = plugins.all()[key]
     if not plugin:
       return
@@ -568,9 +563,12 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         exec ("del sys.modules[%s]" % plugin["localdir"])
       except:
         pass
-      plugins.setPluginData(key, "status", "not installed")
-      plugins.setPluginData(key, "version_inst", "")
-      plugins.setPluginData(key, "desc_local", "")
+      if plugin["status"] == "orphan":
+        plugins.remove(key)
+      else:
+        plugins.setPluginData(key, "status", "not installed")
+        plugins.setPluginData(key, "version_inst", "")
+        plugins.setPluginData(key, "desc_local", "")
       self.populatePluginTree()
       QApplication.restoreOverrideCursor()
       QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin uninstalled successfully"))

@@ -20,7 +20,7 @@ def author_name():
   return "perrygeo, borysiasty"
 
 def version():
-  return "Version 0.05.6"
+  return "Version 0.06.1"
 
 def classFactory(iface):
   from installer_plugin import InstallerPlugin

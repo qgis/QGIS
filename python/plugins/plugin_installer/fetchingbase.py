@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'fetchingbase.ui'
 #
-# Created: Sun Sep  7 16:22:19 2008
+# Created: Fri Sep 12 19:21:37 2008
 #      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!

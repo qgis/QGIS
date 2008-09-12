@@ -229,7 +229,6 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def xmlDownloaded(self,nr,state):
-    #print reposName, nr, state
     if not self.httpId.has_key(nr):
       return
     reposName = self.httpId[nr]
@@ -296,8 +295,8 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def firstByName(self, name):
-    plugins = [i for i in self.mPlugins if self.mPlugins[i]["name"] == name]
+  def keyByUrl(self, name):
+    plugins = [i for i in self.mPlugins if self.mPlugins[i]["url"] == name]
     if plugins:
       return plugins[0]
     return None
@@ -421,6 +420,11 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
+  def remove(self, key):
+    del self.mPlugins[key]
+
+
+  # ----------------------------------------- #
   def updatePlugin(self, key, readOnly):
     try:
       exec("import "+ key)
@@ -452,6 +456,11 @@ class Plugins(QObject):
       desc  = ""
       auth  = ""
       homepage  = ""
+    if readOnly:
+      path = QgsApplication.pkgDataPath()
+    else:
+      path = QgsApplication.qgisSettingsDirPath()
+    path = QDir.cleanPath(unicode(path,"utf-8") + "python/plugins/" + key)
     normVer = self.normalizeVersion(QString(ver))
     plugin = {
         "name"          : nam,
@@ -461,7 +470,7 @@ class Plugins(QObject):
         "desc_repo"     : "",
         "author"        : auth,
         "homepage"      : homepage,
-        "url"           : "",
+        "url"           : path,
         "filename"      : "",
         "status"        : stat,
         "repository"    : "",
@@ -478,10 +487,6 @@ class Plugins(QObject):
         self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority, except invalid plugins
         self.mPlugins[key]["version_inst"] = plugin["version_inst"]
         self.mPlugins[key]["desc_local"] = plugin["desc_local"]
-        if plugin["author"]:
-          self.mPlugins[key]["author"] = plugin["author"] #local author name has higher priority, if exists
-        if plugin["homepage"]:
-          self.mPlugins[key]["homepage"] = plugin["homepage"] # local homepage adress has higher priority, if exists
     # set status
     #
     # installed   available   status
@@ -509,7 +514,6 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def getAllInstalled(self):
     """ update the mPlugins dict with alredy installed plugins """
-    #print "getting list of installed plugins"
     # first, try to add the read-only plugins...
     try:
       pluginDir = QDir.cleanPath(unicode(QgsApplication.pkgDataPath(),'utf-8') + "/python/plugins")
@@ -537,7 +541,6 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def markNews(self):
     """ mark all new plugins as new """
-    #print "marking the new plugins"
     settings = QSettings()
     seenPlugins = settings.value(seenPluginGroup, QVariant(QStringList(self.mPlugins.keys()))).toStringList()
     if len(seenPlugins) > 0:
@@ -549,7 +552,6 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def updateSeenPluginsList(self):
     """ update the list of all seen plugins """
-    #print "updating the list of seen plugins"
     settings = QSettings()
     seenPlugins = settings.value(seenPluginGroup, QVariant(QStringList(self.mPlugins.keys()))).toStringList()
     for i in self.mPlugins.keys():
