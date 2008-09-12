@@ -2745,6 +2745,14 @@ bool QgsVectorLayer::commitChanges()
     //
     if ( mAddedFeatures.size() > 0 )
     {
+      for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
+      {
+        if ( mChangedGeometries.contains( iter->featureId() ) )
+        {
+          iter->setGeometry( mChangedGeometries.take( iter->featureId() ) );
+        }
+      }
+
       if (( cap & QgsVectorDataProvider::AddFeatures ) && mDataProvider->addFeatures( mAddedFeatures ) )
       {
         mCommitErrors << tr( "SUCCESS: %1 features added." ).arg( mAddedFeatures.size() );
