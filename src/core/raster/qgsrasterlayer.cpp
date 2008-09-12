@@ -542,6 +542,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   {
     rasterLayerType = MULTIBAND;
   }
+  //TODO hasBand is really obsolete and only used in the Palette instance, change to new function hasPalette(int)
   else if ( hasBand( "Palette" ) ) //dont tr() this its a gdal word!
   {
     rasterLayerType = PALETTE;
@@ -3433,6 +3434,9 @@ QString QgsRasterLayer::getMetadata()
 QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyramidList,
                                        QString const & theResamplingMethod, bool theTryInternalFlag )
 {
+  //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
+  //without requiring the user to rebuild the pyramid list to get the updated infomation
+  
   //
   // Note: Make sure the raster is not opened in write mode
   // in order to force overviews to be written to a separate file.
@@ -3456,20 +3460,22 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
     return "ERROR_VIRTUAL";
   }
 
-
   if ( theTryInternalFlag )
   {
     //close the gdal dataset and reopen it in read / write mode
     GDALClose( mGdalDataset );
-    mGdalDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_Update );
+    mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_Update );
 
     // if the dataset couldn't be opened in read / write mode, tell the user
-    if ( !mGdalDataset )
+    if ( !mGdalBaseDataset )
     {
-      mGdalDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+      mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+      //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+      mGdalDataset = mGdalBaseDataset;
       return "ERROR_WRITE_FORMAT";
     }
   }
+  
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
@@ -3486,9 +3492,9 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
     QgsLogger::debug( "Build pyramids:: Level", ( *myRasterPyramidIterator ).level, 1, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug( "x", ( *myRasterPyramidIterator ).xDim, 1, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug( "y", ( *myRasterPyramidIterator ).yDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "exists :", ( *myRasterPyramidIterator ).existsFlag,  1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "exists :", ( *myRasterPyramidIterator ).exists,  1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
-    if (( *myRasterPyramidIterator ).existsFlag )
+    if (( *myRasterPyramidIterator ).build )
     {
       QgsDebugMsg( "Building....." );
       emit drawingProgress( myCount, myTotal );
@@ -3513,32 +3519,40 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
         //see ticket #284
         if ( theResamplingMethod == tr( "Average Magphase" ) )
         {
-          myError = GDALBuildOverviews( mGdalDataset, "MODE", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalBaseDataset, "MODE", 1, myOverviewLevelsArray, 0, NULL,
                                         progressCallback, this ); //this is the arg for the gdal progress callback
         }
         else if ( theResamplingMethod == tr( "Average" ) )
 
         {
-          myError = GDALBuildOverviews( mGdalDataset, "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalBaseDataset, "AVERAGE", 1, myOverviewLevelsArray, 0, NULL,
                                         progressCallback, this ); //this is the arg for the gdal progress callback
         }
         else // fall back to nearest neighbor
         {
-          myError = GDALBuildOverviews( mGdalDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
+          myError = GDALBuildOverviews( mGdalBaseDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
                                         progressCallback, this ); //this is the arg for the gdal progress callback
         }
+        
         if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
         {
           //something bad happenend
           //QString myString = QString (CPLGetLastError());
-          GDALClose( mGdalDataset );
-          mGdalDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+          GDALClose( mGdalBaseDataset );
+          mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+          //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+          mGdalDataset = mGdalBaseDataset;
+          
           emit drawingProgress( 0, 0 );
           return "FAILED_NOT_SUPPORTED";
         }
+        else
+        {
+          //make sure the raster knows it has pyramids
+          hasPyramidsFlag = true;
+        }
         myCount++;
-        //make sure the raster knows it has pyramids
-        hasPyramidsFlag = true;
+        
       }
       catch ( CPLErr )
       {
@@ -3546,13 +3560,17 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
       }
     }
   }
+  
   QgsDebugMsg( "Pyramid overviews built" );
   if ( theTryInternalFlag )
   {
     //close the gdal dataset and reopen it in read only mode
-    GDALClose( mGdalDataset );
-    mGdalDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+    GDALClose( mGdalBaseDataset );
+    mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
+    //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
+    mGdalDataset = mGdalBaseDataset;
   }
+  
   emit drawingProgress( 0, 0 );
   return NULL; // returning null on success
 }
@@ -3576,15 +3594,12 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
     myRasterPyramid.level = myDivisor;
     myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) );
     myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) );
-    myRasterPyramid.existsFlag = false;
+    myRasterPyramid.exists = false;
 #ifdef QGISDEBUG
     QgsLogger::debug( "Pyramid", myRasterPyramid.level, 1, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug( "xDim", myRasterPyramid.xDim, 1, __FILE__, __FUNCTION__, __LINE__ );
     QgsLogger::debug( "yDim", myRasterPyramid.yDim, 1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
-
-
-
 
     //
     // Now we check if it actually exists in the raster layer
@@ -3620,7 +3635,7 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildRasterPyramidList()
           //right we have a match so adjust the a / y before they get added to the list
           myRasterPyramid.xDim = myOverviewXDim;
           myRasterPyramid.yDim = myOverviewYDim;
-          myRasterPyramid.existsFlag = true;
+          myRasterPyramid.exists = true;
           QgsDebugMsg( ".....YES!" );
         }
         else

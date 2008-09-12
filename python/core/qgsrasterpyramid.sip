@@ -13,6 +13,9 @@ class QgsRasterPyramid
   /** \brief YDimension for this pyramid layer */
   int yDim;
   /** \brief Whether the pyramid layer has been built yet */
-  bool existsFlag;
+  bool exists;
+  /** \brief Whether the pyramid should be built */
+  bool build;
 
+  QgsRasterPyramid()
 };
