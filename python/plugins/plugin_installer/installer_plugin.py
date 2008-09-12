@@ -33,14 +33,14 @@ class InstallerPlugin:
   # ----------------------------------------- #
   def initGui(self):
     """ create action that will start plugin window and then add it to menu """
-    self.action = QAction(QIcon(":/plugins/installer/PluginInstaller.png"), QCoreApplication.translate("QgsPluginInstaller","Plugin Installer..."), self.mainWindow())
+    self.action = QAction(QIcon(":/plugins/installer/PluginInstaller.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
     self.action.setWhatsThis(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     self.action.setStatusTip(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     if str(QGis.qgisVersion)[0] == "0":
       nextAction = self.mainWindow().menuBar().actions()[4].menu().actions()[1]
       self.mainWindow().menuBar().actions()[4].menu().insertAction(nextAction,self.action)
     else:
-      nextAction = self.iface.actionPluginSeparator1()
+      nextAction = self.iface.actionManagePlugins()  #actionPluginSeparator1()
       self.iface.pluginMenu().insertAction(nextAction,self.action)
     QObject.connect(self.action, SIGNAL("activated()"), self.run)
     self.statusLabel = None
