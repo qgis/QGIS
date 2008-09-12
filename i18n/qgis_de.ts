@@ -23,7 +23,7 @@
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation>Koordinate im Koordinatenbezugssystem des Kartebereichs</translation>
+        <translation>Koordinate im Koordinatenbezugssystem des Kartenbereichs</translation>
     </message>
     <message>
         <source>Copy to clipboard</source>
@@ -62,7 +62,7 @@
     </message>
     <message>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation type="unfinished">Wozu sind die ganzen Dateien in dem gerade erstellten Plugin-Ordner nützlich?</translation>
+        <translation type="unfinished">Wozu dienen die ganzen Dateien in dem gerade erstellten Plugin-Ordner?</translation>
     </message>
     <message>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
@@ -253,7 +253,7 @@
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
-        <translation type="unfinished">Konnte konnte Verbindung herstellen zu: &apos;</translation>
+        <translation type="unfinished">Konnte keine Verbindung herstellen zu: &apos;</translation>
     </message>
     <message>
         <source>Open OGR file</source>
@@ -528,7 +528,7 @@
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: </source>
-        <translation>Die Referenzspalte würde nicht gefunden:</translation>
+        <translation>Die Referenzspalte wurde nicht gefunden: </translation>
     </message>
     <message>
         <source>Division by zero.</source>
@@ -1474,7 +1474,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">Dateinamen zum Speichern des Kartebildes w�hlen</translation>
+        <translation type="obsolete">Dateinamen zum Speichern des Kartenbildes wählen</translation>
     </message>
     <message>
         <source>Extents: </source>
@@ -2815,7 +2815,7 @@ Bitte kontaktieren Sie die Entwickler.</translation>
 
 Errors:  %2
 </source>
-        <translation type="unfinished">Konnte Änderungen am Layer %1 nicht anwenden
+        <translation type="unfinished">Änderungen am Layer %1 konnten nicht gespeichern werden
 	
 Fehler: %2
 </translation>
@@ -3279,7 +3279,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Could not commit changes - changes are still pending</source>
-        <translation type="obsolete">Konnten Änderungen nicht commiten - Die Änderungen wurden noch nicht durchgeführt.</translation>
+        <translation type="obsolete">Konnten Änderungen nicht speichern - sie stehen weiter an.</translation>
     </message>
     <message>
         <source>Editing not permitted</source>
@@ -7737,7 +7737,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation>Zeigt die aktuelle GRASS-Region als Rechteck auf dem Kartebild an</translation>
+        <translation>Zeigt die aktuelle GRASS-Region als Rechteck im Kartenbild an</translation>
     </message>
     <message>
         <source>Edit the current GRASS region</source>
@@ -8637,7 +8637,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Add group</source>
-        <translation>Gruppe Hinzufügen</translation>
+        <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
         <source>&amp;Expand all</source>
@@ -8743,7 +8743,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Kann die Änderungen nicht abspeichern.</translation>
+        <translation type="unfinished">Änderungen konnten nicht gespeichern werden.</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
@@ -11333,7 +11333,7 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation>Öffne Datei</translation>
+        <translation>Datei öffnen</translation>
     </message>
     <message>
         <source>Import Error</source>
@@ -12888,35 +12888,35 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <name>QgsVectorLayer</name>
     <message>
         <source>Could not commit the added features.</source>
-        <translation type="obsolete">Hinzugefügte Objekte konnten nicht übernommen werden.</translation>
+        <translation type="obsolete">Hinzugefügte Objekte konnten nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>No other types of changes will be committed at this time.</source>
-        <translation type="obsolete">Es werden keine anderen Änderungen übernommen.</translation>
+        <translation type="obsolete">Es werden keine weiteren Änderungen gespeichert.</translation>
     </message>
     <message>
         <source>Could not commit the changed attributes.</source>
-        <translation type="obsolete">Die geänderten Attribute konnte nicht übernommen werden.</translation>
+        <translation type="obsolete">Die geänderten Attribute konnte nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>However, the added features were committed OK.</source>
-        <translation type="obsolete">Die hinzugefügten Objekte wurden allerdings richtig übernommen.</translation>
+        <translation type="obsolete">Die hinzugefügten Objekte wurden allerdings gespeichert.</translation>
     </message>
     <message>
         <source>Could not commit the changed geometries.</source>
-        <translation type="obsolete">Die geänderten Geometrien konnten nicht übernommen werden.</translation>
+        <translation type="obsolete">Die geänderten Geometrien konnten nicht gespeichert werden.</translation>
     </message>
     <message>
         <source>However, the changed attributes were committed OK.</source>
-        <translation type="obsolete">Die geänderten Attribute wurden jedoch richtig übernommen.</translation>
+        <translation type="obsolete">Die geänderten Attribute wurden jedoch gespeichert.</translation>
     </message>
     <message>
         <source>Could not commit the deleted features.</source>
-        <translation type="obsolete">Die gelöschten Objekte konnte nicht übernommen werden.</translation>
+        <translation type="obsolete">Die Löschung von Objekte konnte nicht vollzogen werden.</translation>
     </message>
     <message>
         <source>However, the changed geometries were committed OK.</source>
-        <translation type="obsolete">Die geänderten Geometrien wurden jedoch korrekt übernommen.</translation>
+        <translation type="obsolete">Die geänderten Geometrien wurden jedoch gespeichert.</translation>
     </message>
     <message>
         <source>ERROR: no provider</source>
