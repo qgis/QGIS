@@ -38,16 +38,33 @@ email                : morb at ozemail dot com dot au
 class GEOSException
 {
   public:
-    GEOSException( const char *theMsg )
+    GEOSException( char *theMsg )
     {
-      msg  = theMsg;
+      if ( strcmp( theMsg, "Unknown exception thrown" ) == 0 && lastMsg )
+      {
+        delete [] theMsg;
+        msg = new char[strlen( lastMsg )+1];
+        strcpy( msg, lastMsg );
+      }
+      else
+      {
+        msg = theMsg;
+        lastMsg = msg;
+      }
+    }
+
+    // copy constructor
+    GEOSException( const GEOSException &rhs )
+    {
+      *this = rhs;
     }
 
     ~GEOSException()
     {
+      if ( lastMsg == msg )
+        lastMsg = NULL;
       delete [] msg;
     }
-
 
     const char *what()
     {
@@ -55,8 +72,11 @@ class GEOSException
     }
 
   private:
-    const char *msg;
+    char *msg;
+    static const char *lastMsg;
 };
+
+const char *GEOSException::lastMsg = NULL;
 
 void throwGEOSException( const char *fmt, ... )
 {
@@ -2080,7 +2100,11 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
   {
     try
     {
-      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( mGeos );
+      const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
+      if ( !g )
+        return QgsPoint( 0, 0 );
+
+      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( g );
       GEOSCoordSeq_getX( cs, atVertex, &x );
       GEOSCoordSeq_getY( cs, atVertex, &y );
       return QgsPoint( x, y );
@@ -2317,7 +2341,11 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
     // set up the GEOS geometry
     exportWkbToGeos();
 
-    const GEOSCoordSequence *sequence = GEOSGeom_getCoordSeq( mGeos );
+    const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
+    if ( g == NULL )
+      return -1;
+
+    const GEOSCoordSequence *sequence = GEOSGeom_getCoordSeq( g );
 
     unsigned int n;
     GEOSCoordSeq_getSize( sequence, &n );
