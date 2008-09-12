@@ -276,7 +276,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
     {
-      if (( *myRasterPyramidIterator ).existsFlag == true )
+      if (( *myRasterPyramidIterator ).exists == true )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
                                         QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +
@@ -1546,10 +1546,14 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   for ( int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
-    if ( myItem->isSelected() )
+    if ( myItem->isSelected() || myPyramidList[myCounterInt].exists )
     {
       //mark to be pyramided
-      myPyramidList[myCounterInt].existsFlag = true;
+      myPyramidList[myCounterInt].build = true;
+    }
+    else
+    {
+      myPyramidList[myCounterInt].build = false;
     }
   }
   //
@@ -1583,6 +1587,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
     }
+    else if ( res == "ERROR_VIRTUAL" )
+    {
+      QMessageBox::warning( this, tr( "Building pyramids failed." ),
+                            tr( "Building pyramid overviews is not supported on this type of raster." ) );
+                            //TODO: should really read -- Building pyramid overviews is not supported for 'warped virtual dataset'. -- But in feature freeze, and translation requests have already gone out PJE20080912
+    }
+    
   }
 
 
@@ -1590,6 +1601,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
+  // Need to rebuild list as some or all pyramids may have failed to build
+  myPyramidList = mRasterLayer->buildRasterPyramidList();
   QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgisApp::getThemeIcon( "/mIconNoPyramid.png" ) );
 
@@ -1598,7 +1611,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
         myRasterPyramidIterator != myPyramidList.end();
         ++myRasterPyramidIterator )
   {
-    if (( *myRasterPyramidIterator ).existsFlag == true )
+    if (( *myRasterPyramidIterator ).exists == true )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
                                       QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +

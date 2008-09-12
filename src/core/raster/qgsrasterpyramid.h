@@ -30,7 +30,18 @@ class CORE_EXPORT QgsRasterPyramid
     /** \brief YDimension for this pyramid layer */
     int yDim;
     /** \brief Whether the pyramid layer has been built yet */
-    bool existsFlag;
+    bool exists;
+    /** \brief Whether the pyramid should be built */
+    bool build;
+    
+    QgsRasterPyramid()
+    {
+      level = 0;
+      xDim = 0;
+      yDim = 0;
+      exists = false;
+      build = false;
+    }
 
 };
 #endif
