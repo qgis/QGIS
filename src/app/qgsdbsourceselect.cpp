@@ -414,8 +414,6 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
         {
           connect( mColumnTypeThread, SIGNAL( setLayerType( QString, QString, QString, QString ) ),
                    this, SLOT( setLayerType( QString, QString, QString, QString ) ) );
-          connect( this, SIGNAL( finished() ),
-                   mColumnTypeThread, SLOT( stop() ) );
 
           // Do it in a thread.
           mColumnTypeThread->start();
