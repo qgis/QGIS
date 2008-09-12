@@ -310,7 +310,6 @@ QgsRasterLayer::QgsRasterLayer(
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
     mRasterXDim( std::numeric_limits<int>::max() ),
     mRasterYDim( std::numeric_limits<int>::max() ),
-    mDebugOverlayFlag( false ),
     mInvertPixelsFlag( false ),
     mStandardDeviations( 0 ),
     mDataProvider( 0 )
@@ -1325,12 +1324,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
   }
 
-  //see if debug info is wanted
-  if ( mDebugOverlayFlag )
-  {
-    showDebugOverlay( theQPainter, theRasterViewPort );
-  };
-
 }                               //end of draw method
 
 
@@ -2035,37 +2028,6 @@ void QgsRasterLayer::filterLayer( QImage * theQImage )
   //return;
 }
 
-/**
-  Print some debug info to the qpainter
-  */
-
-void QgsRasterLayer::showDebugOverlay( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort )
-{
-
-
-  QFont myQFont( "arial", 10, QFont::Bold );
-  theQPainter->setFont( myQFont );
-  theQPainter->setPen( Qt::black );
-  QBrush myQBrush( qRgba( 128, 128, 164, 50 ), Qt::Dense6Pattern ); //semi transparent
-  theQPainter->setBrush( myQBrush );  // set the yellow brush
-  theQPainter->drawRect( 5, 5, theQPainter->window().width() - 10, 60 );
-  theQPainter->setBrush( Qt::NoBrush ); // do not fill
-
-  theQPainter->drawText( 10, 20, "QPainter: "
-                         + QString::number( theQPainter->window().width() ) + " x " + QString::number( theQPainter->window().height() ) );
-  theQPainter->drawText( 10, 32, tr( "Raster Extent: " )
-                         + QString::number( theRasterViewPort->drawableAreaXDim )
-                         + "," + QString::number( theRasterViewPort->drawableAreaYDim ) );
-  theQPainter->drawText( 10, 44, tr( "Clipped area: " )
-                         + QString::number( theRasterViewPort->clippedXMin )
-                         + "," + QString::number( theRasterViewPort->clippedYMin )
-                         + " - " + QString::number( theRasterViewPort->clippedXMax )
-                         + "," + QString::number( theRasterViewPort->clippedYMin ) );
-
-  return;
-
-
-}                               //end of main draw method
 
 const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( QString const & theBandName )
 {
@@ -3834,7 +3796,6 @@ double QgsRasterLayer::readValue( void *data, GDALDataType type, int index )
   <zorder>0</zorder>
   <transparencyLevelInt>255</transparencyLevelInt>
   <rasterproperties>
-  <mDebugOverlayFlag boolean="false"/>
   <drawingStyle>SINGLE_BAND_GRAY</drawingStyle>
   <mInvertPixelsFlag boolean="false"/>
   <mStandardDeviations>0</mStandardDeviations>
@@ -3912,14 +3873,8 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
   }
 
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
-
-  QDomNode snode = mnl.namedItem( "mDebugOverlayFlag" );
+  QDomNode snode = mnl.namedItem( "drawingStyle" );
   QDomElement myElement = snode.toElement();
-  QVariant myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setShowDebugOverlayFlag( myQVariant.toBool() );
-
-  snode = mnl.namedItem( "drawingStyle" );
-  myElement = snode.toElement();
   setDrawingStyle( myElement.text() );
 
   snode = mnl.namedItem( "mColorShadingAlgorithm" );
@@ -3928,8 +3883,8 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
 
   snode = mnl.namedItem( "mInvertPixelsFlag" );
   myElement = snode.toElement();
-  myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setInvertHistogramFlag( myQVariant.toBool() );
+  QVariant myVariant = ( QVariant ) myElement.attribute( "boolean" );
+  setInvertHistogramFlag( myVariant.toBool() );
 
   snode = mnl.namedItem( "mRedBandName" );
   myElement = snode.toElement();
@@ -3954,23 +3909,23 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
 
   snode = mnl.namedItem( "mUserDefinedRGBMinMaxFlag" );
   myElement = snode.toElement();
-  myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setUserDefinedRGBMinMax( myQVariant.toBool() );
+  myVariant = ( QVariant ) myElement.attribute( "boolean" );
+  setUserDefinedRGBMinMax( myVariant.toBool() );
 
   snode = mnl.namedItem( "mRGBActualMinimumMaximum" );
   myElement = snode.toElement();
-  myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setActualRGBMinMaxFlag( myQVariant.toBool() );
+  myVariant = ( QVariant ) myElement.attribute( "boolean" );
+  setActualRGBMinMaxFlag( myVariant.toBool() );
 
   snode = mnl.namedItem( "mUserDefinedGrayMinMaxFlag" );
   myElement = snode.toElement();
-  myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setUserDefinedGrayMinMax( myQVariant.toBool() );
+  myVariant = ( QVariant ) myElement.attribute( "boolean" );
+  setUserDefinedGrayMinMax( myVariant.toBool() );
 
   snode = mnl.namedItem( "mGrayActualMinimumMaximum" );
   myElement = snode.toElement();
-  myQVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setActualGrayMinMaxFlag( myQVariant.toBool() );
+  myVariant = ( QVariant ) myElement.attribute( "boolean" );
+  setActualGrayMinMaxFlag( myVariant.toBool() );
 
   snode = mnl.namedItem( "mContrastEnhancementAlgorithm" );
   myElement = snode.toElement();
@@ -4171,20 +4126,6 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     rasterPropertiesElement.appendChild( formatElement );
 
   }
-
-  // <mDebugOverlayFlag>
-  QDomElement mDebugOverlayFlagElement = document.createElement( "mDebugOverlayFlag" );
-
-  if ( getShowDebugOverlayFlag() )
-  {
-    mDebugOverlayFlagElement.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    mDebugOverlayFlagElement.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( mDebugOverlayFlagElement );
 
   // <drawingStyle>
   QDomElement drawStyleElement = document.createElement( "drawingStyle" );
@@ -4610,7 +4551,6 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     : QgsMapLayer( RASTER, baseName, rasterLayerPath ),
     mRasterXDim( std::numeric_limits<int>::max() ),
     mRasterYDim( std::numeric_limits<int>::max() ),
-    mDebugOverlayFlag( false ),
     mInvertPixelsFlag( false ),
     mStandardDeviations( 0 ),
     mProviderKey( providerKey ),

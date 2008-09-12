@@ -429,19 +429,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
     /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName( const QString & theBandName );
-    //
-    // Accessor and mutator for mDebugOverlayFlag
-    //
-    /** \brief Accessor for a flag that determines whether to show some debug info on the image.  */
-    bool getShowDebugOverlayFlag()
-    {
-      return mDebugOverlayFlag;
-    }
-    /** \brief Mutator for a flag that determines whether to show some debug info on the image.  */
-    void setShowDebugOverlayFlag( bool theFlag )
-    {
-      mDebugOverlayFlag = theFlag;
-    }
 
     // Accessor and mutator for minimum maximum values
     //TODO: Move these out of the header file...
@@ -912,8 +899,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //
     // Private methods
     //
-    /** \brief Paint debug information onto the output image.  */
-    void showDebugOverlay( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort );
 
     //
     // Grayscale Imagery
@@ -1033,8 +1018,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double mNoDataValue;
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
-    /** \brief Flag to indicate whether debug info overlay should be rendered onto the raster.  */
-    bool mDebugOverlayFlag;
     /** \brief Pointer to the gdaldataset.  */
     GDALDatasetH mGdalBaseDataset;
     /** \brief Pointer to the gdaldataset (possibly warped vrt).  */
