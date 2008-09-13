@@ -2096,89 +2096,174 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
 {
   double x, y;
 
-  if ( mGeos ) //try to find the vertex from the Geos geometry (it present)
+  if ( mDirtyWkb )
   {
-    try
-    {
-      const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
-      if ( !g )
-        return QgsPoint( 0, 0 );
-
-      const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( g );
-      GEOSCoordSeq_getX( cs, atVertex, &x );
-      GEOSCoordSeq_getY( cs, atVertex, &y );
-      return QgsPoint( x, y );
-    }
-    catch ( GEOSException &e )
-    {
-      Q_UNUSED( e );
-      return QgsPoint( 0, 0 );
-    }
+    exportGeosToWkb();
   }
-  else if ( mGeometry )
+
+  if ( !mGeometry )
   {
-    QGis::WKBTYPE wkbType;
-    bool hasZValue = false;
-    unsigned char* ptr;
+    QgsDebugMsg( "WKB geometry not available!" );
+    return QgsPoint( 0, 0 );
+  }
 
-    memcpy( &wkbType, ( mGeometry + 1 ), sizeof( int ) );
-    switch ( wkbType )
+  QGis::WKBTYPE wkbType;
+  bool hasZValue = false;
+  unsigned char* ptr;
+
+  memcpy( &wkbType, ( mGeometry + 1 ), sizeof( int ) );
+  switch ( wkbType )
+  {
+    case QGis::WKBPoint25D:
+    case QGis::WKBPoint:
     {
-      case QGis::WKBPoint25D:
-      case QGis::WKBPoint:
+      if ( atVertex == 0 )
       {
-        if ( atVertex == 0 )
-        {
-          ptr = mGeometry + 1 + sizeof( int );
-          memcpy( &x, ptr, sizeof( double ) );
-          ptr += sizeof( double );
-          memcpy( &y, ptr, sizeof( double ) );
-          return QgsPoint( x, y );
-        }
-        else
-        {
-          return QgsPoint( 0, 0 );
-        }
-      }
-      case QGis::WKBLineString25D:
-        hasZValue = true;
-      case QGis::WKBLineString:
-      {
-        int *nPoints;
-        // get number of points in the line
-        ptr = mGeometry + 1 + sizeof( int );   // now at mGeometry.numPoints
-        nPoints = ( int * ) ptr;
-
-        // return error if underflow
-        if ( 0 > atVertex || *nPoints <= atVertex )
-        {
-          return QgsPoint( 0, 0 );
-        }
-
-        // copy the vertex coordinates
-        if ( hasZValue )
-        {
-          ptr = mGeometry + 9 + ( atVertex * 3 * sizeof( double ) );
-        }
-        else
-        {
-          ptr = mGeometry + 9 + ( atVertex * 2 * sizeof( double ) );
-        }
+        ptr = mGeometry + 1 + sizeof( int );
         memcpy( &x, ptr, sizeof( double ) );
         ptr += sizeof( double );
         memcpy( &y, ptr, sizeof( double ) );
         return QgsPoint( x, y );
       }
-      case QGis::WKBPolygon25D:
-        hasZValue = true;
-      case QGis::WKBPolygon:
+      else
       {
-        int *nRings;
-        int *nPoints = 0;
-        ptr = mGeometry + 1 + sizeof( int );
+        return QgsPoint( 0, 0 );
+      }
+    }
+    case QGis::WKBLineString25D:
+      hasZValue = true;
+    case QGis::WKBLineString:
+    {
+      int *nPoints;
+      // get number of points in the line
+      ptr = mGeometry + 1 + sizeof( int );   // now at mGeometry.numPoints
+      nPoints = ( int * ) ptr;
+
+      // return error if underflow
+      if ( 0 > atVertex || *nPoints <= atVertex )
+      {
+        return QgsPoint( 0, 0 );
+      }
+
+      // copy the vertex coordinates
+      if ( hasZValue )
+      {
+        ptr = mGeometry + 9 + ( atVertex * 3 * sizeof( double ) );
+      }
+      else
+      {
+        ptr = mGeometry + 9 + ( atVertex * 2 * sizeof( double ) );
+      }
+      memcpy( &x, ptr, sizeof( double ) );
+      ptr += sizeof( double );
+      memcpy( &y, ptr, sizeof( double ) );
+      return QgsPoint( x, y );
+    }
+    case QGis::WKBPolygon25D:
+      hasZValue = true;
+    case QGis::WKBPolygon:
+    {
+      int *nRings;
+      int *nPoints = 0;
+      ptr = mGeometry + 1 + sizeof( int );
+      nRings = ( int* )ptr;
+      ptr += sizeof( int );
+      int pointindex = 0;
+      for ( int ringnr = 0; ringnr < *nRings; ++ringnr )
+      {
+        nPoints = ( int* )ptr;
+        ptr += sizeof( int );
+        for ( int pointnr = 0; pointnr < *nPoints; ++pointnr )
+        {
+          if ( pointindex == atVertex )
+          {
+            memcpy( &x, ptr, sizeof( double ) );
+            ptr += sizeof( double );
+            memcpy( &y, ptr, sizeof( double ) );
+            return QgsPoint( x, y );
+          }
+          ptr += 2 * sizeof( double );
+          if ( hasZValue )
+          {
+            ptr += sizeof( double );
+          }
+          ++pointindex;
+        }
+      }
+      return QgsPoint( 0, 0 );
+    }
+    case QGis::WKBMultiPoint25D:
+      hasZValue = true;
+    case QGis::WKBMultiPoint:
+    {
+      ptr = mGeometry + 1 + sizeof( int );
+      int* nPoints = ( int* )ptr;
+      if ( atVertex < 0 || atVertex >= *nPoints )
+      {
+        return QgsPoint( 0, 0 );
+      }
+      if ( hasZValue )
+      {
+        ptr += atVertex * ( 3 * sizeof( double ) + 1 + sizeof( int ) );
+      }
+      else
+      {
+        ptr += atVertex * ( 2 * sizeof( double ) + 1 + sizeof( int ) );
+      }
+      ptr += 1 + sizeof( int );
+      memcpy( &x, ptr, sizeof( double ) );
+      ptr += sizeof( double );
+      memcpy( &y, ptr, sizeof( double ) );
+      return QgsPoint( x, y );
+    }
+    case QGis::WKBMultiLineString25D:
+      hasZValue = true;
+    case QGis::WKBMultiLineString:
+    {
+      ptr = mGeometry + 1 + sizeof( int );
+      int* nLines = ( int* )ptr;
+      int* nPoints = 0; //number of points in a line
+      int pointindex = 0; //global point counter
+      ptr += sizeof( int );
+      for ( int linenr = 0; linenr < *nLines; ++linenr )
+      {
+        ptr += sizeof( int ) + 1;
+        nPoints = ( int* )ptr;
+        ptr += sizeof( int );
+        for ( int pointnr = 0; pointnr < *nPoints; ++pointnr )
+        {
+          if ( pointindex == atVertex )
+          {
+            memcpy( &x, ptr, sizeof( double ) );
+            ptr += sizeof( double );
+            memcpy( &y, ptr, sizeof( double ) );
+            return QgsPoint( x, y );
+          }
+          ptr += 2 * sizeof( double );
+          if ( hasZValue )
+          {
+            ptr += sizeof( double );
+          }
+          ++pointindex;
+        }
+      }
+      return QgsPoint( 0, 0 );
+    }
+    case QGis::WKBMultiPolygon25D:
+      hasZValue = true;
+    case QGis::WKBMultiPolygon:
+    {
+      ptr = mGeometry + 1 + sizeof( int );
+      int* nRings = 0;//number of rings in a polygon
+      int* nPoints = 0;//number of points in a ring
+      int pointindex = 0; //global point counter
+      int* nPolygons = ( int* )ptr;
+      ptr += sizeof( int );
+      for ( int polynr = 0; polynr < *nPolygons; ++polynr )
+      {
+        ptr += ( 1 + sizeof( int ) ); //skip endian and polygon type
         nRings = ( int* )ptr;
         ptr += sizeof( int );
-        int pointindex = 0;
         for ( int ringnr = 0; ringnr < *nRings; ++ringnr )
         {
           nPoints = ( int* )ptr;
@@ -2192,123 +2277,21 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
               memcpy( &y, ptr, sizeof( double ) );
               return QgsPoint( x, y );
             }
+            ++pointindex;
             ptr += 2 * sizeof( double );
             if ( hasZValue )
             {
               ptr += sizeof( double );
             }
-            ++pointindex;
           }
         }
-        return QgsPoint( 0, 0 );
       }
-      case QGis::WKBMultiPoint25D:
-        hasZValue = true;
-      case QGis::WKBMultiPoint:
-      {
-        ptr = mGeometry + 1 + sizeof( int );
-        int* nPoints = ( int* )ptr;
-        if ( atVertex < 0 || atVertex >= *nPoints )
-        {
-          return QgsPoint( 0, 0 );
-        }
-        if ( hasZValue )
-        {
-          ptr += atVertex * ( 3 * sizeof( double ) + 1 + sizeof( int ) );
-        }
-        else
-        {
-          ptr += atVertex * ( 2 * sizeof( double ) + 1 + sizeof( int ) );
-        }
-        ptr += 1 + sizeof( int );
-        memcpy( &x, ptr, sizeof( double ) );
-        ptr += sizeof( double );
-        memcpy( &y, ptr, sizeof( double ) );
-        return QgsPoint( x, y );
-      }
-      case QGis::WKBMultiLineString25D:
-        hasZValue = true;
-      case QGis::WKBMultiLineString:
-      {
-        ptr = mGeometry + 1 + sizeof( int );
-        int* nLines = ( int* )ptr;
-        int* nPoints = 0; //number of points in a line
-        int pointindex = 0; //global point counter
-        ptr += sizeof( int );
-        for ( int linenr = 0; linenr < *nLines; ++linenr )
-        {
-          ptr += sizeof( int ) + 1;
-          nPoints = ( int* )ptr;
-          ptr += sizeof( int );
-          for ( int pointnr = 0; pointnr < *nPoints; ++pointnr )
-          {
-            if ( pointindex == atVertex )
-            {
-              memcpy( &x, ptr, sizeof( double ) );
-              ptr += sizeof( double );
-              memcpy( &y, ptr, sizeof( double ) );
-              return QgsPoint( x, y );
-            }
-            ptr += 2 * sizeof( double );
-            if ( hasZValue )
-            {
-              ptr += sizeof( double );
-            }
-            ++pointindex;
-          }
-        }
-        return QgsPoint( 0, 0 );
-      }
-      case QGis::WKBMultiPolygon25D:
-        hasZValue = true;
-      case QGis::WKBMultiPolygon:
-      {
-        ptr = mGeometry + 1 + sizeof( int );
-        int* nRings = 0;//number of rings in a polygon
-        int* nPoints = 0;//number of points in a ring
-        int pointindex = 0; //global point counter
-        int* nPolygons = ( int* )ptr;
-        ptr += sizeof( int );
-        for ( int polynr = 0; polynr < *nPolygons; ++polynr )
-        {
-          ptr += ( 1 + sizeof( int ) ); //skip endian and polygon type
-          nRings = ( int* )ptr;
-          ptr += sizeof( int );
-          for ( int ringnr = 0; ringnr < *nRings; ++ringnr )
-          {
-            nPoints = ( int* )ptr;
-            ptr += sizeof( int );
-            for ( int pointnr = 0; pointnr < *nPoints; ++pointnr )
-            {
-              if ( pointindex == atVertex )
-              {
-                memcpy( &x, ptr, sizeof( double ) );
-                ptr += sizeof( double );
-                memcpy( &y, ptr, sizeof( double ) );
-                return QgsPoint( x, y );
-              }
-              ++pointindex;
-              ptr += 2 * sizeof( double );
-              if ( hasZValue )
-              {
-                ptr += sizeof( double );
-              }
-            }
-          }
-        }
-        return QgsPoint( 0, 0 );
-      }
-      default:
-        QgsDebugMsg( "error: mGeometry type not recognized" );
-        return QgsPoint( 0, 0 );
+      return QgsPoint( 0, 0 );
     }
+    default:
+      QgsDebugMsg( "error: mGeometry type not recognized" );
+      return QgsPoint( 0, 0 );
   }
-  else
-  {
-    QgsDebugMsg( "error: no mGeometry pointer" );
-  }
-
-  return QgsPoint( 0, 0 );
 }
 
 
