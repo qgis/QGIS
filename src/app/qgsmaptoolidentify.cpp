@@ -37,7 +37,6 @@
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
-#include "qgslogger.h"
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas ),
@@ -237,19 +236,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
   QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
 
-  // create the search rectangle
-  double searchRadius = mCanvas->extent().width() * ( identifyValue / 100.0 );
-
-  QgsRect r;
-  r.setXMinimum( point.x() - searchRadius );
-  r.setXMaximum( point.x() + searchRadius );
-  r.setYMinimum( point.y() - searchRadius );
-  r.setYMaximum( point.y() + searchRadius );
-
-  r = toLayerCoordinates( layer, r );
-
   int featureCount = 0;
-  //QgsFeature feat;
   QgsAttributeAction& actions = *layer->actions();
   QString fieldIndex = layer->displayField();
   const QgsFieldMap& fields = layer->pendingFields();
@@ -263,10 +250,33 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   mFeatureList.clear();
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  layer->select( layer->pendingAllAttributesList(), r, true, true );
-  QgsFeature f;
-  while ( layer->getNextFeature( f ) )
-    mFeatureList << QgsFeature( f );
+  // toLayerCoordinates will throw an exception for an 'invalid' point.
+  // For example, if you project a world map onto a globe using EPSG 2163
+  // and then click somewhere off the globe, an exception will be thrown. 
+  try
+  {
+    // create the search rectangle
+    double searchRadius = mCanvas->extent().width() * ( identifyValue / 100.0 );
+
+    QgsRect r;
+    r.setXMinimum( point.x() - searchRadius );
+    r.setXMaximum( point.x() + searchRadius );
+    r.setYMinimum( point.y() - searchRadius );
+    r.setYMaximum( point.y() + searchRadius );
+
+    r = toLayerCoordinates( layer, r );
+
+    layer->select( layer->pendingAllAttributesList(), r, true, true );
+    QgsFeature f;
+    while ( layer->getNextFeature( f ) )
+      mFeatureList << QgsFeature( f );
+  }
+  catch ( QgsCsException & cse )
+  {
+    Q_UNUSED( cse );
+    // catch exception for 'invalid' point and proceed with no features found
+    QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+  }
 
   QApplication::restoreOverrideCursor();
 

@@ -18,7 +18,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
+#include "qgscsexception.h"
 #include "qgscursors.h"
+#include "qgslogger.h"
 
 #include <QApplication>
 #include <QMessageBox>
@@ -92,7 +94,22 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   bool lock = ( e->modifiers() & Qt::ControlModifier );
 
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
-  search = toLayerCoordinates( vlayer, search );
+  // toLayerCoordinates will throw an exception for an 'invalid' rectangle.
+  // For example, if you project a world map onto a globe using EPSG 2163
+  // and then click somewhere off the globe, an exception will be thrown. 
+  try
+  {
+    search = toLayerCoordinates( vlayer, search );
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    // catch exception for 'invalid' rectangle and leave existing selection unchanged
+    QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    QMessageBox::warning( mCanvas, QObject::tr( "CRS Exception" ),
+                          QObject::tr( "Selection extends beyond layer's coordinate system." ) );
+    return;
+  }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   vlayer->select( search, lock );
