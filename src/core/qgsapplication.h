@@ -28,6 +28,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     QgsApplication( int & argc, char ** argv, bool GUIenabled );
     virtual ~QgsApplication();
 
+    //! Catch exceptions when sending event to receiver.
+    virtual bool notify( QObject * receiver, QEvent * event );
+
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"

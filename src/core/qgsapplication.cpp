@@ -19,11 +19,10 @@
 #include "qgsproviderregistry.h"
 
 #include <QDir>
+#include <QMessageBox>
 #include <QPalette>
 
-#include <qgsconfig.h>
-
-#include <iostream>
+#include "qgsconfig.h"
 
 // for htonl
 #ifdef WIN32
@@ -67,6 +66,21 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
 
 QgsApplication::~QgsApplication()
 {}
+
+bool QgsApplication::notify( QObject * receiver, QEvent * event )
+{
+  // Send event to receiver and catch unhandled exceptions
+  bool done = true;
+  try
+  {
+    done = QApplication::notify( receiver, event );
+  }
+  catch ( std::exception & e )
+  {
+    QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+  }
+  return done;
+}
 
 void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefaultPaths )
 {
