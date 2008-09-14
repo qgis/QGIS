@@ -57,7 +57,7 @@ void OgrPlugin::initGui()
   mQActionPointer = new QAction( QIcon( ":/ogrconverter/ogr_converter.png" ), tr( "Run OGR Layer Converter" ), this );
 
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "Replace this with a short description of what the plugin does" ) );
+  mQActionPointer->setWhatsThis( tr( "Translates vector layers between formats supported by OGR library" ) );
 
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
