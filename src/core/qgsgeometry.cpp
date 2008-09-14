@@ -38,13 +38,14 @@ email                : morb at ozemail dot com dot au
 class GEOSException
 {
   public:
-    GEOSException( char *theMsg )
+    GEOSException( const char *theMsg )
     {
       if ( strcmp( theMsg, "Unknown exception thrown" ) == 0 && lastMsg )
       {
         delete [] theMsg;
-        msg = new char[strlen( lastMsg )+1];
-        strcpy( msg, lastMsg );
+        char *aMsg = new char[strlen( lastMsg )+1];
+        strcpy( aMsg, lastMsg );
+        msg = aMsg;
       }
       else
       {
@@ -72,13 +73,13 @@ class GEOSException
     }
 
   private:
-    char *msg;
+    const char *msg;
     static const char *lastMsg;
 };
 
 const char *GEOSException::lastMsg = NULL;
 
-void throwGEOSException( const char *fmt, ... )
+static void throwGEOSException( const char *fmt, ... )
 {
   va_list ap;
   va_start( ap, fmt );
@@ -92,7 +93,7 @@ void throwGEOSException( const char *fmt, ... )
   throw GEOSException( msg );
 }
 
-void printGEOSNotice( const char *fmt, ... )
+static void printGEOSNotice( const char *fmt, ... )
 {
 #if defined(QGISDEBUG)
   va_list ap;
@@ -105,6 +106,23 @@ void printGEOSNotice( const char *fmt, ... )
   delete [] msg;
 #endif
 }
+
+class GEOSInit
+{
+  public:
+    GEOSInit()
+    {
+      initGEOS( printGEOSNotice, throwGEOSException );
+    }
+
+    ~GEOSInit()
+    {
+      finishGEOS();
+    }
+};
+
+static GEOSInit geosinit;
+
 
 #if defined(GEOS_VERSION_MAJOR) && (GEOS_VERSION_MAJOR<3)
 #define GEOSGeom_getCoordSeq(g) GEOSGeom_getCoordSeq( (GEOSGeometry *) g )
@@ -154,8 +172,6 @@ static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
 #define GEOSGeom_clone(g) cloneGeosGeom(g)
 #endif
 
-int QgsGeometry::refcount = 0;
-
 QgsGeometry::QgsGeometry()
     : mGeometry( 0 ),
     mGeometrySize( 0 ),
@@ -163,12 +179,7 @@ QgsGeometry::QgsGeometry()
     mDirtyWkb( FALSE ),
     mDirtyGeos( FALSE )
 {
-  if ( refcount++ == 0 )
-  {
-    initGEOS( printGEOSNotice, throwGEOSException );
-  }
 }
-
 
 QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
     : mGeometry( 0 ),
@@ -176,11 +187,6 @@ QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
     mDirtyWkb( rhs.mDirtyWkb ),
     mDirtyGeos( rhs.mDirtyGeos )
 {
-  if ( refcount++ == 0 )
-  {
-    initGEOS( printGEOSNotice, throwGEOSException );
-  }
-
   if ( mGeometrySize && rhs.mGeometry )
   {
     mGeometry = new unsigned char[mGeometrySize];
@@ -210,9 +216,6 @@ QgsGeometry::~QgsGeometry()
   {
     GEOSGeom_destroy( mGeos );
   }
-
-  if ( --refcount == 0 )
-    finishGEOS();
 }
 
 static unsigned int getNumGeosPoints( const GEOSGeometry *geom )
