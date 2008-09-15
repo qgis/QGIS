@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="tr_TR">
+<defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
     <message>
@@ -308,15 +310,15 @@
     <name>CoordinateCapture</name>
     <message>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Yakala</translation>
     </message>
     <message>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatları görmek için haritaya tıklatın ve panoya kopyalayın.</translation>
     </message>
     <message>
         <source>&amp;Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Koordinat Yakala</translation>
     </message>
     <message>
         <source>Click to select the CRS to use for coordinate display</source>
@@ -343,7 +345,7 @@
     <name>CoordinateCaptureGui</name>
     <message>
         <source>Welcome to your automatically generated plugin!</source>
-        <translation type="unfinished">Otomatik olarak oluşturulmuş eklentinize Hoşgeldiniz!</translation>
+        <translation>Otomatik olarak oluşturulmuş eklentinize Hoşgeldiniz!</translation>
     </message>
     <message>
         <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
@@ -351,7 +353,7 @@
     </message>
     <message>
         <source>Documentation:</source>
-        <translation type="unfinished">Belgeler:</translation>
+        <translation>Belgeler:</translation>
     </message>
     <message>
         <source>You really need to read the QGIS API Documentation now at:</source>
@@ -374,7 +376,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
+        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</
+ source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -422,11 +425,11 @@
     <name>CoordinateCaptureGuiBase</name>
     <message>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">QGIS Eklenti Şablonu</translation>
+        <translation>QGIS Eklenti Şablonu</translation>
     </message>
     <message>
         <source>Plugin Template</source>
-        <translation type="unfinished">Eklenti Şablonu</translation>
+        <translation>Eklenti Şablonu</translation>
     </message>
 </context>
 <context>
@@ -497,15 +500,15 @@
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diyalog</translation>
+        <translation>Diyalog</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation type="unfinished">Nokta Sembolü</translation>
+        <translation>Nokta Sembolü</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Boyut</translation>
+        <translation>Boyut</translation>
     </message>
     <message>
         <source>Area scale field</source>
@@ -517,95 +520,95 @@
     </message>
     <message>
         <source>Style Options</source>
-        <translation type="unfinished">Stil Seçenekleri</translation>
+        <translation>Stil Seçenekleri</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished">Çerçeve stili</translation>
+        <translation>Çerçeve stili</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation type="unfinished">Çerçeve rengi</translation>
+        <translation>Çerçeve rengi</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation type="unfinished">Çerçeve genişliği</translation>
+        <translation>Çerçeve genişliği</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation type="unfinished">Doldurma rengi</translation>
+        <translation>Doldurma rengi</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation type="unfinished">Doldurma stili</translation>
+        <translation>Doldurma stili</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">Bağlan</translation>
+        <translation>Bağlan</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Gözat</translation>
     </message>
     <message>
         <source>OGR Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Dönüştürücü</translation>
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantı kurulamıyor:&apos;</translation>
     </message>
     <message>
         <source>Open OGR file</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR dosyasını aç</translation>
     </message>
     <message>
         <source>OGR File Data Source (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Dosya Veri Kaynağı (*.*)</translation>
     </message>
     <message>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizini Aç</translation>
     </message>
     <message>
         <source>Input OGR dataset is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Girdi OGR veri takımı kayıp!</translation>
     </message>
     <message>
         <source>Input OGR layer name is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Girdi OGR katman adı kayıp!</translation>
     </message>
     <message>
         <source>Target OGR format not selected!</source>
-        <translation type="unfinished"></translation>
+        <translation>Hedef OGR biçimi seçilmedi!</translation>
     </message>
     <message>
         <source>Output OGR dataset is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı OGR veri takımı kayıp!</translation>
     </message>
     <message>
         <source>Output OGR layer name is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı OGR katman adı kayıp!</translation>
     </message>
     <message>
         <source>Successfully translated layer &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Başarıyla dönüştürlen katman &apos;</translation>
     </message>
     <message>
         <source>Failed to translate layer &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Dönüşümünde hata olan katman&apos;</translation>
     </message>
     <message>
         <source>Successfully connected to: &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Başarıyla bağlanıldı:&apos;</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydetmek için dosya adı seçiniz</translation>
     </message>
 </context>
 <context>
@@ -718,7 +721,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
+        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</
+ source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1022,73 +1026,73 @@
     <name>OgrConverterGuiBase</name>
     <message>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Katman Dönüştürücü</translation>
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished">Kaynak</translation>
+        <translation>Kaynak</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished">Biçim</translation>
+        <translation>Biçim</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Dosya</translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Dizin</translation>
+        <translation>Dizin</translation>
     </message>
     <message>
         <source>Remote source</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzaktaki kaynak</translation>
     </message>
     <message>
         <source>Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Veri takımı</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Gözat</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Katman</translation>
+        <translation>Katman</translation>
     </message>
     <message>
         <source>Target</source>
-        <translation type="unfinished"></translation>
+        <translation>Hedef</translation>
     </message>
 </context>
 <context>
     <name>OgrPlugin</name>
     <message>
         <source>Run OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Katman Dönüştürücüyü Çalıştır</translation>
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="unfinished">Bunu eklentinin ne yaptığını anlatan kısa bir açıklama ile yer değiştirin</translation>
+        <translation>OGR tarafından desteklenen biçimlerden diğer desteklenen biçimlere dönüşüm sağlar</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OG&amp;R Dönüştürücü</translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>Save experiment report to portable document format (.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deneme sonuçlarını taşınır belge biçimi (.pdf) olarak kaydet</translation>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman özelliklerini stil dosyası (.qml) ndan yükle</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman özelliklerini stil dosyası (.qml) olarak yükle</translation>
     </message>
 </context>
 <context>
@@ -1954,7 +1958,7 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>Loaded default style file from </source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan stili yükle</translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
@@ -1962,7 +1966,7 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>Created default style file as </source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan stil dosyasını farklı kaydet</translation>
     </message>
     <message>
         <source>File could not been opened.</source>
@@ -1970,11 +1974,11 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>Dxf2Shp Converter</source>
-        <translation type="unfinished">Dxf2Shp dönüştürücü</translation>
+        <translation>Dxf2Shp dönüştürücü</translation>
     </message>
     <message>
         <source>Converts from dxf to shp file format</source>
-        <translation type="unfinished">dxf biçiminden shp biçimine dönüştürür</translation>
+        <translation>dxf biçiminden shp biçimine dönüştürür</translation>
     </message>
     <message>
         <source>eVis</source>
@@ -1998,23 +2002,23 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>Interpolating...</source>
-        <translation type="unfinished">Ara değerler hesaplanıyor...</translation>
+        <translation>Ara değerler hesaplanıyor...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Vazgeç</translation>
+        <translation>Vazgeç</translation>
     </message>
     <message>
         <source>Interpolation plugin</source>
-        <translation type="unfinished">Ara değerler hesaplama eklentisi</translation>
+        <translation>Ara değerler hesaplama eklentisi</translation>
     </message>
     <message>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation type="unfinished">Vektör katmanın kırıklık noktalarına bağlı ara değer hesaplayan bir eklenti</translation>
+        <translation>Vektör katmanın kırıklık noktalarına bağlı ara değer hesaplayan bir eklenti</translation>
     </message>
     <message>
         <source>Version 0.001</source>
-        <translation type="unfinished">Sürüm 0.001</translation>
+        <translation>Sürüm 0.001</translation>
     </message>
     <message>
         <source>SOS plugin</source>
@@ -2026,67 +2030,67 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source> is not writeable.</source>
-        <translation type="unfinished"></translation>
+        <translation>yazılabilir değil.</translation>
     </message>
     <message>
         <source>Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen izinleri düzenleyin (eğer mümkünse) ve tekrar deneyin.</translation>
     </message>
     <message>
         <source>Uncatched fatal GRASS error</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakalanamayan ölümcül GRASS hatası</translation>
     </message>
     <message>
         <source>Couldn&apos;t load SIP module.</source>
-        <translation type="unfinished"></translation>
+        <translation>SIP modülü yüklenemiyor.</translation>
     </message>
     <message>
         <source>Python support will be disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python desteği kaldırılacak.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load PyQt4.</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQt4 yüklenemedi.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load PyQGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQGIS yüklenemedi.</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python kodunu çalıştırırken bir hata oluştu:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python sürümü:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python dizini:</translation>
     </message>
     <message>
         <source>An error occured during execution of following code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Takipeden kodu çalıştırırken bir hata oluştu:</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Lejand</translation>
+        <translation>Lejand</translation>
     </message>
     <message>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Yakala</translation>
     </message>
     <message>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Fare koordinatlarını farklı KRS yakala</translation>
     </message>
     <message>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR Katman Dönüştürücü</translation>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektör katmanlarını OGR kütüphanesi tarafından desteklenen biçimler arasında dönüştürür</translation>
     </message>
 </context>
 <context>
@@ -2277,7 +2281,7 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">Harita kanavası. Raster ve vektör katmanlar haritaya eklendiğinde gösterilecek yer </translation>
+        <translation>Harita kanavası. Raster ve vektör katmanlar haritaya eklendiğinde gösterilen yer </translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -3376,33 +3380,35 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaynak Konum Hatası</translation>
     </message>
     <message>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simge kaynaklarını okumada hata:
+%1
+Çıkılıyor...</translation>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Öngörünüş</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Lejand</translation>
+        <translation>Lejand</translation>
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kod düzeltme %2 olan QGIS sürüm %1 i kullanıyorsunuz.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu QGIS kopyası PostgreSQL desteği ile derlendi.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bu QGIS kopyası PostgreSQL desteği olmadan derlendi.</translation>
     </message>
     <message>
         <source>
@@ -3430,177 +3436,177 @@ Please contact the developers.
     <message>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
-        <translation type="unfinished"></translation>
+        <translation>Shift+Ctrl+S</translation>
     </message>
     <message>
         <source>&amp;Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Çıktı Düzenleyici</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
         <comment>Print Composer</comment>
-        <translation type="unfinished">Ctrl+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı Düzenleyici</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geri al</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Son işlemi geri al</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Ke&amp;s</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli seçimi panoya kes</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli seçimi panoya kopyala</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yapıştır</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Panodaki içeriği geçerli seçime yapıştır</translation>
     </message>
     <message>
         <source>M</source>
         <comment>Measure a Line</comment>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
     <message>
         <source>J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
+        <translation>J</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçime yaklaş</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerçek boyutu ayarla</translation>
     </message>
     <message>
         <source>Zoom to Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerçek boyuta ayarla</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektör Katman Ekle...</translation>
     </message>
     <message>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster Katman Ekle...</translation>
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS Katmanı Ekle...</translation>
     </message>
     <message>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <source>Add a Web Mapping Server Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita Sunucu Katman Ekle</translation>
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Öznitelik Tablosunu Aç</translation>
     </message>
     <message>
         <source>Save as Shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile olarak kaydet...</translation>
     </message>
     <message>
         <source>Save the current layer as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli seçimi Shapefile olarak kaydet</translation>
     </message>
     <message>
         <source>Save Selection as Shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçimi Shapefile olarak kaydet...</translation>
     </message>
     <message>
         <source>Save the selection as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçimi Shapefile olarak kaydet</translation>
     </message>
     <message>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Özellikler</translation>
     </message>
     <message>
         <source>Set properties of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli katmanın özelliklerini ayarla</translation>
     </message>
     <message>
         <source>Add to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Öngörünüşe ekle</translation>
     </message>
     <message>
         <source>Add All to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü öngörünüşe ekle</translation>
     </message>
     <message>
         <source>Manage Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklentileri Yönet...</translation>
     </message>
     <message>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam ekran moduna değiştir</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
-        <translation type="unfinished"></translation>
+        <translation>Özel KRS...</translation>
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Özel koordinat referans sistemini yönet</translation>
     </message>
     <message>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Küçült</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Minimizes the active window to the dock</source>
@@ -3608,7 +3614,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">Yakınlaştır</translation>
+        <translation>Yakınlaştır</translation>
     </message>
     <message>
         <source>Toggles between a predefined size and the window size set by the user</source>
@@ -3616,15 +3622,15 @@ Please contact the developers.
     </message>
     <message>
         <source>Bring All to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü öne getir</translation>
     </message>
     <message>
         <source>Bring forward all open windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm açık pencereleri öne getir</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Düzenle</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -3632,11 +3638,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Araçlar</translation>
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pencere</translation>
     </message>
     <message>
         <source>Toggle extents and mouse position display</source>
@@ -3688,27 +3694,27 @@ Please contact the developers.
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS projesini  kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Düzeltmeyi başlatmada hata</translation>
+        <translation>Düzeltmeyi başlatmada hata</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
+        <translation>Düzeltme için gerekli sağlayıcı açılamıyor</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenlemeyi durdur</translation>
     </message>
     <message>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Değişiklikleri %1 katmanına kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
@@ -3755,7 +3761,7 @@ Errors:  %2
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
 </context>
 <context>
@@ -3842,15 +3848,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut QGIS Veri Sağlama Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut Qt Veritabanı Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut Qt Görüntü Eklentileri</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3861,11 +3867,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished">http://www.gnu.org/licenses</translation>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Join our user mailing list</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı posta listemize katılın</translation>
     </message>
 </context>
 <context>
@@ -4019,35 +4025,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Öznitelik Eylemleri</translation>
     </message>
     <message>
         <source>Action properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Eylem özellikleri</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Ad</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Eylem</translation>
+        <translation>Eylem</translation>
     </message>
     <message>
         <source>Browse for action</source>
-        <translation type="unfinished"></translation>
+        <translation>Eylem için gözat</translation>
     </message>
     <message>
         <source>Click to browse for an action</source>
-        <translation type="unfinished"></translation>
+        <translation>Eylem gözatmak için tıkla</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Capture</source>
-        <translation type="unfinished">Sayısallaştır</translation>
+        <translation>Sayısallaştır</translation>
     </message>
     <message>
         <source>Clicking the button will let you select an application to use as the action</source>
@@ -4058,23 +4064,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeDialog</name>
     <message>
         <source> (int)</source>
-        <translation type="unfinished"></translation>
+        <translation> (int)</translation>
     </message>
     <message>
         <source> (dbl)</source>
-        <translation type="unfinished"></translation>
+        <translation> (dbl)</translation>
     </message>
     <message>
         <source> (txt)</source>
-        <translation type="unfinished"></translation>
+        <translation> (txt)</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya seç</translation>
     </message>
 </context>
 <context>
@@ -4223,23 +4229,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search for</source>
-        <translation type="unfinished"></translation>
+        <translation>Araştır</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen satırları haritada  göster (Ctrl-F) </translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tablo düzenlemeyi aç/kapa</translation>
     </message>
 </context>
 <context>
@@ -4307,91 +4313,91 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Öznitelik Tablosu - </translation>
+        <translation>Öznitelik Tablosu - </translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Dosya</translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Kapat</translation>
+        <translation>Kapat</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenle</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geri al</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Ke&amp;s</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yapıştır</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Sil</translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Katman</translation>
+        <translation>Katman</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçime Yaklaştır</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tablo</translation>
+        <translation>Tablo</translation>
     </message>
     <message>
         <source>Move to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Üste taşı</translation>
     </message>
     <message>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>Ters çevir</translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
@@ -4406,7 +4412,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsBookmarks</name>
     <message>
         <source>Really Delete?</source>
-        <translation>Gerçekten Sileyim mi?</translation>
+        <translation>Silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -4440,11 +4446,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sil</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yaklaştır</translation>
     </message>
 </context>
 <context>
@@ -4594,119 +4600,119 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished"></translation>
+        <translation>İçeriği Taşı</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğe içeriğini taşı</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grup</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğeleri grupla</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grubu çöz</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğe grubunu çöz</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished"></translation>
+        <translation>Üste çıkar</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen öğeleri üste çıkar</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>Alta gönder</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen öğeleri alta gönder</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Öne getir</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen öğeleri üste çıkar</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Arkaya Gönder</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen öğeleri alta gönder</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Dosya</translation>
+        <translation>Dosya</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Kapat</translation>
+        <translation>Kapat</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenle</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geri al</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Ke&amp;s</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopyala</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yapıştır</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Sil</translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Pencere</translation>
     </message>
     <message>
         <source>Layout</source>
@@ -4714,11 +4720,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
         <source>Choose a file name to save the map as</source>
-        <translation type="unfinished"></translation>
+        <translation>Haritayı kaydedeceğiniz dosya adını seçin</translation>
     </message>
 </context>
 <context>
@@ -4809,78 +4815,78 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Şablonu Aç...</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation type="unfinished">Tam Yakınlaştırma</translation>
+        <translation>Tam Yakınlaştırma</translation>
     </message>
     <message>
         <source>Add Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita ekle</translation>
     </message>
     <message>
         <source>Add Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiket Ekle</translation>
     </message>
     <message>
         <source>Add Vector Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektör lejandı ekle</translation>
     </message>
     <message>
         <source>Move Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğeyi taşı</translation>
     </message>
     <message>
         <source>Export as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Görüntü olarak dışarı aktar...</translation>
     </message>
     <message>
         <source>Export as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG olarak dışarı aktar...</translation>
     </message>
     <message>
         <source>Add Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçek çubuğu ekle</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">Tazele</translation>
+        <translation>Tazele</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>Composer item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenleyici öğe özellikleri</translation>
     </message>
     <message>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk:</translation>
     </message>
     <message>
         <source>Frame...</source>
-        <translation type="unfinished"></translation>
+        <translation>Çerçeve...</translation>
     </message>
     <message>
         <source>Background...</source>
-        <translation type="unfinished"></translation>
+        <translation>Artalan...</translation>
     </message>
     <message>
         <source>Opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaflık:</translation>
     </message>
     <message>
         <source>Outline width: </source>
-        <translation type="unfinished"></translation>
+        <translation>Çerçeve genişliği:</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished">Çerçeve</translation>
+        <translation>Çerçeve</translation>
     </message>
 </context>
 <context>
@@ -4902,109 +4908,109 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerLabelWidgetBase</name>
     <message>
         <source>Label Options</source>
-        <translation type="unfinished">Etiket Seçenekleri</translation>
+        <translation>Etiket Seçenekleri</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">Yazıtipi</translation>
+        <translation>Yazıtipi</translation>
     </message>
     <message>
         <source>Margin (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınırlar (mm):</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLegendItemDialogBase</name>
     <message>
         <source>Legend item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Lejand öğe özellikleri</translation>
     </message>
     <message>
         <source>Item text:</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğe metni:</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation type="unfinished">Çubuk ölçek Seçenekleri</translation>
+        <translation>Çubuk ölçek Seçenekleri</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Genel</translation>
+        <translation>Genel</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlık:</translation>
     </message>
     <message>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yazıtipi:</translation>
     </message>
     <message>
         <source>Title...</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlık...</translation>
     </message>
     <message>
         <source>Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman...</translation>
     </message>
     <message>
         <source>Item...</source>
-        <translation type="unfinished"></translation>
+        <translation>Öğe...</translation>
     </message>
     <message>
         <source>Symbol width: </source>
-        <translation type="unfinished"></translation>
+        <translation>Sembol genişliği:</translation>
     </message>
     <message>
         <source>Symbol height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sembol yüksekliği:</translation>
     </message>
     <message>
         <source>Layer space: </source>
-        <translation type="unfinished"></translation>
+        <translation>Katman boşluğu:</translation>
     </message>
     <message>
         <source>Symbol space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sembol boşluğu:</translation>
     </message>
     <message>
         <source>Icon label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simge etiket boşluğu:</translation>
     </message>
     <message>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kutu boşluğu:</translation>
     </message>
     <message>
         <source>Legend items</source>
-        <translation type="unfinished"></translation>
+        <translation>Lejand öğeleri</translation>
     </message>
     <message>
         <source>down</source>
-        <translation type="unfinished"></translation>
+        <translation>aşağı</translation>
     </message>
     <message>
         <source>up</source>
-        <translation type="unfinished"></translation>
+        <translation>yukarı</translation>
     </message>
     <message>
         <source>remove</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaldır</translation>
     </message>
     <message>
         <source>edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenle...</translation>
     </message>
     <message>
         <source>update</source>
-        <translation type="unfinished"></translation>
+        <translation>Güncelle</translation>
     </message>
     <message>
         <source>update all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü güncelle</translation>
     </message>
 </context>
 <context>
@@ -5035,7 +5041,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">Harita</translation>
+        <translation>Harita</translation>
     </message>
     <message>
         <source>Map will be printed here</source>
@@ -5117,74 +5123,74 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerMapWidget</name>
     <message>
         <source>Cache</source>
-        <translation type="unfinished">Önbellek</translation>
+        <translation>Önbellek</translation>
     </message>
     <message>
         <source>Rectangle</source>
-        <translation type="unfinished">Dikdörtgen</translation>
+        <translation>Dikdörtgen</translation>
     </message>
     <message>
         <source>Render</source>
-        <translation type="unfinished">Görüntüle</translation>
+        <translation>Görüntüle</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
     <message>
         <source>Map options</source>
-        <translation type="unfinished">Harita seçenekleri</translation>
+        <translation>Harita seçenekleri</translation>
     </message>
     <message>
         <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Harita&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Harita&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Genişlik</translation>
+        <translation>Genişlik</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Yükseklik</translation>
+        <translation>Yükseklik</translation>
     </message>
     <message>
         <source>Scale:</source>
-        <translation type="unfinished">Ölçek:</translation>
+        <translation>Ölçek:</translation>
     </message>
     <message>
         <source>1:</source>
-        <translation type="unfinished">1:</translation>
+        <translation>1:</translation>
     </message>
     <message>
         <source>Map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita sınırları</translation>
     </message>
     <message>
         <source>X min:</source>
-        <translation type="unfinished"></translation>
+        <translation>X min:</translation>
     </message>
     <message>
         <source>Y min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min:</translation>
     </message>
     <message>
         <source>X max:</source>
-        <translation type="unfinished"></translation>
+        <translation>X max:</translation>
     </message>
     <message>
         <source>Y max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y max:</translation>
     </message>
     <message>
         <source>set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita kanava sınırlarına ayarla</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Öngörünüş</translation>
+        <translation>Önizleme</translation>
     </message>
     <message>
         <source>Update preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Önizlemeyi güncelle</translation>
     </message>
 </context>
 <context>
@@ -5245,147 +5251,147 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerPictureWidget</name>
     <message>
         <source>Select svg or image file</source>
-        <translation type="unfinished"></translation>
+        <translation>svg veya görüntü dosyasını seç</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerPictureWidgetBase</name>
     <message>
         <source>Picture Options</source>
-        <translation type="unfinished">Resim Seçenekleri</translation>
+        <translation>Resim Seçenekleri</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">Göz at...</translation>
+        <translation>Göz at...</translation>
     </message>
     <message>
         <source>Width:</source>
-        <translation type="unfinished">Genişlik:</translation>
+        <translation>Genişlik:</translation>
     </message>
     <message>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükseklik:</translation>
     </message>
     <message>
         <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Döndürme:</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Tek Kutu</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Çift Kutu</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları ortada</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları altta</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları üstte</translation>
     </message>
     <message>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayısal</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <source>Single Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Tek Kutu</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Çift Kutu</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları ortada</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları altta</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Çubuk ayrımları üstte</translation>
     </message>
     <message>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayısal</translation>
     </message>
     <message>
         <source>Map </source>
-        <translation type="unfinished"></translation>
+        <translation>Harita</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation type="unfinished">Çubuk ölçek Seçenekleri</translation>
+        <translation>Çubuk ölçek Seçenekleri</translation>
     </message>
     <message>
         <source>Segment size (map units):</source>
-        <translation type="unfinished"></translation>
+        <translation>Parça boyutları (harita birimlerinde):</translation>
     </message>
     <message>
         <source>Map units per bar unit:</source>
-        <translation type="unfinished"></translation>
+        <translation>Her çubuk birimi için harita birimleri:</translation>
     </message>
     <message>
         <source>Number of segments:</source>
-        <translation type="unfinished"></translation>
+        <translation>Parça sayısı:</translation>
     </message>
     <message>
         <source>Segments left:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sola parça:</translation>
     </message>
     <message>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil:</translation>
     </message>
     <message>
         <source>Map:</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita:</translation>
     </message>
     <message>
         <source>Height (mm):</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükseklik(mm):</translation>
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi Genişliği:</translation>
     </message>
     <message>
         <source>Label space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiket boşluğu:</translation>
     </message>
     <message>
         <source>Box space:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kutu boşluğu:</translation>
     </message>
     <message>
         <source>Unit label:</source>
-        <translation type="unfinished"></translation>
+        <translation>Birim etiketi:</translation>
     </message>
     <message>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Yazıtipi...</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk...</translation>
     </message>
 </context>
 <context>
@@ -5486,15 +5492,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Katmanlar</translation>
+        <translation>Katmanlar</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Grup</translation>
+        <translation>Grup</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -5631,106 +5637,106 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
     <name>QgsCompositionWidget</name>
     <message>
         <source>Landscape</source>
-        <translation type="unfinished">Yatay</translation>
+        <translation>Yatay</translation>
     </message>
     <message>
         <source>Portrait</source>
-        <translation type="unfinished">Düşey</translation>
+        <translation>Düşey</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="unfinished">Özel</translation>
+        <translation>Özel</translation>
     </message>
     <message>
         <source>A5 (148x210 mm)</source>
-        <translation type="unfinished">A5 (148x210 mm)</translation>
+        <translation>A5 (148x210 mm)</translation>
     </message>
     <message>
         <source>A4 (210x297 mm)</source>
-        <translation type="unfinished">A4 (210x297 mm)</translation>
+        <translation>A4 (210x297 mm)</translation>
     </message>
     <message>
         <source>A3 (297x420 mm)</source>
-        <translation type="unfinished">A3 (297x420 mm)</translation>
+        <translation>A3 (297x420 mm)</translation>
     </message>
     <message>
         <source>A2 (420x594 mm)</source>
-        <translation type="unfinished">A2 (420x594 mm)</translation>
+        <translation>A2 (420x594 mm)</translation>
     </message>
     <message>
         <source>A1 (594x841 mm)</source>
-        <translation type="unfinished">A1 (594x841 mm)</translation>
+        <translation>A1 (594x841 mm)</translation>
     </message>
     <message>
         <source>A0 (841x1189 mm)</source>
-        <translation type="unfinished">A0 (841x1189 mm)</translation>
+        <translation>A0 (841x1189 mm)</translation>
     </message>
     <message>
         <source>B5 (176 x 250 mm)</source>
-        <translation type="unfinished">B5 (176 x 250 mm)</translation>
+        <translation>B5 (176 x 250 mm)</translation>
     </message>
     <message>
         <source>B4 (250 x 353 mm)</source>
-        <translation type="unfinished">B4 (250 x 353 mm)</translation>
+        <translation>B4 (250 x 353 mm)</translation>
     </message>
     <message>
         <source>B3 (353 x 500 mm)</source>
-        <translation type="unfinished">B3 (353 x 500 mm)</translation>
+        <translation>B3 (353 x 500 mm)</translation>
     </message>
     <message>
         <source>B2 (500 x 707 mm)</source>
-        <translation type="unfinished">B2 (500 x 707 mm)</translation>
+        <translation>B2 (500 x 707 mm)</translation>
     </message>
     <message>
         <source>B1 (707 x 1000 mm)</source>
-        <translation type="unfinished">B1 (707 x 1000 mm)</translation>
+        <translation>B1 (707 x 1000 mm)</translation>
     </message>
     <message>
         <source>B0 (1000 x 1414 mm)</source>
-        <translation type="unfinished">B0 (1000 x 1414 mm)</translation>
+        <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
         <source>Letter (8.5x11 inches)</source>
-        <translation type="unfinished">Mektup (8.5x11 inç)</translation>
+        <translation>Mektup (8.5x11 inç)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
-        <translation type="unfinished">Legal (8.5x14 inç)</translation>
+        <translation>Legal (8.5x14 inç)</translation>
     </message>
 </context>
 <context>
     <name>QgsCompositionWidgetBase</name>
     <message>
         <source>Composition</source>
-        <translation type="unfinished">Düzenleme</translation>
+        <translation>Düzenleme</translation>
     </message>
     <message>
         <source>Paper</source>
-        <translation type="unfinished">Kağıt</translation>
+        <translation>Kağıt</translation>
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished">Yerleştirme</translation>
+        <translation>Yerleştirme</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Yükseklik</translation>
+        <translation>Yükseklik</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Genişlik</translation>
+        <translation>Genişlik</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished">Birimler</translation>
+        <translation>Birimler</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Boyut</translation>
+        <translation>Boyut</translation>
     </message>
     <message>
         <source>Print quality (dpi)</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı kalitesi (dpi)</translation>
     </message>
 </context>
 <context>
@@ -5882,15 +5888,15 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
     </message>
     <message>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation type="unfinished"></translation>
+        <translation>Kaynak Mekansal Referans Sistemi (SRS) geçerli değil. </translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatlar yeniden projeksiyonlandırılamadı. SRS şudur: </translation>
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation type="unfinished"></translation>
+        <translation>Hedef mekansal referans sistemi(SRS) geçerli değil. </translation>
     </message>
 </context>
 <context>
@@ -6153,31 +6159,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Ad</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parametreler</translation>
+        <translation>Parametreler</translation>
     </message>
     <message>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation>*</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished">Kuzey</translation>
+        <translation>Kuzey</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished">Doğu</translation>
+        <translation>Doğu</translation>
     </message>
     <message>
         <source>Custom Coordinate Reference System Definition</source>
@@ -6738,15 +6744,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsDetailedItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Form</translation>
     </message>
     <message>
         <source>Heading Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Üst bilgi etiketi</translation>
     </message>
     <message>
         <source>Detail label</source>
-        <translation type="unfinished"></translation>
+        <translation>Detay etiketi</translation>
     </message>
 </context>
 <context>
@@ -6995,7 +7001,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Device name</source>
-        <translation type="unfinished"></translation>
+        <translation>Aygıt adı</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -7380,11 +7386,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aygıtlarıı düzenle...</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">Tazele</translation>
+        <translation>Tazele</translation>
     </message>
 </context>
 <context>
@@ -7406,11 +7412,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGenericProjectionSelector</name>
     <message>
         <source>Define this layer&apos;s projection:</source>
-        <translation type="unfinished">Bu katmanların projeksiyonunu belirle:</translation>
+        <translation>Bu katmanların projeksiyonunu belirle:</translation>
     </message>
     <message>
         <source>This layer appears to have no projection specification.</source>
-        <translation type="unfinished">Bu katman projeksiyon bilgisi yok görünüyor.</translation>
+        <translation>Bu katman projeksiyon bilgisi yok görünüyor.</translation>
     </message>
     <message>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
@@ -7421,7 +7427,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGenericProjectionSelectorBase</name>
     <message>
         <source>Projection Selector</source>
-        <translation type="unfinished">Projeksiyon Seçici</translation>
+        <translation>Projeksiyon Seçici</translation>
     </message>
 </context>
 <context>
@@ -7436,15 +7442,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Real</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerçek sayı</translation>
     </message>
     <message>
         <source>Integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tamsayı</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Karakter</translation>
     </message>
 </context>
 <context>
@@ -7459,7 +7465,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line</source>
-        <translation>Satır</translation>
+        <translation>Çizgi</translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -7503,27 +7509,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya biçimi</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished">Öznitelikler</translation>
+        <translation>Öznitelikler</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Ad</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen özniteliğiı sil</translation>
     </message>
     <message>
         <source>Add attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Öznitelik Ekle</translation>
     </message>
 </context>
 <context>
@@ -7703,15 +7709,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıflandırma alanı</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished">Mod</translation>
+        <translation>Mod</translation>
     </message>
     <message>
         <source>Number of classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıf Sayısı</translation>
     </message>
 </context>
 <context>
@@ -7765,7 +7771,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update</source>
-        <translation>Güncelleme</translation>
+        <translation>Güncelle</translation>
     </message>
     <message>
         <source>Update database record</source>
@@ -8118,27 +8124,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Disp</source>
-        <translation type="unfinished">Görüntü</translation>
+        <translation>Görüntü</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Renk</translation>
+        <translation>Renk</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tip</translation>
+        <translation>Tip</translation>
     </message>
     <message>
         <source>Index</source>
-        <translation type="unfinished">Dizin</translation>
+        <translation>Dizin</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Sütun</translation>
+        <translation>Sütun</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Uzunluk</translation>
+        <translation>Uzunluk</translation>
     </message>
 </context>
 <context>
@@ -8212,7 +8218,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Addition</source>
-        <translation type="unfinished">Toplama</translation>
+        <translation>Toplama</translation>
     </message>
     <message>
         <source>Subtraction</source>
@@ -8602,7 +8608,7 @@ at line </source>
     </message>
     <message>
         <source>Please ensure you have the GRASS documentation installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen GRASS belgelerinin yüklendiğinden emin olun.</translation>
     </message>
 </context>
 <context>
@@ -9111,19 +9117,19 @@ satırında</translation>
     </message>
     <message>
         <source>New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni harita takımı</translation>
     </message>
     <message>
         <source>GRASS Database</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS veritabanı</translation>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished">Ağaç</translation>
+        <translation>Ağaç</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Açıklama</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -9135,11 +9141,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">Göz at...</translation>
+        <translation>Göz at...</translation>
     </message>
     <message>
         <source>GRASS Location</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS mevkisi</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -9151,7 +9157,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Default GRASS Region</source>
-        <translation type="unfinished">Varsayılan GRASS Bölgesi</translation>
+        <translation>Varsayılan GRASS Bölgesi</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -9163,11 +9169,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Harita Takımı</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished">Sahip</translation>
+        <translation>Sahip</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -9179,7 +9185,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create New Mapset</source>
-        <translation type="unfinished">Yeni Harita takımı oluştur</translation>
+        <translation>Yeni Harita takımı oluştur</translation>
     </message>
 </context>
 <context>
@@ -9565,19 +9571,19 @@ satırında</translation>
     <name>QgsGrassToolsBase</name>
     <message>
         <source>Grass Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS Araçları</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıflanmış Modüller</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <source>Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>Modül listesi</translation>
     </message>
 </context>
 <context>
@@ -9631,15 +9637,15 @@ satırında</translation>
     </message>
     <message>
         <source>Please enter the file name before pressing OK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen TAMAM&apos;a basmadan önce dosya adını girin!</translation>
     </message>
     <message>
         <source>Please enter intervals before pressing OK!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lütfen TAMAM&apos;a basmadan önce aralık değerleriniı girin!</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydedeceğiniz dosya adını seçin</translation>
     </message>
 </context>
 <context>
@@ -9856,7 +9862,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsIDWInterpolatorDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diyalog</translation>
+        <translation>Diyalog</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9932,7 +9938,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input</source>
-        <translation type="unfinished">Girdi</translation>
+        <translation>Girdi</translation>
     </message>
     <message>
         <source>Input vector layer:</source>
@@ -9940,7 +9946,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use z-Coordinate for interpolation</source>
-        <translation type="unfinished">Ara değeri belirleme için -koordinatını kullan</translation>
+        <translation>Ara değeri belirleme için z-koordinatını kullan</translation>
     </message>
     <message>
         <source>Interpolation attribute: </source>
@@ -9948,7 +9954,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Çıktı</translation>
+        <translation>Çıktı</translation>
     </message>
     <message>
         <source>Interpolation method:</source>
@@ -9968,42 +9974,42 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Interpolation plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ara değerler hesaplama eklentisi</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Girdi vektör katman</translation>
     </message>
     <message>
         <source>Interpolation attribute </source>
-        <translation type="unfinished"></translation>
+        <translation>Ara değer için öznitelik</translation>
     </message>
     <message>
         <source>Interpolation method</source>
-        <translation type="unfinished"></translation>
+        <translation>Ara değer belirleme yöntemi</translation>
     </message>
     <message>
         <source>Number of columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Sütun sayısı</translation>
     </message>
     <message>
         <source>Number of rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Satır sayısı</translation>
     </message>
     <message>
         <source>Output file </source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı Dosya</translation>
     </message>
 </context>
 <context>
     <name>QgsInterpolationPlugin</name>
     <message>
         <source>&amp;Interpolation</source>
-        <translation type="unfinished">&amp;Ara değer belirleme</translation>
+        <translation>&amp;Ara değer belirleme</translation>
     </message>
 </context>
 <context>
@@ -10213,11 +10219,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field containing label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiket içeren alan</translation>
     </message>
     <message>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan etiket</translation>
     </message>
     <message>
         <source>Data defined style</source>
@@ -10237,27 +10243,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Yazıtipi şeffaflığı</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Renk</translation>
+        <translation>Renk</translation>
     </message>
     <message>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Açı (derece)</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampon etiketleri?</translation>
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampon boyutu</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaflık</translation>
     </message>
     <message>
         <source>X Offset (pts)</source>
@@ -10269,35 +10275,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Yazıtipi ailesi</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Koyu</translation>
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eğik</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Altçizgi</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Boyut</translation>
     </message>
     <message>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Boyut Birimleri</translation>
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation type="unfinished">X Koordinatı</translation>
+        <translation>X Koordinatı</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation type="unfinished">Y Koordinatı</translation>
+        <translation>Y Koordinatı</translation>
     </message>
     <message>
         <source>Multiline labels?</source>
@@ -10445,7 +10451,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Multiple layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Çoklu katmanlar</translation>
     </message>
     <message>
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
@@ -10572,7 +10578,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman öznitelik tablosu desteklenmeyen veri tip(ler)i içeriyor</translation>
     </message>
 </context>
 <context>
@@ -10644,31 +10650,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>User database could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı veritabanı açılamıyor.</translation>
     </message>
     <message>
         <source>The style table could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil tablosu oluşturulamıyor.</translation>
     </message>
     <message>
         <source>The style %1 was saved to database</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 stili veritabanına kaydedildi</translation>
     </message>
     <message>
         <source>The style %1 was updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 stili veritabanında güncellendi.</translation>
     </message>
     <message>
         <source>The style %1 could not be updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 stili veritabanında güncellenemedi.</translation>
     </message>
     <message>
         <source>The style %1 could not be inserted into database.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 stili veritabanına eklenemedi.</translation>
     </message>
     <message>
         <source>style not found in database</source>
-        <translation type="unfinished"></translation>
+        <translation>stil veritabanında bulunamadı</translation>
     </message>
 </context>
 <context>
@@ -10708,7 +10714,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsMapToolVertexEdit</name>
     <message>
         <source>Snap tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakalama payı</translation>
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
@@ -10716,7 +10722,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not snap segment.</source>
-        <translation type="unfinished"></translation>
+        <translation>parça yakalanamıyor.</translation>
     </message>
     <message>
         <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
@@ -10777,8 +10783,8 @@ Do you want to overwrite it?</source>
         <source> exists. 
 Do you want to overwrite it?</source>
         <comment>a fileName is prepended to this text, and appears in a dialog box</comment>
-        <translation type="unfinished">Mevcut
-Üzerine yazmamı istermisin?</translation>
+        <translation>Mevcut
+Üzerine yazılmasını istermisin?</translation>
     </message>
 </context>
 <context>
@@ -11014,7 +11020,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Segments</source>
-        <translation type="unfinished">Parçalar </translation>
+        <translation>Parçalar</translation>
     </message>
 </context>
 <context>
@@ -11316,11 +11322,11 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Create a new WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni bir WMS bağlantısı oluştur</translation>
     </message>
     <message>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantı detayları</translation>
     </message>
 </context>
 <context>
@@ -11467,35 +11473,35 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">kırıklık noktasına</translation>
     </message>
     <message>
         <source>to segment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">parçaya</translation>
     </message>
     <message>
         <source>to vertex and segment</source>
-        <translation type="unfinished"></translation>
+        <translation>kırıklık noktasına ve parçaya</translation>
     </message>
     <message>
         <source>Semi transparent circle</source>
-        <translation type="unfinished"></translation>
+        <translation>Yarı şeffaf daire</translation>
     </message>
     <message>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Çarpı</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm objeleri göster</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen objeleri göster</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli kanavadaki objeleri göster</translation>
     </message>
 </context>
 <context>
@@ -11814,15 +11820,15 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Project files</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje dosyaları</translation>
     </message>
     <message>
         <source>Prompt to save project changes when required</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerektiğinde proje değişiklikleri kaydet</translation>
     </message>
     <message>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Eski QGIS sürümlerinde oluşturulan bir proje dosyasını açarken uyar</translation>
     </message>
     <message>
         <source>Default Map Appearance (overridden by project properties)</source>
@@ -11830,31 +11836,31 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçim Rengi</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Artalan Rengi</translation>
     </message>
     <message>
         <source>&amp;Application</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uygulama</translation>
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>Simge Teması</translation>
     </message>
     <message>
         <source>Capitalise layer names in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Lejandda katman adını büyük harfe çevir</translation>
     </message>
     <message>
         <source>Display classification attribute names in legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Lejandda öznitelik sınıflandırma adlarını göster</translation>
     </message>
     <message>
         <source>Rendering behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Görüntüleme davranışı</translation>
     </message>
     <message>
         <source>Number of features to draw before updating the display</source>
@@ -11866,15 +11872,15 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Rendering quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Görüntüleme kalitesi</translation>
     </message>
     <message>
         <source>Zoom factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakınlaştırma faktörü</translation>
     </message>
     <message>
         <source>Mouse wheel action</source>
-        <translation type="unfinished"></translation>
+        <translation>Fare tekerleği eylemi</translation>
     </message>
     <message>
         <source>Rubberband color</source>
@@ -11882,7 +11888,7 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesafe hesaplama için kullanılacak Elipsoid</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
@@ -11894,23 +11900,23 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished">Çizgi Genişliği</translation>
+        <translation>Çizgi Genişliği</translation>
     </message>
     <message>
         <source>Line colour</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi Rengi</translation>
     </message>
     <message>
         <source>Default snap mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan Yakalama Modu</translation>
     </message>
     <message>
         <source>Default snapping tolerance in layer units</source>
-        <translation type="unfinished"></translation>
+        <translation>katman birimlerindeki varsayılan yakalama sınırları </translation>
     </message>
     <message>
         <source>Search radius for vertex edits in layer units</source>
-        <translation type="unfinished"></translation>
+        <translation>Kırıklık noktalarını düzeltme için arama yarıçapı (katman birimlerinde)</translation>
     </message>
     <message>
         <source>Vertex markers</source>
@@ -11922,7 +11928,7 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Override system locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem dilini geçersiz kıl</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
@@ -11938,15 +11944,15 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished">Ana Bilgisayar</translation>
+        <translation>Ana Bilgisayar</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı</translation>
     </message>
     <message>
         <source>Leave this blank if no proxy username / password are required</source>
@@ -11954,7 +11960,7 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">Parola</translation>
+        <translation>Parola</translation>
     </message>
     <message>
         <source>Open attribute table in a dock window</source>
@@ -11962,11 +11968,11 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Öznitelik tablo davranışı</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>KRS</translation>
     </message>
     <message>
         <source>When layer is loaded that has no coordinate reference system (CRS)</source>
@@ -11978,11 +11984,11 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje bazında varsayılan KRS kullanılacak</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aşağıda görüntülenen varsayılan genel KRS kullanılacak</translation>
     </message>
 </context>
 <context>
@@ -12332,30 +12338,30 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Datasource</source>
-        <translation type="unfinished"></translation>
+        <translation>Veri kaynağı</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python Eklenti Yükleyici</translation>
     </message>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation type="unfinished">QGIS Eklenti Yükleyici</translation>
+        <translation>QGIS Eklenti Yükleyici</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Eklentiler</translation>
+        <translation>Eklentiler</translation>
     </message>
     <message>
         <source>List of available and installed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Yüklenebilir ve yüklenmiş eklenti listesi</translation>
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Süzgeç:</translation>
     </message>
     <message>
         <source>Display only plugins containing this word in their metadata</source>
@@ -12367,7 +12373,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Tüm depolar</translation>
     </message>
     <message>
         <source>Display only plugins with matching status</source>
@@ -12375,55 +12381,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished">Durum</translation>
+        <translation>Durum</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Ad</translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Sürüm</translation>
+        <translation>Sürüm</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Açıklama</translation>
+        <translation>Açıklama</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation type="unfinished">Yazar</translation>
+        <translation>Yazar</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished">Depo</translation>
+        <translation>Depo</translation>
     </message>
     <message>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen eklentiyi yükle, yeniden yükle veya yükselt</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti Yükle/Güncelle</translation>
     </message>
     <message>
         <source>Uninstall the selected plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen eklentiyi kaldır</translation>
     </message>
     <message>
         <source>Uninstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti kaldır</translation>
     </message>
     <message>
         <source>Repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Depolar</translation>
     </message>
     <message>
         <source>List of plugin repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti depoları listesi</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
@@ -12431,73 +12437,73 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Check for updates on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlangıçta güncellemeleri kontrol et</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Üçüncü parti eklenti depolarını listeye ekle</translation>
     </message>
     <message>
         <source>Add 3rd party repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Üçüncü parti depo ekle</translation>
     </message>
     <message>
         <source>Add a new plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni eklenti deposu ekle</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekle...</translation>
     </message>
     <message>
         <source>Edit the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen depoyu düzenle</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenle...</translation>
     </message>
     <message>
         <source>Remove the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen depoyu kaldır</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Sil</translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti ~/.qgis/python/plugins dizinine yüklenecek</translation>
     </message>
     <message>
         <source>Close the Installer window</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükleyici penceresini kapat</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Kapat</translation>
+        <translation>Kapat</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Python Eklenti Yükleyici</translation>
     </message>
     <message>
         <source>Installing plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Yüklenen Eklenti:</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlanılıyor...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>Error loading plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti Yüklemede hata</translation>
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
@@ -12512,23 +12518,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerRepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation type="unfinished">Depo detayları</translation>
+        <translation>Depo detayları</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished">Ad:</translation>
+        <translation>Ad:</translation>
     </message>
     <message>
         <source>Enter a name for the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Depo için bir ad gir</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation type="unfinished">URL:</translation>
+        <translation>URL:</translation>
     </message>
     <message>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;http://&quot; ile başlayan depo adresini gir </translation>
     </message>
     <message>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
@@ -12536,7 +12542,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Etkinleştir</translation>
     </message>
     <message>
         <source>[place for a warning message]</source>
@@ -12571,11 +12577,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation type="unfinished">&amp;Tümünü Seç</translation>
+        <translation>&amp;Tümünü Seç</translation>
     </message>
     <message>
         <source>&amp;Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tümünü temizle</translation>
     </message>
 </context>
 <context>
@@ -12654,15 +12660,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Süzgeç:</translation>
     </message>
     <message>
         <source>Plugin Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti Dizini:</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Dizin</translation>
+        <translation>Dizin</translation>
     </message>
 </context>
 <context>
@@ -12779,7 +12785,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished">-koordinatli</translation>
+        <translation>-koordinatli</translation>
     </message>
 </context>
 <context>
@@ -13110,13 +13116,13 @@ Qgis tablonun ya benzersiz kısıtlayıcıya (anahtar sütunu içeren) sahip int
     <name>QgsPostgresProvider::Conn</name>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished">GEOS desteği yok!</translation>
+        <translation>GEOS desteği yok!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished">PostGIS kurulumunuzun GEOS desteği yok.
+        <translation>PostGIS kurulumunuzun GEOS desteği yok.
 Obje seçimi ve belirlenmesi doğru çalışmayacak.
 Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</translation>
     </message>
@@ -13277,31 +13283,31 @@ Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</t
     </message>
     <message>
         <source>Title and colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Başlık ve renkler</translation>
     </message>
     <message>
         <source>Project title</source>
-        <translation type="unfinished"></translation>
+        <translation>Proje Başlığı</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçim Rengi</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Artalan Rengi</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished">Harita birimleri</translation>
+        <translation>Harita birimleri</translation>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;on the fly&apos; KRS dönüşümünü etkinleştir</translation>
     </message>
 </context>
 <context>
@@ -13316,19 +13322,19 @@ Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</t
     </message>
     <message>
         <source>User Defined Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı tanımlı Koordinat Sistemleri</translation>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Coğrafi koordinat Sistemi</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Projeksiyon Koordinat Sistemi</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaynak Konum Hatası</translation>
     </message>
     <message>
         <source>Error reading database file from: 
@@ -13381,19 +13387,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Referans Sistemi Seçici</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Koordinat Referans Sistemi</translation>
+        <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
         <source>EPSG</source>
-        <translation type="unfinished"></translation>
+        <translation>EPSG</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -13526,7 +13532,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Band No</source>
-        <translation>Band Numarası</translation>
+        <translation>Bant Numarası</translation>
     </message>
     <message>
         <source>No Stats</source>
@@ -13574,43 +13580,43 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation type="unfinished">GDT_UInt16 - Sixteen bit unsigned integer</translation>
+        <translation>GDT_UInt16 - Sixteen bit unsigned integer</translation>
     </message>
     <message>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation type="unfinished">GDT_Int16 - Sixteen bit signed integer</translation>
+        <translation>GDT_Int16 - Sixteen bit signed integer</translation>
     </message>
     <message>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation type="unfinished">GDT_UInt32 - Thirty two bit unsigned integer</translation>
+        <translation>GDT_UInt32 - Thirty two bit unsigned integer</translation>
     </message>
     <message>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation type="unfinished">GDT_Int32 - Thirty two bit signed integer</translation>
+        <translation>GDT_Int32 - Thirty two bit signed integer</translation>
     </message>
     <message>
         <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation type="unfinished">GDT_Float32 - Thirty two bit floating point</translation>
+        <translation>GDT_Float32 - Thirty two bit floating point</translation>
     </message>
     <message>
         <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation type="unfinished">GDT_Float64 - Sixty four bit floating point</translation>
+        <translation>GDT_Float64 - Sixty four bit floating point</translation>
     </message>
     <message>
         <source>GDT_CInt16 - Complex Int16 </source>
-        <translation type="unfinished">GDT_CInt16 - Complex Int16</translation>
+        <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
         <source>GDT_CInt32 - Complex Int32 </source>
-        <translation type="unfinished">GDT_CInt32 - Complex Int32</translation>
+        <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
         <source>GDT_CFloat32 - Complex Float32 </source>
-        <translation type="unfinished">GDT_CFloat32 - Complex Float32</translation>
+        <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
         <source>GDT_CFloat64 - Complex Float64 </source>
-        <translation type="unfinished">GDT_CFloat64 - Complex Float64</translation>
+        <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
         <source>Could not determine raster data type.</source>
@@ -13658,7 +13664,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bant %1</translation>
     </message>
 </context>
 <context>
@@ -13677,7 +13683,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Not Set</source>
-        <translation type="unfinished">Ayarlanmadı</translation>
+        <translation>Ayarlanmadı</translation>
     </message>
     <message>
         <source>Columns: </source>
@@ -13728,11 +13734,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>No Stretch</source>
-        <translation>Esnetme</translation>
+        <translation>Esnetme yok</translation>
     </message>
     <message>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>En küçük en büyüğe esnet</translation>
     </message>
     <message>
         <source>Stretch And Clip To MinMax</source>
@@ -13744,7 +13750,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Discrete</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayrı</translation>
     </message>
     <message>
         <source>Linearly</source>
@@ -13756,7 +13762,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Quantiles</source>
-        <translation type="unfinished">Sıklık</translation>
+        <translation>Sıklık</translation>
     </message>
     <message>
         <source>Description</source>
@@ -13808,7 +13814,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>No-Data Value: Not Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Veri Değeri Yok: Ayarlanmadı</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -13855,31 +13861,31 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished">Varsayılan Stil</translation>
+        <translation>Varsayılan Stil</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="unfinished">QGIS katman Stil Dosyası (*.qml)</translation>
+        <translation>QGIS katman Stil Dosyası (*.qml)</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished">Bilinmeyen stil biçimi:</translation>
+        <translation>Bilinmeyen stil biçimi:</translation>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished">Renk haritası</translation>
+        <translation>Renk haritası</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">Doğrusal</translation>
+        <translation>Doğrusal</translation>
     </message>
     <message>
         <source>Exact</source>
-        <translation type="unfinished"></translation>
+        <translation>Tam</translation>
     </message>
     <message>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
@@ -13891,7 +13897,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
@@ -13899,7 +13905,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Custom color map entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı Renk haritası girişi</translation>
     </message>
     <message>
         <source>QGIS Generated Color Map Export File</source>
@@ -13907,11 +13913,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Load Color Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Haritasını Yükle</translation>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıtlı Stil</translation>
     </message>
 </context>
 <context>
@@ -14285,79 +14291,79 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Single band gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Tek Band Gri</translation>
     </message>
     <message>
         <source>Three band color</source>
-        <translation type="unfinished"></translation>
+        <translation>Üç Band Renkli</translation>
     </message>
     <message>
         <source>RGB mode band selection and scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>KYM modda Band Seçimi ve ölçekleme</translation>
     </message>
     <message>
         <source>Red band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kırmızı bant</translation>
     </message>
     <message>
         <source>Green band</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeşil bant</translation>
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished"></translation>
+        <translation>Mavi bant</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Kullanıcı en küçük/en büyük değerleri</translation>
     </message>
     <message>
         <source>Red min</source>
-        <translation type="unfinished"></translation>
+        <translation>Kırmızı en küçük</translation>
     </message>
     <message>
         <source>Red max</source>
-        <translation type="unfinished"></translation>
+        <translation>Kırmızı en büyük</translation>
     </message>
     <message>
         <source>Green min</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeşil en küçük</translation>
     </message>
     <message>
         <source>Green max</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeşil en büyük</translation>
     </message>
     <message>
         <source>Blue min</source>
-        <translation type="unfinished"></translation>
+        <translation>Mavi en küçük</translation>
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
+        <translation>Mavien büyük</translation>
     </message>
     <message>
         <source>Single band properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tek bant özellikleri</translation>
     </message>
     <message>
         <source>Gray band</source>
-        <translation type="unfinished"></translation>
+        <translation>Gri bant</translation>
     </message>
     <message>
         <source>Color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk haritası</translation>
     </message>
     <message>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Haritasını Dönüştür</translation>
     </message>
     <message>
         <source>Use standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Standart Sapma kullan</translation>
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>Not: </translation>
     </message>
     <message>
         <source>Load min / max values from band</source>
@@ -14373,11 +14379,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Yükle</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrast Zenginleştirme</translation>
     </message>
     <message>
         <source>Current</source>
@@ -14393,23 +14399,23 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished">Metin etiket</translation>
+        <translation>Metin etiket</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaflık</translation>
     </message>
     <message>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Genel Şeffaflık</translation>
     </message>
     <message>
         <source>No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Veri Değeri Yok</translation>
     </message>
     <message>
         <source>Reset no data value</source>
@@ -14421,39 +14427,39 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Transparency band</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaf Band</translation>
     </message>
     <message>
         <source>Transparent pixel list</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaf Hücre listesi</translation>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Değerleri elle ekle</translation>
     </message>
     <message>
         <source>Add Values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Değerleri Görüntüden Ekle</translation>
     </message>
     <message>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen Satırı Sil</translation>
     </message>
     <message>
         <source>Default values</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan Değerler</translation>
     </message>
     <message>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyadan içe aktar</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyaya dışa aktar</translation>
     </message>
     <message>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıt sayısı</translation>
     </message>
     <message>
         <source>Color interpolation</source>
@@ -14461,123 +14467,123 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Classification mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıflandırma modu</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Ölçek Bağımlı Görünürlük</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>En büyük</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>En küçük</translation>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman Kaynağı</translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished">Ad Göster</translation>
+        <translation>Ad Göster</translation>
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Piramid Çözünürlükleri</translation>
     </message>
     <message>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeniden örnekleme metodu</translation>
     </message>
     <message>
         <source>Build pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Piramit Oluştur</translation>
     </message>
     <message>
         <source>Line graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Çizgi Grafik</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Out of range OK?</source>
-        <translation type="unfinished"></translation>
+        <translation>Aralık Dışında Tamam?</translation>
     </message>
     <message>
         <source>Allow approximation</source>
-        <translation type="unfinished"></translation>
+        <translation>Yaklaştırmaya izin ver</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
-        <translation type="unfinished">Varsayılan Stili Onar</translation>
+        <translation>Varsayılan Stili Onar</translation>
     </message>
     <message>
         <source>Save As Default</source>
-        <translation type="unfinished">Varsayılan Olarak Kaydet</translation>
+        <translation>Varsayılan Olarak Kaydet</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation type="unfinished">Stil Yükle ...</translation>
+        <translation>Stil Yükle ...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation type="unfinished">Stili Kaydet ...</translation>
+        <translation>Stili Kaydet ...</translation>
     </message>
     <message>
         <source>Default R:1 G:2 B:3</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan K:1 Y:2 M:3</translation>
     </message>
     <message>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıt gir</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Sırala</translation>
     </message>
     <message>
         <source>Load color map from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Haritasını banttan yükle</translation>
     </message>
     <message>
         <source>Load color map from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Haritasını dosyadan yükle</translation>
     </message>
     <message>
         <source>Export color map to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Renk Haritasını dosyaya kaydet</translation>
     </message>
     <message>
         <source>Generate new color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni renk haritası oluştur</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">Değiştir ...</translation>
+        <translation>Değiştir ...</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Lejand</translation>
+        <translation>Lejand</translation>
     </message>
     <message>
         <source>Palette</source>
-        <translation type="unfinished">Palet</translation>
+        <translation>Palet</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Notlar</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -14607,7 +14613,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Eylem</translation>
+        <translation>Eylem</translation>
     </message>
 </context>
 <context>
@@ -15074,7 +15080,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scanning </source>
-        <translation type="unfinished"></translation>
+        <translation>Taranıyor</translation>
     </message>
 </context>
 <context>
@@ -15125,19 +15131,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Dolu</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Yatay</translation>
+        <translation>Yatay</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Düşey</translation>
+        <translation>Düşey</translation>
     </message>
     <message>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Çarpraz</translation>
     </message>
     <message>
         <source>BDiagonal</source>
@@ -15153,35 +15159,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dense1</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 1</translation>
     </message>
     <message>
         <source>Dense2</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun  2</translation>
     </message>
     <message>
         <source>Dense3</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 3</translation>
     </message>
     <message>
         <source>Dense4</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 4</translation>
     </message>
     <message>
         <source>Dense5</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 5</translation>
     </message>
     <message>
         <source>Dense6</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 6</translation>
     </message>
     <message>
         <source>Dense7</source>
-        <translation type="unfinished"></translation>
+        <translation>Yoğun 7</translation>
     </message>
     <message>
         <source>Texture</source>
-        <translation type="unfinished"></translation>
+        <translation>Doku</translation>
     </message>
 </context>
 <context>
@@ -15283,15 +15289,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsSnappingDialog</name>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>kırıklık noktasına</translation>
     </message>
     <message>
         <source>to segment</source>
-        <translation type="unfinished"></translation>
+        <translation>parçaya</translation>
     </message>
     <message>
         <source>to vertex and segment</source>
-        <translation type="unfinished"></translation>
+        <translation>kırıklık noktasına ve parçaya</translation>
     </message>
 </context>
 <context>
@@ -15567,11 +15573,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Password for </source>
-        <translation type="unfinished">Parolası</translation>
+        <translation>Parolası</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Lütfen parolanızı girin:</translation>
+        <translation>Lütfen parolanızı girin:</translation>
     </message>
 </context>
 <context>
@@ -15674,7 +15680,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">Bağlan</translation>
+        <translation>Bağlan</translation>
     </message>
     <message>
         <source>Edit</source>
@@ -15702,7 +15708,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connect to PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS&apos;e bağlan</translation>
     </message>
 </context>
 <context>
@@ -15731,7 +15737,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsTINInterpolatorDialogBase</name>
     <message>
         <source>Interpolation method:</source>
-        <translation type="unfinished">Ara değer belirleme yöntemi:</translation>
+        <translation>Ara değer belirleme yöntemi:</translation>
     </message>
     <message>
         <source>Triangle based interpolation</source>
@@ -15749,7 +15755,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsUniqueValueDialog</name>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Silmeyi Onayla</translation>
+        <translation>Silmeyi Onayla</translation>
     </message>
     <message>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
@@ -15777,23 +15783,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıflandırma alanı</translation>
     </message>
     <message>
         <source>Add class</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıf ekle</translation>
     </message>
     <message>
         <source>Delete classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıf sil</translation>
     </message>
     <message>
         <source>Randomize Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Renkleri karıştır</translation>
     </message>
     <message>
         <source>Reset Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Renkleri sıfırla</translation>
     </message>
 </context>
 <context>
@@ -16027,27 +16033,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>Id</translation>
     </message>
     <message>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ad</translation>
     </message>
     <message>
         <source>type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip</translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzunluk</translation>
     </message>
     <message>
         <source>precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Hassasiyet</translation>
     </message>
     <message>
         <source>comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Açıklama</translation>
     </message>
     <message>
         <source>edit widget</source>
@@ -16055,7 +16061,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>values</source>
-        <translation type="unfinished"></translation>
+        <translation>Değerler</translation>
     </message>
     <message>
         <source>line edit</source>
@@ -16063,19 +16069,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Benzersiz Değerler</translation>
     </message>
     <message>
         <source>unique values (editable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Benzersiz Değerler (düzeltilebilir)</translation>
     </message>
     <message>
         <source>value map</source>
-        <translation type="unfinished"></translation>
+        <translation>değer haritası</translation>
     </message>
     <message>
         <source>classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Sınıflandırma</translation>
     </message>
     <message>
         <source>range (editable)</source>
@@ -16087,23 +16093,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya Adı</translation>
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished">İsim çakışması</translation>
+        <translation>İsim çakışması</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="unfinished">Öznitelik girilemedi. İsim zaten tabloda var.</translation>
+        <translation>Öznitelik girilemedi. İsim zaten tabloda var.</translation>
     </message>
     <message>
         <source>Creation of spatial index successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Mekansal indeks oluşturma başarılı</translation>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kayıtlı Stil</translation>
     </message>
 </context>
 <context>
@@ -16246,55 +16252,55 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend type</source>
-        <translation type="unfinished"></translation>
+        <translation>Lejand tipi</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Şeffaflık</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Seçenekler</translation>
+        <translation>Seçenekler</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>En büyük</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>En küçük</translation>
     </message>
     <message>
         <source>Change CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>KRS değiştir</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished">Öznitelikler</translation>
+        <translation>Öznitelikler</translation>
     </message>
     <message>
         <source>New column</source>
-        <translation type="unfinished">Yeni sütun</translation>
+        <translation>Yeni sütun</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">Sütun sil</translation>
+        <translation>Sütun sil</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tablo düzenlemeyi aç/kapa</translation>
     </message>
 </context>
 <context>
@@ -16347,7 +16353,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>received %1 bytes from %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 baytın %1 i alındı</translation>
     </message>
 </context>
 <context>
@@ -16445,7 +16451,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Add WFS Layer from a Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Sunucudan WFS Katman ekle</translation>
     </message>
 </context>
 <context>
@@ -16664,7 +16670,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation type="unfinished"></translation>
+        <translation>Katman sorgulanamadı.</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -16821,11 +16827,11 @@ Should the existing classes be deleted before classification?</source>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished">dxf bdosyalarını Shape dosyası biçimine dönüştürür</translation>
+        <translation>dxf bdosyalarını Shape dosyası biçimine dönüştürür</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dxf2Shp</translation>
     </message>
 </context>
 <context>
@@ -16836,11 +16842,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Nokta</translation>
+        <translation>Nokta</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -16852,11 +16858,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Polyline</source>
-        <translation type="unfinished">Çoklu çizgi</translation>
+        <translation>Çoklu çizgi</translation>
     </message>
     <message>
         <source>Export text labels</source>
-        <translation type="unfinished">Metin etiketleri dışa aktar</translation>
+        <translation>Metin etiketleri dışa aktar</translation>
     </message>
     <message>
         <source>Dxf Importer</source>
@@ -16868,7 +16874,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -16879,7 +16885,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Çıktı Dosya tipi</translation>
     </message>
     <message>
         <source>Fields description:
@@ -16897,11 +16903,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Açmak için DXF dosyasını seçin</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaydetmek için dosya adı seçiniz</translation>
     </message>
 </context>
 <context>
