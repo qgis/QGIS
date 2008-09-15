@@ -820,6 +820,7 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
 
     updateScale();
     refresh();
+    emit extentsChanged();
   }
   isAlreadyIn = false;
 } // resizeEvent
