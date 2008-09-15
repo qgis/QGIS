@@ -52,7 +52,7 @@ void QgisAppInterface::zoomToPrevious()
   qgis->zoomToPrevious();
 }
 
-void QgisAppInterface::zoomActiveLayer()
+void QgisAppInterface::zoomToActiveLayer()
 {
   qgis->zoomToLayerExtent();
 }

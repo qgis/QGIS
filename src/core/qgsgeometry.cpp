@@ -2993,6 +2993,132 @@ int QgsGeometry::translate( double dx, double dy )
   return 0;
 }
 
+int QgsGeometry::transform( QgsCoordinateTransform& ct )
+{
+  if ( mDirtyWkb )
+  {
+    exportGeosToWkb();
+  }
+
+  if ( !mGeometry )
+  {
+    QgsDebugMsg( "WKB geometry not available!" );
+    return 1;
+  }
+
+  QGis::WKBTYPE wkbType;
+  memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
+  bool hasZValue = false;
+  int wkbPosition = 5;
+
+  switch ( wkbType )
+  {
+    case QGis::WKBPoint25D:
+    case QGis::WKBPoint:
+    {
+      transformVertex( wkbPosition, ct, hasZValue );
+    }
+    break;
+
+    case QGis::WKBLineString25D:
+      hasZValue = true;
+    case QGis::WKBLineString:
+    {
+      int* npoints = ( int* )( &mGeometry[wkbPosition] );
+      wkbPosition += sizeof( int );
+      for ( int index = 0;index < *npoints;++index )
+      {
+        transformVertex( wkbPosition, ct, hasZValue );
+      }
+      break;
+    }
+
+    case QGis::WKBPolygon25D:
+      hasZValue = true;
+    case QGis::WKBPolygon:
+    {
+      int* nrings = ( int* )( &( mGeometry[wkbPosition] ) );
+      wkbPosition += sizeof( int );
+      int* npoints;
+
+      for ( int index = 0;index < *nrings;++index )
+      {
+        npoints = ( int* )( &( mGeometry[wkbPosition] ) );
+        wkbPosition += sizeof( int );
+        for ( int index2 = 0;index2 < *npoints;++index2 )
+        {
+          transformVertex( wkbPosition, ct, hasZValue );
+        }
+      }
+      break;
+    }
+
+    case QGis::WKBMultiPoint25D:
+      hasZValue = true;
+    case QGis::WKBMultiPoint:
+    {
+      int* npoints = ( int* )( &( mGeometry[wkbPosition] ) );
+      wkbPosition += sizeof( int );
+      for ( int index = 0;index < *npoints;++index )
+      {
+        wkbPosition += ( sizeof( int ) + 1 );
+        transformVertex( wkbPosition, ct, hasZValue );
+      }
+      break;
+    }
+
+    case QGis::WKBMultiLineString25D:
+      hasZValue = true;
+    case QGis::WKBMultiLineString:
+    {
+      int* nlines = ( int* )( &( mGeometry[wkbPosition] ) );
+      int* npoints = 0;
+      wkbPosition += sizeof( int );
+      for ( int index = 0;index < *nlines;++index )
+      {
+        wkbPosition += ( sizeof( int ) + 1 );
+        npoints = ( int* )( &( mGeometry[wkbPosition] ) );
+        wkbPosition += sizeof( int );
+        for ( int index2 = 0; index2 < *npoints; ++index2 )
+        {
+          transformVertex( wkbPosition, ct, hasZValue );
+        }
+      }
+      break;
+    }
+
+    case QGis::WKBMultiPolygon25D:
+      hasZValue = true;
+    case QGis::WKBMultiPolygon:
+    {
+      int* npolys = ( int* )( &( mGeometry[wkbPosition] ) );
+      int* nrings;
+      int* npoints;
+      wkbPosition += sizeof( int );
+      for ( int index = 0;index < *npolys;++index )
+      {
+        wkbPosition += ( 1 + sizeof( int ) ); //skip endian and polygon type
+        nrings = ( int* )( &( mGeometry[wkbPosition] ) );
+        wkbPosition += sizeof( int );
+        for ( int index2 = 0;index2 < *nrings;++index2 )
+        {
+          npoints = ( int* )( &( mGeometry[wkbPosition] ) );
+          wkbPosition += sizeof( int );
+          for ( int index3 = 0;index3 < *npoints;++index3 )
+          {
+            transformVertex( wkbPosition, ct, hasZValue );
+          }
+        }
+      }
+    }
+
+    default:
+      break;
+  }
+  mDirtyGeos = true;
+  return 0;
+}
+
 int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries )
 {
   int returnCode = 0;
@@ -4561,6 +4687,31 @@ void QgsGeometry::translateVertex( int& wkbPosition, double dx, double dy, bool 
   y = *(( double * )( &( mGeometry[wkbPosition] ) ) );
   translated_y = y + dy;
   memcpy( &( mGeometry[wkbPosition] ), &translated_y, sizeof( double ) );
+  wkbPosition += sizeof( double );
+
+  if ( hasZValue )
+  {
+    wkbPosition += sizeof( double );
+  }
+}
+
+void QgsGeometry::transformVertex( int& wkbPosition, QgsCoordinateTransform& ct, bool hasZValue )
+{
+  double x, y, z;
+
+
+  x = *(( double * )( &( mGeometry[wkbPosition] ) ) );
+  y = *(( double * )( &( mGeometry[wkbPosition + sizeof( double )] ) ) );
+  z = 0.0; // Ignore Z for now.
+
+  ct.transformInPlace( x, y, z);
+
+  // new x-coordinate
+  memcpy( &( mGeometry[wkbPosition] ), &x, sizeof( double ) );
+  wkbPosition += sizeof( double );
+
+  // new y-coordinate
+  memcpy( &( mGeometry[wkbPosition] ), &y, sizeof( double ) );
   wkbPosition += sizeof( double );
 
   if ( hasZValue )

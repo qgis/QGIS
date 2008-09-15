@@ -294,18 +294,36 @@ QgsVectorFileWriter::WriterError
 QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
                                        const QString& shapefileName,
                                        const QString& fileEncoding,
+                                       const QgsCoordinateReferenceSystem* destCRS,
                                        bool onlySelected )
 {
 
-  QgsVectorDataProvider* provider = layer->dataProvider();
+  const QgsCoordinateReferenceSystem* outputCRS;
+  QgsCoordinateTransform* ct;
 
+  QgsVectorDataProvider* provider = layer->dataProvider();
+  int shallTransform = false;
+
+  if ( destCRS && destCRS->isValid() )
+  {
+    // This means we should transform
+    outputCRS = destCRS;
+    shallTransform = true;
+  } else {
+    // This means we shouldn't transform, use source CRS as output (if defined)
+    outputCRS = &layer->srs();
+  }  
   QgsVectorFileWriter* writer = new QgsVectorFileWriter( shapefileName,
-      fileEncoding, provider->fields(), provider->geometryType(), &layer->srs() );
+      fileEncoding, provider->fields(), provider->geometryType(), outputCRS );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
   if ( err != NoError )
   {
+    if (ct != NULL)
+    {
+      delete ct;
+    }
     delete writer;
     return err;
   }
@@ -317,17 +335,37 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
+  // Create our transform
+  if (destCRS)
+  {
+    ct = new QgsCoordinateTransform(layer->srs(), *destCRS);
+  }
+
+  // Check for failure
+  if (ct == NULL)
+  {
+    shallTransform = false;
+  }
+
   // write all features
   while ( provider->getNextFeature( fet ) )
   {
     if ( onlySelected && !ids.contains( fet.featureId() ) )
       continue;
 
+    if ( shallTransform )
+    {
+      fet.geometry()->transform(*ct);
+    }
     writer->addFeature( fet );
   }
 
   delete writer;
 
+  if (shallTransform)
+  {
+    delete ct;
+  }
   return NoError;
 }
 

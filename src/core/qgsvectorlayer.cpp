@@ -3301,7 +3301,8 @@ void QgsVectorLayer::drawFeature( QPainter* p,
         transformPoint( x, y, theMapToPixelTransform, ct );
         //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
         //QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
-        QPointF pt( x, y );
+        QPointF pt( x*rasterScaleFactor - ( marker->width() / 2 ),  y*rasterScaleFactor - ( marker->height() / 2 ) );
+        //QPointF pt( x, y );
 
 #if defined(Q_WS_X11)
         // Work around a +/- 32768 limitation on coordinates in X11

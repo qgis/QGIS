@@ -24,10 +24,12 @@
 #include "qgslegendlayer.h"
 #include "qgslegendlayerfile.h"
 #include "qgsmaplayer.h"
+#include "qgsmaprenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsgenericprojectionselector.h"
 
 // attribute table
 #include "qgsattributetable.h"
@@ -225,6 +227,8 @@ void QgsLegendLayerFile::saveSelectionAsShapefile()
 
 void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 {
+  QgsCoordinateReferenceSystem destCRS;
+
   if ( mLyr.layer()->type() != QgsMapLayer::VECTOR )
     return;
 
@@ -264,6 +268,33 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
     shapefileName += ".shp";
   }
 
+  destCRS = vlayer->srs();
+  // Find out if we have projections enabled or not
+  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->projectionsEnabled() )
+  {
+    destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
+  }
+  
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
+  mySelector->setSelectedCrsId( destCRS.srsid() );
+  mySelector->setMessage(tr("Select the coordinate reference system for the saved shapefile.") +
+                         tr("The data points will be transformed from the layer coordinate reference system."));
+
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID );
+    destCRS = srs;
+    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID)
+  }
+  else
+  {
+    // Aborted CS selection, don't save.
+    delete mySelector;
+    return;
+  }
+
+  delete mySelector;
+
   // overwrite the file - user will already have been prompted
   // to verify they want to overwrite by the file dialog above
   if ( QFile::exists( shapefileName ) )
@@ -273,11 +304,12 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
       return;
     }
   }
+
   // ok if the file existed it should be deleted now so we can continue...
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsVectorFileWriter::WriterError error;
-  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, saveOnlySelection );
+  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, &destCRS, saveOnlySelection );
 
   QApplication::restoreOverrideCursor();
 
