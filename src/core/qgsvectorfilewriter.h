@@ -55,6 +55,7 @@ class CORE_EXPORT QgsVectorFileWriter
     static WriterError writeAsShapefile( QgsVectorLayer* layer,
                                          const QString& shapefileName,
                                          const QString& fileEncoding,
+                                         const QgsCoordinateReferenceSystem *destCRS,
                                          bool onlySelected = FALSE );
 
 

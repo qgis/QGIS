@@ -33,7 +33,7 @@ class QgisInterface : QObject
     //! Zoom to previous view extent
     virtual void zoomToPrevious()=0;
     //! Zoome to extent of the active layer
-    virtual void zoomActiveLayer()=0;
+    virtual void zoomToActiveLayer()=0;
 
     //! Add a vector layer
     virtual QgsVectorLayer* addVectorLayer(QString vectorLayerPath, QString baseName, QString providerKey)=0;

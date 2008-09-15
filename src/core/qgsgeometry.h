@@ -30,6 +30,7 @@ email                : morb at ozemail dot com dot au
 #endif
 
 #include "qgspoint.h"
+#include "qgscoordinatetransform.h"
 
 /** polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
@@ -233,6 +234,10 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success*/
     int translate( double dx, double dy );
 
+    /**Transform this geometry as described by CoordinateTranasform ct
+     @return 0 in case of success*/
+    int transform( QgsCoordinateTransform& ct );
+
     /**Splits this geometry according to a given line. Note that the geometry is only splitted once. If there are several intersections
      between geometry and splitLine, only the first one is considered.
     @param splitLine the line that splits the geometry
@@ -379,6 +384,13 @@ class CORE_EXPORT QgsGeometry
     @param dy translation of y-coordinate
     @param hasZValue 25D type?*/
     void translateVertex( int& wkbPosition, double dx, double dy, bool hasZValue );
+
+    /**Transforms a single vertex by ct.
+     @param ptr pointer to the wkb fragment containing the vertex
+    @param wkbPosition position in wkb array. Is increased automatically by the function
+    @param ct the QgsCoordinateTransform
+    @param hasZValue 25D type?*/
+    void transformVertex( int& wkbPosition, QgsCoordinateTransform& ct, bool hasZValue );
 
     //helper functions for geometry splitting
 

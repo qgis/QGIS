@@ -28,6 +28,7 @@ public:
     static WriterError writeAsShapefile(QgsVectorLayer* layer,
                                         const QString& shapefileName,
                                         const QString& fileEncoding,
+                                        const QgsCoordinateReferenceSystem*,
                                         bool onlySelected = FALSE);
 
 

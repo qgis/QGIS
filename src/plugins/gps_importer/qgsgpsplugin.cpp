@@ -556,6 +556,8 @@ void QgsGPSPlugin::setupBabel()
   if ( mBabelPath.isEmpty() )
     mBabelPath = "gpsbabel";
   // the importable formats
+  mImporters["Shapefile"] =
+    new QgsSimpleBabelFormat( "shape", true, true, true );
   mImporters["Geocaching.com .loc"] =
     new QgsSimpleBabelFormat( "geo", true, false, false );
   mImporters["Magellan Mapsend"] =

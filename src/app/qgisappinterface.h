@@ -48,7 +48,7 @@ class QgisAppInterface : public QgisInterface
     //! Zoom map to previous extent
     void zoomToPrevious();
     //! Zoom to active layer
-    void zoomActiveLayer();
+    void zoomToActiveLayer();
 
     //! Add a vector layer
     QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey );
