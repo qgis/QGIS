@@ -81,7 +81,7 @@ double QgsScaleCalculator::calculate( const QgsRect &mapExtent, int canvasWidth 
     QgsDebugMsg( "Can't calculate scale from the input values" );
     return 0;
   }
-  double scale = ( delta * conversionFactor ) / ( canvasWidth / mDpi );
+  double scale = ( delta * conversionFactor ) / ( (double)canvasWidth / mDpi );
   return scale;
 }
 
