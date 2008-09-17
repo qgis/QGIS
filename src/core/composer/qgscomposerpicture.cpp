@@ -110,7 +110,9 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     if ( validTestRenderer.isValid() )
     {
       mMode = SVG;
-      mDefaultSvgSize = validTestRenderer.defaultSize();
+      QRect viewBox = validTestRenderer.viewBox(); //take width/height ratio from view box instead of default size
+      mDefaultSvgSize.setWidth(viewBox.width());
+      mDefaultSvgSize.setHeight(viewBox.height());
       mSvgCacheUpToDate = false;
     }
     else
@@ -138,6 +140,7 @@ void QgsComposerPicture::updateImageFromSvg()
 {
   mImage.fill( 0 );
   QPainter p( &mImage );
+  p.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing, true);
   QSvgRenderer theRenderer( mSourceFile.fileName() );
   if ( theRenderer.isValid() )
   {
