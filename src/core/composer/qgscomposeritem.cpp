@@ -37,7 +37,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectIt
   //set default pen and brush
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidth( 1 );
+  defaultPen.setWidthF( 0.3 );
   setPen( defaultPen );
 
   //let z-Value be managed by composition
@@ -59,7 +59,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   //set default pen and brush
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidth( 1 );
+  defaultPen.setWidthF( 0.3 );
   setPen( defaultPen );
 
 //let z-Value be managed by composition
