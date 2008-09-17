@@ -2,7 +2,6 @@
 
 ;Quantum GIS Installer for Windows
 ;Written by Marco Pasetti
-;Last Update: 17 July 2008
 ;Mail to: marco.pasetti@alice.it 
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -480,10 +479,10 @@ SectionEnd
 Section /O "Alaska Data Set" SecAlaskaSDB
 
 	;Set the size (in KB)  of the archive file
-	StrCpy $ARCHIVE_SIZE_KB 18496
+	StrCpy $ARCHIVE_SIZE_KB 10253
 	
 	;Set the size (in KB) of the unpacked archive file
-	AddSize 132477
+	AddSize 33914
 	
 	StrCpy $HTTP_PATH "http://download.osgeo.org/qgis/data"
 	StrCpy $ARCHIVE_NAME "qgis_sample_data.tar.gz"
