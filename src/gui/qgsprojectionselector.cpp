@@ -529,7 +529,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   }
 
   // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = "select description, srs_id, epsg, is_geo, name, parameters from vw_srs ";
+  QString mySql = "select description, srs_id from vw_srs ";
   mySql += "where ";
   mySql += sqlFilter;
 
@@ -541,8 +541,10 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
       newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) ) );
+      // EPSG for user projections is not always defined in some dbases.
+      // It's also not written from customprojections dialog.
       // display the epsg (field 2) in the second column of the list view
-      newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) ) );
+      // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) ) );
       // display the qgis srs_id (field 1) in the third column of the list view
       newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) ) );
     }
