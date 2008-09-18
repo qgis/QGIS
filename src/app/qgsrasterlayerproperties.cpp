@@ -2649,7 +2649,7 @@ void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick( QTreeWidgetI
     {
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       //show color dialog
-      QColor newColor = QColorDialog::getColor();
+      QColor newColor = QColorDialog::getColor(item->background(column).color());
       if ( newColor.isValid() )
       {
         item->setBackground( 1, QBrush( newColor ) );
