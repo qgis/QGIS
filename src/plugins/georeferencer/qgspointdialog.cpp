@@ -351,8 +351,8 @@ bool QgsPointDialog::generateWorldFile()
     for ( unsigned int i = 0; i < mapCoords.size(); ++i )
     {
       points << ( QString( "%1\t%2\t%3\t%4" ).
-                  arg( mapCoords[i].x() ).arg( mapCoords[i].y(), 0, 'f', 15 ).
-                  arg( pixelCoords[i].x() ).arg( pixelCoords[i].y(), 0, 'f', 15 ) ) << endl;
+                  arg( mapCoords[i].x(), 0, 'f', 15 ).arg( mapCoords[i].y(), 0, 'f', 15 ).
+                  arg( pixelCoords[i].x(), 0, 'f', 15 ).arg( pixelCoords[i].y(), 0, 'f', 15 ) ) << endl;
     }
   }
   return true;
