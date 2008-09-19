@@ -41,18 +41,6 @@ class QSizeGrip;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.
- * The constructor creates empty composer, without compositions and mFirstTime set to true.
- * - if signal projectRead() is received all old compositions are deleted and
- *     - if the composition exists in project it is created from project settings (mFirstTime set to false)
- *     - if the composition does not exist in project
- *         - if the composer is visible new default composition is created (mFirstTime set to false)
- *         - if the composer is not visible the composer is left empty (mFirstTime set to true)
- * - if signal newProject() is received all old compositions are deleted and
- *     - if the composer is visible a new default composition is created (mFirstTime set to false)
- *     - if the composer is not visible the composer is left empty (mFirstTime set to true)
- *
- * If open() is called and mFirstTime == true, a new default composition is created.
- *
  */
 class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 {
@@ -79,12 +67,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Show composition options in widget
     void showCompositionOptions( QWidget *w );
-
-    /** \brief stores statei in project */
-    bool writeSettings( void );
-
-    /** \brief read state from project */
-    bool readSettings( void );
 
     //! Restore the window and toolbar state
     void restoreWindowState();
@@ -167,12 +149,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //!Move selected items to bottom
     void moveSelectedItemsToBottom();
-
-    //! read project
-    void projectRead();
-
-    //! New project
-    void newProject();
 
     //! Save window state
     void saveWindowState();
