@@ -68,9 +68,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Zoom to full extent of the paper
     void zoomFull();
 
-    //! Select item
-    void selectItem();
-
     //! Return pointer to map canvas
     QgsMapCanvas *mapCanvas( void );
 
@@ -227,9 +224,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
     /**Establishes the signal slot connection for the class*/
     void connectSlots();
-
-    //! Set buttons up
-    void setToolActionsOff( void );
 
     //! returns new world matrix for canvas view after zoom with factor scaleChange
     QMatrix updateMatrix( double scaleChange );
