@@ -834,87 +834,6 @@ void QgsComposer::on_closePButton_clicked()
   close();
 }
 
-void QgsComposer::projectRead( void )
-{
-  QgsDebugMsg( "entered." );
-  //if ( mComposition ) delete mComposition;
-  //mComposition  = new QgsComposition( this, 1 );
-
-  // Read composition if it is defined in project
-  QStringList l = QgsProject::instance()->subkeyList( "Compositions", "" );
-
-  bool found = false;
-  for ( QStringList::iterator it = l.begin(); it != l.end(); ++it )
-  {
-    QgsDebugMsg( QString( "key: %1" ).arg(( *it ) ) );
-    if (( *it ).compare( "composition_1" ) == 0 )
-    {
-      found = true;
-      break;
-    }
-  }
-
-  if ( found )
-  {
-    //mComposition->readSettings ( );
-    mFirstTime = false;
-  }
-  else
-  {
-    if ( isVisible() )
-    {
-      //mComposition->createDefault();
-      mFirstTime = false;
-    }
-    else
-    {
-      mFirstTime = true;
-    }
-  }
-
-  //mComposition->setActive ( true );
-}
-
-void QgsComposer::newProject( void )
-{
-  QgsDebugMsg( "entered." );
-  //if ( mComposition ) delete mComposition;
-
-  //mComposition  = new QgsComposition( this, 1 );
-  //mComposition->setActive ( true );
-
-  // If composer is visible, create default immediately, otherwise wait for the first open()
-  if ( isVisible() )
-  {
-    //mComposition->createDefault();
-    mFirstTime = false;
-  }
-  else
-  {
-    mFirstTime = true;
-  }
-}
-
-bool QgsComposer::writeSettings( void )
-{
-#ifdef WIN32
-  bool ok = true;
-#else
-  bool ok = false;
-#endif
-  return ok;
-}
-
-bool QgsComposer::readSettings( void )
-{
-#ifdef WIN32
-  bool ok = true;
-#else
-  bool ok = false;
-#endif
-  return ok;
-}
-
 void  QgsComposer::writeXML( QDomDocument& doc )
 {
   QDomNodeList nl = doc.elementsByTagName( "qgis" );
@@ -1084,6 +1003,8 @@ void QgsComposer::readXML( const QDomDocument& doc )
 
   mComposition->sortZList();
   mView->setComposition( mComposition );
+
+  setSelectionTool();
 }
 
 void QgsComposer::addComposerMap( QgsComposerMap* map )
