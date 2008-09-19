@@ -242,8 +242,10 @@ class CORE_EXPORT QgsGeometry
      between geometry and splitLine, only the first one is considered.
     @param splitLine the line that splits the geometry
     @param newGeometrys OUT: list of new geometries that have been created with the split
+    @param topological true if topological editing is enabled
+    @topologyTestPoints OUT: points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries );
+    int splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints);
 
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
@@ -398,12 +400,13 @@ class CORE_EXPORT QgsGeometry
      @splitLine the line that splits the feature
      @newGeometry new geometry if splitting was successful
      @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries );
+    int splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries);
     /**Splits polygon/multipolygon geometries
        @return 0 in case of success, 1 if geometry has not been split, error else*/
     int splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries );
-    /**Finds the vertices next to point where the line is split. If it is split at a vertex, beforeVertex
-     and afterVertex are the same*/
+    /**Finds out the points that need to be tested for topological correctnes if this geometry will be split
+     @return 0 in case of success*/
+    int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints) const;
 
     /**Nodes together a split line and a (multi-) polygon geometry in a multilinestring
      @return the noded multiline geometry or 0 in case of error. The calling function takes ownership of the node geometry*/
