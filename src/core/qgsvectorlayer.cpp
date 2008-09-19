@@ -1722,8 +1722,9 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   for ( ; select_it != featureList.end(); ++select_it )
   {
     QList<QgsGeometry*> newGeometries;
+    QList<QgsPoint> topologyTestPoints;
     QgsGeometry* newGeometry = 0;
-    splitFunctionReturn = select_it->geometry()->splitGeometry( splitLine, newGeometries );
+    splitFunctionReturn = select_it->geometry()->splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints);
     if ( splitFunctionReturn == 0 )
     {
       //change this geometry
@@ -1737,18 +1738,17 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
         newFeature.setGeometry( newGeometry );
         newFeature.setAttributeMap( select_it->attributeMap() );
         newFeatures.append( newFeature );
-        if ( topologicalEditing ) //add topological points for new feature
-        {
-          addTopologicalPoints( newGeometry );
-        }
       }
-      setModified( true, true );
 
-      //add topological points for this geometry if necessary
-      if ( topologicalEditing )
-      {
-        addTopologicalPoints( select_it->geometry() );
-      }
+      setModified( true, true );
+      if(topologicalEditing)
+	{
+	  QList<QgsPoint>::const_iterator topol_it = topologyTestPoints.constBegin();
+	  for(; topol_it != topologyTestPoints.constEnd(); ++topol_it)
+	    {
+	      addTopologicalPoints(*topol_it);
+	    }
+	}
     }
     else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
     {
