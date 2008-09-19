@@ -3156,14 +3156,14 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
       return 1;
     }
 
-    if(topological)
+    if ( topological )
+    {
+      //find out candidate points for topological corrections
+      if ( topologicalTestPointsSplit( splitLineGeos, topologyTestPoints ) != 0 )
       {
-	//find out candidate points for topological corrections
-	if(topologicalTestPointsSplit(splitLineGeos, topologyTestPoints) != 0)
-	  {
-	    return 1;
-	  }
+        return 1;
       }
+    }
 
     //call split function depending on geometry type
     if ( vectorType() == QGis::Line )
@@ -4713,7 +4713,7 @@ void QgsGeometry::transformVertex( int& wkbPosition, QgsCoordinateTransform& ct,
   y = *(( double * )( &( mGeometry[wkbPosition + sizeof( double )] ) ) );
   z = 0.0; // Ignore Z for now.
 
-  ct.transformInPlace( x, y, z);
+  ct.transformInPlace( x, y, z );
 
   // new x-coordinate
   memcpy( &( mGeometry[wkbPosition] ), &x, sizeof( double ) );
@@ -4894,61 +4894,61 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
   return 0;
 }
 
-int QgsGeometry::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints) const
+int QgsGeometry::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints ) const
 {
   //Find out the intersection points between splitLineGeos and this geometry.
   //These points need to be tested for topological correctness by the calling function
   //if topological editing is enabled
 
   testPoints.clear();
-  GEOSGeometry* intersectionGeom = GEOSIntersection(mGeos, splitLine);
-  if(intersectionGeom == NULL)
-    {
-      return 1;
-    }
-  
+  GEOSGeometry* intersectionGeom = GEOSIntersection( mGeos, splitLine );
+  if ( intersectionGeom == NULL )
+  {
+    return 1;
+  }
+
   bool simple = false;
   int nIntersectGeoms = 1;
-  if(GEOSGeomTypeId(intersectionGeom) == (GEOS_LINESTRING) || GEOSGeomTypeId(intersectionGeom) == (GEOS_POINT))
+  if ( GEOSGeomTypeId( intersectionGeom ) == GEOS_LINESTRING || GEOSGeomTypeId( intersectionGeom ) == GEOS_POINT )
+  {
+    simple = true;
+  }
+
+  if ( !simple )
+  {
+    nIntersectGeoms = GEOSGetNumGeometries( intersectionGeom );
+  }
+
+  for ( int i = 0; i < nIntersectGeoms; ++i )
+  {
+    const GEOSGeometry* currentIntersectGeom;
+    if ( simple )
     {
-      simple = true;
+      currentIntersectGeom = intersectionGeom;
     }
-  
-  if(!simple)
+    else
     {
-      nIntersectGeoms = GEOSGetNumGeometries(intersectionGeom);
+      currentIntersectGeom = GEOSGetGeometryN( intersectionGeom, i );
     }
-  
-  for(int i = 0; i < nIntersectGeoms; ++i)
+
+    const GEOSCoordSequence* lineSequence = GEOSGeom_getCoordSeq( currentIntersectGeom );
+    unsigned int sequenceSize = 0;
+    double x, y;
+    if ( GEOSCoordSeq_getSize( lineSequence, &sequenceSize ) != 0 )
     {
-      GEOSGeometry* currentIntersectGeom;
-      if(simple)
-	{
-	  currentIntersectGeom = intersectionGeom;
-	}
-      else
-	{
-	  currentIntersectGeom = GEOSGetGeometryN(intersectionGeom, i);
-	}
-      
-      GEOSCoordSequence* lineSequence = GEOSGeom_getCoordSeq(currentIntersectGeom);
-      unsigned int sequenceSize = 0;
-      double x, y;
-      if(GEOSCoordSeq_getSize(lineSequence, &sequenceSize) != 0)
-	{
-	  for(int i = 0; i < sequenceSize; ++i)
-	    {
-	      if(GEOSCoordSeq_getX(lineSequence, i, &x) != 0)
-		{
-		  if(GEOSCoordSeq_getY(lineSequence, i, &y) != 0)
-		    {
-		      testPoints.push_back(QgsPoint(x, y));
-		    }
-		}
-	    }
-	}
+      for ( unsigned int i = 0; i < sequenceSize; ++i )
+      {
+        if ( GEOSCoordSeq_getX( lineSequence, i, &x ) != 0 )
+        {
+          if ( GEOSCoordSeq_getY( lineSequence, i, &y ) != 0 )
+          {
+            testPoints.push_back( QgsPoint( x, y ) );
+          }
+        }
+      }
     }
-  GEOSGeom_destroy(intersectionGeom);
+  }
+  GEOSGeom_destroy( intersectionGeom );
   return 0;
 }
 
