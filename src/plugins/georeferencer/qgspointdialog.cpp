@@ -422,8 +422,8 @@ void QgsPointDialog::deleteDataPoint( QgsPoint& coords )
     QgsDebugMsg( QString( "deleteDataPoint! test: %1" ).arg(( x*x + y*y ) ) );
     if (( x*x + y*y ) < maxDistSqr )
     {
-      mPoints.erase( it );
       delete *it;
+      mPoints.erase( it );
       --mAcetateCounter;
       mCanvas->refresh();
       break;
