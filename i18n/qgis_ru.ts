@@ -3293,6 +3293,11 @@ Errors:  %2
         <source>Python Console</source>
         <translation>Консоль Python</translation>
     </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3032"/>
+        <source></source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -9863,100 +9868,110 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsLegendLayerFile</name>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="240"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="244"/>
         <source>Save layer as...</source>
         <translation>Сохранить слой как...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="303"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="335"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="287"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="319"/>
         <source>Saving done</source>
         <translation>Сохранение выполнено</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="287"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="319"/>
         <source>Export to Shapefile has been completed</source>
         <translation>Экспорт в shape-файл завершён</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="291"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="323"/>
         <source>Driver not found</source>
         <translation>Драйвер не найден</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="291"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="323"/>
         <source>ESRI Shapefile driver is not available</source>
         <translation>Драйвер shape-файлов ESRI не доступен</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="295"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="327"/>
         <source>Error creating shapefile</source>
         <translation>Ошибка создания shape-файла</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="296"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="328"/>
         <source>The shapefile could not be created (</source>
         <translation>Не удалось создать shape-файл (</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="300"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="332"/>
         <source>Layer creation failed</source>
         <translation>Не удалось создать слой</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="330"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="362"/>
         <source>&amp;Zoom to layer extent</source>
         <translation>&amp;Увеличить до границ слоя</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="333"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="365"/>
         <source>&amp;Show in overview</source>
         <translation>&amp;Показать в обзоре</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="341"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="373"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="350"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="382"/>
         <source>&amp;Open attribute table</source>
         <translation>&amp;Открыть таблицу атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="364"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="396"/>
         <source>Save as shapefile...</source>
         <translation>Сохранить как shape-файл...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="366"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="398"/>
         <source>Save selection as shapefile...</source>
         <translation>Сохранить выделение как shape-файл...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="383"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="415"/>
         <source>&amp;Properties</source>
         <translation>&amp;Свойства</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="304"/>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="336"/>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation>Таблица атрибутов слоя включает неподдерживаемые типы данных</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="281"/>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation>Выберите систему координат для вновь создаваемого shape-файла.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="281"/>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation>Данные в исходной системе координат слоя будут преобразованы.</translation>
     </message>
 </context>
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1219"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1220"/>
         <source>Could not draw</source>
         <translation>Ошибка отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1219"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1220"/>
         <source>because</source>
         <translation>по причине</translation>
     </message>
@@ -12416,22 +12431,22 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>Пользовательские системы координат</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="566"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="568"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Географические системы координат</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="575"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="577"/>
         <source>Projected Coordinate Systems</source>
         <translation>Прямоугольные системы координат</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="930"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="932"/>
         <source>Resource Location Error</source>
         <translation>Ошибка поиска ресурса</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="933"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="935"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
