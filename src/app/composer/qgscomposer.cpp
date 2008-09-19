@@ -435,6 +435,11 @@ void QgsComposer::on_mActionPrint_activated( void )
     return;
   }
 
+  if(containsWMSLayer())
+    {
+      showWMSPrintingWarning();
+    }
+
   QPrinter printer;
 
   //try to set most of the print dialog settings based on composer properties
@@ -487,6 +492,11 @@ void QgsComposer::on_mActionPrint_activated( void )
 
 void QgsComposer::on_mActionExportAsImage_activated( void )
 {
+  if(containsWMSLayer())
+    {
+      showWMSPrintingWarning();
+    }
+
   // Image size
   int width = ( int )( mComposition->printoutResolution() * mComposition->paperWidth() / 25.4 );
   int height = ( int )( mComposition-> printoutResolution() * mComposition->paperHeight() / 25.4 );
@@ -608,6 +618,11 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
 
 void QgsComposer::on_mActionExportAsSVG_activated( void )
 {
+  if(containsWMSLayer())
+    {
+      showWMSPrintingWarning();
+    }
+
   QString myQSettingsLabel = "/UI/displaySVGWarning";
   QSettings myQSettings;
 
@@ -1079,4 +1094,44 @@ void QgsComposer::setSelectionTool()
 {
   mActionSelectMoveItem->setChecked( true );
   on_mActionSelectMoveItem_activated();
+}
+
+bool QgsComposer::containsWMSLayer() const
+{
+  QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
+  QgsComposerItem* currentItem = 0;
+  QgsComposerMap* currentMap = 0;
+
+  for(; item_it != mItemWidgetMap.constEnd(); ++item_it)
+    {
+      currentItem = item_it.key();
+      currentMap = dynamic_cast<QgsComposerMap*>(currentItem);
+      if(currentMap)
+	{
+	  if(currentMap->containsWMSLayer())
+	    {
+	      return true;
+	    }
+	}
+    }
+  return false;
+}
+
+void QgsComposer::showWMSPrintingWarning()
+{
+  QString myQSettingsLabel = "/UI/displayComposerWMSWarning";
+  QSettings myQSettings;
+
+  bool displayWMSWarning = myQSettings.value( myQSettingsLabel, true ).toBool();
+  if(displayWMSWarning)
+    {
+      QgsMessageViewer* m = new QgsMessageViewer( this );
+      m->setWindowTitle( tr( "Project contains WMS layers" ) );
+      m->setMessage(tr("Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed"), QgsMessageOutput::MessageText);
+      m->setCheckBoxText( tr( "Don't show this message again" ) );
+      m->setCheckBoxState( Qt::Unchecked );
+      m->setCheckBoxVisible( true );
+      m->setCheckBoxQSettingsLabel( myQSettingsLabel );
+      m->exec();
+    }
 }

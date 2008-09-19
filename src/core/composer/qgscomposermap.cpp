@@ -25,6 +25,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsmaprenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
@@ -400,6 +401,40 @@ void QgsComposerMap::setOffset( double xOffset, double yOffset )
 {
   mXOffset = xOffset;
   mYOffset = yOffset;
+}
+
+bool QgsComposerMap::containsWMSLayer() const
+{
+  if(!mMapRenderer)
+    {
+      return false;
+    }
+
+  QStringList layers = mMapRenderer->layerSet();
+
+  QStringList::const_iterator layer_it = layers.constBegin();
+  QgsMapLayer* currentLayer = 0;
+
+  for(; layer_it != layers.constEnd(); ++layer_it)
+    {
+      currentLayer = QgsMapLayerRegistry::instance()->mapLayer(*layer_it);
+      if(currentLayer)
+	{
+	  QgsRasterLayer* currentRasterLayer = dynamic_cast<QgsRasterLayer*>(currentLayer);
+	  if(currentRasterLayer)
+	    {
+	      const QgsRasterDataProvider* rasterProvider = 0;
+	      if(rasterProvider = currentRasterLayer->dataProvider())
+		{
+		  if(rasterProvider->name() == "wms")
+		    {
+		      return true;
+		    }
+		}
+	    }
+	}
+    }
+  return false;
 }
 
 double QgsComposerMap::horizontalViewScaleFactor() const

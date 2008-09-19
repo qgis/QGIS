@@ -204,6 +204,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! returns new world matrix for canvas view after zoom with factor scaleChange
     QMatrix updateMatrix( double scaleChange );
 
+    //! True if a composer map contains a WMS layer
+    bool containsWMSLayer() const;
+
+    //! Displays a warning because of possible min/max size in WMS
+    void showWMSPrintingWarning();
+
     //! Pointer to composer view
     QgsComposerView *mView;
 

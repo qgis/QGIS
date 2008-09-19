@@ -118,6 +118,9 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     /**Sets offset values to shift image (useful for live updates when moving item content)*/
     void setOffset( double xOffset, double yOffset );
 
+    /**True if composer map renders a WMS layer*/
+    bool containsWMSLayer() const;
+
     /** stores state in Dom node
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param temp write template file
