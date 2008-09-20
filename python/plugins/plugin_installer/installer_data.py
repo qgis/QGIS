@@ -54,10 +54,10 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 # knownRepos: (name, url for QGIS 0.x, url for QGIS 1.x, possible depreciated url, another possible depreciated url)
 knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","",""),
-              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo.xml","","http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml",""),
+              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml","","http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml",""),
               ("Barry Rowlingson's Repository","http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml","","",""),
               ("Borys Jurgiel's Repository","http://bwj.aster.net.pl/qgis-oldapi/plugins.xml","http://bwj.aster.net.pl/qgis/plugins.xml","",""),
-              ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","","","")]
+              ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","","")]
 
 
 
@@ -169,7 +169,7 @@ class Repositories(QObject):
     settings.beginGroup(reposGroup)
     # first, update the QSettings repositories if needed
     if len(settings.childGroups()) == 0: # add the default repository when there isn't any
-      settings.setValue(self.knownRepos[0][0]+"/url", QVariant(self.knownRepos[0][self.QGISver+1]))
+      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][self.QGISver+1]))
     else: # else update invalid urls
       for key in settings.childGroups():
         url = settings.value(key+"/url", QVariant()).toString()

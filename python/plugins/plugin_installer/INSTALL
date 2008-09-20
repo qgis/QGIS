@@ -1,7 +1,0 @@
-You must have qgis 0.9+ with python bindings in order to run this plugin. If you want to modify the UI, you'll need th qt4 devtools.
-
-1) Edit the INST_DIR in the Makefile to match your environment
-2) sudo make install
-3) open qgis and turn on the Installer plugin
-
-
