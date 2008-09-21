@@ -416,115 +416,115 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>QGIS instalátor zásuvných modulů</translation>
+        <translation type="obsolete">QGIS instalátor zásuvných modulů</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Název instalovaného zásuvného modulu</translation>
+        <translation type="obsolete">Název instalovaného zásuvného modulu</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Získat seznam</translation>
+        <translation type="obsolete">Získat seznam</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Hotovo</translation>
+        <translation type="obsolete">Hotovo</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Instalovat zásuvný modul</translation>
+        <translation type="obsolete">Instalovat zásuvný modul</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>Zásuvný modul byl instalován do ~/.qgis/python/plugins</translation>
+        <translation type="obsolete">Zásuvný modul byl instalován do ~/.qgis/python/plugins</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Název</translation>
+        <translation type="obsolete">Název</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Verze</translation>
+        <translation type="obsolete">Verze</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Popis</translation>
+        <translation type="obsolete">Popis</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Autor</translation>
+        <translation type="obsolete">Autor</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Vyberte repozitář, získejte seznam dostupných zásuvných modulů, vyberte jeden z nich a nainstalujte ho</translation>
+        <translation type="obsolete">Vyberte repozitář, získejte seznam dostupných zásuvných modulů, vyberte jeden z nich a nainstalujte ho</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Repozitář</translation>
+        <translation type="obsolete">Repozitář</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Aktivní repozitář:</translation>
+        <translation type="obsolete">Aktivní repozitář:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Přidat</translation>
+        <translation type="obsolete">Přidat</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editovat</translation>
+        <translation type="obsolete">Editovat</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Odstranit</translation>
+        <translation type="obsolete">Odstranit</translation>
     </message>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation type="obsolete">Dialog</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation>Bodový symbol</translation>
+        <translation type="obsolete">Bodový symbol</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Velikost</translation>
+        <translation type="obsolete">Velikost</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation>Pole zvetšení znaku</translation>
+        <translation type="obsolete">Pole zvetšení znaku</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation>Pole rotace</translation>
+        <translation type="obsolete">Pole rotace</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation>Nastavení stylu</translation>
+        <translation type="obsolete">Nastavení stylu</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation>Styl obrysu</translation>
+        <translation type="obsolete">Styl obrysu</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Barva obrysu</translation>
+        <translation type="obsolete">Barva obrysu</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Šířka obrysu</translation>
+        <translation type="obsolete">Šířka obrysu</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Barva výplně</translation>
+        <translation type="obsolete">Barva výplně</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation>Styl výplně</translation>
+        <translation type="obsolete">Styl výplně</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -824,11 +824,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Replace this with a short description of the what the plugin does</source>
+        <source>OG&amp;R Converter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OG&amp;R Converter</source>
+        <source>Translates vector layers between formats supported by OGR library</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2435,6 +2435,14 @@ Chcete zadat cestu (GISBASE) k instalaci programu GRASS?</translation>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5458,27 +5466,27 @@ Tuto volbu můžete změnit později v menu Nastavení a Volby (záložka Prohl�
     </message>
     <message>
         <source>Name</source>
-        <translation>Název</translation>
+        <translation type="obsolete">Název</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation>Webové stránky</translation>
+        <translation type="obsolete">Webové stránky</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Následující sponzorují QGIS přispíváním peněz na zaplacení vývoje a jiných nákladů projeku&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Následující sponzorují QGIS přispíváním peněz na zaplacení vývoje a jiných nákladů projeku&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Dostupné zásuvné moduly Správy dat QGISu</translation>
+        <translation type="obsolete">Dostupné zásuvné moduly Správy dat QGISu</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation>Dostupné zásuvné moduly Databáze Qt</translation>
+        <translation type="obsolete">Dostupné zásuvné moduly Databáze Qt</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation>Dostupné zásuvné moduly Obrázek Qt</translation>
+        <translation type="obsolete">Dostupné zásuvné moduly Obrázek Qt</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5586,6 +5594,13 @@ Krátký přehled syntaxe:
     <message>
         <source>Search string:</source>
         <translation type="obsolete">Hledat řetězec:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsApplication</name>
+    <message>
+        <source>Exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6343,11 +6358,11 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source> for read/write</source>
-        <translation> pro čtení/zápis</translation>
+        <translation type="obsolete"> pro čtení/zápis</translation>
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Chyba při tisku</translation>
+        <translation type="obsolete">Chyba při tisku</translation>
     </message>
     <message>
         <source>Cannot format BoundingBox</source>
@@ -6355,15 +6370,15 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Cannot seek</source>
-        <translation>Nelze prohledat</translation>
+        <translation type="obsolete">Nelze prohledat</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>Nelze přepsat &quot;Bounding Box&quot;</translation>
+        <translation type="obsolete">Nelze přepsat &quot;Bounding Box&quot;</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>Nelze najít &quot;Bounding Box&quot;</translation>
+        <translation type="obsolete">Nelze najít &quot;Bounding Box&quot;</translation>
     </message>
     <message>
         <source>Cannot format translate</source>
@@ -6371,23 +6386,23 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>Nelze přepsat přemístění</translation>
+        <translation type="obsolete">Nelze přepsat přemístění</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>Nelze najít přemístění</translation>
+        <translation type="obsolete">Nelze najít přemístění</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Chyba při čtení/zápisu (I/O) souboru</translation>
+        <translation type="obsolete">Chyba při čtení/zápisu (I/O) souboru</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>Velikost papíru neodpovídá</translation>
+        <translation type="obsolete">Velikost papíru neodpovídá</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>Vybraná velikost papíru neodpovídá velikosti kompozice</translation>
+        <translation type="obsolete">Vybraná velikost papíru neodpovídá velikosti kompozice</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -6415,7 +6430,7 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>Nelze otevřít</translation>
+        <translation type="obsolete">Nelze otevřít</translation>
     </message>
     <message>
         <source>format</source>
@@ -6559,6 +6574,14 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Choose a file name to save the map as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13678,11 +13701,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation>Více vrstev</translation>
+        <translation type="obsolete">Více vrstev</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation>Položka obsahuje více souborů vrstev. Není podporováno zobrazení více vrstev v tabulce.</translation>
+        <translation type="obsolete">Položka obsahuje více souborů vrstev. Není podporováno zobrazení více vrstev v tabulce.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -13697,7 +13720,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation>Atributová tabulka - </translation>
+        <translation type="obsolete">Atributová tabulka - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -13705,19 +13728,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation>Editace selhala</translation>
+        <translation type="obsolete">Editace selhala</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation>Poskytovatel nemůže být otevřen pro editaci</translation>
+        <translation type="obsolete">Poskytovatel nemůže být otevřen pro editaci</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>Ukončit editaci</translation>
+        <translation type="obsolete">Ukončit editaci</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation>Přejete si uložit změny?</translation>
+        <translation type="obsolete">Přejete si uložit změny?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -13733,19 +13756,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation>Nemohu zapsat změny</translation>
+        <translation type="obsolete">Nemohu zapsat změny</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation>Problémy během návratu zpět</translation>
+        <translation type="obsolete">Problémy během návratu zpět</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation>Není vektorová vrstva</translation>
+        <translation type="obsolete">Není vektorová vrstva</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation>Pro otevření atributové tabulky musíte vybrat vektorovou vrstvu v legendě</translation>
+        <translation type="obsolete">Pro otevření atributové tabulky musíte vybrat vektorovou vrstvu v legendě</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -13805,15 +13828,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation>bad_alloc vyjímka</translation>
+        <translation type="obsolete">bad_alloc vyjímka</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation>Naplňování atributové tabulky bylo pozastaveno, jelikož není dostatek virtuální paměti</translation>
+        <translation type="obsolete">Naplňování atributové tabulky bylo pozastaveno, jelikož není dostatek virtuální paměti</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation>Atributová tabulka vrstvy obsahuje nepodporovaný datový typ</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14831,18 +14862,6 @@ Rozšířené informace o chybě:
         <source>Cross</source>
         <translation>Kříž</translation>
     </message>
-    <message>
-        <source>Show all features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show features in current canvas</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -15416,10 +15435,6 @@ identifikace bez zoomování in very close.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Attribute table behaviour</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>CRS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15984,6 +15999,29 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerFetchingDialog</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overall progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort fetching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished">Repozitář</translation>
+    </message>
+    <message>
+        <source>State</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17082,11 +17120,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation>Rozsah rastru:</translation>
+        <translation type="obsolete">Rozsah rastru:</translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation>Oříznutá oblast: </translation>
+        <translation type="obsolete">Oříznutá oblast: </translation>
     </message>
     <message>
         <source>Pyramid overviews:</source>
@@ -21056,19 +21094,19 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Detaily skladu</translation>
+        <translation type="obsolete">Detaily skladu</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Jméno:</translation>
+        <translation type="obsolete">Jméno:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -21203,28 +21241,6 @@ p, li { white-space: pre-wrap; }
         <source>Export text labels</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a DXF file to open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>eVisDatabaseConnectionGuiBase</name>
@@ -21305,7 +21321,7 @@ For support send a mail to scala@itc.cnr.it
     <name>pluginname</name>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Nahradit toto krátkým popisem toho co tento plugin dělá</translation>
+        <translation type="obsolete">Nahradit toto krátkým popisem toho co tento plugin dělá</translation>
     </message>
     <message>
         <source>[menuitemname]</source>
@@ -21314,6 +21330,10 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>&amp;[menuname]</source>
         <translation>&amp;[název menu]</translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

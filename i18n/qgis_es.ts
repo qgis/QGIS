@@ -128,67 +128,67 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>Instalador de complementos de QGIS</translation>
+        <translation type="obsolete">Instalador de complementos de QGIS</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Nombre del complemento a instalar</translation>
+        <translation type="obsolete">Nombre del complemento a instalar</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Obtener lista</translation>
+        <translation type="obsolete">Obtener lista</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Hecho</translation>
+        <translation type="obsolete">Hecho</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Instalar complemento</translation>
+        <translation type="obsolete">Instalar complemento</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>El complemento se instalará en ~/.qgis/python/plugins</translation>
+        <translation type="obsolete">El complemento se instalará en ~/.qgis/python/plugins</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Versión</translation>
+        <translation type="obsolete">Versión</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Descripción</translation>
+        <translation type="obsolete">Descripción</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Autor</translation>
+        <translation type="obsolete">Autor</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Seleccionar repositorio, obtener la lista de complementos disponibles, seleccionar uno e instalarlo</translation>
+        <translation type="obsolete">Seleccionar repositorio, obtener la lista de complementos disponibles, seleccionar uno e instalarlo</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Repositorio</translation>
+        <translation type="obsolete">Repositorio</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Repositorio activo:</translation>
+        <translation type="obsolete">Repositorio activo:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Añadir</translation>
+        <translation type="obsolete">Añadir</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editar</translation>
+        <translation type="obsolete">Editar</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Borrar</translation>
+        <translation type="obsolete">Borrar</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -2732,28 +2732,8 @@ p, li { white-space: pre-wrap; }
         <translation>Únase a nuestra lista de correo de usuarios</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
-    </message>
-    <message>
-        <source>Website</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
 </context>
 <context>
@@ -3227,47 +3207,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>No se puede abrir </translation>
+        <translation type="obsolete">No se puede abrir </translation>
     </message>
     <message>
         <source> for read/write</source>
-        <translation> para leer/escribir</translation>
+        <translation type="obsolete"> para leer/escribir</translation>
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Error al imprimir</translation>
+        <translation type="obsolete">Error al imprimir</translation>
     </message>
     <message>
         <source>Cannot seek</source>
-        <translation>No se puede solicitar</translation>
+        <translation type="obsolete">No se puede solicitar</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>No se puede sobrescribir el marco</translation>
+        <translation type="obsolete">No se puede sobrescribir el marco</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>No se puede encontrar el marco</translation>
+        <translation type="obsolete">No se puede encontrar el marco</translation>
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>No se puede sobrescribir la traducción</translation>
+        <translation type="obsolete">No se puede sobrescribir la traducción</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>No se puede encontrar la traducción</translation>
+        <translation type="obsolete">No se puede encontrar la traducción</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Error de ES del archivo</translation>
+        <translation type="obsolete">Error de ES del archivo</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>El papel no coincide</translation>
+        <translation type="obsolete">El papel no coincide</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>El tamaño de papel seleccionado no se ajusta al tamaño del mapa</translation>
+        <translation type="obsolete">El tamaño de papel seleccionado no se ajusta al tamaño del mapa</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -3428,6 +3408,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Choose a file name to save the map as</source>
         <translation>Seleccione un nombre de archivo para guardar el mapa</translation>
+    </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12839,19 +12827,19 @@ Should the existing classes be deleted before classification?</source>
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Detalles del repositorio</translation>
+        <translation type="obsolete">Detalles del repositorio</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Nombre:</translation>
+        <translation type="obsolete">Nombre:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -12918,26 +12906,8 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a DXF file to open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">Seleccione un nombre de archivo en el que guardar</translation>
+        <translation type="obsolete">Seleccione un nombre de archivo en el que guardar</translation>
     </message>
 </context>
 <context>
