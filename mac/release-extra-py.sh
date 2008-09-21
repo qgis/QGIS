@@ -2,18 +2,18 @@
 # Copy PyQt supporting libraries to qgis bundle
 # and make search paths for them relative to bundle
 
-BUNDLE=qgis0.11.0.app/Contents/MacOS
+BUNDLE=qgis1.0.0.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LNKGDAL=libgdal.1.dylib
-LNKGEOS=libgeos.3.dylib
+LNKGEOSC=libgeos_c.1.dylib
 
-QTPREFIX=/usr/local/Trolltech/Qt-4.4.0
-QTFRAMEWORKS="QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon"
-LIBQTCL=libQtCLucene.4.4.0.dylib
+QTPREFIX=/usr/local/Trolltech/Qt-4.4.2
+QTFRAMEWORKS="QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon"
+LIBQTCL=libQtCLucene.4.4.2.dylib
 LNKQTCL=libQtCLucene.4.dylib
 
-SITEPKG=/Library/Python/2.3/site-packages
+SITEPKG=/Library/Python/2.5/site-packages
 
 # Copy additional Qt frameworks needed by PyQt to application bundle
 cd $BUNDLE/lib
@@ -36,7 +36,7 @@ if test ! -f $LIBQTCL; then
 fi
 
 # Update paths to supporting Qt frameworks
-for FRAMEWORK in QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+for FRAMEWORK in QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 do
 	install_name_tool -change $QTPREFIX/lib/QtCore.framework/Versions/4/QtCore \
 		@executable_path/lib/QtCore.framework/Versions/4/QtCore \
@@ -45,13 +45,13 @@ done
 install_name_tool -change $QTPREFIX/lib/QtCore.framework/Versions/4/QtCore \
 	@executable_path/lib/QtCore.framework/Versions/4/QtCore \
 	$LIBQTCL
-for FRAMEWORK in QtAssistant QtDesigner QtHelp QtOpenGL QtWebKit phonon
+for FRAMEWORK in QtAssistant QtHelp QtOpenGL QtWebKit phonon
 do
 	install_name_tool -change $QTPREFIX/lib/QtGui.framework/Versions/4/QtGui \
 		@executable_path/lib/QtGui.framework/Versions/4/QtGui \
 		$FRAMEWORK.framework/Versions/4/$FRAMEWORK
 done
-for FRAMEWORK in QtAssistant QtWebKit QtXmlPatterns
+for FRAMEWORK in QtAssistant QtHelp QtWebKit QtXmlPatterns
 do
 	install_name_tool -change $QTPREFIX/lib/QtNetwork.framework/Versions/4/QtNetwork \
 		@executable_path/lib/QtNetwork.framework/Versions/4/QtNetwork \
@@ -60,15 +60,9 @@ done
 install_name_tool -change $QTPREFIX/lib/QtSql.framework/Versions/4/QtSql \
 	@executable_path/lib/QtSql.framework/Versions/4/QtSql \
 	QtHelp.framework/Versions/4/QtHelp
-for FRAMEWORK in QtDesigner QtHelp
-do
-	install_name_tool -change $QTPREFIX/lib/QtXml.framework/Versions/4/QtXml \
-		@executable_path/lib/QtXml.framework/Versions/4/QtXml \
-		$FRAMEWORK.framework/Versions/4/$FRAMEWORK
-done
-install_name_tool -change $QTPREFIX/lib/QtScript.framework/Versions/4/QtScript \
-	@executable_path/lib/QtScript.framework/Versions/4/QtScript \
-	QtDesigner.framework/Versions/4/QtDesigner
+install_name_tool -change $QTPREFIX/lib/QtXml.framework/Versions/4/QtXml \
+	@executable_path/lib/QtXml.framework/Versions/4/QtXml \
+	QtHelp.framework/Versions/4/QtHelp
 install_name_tool -change $QTPREFIX/lib/$LNKQTCL \
 	@executable_path/lib/$LNKQTCL \
 	QtHelp.framework/Versions/4/QtHelp
@@ -85,7 +79,7 @@ fi
 
 if test ! -d PyQt4; then
 	cp -R $SITEPKG/PyQt4 .
-	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 	do
 		cp $SITEPKG/PyQt4/$LIBPYQT4.so PyQt4/$LIBPYQT4.so
 		# Update paths to supporting Qt frameworks
@@ -109,15 +103,12 @@ if test ! -d PyQt4; then
 	install_name_tool -change $QTPREFIX/lib/QtSql.framework/Versions/4/QtSql \
 		@executable_path/lib/QtSql.framework/Versions/4/QtSql \
 		PyQt4/QtHelp.so
-	for LIBPYQT4 in QtSvg QtDesigner QtHelp
+	for LIBPYQT4 in QtSvg QtHelp
 	do
 		install_name_tool -change $QTPREFIX/lib/QtXml.framework/Versions/4/QtXml \
 			@executable_path/lib/QtXml.framework/Versions/4/QtXml \
 			PyQt4/$LIBPYQT4.so
 	done
-	install_name_tool -change $QTPREFIX/lib/QtScript.framework/Versions/4/QtScript \
-		@executable_path/lib/QtScript.framework/Versions/4/QtScript \
-		PyQt4/QtDesigner.so
 	install_name_tool -change $QTPREFIX/lib/libQtCLucene.4.dylib \
 		@executable_path/lib/libQtCLucene.4.dylib \
 		PyQt4/QtHelp.so
@@ -129,8 +120,8 @@ do
 	install_name_tool -change /usr/local/lib/$LNKGDAL \
 		@executable_path/lib/$LNKGDAL \
 		qgis/$LIBQGIS.so
-	install_name_tool -change /usr/local/lib/$LNKGEOS \
-		@executable_path/lib/$LNKGEOS \
+	install_name_tool -change /usr/local/lib/$LNKGEOSC \
+		@executable_path/lib/$LNKGEOSC \
 		qgis/$LIBQGIS.so
 	for FRAMEWORK in QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support
 	do

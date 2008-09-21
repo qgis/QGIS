@@ -2,7 +2,8 @@
 # Copy supporting libraries (except Qt) to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.11.0.app/Contents/MacOS
+VER=1.0
+PREFIX=qgis$VER.0.app/Contents/MacOS
 
 HELPPREFIX=$PREFIX/bin/qgis_help.app/Contents/MacOS
 PREFIXBACKTRACK=../../../..
@@ -14,7 +15,7 @@ LIBGEOS=libgeos.3.0.0.dylib
 LNKGEOS=libgeos.3.dylib
 LIBGEOSC=libgeos_c.1.4.1.dylib
 LNKGEOSC=libgeos_c.1.dylib
-LIBPROJ=libproj.0.5.4.dylib
+LIBPROJ=libproj.0.5.5.dylib
 LNKPROJ=libproj.0.dylib
 LIBSQLITE3=libsqlite3.0.dylib
 LNKSQLITE3=libsqlite3.0.dylib
@@ -164,37 +165,42 @@ cd ../../../../
 
 # Update application paths to supporting libraries
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/qgis
-install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/qgis
+install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/qgis
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/qgis
 install_name_tool -change /usr/local/pgsql/lib/$LNKPQ @executable_path/lib/$LNKPQ $PREFIX/qgis
 
 # Update library paths to supporting libraries
-for LIB in _core _gui grass python
+LIBS="_core _gui"
+if test -f $PREFIX/lib/libqgisgrass.$VER.dylib; then LIBS="$LIBS grass"; fi
+if test -f $PREFIX/lib/libqgispython.$VER.dylib; then LIBS="$LIBS python"; fi
+for LIB in $LIBS
 do
-	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/lib/libqgis$LIB.dylib
-	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis$LIB.dylib
+	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/libqgis$LIB.$VER.dylib
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/lib/libqgis$LIB.$VER.dylib
+	install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/lib/libqgis$LIB.$VER.dylib
+	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/libqgis$LIB.$VER.dylib
 done
 
 # Update plugin paths to supporting libraries
 for PLUGIN in \
+	libcoordinatecaptureplugin.so \
 	libcopyrightlabelplugin.so \
 	libdelimitedtextplugin.so \
 	libdelimitedtextprovider.so \
+	libdxf2shpconverterplugin.so \
 	libgeorefplugin.so \
 	libgpsimporterplugin.so \
 	libgpxprovider.so \
 	libgrassplugin.so \
 	libgrassprovider.so \
 	libgridmakerplugin.so \
+	libinterpolationplugin.so \
 	libmemoryprovider.so \
 	libnortharrowplugin.so \
+	libogrconverterplugin.so \
 	libogrprovider.so \
-	libpggeoprocessingplugin.so \
 	libpostgresprovider.so \
-	libquickprintplugin.so \
 	libscalebarplugin.so \
 	libspitplugin.so \
 	libwfsplugin.so \
@@ -202,7 +208,7 @@ for PLUGIN in \
 	libwmsprovider.so
 do
 	install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $PREFIX/lib/qgis/$PLUGIN
-	install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $PREFIX/lib/qgis/$PLUGIN
+	install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $PREFIX/lib/qgis/$PLUGIN
 	install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $PREFIX/lib/qgis/$PLUGIN
 done
@@ -218,7 +224,6 @@ install_name_tool -change /usr/local/lib/$LNKGSL @executable_path/lib/$LNKGSL $P
 install_name_tool -change /usr/local/lib/$LNKGSLCBLAS @executable_path/lib/$LNKGSLCBLAS $PREFIX/lib/qgis/libgeorefplugin.so
 
 for PLUGIN in \
-	libpggeoprocessingplugin.so \
 	libpostgresprovider.so \
 	libspitplugin.so
 do
@@ -252,7 +257,7 @@ done
 
 # Update qgis_help application paths to supporting libraries
 install_name_tool -change /usr/local/lib/$LNKGDAL @executable_path/lib/$LNKGDAL $HELPPREFIX/qgis_help
-install_name_tool -change /usr/local/lib/$LNKGEOS @executable_path/lib/$LNKGEOS $HELPPREFIX/qgis_help
+install_name_tool -change /usr/local/lib/$LNKGEOSC @executable_path/lib/$LNKGEOSC $HELPPREFIX/qgis_help
 install_name_tool -change /usr/local/lib/$LNKPROJ @executable_path/lib/$LNKPROJ $HELPPREFIX/qgis_help
 install_name_tool -change /usr/local/lib/$LNKSQLITE3 @executable_path/lib/$LNKSQLITE3 $HELPPREFIX/qgis_help
 ln -sf $PREFIXBACKTRACK/lib $HELPPREFIX/lib

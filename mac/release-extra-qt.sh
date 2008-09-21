@@ -2,7 +2,7 @@
 # Copy Qt frameworks to qgis bundle
 # and make search paths for them relative to bundle
 
-BUNDLE=qgis0.11.0.app/Contents/MacOS
+BUNDLE=qgis1.0.0.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LIBJPEG=libjpeg.62.0.0.dylib
@@ -10,7 +10,7 @@ LNKJPEG=libjpeg.62.dylib
 LIBPNG=libpng12.0.dylib
 LNKPNG=libpng12.0.dylib
 
-QTPREFIX=/usr/local/Trolltech/Qt-4.4.0
+QTPREFIX=/usr/local/Trolltech/Qt-4.4.2
 QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support"
 
 # Copy Qt frameworks to application bundle
@@ -92,21 +92,23 @@ for FILE in \
 	lib/libqgis_gui.dylib \
 	lib/libqgisgrass.dylib \
 	lib/libqgispython.dylib \
+	lib/qgis/libcoordinatecaptureplugin.so \
 	lib/qgis/libcopyrightlabelplugin.so \
 	lib/qgis/libdelimitedtextplugin.so \
 	lib/qgis/libdelimitedtextprovider.so \
+	lib/qgis/libdxf2shpconverterplugin.so \
 	lib/qgis/libgeorefplugin.so \
 	lib/qgis/libgpsimporterplugin.so \
 	lib/qgis/libgpxprovider.so \
 	lib/qgis/libgrassplugin.so \
 	lib/qgis/libgrassprovider.so \
 	lib/qgis/libgridmakerplugin.so \
+	lib/qgis/libinterpolationplugin.so \
 	lib/qgis/libmemoryprovider.so \
 	lib/qgis/libnortharrowplugin.so \
+	lib/qgis/libogrconverterplugin.so \
 	lib/qgis/libogrprovider.so \
-	lib/qgis/libpggeoprocessingplugin.so \
 	lib/qgis/libpostgresprovider.so \
-	lib/qgis/libquickprintplugin.so \
 	lib/qgis/libscalebarplugin.so \
 	lib/qgis/libspitplugin.so \
 	lib/qgis/libwfsplugin.so \

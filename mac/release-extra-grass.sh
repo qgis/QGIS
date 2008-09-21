@@ -2,7 +2,7 @@
 # Copy GRASS supporting libraries to qgis bundle
 # and make search paths for them relative to bundle
 
-PREFIX=qgis0.11.0.app/Contents/MacOS
+PREFIX=qgis1.0.0.app/Contents/MacOS
 
 # Edit version when any library is upgraded
 LNKGDAL=libgdal.1.dylib

@@ -5,7 +5,7 @@
 # Edit INSTALLPREFIX to match the value of cmake INSTALL_PREFIX
 INSTALLPREFIX=$PWD
 
-VER=0.11
+VER=1.0
 BUNDLE=qgis$VER.0.app/Contents/MacOS
 BUILDPREFIX=$INSTALLPREFIX/$BUNDLE
 
@@ -33,19 +33,21 @@ install_name_tool -change $BUILDPREFIX/lib/libqgis_core.$VER.dylib \
 
 # Update plugin and lib clients of libqgis_*
 for PLUGIN in \
+	qgis/libcoordinatecaptureplugin.so \
 	qgis/libcopyrightlabelplugin.so \
 	qgis/libdelimitedtextplugin.so \
 	qgis/libdelimitedtextprovider.so \
+	qgis/libdxf2shpconverterplugin.so \
 	qgis/libgeorefplugin.so \
 	qgis/libgpsimporterplugin.so \
 	qgis/libgpxprovider.so \
 	qgis/libgridmakerplugin.so \
+	qgis/libinterpolationplugin.so \
 	qgis/libmemoryprovider.so \
 	qgis/libnortharrowplugin.so \
+	qgis/libogrconverterplugin.so \
 	qgis/libogrprovider.so \
-	qgis/libpggeoprocessingplugin.so \
 	qgis/libpostgresprovider.so \
-	qgis/libquickprintplugin.so \
 	qgis/libscalebarplugin.so \
 	qgis/libspitplugin.so \
 	qgis/libwfsplugin.so \
