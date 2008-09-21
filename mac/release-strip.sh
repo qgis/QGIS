@@ -1,26 +1,28 @@
 #!/bin/sh
 # Strip all non-global symbols
 
-PREFIX=qgis0.11.0.app/Contents/MacOS
+PREFIX=qgis1.0.0.app/Contents/MacOS
 
 strip -x $PREFIX/qgis
 strip -x $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
 
 strip -x $PREFIX/lib/libqgis_core.dylib
 strip -x $PREFIX/lib/libqgis_gui.dylib
+strip -x $PREFIX/lib/qgis/libcoordinatecaptureplugin.so
 strip -x $PREFIX/lib/qgis/libcopyrightlabelplugin.so 
 strip -x $PREFIX/lib/qgis/libdelimitedtextplugin.so
 strip -x $PREFIX/lib/qgis/libdelimitedtextprovider.so
+strip -x $PREFIX/lib/qgis/libdxf2shpconverterplugin.so
 strip -x $PREFIX/lib/qgis/libgeorefplugin.so 
 strip -x $PREFIX/lib/qgis/libgpsimporterplugin.so
 strip -x $PREFIX/lib/qgis/libgpxprovider.so
 strip -x $PREFIX/lib/qgis/libgridmakerplugin.so 
+strip -x $PREFIX/lib/qgis/libinterpolationplugin.so
 strip -x $PREFIX/lib/qgis/libmemoryprovider.so
 strip -x $PREFIX/lib/qgis/libnortharrowplugin.so
+strip -x $PREFIX/lib/qgis/libogrconverterplugin.so
 strip -x $PREFIX/lib/qgis/libogrprovider.so
-strip -x $PREFIX/lib/qgis/libpggeoprocessingplugin.so
 strip -x $PREFIX/lib/qgis/libpostgresprovider.so
-strip -x $PREFIX/lib/qgis/libquickprintplugin.so
 strip -x $PREFIX/lib/qgis/libscalebarplugin.so
 strip -x $PREFIX/lib/qgis/libspitplugin.so
 strip -x $PREFIX/lib/qgis/libwfsplugin.so
@@ -39,7 +41,7 @@ strip -x $PREFIX/../plugins/imageformats/libqjpeg.dylib
 strip -x $PREFIX/lib/libgdal.1.dylib
 strip -x $PREFIX/lib/libgeos.3.0.0.dylib
 strip -x $PREFIX/lib/libgeos_c.1.4.1.dylib
-strip -x $PREFIX/lib/libproj.0.5.4.dylib
+strip -x $PREFIX/lib/libproj.0.5.5.dylib
 strip -x $PREFIX/lib/libsqlite3.0.dylib
 strip -x $PREFIX/lib/libxerces-c.28.0.dylib
 strip -x $PREFIX/lib/libgif.4.1.6.dylib
@@ -72,16 +74,16 @@ fi
 if test -f $PREFIX/lib/libqgispython.dylib; then
 	strip -x $PREFIX/lib/libqgispython.dylib
 
-	for FRAMEWORK in QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+	for FRAMEWORK in QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 	do
 		strip -x $PREFIX/lib/$FRAMEWORK.framework/Versions/4/$FRAMEWORK
 	done
-	strip -x $PREFIX/lib/libQtCLucene.4.4.0.dylib
+	strip -x $PREFIX/lib/libQtCLucene.4.4.2.dylib
 
 	strip -x $PREFIX/share/qgis/python/qgis/core.so
 	strip -x $PREFIX/share/qgis/python/qgis/gui.so
 	strip -x $PREFIX/share/qgis/python/sip.so
-	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 	do
 		strip -x $PREFIX/share/qgis/python/PyQt4/$LIBPYQT4.so
 	done

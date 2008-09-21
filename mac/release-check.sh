@@ -2,26 +2,28 @@
 # Display all paths to supporting libraries
 # Output should be visually inspected for paths which haven't been made relative (such as /usr/local)
 
-PREFIX=qgis0.11.0.app/Contents/MacOS
+PREFIX=qgis1.0.0.app/Contents/MacOS
 
 otool -L $PREFIX/qgis
 otool -L $PREFIX/bin/qgis_help.app/Contents/MacOS/qgis_help
 
 otool -L $PREFIX/lib/libqgis_core.dylib
 otool -L $PREFIX/lib/libqgis_gui.dylib
+otool -L $PREFIX/lib/qgis/libcoordinatecaptureplugin.so
 otool -L $PREFIX/lib/qgis/libcopyrightlabelplugin.so 
 otool -L $PREFIX/lib/qgis/libdelimitedtextplugin.so
 otool -L $PREFIX/lib/qgis/libdelimitedtextprovider.so
+otool -L $PREFIX/lib/qgis/libdxf2shpconverterplugin.so
 otool -L $PREFIX/lib/qgis/libgeorefplugin.so 
 otool -L $PREFIX/lib/qgis/libgpsimporterplugin.so
 otool -L $PREFIX/lib/qgis/libgpxprovider.so
 otool -L $PREFIX/lib/qgis/libgridmakerplugin.so 
+otool -L $PREFIX/lib/qgis/libinterpolationplugin.so
 otool -L $PREFIX/lib/qgis/libmemoryprovider.so
 otool -L $PREFIX/lib/qgis/libnortharrowplugin.so
+otool -L $PREFIX/lib/qgis/libogrconverterplugin.so
 otool -L $PREFIX/lib/qgis/libogrprovider.so
-otool -L $PREFIX/lib/qgis/libpggeoprocessingplugin.so
 otool -L $PREFIX/lib/qgis/libpostgresprovider.so
-otool -L $PREFIX/lib/qgis/libquickprintplugin.so
 otool -L $PREFIX/lib/qgis/libscalebarplugin.so
 otool -L $PREFIX/lib/qgis/libspitplugin.so
 otool -L $PREFIX/lib/qgis/libwfsplugin.so
@@ -40,7 +42,7 @@ otool -L $PREFIX/../plugins/imageformats/libqjpeg.dylib
 otool -L $PREFIX/lib/libgdal.1.dylib
 otool -L $PREFIX/lib/libgeos.3.0.0.dylib
 otool -L $PREFIX/lib/libgeos_c.1.4.1.dylib
-otool -L $PREFIX/lib/libproj.0.5.4.dylib
+otool -L $PREFIX/lib/libproj.0.5.5.dylib
 otool -L $PREFIX/lib/libsqlite3.0.dylib
 otool -L $PREFIX/lib/libxerces-c.28.0.dylib
 otool -L $PREFIX/lib/libgif.4.1.6.dylib
@@ -76,14 +78,14 @@ if test -f $PREFIX/lib/libqgispython.dylib; then
 	otool -L $PREFIX/share/qgis/python/qgis/core.so
 	otool -L $PREFIX/share/qgis/python/qgis/gui.so
 
-	for FRAMEWORK in QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+	for FRAMEWORK in QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 	do
 		otool -L $PREFIX/lib/$FRAMEWORK.framework/Versions/4/$FRAMEWORK
 	done
-	otool -L $PREFIX/lib/libQtCLucene.4.4.0.dylib
+	otool -L $PREFIX/lib/libQtCLucene.4.4.2.dylib
 
 	otool -L $PREFIX/share/qgis/python/sip.so
-	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtDesigner QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
+	for LIBPYQT4 in Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon
 	do
 		otool -L $PREFIX/share/qgis/python/PyQt4/$LIBPYQT4.so
 	done
