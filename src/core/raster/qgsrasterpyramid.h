@@ -33,7 +33,7 @@ class CORE_EXPORT QgsRasterPyramid
     bool exists;
     /** \brief Whether the pyramid should be built */
     bool build;
-    
+
     QgsRasterPyramid()
     {
       level = 0;

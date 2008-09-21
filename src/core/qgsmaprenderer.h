@@ -44,8 +44,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   public:
 
-  /**Output units for pen width and point marker width/height*/
-  enum OUTPUT_UNITS
+    /**Output units for pen width and point marker width/height*/
+    enum OUTPUT_UNITS
     {
       MM,
       PIXEL
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! returns CRS ID of destination spatial reference system
     const QgsCoordinateReferenceSystem& destinationSrs();
 
-    void setOutputUnits(OUTPUT_UNITS u){mOutputUnits = u;}
+    void setOutputUnits( OUTPUT_UNITS u ) {mOutputUnits = u;}
 
     OUTPUT_UNITS outputUnits() const {return mOutputUnits;}
 

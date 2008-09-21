@@ -96,7 +96,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   // toLayerCoordinates will throw an exception for an 'invalid' rectangle.
   // For example, if you project a world map onto a globe using EPSG 2163
-  // and then click somewhere off the globe, an exception will be thrown. 
+  // and then click somewhere off the globe, an exception will be thrown.
   try
   {
     search = toLayerCoordinates( vlayer, search );

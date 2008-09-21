@@ -435,10 +435,10 @@ void QgsComposer::on_mActionPrint_activated( void )
     return;
   }
 
-  if(containsWMSLayer())
-    {
-      showWMSPrintingWarning();
-    }
+  if ( containsWMSLayer() )
+  {
+    showWMSPrintingWarning();
+  }
 
   QPrinter printer;
 
@@ -492,10 +492,10 @@ void QgsComposer::on_mActionPrint_activated( void )
 
 void QgsComposer::on_mActionExportAsImage_activated( void )
 {
-  if(containsWMSLayer())
-    {
-      showWMSPrintingWarning();
-    }
+  if ( containsWMSLayer() )
+  {
+    showWMSPrintingWarning();
+  }
 
   // Image size
   int width = ( int )( mComposition->printoutResolution() * mComposition->paperWidth() / 25.4 );
@@ -567,7 +567,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
     )
   );
 
-  myQFileDialog->setFileMode(QFileDialog::AnyFile);
+  myQFileDialog->setFileMode( QFileDialog::AnyFile );
 
   // set the filter to the last one used
   myQFileDialog->selectFilter( myLastUsedFilter );
@@ -587,7 +587,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   }
 
   myOutputFileNameQString = myQFileDialog->selectedFiles().last();
-  qWarning(myOutputFileNameQString.toLocal8Bit().data());
+  qWarning( myOutputFileNameQString.toLocal8Bit().data() );
   QString myFilterString = myQFileDialog->selectedFilter();
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
@@ -618,10 +618,10 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
 
 void QgsComposer::on_mActionExportAsSVG_activated( void )
 {
-  if(containsWMSLayer())
-    {
-      showWMSPrintingWarning();
-    }
+  if ( containsWMSLayer() )
+  {
+    showWMSPrintingWarning();
+  }
 
   QString myQSettingsLabel = "/UI/displaySVGWarning";
   QSettings myQSettings;
@@ -1102,18 +1102,18 @@ bool QgsComposer::containsWMSLayer() const
   QgsComposerItem* currentItem = 0;
   QgsComposerMap* currentMap = 0;
 
-  for(; item_it != mItemWidgetMap.constEnd(); ++item_it)
+  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  {
+    currentItem = item_it.key();
+    currentMap = dynamic_cast<QgsComposerMap*>( currentItem );
+    if ( currentMap )
     {
-      currentItem = item_it.key();
-      currentMap = dynamic_cast<QgsComposerMap*>(currentItem);
-      if(currentMap)
-	{
-	  if(currentMap->containsWMSLayer())
-	    {
-	      return true;
-	    }
-	}
+      if ( currentMap->containsWMSLayer() )
+      {
+        return true;
+      }
     }
+  }
   return false;
 }
 
@@ -1123,15 +1123,15 @@ void QgsComposer::showWMSPrintingWarning()
   QSettings myQSettings;
 
   bool displayWMSWarning = myQSettings.value( myQSettingsLabel, true ).toBool();
-  if(displayWMSWarning)
-    {
-      QgsMessageViewer* m = new QgsMessageViewer( this );
-      m->setWindowTitle( tr( "Project contains WMS layers" ) );
-      m->setMessage(tr("Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed"), QgsMessageOutput::MessageText);
-      m->setCheckBoxText( tr( "Don't show this message again" ) );
-      m->setCheckBoxState( Qt::Unchecked );
-      m->setCheckBoxVisible( true );
-      m->setCheckBoxQSettingsLabel( myQSettingsLabel );
-      m->exec();
-    }
+  if ( displayWMSWarning )
+  {
+    QgsMessageViewer* m = new QgsMessageViewer( this );
+    m->setWindowTitle( tr( "Project contains WMS layers" ) );
+    m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
+    m->setCheckBoxText( tr( "Don't show this message again" ) );
+    m->setCheckBoxState( Qt::Unchecked );
+    m->setCheckBoxVisible( true );
+    m->setCheckBoxQSettingsLabel( myQSettingsLabel );
+    m->exec();
+  }
 }

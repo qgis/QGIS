@@ -274,11 +274,11 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
   {
     destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
   }
-  
+
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
   mySelector->setSelectedCrsId( destCRS.srsid() );
-  mySelector->setMessage(tr("Select the coordinate reference system for the saved shapefile.") +
-                         tr("The data points will be transformed from the layer coordinate reference system."));
+  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile." ) +
+                          tr( "The data points will be transformed from the layer coordinate reference system." ) );
 
   if ( mySelector->exec() )
   {

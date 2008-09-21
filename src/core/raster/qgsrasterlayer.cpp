@@ -3398,7 +3398,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated infomation
-  
+
   //
   // Note: Make sure the raster is not opened in write mode
   // in order to force overviews to be written to a separate file.
@@ -3437,7 +3437,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
       return "ERROR_WRITE_FORMAT";
     }
   }
-  
+
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
   // marked as exists in eaxh RasterPyramid struct.
@@ -3495,7 +3495,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
           myError = GDALBuildOverviews( mGdalBaseDataset, "NEAREST", 1, myOverviewLevelsArray, 0, NULL,
                                         progressCallback, this ); //this is the arg for the gdal progress callback
         }
-        
+
         if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
         {
           //something bad happenend
@@ -3504,7 +3504,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
           mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_ReadOnly );
           //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
           mGdalDataset = mGdalBaseDataset;
-          
+
           emit drawingProgress( 0, 0 );
           return "FAILED_NOT_SUPPORTED";
         }
@@ -3514,7 +3514,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
           hasPyramidsFlag = true;
         }
         myCount++;
-        
+
       }
       catch ( CPLErr )
       {
@@ -3522,7 +3522,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
       }
     }
   }
-  
+
   QgsDebugMsg( "Pyramid overviews built" );
   if ( theTryInternalFlag )
   {
@@ -3532,7 +3532,7 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
-  
+
   emit drawingProgress( 0, 0 );
   return NULL; // returning null on success
 }
