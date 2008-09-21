@@ -473,7 +473,7 @@
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vektorlayer zwischen von der OGR-Bibliothek unterstützten Formaten umwandeln</translation>
     </message>
 </context>
 <context>
@@ -1403,11 +1403,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">KBS-Ausnahme</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auswahl außerhalb des Koordinatensystems des Layers.</translation>
     </message>
 </context>
 <context>
@@ -2961,7 +2961,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsApplication</name>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ausnahme</translation>
     </message>
 </context>
 <context>
@@ -3688,11 +3688,11 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Projekt enthält WMS-Layer</translation>
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Einige WMS-Server (z.B. UMN Mapserver) haben Begrenzungen für die WIDTH- und HEIGHT-Parameter.  Falls diese Begrenzungen beim Ausdruck überschritten werden, werden diese WMS-Layer nicht gedruckt.</translation>
     </message>
 </context>
 <context>
@@ -3830,7 +3830,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Composer item properties</source>
-        <translation type="unfinished">Eigenschaften des Element der Zusammenstellung</translation>
+        <translation type="unfinished">Elementeigenschaften</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -3914,7 +3914,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Font:</source>
-        <translation type="unfinished">Font:</translation>
+        <translation type="unfinished">Schriftart:</translation>
     </message>
     <message>
         <source>Title...</source>
@@ -4142,7 +4142,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>set to map canvas extent</source>
-        <translation type="unfinished">Auf Ausmaß des Kartenausschnitts setzen</translation>
+        <translation type="unfinished">Anzeigegrenzen übernehmen</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -4233,23 +4233,23 @@ File dialog window title</comment>
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation type="unfinished">Einfacher Rahmen</translation>
+        <translation type="unfinished">Einfachrahmen</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation type="unfinished">Doppelter Rahmen</translation>
+        <translation type="unfinished">Doppelrahmen</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mittige Linieneinteilung</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Linieneinteilung unten</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Linieneinteilung oben</translation>
     </message>
     <message>
         <source>Numeric</source>
@@ -4268,15 +4268,15 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mittige Linieneinteilung</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Linieneinteilung unten</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Linieneinteilung oben</translation>
     </message>
     <message>
         <source>Numeric</source>
@@ -4339,7 +4339,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schriftart...</translation>
     </message>
     <message>
         <source>Color...</source>
@@ -8569,7 +8569,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished">Fonttransparenz</translation>
+        <translation type="unfinished">Schrifttransparenz</translation>
     </message>
     <message>
         <source>Color</source>
@@ -8601,7 +8601,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished">&amp;Fontfamilie</translation>
+        <translation type="unfinished">&amp;Schriftfamilie</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
@@ -8850,11 +8850,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koordinatenbezugssystem für die gespeicherte Shapedatei wählen</translation>
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Die Punkte werden von dem Koordinatensystem des Layers transformiert.</translation>
     </message>
 </context>
 <context>
@@ -10308,23 +10308,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Fetching repositories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lade Repositories</translation>
     </message>
     <message>
         <source>Overall progress:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gesamtfortschritt</translation>
     </message>
     <message>
         <source>Abort fetching</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ladevorgang abbrechen</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished">Repository</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Status</translation>
     </message>
 </context>
 <context>
@@ -13921,7 +13921,7 @@ Unterstützung unter scala@itc.cnr.it
     </message>
     <message>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kurzbeschreibung des Plugins hier</translation>
     </message>
 </context>
 </TS>
