@@ -252,7 +252,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
-  // and then click somewhere off the globe, an exception will be thrown. 
+  // and then click somewhere off the globe, an exception will be thrown.
   try
   {
     // create the search rectangle

@@ -241,10 +241,10 @@ void QgsMapRenderer::render( QPainter* painter )
   //because sometimes QPainter units are in a local coord sys (e.g. in case of QGraphicsScene)
   double sceneDpi = mScaleCalculator->dpi();
   double scaleFactor = 1.0;
-  if(mOutputUnits == QgsMapRenderer::MM)
-    {
-      scaleFactor = sceneDpi / 25.4;
-    }
+  if ( mOutputUnits == QgsMapRenderer::MM )
+  {
+    scaleFactor = sceneDpi / 25.4;
+  }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
   mRenderContext.setScaleFactor( scaleFactor );
   mRenderContext.setRasterScaleFactor( rasterScaleFactor );

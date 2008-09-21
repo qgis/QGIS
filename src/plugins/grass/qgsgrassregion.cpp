@@ -165,7 +165,7 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   }
 
   QgsGrass::setLocation( gisdbase, location );
-  char *err = G__get_window( &mWindow, (char *) "", (char *) "WIND", mapset.toLatin1().data() );
+  char *err = G__get_window( &mWindow, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
 
   if ( err )
   {
@@ -426,7 +426,7 @@ void QgsGrassRegion::accept()
   }
 
   QgsGrass::setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
-  G__setenv( (char *) "MAPSET", QgsGrass::getDefaultMapset().toLatin1().data() );
+  G__setenv(( char * ) "MAPSET", QgsGrass::getDefaultMapset().toLatin1().data() );
 
   if ( G_put_window( &mWindow ) == -1 )
   {

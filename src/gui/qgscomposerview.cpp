@@ -336,20 +336,20 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
   }
 }
 
-void QgsComposerView::wheelEvent( QWheelEvent* event)
+void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
   QPointF scenePoint = mapToScene( event->pos() );
-  
+
   //select topmost item at position of event
   QgsComposerItem* theItem = composition()->composerItemAt( scenePoint );
-  if (theItem)
+  if ( theItem )
+  {
+    if ( theItem->isSelected() )
     {
-      if(theItem->isSelected())
-	{
-	  QPointF itemPoint = theItem->mapFromScene(scenePoint);
-	  theItem->zoomContent(event->delta(), itemPoint.x(), itemPoint.y());
-	}
+      QPointF itemPoint = theItem->mapFromScene( scenePoint );
+      theItem->zoomContent( event->delta(), itemPoint.x(), itemPoint.y() );
     }
+  }
 }
 
 void QgsComposerView::setComposition( QgsComposition* c )

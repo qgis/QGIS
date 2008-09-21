@@ -1384,7 +1384,7 @@ void QgsRasterLayerProperties::apply()
         myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
         myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
         myNewColorRampItem.label = myCurrentItem->text( 2 );
-        
+
         //Simple insertion sort - speed is not a huge factor here
         inserted = false;
         myCurrentIndex = 0;
@@ -1590,9 +1590,9 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
-                            //TODO: should really read -- Building pyramid overviews is not supported for 'warped virtual dataset'. -- But in feature freeze, and translation requests have already gone out PJE20080912
+      //TODO: should really read -- Building pyramid overviews is not supported for 'warped virtual dataset'. -- But in feature freeze, and translation requests have already gone out PJE20080912
     }
-    
+
   }
 
 
@@ -2649,7 +2649,7 @@ void QgsRasterLayerProperties::handleColormapTreeWidgetDoubleClick( QTreeWidgetI
     {
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       //show color dialog
-      QColor newColor = QColorDialog::getColor(item->background(column).color());
+      QColor newColor = QColorDialog::getColor( item->background( column ).color() );
       if ( newColor.isValid() )
       {
         item->setBackground( 1, QBrush( newColor ) );

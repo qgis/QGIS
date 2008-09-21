@@ -79,7 +79,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
     @param x x-position of mouse cursor (in item coordinates)
     @param y y-position of mouse cursor (in item coordinates)*/
-    virtual void zoomContent( int delta, double x, double y) {}
+    virtual void zoomContent( int delta, double x, double y ) {}
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/

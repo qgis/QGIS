@@ -730,7 +730,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
       QgsDebugMsg( "Database opened -> open select cursor" );
       dbString dbstr;
       db_init_string( &dbstr );
-      db_set_string( &dbstr, (char *)"select * from " );
+      db_set_string( &dbstr, ( char * )"select * from " );
       db_append_string( &dbstr, layer.fieldInfo->table );
 
       QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
@@ -1074,7 +1074,7 @@ void QgsGrassProvider::updateMap( int mapId )
 
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for close ?
-  G__setenv( (char *)"MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * )"MAPSET", map->mapset.toAscii().data() );
 
   if ( closeMap ) Vect_close( map->map );
 
@@ -1423,7 +1423,7 @@ bool QgsGrassProvider::startEdit( void )
 
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
-  G__setenv( (char *)"MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * )"MAPSET", map->mapset.toAscii().data() );
 
   Vect_close( map->map );
 
@@ -1499,7 +1499,7 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   // Set current mapset (mapset was previously checked by isGrassEditable() )
   // TODO: Should be done better / in other place ?
   // TODO: Is it necessary for build/close ?
-  G__setenv( (char *) "MAPSET", map->mapset.toAscii().data() );
+  G__setenv(( char * ) "MAPSET", map->mapset.toAscii().data() );
 
   Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
   Vect_build( map->map, stderr );

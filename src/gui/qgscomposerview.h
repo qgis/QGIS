@@ -79,7 +79,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void keyPressEvent( QKeyEvent * e );
     void keyReleaseEvent( QKeyEvent * e );
 
-    void wheelEvent( QWheelEvent* event);
+    void wheelEvent( QWheelEvent* event );
 
   private:
     /**Status of shift key (used for multiple selection)*/

@@ -101,22 +101,22 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
     snappingResult.push_back( evalIt.value() );
   }
   else if ( mSnapMode == QgsSnapper::SEVERAL_RESULTS_SAME_POSITION )
-  {    
+  {
     //take all snapping Results within a certain tolerance because rounding differences may occur
     double tolerance = 0.000001;
     double minDistance = evalIt.key();
 
-    for(evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt)
+    for ( evalIt = snappingResultList.begin(); evalIt != snappingResultList.end(); ++evalIt )
+    {
+      if ( evalIt.key() > ( minDistance + tolerance ) )
       {
-	if(evalIt.key() > (minDistance + tolerance))
-	  {
-	    break;
-	  }
-	snappingResult.push_back(evalIt.value());
+        break;
       }
-    
+      snappingResult.push_back( evalIt.value() );
+    }
+
   }
-   
+
   else //take all results
   {
     for ( ;evalIt != snappingResultList.end(); ++evalIt )

@@ -309,10 +309,12 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
     // This means we should transform
     outputCRS = destCRS;
     shallTransform = true;
-  } else {
+  }
+  else
+  {
     // This means we shouldn't transform, use source CRS as output (if defined)
     outputCRS = &layer->srs();
-  }  
+  }
   QgsVectorFileWriter* writer = new QgsVectorFileWriter( shapefileName,
       fileEncoding, provider->fields(), provider->geometryType(), outputCRS );
 
@@ -320,7 +322,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   WriterError err = writer->hasError();
   if ( err != NoError )
   {
-    if (ct != NULL)
+    if ( ct != NULL )
     {
       delete ct;
     }
@@ -336,13 +338,13 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
   // Create our transform
-  if (destCRS)
+  if ( destCRS )
   {
-    ct = new QgsCoordinateTransform(layer->srs(), *destCRS);
+    ct = new QgsCoordinateTransform( layer->srs(), *destCRS );
   }
 
   // Check for failure
-  if (ct == NULL)
+  if ( ct == NULL )
   {
     shallTransform = false;
   }
@@ -355,14 +357,14 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 
     if ( shallTransform )
     {
-      fet.geometry()->transform(*ct);
+      fet.geometry()->transform( *ct );
     }
     writer->addFeature( fet );
   }
 
   delete writer;
 
-  if (shallTransform)
+  if ( shallTransform )
   {
     delete ct;
   }
