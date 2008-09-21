@@ -140,115 +140,115 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>QGIS modul installáló</translation>
+        <translation type="obsolete">QGIS modul installáló</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Válaszd ki a tárházat, kérd le a modulok listáját, válassz egyet és installáld</translation>
+        <translation type="obsolete">Válaszd ki a tárházat, kérd le a modulok listáját, válassz egyet és installáld</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Tárház</translation>
+        <translation type="obsolete">Tárház</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Aktív tárház:</translation>
+        <translation type="obsolete">Aktív tárház:</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Lista</translation>
+        <translation type="obsolete">Lista</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Hozzáad</translation>
+        <translation type="obsolete">Hozzáad</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Szerkeszt</translation>
+        <translation type="obsolete">Szerkeszt</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Töröl</translation>
+        <translation type="obsolete">Töröl</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Név</translation>
+        <translation type="obsolete">Név</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Verzió</translation>
+        <translation type="obsolete">Verzió</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Leírás</translation>
+        <translation type="obsolete">Leírás</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Szerző</translation>
+        <translation type="obsolete">Szerző</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Installálandó modul neve</translation>
+        <translation type="obsolete">Installálandó modul neve</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Modul installálás</translation>
+        <translation type="obsolete">Modul installálás</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>A modult a ~/.qgis/python/plugins könyvtárba installálom</translation>
+        <translation type="obsolete">A modult a ~/.qgis/python/plugins könyvtárba installálom</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Kész</translation>
+        <translation type="obsolete">Kész</translation>
     </message>
     <message>
         <source>Dialog</source>
-        <translation>Párbeszédablak</translation>
+        <translation type="obsolete">Párbeszédablak</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation>Pont szimbólum</translation>
+        <translation type="obsolete">Pont szimbólum</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Méret</translation>
+        <translation type="obsolete">Méret</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation>Terület arány mező</translation>
+        <translation type="obsolete">Terület arány mező</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation>Forgatás mezõ</translation>
+        <translation type="obsolete">Forgatás mezõ</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation>Stílus beállítások</translation>
+        <translation type="obsolete">Stílus beállítások</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation>Határvonal stílus</translation>
+        <translation type="obsolete">Határvonal stílus</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Határvonal szín</translation>
+        <translation type="obsolete">Határvonal szín</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Határvonal vastagság</translation>
+        <translation type="obsolete">Határvonal vastagság</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Kitöltés szín</translation>
+        <translation type="obsolete">Kitöltés szín</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation>Kitöltés stílus</translation>
+        <translation type="obsolete">Kitöltés stílus</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -522,10 +522,14 @@
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="unfinished">Cseréld le ezt a modul rövid leírásával</translation>
+        <translation type="obsolete">Cseréld le ezt a modul rövid leírásával</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translates vector layers between formats supported by OGR library</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1480,6 +1484,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3065,11 +3077,11 @@ Errors:  %2
     </message>
     <message>
         <source>Name</source>
-        <translation>Név</translation>
+        <translation type="obsolete">Név</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation>Honlap</translation>
+        <translation type="obsolete">Honlap</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
@@ -3131,19 +3143,19 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation>&lt;p&gt;A következők pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;A következők pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Elérhető QGIS adat modulok</translation>
+        <translation type="obsolete">Elérhető QGIS adat modulok</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation>Elérhető QT adatbázis modulok</translation>
+        <translation type="obsolete">Elérhető QT adatbázis modulok</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation>Elérhető Qt kép modulok</translation>
+        <translation type="obsolete">Elérhető Qt kép modulok</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3185,6 +3197,13 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <source>Name:</source>
         <translation>Név:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsApplication</name>
+    <message>
+        <source>Exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3798,47 +3817,43 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>Nem tudom megnyitni</translation>
+        <translation type="obsolete">Nem tudom megnyitni</translation>
     </message>
     <message>
         <source> for read/write</source>
-        <translation>olvasásra/irásra</translation>
+        <translation type="obsolete">olvasásra/irásra</translation>
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Hiba a nyomtatás közben</translation>
-    </message>
-    <message>
-        <source>Cannot seek</source>
-        <translation></translation>
+        <translation type="obsolete">Hiba a nyomtatás közben</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>Nem tudom felülírni a befoglaló téglalapot</translation>
+        <translation type="obsolete">Nem tudom felülírni a befoglaló téglalapot</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>Nem találom a befoglaló téglalapot</translation>
+        <translation type="obsolete">Nem találom a befoglaló téglalapot</translation>
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>Nem tudom felülírni a fordítást</translation>
+        <translation type="obsolete">Nem tudom felülírni a fordítást</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>Nem találom a fordítást</translation>
+        <translation type="obsolete">Nem találom a fordítást</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Fájl IO hiba</translation>
+        <translation type="obsolete">Fájl IO hiba</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>Papír nem egyezik</translation>
+        <translation type="obsolete">Papír nem egyezik</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>A kiválasztott papírméret nem egyezik az összeállítás méretével</translation>
+        <translation type="obsolete">A kiválasztott papírméret nem egyezik az összeállítás méretével</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -4010,6 +4025,14 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Choose a file name to save the map as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9515,11 +9538,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation>További rétegek</translation>
+        <translation type="obsolete">További rétegek</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation>Ez az elem több réteg fájlt tartalmaz. Több réteg táblában megjelenítése nem lehetséges.</translation>
+        <translation type="obsolete">Ez az elem több réteg fájlt tartalmaz. Több réteg táblában megjelenítése nem lehetséges.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9534,23 +9557,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Not a vector layer</source>
-        <translation>Nem vektor réteg</translation>
+        <translation type="obsolete">Nem vektor réteg</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation>Az attribútum tábla megnyitásához egy réteget kell szelektálnod a jelmagyarázatban</translation>
+        <translation type="obsolete">Az attribútum tábla megnyitásához egy réteget kell szelektálnod a jelmagyarázatban</translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation>bad_alloc exception</translation>
+        <translation type="obsolete">bad_alloc exception</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation>Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
+        <translation type="obsolete">Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation>Attribútum tábla -</translation>
+        <translation type="obsolete">Attribútum tábla -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9594,27 +9617,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation>Sikertelen szerkesztés kezdés</translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation></translation>
+        <translation type="obsolete">Sikertelen szerkesztés kezdés</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>Szerkesztés vége</translation>
+        <translation type="obsolete">Szerkesztés vége</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation>Akarod menteni a változásokat?</translation>
+        <translation type="obsolete">Akarod menteni a változásokat?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation>Nem tudom menteni a változásokat</translation>
+        <translation type="obsolete">Nem tudom menteni a változásokat</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation>Probléma a visszavonás közben</translation>
+        <translation type="obsolete">Probléma a visszavonás közben</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -9643,6 +9662,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;Properties</source>
         <translation>&amp;Tulajdonságok</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10505,18 +10532,6 @@ Bővebb hibaüzenet:
         <source>Cross</source>
         <translation>Kereszt</translation>
     </message>
-    <message>
-        <source>Show all features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show features in current canvas</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -10926,10 +10941,6 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Open attribute table in a dock window</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11439,6 +11450,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Close</source>
         <translation type="unfinished">Lezár</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerFetchingDialog</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overall progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort fetching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished">Tárház</translation>
+    </message>
+    <message>
+        <source>State</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12335,11 +12369,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation>Raszter terjedelem: </translation>
+        <translation type="obsolete">Raszter terjedelem: </translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation>Kivágott terület: </translation>
+        <translation type="obsolete">Kivágott terület: </translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -15409,19 +15443,19 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Tárház részletek</translation>
+        <translation type="obsolete">Tárház részletek</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Név:</translation>
+        <translation type="obsolete">Név:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -15493,28 +15527,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export text labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a DXF file to open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a file name to save to</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15590,11 +15602,15 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Cseréld le ezt a modul rövid leírásával</translation>
+        <translation type="obsolete">Cseréld le ezt a modul rövid leírásával</translation>
     </message>
     <message>
         <source>&amp;[menuname]</source>
         <translation>&amp;[nemuname]</translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

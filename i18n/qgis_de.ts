@@ -128,116 +128,116 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>QGIS Plugin Installation</translation>
+        <translation type="obsolete">QGIS Plugin Installation</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Name des zu installierenden Plugins</translation>
+        <translation type="obsolete">Name des zu installierenden Plugins</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Hole Liste</translation>
+        <translation type="obsolete">Hole Liste</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished">Fertig</translation>
+        <translation type="obsolete">Fertig</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Plugin-Installation</translation>
+        <translation type="obsolete">Plugin-Installation</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>Das Plugin wird unter ~/.qgis/python/plugins installiert</translation>
+        <translation type="obsolete">Das Plugin wird unter ~/.qgis/python/plugins installiert</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">Version</translation>
+        <translation type="obsolete">Version</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Beschreibung</translation>
+        <translation type="obsolete">Beschreibung</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Autor</translation>
+        <translation type="obsolete">Autor</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Wähle ein Repository, empfange die Liste mit vorhandenen Plugins und installiere eines davon.</translation>
+        <translation type="obsolete">Wähle ein Repository, empfange die Liste mit vorhandenen Plugins und installiere eines davon.</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Repository</translation>
+        <translation type="obsolete">Repository</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Aktives Repository:</translation>
+        <translation type="obsolete">Aktives Repository:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Hinzufügen</translation>
+        <translation type="obsolete">Hinzufügen</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Bearbeiten</translation>
+        <translation type="obsolete">Bearbeiten</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Löschen</translation>
+        <translation type="obsolete">Löschen</translation>
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialog</translation>
+        <translation type="obsolete">Dialog</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation type="unfinished">Punktsymbol </translation>
+        <translation type="obsolete">Punktsymbol </translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Grösse</translation>
+        <translation type="obsolete">Grösse</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation type="unfinished">Flächenmaßstabs Feld</translation>
+        <translation type="obsolete">Flächenmaßstabs Feld</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation type="unfinished">Rotationsfeld</translation>
+        <translation type="obsolete">Rotationsfeld</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation type="unfinished">Stiloption</translation>
+        <translation type="obsolete">Stiloption</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished">Umrandungsstil</translation>
+        <translation type="obsolete">Umrandungsstil</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation type="unfinished">Umrandungsfarbe
+        <translation type="obsolete">Umrandungsfarbe
 </translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation type="unfinished">Umrandungsbreite</translation>
+        <translation type="obsolete">Umrandungsbreite</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation type="unfinished">Füllfarbe</translation>
+        <translation type="obsolete">Füllfarbe</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation type="unfinished">Füllstil</translation>
+        <translation type="obsolete">Füllstil</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -465,11 +465,15 @@
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="unfinished">Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
+        <translation type="obsolete">Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
         <translation type="unfinished">OG&amp;R-Konverter</translation>
+    </message>
+    <message>
+        <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1396,6 +1400,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
         <translation type="unfinished">Vektorlayer von einem in ein anderes von der OGR-Bibliothek unterstütztes Formats umwandeln</translation>
+    </message>
+    <message>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2816,7 +2828,7 @@ Bitte kontaktieren Sie die Entwickler.</translation>
 Errors:  %2
 </source>
         <translation type="unfinished">Änderungen am Layer %1 konnten nicht gespeichern werden
-	
+<byte value="x9"/>
 Fehler: %2
 </translation>
     </message>
@@ -2911,27 +2923,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
-    </message>
-    <message>
-        <source>Website</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Name</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Verfügbare QGIS-Datenlieferantenplugins</translation>
+        <translation type="obsolete">Verfügbare QGIS-Datenlieferantenplugins</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Verfügbare Qt-Datenbankplugins</translation>
+        <translation type="obsolete">Verfügbare Qt-Datenbankplugins</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Verfügbare Qt-Bildformatplugins</translation>
+        <translation type="obsolete">Verfügbare Qt-Bildformatplugins</translation>
     </message>
 </context>
 <context>
@@ -2942,11 +2950,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Name:</translation>
     </message>
     <message>
         <source>Type:</source>
         <translation>Typ:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsApplication</name>
+    <message>
+        <source>Exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3461,43 +3476,43 @@ File dialog window title</comment>
     </message>
     <message>
         <source> for read/write</source>
-        <translation>um zu lesen/ schreiben</translation>
+        <translation type="obsolete">um zu lesen/ schreiben</translation>
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Fehler beim Drucken</translation>
+        <translation type="obsolete">Fehler beim Drucken</translation>
     </message>
     <message>
         <source>Cannot seek</source>
-        <translation>Kann nicht suchen</translation>
+        <translation type="obsolete">Kann nicht suchen</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>Kann die Umgrenzung nicht überschreiben</translation>
+        <translation type="obsolete">Kann die Umgrenzung nicht überschreiben</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>Kann die Umgrenzung nicht finden.</translation>
+        <translation type="obsolete">Kann die Umgrenzung nicht finden.</translation>
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>Kann Übersetzung nicht überschreiben.</translation>
+        <translation type="obsolete">Kann Übersetzung nicht überschreiben.</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>Kann Übersetzung nicht finden.</translation>
+        <translation type="obsolete">Kann Übersetzung nicht finden.</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Dateifehler</translation>
+        <translation type="obsolete">Dateifehler</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>Papier passt nicht</translation>
+        <translation type="obsolete">Papier passt nicht</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>Die ausgewählte Papiergröße passt nicht zur Auswahl.</translation>
+        <translation type="obsolete">Die ausgewählte Papiergröße passt nicht zur Auswahl.</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -3525,7 +3540,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>Kann nicht öffnen </translation>
+        <translation type="obsolete">Kann nicht öffnen </translation>
     </message>
     <message>
         <source>format</source>
@@ -3670,6 +3685,14 @@ File dialog window title</comment>
     <message>
         <source>Choose a file name to save the map as</source>
         <translation type="unfinished">Einen Dateinamen zum Speichern des Kartenabbilds wählen</translation>
+    </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8273,7 +8296,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsIDWInterpolatorDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dialog</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -8696,11 +8719,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Weitere Layer</translation>
+        <translation type="obsolete">Weitere Layer</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
+        <translation type="obsolete">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8715,7 +8738,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Attributtabelle - </translation>
+        <translation type="obsolete">Attributtabelle - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8723,19 +8746,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Beginnen der Editierung fehlgeschlagen.</translation>
+        <translation type="obsolete">Beginnen der Editierung fehlgeschlagen.</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
+        <translation type="obsolete">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Digitalisieren stoppen</translation>
+        <translation type="obsolete">Digitalisieren stoppen</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Sollen die Änderungen gespeichert werden?</translation>
+        <translation type="obsolete">Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8743,19 +8766,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Änderungen konnten nicht gespeichern werden.</translation>
+        <translation type="obsolete">Änderungen konnten nicht gespeichern werden.</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problem beim Rückgängigmachen (rollback).</translation>
+        <translation type="obsolete">Problem beim Rückgängigmachen (rollback).</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Kein Vektorlayer</translation>
+        <translation type="obsolete">Kein Vektorlayer</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
+        <translation type="obsolete">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -8815,15 +8838,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation>Speicher-Fehler</translation>
+        <translation type="obsolete">Speicher-Fehler</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation>Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
+        <translation type="obsolete">Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation>Die Attributtabelle des Layers enthält nicht unterstützte Datentypen.</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9487,15 +9518,15 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="unfinished">Alle Objekte anzeigen</translation>
+        <translation type="obsolete">Alle Objekte anzeigen</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="unfinished">Nur selektierte Objekte anzeigen</translation>
+        <translation type="obsolete">Nur selektierte Objekte anzeigen</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="unfinished">Objekte im aktuellen Kartenausschnitt anzeigen</translation>
+        <translation type="obsolete">Objekte im aktuellen Kartenausschnitt anzeigen</translation>
     </message>
 </context>
 <context>
@@ -9786,7 +9817,7 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished">Verhalten der Attributtabelle</translation>
+        <translation type="obsolete">Verhalten der Attributtabelle</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -10274,6 +10305,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPluginInstallerFetchingDialog</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overall progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort fetching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished">Repository</translation>
+    </message>
+    <message>
+        <source>State</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
@@ -10311,7 +10365,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Name:</translation>
     </message>
     <message>
         <source>Enter a name for the repository</source>
@@ -11031,11 +11085,11 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation>Rasterausmaß:</translation>
+        <translation type="obsolete">Rasterausmaß:</translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation>Ausschnittsbereich:</translation>
+        <translation type="obsolete">Ausschnittsbereich:</translation>
     </message>
     <message>
         <source>Pyramid overviews:</source>
@@ -13737,19 +13791,19 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Repository Details</translation>
+        <translation type="obsolete">Repository Details</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation type="obsolete">Name:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -13830,7 +13884,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished">Feldbeschreibung:
+        <translation type="obsolete">Feldbeschreibung:
 * DXF-Eingabedatei: Pfad zur zu konvertierenden DXF-Datei
 * Ausgabe-Shape-Datei: Gewünschter Name der zu erzeugenden Shapedatei
 * Typ der Ausgabe-Shape-Datei: gibt den Typ der Ausgabe-Shape-Datei
@@ -13844,18 +13898,18 @@ Unterstützung unter scala@itc.cnr.it
     </message>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished">Zu öffnende DXF-Datei wählen</translation>
+        <translation type="obsolete">Zu öffnende DXF-Datei wählen</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">Dateiname zum Speichern wählen</translation>
+        <translation type="obsolete">Dateiname zum Speichern wählen</translation>
     </message>
 </context>
 <context>
     <name>pluginname</name>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
+        <translation type="obsolete">Diese Notiz mit einer kurzen Beschreibung, was das Plugin macht, ersetzen</translation>
     </message>
     <message>
         <source>[menuitemname]</source>
@@ -13864,6 +13918,10 @@ Unterstützung unter scala@itc.cnr.it
     <message>
         <source>&amp;[menuname]</source>
         <translation>&amp;[menuname]</translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="lv">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
@@ -130,115 +129,115 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>QGIS spraudņu instalators</translation>
+        <translation type="obsolete">QGIS spraudņu instalators</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Instalējamā spraudņa nosaukums</translation>
+        <translation type="obsolete">Instalējamā spraudņa nosaukums</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Saņemt sarakstu</translation>
+        <translation type="obsolete">Saņemt sarakstu</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Darīts</translation>
+        <translation type="obsolete">Darīts</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Instalēt spraudni</translation>
+        <translation type="obsolete">Instalēt spraudni</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>Spraudnis tiks instalēts iekš ~/.qgis/python/plugins</translation>
+        <translation type="obsolete">Spraudnis tiks instalēts iekš ~/.qgis/python/plugins</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nosaukums</translation>
+        <translation type="obsolete">Nosaukums</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Versija</translation>
+        <translation type="obsolete">Versija</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Apraksts</translation>
+        <translation type="obsolete">Apraksts</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Autors</translation>
+        <translation type="obsolete">Autors</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Izvēlieties repozitoriju, saņemiet pieejamo spraudņu sarakstu, izvēlēties vēlamo un instalējiet to</translation>
+        <translation type="obsolete">Izvēlieties repozitoriju, saņemiet pieejamo spraudņu sarakstu, izvēlēties vēlamo un instalējiet to</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Repozitorijs</translation>
+        <translation type="obsolete">Repozitorijs</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Aktīvais repozitorijs:</translation>
+        <translation type="obsolete">Aktīvais repozitorijs:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Pievienot</translation>
+        <translation type="obsolete">Pievienot</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Rediģēt</translation>
+        <translation type="obsolete">Rediģēt</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Dzēst</translation>
+        <translation type="obsolete">Dzēst</translation>
     </message>
     <message>
         <source>Dialog</source>
-        <translation>Dialogs</translation>
+        <translation type="obsolete">Dialogs</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation>Punkta simbols</translation>
+        <translation type="obsolete">Punkta simbols</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Izmērs</translation>
+        <translation type="obsolete">Izmērs</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation>Laukuma mērogošanas lauks</translation>
+        <translation type="obsolete">Laukuma mērogošanas lauks</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation>Rotācijas lauks</translation>
+        <translation type="obsolete">Rotācijas lauks</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation>Stila opcijas</translation>
+        <translation type="obsolete">Stila opcijas</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation>Līnijas stils</translation>
+        <translation type="obsolete">Līnijas stils</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Līnijas krāsa</translation>
+        <translation type="obsolete">Līnijas krāsa</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Līnijas platums</translation>
+        <translation type="obsolete">Līnijas platums</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Aizpildījuma krāsa</translation>
+        <translation type="obsolete">Aizpildījuma krāsa</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation>Aizpildījuma stils</translation>
+        <translation type="obsolete">Aizpildījuma stils</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -466,11 +465,15 @@
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Aizstājiet šo ar īsu spraudņa darbības aprakstu</translation>
+        <translation type="obsolete">Aizstājiet šo ar īsu spraudņa darbības aprakstu</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
         <translation>OG&amp;R Konvertors</translation>
+    </message>
+    <message>
+        <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished">Konvertē OGR bibliotēkas atbalstītos vektordatu slāņus</translation>
     </message>
 </context>
 <context>
@@ -1428,6 +1431,14 @@ Python atbalsts tiks atslēgts.</translation>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
         <translation>Konvertē OGR bibliotēkas atbalstītos vektordatu slāņus</translation>
+    </message>
+    <message>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3052,7 +3063,7 @@ Kļūdas:  %2
     </message>
     <message>
         <source>Name</source>
-        <translation>Nosaukums</translation>
+        <translation type="obsolete">Nosaukums</translation>
     </message>
     <message>
         <source>Sponsors</source>
@@ -3068,7 +3079,7 @@ Kļūdas:  %2
     </message>
     <message>
         <source>Website</source>
-        <translation>Mājaslapa</translation>
+        <translation type="obsolete">Mājaslapa</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
@@ -3083,20 +3094,16 @@ Ievadi pilno ceļu, ja pārlūks nav norādīts sitēmas PATH vērtībās.
         <translation>Quantum GIS tiek izplatīts izmantojot GPL licenci</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Pieejamie QGIS datu piegādatāju spraudņi</translation>
+        <translation type="obsolete">Pieejamie QGIS datu piegādatāju spraudņi</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation>Pieejamie Qt datubāzes spraudņi</translation>
+        <translation type="obsolete">Pieejamie Qt datubāzes spraudņi</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation>Pieejamie Qt attēlu spraudņi</translation>
+        <translation type="obsolete">Pieejamie Qt attēlu spraudņi</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3135,6 +3142,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cancel</source>
         <translation type="obsolete">Atcelt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsApplication</name>
+    <message>
+        <source>Exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3740,7 +3754,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposer</name>
     <message>
         <source> for read/write</source>
-        <translation> lasīšanai/rakstīšanai</translation>
+        <translation type="obsolete"> lasīšanai/rakstīšanai</translation>
     </message>
     <message>
         <source>Choose a filename to save the map image as</source>
@@ -3752,39 +3766,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Kļūda drukājot</translation>
+        <translation type="obsolete">Kļūda drukājot</translation>
     </message>
     <message>
         <source>Cannot seek</source>
-        <translation>Nevar meklēt</translation>
+        <translation type="obsolete">Nevar meklēt</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>Nevar pārrakstīt ietverošo robežu taisnstūri</translation>
+        <translation type="obsolete">Nevar pārrakstīt ietverošo robežu taisnstūri</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>Nevar atrast ietverošo robežu taisnstūri</translation>
+        <translation type="obsolete">Nevar atrast ietverošo robežu taisnstūri</translation>
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>Nevar pārrakstīt tulkojumu</translation>
+        <translation type="obsolete">Nevar pārrakstīt tulkojumu</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>Nevar atrast tulkojumu</translation>
+        <translation type="obsolete">Nevar atrast tulkojumu</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Faila IO kļūda</translation>
+        <translation type="obsolete">Faila IO kļūda</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>Papīrs neatbilst</translation>
+        <translation type="obsolete">Papīrs neatbilst</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>Izvēlētā papīra izmērs neatbilst salikuma izmēram</translation>
+        <translation type="obsolete">Izvēlētā papīra izmērs neatbilst salikuma izmēram</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -3812,7 +3826,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>Nebija iespējams atvērt </translation>
+        <translation type="obsolete">Nebija iespējams atvērt </translation>
     </message>
     <message>
         <source>format</source>
@@ -3961,6 +3975,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Choose a file name to save the map as</source>
         <translation>Izvēlieties faila nosaukumu ar kādu saglabāt karti</translation>
+    </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9309,11 +9331,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation>Vairāk slāņu</translation>
+        <translation type="obsolete">Vairāk slāņu</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation>Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
+        <translation type="obsolete">Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9328,7 +9350,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation>Atribūtu tabula - </translation>
+        <translation type="obsolete">Atribūtu tabula - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9336,19 +9358,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation>Rediģēšanas sākšana neizdevās</translation>
+        <translation type="obsolete">Rediģēšanas sākšana neizdevās</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation>Sniedzējs nevar tikt atvērts rediģēšanai</translation>
+        <translation type="obsolete">Sniedzējs nevar tikt atvērts rediģēšanai</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>Pārtraukt rediģēšanu</translation>
+        <translation type="obsolete">Pārtraukt rediģēšanu</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation>Vai Jūs velaties saglabāt izmaiņas?</translation>
+        <translation type="obsolete">Vai Jūs velaties saglabāt izmaiņas?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9356,19 +9378,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation>Nevar apstiprināt izmaiņas</translation>
+        <translation type="obsolete">Nevar apstiprināt izmaiņas</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation>Problēmas pie darbību atcelšanas</translation>
+        <translation type="obsolete">Problēmas pie darbību atcelšanas</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation>Nav vektordatu slānis</translation>
+        <translation type="obsolete">Nav vektordatu slānis</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation>Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
+        <translation type="obsolete">Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -9428,15 +9450,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation>Bad_alloc kļūda</translation>
+        <translation type="obsolete">Bad_alloc kļūda</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation>Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
+        <translation type="obsolete">Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation>Slāņa atribūtu tabula satur neatbalstītus datu tipus.</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10272,15 +10302,15 @@ Paplašināta kļūdas informācija:
     </message>
     <message>
         <source>Show all features</source>
-        <translation>Rādīt visus objektus</translation>
+        <translation type="obsolete">Rādīt visus objektus</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation>Rādīt izvēlētos objektus</translation>
+        <translation type="obsolete">Rādīt izvēlētos objektus</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation>Rādīt pašreizs redzamos objektus</translation>
+        <translation type="obsolete">Rādīt pašreizs redzamos objektus</translation>
     </message>
 </context>
 <context>
@@ -10695,7 +10725,7 @@ Paplašināta kļūdas informācija:
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation>Atribūtu tabulas uzvedība</translation>
+        <translation type="obsolete">Atribūtu tabulas uzvedība</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11200,6 +11230,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Close</source>
         <translation>Aizvērt</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerFetchingDialog</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overall progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort fetching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>State</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12068,11 +12121,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation>Rastra apjoms: </translation>
+        <translation type="obsolete">Rastra apjoms: </translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation>Izgriestais apgabals: </translation>
+        <translation type="obsolete">Izgriestais apgabals: </translation>
     </message>
     <message>
         <source>Driver:</source>
@@ -15171,19 +15224,19 @@ Should the existing classes be deleted before classification?</source>
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Repozitorija informācija</translation>
+        <translation type="obsolete">Repozitorija informācija</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Nosaukums:</translation>
+        <translation type="obsolete">Nosaukums:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -15250,33 +15303,19 @@ p, li { white-space: pre-wrap; }
         <translation>Eksportēt teksta birkas</translation>
     </message>
     <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a DXF file to open</source>
-        <translation>Atvēršanai izvēlies DXF failu</translation>
+        <translation type="obsolete">Atvēršanai izvēlies DXF failu</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation>Saglabāšanai izvēlies faila nosaukumu</translation>
+        <translation type="obsolete">Saglabāšanai izvēlies faila nosaukumu</translation>
     </message>
 </context>
 <context>
     <name>pluginname</name>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Aizstājiet šo ar īsu spraudņa darbības aprakstu</translation>
+        <translation type="obsolete">Aizstājiet šo ar īsu spraudņa darbības aprakstu</translation>
     </message>
     <message>
         <source>[menuitemname]</source>
@@ -15285,6 +15324,10 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>&amp;[menuname]</source>
         <translation>&amp;[menuname]</translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
