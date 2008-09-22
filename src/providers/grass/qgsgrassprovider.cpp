@@ -1087,13 +1087,24 @@ void QgsGrassProvider::updateMap( int mapId )
   // Reopen vector
   QgsGrass::resetError(); // to "catch" error after Vect_open_old()
   Vect_set_open_level( 2 );
-  Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  {
+    Vect_open_old( map->map, map->mapName.toAscii().data(), map->mapset.toAscii().data() );
+  }
+  QgsGrass::clearErrorEnv();
 
   if ( QgsGrass::getError() == QgsGrass::FATAL )
   {
     QgsDebugMsg( QString( "Cannot reopen GRASS vector: %1" ).arg( QgsGrass::getErrorMessage() ) );
 
-    // TODO if reopen fails, mLayers should be also updated
+    // if reopen fails, mLayers should be also updated
+    for ( unsigned int i = 0; i <  mLayers.size(); i++ )
+    {
+      if ( mLayers[i].mapId == mapId )
+      {
+        closeLayer( i );
+      }
+    }
     return;
   }
 
@@ -1149,6 +1160,13 @@ bool QgsGrassProvider::mapOutdated( int mapId )
 
   if ( map->lastModified < di.lastModified() )
   {
+    // If the cidx file has been deleted, the map is currently being modified
+    // by an external tool. Do not update until the cidx file has been recreated.
+    if ( !QFileInfo( dp, "cidx" ).exists() )
+    {
+      QgsDebugMsg( QString( "**** The map %1 is being modified and is unavailable ****" ).arg( mapId ) );
+      return false;
+    }
     QgsDebugMsg( QString( "**** The map %1 was modified ****" ).arg( mapId ) );
 
     return true;
