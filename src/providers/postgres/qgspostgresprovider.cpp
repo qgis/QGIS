@@ -1821,6 +1821,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
     PQclear( stmt );
 
     int primaryKeyHighWater = maxPrimaryKeyValue();
+    QList<int> newIds;
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
     {
@@ -1832,7 +1833,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       QStringList params;
       params << geomParam;
       params << QString( "%1" ).arg( ++primaryKeyHighWater );
-      features->setFeatureId( primaryKeyHighWater );
+
+      newIds << primaryKeyHighWater;
 
       for ( int i = 0; i < fieldId.size(); i++ )
         params << paramValue( attributevec[ fieldId[i] ].toString(), defaultValue[i] );
@@ -1843,14 +1845,17 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       PQclear( result );
     }
 
+    for ( int i = 0; i < flist.size(); i++ )
+      flist[i].setFeatureId( newIds[i] );
+
     connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     connectionRW->PQexecNR( "COMMIT" );
   }
   catch ( PGException &e )
   {
     e.showErrorMessage( tr( "Error while adding features" ) );
-    connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     connectionRW->PQexecNR( "ROLLBACK" );
+    connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     returnvalue = false;
   }
 
@@ -2121,8 +2126,8 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   catch ( PGException &e )
   {
     e.showErrorMessage( tr( "Error while changing geometry values" ) );
-    connectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
     connectionRW->PQexecNR( "ROLLBACK" );
+    connectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
     returnvalue = false;
   }
 
