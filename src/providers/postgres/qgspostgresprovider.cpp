@@ -1612,34 +1612,38 @@ bool QgsPostgresProvider::isValid()
   return valid;
 }
 
+QVariant QgsPostgresProvider::getDefaultValue( QString fieldName )
+{
+  // Get the default column value from the Postgres information
+  // schema. If there is no default we return an empty string.
+
+  // Maintaining a cache of the results of this query would be quite
+  // simple and if this query is called lots, could save some time.
+
+  QString sql( "SELECT column_default FROM"
+               " information_schema.columns WHERE"
+               " column_default IS NOT NULL"
+               " AND table_schema = " + quotedValue( mSchemaName ) +
+               " AND table_name = " + quotedValue( mTableName ) +
+               " AND column_name = " + quotedValue( fieldName ) );
+
+  QVariant defaultValue( QString::null );
+
+  Result result = connectionRO->PQexec( sql );
+
+  if ( PQntuples( result ) == 1 && !PQgetisnull( result, 0, 0 ) )
+    defaultValue = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+
+  // QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
+
+  return defaultValue;
+}
+
 QVariant QgsPostgresProvider::getDefaultValue( int fieldId )
 {
   try
   {
-    // Get the default column value from the Postgres information
-    // schema. If there is no default we return an empty string.
-
-    // Maintaining a cache of the results of this query would be quite
-    // simple and if this query is called lots, could save some time.
-    QString fieldName = field( fieldId ).name();
-
-    QString sql( "SELECT column_default FROM"
-                 " information_schema.columns WHERE"
-                 " column_default IS NOT NULL"
-                 " AND table_schema = " + quotedValue( mSchemaName ) +
-                 " AND table_name = " + quotedValue( mTableName ) +
-                 " AND column_name = " + quotedValue( fieldName ) );
-
-    QVariant defaultValue( QString::null );
-
-    Result result = connectionRO->PQexec( sql );
-
-    if ( PQntuples( result ) == 1 && !PQgetisnull( result, 0, 0 ) )
-      defaultValue = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
-
-    // QgsDebugMsg( QString("defaultValue for %1 is NULL: %2").arg(fieldId).arg( defaultValue.isNull() ) );
-
-    return defaultValue;
+    return getDefaultValue( field( fieldId ).name() );
   }
   catch ( PGFieldNotFound )
   {
@@ -1820,7 +1824,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       throw PGException( stmt );
     PQclear( stmt );
 
-    int primaryKeyHighWater = maxPrimaryKeyValue();
+    QString keyDefault = getDefaultValue( primaryKey ).toString();
+    int primaryKeyHighWater = -1;
+    if ( keyDefault.isNull() )
+      primaryKeyHighWater = maxPrimaryKeyValue();
     QList<int> newIds;
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
@@ -1832,9 +1839,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
       QStringList params;
       params << geomParam;
-      params << QString( "%1" ).arg( ++primaryKeyHighWater );
 
-      newIds << primaryKeyHighWater;
+      if ( keyDefault.isNull() )
+      {
+        ++primaryKeyHighWater;
+        params << QString::number( primaryKeyHighWater );
+        newIds << primaryKeyHighWater;
+      }
+      else
+      {
+        QByteArray key = paramValue( keyDefault, keyDefault );
+        params << key;
+        newIds << key.toInt();
+      }
 
       for ( int i = 0; i < fieldId.size(); i++ )
         params << paramValue( attributevec[ fieldId[i] ].toString(), defaultValue[i] );

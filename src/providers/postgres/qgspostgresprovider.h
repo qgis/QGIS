@@ -197,6 +197,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList allAttributesList();
 
+    /**Returns the default value for field specified by @c fieldName */
+    QVariant getDefaultValue( QString fieldName );
+
     /**Returns the default value for field specified by @c fieldId */
     QVariant getDefaultValue( int fieldId );
 
