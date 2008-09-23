@@ -2747,6 +2747,18 @@ bool QgsVectorLayer::commitChanges()
     {
       for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
       {
+        if ( mDeletedFeatureIds.contains( iter->featureId() ) )
+        {
+          mDeletedFeatureIds.remove( iter->featureId() );
+
+          if ( mChangedGeometries.contains( iter->featureId() ) )
+            mChangedGeometries.remove( iter->featureId() );
+
+          mAddedFeatures.erase( iter );
+
+          continue;
+        }
+
         if ( mChangedGeometries.contains( iter->featureId() ) )
         {
           iter->setGeometry( mChangedGeometries.take( iter->featureId() ) );
