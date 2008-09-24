@@ -270,7 +270,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     //it in the ctor of the layer projection selector
 
     QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-    mySelector->setMessage(); //shows a generic message
+    mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not speficied
     proj4String = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
     QgsCoordinateReferenceSystem defaultCRS;
     if ( defaultCRS.createFromProj4( proj4String ) )

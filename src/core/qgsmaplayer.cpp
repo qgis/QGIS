@@ -140,6 +140,10 @@ void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 
 bool QgsMapLayer::readXML( QDomNode & layer_node )
 {
+  QgsCoordinateReferenceSystem savedCRS;
+  CUSTOM_CRS_VALIDATION savedValidation;
+  bool layerError;
+
   QDomElement element = layer_node.toElement();
 
   // XXX not needed? QString type = element.attribute("type");
@@ -149,15 +153,31 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   QDomElement mne = mnl.toElement();
   mDataSource = mne.text();
 
-  // Set the CRS so that we don't ask the user.
+  // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
   // We will still overwrite whatever GDAL etc picks up anyway
   // further down this function.
   QDomNode srsNode = layer_node.namedItem( "srs" );
   mCRS->readXML( srsNode );
+  mCRS->validate();
+  savedCRS = *mCRS;
+
+  // Do not validate any projections in children, they will be overwritten anyway.
+  // No need to ask the user for a projections when it is overwritten, is there?
+  savedValidation = QgsCoordinateReferenceSystem::customSrsValidation();
+  QgsCoordinateReferenceSystem::setCustomSrsValidation( NULL );
 
   // now let the children grab what they need from the Dom node.
-  if ( !readXml( layer_node ) )
+  layerError = !readXml( layer_node );
+
+  // overwrite CRS with what we read from project file before the raster/vector
+  // file readnig functions changed it. They will if projections is specfied in the file.
+  // FIXME: is this necessary?
+  QgsCoordinateReferenceSystem::setCustomSrsValidation( savedValidation );
+  *mCRS = savedCRS;
+
+  // Abort if any error in layer, such as not found.
+  if ( layerError )
   {
     return false;
   }
@@ -194,10 +214,6 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   mnl = layer_node.namedItem( "layername" );
   mne = mnl.toElement();
   setLayerName( mne.text() );
-
-  // overwrite srs
-  // FIXME: is this necessary?
-  mCRS->readXML( srsNode );
 
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );

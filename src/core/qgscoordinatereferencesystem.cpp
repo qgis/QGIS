@@ -45,14 +45,16 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
     : mMapUnits( QGis::UNKNOWN ),
-    mIsValidFlag( 0 )
+      mIsValidFlag( 0 ),
+      mValidationHint ( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
     : mMapUnits( QGis::UNKNOWN ),
-    mIsValidFlag( 0 )
+      mIsValidFlag( 0 ),
+      mValidationHint ( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromWkt( theWkt );
@@ -61,7 +63,8 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CRS_TYPE theType )
     : mMapUnits( QGis::UNKNOWN ),
-    mIsValidFlag( 0 )
+      mIsValidFlag( 0 ),
+      mValidationHint ( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromId( theId, theType );
@@ -138,6 +141,7 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mSRID = srs.mSRID;
     mEpsg = srs.mEpsg;
     mIsValidFlag = srs.mIsValidFlag;
+    mValidationHint = srs.mValidationHint;
     if ( mIsValidFlag )
     {
       OSRDestroySpatialReference( mCRS );
@@ -1099,6 +1103,11 @@ void QgsCoordinateReferenceSystem::setCustomSrsValidation( CUSTOM_CRS_VALIDATION
   mCustomSrsValidation = f;
 }
 
+CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::customSrsValidation()
+{
+  return mCustomSrsValidation;
+}
+
 void QgsCoordinateReferenceSystem::debugPrint()
 {
   QgsDebugMsg( "***SpatialRefSystem***" );
@@ -1106,4 +1115,14 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* SrsId : " + QString::number( mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + proj4String() );
   QgsDebugMsg( "* Desc. : " + mDescription );
+}
+
+void QgsCoordinateReferenceSystem::setValidationHint( QString html )
+{
+  mValidationHint = html;
+}
+
+QString QgsCoordinateReferenceSystem::validationHint()
+{
+  return mValidationHint;
 }
