@@ -248,6 +248,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     static void setCustomSrsValidation( CUSTOM_CRS_VALIDATION f );
 
+    /** Gets custom function
+     */
+    static CUSTOM_CRS_VALIDATION customSrsValidation();
+
     // Accessors -----------------------------------
 
     /*! Get the SrsId - if possible
@@ -336,6 +340,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! Print the description if debugging
      */
     void debugPrint();
+
+    /*! Set user hint for validation
+     */
+    void setValidationHint( QString html );
+
+    /*! Get user hint for validation
+     */
+    QString validationHint();
   private:
     // Open SQLite db and show message if ccannot be opened
     // returns the same code as sqlite3_open
@@ -366,6 +378,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void *mCRS;
 
     bool loadFromDb( QString db, QString field, long id );
+
+    QString mValidationHint;
 
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 };
