@@ -4023,8 +4023,19 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
   {
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
 
-    QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
-    myColorRampShader->setColorRampType( customColorRampTypeNode.toElement().text() );
+    //TODO: Remove the customColorRampType check and following if() in v2.0, added for compatability with older ( bugged ) project files
+    QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
+    QDomNode colorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
+    QString myRampType = "";
+    if( "" == customColorRampTypeNode.toElement().text() )
+    {
+      myRampType = colorRampTypeNode.toElement().text();
+    }
+    else
+    {
+      myRampType = customColorRampTypeNode.toElement().text();
+    }
+    myColorRampShader->setColorRampType( myRampType );
 
 
     //entries
@@ -4378,7 +4389,7 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
   {
     QDomElement customColorRampElement = document.createElement( "customColorRamp" );
 
-    QDomElement customColorRampType = document.createElement( "customColorRampType" );
+    QDomElement customColorRampType = document.createElement( "colorRampType" );
     QDomText customColorRampTypeText = document.createTextNode((( QgsColorRampShader* )mRasterShader->getRasterShaderFunction() )->getColorRampTypeAsQString() );
     customColorRampType.appendChild( customColorRampTypeText );
     customColorRampElement.appendChild( customColorRampType );
