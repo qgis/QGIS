@@ -234,12 +234,11 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
       mCapturing = FALSE;
 
-      delete mRubberBand;
-      mRubberBand = NULL;
-
       //lines: bail out if there are not at least two vertices
       if ( mTool == CaptureLine && mCaptureList.size() < 2 )
       {
+        delete mRubberBand;
+        mRubberBand = NULL;
         mCaptureList.clear();
         return;
       }
@@ -247,6 +246,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       //polygons: bail out if there are not at least two vertices
       if ( mTool == CapturePolygon && mCaptureList.size() < 3 )
       {
+        delete mRubberBand;
+        mRubberBand = NULL;
         mCaptureList.clear();
         return;
       }
@@ -321,6 +322,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         else
         {
           QMessageBox::critical( 0, QObject::tr( "Error" ), QObject::tr( "Cannot add feature. Unknown WKB type" ) );
+          delete mRubberBand;
+          mRubberBand = NULL;
+          mCaptureList.clear();
           return; //unknown wkbtype
         }
         f->setGeometryAndOwnership( &wkb[0], size );
@@ -414,6 +418,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         else
         {
           QMessageBox::critical( 0, QObject::tr( "Error" ), QObject::tr( "Cannot add feature. Unknown WKB type" ) );
+          delete mRubberBand;
+          mRubberBand = NULL;
+          mCaptureList.clear();
           return; //unknown wkbtype
         }
         f->setGeometryAndOwnership( &wkb[0], size );
@@ -452,6 +459,9 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       delete f;
       delete mypDialog;
+
+      delete mRubberBand;
+      mRubberBand = NULL;
 
       // delete the elements of mCaptureList
       mCaptureList.clear();
