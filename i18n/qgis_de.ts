@@ -10320,7 +10320,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Repository</translation>
     </message>
     <message>
         <source>State</source>
