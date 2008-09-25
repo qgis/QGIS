@@ -13357,9 +13357,6 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
-    <name>RepositoryDetailsDialog</name>
-</context>
-<context>
     <name>SplashScreen</name>
     <message>
         <source>Quantum GIS - </source>
