@@ -131,10 +131,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   appMenu->addAction( QgisApp::instance()->actionOptions() );
 
   QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
-  fileMenu->addAction( mActionOpenTemplate );
-  fileMenu->addSeparator();
   QAction *closeAction = fileMenu->addAction( tr( "Close" ), this, SLOT( close() ), tr( "Ctrl+W" ) );
-  fileMenu->addAction( mActionSaveTemplateAs );
   fileMenu->addAction( mActionExportAsImage );
   fileMenu->addAction( mActionExportAsSVG );
   fileMenu->addSeparator();
