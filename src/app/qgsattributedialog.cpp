@@ -242,7 +242,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         }
         else if ( myFieldType == QVariant::Double )
         {
-          le->setValidator( new QIntValidator( le ) );
+          le->setValidator( new QDoubleValidator( le ) );
         }
 
         myWidget = le;
