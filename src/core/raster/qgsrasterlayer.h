@@ -252,7 +252,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * \param point[in]  a coordinate in the CRS of this layer.
      */
-    void identify( const QgsPoint & point, QMap<QString, QString>& results );
+    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
     /** \brief Identify arbitrary details from the WMS server found on the point position
      *
