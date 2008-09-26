@@ -4416,8 +4416,14 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
 
 
-void QgsRasterLayer::identify( const QgsPoint& point, QMap<QString, QString>& results )
+bool QgsRasterLayer::identify( const QgsPoint& point, QMap<QString, QString>& results )
 {
+  results.clear();
+  if ( mProviderKey == "wms" )
+  {
+    return false;
+  }
+  
   double x = point.x();
   double y = point.y();
 
@@ -4478,7 +4484,8 @@ void QgsRasterLayer::identify( const QgsPoint& point, QMap<QString, QString>& re
     }
   }
 
-} // void QgsRasterLayer::identify
+  return true;
+} // bool QgsRasterLayer::identify
 
 
 QString QgsRasterLayer::identifyAsText( const QgsPoint& point )
