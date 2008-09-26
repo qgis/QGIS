@@ -1263,11 +1263,14 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
   if ( !fi.exists() )
     return;
 
-  QString sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( fld.name() ).arg( fi.baseName() );
+  QString sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" )
+                .arg( quotedIdentifier( fld.name() ) )
+                .arg( quotedIdentifier( fi.baseName() ) );
 
   uniqueValues.clear();
 
-  OGRLayerH lyr = OGR_DS_ExecuteSQL( ogrDataSource, sql.toAscii(), NULL, "SQL" );
+  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
+  OGRLayerH lyr = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( 0 == lyr )
     return;
 
@@ -1290,9 +1293,11 @@ QVariant QgsOgrProvider::minimumValue( int index )
   if ( !fi.exists() )
     return QVariant();
 
-  QString sql = QString( "SELECT MIN(%1) FROM %2" ).arg( fld.name() ).arg( fi.baseName() );
+  QString sql = QString( "SELECT MIN(%1) FROM %2" )
+                .arg( quotedIdentifier( fld.name() ) )
+                .arg( quotedIdentifier( fi.baseName() ) );
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.toAscii(), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
 
   if ( l == 0 )
     return QVariant();
@@ -1319,9 +1324,11 @@ QVariant QgsOgrProvider::maximumValue( int index )
   if ( !fi.exists() )
     return QVariant();
 
-  QString sql = QString( "SELECT MAX(%1) FROM %2" ).arg( fld.name() ).arg( fi.baseName() );
+  QString sql = QString( "SELECT MAX(%1) FROM %2" )
+                .arg( quotedIdentifier( fld.name() ) )
+                .arg( quotedIdentifier( fi.baseName() ) );
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, sql.toAscii(), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( l == 0 )
     return QVariant();
 
@@ -1338,4 +1345,12 @@ QVariant QgsOgrProvider::maximumValue( int index )
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
 
   return value;
+}
+
+QString QgsOgrProvider::quotedIdentifier( QString field )
+{
+  field.replace( '\\', "\\\\" );
+  field.replace( '"', "\\\"" );
+  field.replace( "'", "\\'" );
+  return field.prepend( "\"" ).append( "\"" );
 }
