@@ -229,8 +229,6 @@
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionOpenTemplate" />
-   <addaction name="mActionSaveTemplateAs" />
    <addaction name="mActionExportAsImage" />
    <addaction name="mActionExportAsSVG" />
    <addaction name="mActionPrint" />
@@ -247,22 +245,6 @@
    <addaction name="mActionAddNewScalebar" />
    <addaction name="mActionSelectMoveItem" />
   </widget>
-  <action name="mActionOpenTemplate" >
-   <property name="icon" >
-    <iconset>../themes/default/mActionFileOpen.png</iconset>
-   </property>
-   <property name="text" >
-    <string>&amp;Open Template...</string>
-   </property>
-  </action>
-  <action name="mActionSaveTemplateAs" >
-   <property name="icon" >
-    <iconset>../themes/default/mActionFileSaveAs.png</iconset>
-   </property>
-   <property name="text" >
-    <string>Save Template &amp;As...</string>
-   </property>
-  </action>
   <action name="mActionPrint" >
    <property name="icon" >
     <iconset>../themes/default/mActionFilePrint.png</iconset>
