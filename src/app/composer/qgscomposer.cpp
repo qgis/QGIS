@@ -118,10 +118,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
   setWindowTitle( tr( "QGIS - print composer" ) );
 
-  // Template save and load is not yet implemented, so disable those actions
-  mActionOpenTemplate->setEnabled( false );
-  mActionSaveTemplateAs->setEnabled( false );
-
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
   mActionAddNewLegend->setCheckable( true );
@@ -251,8 +247,6 @@ void QgsComposer::setupTheme()
 {
   //now set all the icons - getThemeIcon will fall back to default theme if its
   //missing from active theme
-  mActionOpenTemplate->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
-  mActionSaveTemplateAs->setIcon( QgisApp::getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionExportAsImage->setIcon( QgisApp::getThemeIcon( "/mActionExportMapServer.png" ) );
   mActionExportAsSVG->setIcon( QgisApp::getThemeIcon( "/mActionSaveAsSVG.png" ) );
   mActionPrint->setIcon( QgisApp::getThemeIcon( "/mActionFilePrint.png" ) );
