@@ -155,7 +155,6 @@ void QgsMeasureDialog::restorePosition()
     wh = settings.value( "/Windows/Measure/h", 200 ).toInt();
   resize( width(), wh );
   updateUi();
-  this->show();
 }
 
 void QgsMeasureDialog::saveWindowLocation()

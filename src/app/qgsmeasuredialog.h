@@ -36,7 +36,7 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Save position
     void saveWindowLocation( void );
 
-    //! Restore last window position/size and show the window
+    //! Restore last window position/size
     void restorePosition( void );
 
     //! Add new point
