@@ -165,11 +165,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mLineColourToolButton->setColor( QColor( myRed, myGreen, myBlue ) );
 
   //default snap mode
-  mDefaultSnapModeComboBox->insertItem( 0, tr( "to vertex" ) );
-  mDefaultSnapModeComboBox->insertItem( 1, tr( "to segment" ) );
-  mDefaultSnapModeComboBox->insertItem( 2, tr( "to vertex and segment" ) );
-  QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", tr( "to vertex" ) ).toString();
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findText( defaultSnapString ) );
+  mDefaultSnapModeComboBox->insertItem( 0, tr( "to vertex" ), "to vertex" );
+  mDefaultSnapModeComboBox->insertItem( 1, tr( "to segment" ), "to segment" );
+  mDefaultSnapModeComboBox->insertItem( 2, tr( "to vertex and segment" ), "to vertex and segment" );
+  QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex").toString();
+  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
 
@@ -326,19 +326,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/line_color_blue", digitizingColor.blue() );
 
   //default snap mode
-  QString defaultSnapModeString;
-  if ( mDefaultSnapModeComboBox->currentText() == tr( "to vertex" ) )
-  {
-    defaultSnapModeString = "to vertex";
-  }
-  else if ( mDefaultSnapModeComboBox->currentText() == tr( "to segment" ) )
-  {
-    defaultSnapModeString = "to segment";
-  }
-  else if ( mDefaultSnapModeComboBox->currentText() == tr( "to vertex and segment" ) )
-  {
-    defaultSnapModeString = "to vertex and segment";
-  }
+  QString defaultSnapModeString = mDefaultSnapModeComboBox->itemData( mDefaultSnapModeComboBox->currentIndex() ).toString();
   settings.setValue( "/qgis/digitizing/default_snap_mode", defaultSnapModeString );
   settings.setValue( "/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value() );
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value() );
