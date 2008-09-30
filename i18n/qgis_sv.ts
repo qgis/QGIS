@@ -6265,7 +6265,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Spara mall &amp;som...</translation>
+        <translation type="obsolete">Spara mall &amp;som...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -6329,7 +6329,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Öppna mall...</translation>
+        <translation type="obsolete">&amp;Öppna mall...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

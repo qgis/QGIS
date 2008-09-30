@@ -5681,7 +5681,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>テンプレートを保存 (&amp;A) ...</translation>
+        <translation type="obsolete">テンプレートを保存 (&amp;A) ...</translation>
     </message>
     <message>
         <source>Print</source>
@@ -5766,10 +5766,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Help</source>
         <translation type="unfinished">ヘルプ</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

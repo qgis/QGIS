@@ -3420,10 +3420,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save Template &amp;As...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3461,10 +3457,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Image</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

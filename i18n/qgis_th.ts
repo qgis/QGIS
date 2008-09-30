@@ -4179,7 +4179,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>บันทึกต้นแบบ &amp;เป็น...</translation>
+        <translation type="obsolete">บันทึกต้นแบบ &amp;เป็น...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4232,10 +4232,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add Image</source>
         <translation>เพิ่มภาพ</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

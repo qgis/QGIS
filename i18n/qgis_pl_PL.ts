@@ -3743,7 +3743,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Zapisz szablon j&amp;ako...</translation>
+        <translation type="obsolete">Zapisz szablon j&amp;ako...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -3811,7 +3811,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Otwórz szablon ...</translation>
+        <translation type="obsolete">&amp;Otwórz szablon ...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

@@ -3454,7 +3454,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Сохранить шаблон &amp;как...</translation>
+        <translation type="obsolete">Сохранить шаблон &amp;как...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -3510,7 +3510,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Открыть шаблон...</translation>
+        <translation type="obsolete">&amp;Открыть шаблон...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

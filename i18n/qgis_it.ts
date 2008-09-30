@@ -4406,7 +4406,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>S&amp;alva il modello come...</translation>
+        <translation type="obsolete">S&amp;alva il modello come...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4471,10 +4471,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Help</source>
         <translation>Aiuto</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

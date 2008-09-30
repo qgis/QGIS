@@ -5349,7 +5349,7 @@ File dialog window title
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>ເ&amp;ກັບເເບບຟອມເປັນ...</translation>
+        <translation type="obsolete">ເ&amp;ກັບເເບບຟອມເປັນ...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -5414,10 +5414,6 @@ File dialog window title
     <message>
         <source>Help</source>
         <translation type="unfinished">ຊ່ວຍເຫຼືອ</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>
