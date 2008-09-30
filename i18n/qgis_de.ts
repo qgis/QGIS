@@ -6087,7 +6087,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation>Schliessen</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <source>...</source>
@@ -6383,7 +6383,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation>Schliessen</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -7102,7 +7102,7 @@ bei Zeile </translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Schliessen</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <source>View output</source>
@@ -8015,7 +8015,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation>Schliessen</translation>
+        <translation>Schließen</translation>
     </message>
 </context>
 <context>
@@ -12613,7 +12613,7 @@ is appended to a truncated SQL statement</comment>
     <message>
         <source>[Quit] - quit the program
 </source>
-        <translation>[Schliessen] - das Programm verlassen</translation>
+        <translation>[Schließen] - das Programm verlassen</translation>
     </message>
     <message>
         <source>[Help] - display this help dialog</source>
