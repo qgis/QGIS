@@ -4068,7 +4068,7 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Sablon mentés &amp;másként ...</translation>
+        <translation type="obsolete">Sablon mentés &amp;másként ...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4121,10 +4121,6 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <source>Add Image</source>
         <translation>Kép hozzáadás</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

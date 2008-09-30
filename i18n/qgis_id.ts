@@ -5041,10 +5041,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Peralatan</translation>
     </message>
     <message>
-        <source>Save Template &amp;As...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Print</source>
         <translation type="obsolete">Cetak</translation>
     </message>
@@ -5111,10 +5107,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Help</source>
         <translation type="unfinished">Bantuan</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

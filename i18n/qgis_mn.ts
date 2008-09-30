@@ -4319,7 +4319,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Загвар хадгалах нэр &amp;... </translation>
+        <translation type="obsolete">Загвар хадгалах нэр &amp;... </translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4383,10 +4383,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -6740,7 +6740,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Uložiť šablónu &amp;ako...</translation>
+        <translation type="obsolete">Uložiť šablónu &amp;ako...</translation>
     </message>
     <message>
         <source>Print</source>
@@ -6829,10 +6829,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Help</source>
         <translation>Pomocník</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

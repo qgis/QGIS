@@ -4307,7 +4307,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Sla Sjabloon op &amp;Als...</translation>
+        <translation type="obsolete">Sla Sjabloon op &amp;Als...</translation>
     </message>
     <message>
         <source>Select/Move item</source>
@@ -4327,7 +4327,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Open Sjabloon ...</translation>
+        <translation type="obsolete">&amp;Open Sjabloon ...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

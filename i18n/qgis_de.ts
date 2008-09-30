@@ -3715,7 +3715,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Schablone speichern &amp;als... </translation>
+        <translation type="obsolete">Schablone speichern &amp;als... </translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -3783,7 +3783,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation type="unfinished">&amp;Vorlage öffnen</translation>
+        <translation type="obsolete">&amp;Vorlage öffnen</translation>
     </message>
     <message>
         <source>Zoom Full</source>

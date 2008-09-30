@@ -6637,7 +6637,7 @@ Krátký přehled syntaxe:
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Uložit šablonu &amp;jako...</translation>
+        <translation type="obsolete">Uložit šablonu &amp;jako...</translation>
     </message>
     <message>
         <source>Print</source>
@@ -6726,10 +6726,6 @@ Krátký přehled syntaxe:
     <message>
         <source>Help</source>
         <translation>Nápověda</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

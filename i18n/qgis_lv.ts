@@ -4005,7 +4005,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Saglabāt šablonu &amp;kā...</translation>
+        <translation type="obsolete">Saglabāt šablonu &amp;kā...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4073,7 +4073,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Atvērt šablonu...</translation>
+        <translation type="obsolete">&amp;Atvērt šablonu...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

@@ -4516,7 +4516,7 @@ Măsurare suprafaţă</translation>
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Salvare Template &amp;Ca...</translation>
+        <translation type="obsolete">Salvare Template &amp;Ca...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4569,10 +4569,6 @@ Măsurare suprafaţă</translation>
     <message>
         <source>Add Image</source>
         <translation>Adăugaţi imagine</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Zoom Full</source>

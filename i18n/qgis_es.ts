@@ -3446,7 +3446,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Guardar plantilla &amp;como...</translation>
+        <translation type="obsolete">Guardar plantilla &amp;como...</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -3490,7 +3490,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Abrir plantilla...</translation>
+        <translation type="obsolete">&amp;Abrir plantilla...</translation>
     </message>
     <message>
         <source>Zoom Full</source>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="tr_TR">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
@@ -435,115 +434,107 @@
     <name>Dialog</name>
     <message>
         <source>QGIS Plugin Installer</source>
-        <translation>QGIS Eklenti Yükleyici</translation>
+        <translation type="obsolete">QGIS Eklenti Yükleyici</translation>
     </message>
     <message>
         <source>Name of plugin to install</source>
-        <translation>Yüklenecek eklenti adı</translation>
+        <translation type="obsolete">Yüklenecek eklenti adı</translation>
     </message>
     <message>
         <source>Get List</source>
-        <translation>Listele</translation>
+        <translation type="obsolete">Listele</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation>Tamamlandı</translation>
+        <translation type="obsolete">Tamamlandı</translation>
     </message>
     <message>
         <source>Install Plugin</source>
-        <translation>Eklenti Yükle</translation>
+        <translation type="obsolete">Eklenti Yükle</translation>
     </message>
     <message>
         <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation>Eklenti ~/.qgis/python/plugins dizinine yüklenecek</translation>
+        <translation type="obsolete">Eklenti ~/.qgis/python/plugins dizinine yüklenecek</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Ad</translation>
+        <translation type="obsolete">Ad</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>Sürüm</translation>
+        <translation type="obsolete">Sürüm</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>Açıklama</translation>
+        <translation type="obsolete">Açıklama</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>Yazar</translation>
+        <translation type="obsolete">Yazar</translation>
     </message>
     <message>
         <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation>Depo seç, mevcut eklentileri listele, birini seç ve yükle</translation>
+        <translation type="obsolete">Depo seç, mevcut eklentileri listele, birini seç ve yükle</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Depo</translation>
+        <translation type="obsolete">Depo</translation>
     </message>
     <message>
         <source>Active repository:</source>
-        <translation>Aktif depo:</translation>
+        <translation type="obsolete">Aktif depo:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Ekle</translation>
+        <translation type="obsolete">Ekle</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Düzenle</translation>
+        <translation type="obsolete">Düzenle</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Sil</translation>
+        <translation type="obsolete">Sil</translation>
     </message>
     <message>
         <source>Dialog</source>
-        <translation>Diyalog</translation>
+        <translation type="obsolete">Diyalog</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation>Nokta Sembolü</translation>
+        <translation type="obsolete">Nokta Sembolü</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Boyut</translation>
-    </message>
-    <message>
-        <source>Area scale field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation field</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Boyut</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation>Stil Seçenekleri</translation>
+        <translation type="obsolete">Stil Seçenekleri</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation>Çerçeve stili</translation>
+        <translation type="obsolete">Çerçeve stili</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Çerçeve rengi</translation>
+        <translation type="obsolete">Çerçeve rengi</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Çerçeve genişliği</translation>
+        <translation type="obsolete">Çerçeve genişliği</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Doldurma rengi</translation>
+        <translation type="obsolete">Doldurma rengi</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation>Doldurma stili</translation>
+        <translation type="obsolete">Doldurma stili</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Connect</source>
@@ -1071,11 +1062,15 @@
     </message>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>OGR tarafından desteklenen biçimlerden diğer desteklenen biçimlere dönüşüm sağlar</translation>
+        <translation type="obsolete">OGR tarafından desteklenen biçimlerden diğer desteklenen biçimlere dönüşüm sağlar</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
         <translation>OG&amp;R Dönüştürücü</translation>
+    </message>
+    <message>
+        <source>Translates vector layers between formats supported by OGR library</source>
+        <translation type="unfinished">Vektör katmanlarını OGR kütüphanesi tarafından desteklenen biçimler arasında dönüştürür</translation>
     </message>
 </context>
 <context>
@@ -2089,6 +2084,14 @@ Python desteği etkisizleştirilecek.</translation>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
         <translation>Vektör katmanlarını OGR kütüphanesi tarafından desteklenen biçimler arasında dönüştürür</translation>
+    </message>
+    <message>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3818,11 +3821,11 @@ Errors:  %2
     </message>
     <message>
         <source>Name</source>
-        <translation>Ad</translation>
+        <translation type="obsolete">Ad</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation>Web sitesi</translation>
+        <translation type="obsolete">Web sitesi</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3841,20 +3844,16 @@ p, li { white-space: pre-wrap; }
         <translation>Quantum CBS GNU General Public License ile lisanslıdır</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Mevcut QGIS Veri Sağlama Eklentileri</translation>
+        <translation type="obsolete">Mevcut QGIS Veri Sağlama Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation>Mevcut Qt Veritabanı Eklentileri</translation>
+        <translation type="obsolete">Mevcut Qt Veritabanı Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation>Mevcut Qt Görüntü Eklentileri</translation>
+        <translation type="obsolete">Mevcut Qt Görüntü Eklentileri</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3893,6 +3892,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cancel</source>
         <translation type="obsolete">İptal</translation>
+    </message>
+</context>
+<context>
+    <name>QgsApplication</name>
+    <message>
+        <source>Exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4514,43 +4520,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> for read/write</source>
-        <translation>okuma/yazma için</translation>
+        <translation type="obsolete">okuma/yazma için</translation>
     </message>
     <message>
         <source>Error in Print</source>
-        <translation>Yazdırmada hata</translation>
+        <translation type="obsolete">Yazdırmada hata</translation>
     </message>
     <message>
         <source>Cannot seek</source>
-        <translation>Araştırılamıyor</translation>
+        <translation type="obsolete">Araştırılamıyor</translation>
     </message>
     <message>
         <source>Cannot overwrite BoundingBox</source>
-        <translation>Sınır çerçevesi üstüne yazılamıyor</translation>
+        <translation type="obsolete">Sınır çerçevesi üstüne yazılamıyor</translation>
     </message>
     <message>
         <source>Cannot find BoundingBox</source>
-        <translation>Sınır çerçevesi bulunamıyor</translation>
+        <translation type="obsolete">Sınır çerçevesi bulunamıyor</translation>
     </message>
     <message>
         <source>Cannot overwrite translate</source>
-        <translation>Çevirinin üzerine yazılamıyor</translation>
+        <translation type="obsolete">Çevirinin üzerine yazılamıyor</translation>
     </message>
     <message>
         <source>Cannot find translate</source>
-        <translation>Çeviri bulunamıyor</translation>
+        <translation type="obsolete">Çeviri bulunamıyor</translation>
     </message>
     <message>
         <source>File IO Error</source>
-        <translation>Dosya IO Hatası</translation>
+        <translation type="obsolete">Dosya IO Hatası</translation>
     </message>
     <message>
         <source>Paper does not match</source>
-        <translation>Kağıt uyuşmuyor</translation>
+        <translation type="obsolete">Kağıt uyuşmuyor</translation>
     </message>
     <message>
         <source>The selected paper size does not match the composition size</source>
-        <translation>Seçilen kağıt boyutu kompozisyon boyutuna uymuyor</translation>
+        <translation type="obsolete">Seçilen kağıt boyutu kompozisyon boyutuna uymuyor</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -4578,7 +4584,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open </source>
-        <translation>Açılamıyor</translation>
+        <translation type="obsolete">Açılamıyor</translation>
     </message>
     <message>
         <source>format</source>
@@ -4724,6 +4730,14 @@ p, li { white-space: pre-wrap; }
         <source>Choose a file name to save the map as</source>
         <translation>Haritayı kaydedeceğiniz dosya adını seçin</translation>
     </message>
+    <message>
+        <source>Project contains WMS layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerBase</name>
@@ -4745,7 +4759,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save Template &amp;As...</source>
-        <translation>Şablonu Yeni &amp;Adla kaydet... </translation>
+        <translation type="obsolete">Şablonu Yeni &amp;Adla kaydet... </translation>
     </message>
     <message>
         <source>&amp;Print...</source>
@@ -4813,7 +4827,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open Template...</source>
-        <translation>&amp;Şablonu Aç...</translation>
+        <translation type="obsolete">&amp;Şablonu Aç...</translation>
     </message>
     <message>
         <source>Zoom Full</source>
@@ -7238,7 +7252,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Choose a file name to save under</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
         <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
@@ -10441,11 +10455,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation>Daha çok katman</translation>
+        <translation type="obsolete">Daha çok katman</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation>Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
+        <translation type="obsolete">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -10460,7 +10474,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation>Öznitelik Tablosu - </translation>
+        <translation type="obsolete">Öznitelik Tablosu - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10468,19 +10482,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation>Düzeltmeyi başlatmada hata</translation>
+        <translation type="obsolete">Düzeltmeyi başlatmada hata</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation>Düzeltme için gerekli sağlayıcı açılamıyor</translation>
+        <translation type="obsolete">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation>Düzeltmeyi durdur</translation>
+        <translation type="obsolete">Düzeltmeyi durdur</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation>Değişikliklerin kaydedilmesini istermisiniz?</translation>
+        <translation type="obsolete">Değişikliklerin kaydedilmesini istermisiniz?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -10496,19 +10510,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation>Değişiklikler henüz kabul edilmedi</translation>
+        <translation type="obsolete">Değişiklikler henüz kabul edilmedi</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation>Geri almada hata</translation>
+        <translation type="obsolete">Geri almada hata</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation>Vektör katman değil</translation>
+        <translation type="obsolete">Vektör katman değil</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation>Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
+        <translation type="obsolete">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -10567,16 +10581,16 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Özellikler</translation>
     </message>
     <message>
-        <source>bad_alloc exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation>Katman öznitelik tablosu desteklenmeyen veri tip(ler)i içeriyor</translation>
+    </message>
+    <message>
+        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11491,15 +11505,15 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation>Tüm objeleri göster</translation>
+        <translation type="obsolete">Tüm objeleri göster</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation>Seçilen objeleri göster</translation>
+        <translation type="obsolete">Seçilen objeleri göster</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation>Geçerli kanavadaki objeleri göster</translation>
+        <translation type="obsolete">Geçerli kanavadaki objeleri göster</translation>
     </message>
 </context>
 <context>
@@ -11966,7 +11980,7 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation>Öznitelik tablo davranışı</translation>
+        <translation type="obsolete">Öznitelik tablo davranışı</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -12480,6 +12494,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Close</source>
         <translation>Kapat</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerFetchingDialog</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overall progress:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort fetching</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="unfinished">Depo</translation>
+    </message>
+    <message>
+        <source>State</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13502,11 +13539,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Raster Extent: </source>
-        <translation>Raster Sınırları:</translation>
+        <translation type="obsolete">Raster Sınırları:</translation>
     </message>
     <message>
         <source>Clipped area: </source>
-        <translation>Kırpılmış alan:</translation>
+        <translation type="obsolete">Kırpılmış alan:</translation>
     </message>
     <message>
         <source>Pyramid overviews:</source>
@@ -16768,19 +16805,19 @@ Should the existing classes be deleted before classification?</source>
     <name>RepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>Depo detayları</translation>
+        <translation type="obsolete">Depo detayları</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>Ad:</translation>
+        <translation type="obsolete">Ad:</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>http://</source>
-        <translation>http://</translation>
+        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -16886,26 +16923,12 @@ p, li { white-space: pre-wrap; }
         <translation>Çıktı Dosya tipi</translation>
     </message>
     <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a DXF file to open</source>
-        <translation>Açmak için DXF dosyasını seçin</translation>
+        <translation type="obsolete">Açmak için DXF dosyasını seçin</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation>Kaydetmek için dosya adı seçiniz</translation>
+        <translation type="obsolete">Kaydetmek için dosya adı seçiniz</translation>
     </message>
 </context>
 <context>
@@ -17204,7 +17227,7 @@ For support send a mail to scala@itc.cnr.it
     <name>pluginname</name>
     <message>
         <source>Replace this with a short description of the what the plugin does</source>
-        <translation>Bunu eklentinin ne yaptığını anlatan kısa bir açıklama ile yer değiştirin</translation>
+        <translation type="obsolete">Bunu eklentinin ne yaptığını anlatan kısa bir açıklama ile yer değiştirin</translation>
     </message>
     <message>
         <source>[menuitemname]</source>
@@ -17213,6 +17236,10 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>&amp;[menuname]</source>
         <translation>&amp;[menüadı]</translation>
+    </message>
+    <message>
+        <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
