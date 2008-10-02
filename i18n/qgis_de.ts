@@ -3572,7 +3572,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">&amp;Gruppenelemente</translation>
+        <translation type="unfinished">Gruppenelemente</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
@@ -3596,7 +3596,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Gewählte Elemente in versenken</translation>
+        <translation type="unfinished">Gewählte Elemente in den Hintergrund bringen</translation>
     </message>
     <message>
         <source>Bring to Front</source>
