@@ -132,46 +132,6 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       continue;
     }
 
-#if 0
-    //label
-    QString label;
-    QString lowerValue = ( *symbolIt )->lowerValue();
-    QString upperValue = ( *symbolIt )->upperValue();
-
-    if ( lowerValue == upperValue || upperValue.isEmpty() )
-    {
-      label = lowerValue;
-    }
-    else
-    {
-      label = lowerValue + " - " + upperValue;
-    }
-
-    //icon item
-    switch (( *symbolIt )->type() )
-    {
-      case QGis::Point:
-        currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(( *symbolIt )->getPointSymbolAsImage() ) ), label );
-        break;
-      case QGis::Line:
-        currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(( *symbolIt )->getLineSymbolAsImage() ) ), label );
-        break;
-      case QGis::Polygon:
-        currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage(( *symbolIt )->getPolygonSymbolAsImage() ) ), label );
-        break;
-      default:
-        currentSymbolItem = 0;
-        break;
-    }
-
-    //Pass deep copy of QgsSymbol as user data. Cast to void* necessary such that QMetaType handles it
-    QgsSymbol* symbolCopy = new QgsSymbol( **symbolIt );
-    currentSymbolItem->setData( QVariant::fromValue(( void* )symbolCopy ) );
-    insertSymbol( symbolCopy );
-
-    currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-#endif //0
-
     QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt );
     if ( !currentSymbolItem )
     {
@@ -465,30 +425,40 @@ QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
   QStandardItem* currentSymbolItem = 0;
 
   //label
+  QString itemText;
   QString label;
+
   QString lowerValue = s->lowerValue();
   QString upperValue = s->upperValue();
 
-  if ( lowerValue == upperValue || upperValue.isEmpty() )
+  label = s->label();
+
+  //Take the label as item text if it is there
+  if(!label.isEmpty())
+    {
+      itemText = label;
+    }
+  //take single value
+  else if ( lowerValue == upperValue || upperValue.isEmpty() )
   {
-    label = lowerValue;
+    itemText = lowerValue;
   }
-  else
+  else //or value range
   {
-    label = lowerValue + " - " + upperValue;
+    itemText = lowerValue + " - " + upperValue;
   }
 
   //icon item
   switch ( s->type() )
   {
     case QGis::Point:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPointSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPointSymbolAsImage() ) ), itemText );
       break;
     case QGis::Line:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getLineSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getLineSymbolAsImage() ) ), itemText );
       break;
     case QGis::Polygon:
-      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPolygonSymbolAsImage() ) ), label );
+      currentSymbolItem = new QStandardItem( QIcon( QPixmap::fromImage( s->getPolygonSymbolAsImage() ) ), itemText );
       break;
     default:
       currentSymbolItem = 0;
