@@ -516,11 +516,11 @@
     </message>
     <message>
         <source> at line </source>
-        <translation>bei Linie</translation>
+        <translation> in Zeile </translation>
     </message>
     <message>
         <source> column </source>
-        <translation>Kolonne</translation>
+        <translation> Spalte </translation>
     </message>
     <message>
         <source> for file </source>
@@ -664,7 +664,7 @@
     </message>
     <message>
         <source>Project file read error: </source>
-        <translation>Fehler beim Lesen der Projektionsdatei:</translation>
+        <translation>Fehler beim Lesen der Projektdatei: </translation>
     </message>
     <message>
         <source>Label</source>
@@ -6562,7 +6562,7 @@ Column title</comment>
     </message>
     <message>
         <source>Column 1</source>
-        <translation type="obsolete">Kolonne 1</translation>
+        <translation type="obsolete">Spalte 1</translation>
     </message>
     <message>
         <source>Table</source>
@@ -7481,7 +7481,7 @@ bei Zeile </translation>
     <name>QgsGrassNewMapsetBase</name>
     <message>
         <source>Column 1</source>
-        <translation type="obsolete">Kolonne 1</translation>
+        <translation type="obsolete">Spalte 1</translation>
     </message>
     <message>
         <source>Example directory tree:</source>
@@ -13499,7 +13499,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
-        <translation>Konnte die WMS-Capabilities nicht erfragen: %1 bei Linie %2, Spalte %3</translation>
+        <translation>Konnte die WMS-Capabilities nicht erfragen: %1 in Zeile %2, Spalte %3</translation>
     </message>
     <message>
         <source>This is probably due to an incorrect WMS Server URL.</source>
@@ -13511,7 +13511,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-        <translation>Konnte die WMS-Service-Ausnahme bei %1 nicht interpretieren: %2 bei Linie %3, Spalte %4</translation>
+        <translation>Konnte die WMS-Service-Ausnahme bei %1 nicht interpretieren: %2 in Zeile %3, Spalte %4</translation>
     </message>
     <message>
         <source>Request contains a Format not offered by the server.</source>
