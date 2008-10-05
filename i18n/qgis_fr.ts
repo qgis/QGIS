@@ -1,4 +1,5 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="fr_FR">
 <defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
@@ -854,7 +855,7 @@
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished">Traduire les couches vectorielles vers des formats supportés par la bibliothèque OGR</translation>
+        <translation>Traduire les couches vectorielles vers des formats supportés par la bibliothèque OGR</translation>
     </message>
 </context>
 <context>
@@ -1755,7 +1756,7 @@ Le support Python va être désactivé.</translation>
     </message>
     <message>
         <source>Uncatched fatal GRASS error</source>
-        <translation type="unfinished">erreur fatale de GRASS</translation>
+        <translation>Erreur fatale de GRASS</translation>
     </message>
     <message>
         <source>Couldn&apos;t load SIP module.</source>
@@ -1835,11 +1836,11 @@ Le support Python va être désactivé.</translation>
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished"></translation>
+        <translation>La sélection s&apos;étend au-delà du système de coordonnée de la couche</translation>
     </message>
 </context>
 <context>
@@ -3090,7 +3091,7 @@ Compilé avec Qt </translation>
     </message>
     <message>
         <source>Map Tips</source>
-        <translation type="unfinished">Infbulles</translation>
+        <translation>Infobulles</translation>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
@@ -3705,7 +3706,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsApplication</name>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -10640,11 +10641,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez le système de coordonnées de référence pour le shapefile sauvegardé</translation>
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les points seront transformés dans le système de coordonnée de la couche.</translation>
     </message>
 </context>
 <context>
@@ -12588,23 +12589,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Fetching repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Recheche de dépôts</translation>
     </message>
     <message>
         <source>Overall progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Progression globale</translation>
     </message>
     <message>
         <source>Abort fetching</source>
-        <translation type="unfinished"></translation>
+        <translation>Abandonner la recherche de dépôts</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished">Dépôt</translation>
+        <translation>Dépôt</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Etat</translation>
     </message>
 </context>
 <context>
@@ -12783,19 +12784,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation type="unfinished"></translation>
+        <translation>Pour activer / désactiver un plugin, cliquez dans la boîte à cocher ou sur la description</translation>
     </message>
     <message>
         <source>&amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Filtrer</translation>
     </message>
     <message>
         <source>Plugin Directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire des Plugins :</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Répertoire</translation>
+        <translation>Répertoire</translation>
     </message>
 </context>
 <context>
@@ -12912,7 +12913,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished">-modifié</translation>
+        <translation>-modifié</translation>
     </message>
 </context>
 <context>
@@ -13207,20 +13208,22 @@ clef primaire) ou possède une ligne de l&apos;oid column de PostgreSQL.
     </message>
     <message>
         <source>Qgis was unable to determine the type and srid of column </source>
-        <translation type="unfinished"></translation>
+        <translation>Qgis n&apos;a pu déterminé le type et le srid de la colonne</translation>
     </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de support GEOS !</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
+        <translation>Votre installation PostGIS n&apos;a pas de support GEOS.
+La sélection et l&apos;identification d&apos;entités ne fonctionnera pas normalement.
+Veuillez installer PostGIS avec le support GEOS (http://geos.refractions.net)</translation>
     </message>
 </context>
 <context>
@@ -13367,31 +13370,31 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Title and colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre et couleurs</translation>
     </message>
     <message>
         <source>Project title</source>
-        <translation type="unfinished"></translation>
+        <translation>Titre du projet</translation>
     </message>
     <message>
         <source>Selection color</source>
-        <translation type="unfinished">Sélection de la couleur</translation>
+        <translation>Sélection de la couleur</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished">Couleur de fond d&apos;écran</translation>
+        <translation>Couleur de fond d&apos;écran</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished">Unités de carte</translation>
+        <translation>Unités de carte</translation>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de coordonnées de référence (CRS)</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer la projection &apos;à la volée&apos;</translation>
     </message>
 </context>
 <context>
@@ -13406,25 +13409,27 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>User Defined Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de coordonnées défini par l&apos;utilisateur</translation>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Systèmes de coordonnées géographiques</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de coordonnées projeté</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
-        <translation type="unfinished">Emplacement erroné de la ressource</translation>
+        <translation>Emplacement erroné de la ressource</translation>
     </message>
     <message>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors la lecture de la base de données depuis :
+%1
+De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     </message>
 </context>
 <context>
@@ -13471,11 +13476,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionneur de système de coordonnées de référence</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Système de coordonnées de référence</translation>
+        <translation>Système de coordonnées de référence</translation>
     </message>
     <message>
         <source>EPSG</source>
@@ -13483,7 +13488,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
 </context>
 <context>
@@ -13791,7 +13796,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande %1</translation>
     </message>
 </context>
 <context>
@@ -13838,7 +13843,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Not Set</source>
-        <translation type="unfinished">Non renseigné</translation>
+        <translation>Non renseigné</translation>
     </message>
     <message>
         <source>Columns: </source>
@@ -13878,7 +13883,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="unfinished">Des vues d&apos;ensemble des pyramides ne sont pas gérées sur ce type de couche.</translation>
+        <translation>Les vues d&apos;ensemble des pyramides ne sont pas gérées sur ce type de raster.</translation>
     </message>
     <message>
         <source>Custom Colormap</source>
@@ -13890,19 +13895,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Etirer jusqu&apos;au MinMax</translation>
     </message>
     <message>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Etirer et couper jusqu&apos;au MinMax</translation>
     </message>
     <message>
         <source>Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper jusqu&apos;au MinMax</translation>
     </message>
     <message>
         <source>Discrete</source>
-        <translation type="unfinished">Discret</translation>
+        <translation>Discret</translation>
     </message>
     <message>
         <source>Linearly</source>
@@ -13930,7 +13935,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation type="unfinished">Vous devez avoir un accès en écriture dans le répertoire ou se trouve la donnée originale pour construire les pyramides.</translation>
+        <translation>Vous devez avoir un accès en écriture dans le répertoire ou se trouve la donnée originale pour construire les pyramides.</translation>
     </message>
     <message>
         <source>Please note that building pyramids may alter the original data file and once created they cannot be removed!</source>
@@ -13986,7 +13991,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier d&apos;exportation de valeurs de pixels transparents généré par QGIS</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -14020,63 +14025,63 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished">Style par défaut</translation>
+        <translation>Style par défaut</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="unfinished">Fichier de style de couche QGIS (*.qml)</translation>
+        <translation>Fichier de style de couche QGIS (*.qml)</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished">Format de style inconnu : </translation>
+        <translation>Format de style inconnu : </translation>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de Couleur</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <source>Exact</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Veulliez noter que la construction interne de pyramides peut altérer l&apos;image d&apos;origine et qu&apos;une fois créés, ils ne peuvent être effacés !</translation>
     </message>
     <message>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
-        <translation type="unfinished"></translation>
+        <translation>Merci de prendre note que la création des pyramides peut corrompre vos images - faites toujours au préalable une sauvegarde de vos données !</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Défaut</translation>
     </message>
     <message>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;était pas inscriptible. Certains formats ne supportent pas les aperçus en pyramides. En cas de doute consultez la documentation de GDAL.</translation>
     </message>
     <message>
         <source>Custom color map entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrée de palette de couleurs personnalisée</translation>
     </message>
     <message>
         <source>QGIS Generated Color Map Export File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier d&apos;exportation de palette de couleurs généré par QGIS</translation>
     </message>
     <message>
         <source>Load Color Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger une palette de Couleur</translation>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style enregistrée</translation>
     </message>
 </context>
 <context>
@@ -14385,7 +14390,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Contrast Enhancement</source>
@@ -14397,15 +14402,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Render as</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher comme</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de Couleur</translation>
     </message>
     <message>
         <source>Number of entries:</source>
@@ -14429,131 +14434,131 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Single band gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande grise unique</translation>
     </message>
     <message>
         <source>Three band color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colorisé par 3 bandes</translation>
     </message>
     <message>
         <source>RGB mode band selection and scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode RVB de sélection mise à l&apos;échelle</translation>
     </message>
     <message>
         <source>Red band</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande rouge</translation>
     </message>
     <message>
         <source>Green band</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande verte</translation>
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande bleue</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs min / max personnalisées</translation>
     </message>
     <message>
         <source>Red min</source>
-        <translation type="unfinished"></translation>
+        <translation>ouge min</translation>
     </message>
     <message>
         <source>Red max</source>
-        <translation type="unfinished"></translation>
+        <translation>Rouge max</translation>
     </message>
     <message>
         <source>Green min</source>
-        <translation type="unfinished"></translation>
+        <translation>Vert min</translation>
     </message>
     <message>
         <source>Green max</source>
-        <translation type="unfinished"></translation>
+        <translation>Vert max</translation>
     </message>
     <message>
         <source>Blue min</source>
-        <translation type="unfinished"></translation>
+        <translation>Bleu min</translation>
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
+        <translation>Bleu max</translation>
     </message>
     <message>
         <source>Single band properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propriétés bande unique</translation>
     </message>
     <message>
         <source>Gray band</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande grise</translation>
     </message>
     <message>
         <source>Color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de Couleur</translation>
     </message>
     <message>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de couleur inversée</translation>
     </message>
     <message>
         <source>Use standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser l&apos;ecart-type</translation>
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Load min / max values from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger les valeurs min / max depuis la bande</translation>
     </message>
     <message>
         <source>Estimate (faster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Estimation (plus rapide)</translation>
     </message>
     <message>
         <source>Actual (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Réelle (plus lente)</translation>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>Amélioration de contraste</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Actuel</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer l&apos;algorythme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer l&apos;algorythme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Défaut</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished">Étiquette</translation>
+        <translation>Étiquette</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparence</translation>
+        <translation>Transparence</translation>
     </message>
     <message>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation> Transparence globale</translation>
     </message>
     <message>
         <source>No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune valeur de données </translation>
     </message>
     <message>
         <source>Reset no data value</source>
@@ -14561,178 +14566,178 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Custom transparency options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options de transparence personnalisée</translation>
     </message>
     <message>
         <source>Transparency band</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande de transparence</translation>
     </message>
     <message>
         <source>Transparent pixel list</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste des pixels transparents</translation>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter les valeurs manuellement</translation>
     </message>
     <message>
         <source>Add Values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouer les valeurs depuis l&apos;affichage</translation>
     </message>
     <message>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la cellule sélectionnée</translation>
     </message>
     <message>
         <source>Default values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeurs par défaut</translation>
     </message>
     <message>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer depuis le fichier</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter vers le fichier</translation>
     </message>
     <message>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre d&apos;entrées</translation>
     </message>
     <message>
         <source>Color interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolation des couleurs</translation>
     </message>
     <message>
         <source>Classification mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de classification</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Echelle visible</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>Source de la couche</translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished">Nom affiché</translation>
+        <translation>Nom affiché</translation>
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolutions de la pyramide</translation>
     </message>
     <message>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode de reéchantillonage</translation>
     </message>
     <message>
         <source>Build pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Construire les pyramides</translation>
     </message>
     <message>
         <source>Line graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Graphique en ligne</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Graphique en barre</translation>
     </message>
     <message>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de colonnes</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
-        <translation type="unfinished"></translation>
+        <translation>En dehors du domaine de validité ? </translation>
     </message>
     <message>
         <source>Allow approximation</source>
-        <translation type="unfinished"></translation>
+        <translation>Permettre l&apos;approximation</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
-        <translation type="unfinished">Restaurer le style par défaut</translation>
+        <translation>Restaurer le style par défaut</translation>
     </message>
     <message>
         <source>Save As Default</source>
-        <translation type="unfinished">Sauvegarder comme défaut</translation>
+        <translation>Sauvegarder comme défaut</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation type="unfinished">Charger le style...</translation>
+        <translation>Charger le style...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation type="unfinished">Sauvegarder le style...</translation>
+        <translation>Sauvegarder le style...</translation>
     </message>
     <message>
         <source>Default R:1 G:2 B:3</source>
-        <translation type="unfinished"></translation>
+        <translation>Par défaut Rouge : 1, Vert : 2, Bleu : 3</translation>
     </message>
     <message>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une entrée</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Trier</translation>
     </message>
     <message>
         <source>Load color map from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger une palette de couleur depuis la bande</translation>
     </message>
     <message>
         <source>Load color map from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger une palette de couleur depuis le fichier</translation>
     </message>
     <message>
         <source>Export color map to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporter une palette de couleur vers le fichier</translation>
     </message>
     <message>
         <source>Generate new color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Générer une nouvelle palette de couleur</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Système de coordonnées de référence (CRS)</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement...</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Légende</translation>
+        <translation>Légende</translation>
     </message>
     <message>
         <source>Palette</source>
-        <translation type="unfinished">Palette</translation>
+        <translation>Palette</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Build pyramids internally if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Construire les pyramides de manière interne si possible</translation>
     </message>
 </context>
 <context>
@@ -14755,7 +14760,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Action</translation>
+        <translation>Action</translation>
     </message>
 </context>
 <context>
@@ -15019,7 +15024,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search query builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Constructeur de requête de recherche</translation>
     </message>
 </context>
 <context>
@@ -15083,7 +15088,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>WMS proxies</source>
-        <translation type="unfinished">Serveur mandataire WMS</translation>
+        <translation>Serveur mandataire WMS</translation>
     </message>
     <message>
         <source>&lt;p&gt;Several WMS servers have been added to the server list. Note that the proxy fields have been left blank and if you access the internet via a web proxy, you will need to individually set the proxy fields with appropriate values.&lt;/p&gt;</source>
@@ -15095,11 +15100,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a pas de système de coordonnées de référence pour les couches que vous avez sélectionné.</translation>
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plusieurs serveurs WMS ont été ajouté à la liste. Si vous avez accès à internet via un serveur mandataire (proxy), vous aurez besoin de le configurer dans les paramètres de QGIS.</translation>
     </message>
 </context>
 <context>
@@ -15214,54 +15219,54 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scanning </source>
-        <translation type="unfinished"></translation>
+        <translation>Analyse</translation>
     </message>
 </context>
 <context>
     <name>QgsSingleSymbolDialog</name>
     <message>
         <source>Solid Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Line continue</translation>
     </message>
     <message>
         <source>Dash Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne en tiret</translation>
     </message>
     <message>
         <source>Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Line pointillée</translation>
     </message>
     <message>
         <source>Dash Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne tiret-point</translation>
     </message>
     <message>
         <source>Dash Dot Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ligne tiret-point-point</translation>
     </message>
     <message>
         <source>No Pen</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de crayon</translation>
     </message>
     <message>
         <source>No Brush</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de brosse</translation>
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation>Continue</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Vertical</translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <source>Cross</source>
-        <translation type="unfinished">Croix</translation>
+        <translation>Croix</translation>
     </message>
     <message>
         <source>BDiagonal</source>
@@ -15336,7 +15341,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Fill Color:</source>
@@ -15356,77 +15361,77 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation type="unfinished">Symbole de point</translation>
+        <translation>Symbole de point</translation>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation type="unfinished">Champ d&apos;échelle de la surface</translation>
+        <translation>Champ d&apos;échelle de la surface</translation>
     </message>
     <message>
         <source>Rotation field</source>
-        <translation type="unfinished">Champ de rotation</translation>
+        <translation>Champ de rotation</translation>
     </message>
     <message>
         <source>Style Options</source>
-        <translation type="unfinished">Options de style</translation>
+        <translation>Options de style</translation>
     </message>
     <message>
         <source>Outline style</source>
-        <translation type="unfinished">Style de bordure externe:</translation>
+        <translation>Style de bordure externe:</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation type="unfinished">Couleur de bordure externe:</translation>
+        <translation>Couleur de bordure externe:</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation type="unfinished">Largeur de bordure externe:</translation>
+        <translation>Largeur de bordure externe:</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation type="unfinished">Couleur de remplissage:</translation>
+        <translation>Couleur de remplissage:</translation>
     </message>
     <message>
         <source>Fill style</source>
-        <translation type="unfinished">Style de remplissage </translation>
+        <translation>Style de remplissage </translation>
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished">Etiquette</translation>
+        <translation>Etiquette</translation>
     </message>
 </context>
 <context>
     <name>QgsSnappingDialog</name>
     <message>
         <source>to vertex</source>
-        <translation type="unfinished">sur un sommet</translation>
+        <translation>sur un sommet</translation>
     </message>
     <message>
         <source>to segment</source>
-        <translation type="unfinished">sur un segment</translation>
+        <translation>sur un segment</translation>
     </message>
     <message>
         <source>to vertex and segment</source>
-        <translation type="unfinished">sur un sommet ou un segment</translation>
+        <translation>sur un sommet ou un segment</translation>
     </message>
 </context>
 <context>
     <name>QgsSnappingDialogBase</name>
     <message>
         <source>Snapping options</source>
-        <translation type="unfinished">Options d&apos;accrochage</translation>
+        <translation>Options d&apos;accrochage</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished">Mode</translation>
+        <translation>Mode</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation type="unfinished">Tolérance</translation>
+        <translation>Tolérance</translation>
     </message>
 </context>
 <context>
@@ -15844,37 +15849,38 @@ p, li { white-space: pre-wrap; }
     <name>QgsTINInterpolatorDialog</name>
     <message>
         <source>Linear interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolation linéaire</translation>
     </message>
 </context>
 <context>
     <name>QgsTINInterpolatorDialogBase</name>
     <message>
         <source>Triangle based interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolation triangulaire</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This interpolator provides different methods for interpolation in a triangular irregular network (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Cette interpolation fournit différentes méthodes pour créer un réseau de triangles irréguliers (TIN).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Interpolation method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Méthode d&apos;interpolation :</translation>
     </message>
 </context>
 <context>
     <name>QgsUniqueValueDialog</name>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Confirmer l&apos;effacement</translation>
+        <translation>Confirmer l&apos;effacement</translation>
     </message>
     <message>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le champ de classification a été modifié de &apos;%1&apos; à &apos;%2&apos;.
+Les classes existantes doivent-elles être effacées avant la classification ?</translation>
     </message>
 </context>
 <context>
@@ -15897,23 +15903,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Classification field</source>
-        <translation type="unfinished">Champ de classification</translation>
+        <translation>Champ de classification</translation>
     </message>
     <message>
         <source>Add class</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une classe</translation>
     </message>
     <message>
         <source>Delete classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer une classe</translation>
     </message>
     <message>
         <source>Randomize Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleurs au hazard</translation>
     </message>
     <message>
         <source>Reset Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Redéfinir les couleurs</translation>
     </message>
 </context>
 <context>
@@ -16048,67 +16054,67 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>ERROR: no provider</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR: pas de fournisseur</translation>
     </message>
     <message>
         <source>ERROR: layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : couche non éditable</translation>
     </message>
     <message>
         <source>SUCCESS: %1 attributes added.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 attributs ajoutés</translation>
     </message>
     <message>
         <source>ERROR: %1 new attributes not added</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : %1 attributs non-ajoutés</translation>
     </message>
     <message>
         <source>SUCCESS: %1 attributes deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 attributs effacés</translation>
     </message>
     <message>
         <source>ERROR: %1 attributes not deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : %1 attributs non effacés</translation>
     </message>
     <message>
         <source>SUCCESS: attribute %1 was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : attribut %1 a été ajouté </translation>
     </message>
     <message>
         <source>ERROR: attribute %1 not added</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR :  attribut %1 non-ajouté</translation>
     </message>
     <message>
         <source>SUCCESS: %1 attribute values changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 valeurs d&apos;attribut modifiés</translation>
     </message>
     <message>
         <source>ERROR: %1 attribute value changes not applied.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : %1 changement des vlaeus d&apos;attribut non-appliqués</translation>
     </message>
     <message>
         <source>SUCCESS: %1 features added.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 entités ajoutées</translation>
     </message>
     <message>
         <source>ERROR: %1 features not added.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR :  %1 entités non-ajoutées</translation>
     </message>
     <message>
         <source>SUCCESS: %1 geometries were changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 géométries modifiées</translation>
     </message>
     <message>
         <source>ERROR: %1 geometries not changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : %1 géométries non-modifiées</translation>
     </message>
     <message>
         <source>SUCCESS: %1 features deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>SUCCES : %1 entités s</translation>
     </message>
     <message>
         <source>ERROR: %1 features not deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR : %1 entités non-effacées</translation>
     </message>
 </context>
 <context>
@@ -16251,27 +16257,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>nom</translation>
     </message>
     <message>
         <source>type</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished"></translation>
+        <translation>longueur</translation>
     </message>
     <message>
         <source>precision</source>
-        <translation type="unfinished"></translation>
+        <translation>précision</translation>
     </message>
     <message>
         <source>comment</source>
-        <translation type="unfinished"></translation>
+        <translation>commentaire</translation>
     </message>
     <message>
         <source>edit widget</source>
@@ -16279,31 +16285,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>values</source>
-        <translation type="unfinished"></translation>
+        <translation>valeurs</translation>
     </message>
     <message>
         <source>line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>édition de ligne</translation>
     </message>
     <message>
         <source>unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>valeurs uniques</translation>
     </message>
     <message>
         <source>unique values (editable)</source>
-        <translation type="unfinished"></translation>
+        <translation>valeurs uniques (éditable)</translation>
     </message>
     <message>
         <source>value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Palette de valeur</translation>
     </message>
     <message>
         <source>classification</source>
-        <translation type="unfinished"></translation>
+        <translation>classification</translation>
     </message>
     <message>
         <source>range (editable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Domaine de validité (éditable)</translation>
     </message>
     <message>
         <source>range (slider)</source>
@@ -16311,23 +16317,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>file name</source>
-        <translation type="unfinished"></translation>
+        <translation>nom de fichier</translation>
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished">Conflit de nommage</translation>
+        <translation>Conflit de nommage</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="unfinished">L&apos;attribut ne peut être ajouté. Le nom existe déjà dans la table.</translation>
+        <translation>L&apos;attribut ne peut être ajouté. Le nom existe déjà dans la table.</translation>
     </message>
     <message>
         <source>Creation of spatial index successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Création de l&apos;index spatial réussi</translation>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style enregistré</translation>
     </message>
 </context>
 <context>
@@ -16470,55 +16476,55 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de légende</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Transparence</translation>
+        <translation>Transparence</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Options</translation>
+        <translation>Options</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Change CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Changement de CRS</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished">Attributs</translation>
+        <translation>Attributs</translation>
     </message>
     <message>
         <source>New column</source>
-        <translation type="unfinished">Nouvelle colonne</translation>
+        <translation>Nouvelle colonne</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">Effacer une colonne</translation>
+        <translation>Effacer une colonne</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Basculer en mode d&apos;édtion</translation>
+        <translation>Basculer en mode d&apos;édtion</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Cliquez pour basculer en mode d&apos;édtion du tableau</translation>
+        <translation>Cliquez pour basculer en mode d&apos;édtion du tableau</translation>
     </message>
 </context>
 <context>
@@ -17001,7 +17007,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Note : si vous voulez plus de contrôle sur la mise en page, veulliez utiliser l&apos;éditeur de carte de QGIS.</translation>
     </message>
     <message>
         <source>Page Size</source>
@@ -17024,7 +17030,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Provides a way to quickly produce a map with minimal user input.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fournit une manière de produire rapdiement une carte avec peu d&apos;intervention de l&apos;utilisateur.</translation>
     </message>
 </context>
 <context>
@@ -17127,11 +17133,11 @@ Should the existing classes be deleted before classification?</source>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertit les fichiers DXF au format Shapefile</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -17142,11 +17148,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polygone</translation>
+        <translation>Polygone</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Point</translation>
+        <translation>Point</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -17158,34 +17164,34 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Dxf Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importation de DXF</translation>
     </message>
     <message>
         <source>Input Dxf file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier DXF </translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Output file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de fichier de sortie</translation>
     </message>
     <message>
         <source>Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Polyligne</translation>
     </message>
     <message>
         <source>Export text labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Expoter les étiquettes</translation>
     </message>
 </context>
 <context>
@@ -17297,7 +17303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacez ceci par une description courte de ce plugin </translation>
     </message>
 </context>
 </TS>
