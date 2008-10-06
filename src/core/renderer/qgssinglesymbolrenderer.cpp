@@ -177,7 +177,7 @@ int QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl 
   return 0;
 }
 
-bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const
+bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
 {
   bool returnval = false;
   QDomElement singlesymbol = document.createElement( "singlesymbol" );

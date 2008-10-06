@@ -238,10 +238,10 @@ QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
 
   const QgsFieldMap& theFields = fields();
   QgsFieldMap::const_iterator field_it = theFields.constBegin();
-  for(; field_it != theFields.constEnd(); ++field_it)
-    {
-      resultMap.insert(field_it.value().name(), field_it.key());
-    }
+  for ( ; field_it != theFields.constEnd(); ++field_it )
+  {
+    resultMap.insert( field_it.value().name(), field_it.key() );
+  }
 
   return resultMap;
 }

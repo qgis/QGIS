@@ -3871,10 +3871,10 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
     }
 
   }
- 
+
   QString theError;
-  return readSymbology(layer_node, theError);
-  
+  return readSymbology( layer_node, theError );
+
 
 } // QgsRasterLayer::readXml( QDomNode & layer_node )
 
@@ -3902,13 +3902,13 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
   QDomText providerText = document.createTextNode( mProviderKey );
   provider.appendChild( providerText );
   layer_node.appendChild( provider );
-  
+
   //write out the symbology
   QString errorMsg;
-  return writeSymbology ( layer_node, document, errorMsg );
+  return writeSymbology( layer_node, document, errorMsg );
 }
 
-bool QgsRasterLayer::writeSymbology ( QDomNode & layer_node, QDomDocument & document, QString& errorMessage) const
+bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & document, QString& errorMessage ) const
 {
   // <rasterproperties>
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
@@ -4236,7 +4236,7 @@ bool QgsRasterLayer::writeSymbology ( QDomNode & layer_node, QDomDocument & docu
   return true;
 } // bool QgsRasterLayer::writeSymbology
 
-bool QgsRasterLayer::readSymbology(const QDomNode& layer_node, QString& errorMessage)
+bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMessage )
 {
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
   QDomNode snode = mnl.namedItem( "drawingStyle" );
@@ -4393,7 +4393,7 @@ bool QgsRasterLayer::readSymbology(const QDomNode& layer_node, QString& errorMes
     QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
     QDomNode colorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
     QString myRampType = "";
-    if( "" == customColorRampTypeNode.toElement().text() )
+    if ( "" == customColorRampTypeNode.toElement().text() )
     {
       myRampType = colorRampTypeNode.toElement().text();
     }
@@ -4424,7 +4424,7 @@ bool QgsRasterLayer::readSymbology(const QDomNode& layer_node, QString& errorMes
     }
     myColorRampShader->setColorRampItemList( myColorRampItemList );
   }
-  return true; 
+  return true;
 } //readSymbology
 
 bool QgsRasterLayer::identify( const QgsPoint& point, QMap<QString, QString>& results )
@@ -4434,7 +4434,7 @@ bool QgsRasterLayer::identify( const QgsPoint& point, QMap<QString, QString>& re
   {
     return false;
   }
-  
+
   double x = point.x();
   double y = point.y();
 

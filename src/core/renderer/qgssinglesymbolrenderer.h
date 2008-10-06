@@ -46,7 +46,7 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const;
     /**Returns true, attributes needed for single symbol*/
     bool needsAttributes() const;
     /**Returns a list of all needed attributes*/

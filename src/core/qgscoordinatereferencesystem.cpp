@@ -45,16 +45,16 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
     : mMapUnits( QGis::UNKNOWN ),
-      mIsValidFlag( 0 ),
-      mValidationHint ( 0 )
+    mIsValidFlag( 0 ),
+    mValidationHint( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
     : mMapUnits( QGis::UNKNOWN ),
-      mIsValidFlag( 0 ),
-      mValidationHint ( 0 )
+    mIsValidFlag( 0 ),
+    mValidationHint( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromWkt( theWkt );
@@ -63,8 +63,8 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CRS_TYPE theType )
     : mMapUnits( QGis::UNKNOWN ),
-      mIsValidFlag( 0 ),
-      mValidationHint ( 0 )
+    mIsValidFlag( 0 ),
+    mValidationHint( 0 )
 {
   mCRS = OSRNewSpatialReference( NULL );
   createFromId( theId, theType );

@@ -894,12 +894,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     */
     /* virtual */ bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
-     /** Read the symbology for the current layer from the Dom node supplied. 
-     * @param QDomNode node that will contain the symbology definition for this layer.
-     * @param errorMessage reference to string that will be updated with any error messages
-     * @return true in case of success.
+    /** Read the symbology for the current layer from the Dom node supplied.
+    * @param QDomNode node that will contain the symbology definition for this layer.
+    * @param errorMessage reference to string that will be updated with any error messages
+    * @return true in case of success.
     */
-    bool readSymbology(const QDomNode& node, QString& errorMessage);
+    bool readSymbology( const QDomNode& node, QString& errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
      *  @param QDomNode the node that will have the style element added to it.
@@ -907,7 +907,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * @param errorMessage reference to string that will be updated with any error messages
      *  @return true in case of success.
      */
-    bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage) const;
+    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
 
   private:
 

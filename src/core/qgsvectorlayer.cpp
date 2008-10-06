@@ -2085,10 +2085,10 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
   }
 
   QString errorMsg;
-  if(!readSymbology(layer_node, errorMsg))
-    {
-      return false;
-    }
+  if ( !readSymbology( layer_node, errorMsg ) )
+  {
+    return false;
+  }
 
   // Test if labeling is on or off
   QDomNode labelnode = layer_node.namedItem( "label" );
@@ -2319,10 +2319,10 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   // renderer specific settings
 
   QString errorMsg;
-  if(!writeSymbology( layer_node, document, errorMsg ))
-    {
-      return false;
-    }
+  if ( !writeSymbology( layer_node, document, errorMsg ) )
+  {
+    return false;
+  }
 
   // Now we get to do all that all over again for QgsLabel
 
@@ -2396,7 +2396,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   return true;
 } // bool QgsVectorLayer::writeXml
 
-bool QgsVectorLayer::readSymbology(const QDomNode& node, QString& errorMessage)
+bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
   // create and bind a renderer to this layer
 
@@ -2428,34 +2428,34 @@ bool QgsVectorLayer::readSymbology(const QDomNode& node, QString& errorMessage)
     renderer = new QgsUniqueValueRenderer( vectorType() );
     returnCode = renderer->readXML( uniquevaluenode, *this );
   }
-  
-  if(!renderer)
-    {
-      return false;
-    }
 
-  if(returnCode == 1)
-    {
-      errorMessage = tr("No renderer object"); delete renderer; return false;
-    }
-  else if(returnCode == 2)
-    {
-      errorMessage = tr("Classification field not found"); delete renderer; return false;
-    }
+  if ( !renderer )
+  {
+    return false;
+  }
+
+  if ( returnCode == 1 )
+  {
+    errorMessage = tr( "No renderer object" ); delete renderer; return false;
+  }
+  else if ( returnCode == 2 )
+  {
+    errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+  }
 
   mRenderer = renderer;
   return true;
 }
 
-bool QgsVectorLayer::writeSymbology(QDomNode& node, QDomDocument& doc, QString& errorMessage) const
+bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
   const QgsRenderer * myRenderer = renderer();
   if ( myRenderer )
   {
-    if(!myRenderer->writeXML( node, doc, *this ))
-      {
-	return false;
-      }
+    if ( !myRenderer->writeXML( node, doc, *this ) )
+    {
+      return false;
+    }
   }
   else
   {

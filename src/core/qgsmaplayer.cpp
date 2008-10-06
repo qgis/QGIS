@@ -536,14 +536,14 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   }
 
   QString errorMsg;
-  theResultFlag = readSymbology(myRoot, errorMsg);
-  if(!theResultFlag)
-    {
-      myErrorMessage = QObject::tr( "Loading style file " ) + theURI + QObject::tr(" failed because:") + "\n" + errorMsg;
-      return myErrorMessage;
-    }
+  theResultFlag = readSymbology( myRoot, errorMsg );
+  if ( !theResultFlag )
+  {
+    myErrorMessage = QObject::tr( "Loading style file " ) + theURI + QObject::tr( " failed because:" ) + "\n" + errorMsg;
+    return myErrorMessage;
+  }
 
-  return ""; 
+  return "";
 }
 
 QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
@@ -565,10 +565,10 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   myDocument.appendChild( myRootNode );
 
   QString errorMsg;
-  if(!writeSymbology(myRootNode, myDocument, errorMsg))
-    {
-      return QObject::tr("Could not save symbology because:") + "\n" + errorMsg;
-    }
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
+  {
+    return QObject::tr( "Could not save symbology because:" ) + "\n" + errorMsg;
+  }
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one

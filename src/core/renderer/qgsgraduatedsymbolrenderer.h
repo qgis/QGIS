@@ -48,7 +48,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
     /**Sets the classicifation field by index
     \param field the number of the field to classify*/
-    void setClassificationField(int);
+    void setClassificationField( int );
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl );
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const;
     /** Returns true*/
     bool needsAttributes() const;
     /**Returns a list of all needed attributes*/
@@ -90,7 +90,7 @@ inline int QgsGraduatedSymbolRenderer::classificationField() const
   return mClassificationField;
 }
 
-inline void QgsGraduatedSymbolRenderer::setClassificationField(int index)
+inline void QgsGraduatedSymbolRenderer::setClassificationField( int index )
 {
   mClassificationField = index;
 }
