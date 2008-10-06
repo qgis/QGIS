@@ -845,7 +845,7 @@ void QgsGrassMapcalc::updateMaps()
   QgsDebugMsg( QString( "nlayers = %1" ).arg( nlayers ) );
   for ( int i = 0; i < nlayers; i++ )
   {
-    QgsMapLayer *layer = canvas->getZpos( i );
+    QgsMapLayer *layer = canvas->layer( i );
 
     if ( layer->type() != QgsMapLayer::RASTER ) continue;
 
