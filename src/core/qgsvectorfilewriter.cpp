@@ -299,7 +299,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 {
 
   const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct;
+  QgsCoordinateTransform* ct = 0;
 
   QgsVectorDataProvider* provider = layer->dataProvider();
   int shallTransform = false;
@@ -322,10 +322,6 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   WriterError err = writer->hasError();
   if ( err != NoError )
   {
-    if ( ct != NULL )
-    {
-      delete ct;
-    }
     delete writer;
     return err;
   }
