@@ -434,10 +434,10 @@ QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
   label = s->label();
 
   //Take the label as item text if it is there
-  if(!label.isEmpty())
-    {
-      itemText = label;
-    }
+  if ( !label.isEmpty() )
+  {
+    itemText = label;
+  }
   //take single value
   else if ( lowerValue == upperValue || upperValue.isEmpty() )
   {

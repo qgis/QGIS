@@ -169,7 +169,7 @@ void TestQgsRenderers::checkClassificationFieldMismatch()
 {
   mReport += "<h2>Classification field mismatch test</h2>\n";
   // Here we test to see that a qml created for one layer
-  // will raise an error properly if the 
+  // will raise an error properly if the
   // We will do this by trying to apply the points qml to the polys shpfile
   // it should fail and raise an error
   QString myFileName = mTestDataDir + "points_continuous_symbol.qml";

@@ -168,7 +168,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mDefaultSnapModeComboBox->insertItem( 0, tr( "to vertex" ), "to vertex" );
   mDefaultSnapModeComboBox->insertItem( 1, tr( "to segment" ), "to segment" );
   mDefaultSnapModeComboBox->insertItem( 2, tr( "to vertex and segment" ), "to vertex and segment" );
-  QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex").toString();
+  QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );

@@ -187,16 +187,16 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   QString classificationField = classnode.toElement().text();
 
   QgsVectorDataProvider* theProvider = vl.dataProvider();
-  if(!theProvider)
-    {
-      return 1;
-    }
-  int classificationId = theProvider->fieldNameIndex(classificationField);
-  if(classificationId == -1)
-    {
-      return 2; //@todo: handle gracefully in gui situation where user needs to nominate field 
-    }
-  this->setClassificationField(classificationId);
+  if ( !theProvider )
+  {
+    return 1;
+  }
+  int classificationId = theProvider->fieldNameIndex( classificationField );
+  if ( classificationId == -1 )
+  {
+    return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
+  }
+  this->setClassificationField( classificationId );
 
   //polygon outline
   QDomNode polyoutlinenode = rnode.namedItem( "polygonoutline" );
@@ -246,17 +246,17 @@ QString QgsContinuousColorRenderer::name() const
 bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
 {
   const QgsVectorDataProvider* theProvider = vl.dataProvider();
-  if(!theProvider)
-    {
-      return false;
-    }
+  if ( !theProvider )
+  {
+    return false;
+  }
 
   QString classificationFieldName;
-  QgsFieldMap::const_iterator field_it = theProvider->fields().find(mClassificationField);
-  if(field_it != theProvider->fields().constEnd())
-    {
-      classificationFieldName = field_it.value().name();
-    }
+  QgsFieldMap::const_iterator field_it = theProvider->fields().find( mClassificationField );
+  if ( field_it != theProvider->fields().constEnd() )
+  {
+    classificationFieldName = field_it.value().name();
+  }
   bool returnval = true;
 #ifndef WIN32
   QDomElement continuoussymbol = document.createElement( "continuoussymbol" );

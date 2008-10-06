@@ -199,16 +199,16 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
   QString classificationField = classnode.toElement().text();
 
   QgsVectorDataProvider* theProvider = vl.dataProvider();
-  if(!theProvider)
-    {
-      return 1;
-    }
+  if ( !theProvider )
+  {
+    return 1;
+  }
 
-  int classificationId = theProvider->fieldNameIndex(classificationField);
-  if(classificationId == -1)
-    {
-      return 2; //@todo: handle gracefully in gui situation where user needs to nominate field 
-    }
+  int classificationId = theProvider->fieldNameIndex( classificationField );
+  if ( classificationId == -1 )
+  {
+    return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
+  }
   this->setClassificationField( classificationId );
 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
@@ -274,17 +274,17 @@ QgsAttributeList QgsUniqueValueRenderer::classificationAttributes() const
 bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
 {
   const QgsVectorDataProvider* theProvider = vl.dataProvider();
-  if(!theProvider)
-    {
-      return false;
-    }
+  if ( !theProvider )
+  {
+    return false;
+  }
 
   QString classificationFieldName;
-  QgsFieldMap::const_iterator field_it = theProvider->fields().find(mClassificationField);
-  if(field_it != theProvider->fields().constEnd())
-    {
-      classificationFieldName = field_it.value().name();
-    }
+  QgsFieldMap::const_iterator field_it = theProvider->fields().find( mClassificationField );
+  if ( field_it != theProvider->fields().constEnd() )
+  {
+    classificationFieldName = field_it.value().name();
+  }
 
   bool returnval = true;
   QDomElement uniquevalue = document.createElement( "uniquevalue" );
