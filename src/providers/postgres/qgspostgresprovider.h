@@ -176,7 +176,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
      * pointer, setting it to 0 and reloading the field list
      */
-    void reset();
+    void begin();
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */

@@ -449,7 +449,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
      * pointer and setting it to 0
      */
-    void reset();
+    void begin();
 
     /**Returns true if layer is valid
     */

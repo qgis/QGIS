@@ -175,7 +175,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int keyField();
 
     /** Restart reading features from previous select operation */
-    void reset();
+    void begin();
 
     /** Returns the minimum value of an attributs
      *  @param index the index of the attribute */

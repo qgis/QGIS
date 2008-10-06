@@ -130,7 +130,7 @@ const QgsFieldMap & QgsWFSProvider::fields() const
   return mFields;
 }
 
-void QgsWFSProvider::reset()
+void QgsWFSProvider::begin()
 {
   mFeatureIterator = mSelectedFeatures.begin();
 }

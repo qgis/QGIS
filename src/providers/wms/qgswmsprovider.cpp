@@ -1666,7 +1666,7 @@ QgsRect QgsWmsProvider::extent()
   return layerExtent;
 }
 
-void QgsWmsProvider::reset()
+void QgsWmsProvider::begin()
 {
   // TODO
 }

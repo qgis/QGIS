@@ -557,7 +557,7 @@ int QgsGrassProvider::keyField()
   return mLayers[mLayerId].keyColumn;
 }
 
-void QgsGrassProvider::reset()
+void QgsGrassProvider::begin()
 {
   if ( isEdited() || isFrozen() || !mValid )
     return;
