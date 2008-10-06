@@ -116,7 +116,7 @@ class QgsMapCanvas : QGraphicsView
     void updateFullExtent();
 
     //! return the map layer at postion index in the layer stack
-    QgsMapLayer *getZpos(int index);
+    QgsMapLayer *layer(int index);
     
     //! return number of layers on the map
     int layerCount() const;
