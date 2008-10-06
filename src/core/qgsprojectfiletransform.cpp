@@ -20,6 +20,8 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include <QTextStream>
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
@@ -35,7 +37,8 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 0, 9, 0 ), PFV( 0, 9, 1 ), &QgsProjectFileTransform::transformNull},
   {PFV( 0, 9, 1 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transform091to0100},
   {PFV( 0, 9, 2 ), PFV( 0, 10, 0 ), &QgsProjectFileTransform::transformNull},
-  {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110}
+  {PFV( 0, 10, 0 ), PFV( 0, 11, 0 ), &QgsProjectFileTransform::transform0100to0110},
+  {PFV( 0, 11, 0 ), PFV( 1, 0, 0), &QgsProjectFileTransform::transform0110to1000}
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -277,5 +280,69 @@ void QgsProjectFileTransform::transform0100to0110()
       QDomText newPointSizeText = mDom.createTextNode( QString::number(( int )pointSize ) );
       currentPointSizeElem.replaceChild( newPointSizeText, pointSizeTextNode );
     }
+  }
+}
+
+void QgsProjectFileTransform::transform0110to1000()
+{
+  if ( ! mDom.isNull() )
+  {
+    QDomNodeList layerList = mDom.elementsByTagName("maplayer");
+    for(int i = 0; i < layerList.size(); ++i)
+      {
+	QDomElement layerElem = layerList.at(i).toElement();
+	QString typeString = layerElem.attribute("type");
+	if(typeString != "vector")
+	  {
+	    continue;
+	  }
+	
+	//datasource 
+	QDomNode dataSourceNode = layerElem.namedItem("datasource");
+	if(dataSourceNode.isNull())
+	  {
+	    return;
+	  }
+	QString dataSource = dataSourceNode.toElement().text();
+
+	//provider key
+	QDomNode providerNode = layerElem.namedItem("provider");
+	if(providerNode.isNull())
+	  {
+	    return;
+	  }
+	QString providerKey = providerNode.toElement().text();
+
+	//create the layer to get the provider for int->fieldName conversion
+	QgsVectorLayer* theLayer = new QgsVectorLayer(dataSource, "", providerKey, false);
+	if(!theLayer->isValid())
+	  {
+	    delete theLayer;
+	    return;
+	  }
+
+	QgsVectorDataProvider* theProvider = theLayer->dataProvider();
+	if(!theProvider)
+	  {
+	    return;
+	  }
+	QgsFieldMap theFieldMap = theProvider->fields();
+
+	//read classificationfield
+	QDomNodeList classificationFieldList = layerElem.elementsByTagName("classificationfield");
+	for(int j = 0; j < classificationFieldList.size(); ++j)
+	  {
+	    QDomElement classificationFieldElem = classificationFieldList.at(j).toElement();
+	    int fieldNumber = classificationFieldElem.text().toInt();
+	    QgsFieldMap::const_iterator field_it = theFieldMap.find(fieldNumber);
+	    if(field_it != theFieldMap.constEnd())
+	      {
+		QDomText fieldName = mDom.createTextNode(field_it.value().name());
+		QDomNode nameNode = classificationFieldElem.firstChild();
+		classificationFieldElem.replaceChild(fieldName, nameNode);
+	      }
+	  }
+	
+      }
   }
 }
