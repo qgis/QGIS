@@ -114,6 +114,21 @@ public:
   virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
 
+  /** Read the symbology for the current layer from the Dom node supplied. 
+   * @param QDomNode node that will contain the symbology definition for this layer.
+   * @param errorMessage reference to string that will be updated with any error messages
+   * @return true in case of success.
+   */
+  bool readSymbology(const QDomNode& node, QString& errorMessage);
+
+  /** Write the symbology for the layer into the docment provided.
+   *  @param QDomNode the node that will have the style element added to it.
+   *  @param QDomDocument the document that will have the QDomNode added.
+   * @param errorMessage reference to string that will be updated with any error messages
+   *  @return true in case of success.
+   */
+  bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage) const;
+
   /**
    * Number of features in the layer. This is necessary if features are
    * added/deleted or the layer has been subsetted. If the data provider

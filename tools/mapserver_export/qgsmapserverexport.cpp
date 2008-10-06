@@ -322,7 +322,7 @@ void QgsMapserverExport::writeMapFile()
     {
       bool isPolygon = false;
       bool isLine = false;
-      QgsMapLayer *lyr = map->getZpos(i);
+      QgsMapLayer *lyr = map->layer(i);
   #ifdef QGISDEBUG
       std::cout << "Mapsrver Export Processing Layer" << std::endl;
   #endif
