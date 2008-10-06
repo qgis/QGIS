@@ -155,7 +155,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QString dataComment() const;
 
     /** Restart reading features from previous select operation */
-    virtual void reset() = 0;
+    virtual void begin() = 0;
 
     /**
      * Returns the minimum value of an attribute

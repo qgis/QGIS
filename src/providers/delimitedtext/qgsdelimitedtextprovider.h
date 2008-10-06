@@ -103,7 +103,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual const QgsFieldMap & fields() const;
 
     /** Restart reading features from previous select operation */
-    virtual void reset();
+    virtual void begin();
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether

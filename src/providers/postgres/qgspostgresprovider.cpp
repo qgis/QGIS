@@ -720,7 +720,7 @@ QString QgsPostgresProvider::dataComment() const
   return mDataComment;
 }
 
-void QgsPostgresProvider::reset()
+void QgsPostgresProvider::begin()
 {
   if ( mFetching )
   {
@@ -1876,7 +1876,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
     returnvalue = false;
   }
 
-  reset();
+  begin();
   return returnvalue;
 }
 
@@ -1914,7 +1914,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
     connectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
-  reset();
+  begin();
   return returnvalue;
 }
 
@@ -1953,7 +1953,7 @@ bool QgsPostgresProvider::addAttributes( const QgsNewAttributesMap & name )
     returnvalue = false;
   }
 
-  reset();
+  begin();
   return returnvalue;
 }
 
@@ -1998,7 +1998,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
     returnvalue = false;
   }
 
-  reset();
+  begin();
   return returnvalue;
 }
 
@@ -2068,7 +2068,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     returnvalue = false;
   }
 
-  reset();
+  begin();
 
   return returnvalue;
 }
@@ -2148,7 +2148,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     returnvalue = false;
   }
 
-  reset();
+  begin();
 
   QgsDebugMsg( "exiting." );
 

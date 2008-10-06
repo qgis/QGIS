@@ -175,10 +175,10 @@ void QgsMemoryProvider::select( QgsAttributeList fetchAttributes,
     mSelectSI_Features.clear();
   }
 
-  reset();
+  begin();
 }
 
-void QgsMemoryProvider::reset()
+void QgsMemoryProvider::begin()
 {
   if ( mSelectUsingSpatialIndex )
     mSelectSI_Iterator = mSelectSI_Features.begin();
