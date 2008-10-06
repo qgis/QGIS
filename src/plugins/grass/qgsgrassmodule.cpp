@@ -599,7 +599,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
       int nlayers = mCanvas->layerCount();
       for ( int i = 0; i < nlayers; i++ )
       {
-        QgsMapLayer *layer = mCanvas->getZpos( i );
+        QgsMapLayer *layer = mCanvas->layer( i );
 
         if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
@@ -671,7 +671,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
       int nlayers = mCanvas->layerCount();
       for ( int i = 0; i < nlayers; i++ )
       {
-        QgsMapLayer *layer = mCanvas->getZpos( i );
+        QgsMapLayer *layer = mCanvas->layer( i );
 
         if ( layer->type() != QgsMapLayer::VECTOR ) continue;
 
@@ -2258,7 +2258,7 @@ void QgsGrassModuleInput::updateQgisLayers()
   int nlayers = canvas->layerCount();
   for ( int i = 0; i < nlayers; i++ )
   {
-    QgsMapLayer *layer = canvas->getZpos( i );
+    QgsMapLayer *layer = canvas->layer( i );
 
     QgsDebugMsg( "layer->type() = " + QString::number( layer->type() ) );
 
@@ -2671,7 +2671,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   int nlayers = canvas->layerCount();
   for ( int i = 0; i < nlayers; i++ )
   {
-    QgsMapLayer *layer = canvas->getZpos( i );
+    QgsMapLayer *layer = canvas->layer( i );
 
     if ( mType == Ogr && layer->type() == QgsMapLayer::VECTOR )
     {
