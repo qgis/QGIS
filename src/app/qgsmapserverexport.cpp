@@ -192,7 +192,7 @@ void QgsMapserverExport::writeMapFile()
     {
       bool isPolygon = false;
       bool isLine = false;
-      QgsMapLayer *lyr = map->getZpos( i );
+      QgsMapLayer *lyr = map->layer( i );
       QgsDebugMsg( "Mapsrver Export Processing Layer" );
       mapFile << "LAYER" << std::endl;
       QString name = lyr->name().lower();
