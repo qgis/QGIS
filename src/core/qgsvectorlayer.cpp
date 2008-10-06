@@ -2084,61 +2084,14 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     }
   }
 
-  // create and bind a renderer to this layer
-
-  QDomNode singlenode = layer_node.namedItem( "singlesymbol" );
-  QDomNode graduatednode = layer_node.namedItem( "graduatedsymbol" );
-  QDomNode continuousnode = layer_node.namedItem( "continuoussymbol" );
-  QDomNode singlemarkernode = layer_node.namedItem( "singlemarker" );
-  QDomNode graduatedmarkernode = layer_node.namedItem( "graduatedmarker" );
-  QDomNode uniquevaluenode = layer_node.namedItem( "uniquevalue" );
-  QDomNode labelnode = layer_node.namedItem( "label" );
-  QDomNode uniquemarkernode = layer_node.namedItem( "uniquevaluemarker" );
-
-  //std::auto_ptr<QgsRenderer> renderer; actually the renderer SHOULD NOT be
-  //deleted when this function finishes, otherwise the application will
-  //crash
-  // XXX this seems to be a dangerous implementation; should re-visit design
-  QgsRenderer * renderer;
-
-  // XXX Kludge!
-
-
-  // if we don't have a coordinate transform, get one
-
-  //
-  // Im commenting this out - if the layer was serialied in a
-  //  >=0.7 project it should have been validated and have all
-  // coord xform info
-  //
-
-  //if ( ! coordinateTransform() )
-  //{
-  //    setCoordinateSystem();
-  //}
-
-  if ( !singlenode.isNull() )
-  {
-    renderer = new QgsSingleSymbolRenderer( vectorType() );
-    renderer->readXML( singlenode, *this );
-  }
-  else if ( !graduatednode.isNull() )
-  {
-    renderer = new QgsGraduatedSymbolRenderer( vectorType() );
-    renderer->readXML( graduatednode, *this );
-  }
-  else if ( !continuousnode.isNull() )
-  {
-    renderer = new QgsContinuousColorRenderer( vectorType() );
-    renderer->readXML( continuousnode, *this );
-  }
-  else if ( !uniquevaluenode.isNull() )
-  {
-    renderer = new QgsUniqueValueRenderer( vectorType() );
-    renderer->readXML( uniquevaluenode, *this );
-  }
+  QString errorMsg;
+  if(!readSymbology(layer_node, errorMsg))
+    {
+      return false;
+    }
 
   // Test if labeling is on or off
+  QDomNode labelnode = layer_node.namedItem( "label" );
   QDomElement element = labelnode.toElement();
   int hasLabelsEnabled = element.text().toInt();
   if ( hasLabelsEnabled < 1 )
@@ -2365,17 +2318,11 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // renderer specific settings
 
-  const QgsRenderer * myRenderer = renderer();
-  if ( myRenderer )
-  {
-    myRenderer->writeXML( layer_node, document );
-  }
-  else
-  {
-    QgsDebugMsg( QString( "%1:%2 no renderer" ).arg( __FILE__ ).arg( __LINE__ ) );
-
-    // XXX return false?
-  }
+  QString errorMsg;
+  if(!writeSymbology( layer_node, document, errorMsg ))
+    {
+      return false;
+    }
 
   // Now we get to do all that all over again for QgsLabel
 
@@ -2448,6 +2395,75 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   return true;
 } // bool QgsVectorLayer::writeXml
+
+bool QgsVectorLayer::readSymbology(const QDomNode& node, QString& errorMessage)
+{
+  // create and bind a renderer to this layer
+
+  QDomNode singlenode = node.namedItem( "singlesymbol" );
+  QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
+  QDomNode continuousnode = node.namedItem( "continuoussymbol" );
+  QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
+
+  QgsRenderer * renderer = 0;
+  int returnCode;
+
+  if ( !singlenode.isNull() )
+  {
+    renderer = new QgsSingleSymbolRenderer( vectorType() );
+    returnCode = renderer->readXML( singlenode, *this );
+  }
+  else if ( !graduatednode.isNull() )
+  {
+    renderer = new QgsGraduatedSymbolRenderer( vectorType() );
+    returnCode = renderer->readXML( graduatednode, *this );
+  }
+  else if ( !continuousnode.isNull() )
+  {
+    renderer = new QgsContinuousColorRenderer( vectorType() );
+    returnCode = renderer->readXML( continuousnode, *this );
+  }
+  else if ( !uniquevaluenode.isNull() )
+  {
+    renderer = new QgsUniqueValueRenderer( vectorType() );
+    returnCode = renderer->readXML( uniquevaluenode, *this );
+  }
+  
+  if(!renderer)
+    {
+      return false;
+    }
+
+  if(returnCode == 1)
+    {
+      errorMessage = tr("No renderer object"); delete renderer; return false;
+    }
+  else if(returnCode == 2)
+    {
+      errorMessage = tr("Classification field not found"); delete renderer; return false;
+    }
+
+  mRenderer = renderer;
+  return true;
+}
+
+bool QgsVectorLayer::writeSymbology(QDomNode& node, QDomDocument& doc, QString& errorMessage) const
+{
+  const QgsRenderer * myRenderer = renderer();
+  if ( myRenderer )
+  {
+    if(!myRenderer->writeXML( node, doc, *this ))
+      {
+	return false;
+      }
+  }
+  else
+  {
+    QgsDebugMsg( QString( "%1:%2 no renderer" ).arg( __FILE__ ).arg( __LINE__ ) );
+    return false;
+  }
+  return true;
+}
 
 bool QgsVectorLayer::changeAttributeValue( int fid, int field, QVariant value, bool emitSignal )
 {

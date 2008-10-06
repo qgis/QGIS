@@ -535,37 +535,15 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     return myErrorMessage;
   }
 
-  QDomElement myLayer = myRoot.firstChildElement( "maplayer" );
-  if ( myLayer.isNull() )
-  {
-    myErrorMessage = "Error: maplayer element could not be found in " + theURI;
-    theResultFlag = false;
-    return myErrorMessage;
-  }
+  QString errorMsg;
+  theResultFlag = readSymbology(myRoot, errorMsg);
+  if(!theResultFlag)
+    {
+      myErrorMessage = QObject::tr( "Loading style file " ) + theURI + QObject::tr(" failed because:") + "\n" + errorMsg;
+      return myErrorMessage;
+    }
 
-  //
-  // we need to ensure the data source matches the layers
-  // current datasource not the one specified in the qml
-  //
-  QDomElement myDataSource = myLayer.firstChildElement( "datasource" );
-  if ( myDataSource.isNull() )
-  {
-    myErrorMessage = "Error: datasource element could not be found in " + theURI;
-    theResultFlag = false;
-    return myErrorMessage;
-  }
-  QDomElement myNewDataSource = myDocument.createElement( "datasource" );
-  QDomText myDataSourceText = myDocument.createTextNode( source() );
-  myNewDataSource.appendChild( myDataSourceText );
-  myLayer.replaceChild( myNewDataSource, myLayer.firstChildElement( "datasource" ) );
-
-  //
-  // Now go on to parse the xml (QDomElement inherits QDomNode
-  // so we can just pass along the element to readXML)
-  //
-  theResultFlag = readXML( myLayer );
-
-  return QObject::tr( "Loaded default style file from " ) + theURI;
+  return ""; 
 }
 
 QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
@@ -585,7 +563,12 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   QDomElement myRootNode = myDocument.createElement( "qgis" );
   myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::qgisVersion ) );
   myDocument.appendChild( myRootNode );
-  writeXML( myRootNode, myDocument );
+
+  QString errorMsg;
+  if(!writeSymbology(myRootNode, myDocument, errorMsg))
+    {
+      return QObject::tr("Could not save symbology because:") + "\n" + errorMsg;
+    }
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one

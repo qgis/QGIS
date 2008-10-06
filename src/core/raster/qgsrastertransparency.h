@@ -49,10 +49,10 @@ class CORE_EXPORT QgsRasterTransparency
     // Initializer, Accessor and mutator for transparency tables.
     //
     /** \brief Mutator for transparentSingleValuePixelList */
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> getTransparentSingleValuePixelList();
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> getTransparentSingleValuePixelList() const;
 
     /** \brief Mutator for transparentThreeValuePixelList */
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> getTransparentThreeValuePixelList();
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> getTransparentThreeValuePixelList() const;
 
     /** \brief Reset to the transparency list to a single value */
     void initializeTransparentPixelList( double );
@@ -67,9 +67,9 @@ class CORE_EXPORT QgsRasterTransparency
     void setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> );
 
     /** \brief Returns the transparency value for a single value Pixel */
-    int getAlphaValue( double, int theGlobalTransparency = 255 );
+    int getAlphaValue( double, int theGlobalTransparency = 255 ) const;
     /** \brief Return the transparency value for a RGB Pixel */
-    int getAlphaValue( double, double, double, int theGlobalTransparency = 255 );
+    int getAlphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
 
   private:
     /** \brief The list to hold transparency values for RGB layers */

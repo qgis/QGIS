@@ -38,13 +38,15 @@ class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
     void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
-     @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML( const QDomNode& rnode, QgsVectorLayer& vl );
+     @param vl the vector layer which will be associated with the renderer
+     @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found
+    */
+    virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl );
     /**Writes the contents of the renderer to a configuration file*/
     /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const;
     /**Returns true, attributes needed for single symbol*/
     bool needsAttributes() const;
     /**Returns a list of all needed attributes*/

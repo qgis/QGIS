@@ -88,10 +88,10 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     /** \brief Return the maximum value for the contrast enhancement range. */
-    double getMaximumValue() { return mMaximumValue; }
+    double getMaximumValue() const { return mMaximumValue; }
 
     /** \brief Return the minimum value for the contrast enhancement range. */
-    double getMinimumValue() { return mMinimumValue; }
+    double getMinimumValue() const { return mMinimumValue; }
 
     CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
 

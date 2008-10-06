@@ -31,10 +31,10 @@ class QgsContinuousColorRenderer : QgsRenderer
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
+    virtual int readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl  ) const;
     /** Returns true*/
     bool needsAttributes() const;
     /**Returns a list with the index of the classification attribute*/

@@ -331,7 +331,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for mInvertPixelsFlag
     //
     /** \brief Accessor to find out whether the histogram should be inverted.   */
-    bool getInvertHistogramFlag()
+    bool getInvertHistogramFlag() const
     {
       return mInvertPixelsFlag;
     }
@@ -344,7 +344,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for mStandardDeviations
     //
     /** \brief Accessor to find out how many standard deviations are being plotted.  */
-    double getStdDevsToPlot()
+    double getStdDevsToPlot() const
     {
       return mStandardDeviations;
     }
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Call any inline image manipulation filters */
     void filterLayer( QImage * theQImage );
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red color). */
-    QString getRedBandName()
+    QString getRedBandName() const
     {
       return mRedBandName;
     }
@@ -385,7 +385,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for green band name
     //
     /** \brief Accessor for green band name mapping.  */
-    QString getGreenBandName()
+    QString getGreenBandName() const
     {
       return mGreenBandName;
     }
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for blue band name
     //
     /** \brief  Accessor for blue band name mapping. */
-    QString getBlueBandName()
+    QString getBlueBandName() const
     {
       return mBlueBandName;
     }
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for transparent band name
     //
     /** \brief  Accessor for transparent band name mapping. */
-    QString getTransparentBandName()
+    QString getTransparentBandName() const
     {
       return mTransparencyBandName;
     }
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for gray band name
     //
     /** \brief Accessor for gray band name mapping.  */
-    QString getGrayBandName()
+    QString getGrayBandName() const
     {
       return mGrayBandName;
     }
@@ -540,7 +540,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for contrast enhancement algorithm. */
-    QString getContrastEnhancementAlgorithmAsQString();
+    QString getContrastEnhancementAlgorithmAsString() const;
 
     /** \brief Mutator for contrast enhancement algorithm. */
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm, bool theGenerateLookupTableFlag = true )
@@ -587,13 +587,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for the color shader algorithm
     //
     /** \brief Accessor for color shader algorithm. */
-    QgsRasterLayer::COLOR_SHADING_ALGORITHM getColorShadingAlgorithm()
+    QgsRasterLayer::COLOR_SHADING_ALGORITHM getColorShadingAlgorithm() const
     {
       return mColorShadingAlgorithm;
     }
 
     /** \brief Accessor for color shader algorithm. */
-    QString getColorShadingAlgorithmAsQString();
+    QString getColorShadingAlgorithmAsString() const;
 
     /** \brief Mutator for color shader algorithm. */
     void setColorShadingAlgorithm( QgsRasterLayer::COLOR_SHADING_ALGORITHM theShaderAlgorithm );
@@ -651,7 +651,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
      * NOTE: May be deprecated in the future!. Use alternate implementation above rather.
      * */
-    QString getDrawingStyleAsQString();
+    QString getDrawingStyleAsString() const;
     /** \brief Mutator for drawing style.  */
     void setDrawingStyle( const DRAWING_STYLE &  theDrawingStyle ) {drawingStyle = theDrawingStyle;}
     /** \brief Overloaded version of the above function for convenience when restoring from xml.
@@ -782,7 +782,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for mUserDefinedRGBMinMaxFlag.  */
-    bool getUserDefinedRGBMinMax()
+    bool getUserDefinedRGBMinMax() const
     {
       return mUserDefinedRGBMinMaxFlag;
     }
@@ -794,7 +794,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for mRGBActualMinimumMaximum.  */
-    bool getActualRGBMinMaxFlag()
+    bool getActualRGBMinMaxFlag() const
     {
       return mRGBActualMinimumMaximum;
     }
@@ -807,7 +807,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for mUserDefinedGrayMinMaxFlag.  */
-    bool getUserDefinedGrayMinMax()
+    bool getUserDefinedGrayMinMax() const
     {
       return mUserDefinedGrayMinMaxFlag;
     }
@@ -819,7 +819,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for mGrayActualMinimumMaximum.  */
-    bool getActualGrayMinMaxFlag()
+    bool getActualGrayMinMaxFlag() const
     {
       return mGrayActualMinimumMaximum;
     }
@@ -893,6 +893,21 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     */
     /* virtual */ bool writeXml( QDomNode & layer_node, QDomDocument & doc );
+
+     /** Read the symbology for the current layer from the Dom node supplied. 
+     * @param QDomNode node that will contain the symbology definition for this layer.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success.
+    */
+    bool readSymbology(const QDomNode& node, QString& errorMessage);
+
+    /** Write the symbology for the layer into the docment provided.
+     *  @param QDomNode the node that will have the style element added to it.
+     *  @param QDomDocument the document that will have the QDomNode added.
+     * @param errorMessage reference to string that will be updated with any error messages
+     *  @return true in case of success.
+     */
+    bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage) const;
 
   private:
 

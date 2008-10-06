@@ -18,6 +18,7 @@
 
 #include "qgsuniquevaluerenderer.h"
 #include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
@@ -191,12 +192,24 @@ QgsSymbol *QgsUniqueValueRenderer::symbolForFeature( const QgsFeature *f )
   }
 }
 
-void QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
+int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mVectorType = vl.vectorType();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
-  int classificationfield = classnode.toElement().text().toInt();
-  this->setClassificationField( classificationfield );
+  QString classificationField = classnode.toElement().text();
+
+  QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return 1;
+    }
+
+  int classificationId = theProvider->fieldNameIndex(classificationField);
+  if(classificationId == -1)
+    {
+      return 2; //@todo: handle gracefully in gui situation where user needs to nominate field 
+    }
+  this->setClassificationField( classificationId );
 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
@@ -208,6 +221,7 @@ void QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl 
   }
   updateSymbolAttributes();
   vl.setRenderer( this );
+  return 0;
 }
 
 void QgsUniqueValueRenderer::clearValues()
@@ -257,13 +271,26 @@ QgsAttributeList QgsUniqueValueRenderer::classificationAttributes() const
   return list;
 }
 
-bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
 {
+  const QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return false;
+    }
+
+  QString classificationFieldName;
+  QgsFieldMap::const_iterator field_it = theProvider->fields().find(mClassificationField);
+  if(field_it != theProvider->fields().constEnd())
+    {
+      classificationFieldName = field_it.value().name();
+    }
+
   bool returnval = true;
   QDomElement uniquevalue = document.createElement( "uniquevalue" );
   layer_node.appendChild( uniquevalue );
   QDomElement classificationfield = document.createElement( "classificationfield" );
-  QDomText classificationfieldtxt = document.createTextNode( QString::number( mClassificationField ) );
+  QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );
   classificationfield.appendChild( classificationfieldtxt );
   uniquevalue.appendChild( classificationfield );
   for ( QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin();it != mSymbols.end();++it )
