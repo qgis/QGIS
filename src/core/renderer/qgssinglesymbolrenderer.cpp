@@ -153,7 +153,7 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
   }
 }
 
-void QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
+int QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mVectorType = vl.vectorType();
   QgsSymbol* sy = new QgsSymbol( mVectorType );
@@ -174,9 +174,10 @@ void QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl
   //create a renderer and add it to the vector layer
   this->addSymbol( sy );
   vl.setRenderer( this );
+  return 0;
 }
 
-bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const
 {
   bool returnval = false;
   QDomElement singlesymbol = document.createElement( "singlesymbol" );

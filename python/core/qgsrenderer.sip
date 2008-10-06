@@ -20,10 +20,10 @@ class QgsRenderer
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl)=0;
+    virtual int readXML(const QDomNode& rnode, QgsVectorLayer& vl)=0;
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const=0;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document,  const QgsVectorLayer& vl  ) const=0;
     /** Returns true, if attribute values are used by the renderer and false otherwise*/
     virtual bool needsAttributes() const=0;
     /**Returns a list with indexes of classification attributes*/

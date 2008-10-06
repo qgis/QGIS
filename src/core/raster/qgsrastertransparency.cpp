@@ -27,7 +27,7 @@ QgsRasterTransparency::QgsRasterTransparency()
 /**
   Accessor for transparentSingleValuePixelList
 */
-QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::getTransparentSingleValuePixelList()
+QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::getTransparentSingleValuePixelList() const
 {
   return mTransparentSingleValuePixelList;
 }
@@ -35,7 +35,7 @@ QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency:
 /**
   Accessor for transparentThreeValuePixelList
 */
-QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::getTransparentThreeValuePixelList()
+QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::getTransparentThreeValuePixelList() const
 {
   return mTransparentThreeValuePixelList;
 }
@@ -95,7 +95,7 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList( QList<QgsRasterTr
   @param theValue the needle to search for in the transparency hay stack
   @param theGlobalTransparency  the overal transparency level for the layer
 */
-int QgsRasterTransparency::getAlphaValue( double theValue, int theGlobalTransparency )
+int QgsRasterTransparency::getAlphaValue( double theValue, int theGlobalTransparency ) const
 {
   //if NaN return 0, transparent
   if ( theValue != theValue )
@@ -133,7 +133,7 @@ int QgsRasterTransparency::getAlphaValue( double theValue, int theGlobalTranspar
   @param theBlueValue the green portion of the needle to search for in the transparency hay stack
   @param theGlobalTransparency  the overal transparency level for the layer
 */
-int QgsRasterTransparency::getAlphaValue( double theRedValue, double theGreenValue, double theBlueValue, int theGlobalTransparency )
+int QgsRasterTransparency::getAlphaValue( double theRedValue, double theGreenValue, double theBlueValue, int theGlobalTransparency ) const
 {
   //if NaN return 0, transparent
   if ( theRedValue != theRedValue || theGreenValue != theGreenValue || theBlueValue != theBlueValue )

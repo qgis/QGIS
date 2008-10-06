@@ -49,6 +49,7 @@ class TestQgsRenderers: public QObject
     void uniqueValue();
     void graduatedSymbol();
     void continuousSymbol();
+    void checkClassificationFieldMismatch();
   private:
     bool setQml( QString theType ); //uniquevalue / continuous / single /
     bool imageCheck( QString theType ); //as above
@@ -98,6 +99,7 @@ void TestQgsRenderers::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+
 
   //
   // Create a line layer that will be used in all tests...
@@ -162,6 +164,20 @@ void TestQgsRenderers::continuousSymbol()
   QVERIFY( setQml( "continuous" ) );
   QVERIFY( imageCheck( "continuous" ) );
 }
+
+void TestQgsRenderers::checkClassificationFieldMismatch()
+{
+  mReport += "<h2>Classification field mismatch test</h2>\n";
+  // Here we test to see that a qml created for one layer
+  // will raise an error properly if the 
+  // We will do this by trying to apply the points qml to the polys shpfile
+  // it should fail and raise an error
+  QString myFileName = mTestDataDir + "points_continuous_symbol.qml";
+  bool myStyleFlag = false;
+  mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
+  QVERIFY( !myStyleFlag ); //we are expecting this to have raised an error
+}
+
 //
 // Private helper functions not called directly by CTest
 //

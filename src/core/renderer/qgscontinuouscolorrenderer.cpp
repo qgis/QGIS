@@ -20,6 +20,7 @@
 #include "qgsmarkercatalogue.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 #include <cfloat>
@@ -179,12 +180,23 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
   }
 }
 
-void QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
+int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mVectorType = vl.vectorType();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
-  int classificationfield = classnode.toElement().text().toInt();
-  this->setClassificationField( classificationfield );
+  QString classificationField = classnode.toElement().text();
+
+  QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return 1;
+    }
+  int classificationId = theProvider->fieldNameIndex(classificationField);
+  if(classificationId == -1)
+    {
+      return 2; //@todo: handle gracefully in gui situation where user needs to nominate field 
+    }
+  this->setClassificationField(classificationId);
 
   //polygon outline
   QDomNode polyoutlinenode = rnode.namedItem( "polygonoutline" );
@@ -216,6 +228,7 @@ void QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer&
     this->setMaximumSymbol( usy );
   }
   vl.setRenderer( this );
+  return 0;
 }
 
 QgsAttributeList QgsContinuousColorRenderer::classificationAttributes() const
@@ -230,14 +243,26 @@ QString QgsContinuousColorRenderer::name() const
   return "Continuous Color";
 }
 
-bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
 {
+  const QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return false;
+    }
+
+  QString classificationFieldName;
+  QgsFieldMap::const_iterator field_it = theProvider->fields().find(mClassificationField);
+  if(field_it != theProvider->fields().constEnd())
+    {
+      classificationFieldName = field_it.value().name();
+    }
   bool returnval = true;
 #ifndef WIN32
   QDomElement continuoussymbol = document.createElement( "continuoussymbol" );
   layer_node.appendChild( continuoussymbol );
   QDomElement classificationfield = document.createElement( "classificationfield" );
-  QDomText classificationfieldtxt = document.createTextNode( QString::number( mClassificationField ) );
+  QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );
   classificationfield.appendChild( classificationfieldtxt );
   continuoussymbol.appendChild( classificationfield );
 

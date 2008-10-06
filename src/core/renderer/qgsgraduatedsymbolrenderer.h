@@ -34,7 +34,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
     /**Adds a new item
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
     void addSymbol( QgsSymbol* sy );
-    /**Returns the number of the classification field*/
+    /**Returns the indes of the classification field*/
     int classificationField() const;
     /**Removes all symbols*/
     void removeSymbols();
@@ -46,16 +46,18 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
      \param f a pointer to a feature to render
      \param t the transform object containing the information how to transform the map coordinates to screen coordinates*/
     void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
-    /**Sets the number of the classicifation field
+    /**Sets the classicifation field by index
     \param field the number of the field to classify*/
-    void setClassificationField( int field );
+    void setClassificationField(int);
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
-     @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML( const QDomNode& rnode, QgsVectorLayer& vl );
+     @param vl the vector layer which will be associated with the renderer
+     @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found
+    */
+    virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl );
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const;
     /** Returns true*/
     bool needsAttributes() const;
     /**Returns a list of all needed attributes*/
@@ -88,9 +90,9 @@ inline int QgsGraduatedSymbolRenderer::classificationField() const
   return mClassificationField;
 }
 
-inline void QgsGraduatedSymbolRenderer::setClassificationField( int field )
+inline void QgsGraduatedSymbolRenderer::setClassificationField(int index)
 {
-  mClassificationField = field;
+  mClassificationField = index;
 }
 
 inline bool QgsGraduatedSymbolRenderer::needsAttributes() const

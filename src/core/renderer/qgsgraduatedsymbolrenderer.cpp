@@ -22,6 +22,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgssymbol.h"
 #include "qgssymbologyutils.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <math.h>
 #include <QDomNode>
@@ -190,13 +191,23 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature* f )
   return ( *it );
 }
 
-void QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
+int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mVectorType = vl.vectorType();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
-  int classificationfield = classnode.toElement().text().toInt();
+  QString classificationField = classnode.toElement().text();
 
-  this->setClassificationField( classificationfield );
+  QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return 1;
+    }
+  int classificationId = theProvider->fieldNameIndex(classificationField);
+  if(classificationId == -1)
+    {
+      return 2; //@todo: handle gracefully in gui situation where user needs to nominate field 
+    }
+  this->setClassificationField(classificationId);
 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
@@ -209,6 +220,7 @@ void QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer&
   }
   updateSymbolAttributes();
   vl.setRenderer( this );
+  return 0;
 }
 
 QgsAttributeList QgsGraduatedSymbolRenderer::classificationAttributes() const
@@ -249,13 +261,28 @@ QString QgsGraduatedSymbolRenderer::name() const
   return "Graduated Symbol";
 }
 
-bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document ) const
+bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl) const
 {
   bool returnval = true;
   QDomElement graduatedsymbol = document.createElement( "graduatedsymbol" );
   layer_node.appendChild( graduatedsymbol );
   QDomElement classificationfield = document.createElement( "classificationfield" );
-  QDomText classificationfieldtxt = document.createTextNode( QString::number( mClassificationField ) );
+
+  const QgsVectorDataProvider* theProvider = vl.dataProvider();
+  if(!theProvider)
+    {
+      return false;
+    }
+
+  QString classificationFieldName;
+  QgsFieldMap::const_iterator field_it = theProvider->fields().find(mClassificationField);
+  if(field_it != theProvider->fields().constEnd())
+    {
+      classificationFieldName = field_it.value().name();
+    }
+
+
+  QDomText classificationfieldtxt = document.createTextNode(classificationFieldName);
   classificationfield.appendChild( classificationfieldtxt );
   graduatedsymbol.appendChild( classificationfield );
   for ( QList<QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )

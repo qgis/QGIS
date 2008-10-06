@@ -232,6 +232,20 @@ int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
   return -1;
 }
 
+QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
+{
+  QMap<QString, int> resultMap;
+
+  const QgsFieldMap& theFields = fields();
+  QgsFieldMap::const_iterator field_it = theFields.constBegin();
+  for(; field_it != theFields.constEnd(); ++field_it)
+    {
+      resultMap.insert(field_it.value().name(), field_it.key());
+    }
+
+  return resultMap;
+}
+
 QgsAttributeList QgsVectorDataProvider::allAttributesList()
 {
   uint count = fieldCount();

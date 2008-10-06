@@ -18,12 +18,12 @@ class QgsSingleSymbolRenderer : QgsRenderer
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read 
      @param vl the vector layer which will be associated with the renderer*/
-    virtual void readXML(const QDomNode& rnode, QgsVectorLayer& vl);
+    virtual int readXML(const QDomNode& rnode, QgsVectorLayer& vl);
     /**Writes the contents of the renderer to a configuration file*/
     /*virtual void writeXML(std::ostream& xml);*/
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl  ) const;
     /**Returns false, no attributes neede for single symbol*/
     bool needsAttributes() const;
     /**Returns an empty list, since no classification attributes are used*/

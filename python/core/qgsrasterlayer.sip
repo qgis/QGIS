@@ -137,7 +137,7 @@ public:
     // Accessor and mutator for mInvertPixelsFlag
     //
     /** \brief Accessor to find out whether the histogram should be inverted.   */
-    bool getInvertHistogramFlag();
+    bool getInvertHistogramFlag() const;
     
     /** \brief Mutator to alter the state of the invert histogram flag.  */
     void setInvertHistogramFlag(bool theFlag);
@@ -146,7 +146,7 @@ public:
     // Accessor and mutator for mStandardDeviations
     //
     /** \brief Accessor to find out how many standard deviations are being plotted.  */
-    double getStdDevsToPlot();
+    double getStdDevsToPlot() const;
     
     /** \brief Mutator to alter the number of standard deviations that should be plotted.  */
     void setStdDevsToPlot(double the);
@@ -173,7 +173,7 @@ public:
     /** \brief Call any inline image manipulation filters */
     void filterLayer(QImage * theQImage);
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red colour). */
-    QString getRedBandName();
+    QString getRedBandName() const;
     
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red colour). */
     void setRedBandName(const QString & theBandNameQString);
@@ -181,7 +181,7 @@ public:
     // Accessor and mutator for green band name
     // 
     /** \brief Accessor for green band name mapping.  */
-    QString getGreenBandName();
+    QString getGreenBandName() const;
     
     /** \brief Mutator for green band name mapping.  */
     void setGreenBandName(const QString & theBandNameQString);
@@ -189,7 +189,7 @@ public:
     // Accessor and mutator for blue band name
     // 
     /** \brief  Accessor for blue band name mapping. */
-    QString getBlueBandName();
+    QString getBlueBandName() const;
     
     /** \brief Mutator for blue band name mapping.  */
     void setBlueBandName(const QString & theBandNameQString);
@@ -203,7 +203,7 @@ public:
     // Accessor and mutator for transparent band name
     // 
     /** \brief  Accessor for transparent band name mapping. */
-    QString getTransparentBandName();
+    QString getTransparentBandName() const;
     
     /** \brief Mutator for transparent band name mapping.  */
     void setTransparentBandName(const QString & theBandNameQString);
@@ -212,7 +212,7 @@ public:
     // Accessor and mutator for gray band name
     //
     /** \brief Accessor for gray band name mapping.  */
-    QString getGrayBandName();
+    QString getGrayBandName() const;
     
     /** \brief Mutator for gray band name mapping.  */
     void setGrayBandName(const QString & theBandNameQString);
@@ -249,7 +249,7 @@ public:
     QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm();
     
     /** \brief Accessor for contrast enhancement algorithm. */
-    QString getContrastEnhancementAlgorithmAsQString();
+    QString getContrastEnhancementAlgorithmAsString() const;
     
     /** \brief Mutator for contrast enhancement algorithm. */
     void setContrastEnhancementAlgorithm(QgsContrastEnhancement::CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm, bool theGenerateLookupTableFlag=true);
@@ -276,10 +276,10 @@ public:
     // Accessor and mutator for the color shader algorithm
     //
     /** \brief Accessor for colour shader algorithm. */
-    COLOR_SHADING_ALGORITHM getColorShadingAlgorithm();
+    COLOR_SHADING_ALGORITHM getColorShadingAlgorithm() const;
 
     /** \brief Accessor for colour shader algorithm. */
-    QString getColorShadingAlgorithmAsQString();
+    QString getColorShadingAlgorithmAsString() const;
     
     /** \brief Mutator for color shader algorithm. */
     void setColorShadingAlgorithm(COLOR_SHADING_ALGORITHM theShaderAlgorithm);
@@ -319,7 +319,7 @@ public:
      * Implementaed mainly for serialisation / deserialisation of settings to xml.
      * NOTE: May be deprecated in the future!. Use alternate implementation above rather.
      * */
-    QString getDrawingStyleAsQString();
+    QString getDrawingStyleAsString() const;
     
     /** \brief Mutator for drawing style.  */
     void setDrawingStyle(const DRAWING_STYLE &  theDrawingStyle);
@@ -435,13 +435,13 @@ public:
     void setUserDefinedRGBMinMax(bool theBool);
 
     /** \brief Accessor for mUserDefinedRGBMinMaxFlag.  */
-    bool getUserDefinedRGBMinMax();
+    bool getUserDefinedRGBMinMax() const;
 
     /** \brief Mutator for mUserDefinedGrayMinMaxFlag */
     void setUserDefinedGrayMinMax(bool theBool);
 
     /** \brief Accessor for mUserDefinedGrayMinMaxFlag.  */
-    bool getUserDefinedGrayMinMax();
+    bool getUserDefinedGrayMinMax() const;
 
 public slots:    
     /**
