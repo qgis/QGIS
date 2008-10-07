@@ -307,7 +307,9 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       if ( last_it != quantileBorders.end() )
       {
         listBoxText = QString::number( *last_it, 'f' ) + " - " + QString::number( *it, 'f' );
-        mClassListWidget->addItem( listBoxText );
+        QListWidgetItem *mypItem = new QListWidgetItem( listBoxText );
+        mClassListWidget->addItem( mypItem );
+        updateEntryIcon( *symbol_it, mypItem );
         ( *symbol_it )->setLowerValue( QString::number( *last_it, 'f' ) );
         ( *symbol_it )->setUpperValue( QString::number( *it, 'f' ) );
         mEntries.insert( std::make_pair( listBoxText, *symbol_it ) );
@@ -348,7 +350,9 @@ void QgsGraduatedSymbolDialog::adjustClassification()
     for ( int i = 0;i < numberofclassesspinbox->value();++i )
     {
       listBoxText = "Empty" + QString::number( i + 1 );
-      mClassListWidget->addItem( listBoxText );
+      QListWidgetItem * mypItem = new QListWidgetItem( listBoxText );
+      updateEntryIcon( *symbol_it, mypItem );
+      mClassListWidget->addItem( mypItem );
       mEntries.insert( std::make_pair( listBoxText, *symbol_it ) );
       ++symbol_it;
     }

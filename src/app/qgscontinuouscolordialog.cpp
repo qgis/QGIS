@@ -44,7 +44,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   if ( provider )
   {
     const QgsFieldMap & fields = provider->fields();
-    int fieldnumber( 0 ), combonumber( 0 );
+    int fieldNumber( 0 ), comboNumber( 0 );
     QString str;
 
     for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
@@ -54,10 +54,10 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
       {
         str = ( *it ).name();
         classificationComboBox->addItem( str );
-        mFieldMap.insert( std::make_pair( combonumber, fieldnumber ) );
-        combonumber++;
+        mFieldMap.insert( std::make_pair( comboNumber, fieldNumber ) );
+        comboNumber++;
       }
-      fieldnumber++;
+      fieldNumber++;
     }
   }
   else
