@@ -370,7 +370,7 @@ void QgsAttributeDialog::accept()
       myFieldValue = QString::number( dsb->value() );
     }
 
-    le = mpWidgets.value( myIndex )->findChild<QLineEdit *>( "lineEdit" );
+    le = mpWidgets.value( myIndex )->findChild<QLineEdit *>();
     if ( le )
     {
       myFieldValue = le->text();
