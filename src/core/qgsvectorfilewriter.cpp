@@ -326,7 +326,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
     return err;
   }
 
-  QgsAttributeList allAttr = provider->allAttributesList();
+  QgsAttributeList allAttr = provider->attributeIndexes();
   QgsFeature fet;
 
   provider->select( allAttr, QgsRect(), true );
@@ -346,7 +346,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   }
 
   // write all features
-  while ( provider->getNextFeature( fet ) )
+  while ( provider->nextFeature( fet ) )
   {
     if ( onlySelected && !ids.contains( fet.featureId() ) )
       continue;

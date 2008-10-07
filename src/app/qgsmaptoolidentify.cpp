@@ -268,7 +268,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
     layer->select( layer->pendingAllAttributesList(), r, true, true );
     QgsFeature f;
-    while ( layer->getNextFeature( f ) )
+    while ( layer->nextFeature( f ) )
       mFeatureList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )
@@ -451,7 +451,7 @@ void QgsMapToolIdentify::highlightFeature( int featureId )
   mRubberBand = 0;
 
   QgsFeature feat;
-  if ( layer->getFeatureAtId( featureId, feat, true, false ) != 0 )
+  if ( layer->featureAtId( featureId, feat, true, false ) != 0 )
   {
     return;
   }

@@ -213,7 +213,7 @@ QString QgsOgrProvider::storageType() const
 }
 
 
-bool QgsOgrProvider::getFeatureAtId( int featureId,
+bool QgsOgrProvider::featureAtId( int featureId,
                                      QgsFeature& feature,
                                      bool fetchGeometry,
                                      QgsAttributeList fetchAttributes )
@@ -245,7 +245,7 @@ bool QgsOgrProvider::getFeatureAtId( int featureId,
   return true;
 }
 
-bool QgsOgrProvider::getNextFeature( QgsFeature& feature )
+bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 {
   if ( !valid )
   {

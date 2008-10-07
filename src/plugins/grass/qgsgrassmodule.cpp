@@ -2954,7 +2954,7 @@ void QgsGrassModuleSelection::updateSelection()
   QgsVectorLayer *vector = dynamic_cast<QgsVectorLayer*>( layer );
 
   QgsGrassProvider *provider = ( QgsGrassProvider * ) vector->dataProvider();
-  QgsAttributeList allAttributes = provider->allAttributesList();
+  QgsAttributeList allAttributes = provider->attributeIndexes();
   const QgsFeatureIds& selected = vector->selectedFeaturesIds();
   int keyField = provider->keyField();
 
@@ -2965,7 +2965,7 @@ void QgsGrassModuleSelection::updateSelection()
   QgsFeature feature;
 
   int i = 0;
-  while ( provider->getNextFeature( feature ) )
+  while ( provider->nextFeature( feature ) )
   {
     if ( !selected.contains( feature.featureId() ) )
       continue;

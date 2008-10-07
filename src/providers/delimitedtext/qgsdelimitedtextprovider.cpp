@@ -191,7 +191,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       else
         parts = line.split( mDelimiter );
 
-      // Skip malformed lines silently. Report line number with getNextFeature()
+      // Skip malformed lines silently. Report line number with nextFeature()
       if ( attributeFields.size() != parts.size() )
       {
         continue;
@@ -281,7 +281,7 @@ QString QgsDelimitedTextProvider::storageType() const
 }
 
 
-bool QgsDelimitedTextProvider::getNextFeature( QgsFeature& feature )
+bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 {
   // before we do anything else, assume that there's something wrong with
   // the feature
@@ -415,7 +415,7 @@ bool QgsDelimitedTextProvider::getNextFeature( QgsFeature& feature )
 
   return false;
 
-} // getNextFeature
+} // nextFeature
 
 
 void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,

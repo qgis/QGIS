@@ -63,7 +63,7 @@ QgsWFSProvider::~QgsWFSProvider()
   delete mSpatialIndex;
 }
 
-bool QgsWFSProvider::getNextFeature( QgsFeature& feature )
+bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 {
   while ( true ) //go through the loop until we find a feature in the filter
   {

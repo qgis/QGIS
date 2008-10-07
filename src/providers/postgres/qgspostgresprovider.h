@@ -75,7 +75,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     virtual QgsCoordinateReferenceSystem getCRS();
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
      *  @param rect spatial filter
      *  @param fetchGeometry true if the feature geometry should be fetched
@@ -92,7 +92,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature( QgsFeature& feature );
+    virtual bool nextFeature( QgsFeature& feature );
 
     /**
       * Gets the feature at the given feature ID.
@@ -102,7 +102,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
       * @return True when feature was found, otherwise false
       */
-    virtual bool getFeatureAtId( int featureId,
+    virtual bool featureAtId( int featureId,
                                  QgsFeature& feature,
                                  bool fetchGeometry = true,
                                  QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -195,13 +195,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool isValid();
 
-    QgsAttributeList allAttributesList();
+    QgsAttributeList attributeIndexes();
 
     /**Returns the default value for field specified by @c fieldName */
-    QVariant getDefaultValue( QString fieldName );
+    QVariant defaultValue( QString fieldName );
 
     /**Returns the default value for field specified by @c fieldId */
-    QVariant getDefaultValue( int fieldId );
+    QVariant defaultValue( int fieldId );
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/

@@ -81,7 +81,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      * @param fetchAttributes list of attributes which should be fetched
      * @param rect spatial filter
      * @param fetchGeometry true if the feature geometry should be fetched
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Default implementation traverses all features until it finds the one with correct ID.
      * In case the provider supports reading the feature directly, override this function.
      */
-    virtual bool getFeatureAtId( int featureId,
+    virtual bool featureAtId( int featureId,
                                  QgsFeature& feature,
                                  bool fetchGeometry = true,
                                  QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature( QgsFeature& feature ) = 0;
+    virtual bool nextFeature( QgsFeature& feature ) = 0;
 
     /**
      * Get feature type.
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /**
      * Returns the default value for field specified by @c fieldId
      */
-    virtual QVariant getDefaultValue( int fieldId );
+    virtual QVariant defaultValue( int fieldId );
 
     /**
      * Changes geometries of existing features
@@ -271,9 +271,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QMap<QString, int> fieldNameMap() const;
 
     /**
-     * Return list of indexes to fetch all attributes in getNextFeature()
+     * Return list of indexes to fetch all attributes in nextFeature()
      */
-    virtual QgsAttributeList allAttributesList();
+    virtual QgsAttributeList attributeIndexes();
 
     /**Returns the names of the numerical types*/
     const QgsNativeTypeMap &supportedNativeTypes() const;
@@ -298,10 +298,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** should provider fetch also features that don't have geometry? */
     bool mFetchFeaturesWithoutGeom;
 
-    /**True if geometry should be added to the features in getNextFeature calls*/
+    /**True if geometry should be added to the features in nextFeature calls*/
     bool mFetchGeom;
 
-    /**List of attribute indices to fetch with getNextFeature calls*/
+    /**List of attribute indices to fetch with nextFeature calls*/
     QgsAttributeList mAttributesToFetch;
 
     /**The names of the providers native types*/
