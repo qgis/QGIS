@@ -328,11 +328,13 @@ void QgsAttributeDialog::accept()
     QString myFieldName = theField.name();
     bool myFlag = false;
     QString myFieldValue;
+    bool modified = true;
 
     QLineEdit *le = dynamic_cast<QLineEdit *>( mpWidgets.value( myIndex ) );
     if ( le )
     {
       myFieldValue = le->text();
+      modified = le->isModified();
     }
 
     QComboBox *cb = dynamic_cast<QComboBox *>( mpWidgets.value( myIndex ) );
@@ -383,9 +385,13 @@ void QgsAttributeDialog::accept()
         {
           mpFeature->changeAttribute( it.key(), QVariant( myIntValue ) );
         }
-        else
+        else if ( modified )
         {
           mpFeature->changeAttribute( it.key(), QVariant( QString::null ) );
+        }
+        else
+        {
+          mpFeature->changeAttribute( it.key(), myFieldValue );
         }
       }
       break;
@@ -396,9 +402,13 @@ void QgsAttributeDialog::accept()
         {
           mpFeature->changeAttribute( it.key(), QVariant( myDblValue ) );
         }
-        else
+        else if ( modified )
         {
           mpFeature->changeAttribute( it.key(), QVariant( QString::null ) );
+        }
+        else
+        {
+          mpFeature->changeAttribute( it.key(), myFieldValue );
         }
       }
       break;
