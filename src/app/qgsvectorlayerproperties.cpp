@@ -501,12 +501,13 @@ void QgsVectorLayerProperties::apply()
   {
     int idx = tblAttributes->item( i, 0 )->text().toInt();
     const QgsField &field = layer->pendingFields()[idx];
-    QgsVectorLayer::EditType editType = layer->editType( idx );
 
     QComboBox *cb = dynamic_cast<QComboBox*>( tblAttributes->cellWidget( i, 6 ) );
     if ( !cb )
       continue;
-    layer->setEditType( idx, ( QgsVectorLayer::EditType ) cb->itemData( cb->currentIndex() ).toInt() );
+
+    QgsVectorLayer::EditType editType = ( QgsVectorLayer::EditType ) cb->itemData( cb->currentIndex() ).toInt();
+    layer->setEditType( idx, editType );
 
     if ( editType == QgsVectorLayer::ValueMap )
     {
