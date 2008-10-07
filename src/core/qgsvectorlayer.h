@@ -222,11 +222,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                  bool fetchGeometry = true,
                  bool useIntersect = false );
 
-    bool getNextFeature( QgsFeature& feature );
+    bool nextFeature( QgsFeature& feature );
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return 0 in case of success*/
-    int getFeatureAtId( int featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    int featureAtId( int featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
         @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.

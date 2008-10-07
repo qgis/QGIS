@@ -60,7 +60,7 @@ QString QgsMemoryProvider::storageType() const
   return "Memory storage";
 }
 
-bool QgsMemoryProvider::getNextFeature( QgsFeature& feature )
+bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
 {
   bool hasFeature = FALSE;
 
@@ -134,7 +134,7 @@ bool QgsMemoryProvider::getNextFeature( QgsFeature& feature )
 }
 
 
-bool QgsMemoryProvider::getFeatureAtId( int featureId,
+bool QgsMemoryProvider::featureAtId( int featureId,
                                         QgsFeature& feature,
                                         bool fetchGeometry,
                                         QgsAttributeList fetchAttributes )

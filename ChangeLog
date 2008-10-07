@@ -281,7 +281,7 @@ of layers and tweak their symbology etc without having delays
 caused by rerendering everything after each change you make.
 
 2004-11-16 [larsl] 0.5.0devel24
-** Reimplemented getNextFeature() so features are visible again
+** Reimplemented nextFeature() so features are visible again
 
 2004-11-13 [larsl] 0.5.0devel23
 ** Changed QgsIdentifyResults and QgsVectorLayer to show all attributes
@@ -312,7 +312,7 @@ qgis to crash.
    a QgsFeature, fixed it
 
 2004-10-29 [larsl] 0.5.0devel16
-** Added getDefaultValue() in QgsVectorLayer and QgsVectorDataProvider,
+** Added defaultValue() in QgsVectorLayer and QgsVectorDataProvider,
    implemented it in the GPX provider
 
 2004-10-29 [stevehalasz] 0.5.0devel15
@@ -911,7 +911,7 @@ will hopefully speed up compile times for folks building on p133's. Changed
 splash image to the fluffball ready for 0.3 release.
 
 2004-05-19 [larsl] 0.2.0devel27
-** Implemented getNextFeature(list<int>&) in the GPX provider
+** Implemented nextFeature(list<int>&) in the GPX provider
 
 2004-05-18 [gsherman] 0.2.0devel26
 ** Saved the qgsappbase.ui and the qgsprojectpropertiesbase.ui files (modified

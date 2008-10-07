@@ -565,7 +565,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRect rect
   mFetching = true;
 }
 
-bool QgsPostgresProvider::getNextFeature( QgsFeature& feature )
+bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 {
   QString cursorName = QString( "qgisf%1" ).arg( providerId );
 
@@ -624,7 +624,7 @@ bool QgsPostgresProvider::getNextFeature( QgsFeature& feature )
   return true;
 }
 
-bool QgsPostgresProvider::getFeatureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   QString cursorName = QString( "qgisfid%1" ).arg( providerId );
   if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, QString( "%2=%3" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId ) ) )
@@ -1612,7 +1612,7 @@ bool QgsPostgresProvider::isValid()
   return valid;
 }
 
-QVariant QgsPostgresProvider::getDefaultValue( QString fieldName )
+QVariant QgsPostgresProvider::defaultValue( QString fieldName )
 {
   // Get the default column value from the Postgres information
   // schema. If there is no default we return an empty string.
@@ -1639,11 +1639,11 @@ QVariant QgsPostgresProvider::getDefaultValue( QString fieldName )
   return defaultValue;
 }
 
-QVariant QgsPostgresProvider::getDefaultValue( int fieldId )
+QVariant QgsPostgresProvider::defaultValue( int fieldId )
 {
   try
   {
-    return getDefaultValue( field( fieldId ).name() );
+    return defaultValue( field( fieldId ).name() );
   }
   catch ( PGFieldNotFound )
   {
@@ -1754,7 +1754,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
     const QgsAttributeMap &attributevec = flist[0].attributeMap();
 
-    QStringList defaultValue;
+    QStringList defaultValues;
     QList<int> fieldId;
 
     // look for unique attribute values to place in statement instead of passing as parameter
@@ -1787,7 +1787,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
       insert += "," + quotedIdentifier( fieldname );
 
-      QString defVal = getDefaultValue( it.key() ).toString();
+      QString defVal = defaultValue( it.key() ).toString();
 
       if ( i == flist.size() )
       {
@@ -1810,8 +1810,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       else
       {
         // value is not unique => add parameter
-        values += QString( ",$%1" ).arg( defaultValue.size() + 3 );
-        defaultValue.append( defVal );
+        values += QString( ",$%1" ).arg( defaultValues.size() + 3 );
+        defaultValues.append( defVal );
         fieldId.append( it.key() );
       }
     }
@@ -1824,7 +1824,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       throw PGException( stmt );
     PQclear( stmt );
 
-    QString keyDefault = getDefaultValue( primaryKey ).toString();
+    QString keyDefault = defaultValue( primaryKey ).toString();
     int primaryKeyHighWater = -1;
     if ( keyDefault.isNull() )
       primaryKeyHighWater = maxPrimaryKeyValue();
@@ -1854,7 +1854,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
-        params << paramValue( attributevec[ fieldId[i] ].toString(), defaultValue[i] );
+        params << paramValue( attributevec[ fieldId[i] ].toString(), defaultValues[i] );
 
       PGresult *result = connectionRW->PQexecPrepared( "addfeatures", params );
       if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
@@ -2155,7 +2155,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   return returnvalue;
 }
 
-QgsAttributeList QgsPostgresProvider::allAttributesList()
+QgsAttributeList QgsPostgresProvider::attributeIndexes()
 {
   QgsAttributeList attributes;
   for ( QgsFieldMap::const_iterator it = attributeFields.constBegin(); it != attributeFields.constEnd(); ++it )

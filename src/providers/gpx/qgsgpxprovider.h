@@ -51,7 +51,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      * @param fetchAttributes list of attributes which should be fetched
      * @param rect spatial filter
      * @param fetchGeometry true if the feature geometry should be fetched
@@ -68,7 +68,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature( QgsFeature& feature );
+    virtual bool nextFeature( QgsFeature& feature );
 
     /**
      * Get feature type.
@@ -120,7 +120,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     /**
      * Returns the default value for field specified by @c fieldId
      */
-    virtual QVariant getDefaultValue( int fieldId );
+    virtual QVariant defaultValue( int fieldId );
 
 
     /* Functions inherited from QgsDataProvider */

@@ -171,7 +171,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       const QgsFieldMap fields = vlayer->pendingFields();
       for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
       {
-        f->addAttribute( it.key(), provider->getDefaultValue( it.key() ) );
+        f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
       }
 
       // show the dialog to enter attribute values
@@ -441,7 +441,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       const QgsFieldMap fields = vlayer->pendingFields();
       for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
       {
-        f->addAttribute( it.key(), provider->getDefaultValue( it.key() ) );
+        f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
       }
 
       QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );

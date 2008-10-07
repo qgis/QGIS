@@ -98,7 +98,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, Qgs
     // Get the data provider
     QgsVectorDataProvider* dataProvider = dynamic_cast<QgsVectorLayer*>( layer )->dataProvider();
     // Fetch the attribute list for the layer
-    QgsAttributeList allAttributes = dataProvider->allAttributesList();
+    QgsAttributeList allAttributes = dataProvider->attributeIndexes();
     // Select all attributes within the search radius
     dataProvider->select( allAttributes, r, true, true );
     // Feature to hold the results of the fetch
@@ -107,7 +107,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, Qgs
     const QgsFieldMap& fields = dataProvider->fields();
     // Get the label (display) field for the layer
     QString fieldIndex = dynamic_cast<QgsVectorLayer*>( layer )->displayField();
-    if ( dataProvider->getNextFeature( feature ) )
+    if ( dataProvider->nextFeature( feature ) )
     {
       // if we get a feature, pull out the display field and set the maptip text to its value
       QgsAttributeMap attributes = feature.attributeMap();

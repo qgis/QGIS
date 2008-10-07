@@ -314,7 +314,7 @@ void QgsVectorLayer::drawLabels( QPainter * p, const QgsRect& viewExtent, const 
       select( attributes, viewExtent );
 
       QgsFeature fet;
-      while ( getNextFeature( fet ) )
+      while ( nextFeature( fet ) )
       {
         if ( mRenderer->willRenderFeature( &fet ) )
         {
@@ -715,7 +715,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     try
     {
-      while ( getNextFeature( fet ) )
+      while ( nextFeature( fet ) )
       {
 
         if ( rendererContext.renderingStopped() )
@@ -841,7 +841,7 @@ void QgsVectorLayer::select( QgsRect & rect, bool lock )
   select( QgsAttributeList(), rect, false, true );
 
   QgsFeature f;
-  while ( getNextFeature( f ) )
+  while ( nextFeature( f ) )
   {
     select( f.featureId(), false ); // don't emit signal (not to redraw it everytime)
   }
@@ -859,7 +859,7 @@ void QgsVectorLayer::invertSelection()
   select( QgsAttributeList(), QgsRect(), false );
 
   QgsFeature fet;
-  while ( getNextFeature( fet ) )
+  while ( nextFeature( fet ) )
   {
     select( fet.featureId(), false ); // don't emit signal
   }
@@ -992,7 +992,7 @@ QgsRect QgsVectorLayer::boundingBoxOfSelected()
   retval.setMinimal();
 
   QgsFeature fet;
-  while ( getNextFeature( fet ) )
+  while ( nextFeature( fet ) )
   {
     if ( mSelectedFeatureIds.contains( fet.featureId() ) )
     {
@@ -1082,7 +1082,7 @@ void QgsVectorLayer::updateExtents()
     select( QgsAttributeList(), QgsRect(), true );
 
     QgsFeature fet;
-    while ( getNextFeature( fet ) )
+    while ( nextFeature( fet ) )
     {
       if ( fet.geometry() )
       {
@@ -1196,7 +1196,7 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRect rect, bool fet
   }
 }
 
-bool QgsVectorLayer::getNextFeature( QgsFeature &f )
+bool QgsVectorLayer::nextFeature( QgsFeature &f )
 {
   if ( !mFetching )
     return false;
@@ -1249,7 +1249,7 @@ bool QgsVectorLayer::getNextFeature( QgsFeature &f )
           {
             // retrieve attributes from provider
             QgsFeature tmp;
-            mDataProvider->getFeatureAtId( fid, tmp, false, mDataProvider->allAttributesList() );
+            mDataProvider->featureAtId( fid, tmp, false, mDataProvider->attributeIndexes() );
             updateFeatureAttributes( tmp );
             f.setAttributeMap( tmp.attributeMap() );
           }
@@ -1295,7 +1295,7 @@ bool QgsVectorLayer::getNextFeature( QgsFeature &f )
     // no more added features
   }
 
-  while ( dataProvider()->getNextFeature( f ) )
+  while ( dataProvider()->nextFeature( f ) )
   {
     if ( mFetchConsidered.contains( f.featureId() ) )
       continue;
@@ -1311,7 +1311,7 @@ bool QgsVectorLayer::getNextFeature( QgsFeature &f )
   return false;
 }
 
-int QgsVectorLayer::getFeatureAtId( int featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
+int QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
 {
   if ( !mDataProvider )
     return 1;
@@ -1348,7 +1348,7 @@ int QgsVectorLayer::getFeatureAtId( int featureId, QgsFeature& f, bool fetchGeom
       {
         // retrieve attributes from provider
         QgsFeature tmp;
-        mDataProvider->getFeatureAtId( featureId, tmp, false, mDataProvider->allAttributesList() );
+        mDataProvider->featureAtId( featureId, tmp, false, mDataProvider->attributeIndexes() );
         updateFeatureAttributes( tmp );
         f.setAttributeMap( tmp.attributeMap() );
       }
@@ -1376,7 +1376,7 @@ int QgsVectorLayer::getFeatureAtId( int featureId, QgsFeature& f, bool fetchGeom
   // regular features
   if ( fetchAttributes )
   {
-    if ( mDataProvider->getFeatureAtId( featureId, f, fetchGeometries, mDataProvider->allAttributesList() ) )
+    if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, mDataProvider->attributeIndexes() ) )
     {
       updateFeatureAttributes( f );
       return 0;
@@ -1384,7 +1384,7 @@ int QgsVectorLayer::getFeatureAtId( int featureId, QgsFeature& f, bool fetchGeom
   }
   else
   {
-    if ( mDataProvider->getFeatureAtId( featureId, f, fetchGeometries, QgsAttributeList() ) )
+    if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, QgsAttributeList() ) )
     {
       return 0;
     }
@@ -1569,7 +1569,7 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
   select( QgsAttributeList(), bBox, true, true );
 
   QgsFeature f;
-  while ( getNextFeature( f ) )
+  while ( nextFeature( f ) )
   {
     addRingReturnCode = f.geometry()->addRing( ring );
     if ( addRingReturnCode == 0 )
@@ -1714,7 +1714,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
     select( QgsAttributeList(), bBox, true, true );
 
     QgsFeature f;
-    while ( getNextFeature( f ) )
+    while ( nextFeature( f ) )
       featureList << QgsFeature( f );
   }
 
@@ -1779,7 +1779,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
   select( QgsAttributeList(), geomBBox, true, true );
 
   QgsFeature f;
-  while ( getNextFeature( f ) )
+  while ( nextFeature( f ) )
   {
     //call geometry->makeDifference for each feature
     QgsGeometry *currentGeom = f.geometry();
@@ -2573,7 +2573,7 @@ const QgsFieldMap &QgsVectorLayer::pendingFields()
 
 QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 {
-  return isEditable() ? mUpdatedFields.keys() : mDataProvider->allAttributesList();
+  return isEditable() ? mUpdatedFields.keys() : mDataProvider->attributeIndexes();
 }
 
 int QgsVectorLayer::pendingFeatureCount()
@@ -2942,7 +2942,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 
   QgsFeatureList features;
 
-  QgsAttributeList allAttrs = mDataProvider->allAttributesList();
+  QgsAttributeList allAttrs = mDataProvider->attributeIndexes();
 
   for ( QgsFeatureIds::iterator it = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it )
   {
@@ -2964,7 +2964,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
     // if the geometry is not newly added, get it from provider
     if ( !selectionIsAddedFeature )
     {
-      mDataProvider->getFeatureAtId( *it, feat, true, allAttrs );
+      mDataProvider->featureAtId( *it, feat, true, allAttrs );
     }
 
     updateFeatureAttributes( feat );
@@ -3124,7 +3124,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
   int n = 0;
   QgsFeature f;
-  while ( getNextFeature( f ) )
+  while ( nextFeature( f ) )
   {
     snapToGeometry( startPoint, f.featureId(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
   }

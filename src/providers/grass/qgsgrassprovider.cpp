@@ -287,7 +287,7 @@ QString QgsGrassProvider::storageType() const
   return "GRASS (Geographic Resources Analysis and Support System) file";
 }
 
-bool QgsGrassProvider::getNextFeature( QgsFeature& feature )
+bool QgsGrassProvider::nextFeature( QgsFeature& feature )
 {
   int cat, type, id;
   unsigned char *wkb;

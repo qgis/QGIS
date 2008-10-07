@@ -46,7 +46,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
 
     /* Inherited from QgsVectorDataProvider */
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
      *  @param rect spatial filter
      *  @param fetchGeometry true if the feature geometry should be fetched
@@ -63,7 +63,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature( QgsFeature& feature );
+    virtual bool nextFeature( QgsFeature& feature );
 
     QGis::WKBTYPE geometryType() const;
     long featureCount() const;
@@ -114,7 +114,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
     /**Vector where the ids of the selected features are inserted*/
     QList<int> mSelectedFeatures;
-    /**Iterator on the feature vector for use in begin(), getNextFeature(), etc...*/
+    /**Iterator on the feature vector for use in begin(), nextFeature(), etc...*/
     QList<int>::iterator mFeatureIterator;
     /**Vector where the features are inserted*/
     QList<QgsFeature*> mFeatures;

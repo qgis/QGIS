@@ -44,7 +44,7 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       virtual QString storageType() const;
 
-      /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+      /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
        * @param fetchAttributes list of attributes which should be fetched
        * @param rect spatial filter
        * @param fetchGeometry true if the feature geometry should be fetched
@@ -70,7 +70,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param fetchAttributes a list containing the indexes of the attribute fields to copy
        * @return True when feature was found, otherwise false
        */
-      virtual bool getFeatureAtId(int featureId,
+      virtual bool featureAtId(int featureId,
                                   QgsFeature& feature,
                                   bool fetchGeometry = true,
                                   QList<int> fetchAttributes = QList<int>());
@@ -80,7 +80,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param feature feature which will receive data from the provider
        * @return true when there was a feature to fetch, false when end was hit
        */
-      virtual bool getNextFeature(QgsFeature& feature) = 0;
+      virtual bool nextFeature(QgsFeature& feature) = 0;
 
       /**
        * Get feature type.
@@ -180,7 +180,7 @@ class QgsVectorDataProvider : QgsDataProvider
       /**
        * Returns the default value for field specified by @c fieldId
        */
-      virtual QVariant getDefaultValue(int fieldId);
+      virtual QVariant defaultValue(int fieldId);
 
       /**
        * Changes geometries of existing features
@@ -224,9 +224,9 @@ class QgsVectorDataProvider : QgsDataProvider
       int fieldNameIndex(const QString& fieldName) const;
       
       /**
-       * Return list of indexes to fetch all attributes in getNextFeature()
+       * Return list of indexes to fetch all attributes in nextFeature()
        */
-      QList<int> allAttributesList();
+      QList<int> attributeIndexes();
 
       /**Returns the names of the numerical types*/
       const QMap<QString,QVariant::Type> &supportedNativeTypes() const;

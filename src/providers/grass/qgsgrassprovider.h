@@ -46,7 +46,7 @@ class QgsField;
  * is set to true. All data loaded from the map to QgsGrassProvider remain unchanged
  * untill closeEdit is called.
  * During editing:
- * getNextFeature() and getFirstFeature() returns 0
+ * nextFeature() and getFirstFeature() returns 0
  * featureCount() returns 0
  * fieldCount() returns original (old) number of fields
  */
@@ -96,7 +96,7 @@ struct GMAP
   struct  Map_info *map; // map header
   int     nUsers;        // number layers using this map
   int     update;        // true if the map is opened in update mode -> disabled standard reading
-  // through getNextFeature(), featureCount() returns 0
+  // through nextFeature(), featureCount() returns 0
   QDateTime lastModified; // last modified time of the vector directory, when the map was opened
   QDateTime lastAttributesModified; // last modified time of the vector 'dbln' file, when the map was opened
   // or attributes were updated. The 'dbln' file is updated by v.to.db etc.
@@ -122,7 +122,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     virtual QString storageType() const;
 
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to getNextFeature.
+    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
      *  @param rect spatial filter
      *  @param fetchGeometry true if the feature geometry should be fetched
@@ -141,7 +141,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit
      */
-    virtual bool getNextFeature( QgsFeature& feature );
+    virtual bool nextFeature( QgsFeature& feature );
 
 
     /**

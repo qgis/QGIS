@@ -88,7 +88,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
   QgsFeature cf;
   QgsFeature f;
-  while ( vlayer->getNextFeature( f ) )
+  while ( vlayer->nextFeature( f ) )
   {
     if ( f.geometry() )
     {

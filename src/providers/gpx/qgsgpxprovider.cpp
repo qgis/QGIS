@@ -126,7 +126,7 @@ int QgsGPXProvider::capabilities() const
          QgsVectorDataProvider::ChangeAttributeValues;
 }
 
-bool QgsGPXProvider::getNextFeature( QgsFeature& feature )
+bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 {
   bool result = false;
 
@@ -765,7 +765,7 @@ void QgsGPXProvider::changeAttributeValues( GPSObject& obj, const QgsAttributeMa
 }
 
 
-QVariant QgsGPXProvider::getDefaultValue( int fieldId )
+QVariant QgsGPXProvider::defaultValue( int fieldId )
 {
   if ( fieldId == SrcAttr )
     return tr( "Digitized in QGIS" );

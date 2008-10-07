@@ -375,7 +375,7 @@ void QgsAttributeTableDisplay::doSearch( QString searchString )
   mLayer->select( mLayer->pendingAllAttributesList(), QgsRect(), false );
 
   QgsFeature f;
-  while ( mLayer->getNextFeature( f ) )
+  while ( mLayer->nextFeature( f ) )
   {
     if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap() ) )
     {
