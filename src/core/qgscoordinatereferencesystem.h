@@ -64,6 +64,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! Use this constructor when you want to create a CRS object using
      *  a postgis SRID, an EPSG id or a QGIS CRS_ID.
+     * @note We encourage you to use EPSG, WKT or Proj4 to describe CRS's in your code
+     * wherever possible. QGSI CRS_IDs are not guaranteed to be permanent / involatile.
      * @param theId The ID no valid for the chosen coordinate system id type
      * @param theType One of the types described in QgsCoordinateReferenceSystem::CRS_TYPE
      */
