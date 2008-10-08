@@ -76,9 +76,9 @@ somecommand to be pasted
 = General Build Notes = 
 
 At version 0.8.1 QGIS no longer uses the autotools for building. QGIS, like a
-number of major projects (eg. KDE 4.0), now uses cmake for building from
-source. The configure script in this directory simply checks for the existence
-of cmake and provides some clues to build QGIS.
+number of major projects (eg. KDE 4.0), now uses cmake (http://www.cmake.org)
+for building from source. The configure script in this directory simply checks
+for the existence of cmake and provides some clues to build QGIS.
 
 For complete information, see the wiki at:
    http://wiki.qgis.org/qgiswiki/Building_with_CMake
@@ -94,16 +94,15 @@ For complete information, see the wiki at:
  * Proj >= ? (known to work with 4.4.x)
  * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
  * Sqlite3 >= ? (probably 3.0.0)
- * GDAL/OGR >= ? (1.2.x should work)
+ * GDAL/OGR >= 1.4.x (1.2.x should work)
 
 '''Optional dependencies:'''
  * for GRASS plugin - GRASS >= 6.0.0
  * for georeferencer - GSL >= ? (works with 1.8)
- * for postgis support and SPIT plugin - PostgreSQL >= ?
+ * for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
  * for gps plugin - expat >= ? (1.95 is OK)
- * for mapserver export and PyQGIS - Python >= ? (probably 2.3)
- * for PyQGIS - SIP >= 4.5, PyQt >= 4.1
-
+ * for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
+ * for PyQGIS - SIP >= 4.5, PyQt >= must match Qt version
 '''Recommended runtime deps:'''
  * for gps plugin - gpsbabel
 
