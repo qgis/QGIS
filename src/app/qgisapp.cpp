@@ -3133,6 +3133,7 @@ bool QgisApp::fileSave()
       QMessageBox::critical( this,
                              tr( "Unable to save project" ),
                              tr( "Unable to save project to " ) + QgsProject::instance()->fileName() );
+      return false;
     }
   }
   catch ( std::exception & e )
@@ -3140,6 +3141,7 @@ bool QgisApp::fileSave()
     QMessageBox::critical( this,
                            tr( "Unable to save project " ) + QgsProject::instance()->fileName(),
                            QString::fromLocal8Bit( e.what() ) );
+    return false;
   }
   return true;
 } // QgisApp::fileSave
