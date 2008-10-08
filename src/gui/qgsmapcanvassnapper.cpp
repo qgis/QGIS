@@ -48,12 +48,13 @@ QgsMapCanvasSnapper::~QgsMapCanvasSnapper()
 void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
 {
   mMapCanvas = canvas;
+  delete mSnapper;
   if ( mMapCanvas )
   {
     mSnapper = new QgsSnapper( canvas->mapRenderer() );
   }
   else
-  {
+  { 
     mSnapper = 0;
   }
 }
