@@ -376,8 +376,9 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
     crsKey = "CRS";
   }
 
-  QString url = baseUrl;
+  QString url = mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref;
 
+  url += "?";
   url += "SERVICE=WMS";
   url += "&";
   url += "VERSION=" + mCapabilities.version;
