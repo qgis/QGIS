@@ -1015,6 +1015,18 @@ bool QgsProject::write()
   doc->save( projectFileStream, 4 );  // save as utf-8
   imp_->file.close();
 
+  // check if the text stream had no error - if it does
+  // the user will get a message so they can try to resolve the 
+  // situation e.g. by saving project to a volume with more space
+  //
+  if ( projectFileStream.pos() == -1  || imp_->file.error() != QFile::NoError)
+  {
+    throw QgsIOException( QObject::tr( "Unable to save to file. Your project "
+          "may be corrupted on disk. Try clearing some space on the volume and "
+          "check file permissions before pressing save again." ) +
+        imp_->file.fileName() );
+    return false;
+  }
 
   dirty( false );               // reset to pristine state
 
