@@ -71,7 +71,10 @@ class QgsGeometry
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * wkbBuffer();
+    SIP_PYOBJECT wkbBuffer();
+%MethodCode
+  sipRes = PyString_FromStringAndSize(sipCpp->wkbBuffer(), sipCpp->wkbSize());
+%End
     
     /** 
        Returns the size of the WKB in wkbBuffer().
