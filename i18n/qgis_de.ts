@@ -1351,7 +1351,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1 Check file permissions and retry.</source>
-        <translation type="unfinished">FEHLER: Konnte die Datei %1 für den voreingestellten Stil nicht erzeugen.  Bitte prüfen Sie die Zugriffrechte vor einem erneuten Versuch.</translation>
+        <translation type="unfinished">FEHLER: Konnte die Datei %1 für den voreingestellten Stil nicht erzeugen.  Bitte überprüfen Sie die Zugriffrechte vor einem erneuten Versuch.</translation>
     </message>
     <message>
         <source>Coordinate Capture</source>
@@ -1411,19 +1411,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Loading style file </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Laden der Stildatei </translation>
     </message>
     <message>
         <source> failed because:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">schlug fehl, weil:</translation>
     </message>
     <message>
         <source>Could not save symbology because:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konnte Symbolik nicht speichern, weil:</translation>
     </message>
     <message>
         <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konnte nicht in Datei speichern. Ihr Projekt könnte auf der Festplatte defekt sein.  Versuchen Sie etwas Platz freizumachen und überprüfen Sie vor einem erneuten Versuch die Zugriffsrechte.</translation>
     </message>
 </context>
 <context>
@@ -5042,7 +5042,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
-        <translation>Verbindung zu %1 auf %2 ist fehlgeschlagen. Entweder ist die Datenbank abgeschaltet oder Ihre Einstellungen sind falsch. %3 Bitte überprüfen Sie den Benutzernamen und das Passwort und probieren Sie es noch einmal. %4 Die Datenbank meldete folgendes:%5%6.</translation>
+        <translation>Verbindung zu %1 auf %2 ist fehlgeschlagen. Entweder ist die Datenbank abgeschaltet oder Ihre Einstellungen sind falsch. %3Bitte überprüfen Sie den Benutzernamen und das Passwort und probieren Sie es noch einmal. %4 Die Datenbank meldete folgendes:%5%6.</translation>
     </message>
     <message>
         <source>Wildcard</source>
@@ -13054,11 +13054,11 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>No renderer object</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kein Renderer-Objekt</translation>
     </message>
     <message>
         <source>Classification field not found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klassifikationsfeld nicht gefunden</translation>
     </message>
 </context>
 <context>
