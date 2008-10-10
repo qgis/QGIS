@@ -2324,10 +2324,6 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Loaded default style file from </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The directory containing your dataset needs to be writeable!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2445,6 +2441,22 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading style file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> failed because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save symbology because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19126,6 +19138,14 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>ERROR: %1 features not deleted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No renderer object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

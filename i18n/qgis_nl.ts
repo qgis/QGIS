@@ -1098,7 +1098,7 @@ Pythonkoppeling kan niet worden gebruikt.</translation>
     </message>
     <message>
         <source>Loaded default style file from </source>
-        <translation>Standaard stylebestand geladen van </translation>
+        <translation type="obsolete">Standaard stylebestand geladen van </translation>
     </message>
     <message>
         <source>Loads and displays delimited text files containing x,y coordinates</source>
@@ -1606,6 +1606,22 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading style file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> failed because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save symbology because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14362,6 +14378,14 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>ERROR: %1 features not deleted.</source>
         <translation>FOUT: %1 objecten niet verwijderd.</translation>
+    </message>
+    <message>
+        <source>No renderer object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -1295,7 +1295,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Loaded default style file from </source>
-        <translation>Standard Style geladen von </translation>
+        <translation type="obsolete">Standard Style geladen von </translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
@@ -1408,6 +1408,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation type="unfinished">Auswahl außerhalb des Koordinatensystems des Layers.</translation>
+    </message>
+    <message>
+        <source>Loading style file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> failed because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save symbology because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13035,6 +13051,14 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <source>ERROR: %1 features not deleted.</source>
         <translation type="unfinished">FEHLER: %1 Objekte nicht gelöscht.</translation>
+    </message>
+    <message>
+        <source>No renderer object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
