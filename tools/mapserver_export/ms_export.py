@@ -160,7 +160,7 @@ class Qgis2Map:
     # the project file doesn't contain the epsg id or proj4 text for 
     # the map apart from that defined in each layer
 
-    self.outFile.write("  PROJECTION\n")
+    self.outFile.write("  CRS\n")
 
     # Get the proj4 text from the first map layer's destination SRS
     destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
@@ -353,7 +353,7 @@ class Qgis2Map:
            float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
       self.outFile.write("    TRANSPARENCY " + str(opacity) + "\n")
 
-      self.outFile.write("    PROJECTION\n")
+      self.outFile.write("    CRS\n")
       # Get the destination srs for this layer and use it to create
       # the projection section
       destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
