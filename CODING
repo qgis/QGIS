@@ -1,4 +1,5 @@
-%!encoding: iso-8859-1
+Quantum GIS (QGIS)
+Developers guide for QGIS
 
 
 ------------------------------------------------------------------------
@@ -17,17 +18,19 @@
       1.3.2. Standard Header and License
       1.3.3. CVS Keyword
     1.4. Variable Names
-    1.5. Editing
-      1.5.1. Tabs
-      1.5.2. Indentation
-      1.5.3. Braces
-    1.6. Coding Style
-      1.6.1. Where-ever Possible Generalize Code
-      1.6.2. Prefer Having Constants First in Predicates
-      1.6.3. Whitespace Can Be Your Friend
-      1.6.4. Add Trailing Identifying Comments
-      1.6.5. Use Braces Even for Single Line Statements
-      1.6.6. Book recommendations
+    1.5. Enumerated Types
+    1.6. Global Constants
+    1.7. Editing
+      1.7.1. Tabs
+      1.7.2. Indentation
+      1.7.3. Braces
+    1.8. Coding Style
+      1.8.1. Where-ever Possible Generalize Code
+      1.8.2. Prefer Having Constants First in Predicates
+      1.8.3. Whitespace Can Be Your Friend
+      1.8.4. Add Trailing Identifying Comments
+      1.8.5. Use Braces Even for Single Line Statements
+      1.8.6. Book recommendations
   2. SVN Access
     2.1. Accessing the Repository
     2.2. Anonymous Access
@@ -52,7 +55,8 @@
     3.3. Adding your unit test to CMakeLists.txt
     3.4. Building your unit test
     3.5. Run your tests
-  4. Authors
+  4. HIG (Human Interface Guidelines)
+  5. Authors
 
 
 ------------------------------------------------------------------------
@@ -204,26 +208,54 @@ Variable names begin with a lower case letter and are formed using mixed case.
   	currentExtent
 
 
+	1.5. Enumerated Types
+	=====================
 
-	1.5. Editing
+Enumerated types should be named in CamelCase with a leading capital e.g.:
+
+
+      enum UnitType
+      {
+        Meters,
+        Feet,
+        Degrees,
+        UnknownUnit
+      } ;
+
+
+Do not use generic type names that will conflict with other types. e.g. use "UnkownUnit" rather 
+than "Unknown"
+
+
+	1.6. Global Constants
+	=====================
+
+Global constants should be written in upper case underscore separated e.g.:
+
+
+  const long GEOCRS_ID = 3344;
+
+
+
+	1.7. Editing
 	============
 
 Any text editor/IDE can be used to edit QGIS code, providing the following requirements are met.
 
 
-		1.5.1. Tabs
+		1.7.1. Tabs
 		===========
 
 Set your editor to emulate tabs with spaces. Tab spacing should be set to 2 spaces.
 
 
-		1.5.2. Indentation
+		1.7.2. Indentation
 		==================
 
 Source code should be indented to improve readability. There is a .indent.pro file in the QGIS src directory that contains the switches to be used when indenting code using the GNU indent program. If you don't use GNU indent, you should emulate these settings.
 
 
-		1.5.3. Braces
+		1.7.3. Braces
 		=============
 
 Braces should start on the line following the expression:
@@ -241,13 +273,13 @@ Braces should start on the line following the expression:
 
 
 
-	1.6. Coding Style
+	1.8. Coding Style
 	=================
 
 Here are described some programming hints and tips that will hopefully reduce errors, development time, and maintenance.
 
 
-		1.6.1. Where-ever Possible Generalize Code
+		1.8.1. Where-ever Possible Generalize Code
 		==========================================
 
 
@@ -262,7 +294,7 @@ This will:
 maintain for others
 
 
-		1.6.2. Prefer Having Constants First in Predicates
+		1.8.2. Prefer Having Constants First in Predicates
 		==================================================
 
 Prefer to put constants first in predicates. 
@@ -276,7 +308,7 @@ logic bugs.  The compiler will generate an error if you accidentally use "=" ins
 inherently cannot be assigned values.
 
 
-		1.6.3. Whitespace Can Be Your Friend
+		1.8.3. Whitespace Can Be Your Friend
 		====================================
 
 Adding spaces between operators, statements, and functions makes it easier for humans to parse code.
@@ -294,7 +326,7 @@ or this:
 
 
 
-		1.6.4. Add Trailing Identifying Comments
+		1.8.4. Add Trailing Identifying Comments
 		========================================
 
 Adding comments at the end of function, struct and class implementations makes it easier to find them later.
@@ -314,7 +346,7 @@ E.g.,
 
 
 
-		1.6.5. Use Braces Even for Single Line Statements
+		1.8.5. Use Braces Even for Single Line Statements
 		=================================================
 
 Using braces for code in if/then blocks or similar code structures even for single line statements means that adding another 
@@ -346,13 +378,16 @@ So, prefer this:
 
 
 
-		1.6.6. Book recommendations
+		1.8.6. Book recommendations
 		===========================
 
  * Effective C++ (http://www.awprofessional.com/title/0321334876), Scott Meyers
  * More Effective C++ (http://www.awprofessional.com/bookstore/product.asp?isbn=020163371X&rl=1), Scott Meyers
  * Effective STL (http://www.awprofessional.com/title/0201749629), Scott Meyers
  * Design Patterns (http://www.awprofessional.com/title/0201634988), GoF
+
+You should also really read this article from Qt Quarterly on 
+http://doc.trolltech.com/qq/qq13-apis.html designing Qt style (APIs)
 
 
   2. SVN Access
@@ -520,10 +555,10 @@ deal with the patches that are sent to use easily.
 		========================
 
 If the patch is a fix for a specific bug, please name the file with the bug number in it e.g. 
-bug777fix.diff, and attach it to the original bug report in trac (https://svn.qgis.org/trac).
+bug777fix.diff, and attach it to the original bug report in trac (https://trac.osgeo.org/qgis/).
 
 If the bug is an enhancement or new feature, its usually a good idea to create a ticket in 
-trac (https://svn.qgis.org/trac) first and then attach you 
+trac (https://trac.osgeo.org/qgis/) first and then attach you 
 
 
 		2.6.2. Create your patch in the top level QGIS source dir
@@ -1190,7 +1225,35 @@ CMakeLists.txt parts) are still being worked on so that the testing framework
 works in a truly platform way. I will update this document as things progress.
 
 
-  4. Authors
+  4. HIG (Human Interface Guidelines)
+  ===================================
+
+In order for all graphical user interface elements to appear consistant and 
+to all the user to instinctively use dialogs, it is important that the following 
+guidelines are followed in layout and design of GUIs.
+
+ 1. Group related elements using group boxes:
+   Try to identify elements that can be grouped together and then use 
+   group boxes with a label identify the topic of that group. 
+   Avoid using group boxes with only a single widget / item inside.
+ 2. Capitalise first letter only in group box labels:
+   Group box labels should be written as a phrase with leading capital letter,
+   and all remaing words written with lower case first letters 
+ 3. Do not end labels for widgets or group boxes with a colon:
+   Adding a colon causes visual noise and does not impart additional meaning,
+   so dont use them. An exception to this rule is when you have two labels 
+   next to each other e.g.: Label1 Plugin (Path:) Label2 [/path/to/plugins]
+ 4. Keep harmful actions away from harmless ones:
+   If you have actions for 'delete', 'remove' etc, try to impose adequate 
+   space between the harmful action and innocuous actions so that the users 
+   is less likely to inadvertantly click on the harmful action.
+ 5. Always use a QButtonBox for 'OK', 'Cancel' etc buttons:
+   Using a button box will ensure that the order of 'OK' and 'Cancel' etc, 
+   buttons is consistent with the operating system / locale / desktop 
+   environment that the user is using.
+
+
+  5. Authors
   ==========
 
  * Tim Sutton (author and editor)

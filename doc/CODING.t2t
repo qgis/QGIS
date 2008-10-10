@@ -147,6 +147,30 @@ Examples:
 	mapCanvas
 	currentExtent
 ```
+== Enumerated Types ==
+
+Enumerated types should be named in CamelCase with a leading capital e.g.:
+
+```    
+    enum UnitType
+    {
+      Meters,
+      Feet,
+      Degrees,
+      UnknownUnit
+    } ;
+```
+
+Do not use generic type names that will conflict with other types. e.g. use "UnkownUnit" rather 
+than "Unknown"
+
+== Global Constants ==
+
+Global constants should be written in upper case underscore separated e.g.:
+
+```
+const long GEOCRS_ID = 3344;
+```
 
 == Editing ==
 Any text editor/IDE can be used to edit QGIS code, providing the following requirements are met.
