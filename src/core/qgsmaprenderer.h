@@ -47,7 +47,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /**Output units for pen width and point marker width/height*/
     enum OUTPUT_UNITS
     {
-      MM,
+      MM, //millimeters
       PIXEL
       //MAP_UNITS probably supported in future versions
     };
@@ -83,8 +83,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Return the measuring object
     QgsDistanceArea* distArea() { return mDistArea; }
-    QGis::units mapUnits() const;
-    void setMapUnits( QGis::units u );
+    QGis::UnitType mapUnits() const;
+    void setMapUnits( QGis::UnitType u );
 
     //! sets whether map image will be for overview
     void setOverview( bool isOverview = true ) { mOverview = isOverview; }

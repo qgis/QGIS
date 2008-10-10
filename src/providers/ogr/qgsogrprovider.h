@@ -81,15 +81,15 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * @return True when feature was found, otherwise false
      */
     virtual bool featureAtId( int featureId,
-                                 QgsFeature& feature,
-                                 bool fetchGeometry = true,
-                                 QgsAttributeList fetchAttributes = QgsAttributeList() );
+                              QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WKBTYPE geometryType() const;
+    virtual QGis::WkbType geometryType() const;
 
     /** return the number of layers for the current data source
 

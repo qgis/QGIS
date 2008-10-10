@@ -44,7 +44,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     {
       DATABASE,
       LOCATION,
-      PROJECTION,
+      CRS,
       REGION,
       MAPSET,
       FINISH
@@ -104,7 +104,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Check location
     void checkLocation();
 
-    /***************** PROJECTION ****************/
+    /***************** CRS ****************/
     //! Set projection page, called when entered from location page
     void setProjectionPage();
 
@@ -118,7 +118,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void projRadioSwitched( );
 
     //! Set GRASS projection structures for currently selected projection
-    // or PROJECTION_XY if 'not defined' is selected
+    // or CRS_XY if 'not defined' is selected
     void setGrassProjection();
 
     /******************* REGION ******************/

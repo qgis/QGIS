@@ -24,11 +24,11 @@
 #include <QPainter>
 #include <QSvgRenderer>
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QObject( 0 ), QgsComposerItem( composition ), mRotation( 0.0 ), mMode( UNKNOWN ), mSvgCacheUpToDate( false ), mCachedDpi( 0 )
+QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QObject( 0 ), QgsComposerItem( composition ), mRotation( 0.0 ), mMode( Unknown ), mSvgCacheUpToDate( false ), mCachedDpi( 0 )
 {
 }
 
-QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mRotation( 0.0 ), mMode( UNKNOWN ), mSvgCacheUpToDate( false )
+QgsComposerPicture::QgsComposerPicture(): QgsComposerItem( 0 ), mRotation( 0.0 ), mMode( Unknown ), mSvgCacheUpToDate( false )
 {
 
 }
@@ -65,7 +65,7 @@ void QgsComposerPicture::paint( QPainter* painter, const QStyleOptionGraphicsIte
   painter->rotate( mRotation );
   drawBackground( painter );
 
-  if ( mMode != UNKNOWN )
+  if ( mMode != Unknown )
   {
     double widthRatio = mImage.width() / rect().width();
     double heightRatio = mImage.height() / rect().height();
@@ -98,7 +98,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
   mSourceFile.setFileName( path );
   if ( !mSourceFile.exists() )
   {
-    mMode = UNKNOWN;
+    mMode = Unknown;
   }
 
   QFileInfo sourceFileInfo( mSourceFile );
@@ -117,7 +117,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     }
     else
     {
-      mMode = UNKNOWN;
+      mMode = Unknown;
     }
   }
   else
@@ -130,7 +130,7 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     }
     else
     {
-      mMode = UNKNOWN;
+      mMode = Unknown;
     }
   }
   emit settingsChanged();

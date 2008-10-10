@@ -443,9 +443,6 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before getMetadata is called
 
-  QgsDebugMsg( "Raster initial CRS" );
-  mCRS->debugPrint();
-
   QString mySourceWKT = getProjectionWKT();
 
   QgsDebugMsg( "--------------------------------------------------------------------------------------" );
@@ -459,8 +456,6 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   {
     mCRS->validate();
   }
-  QgsDebugMsg( "Raster determined to have the following CRS" );
-  mCRS->debugPrint();
 
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zzooming in etc. so

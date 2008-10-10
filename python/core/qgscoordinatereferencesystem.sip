@@ -147,15 +147,6 @@ class QgsCoordinateReferenceSystem
          */
         long findMatchingProj();
          
-        /*! A string based associative array used for passing records around */
-        typedef QMap<QString, QString> RecordMap;
-        /*! Get a record from the srs.db or qgis.db backends, given an sql statment.
-         * @note only handles queries that return a single record.
-         * @note it will first try the system srs.db then the users qgis.db!
-         * @param QString The sql query to execute
-         * @return QMap An associative array of field name <-> value pairs
-         */
-         RecordMap getRecord(QString theSql);
         /*! Overloaded == operator used to compare to CRS's.
          *  Internally it will delegate to the equals method described below
          */
@@ -246,9 +237,9 @@ class QgsCoordinateReferenceSystem
          */
         bool geographicFlag () const;
         /*! Get the units that the projection is in
-         * @return QGis::units that gives the units for the coordinate system
+         * @return QGis::UnitType that gives the units for the coordinate system
          */
-        QGis::units mapUnits() const;
+        QGis::UnitType mapUnits() const;
 
         /*! Set the postgis srid for this srs
          * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)

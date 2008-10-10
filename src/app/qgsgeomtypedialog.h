@@ -31,7 +31,7 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
     QgsGeomTypeDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsGeomTypeDialog();
     /**Returns the selected geometry type*/
-    QGis::WKBTYPE selectedType() const;
+    QGis::WkbType selectedType() const;
     /**Appends the chosen attribute names and types to at*/
     void attributes( std::list<std::pair<QString, QString> >& at ) const;
     /**Returns the file format for storage*/

@@ -94,7 +94,7 @@ class CORE_EXPORT QgsRenderer
     static QColor mSelectionColor;
 
     /**Layer type*/
-    QGis::VectorType mVectorType;
+    QGis::GeometryType mGeometryType;
 
     /**Scales a brush to a given raster scale factor (e.g. for printing)*/
     void scaleBrush( QBrush& b, double rasterScaleFactor ) const;

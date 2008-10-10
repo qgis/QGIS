@@ -29,20 +29,20 @@ class CORE_EXPORT QGis
     // Version constants
     //
     // Version string
-    static const char* qgisVersion;
+    static const char* QGIS_VERSION;
     // Version number used for comparing versions using the "Check QGIS Version" function
-    static const int qgisVersionInt;
+    static const int QGIS_VERSION_INT;
     // Release name
-    static const char* qgisReleaseName;
+    static const char* QGIS_RELEASE_NAME;
     // The subversion version
-    static const char* qgisSvnVersion;
+    static const char* QGIS_SVN_VERSION;
 
     // Enumerations
     //
 
     //! Used for symbology operations
     // Feature types
-    enum WKBTYPE
+    enum WkbType
     {
       WKBPoint = 1,
       WKBLineString,
@@ -58,26 +58,28 @@ class CORE_EXPORT QGis
       WKBMultiLineString25D,
       WKBMultiPolygon25D
     };
-    enum VectorType
+    enum GeometryType
     {
       Point,
       Line,
       Polygon,
-      Unknown
+      UnknownGeometry
     };
+
+    // String representation of geometry types (set in qgis.cpp)
     static const char *qgisVectorGeometryType[];
 
-//! description strings for feature types
+    //! description strings for feature types
     static const char *qgisFeatureTypes[];
 
     //! map units that qgis supports
-    typedef enum
+    enum UnitType
     {
-      METERS,
-      FEET,
-      DEGREES,
-      UNKNOWN
-    } units;
+      Meters,
+      Feet,
+      Degrees,
+      UnknownUnit
+    } ;
 
     //! User defined event types
     enum UserEvent
@@ -131,15 +133,15 @@ const long GEOSRID = 4326;
 const long GEOCRS_ID = 3344;
 /**  Magic number for a geographic coord sys in EPSG ID format */
 const long GEOEPSG_ID = 4326;
-/** The length of teh string "+proj=" */
+/** The length of the string "+proj=" */
 const int PROJ_PREFIX_LEN = 6;
-/** The length of teh string "+ellps=" */
+/** The length of the string "+ellps=" */
 const int ELLPS_PREFIX_LEN = 7;
-/** The length of teh string "+lat_1=" */
+/** The length of the string "+lat_1=" */
 const int LAT_PREFIX_LEN = 7;
-/** Magick number that determins whether a projection srsid is a system (srs.db)
+/** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
-const int USER_PROJECTION_START_ID = 100000;
+const int USER_CRS_START_ID = 100000;
 
 //
 // Constants for point symbols
@@ -147,7 +149,7 @@ const int USER_PROJECTION_START_ID = 100000;
 
 /** Magic number that determines the minimum allowable point size for point symbols */
 const double MINIMUM_POINT_SIZE = 0.1;
-/** Magic number that determines the minimum allowable point size for point symbols */
+/** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE = 2.0;
 
 // FIXME: also in qgisinterface.h

@@ -52,7 +52,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   // these ones are propagated to QgsProject by a signal
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
-  QGis::units myUnit = myRender->mapUnits();
+  QGis::UnitType myUnit = myRender->mapUnits();
   setMapUnits( myUnit );
 
   //see if the user wants on the fly projection enabled
@@ -172,24 +172,24 @@ QgsProjectProperties::~QgsProjectProperties()
 
 
 // return the map units
-QGis::units QgsProjectProperties::mapUnits() const
+QGis::UnitType QgsProjectProperties::mapUnits() const
 {
   return mMapCanvas->mapRenderer()->mapUnits();
 }
 
 
-void QgsProjectProperties::setMapUnits( QGis::units unit )
+void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
 {
   // select the button
-  if ( unit == QGis::UNKNOWN )
+  if ( unit == QGis::UnknownUnit )
   {
-    unit = QGis::METERS;
+    unit = QGis::Meters;
   }
-  if ( unit == QGis::METERS )
+  if ( unit == QGis::Meters )
   {
     radMeters->setChecked( true );
   }
-  else if ( unit == QGis::FEET )
+  else if ( unit == QGis::Feet )
   {
     radFeet->setChecked( true );
   }
@@ -221,18 +221,18 @@ void QgsProjectProperties::apply()
   // Set the map units
   // Note. Qt 3.2.3 and greater have a function selectedId() that
   // can be used instead of the two part technique here
-  QGis::units mapUnit;
+  QGis::UnitType mapUnit;
   if ( radMeters->isChecked() )
   {
-    mapUnit = QGis::METERS;
+    mapUnit = QGis::Meters;
   }
   else if ( radFeet->isChecked() )
   {
-    mapUnit = QGis::FEET;
+    mapUnit = QGis::Feet;
   }
   else
   {
-    mapUnit = QGis::DEGREES;
+    mapUnit = QGis::Degrees;
   }
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
@@ -260,7 +260,7 @@ void QgsProjectProperties::apply()
     {
       // If we couldn't get the map units, default to the value in the
       // projectproperties dialog box (set above)
-      if ( srs.mapUnits() != QGis::UNKNOWN )
+      if ( srs.mapUnits() != QGis::UnknownUnit )
         myRender->setMapUnits( srs.mapUnits() );
     }
   }

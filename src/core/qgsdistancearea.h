@@ -85,7 +85,7 @@ class CORE_EXPORT QgsDistanceArea
     //! compute bearing - in radians
     double getBearing( const QgsPoint& p1, const QgsPoint& p2 );
 
-    static QString textUnit( double value, int decimals, QGis::units u, bool isArea );
+    static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea );
 
   protected:
 

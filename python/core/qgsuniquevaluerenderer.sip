@@ -5,7 +5,7 @@ class QgsUniqueValueRenderer : QgsRenderer
 %End
 
  public:
-    QgsUniqueValueRenderer(QGis::VectorType type);
+    QgsUniqueValueRenderer(QGis::GeometryType type);
     QgsUniqueValueRenderer(const QgsUniqueValueRenderer& other);
     virtual ~QgsUniqueValueRenderer();
     /** Determines if a feature will be rendered or not 

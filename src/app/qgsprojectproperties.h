@@ -43,12 +43,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     /*! Gets the currently select map units
      */
-    QGis::units mapUnits() const;
+    QGis::UnitType mapUnits() const;
 
     /*!
      * Set the map units
      */
-    void setMapUnits( QGis::units );
+    void setMapUnits( QGis::UnitType );
 
     /*!
        Every project has a title

@@ -155,10 +155,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void setRenderer( QgsRenderer * r );
 
     /** Returns point, line or polygon */
-    QGis::VectorType vectorType() const;
+    QGis::GeometryType type() const;
 
     /**Returns the WKBType or WKBUnknown in case of error*/
-    QGis::WKBTYPE geometryType() const;
+    QGis::WkbType geometryType() const;
 
     /** Return the provider type for this layer */
     QString providerType() const;
@@ -612,7 +612,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** max field index */
     int mMaxUpdatedIndex;
 
-    /** Geometry type as defined in enum WKBTYPE (qgis.h) */
+    /** Geometry type as defined in enum WkbType (qgis.h) */
     int mGeometryType;
 
     /** Renderer object which holds the information about how to display the features */

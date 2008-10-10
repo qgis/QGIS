@@ -74,7 +74,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WKBTYPE geometryType() const;
+    virtual QGis::WkbType geometryType() const;
 
     /**
      * Number of features in the layer

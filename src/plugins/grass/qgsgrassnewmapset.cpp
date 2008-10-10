@@ -153,7 +153,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   m = new QTreeWidgetItem( l, QStringList() << "Cimrman" << tr( "User's mapset" ) );
   m->setExpanded( true );
 
-  // PROJECTION
+  // CRS
 
   // MAPSET
   mMapsetsListView->clear();
@@ -327,7 +327,7 @@ int QgsGrassNewMapset::nextId() const
         break;
       }
     case DATABASE:
-    case PROJECTION:
+    case CRS:
     case REGION:
     case MAPSET:
       id += 1;
@@ -377,7 +377,7 @@ void QgsGrassNewMapset::newLocationChanged()
   checkLocation();
 }
 
-/************************** PROJECTION ******************************/
+/************************** CRS ******************************/
 void QgsGrassNewMapset::setProjectionPage()
 {
   QgsDebugMsg( "entered." );
@@ -1407,7 +1407,7 @@ void QgsGrassNewMapset::pageSelected( int index )
       }
       break;
 
-    case PROJECTION:
+    case CRS:
       // Projection selector
       if ( !mProjectionSelector )
       {
@@ -1449,7 +1449,7 @@ void QgsGrassNewMapset::pageSelected( int index )
         mRegionsInited = true;
       }
 
-      if ( mPreviousPage == PROJECTION )
+      if ( mPreviousPage == CRS )
       {
         setRegionPage();
       }

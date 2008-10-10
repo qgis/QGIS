@@ -21,6 +21,7 @@
 #include "qgscsexception.h"
 #include "qgscursors.h"
 #include "qgslogger.h"
+#include "qgis.h"
 
 #include <QApplication>
 #include <QMessageBox>
@@ -34,6 +35,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
 {
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) select_cursor );
   mCursor = QCursor( mySelectQPixmap, 1, 1 );
+  mRubberBand = 0;
 }
 
 
@@ -63,25 +65,48 @@ void QgsMapToolSelect::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
 {
-  if ( !mDragging )
-    return;
-
-  mDragging = FALSE;
-
-  delete mRubberBand;
-  mRubberBand = 0;
-
   if ( !mCanvas->currentLayer() ||
        dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) == NULL )
   {
     QMessageBox::warning( mCanvas, QObject::tr( "No active layer" ),
-                          QObject::tr( "To select features, you must choose a vector layer by clicking on its name in the legend" ) );
+                          QObject::tr( "To select features, you must choose a "
+                                       "vector layer by clicking on its name in the legend"
+                                     ) );
     return;
   }
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
+  //if the user simply clicked without dragging a rect
+  //we will fabricate a small 1x1 pix rect and then continue
+  //as if they had dragged a rect
+  if ( !mDragging )
+  {
+    int boxSize = 0;
+    if ( vlayer->type() != QGis::Polygon )
+    {
+      //if point or line use an artificial bounding box of 10x10 pixels
+      //to aid the user to click on a feature accurately
+      boxSize = 5;
+    }
+    else
+    {
+      //otherwise just use the click point for polys
+      boxSize = 1;
+    }
+    mSelectRect.setLeft( e->pos().x() - boxSize );
+    mSelectRect.setRight( e->pos().x() + boxSize );
+    mSelectRect.setTop( e->pos().y() - boxSize );
+    mSelectRect.setBottom( e->pos().y() + boxSize );
+  }
+  else
+  {
+    delete mRubberBand;
+    mRubberBand = 0;
+    // store the rectangle
+    mSelectRect.setRight( e->pos().x() );
+    mSelectRect.setBottom( e->pos().y() );
+  }
 
-  // store the rectangle
-  mSelectRect.setRight( e->pos().x() );
-  mSelectRect.setBottom( e->pos().y() );
+  mDragging = FALSE;
 
   const QgsMapToPixel* transform = mCanvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( mSelectRect.left(), mSelectRect.bottom() );
@@ -93,7 +118,6 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   // instead of removing old selection
   bool lock = ( e->modifiers() & Qt::ControlModifier );
 
-  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
   // toLayerCoordinates will throw an exception for an 'invalid' rectangle.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.

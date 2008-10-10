@@ -93,7 +93,7 @@ class Repositories(QObject):
     QObject.__init__(self)
     self.mRepositories = {}
     self.httpId = {}   # {httpId : repoName}
-    self.QGISver = int(str(QGis.qgisVersion)[0])
+    self.QGISver = int(str(QGis.QGIS_VERSION)[0])
 
 
   # ----------------------------------------- #

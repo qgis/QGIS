@@ -111,9 +111,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * In case the provider supports reading the feature directly, override this function.
      */
     virtual bool featureAtId( int featureId,
-                                 QgsFeature& feature,
-                                 bool fetchGeometry = true,
-                                 QgsAttributeList fetchAttributes = QgsAttributeList() );
+                              QgsFeature& feature,
+                              bool fetchGeometry = true,
+                              QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /**
      * Get the next feature resulting from a select operation.
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WKBTYPE geometryType() const = 0;
+    virtual QGis::WkbType geometryType() const = 0;
 
 
     /**

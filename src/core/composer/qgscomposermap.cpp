@@ -424,7 +424,7 @@ bool QgsComposerMap::containsWMSLayer() const
       if ( currentRasterLayer )
       {
         const QgsRasterDataProvider* rasterProvider = 0;
-        if ( rasterProvider = currentRasterLayer->dataProvider() )
+        if (( rasterProvider = currentRasterLayer->dataProvider() ) )
         {
           if ( rasterProvider->name() == "wms" )
           {

@@ -89,7 +89,7 @@ QString QgsColorRampShader::getColorRampTypeAsQString()
       return QString( "EXACT" );
       break;
   }
-  return QString( "UNKNOWN" );
+  return QString( "Unknown" );
 }
 
 bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )

@@ -176,32 +176,32 @@ QString QgsMeasureDialog::formatDistance( double distance )
   QString txt;
   QString unitLabel;
 
-  QGis::units myMapUnits = mTool->canvas()->mapUnits();
+  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
   return QgsDistanceArea::textUnit( distance, 2, myMapUnits, false );
 }
 
 QString QgsMeasureDialog::formatArea( double area )
 {
-  QGis::units myMapUnits = mTool->canvas()->mapUnits();
+  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
   return QgsDistanceArea::textUnit( area, 2, myMapUnits, true );
 }
 
 void QgsMeasureDialog::updateUi()
 {
 
-  QGis::units myMapUnits = mTool->canvas()->mapUnits();
+  QGis::UnitType myMapUnits = mTool->canvas()->mapUnits();
   switch ( myMapUnits )
   {
-    case QGis::METERS:
+    case QGis::Meters:
       mTable->setHeaderLabels( QStringList( tr( "Segments (in meters)" ) ) );
       break;
-    case QGis::FEET:
+    case QGis::Feet:
       mTable->setHeaderLabels( QStringList( tr( "Segments (in feet)" ) ) );
       break;
-    case QGis::DEGREES:
+    case QGis::Degrees:
       mTable->setHeaderLabels( QStringList( tr( "Segments (in degrees)" ) ) );
       break;
-    case QGis::UNKNOWN:
+    case QGis::UnknownUnit:
       mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
   };
 

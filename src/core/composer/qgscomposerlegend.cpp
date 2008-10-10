@@ -217,7 +217,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
     return;
   }
 
-  QGis::VectorType symbolType = s->type();
+  QGis::GeometryType symbolType = s->type();
   switch ( symbolType )
   {
     case QGis::Point:
@@ -231,7 +231,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
       drawPolygonSymbol( p, s, currentYCoord, currentXPosition );
       symbolHeight = mSymbolHeight;
       break;
-    case QGis::Unknown:
+    case QGis::UnknownGeometry:
       // shouldn't occur
       break;
   }

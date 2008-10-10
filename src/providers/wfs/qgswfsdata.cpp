@@ -33,7 +33,7 @@ QgsWFSData::QgsWFSData(
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,
   const QSet<QString>& thematicAttributes,
-  QGis::WKBTYPE* wkbType )
+  QGis::WkbType* wkbType )
     : QObject(),
     mUri( uri ),
     mExtent( extent ),
@@ -513,7 +513,7 @@ int QgsWFSData::getPointWKB( unsigned char** wkb, int* size, const QgsPoint& poi
   int wkbSize = 1 + sizeof( int ) + 2 * sizeof( double );
   *size = wkbSize;
   *wkb = new unsigned char[wkbSize];
-  QGis::WKBTYPE type = QGis::WKBPoint;
+  QGis::WkbType type = QGis::WKBPoint;
   double x = point.x();
   double y = point.y();
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
@@ -533,7 +533,7 @@ int QgsWFSData::getLineWKB( unsigned char** wkb, int* size, const std::list<QgsP
   int wkbSize = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
   *size = wkbSize;
   *wkb = new unsigned char[wkbSize];
-  QGis::WKBTYPE type = QGis::WKBLineString;
+  QGis::WkbType type = QGis::WKBLineString;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nPoints = lineCoordinates.size();
@@ -591,7 +591,7 @@ int QgsWFSData::createMultiLineFromFragments()
 
   mCurrentWKB = new unsigned char[mCurrentWKBSize];
   int pos = 0;
-  QGis::WKBTYPE type = QGis::WKBMultiLineString;
+  QGis::WkbType type = QGis::WKBMultiLineString;
   int numLines = mCurrentWKBFragments.begin()->size();
   //add endian
   memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
@@ -624,7 +624,7 @@ int QgsWFSData::createMultiPointFromFragments()
   mCurrentWKBSize += totalWKBFragmentSize();
 
   int pos = 0;
-  QGis::WKBTYPE type = QGis::WKBMultiPoint;
+  QGis::WkbType type = QGis::WKBMultiPoint;
   int numPoints = mCurrentWKBFragments.begin()->size();
 
   memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
@@ -659,7 +659,7 @@ int QgsWFSData::createPolygonFromFragments()
 
   mCurrentWKB = new unsigned char[mCurrentWKBSize];
   int pos = 0;
-  QGis::WKBTYPE type = QGis::WKBPolygon;
+  QGis::WkbType type = QGis::WKBPolygon;
   int numRings = mCurrentWKBFragments.begin()->size();
   memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );
   pos += 1;
@@ -692,8 +692,8 @@ int QgsWFSData::createMultiPolygonFromFragments()
 
   mCurrentWKB = new unsigned char[mCurrentWKBSize];
   int pos = 0;
-  QGis::WKBTYPE type = QGis::WKBMultiPolygon;
-  QGis::WKBTYPE polygonType = QGis::WKBPolygon;
+  QGis::WkbType type = QGis::WKBMultiPolygon;
+  QGis::WkbType polygonType = QGis::WKBPolygon;
   int numPolys = mCurrentWKBFragments.size();
   int numRings;
   memcpy( &( mCurrentWKB[pos] ), &mEndian, 1 );

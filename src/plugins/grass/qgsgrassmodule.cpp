@@ -2002,11 +2002,11 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     : QGroupBox( parent ),
     QgsGrassModuleItem( module, key, qdesc, gdesc, gnode ),
     mModuleStandardOptions( options ),
-    mVectorTypeOption( 0 ), mVectorLayerOption( 0 ),
+    mGeometryTypeOption( 0 ), mVectorLayerOption( 0 ),
     mRegionButton( 0 ), mUpdate( false )
 {
   QgsDebugMsg( "called." );
-  mVectorTypeMask = GV_POINT | GV_LINE | GV_AREA;
+  mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
 
   QString tit;
   if ( mDescription.isEmpty() )
@@ -2048,7 +2048,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
       }
       else
       {
-        mVectorTypeOption = opt;
+        mGeometryTypeOption = opt;
 
         QDomNode valuesNode = optNode.namedItem( "values" );
         if ( valuesNode.isNull() )
@@ -2057,7 +2057,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
         }
         else
         {
-          mVectorTypeMask = 0; //GV_POINT | GV_LINE | GV_AREA;
+          mGeometryTypeMask = 0; //GV_POINT | GV_LINE | GV_AREA;
 
           QDomElement valuesElem = valuesNode.toElement();
           QDomNode valueNode = valuesElem.firstChild();
@@ -2076,15 +2076,15 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
                 if ( val == "point" )
                 {
-                  mVectorTypeMask |= GV_POINT;
+                  mGeometryTypeMask |= GV_POINT;
                 }
                 else if ( val == "line" )
                 {
-                  mVectorTypeMask |= GV_LINE;
+                  mGeometryTypeMask |= GV_LINE;
                 }
                 else if ( val == "area" )
                 {
-                  mVectorTypeMask |= GV_AREA;
+                  mGeometryTypeMask |= GV_AREA;
                 }
               }
             }
@@ -2114,7 +2114,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
         mask |= GV_AREA;
       }
 
-      mVectorTypeMask &= mask;
+      mGeometryTypeMask &= mask;
     }
 
     // Read "layeroption" if defined
@@ -2231,7 +2231,7 @@ void QgsGrassModuleInput::updateQgisLayers()
   QString current = mLayerComboBox->currentText();
   mLayerComboBox->clear();
   mMaps.resize( 0 );
-  mVectorTypes.resize( 0 );
+  mGeometryTypes.resize( 0 );
   mVectorLayerNames.resize( 0 );
   mMapLayers.resize( 0 );
   mVectorFields.resize( 0 );
@@ -2274,9 +2274,9 @@ void QgsGrassModuleInput::updateQgisLayers()
       // Check type mask
       int geomType = provider->geometryType();
 
-      if (( geomType == QGis::WKBPoint && !( mVectorTypeMask & GV_POINT ) ) ||
-          ( geomType == QGis::WKBLineString && !( mVectorTypeMask & GV_LINE ) ) ||
-          ( geomType == QGis::WKBPolygon && !( mVectorTypeMask & GV_AREA ) )
+      if (( geomType == QGis::WKBPoint && !( mGeometryTypeMask & GV_POINT ) ) ||
+          ( geomType == QGis::WKBLineString && !( mGeometryTypeMask & GV_LINE ) ) ||
+          ( geomType == QGis::WKBPolygon && !( mGeometryTypeMask & GV_AREA ) )
          )
       {
         continue;
@@ -2343,7 +2343,7 @@ void QgsGrassModuleInput::updateQgisLayers()
         type = "unknown";
       }
 
-      mVectorTypes.push_back( type );
+      mGeometryTypes.push_back( type );
 
       QString grassLayer = QString::number( provider->grassLayer() );
 
@@ -2428,9 +2428,9 @@ QStringList QgsGrassModuleInput::options()
     list.push_back( opt );
   }
 
-  if ( !mVectorTypeOption.isNull() && current < mVectorTypes.size() )
+  if ( !mGeometryTypeOption.isNull() && current < mGeometryTypes.size() )
   {
-    opt = mVectorTypeOption + "=" + mVectorTypes[current] ;
+    opt = mGeometryTypeOption + "=" + mGeometryTypes[current] ;
     list.push_back( opt );
   }
 

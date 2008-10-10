@@ -135,9 +135,9 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
 
 
 bool QgsMemoryProvider::featureAtId( int featureId,
-                                        QgsFeature& feature,
-                                        bool fetchGeometry,
-                                        QgsAttributeList fetchAttributes )
+                                     QgsFeature& feature,
+                                     bool fetchGeometry,
+                                     QgsAttributeList fetchAttributes )
 {
   QgsFeatureMap::iterator it = mFeatures.find( featureId );
 
@@ -192,7 +192,7 @@ QgsRect QgsMemoryProvider::extent()
   return mExtent;
 }
 
-QGis::WKBTYPE QgsMemoryProvider::geometryType() const
+QGis::WkbType QgsMemoryProvider::geometryType() const
 {
   return mWkbType;
 }

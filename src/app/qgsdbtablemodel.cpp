@@ -56,7 +56,7 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   //path to icon for specified type
   QString typeName;
 
-  QGis::WKBTYPE wkbType = qgisTypeFromDbType( type );
+  QGis::WkbType wkbType = qgisTypeFromDbType( type );
   QIcon iconFile = iconForType( wkbType );
 
   QList<QStandardItem*> childItemList;
@@ -195,7 +195,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
         return;
       }
 
-      QGis::WKBTYPE wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
+      QGis::WkbType wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
       QIcon myIcon = iconForType( wkbType );
       itemFromIndex( currentTypeIndex )->setText( typeList.at( 0 ) ); //todo: add other rows
       itemFromIndex( currentTypeIndex )->setIcon( myIcon );
@@ -213,7 +213,7 @@ void QgsDbTableModel::setGeometryTypesForTable( const QString& schema, const QSt
   }
 }
 
-QIcon QgsDbTableModel::iconForType( QGis::WKBTYPE type ) const
+QIcon QgsDbTableModel::iconForType( QGis::WkbType type ) const
 {
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
   {
@@ -230,7 +230,7 @@ QIcon QgsDbTableModel::iconForType( QGis::WKBTYPE type ) const
   else return QIcon();
 }
 
-QString QgsDbTableModel::displayStringForType( QGis::WKBTYPE type ) const
+QString QgsDbTableModel::displayStringForType( QGis::WkbType type ) const
 {
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D )
   {
@@ -259,7 +259,7 @@ QString QgsDbTableModel::displayStringForType( QGis::WKBTYPE type ) const
   return "Unknown";
 }
 
-QGis::WKBTYPE QgsDbTableModel::qgisTypeFromDbType( const QString& dbType ) const
+QGis::WkbType QgsDbTableModel::qgisTypeFromDbType( const QString& dbType ) const
 {
   if ( dbType == "POINT" )
   {

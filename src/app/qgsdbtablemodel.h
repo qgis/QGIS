@@ -42,9 +42,9 @@ class QgsDbTableModel: public QStandardItemModel
     /**Number of tables in the model*/
     int mTableCount;
 
-    QIcon iconForType( QGis::WKBTYPE type ) const;
-    QString displayStringForType( QGis::WKBTYPE type ) const;
+    QIcon iconForType( QGis::WkbType type ) const;
+    QString displayStringForType( QGis::WkbType type ) const;
     /**Returns qgis wkbtype from database typename*/
-    QGis::WKBTYPE qgisTypeFromDbType( const QString& dbType ) const;
+    QGis::WkbType qgisTypeFromDbType( const QString& dbType ) const;
 };
 

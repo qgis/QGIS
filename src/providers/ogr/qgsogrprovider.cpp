@@ -214,9 +214,9 @@ QString QgsOgrProvider::storageType() const
 
 
 bool QgsOgrProvider::featureAtId( int featureId,
-                                     QgsFeature& feature,
-                                     bool fetchGeometry,
-                                     QgsAttributeList fetchAttributes )
+                                  QgsFeature& feature,
+                                  bool fetchGeometry,
+                                  QgsAttributeList fetchAttributes )
 {
   OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, featureId );
   if ( fet == NULL )
@@ -397,9 +397,9 @@ size_t QgsOgrProvider::layerCount() const
 /**
  * Return the feature type
  */
-QGis::WKBTYPE QgsOgrProvider::geometryType() const
+QGis::WkbType QgsOgrProvider::geometryType() const
 {
-  return ( QGis::WKBTYPE ) geomType;
+  return ( QGis::WkbType ) geomType;
 }
 
 /**
@@ -1113,7 +1113,7 @@ QGISEXTERN bool isProvider()
 QGISEXTERN bool createEmptyDataSource( const QString& uri,
                                        const QString& format,
                                        const QString& encoding,
-                                       QGis::WKBTYPE vectortype,
+                                       QGis::WkbType vectortype,
                                        const std::list<std::pair<QString, QString> >& attributes )
 {
   OGRSFDriverH driver;

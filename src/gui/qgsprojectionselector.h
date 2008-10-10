@@ -8,8 +8,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef QGSPROJECTIONSELECTOR_H
-#define QGSPROJECTIONSELECTOR_H
+#ifndef QGSCRSSELECTOR_H
+#define QGSCRSSELECTOR_H
 
 #include "ui_qgsprojectionselectorbase.h"
 

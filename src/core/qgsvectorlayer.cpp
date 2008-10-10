@@ -121,7 +121,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       {
         setCoordinateSystem();
         // add single symbol renderer as default
-        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( vectorType() );
+        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( type() );
         setRenderer( renderer );
       }
     }
@@ -129,7 +129,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     {
       setCoordinateSystem();
       // add single symbol renderer as default
-      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( vectorType() );
+      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( type() );
       setRenderer( renderer );
     }
     // Get the update threshold from user settings. We
@@ -385,8 +385,8 @@ unsigned char* QgsVectorLayer::drawLineString(
   // the rest of them so end the loop at that point.
   for ( register unsigned int i = 0; i < nPoints; ++i )
   {
-    if ( std::abs( x[i] ) > QgsClipper::maxX ||
-         std::abs( y[i] ) > QgsClipper::maxY )
+    if ( std::abs( x[i] ) > QgsClipper::MAX_X ||
+         std::abs( y[i] ) > QgsClipper::MAX_Y )
     {
       QgsClipper::trimFeature( x, y, true ); // true = polyline
       nPoints = x.size(); // trimming may change nPoints.
@@ -522,8 +522,8 @@ unsigned char *QgsVectorLayer::drawPolygon(
     // the rest of them so end the loop at that point.
     for ( register unsigned int i = 0; i < nPoints; ++i )
     {
-      if ( std::abs( ring->first[i] ) > QgsClipper::maxX ||
-           std::abs( ring->second[i] ) > QgsClipper::maxY )
+      if ( std::abs( ring->first[i] ) > QgsClipper::MAX_X ||
+           std::abs( ring->second[i] ) > QgsClipper::MAX_Y )
       {
         QgsClipper::trimFeature( ring->first, ring->second, false );
         break;
@@ -918,7 +918,7 @@ void QgsVectorLayer::setRenderer( QgsRenderer * r )
   }
 }
 
-QGis::VectorType QgsVectorLayer::vectorType() const
+QGis::GeometryType QgsVectorLayer::type() const
 {
   if ( mDataProvider )
   {
@@ -957,24 +957,24 @@ QGis::VectorType QgsVectorLayer::vectorType() const
   else
   {
 #ifdef QGISDEBUG
-    qWarning( "warning, pointer to mDataProvider is null in QgsVectorLayer::vectorType()" );
+    qWarning( "warning, pointer to mDataProvider is null in QgsVectorLayer::type()" );
 #endif
 
   }
 
   // We shouldn't get here, and if we have, other things are likely to
-  // go wrong. Code that uses the vectorType() return value should be
+  // go wrong. Code that uses the type() return value should be
   // rewritten to cope with a value of QGis::Unknown. To make this
   // need known, the following message is printed every time we get
   // here.
   QgsDebugMsg( QString( "WARNING: This code (file %1, line %2) should never be reached. Problems may occur..." ).arg( __FILE__ ).arg( __LINE__ ) );
 
-  return QGis::Unknown;
+  return QGis::UnknownGeometry;
 }
 
-QGis::WKBTYPE QgsVectorLayer::geometryType() const
+QGis::WkbType QgsVectorLayer::geometryType() const
 {
-  return ( QGis::WKBTYPE )( mGeometryType );
+  return ( QGis::WkbType )( mGeometryType );
 }
 
 QgsRect QgsVectorLayer::boundingBoxOfSelected()
@@ -1767,7 +1767,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom )
   int returnValue = 0;
 
   //first test if geom really has type polygon or multipolygon
-  if ( geom->vectorType() != QGis::Polygon )
+  if ( geom->type() != QGis::Polygon )
   {
     return 1;
   }
@@ -1803,7 +1803,7 @@ int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
 
   int returnVal = 0;
 
-  QGis::WKBTYPE wkbType = geom->wkbType();
+  QGis::WkbType wkbType = geom->wkbType();
 
   switch ( wkbType )
   {
@@ -2221,7 +2221,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[vectorType()] );
+  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[type()] );
 
   // add provider node
 
@@ -2410,22 +2410,22 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   if ( !singlenode.isNull() )
   {
-    renderer = new QgsSingleSymbolRenderer( vectorType() );
+    renderer = new QgsSingleSymbolRenderer( type() );
     returnCode = renderer->readXML( singlenode, *this );
   }
   else if ( !graduatednode.isNull() )
   {
-    renderer = new QgsGraduatedSymbolRenderer( vectorType() );
+    renderer = new QgsGraduatedSymbolRenderer( type() );
     returnCode = renderer->readXML( graduatednode, *this );
   }
   else if ( !continuousnode.isNull() )
   {
-    renderer = new QgsContinuousColorRenderer( vectorType() );
+    renderer = new QgsContinuousColorRenderer( type() );
     returnCode = renderer->readXML( continuousnode, *this );
   }
   else if ( !uniquevaluenode.isNull() )
   {
-    renderer = new QgsUniqueValueRenderer( vectorType() );
+    renderer = new QgsUniqueValueRenderer( type() );
     returnCode = renderer->readXML( uniquevaluenode, *this );
   }
 
@@ -3054,7 +3054,7 @@ bool QgsVectorLayer::isSymbologyCompatible( const QgsMapLayer& other ) const
   const QgsVectorLayer* otherVectorLayer = dynamic_cast<const QgsVectorLayer*>( &other );
   if ( otherVectorLayer )
   {
-    if ( otherVectorLayer->vectorType() != vectorType() )
+    if ( otherVectorLayer->type() != type() )
     {
       return false;
     }
@@ -3127,6 +3127,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   while ( nextFeature( f ) )
   {
     snapToGeometry( startPoint, f.featureId(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
+    ++n;
   }
 
   return n == 0 ? 2 : 0;
@@ -3171,7 +3172,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
   }
   if ( snap_to == QgsSnapper::SNAP_TO_SEGMENT || snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT ) // snap to segment
   {
-    if ( vectorType() != QGis::Point ) // cannot snap to segment for points/multipoints
+    if ( type() != QGis::Point ) // cannot snap to segment for points/multipoints
     {
       sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex );
 
@@ -3282,7 +3283,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
   QgsGeometry* geom = fet.geometry();
   unsigned char* feature = geom->wkbBuffer();
 
-  QGis::WKBTYPE wkbType = geom->wkbType();
+  QGis::WkbType wkbType = geom->wkbType();
 
   switch ( wkbType )
   {
@@ -3334,8 +3335,8 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 
 #if defined(Q_WS_X11)
         // Work around a +/- 32768 limitation on coordinates in X11
-        if ( std::abs( x ) > QgsClipper::maxX ||
-             std::abs( y ) > QgsClipper::maxY )
+        if ( std::abs( x ) > QgsClipper::MAX_X ||
+             std::abs( y ) > QgsClipper::MAX_Y )
           needToTrim = true;
         else
 #endif
@@ -3397,7 +3398,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
       break;
     }
     default:
-      QgsDebugMsg( "UNKNOWN WKBTYPE ENCOUNTERED" );
+      QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
       break;
   }
 }

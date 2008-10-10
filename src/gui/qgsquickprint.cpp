@@ -831,11 +831,11 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
   }
 
   //Get type of map units and set scale bar unit label text
-  QGis::units myMapUnits = thepMapRenderer->mapUnits();
+  QGis::UnitType myMapUnits = thepMapRenderer->mapUnits();
   QString myScaleBarUnitLabel;
   switch ( myMapUnits )
   {
-    case QGis::METERS:
+    case QGis::Meters:
       if ( myActualSize > 1000.0 )
       {
         myScaleBarUnitLabel = tr( " km" );
@@ -854,7 +854,7 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
       else
         myScaleBarUnitLabel = tr( " m" );
       break;
-    case QGis::FEET:
+    case QGis::Feet:
       if ( myActualSize > 5280.0 ) //5280 feet to the mile
       {
         myScaleBarUnitLabel = tr( " miles" );
@@ -879,13 +879,13 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
         myScaleBarUnitLabel = tr( " feet" );
       }
       break;
-    case QGis::DEGREES:
+    case QGis::Degrees:
       if ( myActualSize == 1.0 )
         myScaleBarUnitLabel = tr( " degree" );
       else
         myScaleBarUnitLabel = tr( " degrees" );
       break;
-    case QGis::UNKNOWN:
+    case QGis::UnknownUnit:
       myScaleBarUnitLabel = tr( " unknown" );
     default:
       QgsDebugMsg( "Error: not picked up map units - actual value = "

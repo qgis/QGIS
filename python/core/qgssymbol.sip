@@ -7,9 +7,9 @@ class QgsSymbol
 
  public:
     /**Constructor*/
-    QgsSymbol(QGis::VectorType t, QString lvalue="", QString uvalue="", QString label="");
+    QgsSymbol(QGis::GeometryType t, QString lvalue="", QString uvalue="", QString label="");
     /**Constructor*/
-    QgsSymbol(QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c);
+    QgsSymbol(QGis::GeometryType t, QString lvalue, QString uvalue, QString label, QColor c);
     QgsSymbol(const QgsSymbol&);
     /**old constructors*/
     QgsSymbol();
@@ -75,7 +75,7 @@ class QgsSymbol
      @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
     /**Returns if this symbol is point/ line or polygon*/
-    QGis::VectorType type() const;
+    QGis::GeometryType type() const;
 
 };
 

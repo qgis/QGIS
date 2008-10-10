@@ -65,7 +65,9 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
 }
 
 QgsApplication::~QgsApplication()
-{}
+{
+
+}
 
 bool QgsApplication::notify( QObject * receiver, QEvent * event )
 {

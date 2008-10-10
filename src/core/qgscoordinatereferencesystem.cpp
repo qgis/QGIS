@@ -44,7 +44,7 @@ CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 //--------------------------
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
-    : mMapUnits( QGis::UNKNOWN ),
+    : mMapUnits( QGis::UnknownUnit ),
     mIsValidFlag( 0 ),
     mValidationHint( 0 )
 {
@@ -52,7 +52,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem()
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
-    : mMapUnits( QGis::UNKNOWN ),
+    : mMapUnits( QGis::UnknownUnit ),
     mIsValidFlag( 0 ),
     mValidationHint( 0 )
 {
@@ -62,7 +62,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
 
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CRS_TYPE theType )
-    : mMapUnits( QGis::UNKNOWN ),
+    : mMapUnits( QGis::UnknownUnit ),
     mIsValidFlag( 0 ),
     mValidationHint( 0 )
 {
@@ -336,7 +336,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   myStart = myAxisRegExp.indexIn( theProj4String, myStart );
   if ( myStart == -1 && mEllipsoidAcronym.isNull() )
   {
-    QgsLogger::warning( "QgsCoordinateReferenceSystem::createFromProj4 error proj string supplied has no +ellps or +a argument" );
+    QgsLogger::warning( "QgsCoordinateReferenceSystem::createFromProj4 error"
+                        " proj string supplied has no +ellps or +a argument" );
     return mIsValidFlag;
   }
 
@@ -618,9 +619,9 @@ bool QgsCoordinateReferenceSystem::geographicFlag() const
   return mGeoFlag;
 }
 /*! Get the units that the projection is in
- * @return QGis::units
+ * @return QGis::UnitType
  */
-QGis::units QgsCoordinateReferenceSystem::mapUnits() const
+QGis::UnitType QgsCoordinateReferenceSystem::mapUnits() const
 {
   return mMapUnits;
 }
@@ -663,6 +664,8 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
   mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() ) == OGRERR_NONE;
+  setMapUnits();
+  debugPrint();
 
   setlocale( LC_NUMERIC, oldlocale );
 }
@@ -689,7 +692,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 {
   if ( !mIsValidFlag )
   {
-    mMapUnits = QGis::UNKNOWN;
+    mMapUnits = QGis::UnknownUnit;
     return;
   }
 
@@ -718,13 +721,13 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     QgsDebugMsg( "Projection has linear units of " + unit );
 
     if ( unit == "Meter" )
-      mMapUnits = QGis::METERS;
+      mMapUnits = QGis::Meters;
     else if ( unit == "Foot" )
-      mMapUnits = QGis::FEET;
+      mMapUnits = QGis::Feet;
     else
     {
       QgsLogger::warning( "Unsupported map units of " + unit );
-      mMapUnits = QGis::UNKNOWN;
+      mMapUnits = QGis::UnknownUnit;
     }
   }
   else
@@ -732,11 +735,11 @@ void QgsCoordinateReferenceSystem::setMapUnits()
     OSRGetAngularUnits( mCRS, &unitName );
     QString unit( unitName );
     if ( unit == "degree" )
-      mMapUnits = QGis::DEGREES;
+      mMapUnits = QGis::Degrees;
     else
     {
       QgsLogger::warning( "Unsupported map units of " + unit );
-      mMapUnits = QGis::UNKNOWN;
+      mMapUnits = QGis::UnknownUnit;
     }
     QgsDebugMsg( "Projection has angular units of " + unit );
   }
@@ -1023,14 +1026,14 @@ QString QgsCoordinateReferenceSystem::getProj4FromSrsId( const int theSrsId )
   mySql += QString::number( theSrsId );
 
   QgsDebugMsg( "mySrsId = " + QString::number( theSrsId ) );
-  QgsDebugMsg( "USER_PROJECTION_START_ID = " + QString::number( USER_PROJECTION_START_ID ) );
+  QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
   QgsDebugMsg( "Selection sql : " + mySql );
 
   //
   // Determine if this is a user projection or a system on
   // user projection defs all have srs_id >= 100000
   //
-  if ( theSrsId >= USER_PROJECTION_START_ID )
+  if ( theSrsId >= USER_CRS_START_ID )
   {
     myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
     QFileInfo myFileInfo;
@@ -1115,6 +1118,18 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "* SrsId : " + QString::number( mSrsId ) );
   QgsDebugMsg( "* Proj4 : " + proj4String() );
   QgsDebugMsg( "* Desc. : " + mDescription );
+  if ( mapUnits() == QGis::Meters )
+  {
+    QgsDebugMsg( "* Units : meters" );
+  }
+  else if ( mapUnits() == QGis::Feet )
+  {
+    QgsDebugMsg( "* Units : feet" );
+  }
+  else if ( mapUnits() == QGis::Degrees )
+  {
+    QgsDebugMsg( "* Units : degrees" );
+  }
 }
 
 void QgsCoordinateReferenceSystem::setValidationHint( QString html )

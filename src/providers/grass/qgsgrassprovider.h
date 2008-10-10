@@ -145,10 +145,10 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
 
     /**
-     * Get the feature type as defined in WKBTYPE (qgis.h).
+     * Get the feature type as defined in WkbType (qgis.h).
      * @return int representing the feature type
      */
-    QGis::WKBTYPE geometryType() const;
+    QGis::WkbType geometryType() const;
 
 
     /**
@@ -522,7 +522,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     int     mLayerType;     // layer type POINT, LINE, ...
     int     mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
     // ( GV_BOUNDARY, GV_CENTROID )
-    QGis::WKBTYPE mQgisType;// WKBPoint, WKBLineString, ...
+    QGis::WkbType mQgisType;// WKBPoint, WKBLineString, ...
     int     mLayerId;       // ID used in layers
     struct  Map_info *mMap; // vector header pointer
     int     mMapVersion;    // The version of the map for which the instance was last time updated

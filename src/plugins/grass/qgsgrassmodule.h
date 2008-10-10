@@ -529,10 +529,10 @@ class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
 
     //! Vector type mask read from option defined by "typeoption" tag, used for QGIS layers in combo
     //  + type mask defined in configuration fil
-    int mVectorTypeMask;
+    int mGeometryTypeMask;
 
     //! Name of vector type option associated with this input
-    QString mVectorTypeOption;
+    QString mGeometryTypeOption;
 
     //! Name of vector layer option associated with this input
     QString mVectorLayerOption;
@@ -552,7 +552,7 @@ class QgsGrassModuleInput: public QGroupBox, public QgsGrassModuleItem
     std::vector<QString> mMaps;
 
     //! Type of vector in the combobox
-    std::vector<QString> mVectorTypes;
+    std::vector<QString> mGeometryTypes;
 
     //! Layer names in the combobox
     std::vector<QString> mVectorLayerNames;

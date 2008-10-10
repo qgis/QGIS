@@ -523,7 +523,7 @@ QgsRect QgsGrassProvider::extent()
 /**
 * Return the feature type
 */
-QGis::WKBTYPE QgsGrassProvider::geometryType() const
+QGis::WkbType QgsGrassProvider::geometryType() const
 {
   return mQgisType;
 }

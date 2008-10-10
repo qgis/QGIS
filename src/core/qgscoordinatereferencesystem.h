@@ -189,15 +189,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     long findMatchingProj();
 
-    /*! A string based associative array used for passing records around */
-    typedef QMap<QString, QString> RecordMap;
-    /*! Get a record from the srs.db or qgis.db backends, given an sql statment.
-     * @note only handles queries that return a single record.
-     * @note it will first try the system srs.db then the users qgis.db!
-     * @param QString The sql query to execute
-     * @return QMap An associative array of field name <-> value pairs
-     */
-    RecordMap getRecord( QString theSql );
     /*! Overloaded == operator used to compare to CRS's.
      *  Internally it will delegate to the equals method described below
      */
@@ -291,9 +282,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool geographicFlag() const;
     /*! Get the units that the projection is in
-     * @return QGis::units that gives the units for the coordinate system
+     * @return QGis::UnitType that gives the units for the coordinate system
      */
-    QGis::units mapUnits() const;
+    QGis::UnitType mapUnits() const;
 
     /*! Set the postgis srid for this srs
      * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
@@ -339,10 +330,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void setEllipsoidAcronym( QString theEllipsoidAcronym );
 
-    /*! Print the description if debugging
-     */
-    void debugPrint();
-
     /*! Set user hint for validation
      */
     void setValidationHint( QString html );
@@ -351,6 +338,20 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString validationHint();
   private:
+    /*! Print the description if debugging
+     */
+    void debugPrint();
+
+    /*! A string based associative array used for passing records around */
+    typedef QMap<QString, QString> RecordMap;
+    /*! Get a record from the srs.db or qgis.db backends, given an sql statment.
+     * @note only handles queries that return a single record.
+     * @note it will first try the system srs.db then the users qgis.db!
+     * @param QString The sql query to execute
+     * @return QMap An associative array of field name <-> value pairs
+     */
+    RecordMap getRecord( QString theSql );
+
     // Open SQLite db and show message if ccannot be opened
     // returns the same code as sqlite3_open
     static int openDb( QString path, sqlite3 **db );
@@ -366,7 +367,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //!Whether this is a geographic or projected coordinate system
     bool    mGeoFlag;
     //! The map units
-    QGis::units mMapUnits;
+    QGis::UnitType mMapUnits;
     //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
     long    mSRID;
     //!If available the ESPG identifier for this srs (defaults to 0)

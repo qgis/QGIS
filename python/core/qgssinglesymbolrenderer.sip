@@ -6,7 +6,7 @@ class QgsSingleSymbolRenderer : QgsRenderer
 %End
 
  public:
-    QgsSingleSymbolRenderer(QGis::VectorType type);
+    QgsSingleSymbolRenderer(QGis::GeometryType type);
     QgsSingleSymbolRenderer(const QgsSingleSymbolRenderer& other);
     virtual ~QgsSingleSymbolRenderer();
     /**Replaces the current mSymbol by sy*/

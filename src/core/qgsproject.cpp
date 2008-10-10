@@ -785,13 +785,13 @@ bool QgsProject::read()
 
   // get project version string, if any
   QgsProjectVersion fileVersion =  _getVersion( *doc );
-  QgsProjectVersion thisVersion( QGis::qgisVersion );
+  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
 
   if ( thisVersion > fileVersion )
   {
     QgsLogger::warning( "Loading a file that was saved with an older "
                         "version of qgis (saved in " + fileVersion.text() +
-                        ", loaded in " + QGis::qgisVersion +
+                        ", loaded in " + QGis::QGIS_VERSION +
                         "). Problems may occur." );
 
     QgsProjectFileTransform projectFile( *doc, fileVersion );
@@ -951,7 +951,7 @@ bool QgsProject::write()
 
   QDomElement qgisNode = doc->createElement( "qgis" );
   qgisNode.setAttribute( "projectname", title() );
-  qgisNode.setAttribute( "version", QString( "%1" ).arg( QGis::qgisVersion ) );
+  qgisNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
 
   doc->appendChild( qgisNode );
 
@@ -1016,15 +1016,15 @@ bool QgsProject::write()
   imp_->file.close();
 
   // check if the text stream had no error - if it does
-  // the user will get a message so they can try to resolve the 
+  // the user will get a message so they can try to resolve the
   // situation e.g. by saving project to a volume with more space
   //
-  if ( projectFileStream.pos() == -1  || imp_->file.error() != QFile::NoError)
+  if ( projectFileStream.pos() == -1  || imp_->file.error() != QFile::NoError )
   {
     throw QgsIOException( QObject::tr( "Unable to save to file. Your project "
-          "may be corrupted on disk. Try clearing some space on the volume and "
-          "check file permissions before pressing save again." ) +
-        imp_->file.fileName() );
+                                       "may be corrupted on disk. Try clearing some space on the volume and "
+                                       "check file permissions before pressing save again." ) +
+                          imp_->file.fileName() );
     return false;
   }
 
