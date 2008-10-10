@@ -287,12 +287,12 @@ QString QgsProjectionSelector::selectedProj4String()
       QString mySrsId = myItem->text( QGIS_CRS_ID_COLUMN );
 
       QgsDebugMsg( "mySrsId = " + mySrsId );
-      QgsDebugMsg( "USER_PROJECTION_START_ID = " + QString::number( USER_PROJECTION_START_ID ) );
+      QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
       //
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
       //
-      if ( mySrsId.toLong() >= USER_PROJECTION_START_ID )
+      if ( mySrsId.toLong() >= USER_CRS_START_ID )
       {
         myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;
@@ -380,7 +380,7 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
       // Determine if this is a user projection or a system on
       // user projection defs all have srs_id >= 100000
       //
-      if ( lvi->text( QGIS_CRS_ID_COLUMN ).toLong() >= USER_PROJECTION_START_ID )
+      if ( lvi->text( QGIS_CRS_ID_COLUMN ).toLong() >= USER_CRS_START_ID )
       {
         myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
         QFileInfo myFileInfo;

@@ -34,7 +34,7 @@
 #include "qgslogger.h"
 //do we have to include qstring?
 
-QgsSymbol::QgsSymbol( QGis::VectorType t, QString lvalue, QString uvalue, QString label ) :
+QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QString label ) :
     mLowerValue( lvalue ),
     mUpperValue( uvalue ),
     mLabel( label ),
@@ -50,7 +50,7 @@ QgsSymbol::QgsSymbol( QGis::VectorType t, QString lvalue, QString uvalue, QStrin
 {}
 
 
-QgsSymbol::QgsSymbol( QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c ) :
+QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QString label, QColor c ) :
     mLowerValue( lvalue ),
     mUpperValue( uvalue ),
     mLabel( label ),

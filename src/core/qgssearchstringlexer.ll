@@ -80,7 +80,7 @@ string      "'"{str_char}*"'"
 
 {white}    /* skip blanks and tabs */
 
-.       { return UNKNOWN_CHARACTER; }
+.       { return Unknown_CHARACTER; }
 
 %%
 

@@ -29,15 +29,15 @@
 #include <QImage>
 #include <vector>
 
-QgsUniqueValueRenderer::QgsUniqueValueRenderer( QGis::VectorType type ): mClassificationField( 0 )
+QgsUniqueValueRenderer::QgsUniqueValueRenderer( QGis::GeometryType type ): mClassificationField( 0 )
 {
-  mVectorType = type;
+  mGeometryType = type;
   mSymbolAttributesDirty = false;
 }
 
 QgsUniqueValueRenderer::QgsUniqueValueRenderer( const QgsUniqueValueRenderer& other )
 {
-  mVectorType = other.mVectorType;
+  mGeometryType = other.mGeometryType;
   mClassificationField = other.mClassificationField;
   QMap<QString, QgsSymbol*> s = other.mSymbols;
   for ( QMap<QString, QgsSymbol*>::iterator it = s.begin(); it != s.end(); ++it )
@@ -52,7 +52,7 @@ QgsUniqueValueRenderer& QgsUniqueValueRenderer::operator=( const QgsUniqueValueR
 {
   if ( this != &other )
   {
-    mVectorType = other.mVectorType;
+    mGeometryType = other.mGeometryType;
     mClassificationField = other.mClassificationField;
     clearValues();
     for ( QMap<QString, QgsSymbol*>::iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
@@ -109,11 +109,11 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
   QgsSymbol* symbol = symbolForFeature( &f );
   if ( !symbol ) //no matching symbol
   {
-    if ( img && mVectorType == QGis::Point )
+    if ( img && mGeometryType == QGis::Point )
     {
       img->fill( 0 );
     }
-    else if ( mVectorType != QGis::Point )
+    else if ( mGeometryType != QGis::Point )
     {
       p->setPen( Qt::NoPen );
       p->setBrush( Qt::NoBrush );
@@ -122,7 +122,7 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
   }
 
   // Point
-  if ( img && mVectorType == QGis::Point )
+  if ( img && mGeometryType == QGis::Point )
   {
     double fieldScale = 1.0;
     double rotation = 0.0;
@@ -144,14 +144,14 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
                                           fieldScale, rotation, rasterScaleFactor );
   }
   // Line, polygon
-  else if ( mVectorType != QGis::Point )
+  else if ( mGeometryType != QGis::Point )
   {
     if ( !selected )
     {
       QPen pen = symbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
       p->setPen( pen );
-      if ( mVectorType == QGis::Polygon )
+      if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = symbol->brush();
         scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
@@ -164,7 +164,7 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
       pen.setWidthF( widthScale * pen.widthF() );
       pen.setColor( mSelectionColor );
       p->setPen( pen );
-      if ( mVectorType == QGis::Polygon )
+      if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = symbol->brush();
         scaleBrush( brush, rasterScaleFactor ); //scale brush content for printout
@@ -194,7 +194,7 @@ QgsSymbol *QgsUniqueValueRenderer::symbolForFeature( const QgsFeature *f )
 
 int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mVectorType = vl.vectorType();
+  mGeometryType = vl.type();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 
@@ -214,7 +214,7 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
-    QgsSymbol* msy = new QgsSymbol( mVectorType );
+    QgsSymbol* msy = new QgsSymbol( mGeometryType );
     msy->readXML( symbolnode );
     insertValue( msy->lowerValue(), msy );
     symbolnode = symbolnode.nextSibling();

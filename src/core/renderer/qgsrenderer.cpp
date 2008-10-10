@@ -42,7 +42,7 @@ void QgsRenderer::setSelectionColor( QColor color )
 bool QgsRenderer::containsPixmap() const
 {
   //default implementation returns true only for points
-  switch ( mVectorType )
+  switch ( mGeometryType )
   {
     case QGis::Point:
       return true;

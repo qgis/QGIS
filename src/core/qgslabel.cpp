@@ -509,7 +509,7 @@ void QgsLabel::labelPoint( std::vector<QgsPoint>& points, QgsFeature & feature )
   QgsGeometry *geometry = feature.geometry();
   unsigned char *geom = geometry->wkbBuffer();
   size_t geomlen = geometry->wkbSize();
-  QGis::WKBTYPE wkbType = geometry->wkbType();
+  QGis::WkbType wkbType = geometry->wkbType();
   QgsPoint point;
 
   switch ( wkbType )
@@ -556,7 +556,7 @@ unsigned char* QgsLabel::labelPoint( QgsPoint& point, unsigned char *geom, size_
 {
   // verify that local types match sizes as WKB spec
   Q_ASSERT( sizeof( int ) == 4 );
-  Q_ASSERT( sizeof( QGis::WKBTYPE ) == 4 );
+  Q_ASSERT( sizeof( QGis::WkbType ) == 4 );
   Q_ASSERT( sizeof( double ) == 8 );
 
   if ( geom == NULL )
@@ -565,7 +565,7 @@ unsigned char* QgsLabel::labelPoint( QgsPoint& point, unsigned char *geom, size_
     return NULL;
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
 #ifndef QT_NO_DEBUG
   unsigned char *geomend = geom + geomlen;
 #endif

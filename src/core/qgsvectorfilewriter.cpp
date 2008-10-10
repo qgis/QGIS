@@ -40,7 +40,7 @@
 QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     const QString& fileEncoding,
     const QgsFieldMap& fields,
-    QGis::WKBTYPE geometryType,
+    QGis::WkbType geometryType,
     const QgsCoordinateReferenceSystem* srs )
     : mDS( NULL ), mLayer( NULL ), mGeom( NULL ), mError( NoError )
 {
@@ -165,7 +165,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   mGeom = createEmptyGeometry( mWkbType );
 }
 
-OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WKBTYPE wkbType )
+OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
 {
   return OGR_G_CreateGeometry(( OGRwkbGeometryType ) wkbType );
 }

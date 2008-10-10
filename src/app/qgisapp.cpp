@@ -219,7 +219,7 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters );
 static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "Quantum GIS - " );
-  caption += QString( "%1 " ).arg( QGis::qgisVersion ) + " ";
+  caption += QString( "%1 " ).arg( QGis::QGIS_VERSION ) + " ";
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
@@ -282,7 +282,6 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
       srs->createFromProj4( mySelector->selectedProj4String() );
-      srs->debugPrint();
     }
     else
     {
@@ -296,12 +295,10 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     proj4String = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
     QgsDebugMsg( "Layer srs set from project: " + proj4String );
     srs->createFromProj4( proj4String );
-    srs->debugPrint();
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     srs->createFromProj4( mySettings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
-    srs->debugPrint();
   }
 
 }
@@ -376,7 +373,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
 
   // set application's caption
   QString caption = tr( "Quantum GIS - " );
-  caption += QString( "%1 ('%2')" ).arg( QGis::qgisVersion ).arg( QGis::qgisReleaseName );
+  caption += QString( "%1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
   // set QGIS specific srs validation
@@ -1764,8 +1761,8 @@ void QgisApp::about()
     QApplication::setOverrideCursor( Qt::WaitCursor );
     abt = new QgsAbout();
     QString versionString = tr( "You are using QGIS version %1 built against code revision %2." )
-                            .arg( QGis::qgisVersion )
-                            .arg( QGis::qgisSvnVersion );
+                            .arg( QGis::QGIS_VERSION )
+                            .arg( QGis::QGIS_SVN_VERSION );
 #ifdef HAVE_POSTGRESQL
 
     versionString += tr( " This copy of QGIS has been built with PostgreSQL support." );
@@ -1785,7 +1782,7 @@ void QgisApp::about()
 
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" + tr( "Version" ) + " ";
-    whatsNew += QGis::qgisVersion;
+    whatsNew += QGis::QGIS_VERSION;
     whatsNew += "<h3>" + tr( "New features" ) + "</h3>" +
                 tr( "This release candidate includes over 60 bug fixes and enchancements "
                     "over the QGIS 0.10.0 release. In addition we have added "
@@ -2455,7 +2452,7 @@ dataSource_( QDomNode & layerNode )
 
 
 /// the three flavors for data
-typedef enum { IS_FILE, IS_DATABASE, IS_URL, IS_UNKNOWN } providerType;
+typedef enum { IS_FILE, IS_DATABASE, IS_URL, IS_Unknown } providerType;
 
 
 /** return the physical storage type associated with the given layer
@@ -2511,7 +2508,7 @@ providerType_( QDomNode & layerNode )
       QgsDebugMsg( "unknown ``type'' attribute" );
   }
 
-  return IS_UNKNOWN;
+  return IS_Unknown;
 
 } // providerType_
 
@@ -2641,7 +2638,7 @@ findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
       QgsDebugMsg( "layer is URL based" );
       break;
 
-    case IS_UNKNOWN:
+    case IS_Unknown:
       QgsDebugMsg( "layer has an unkown type" );
       break;
   }
@@ -2776,7 +2773,7 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  QGis::WKBTYPE geometrytype;
+  QGis::WkbType geometrytype;
   QString fileformat;
 
   QgsGeomTypeDialog geomDialog( this );
@@ -2854,7 +2851,7 @@ void QgisApp::newVectorLayer()
   {
     QgsDebugMsg( "ogr provider loaded" );
 
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WKBTYPE,
+    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
         const std::list<std::pair<QString, QString> >& );
     createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
     if ( createEmptyDataSource )
@@ -4358,7 +4355,7 @@ void QgisApp::socketConnected()
   QTextStream os( mSocket );
   mVersionMessage = "";
   // send the qgis version string
-  // os << qgisVersion << "\r\n";
+  // os << QGIS_VERSION << "\r\n";
   os << "GET /qgis/version.txt HTTP/1.0\n\n";
 
 
@@ -4380,14 +4377,14 @@ void QgisApp::socketConnectionClosed()
     // check the version from the  server against our version
     QString versionInfo;
     int currentVersion = parts[0].toInt();
-    if ( currentVersion > QGis::qgisVersionInt )
+    if ( currentVersion > QGis::QGIS_VERSION_INT )
     {
       // show version message from server
       versionInfo = tr( "There is a new version of QGIS available" ) + "\n";
     }
     else
     {
-      if ( QGis::qgisVersionInt > currentVersion )
+      if ( QGis::QGIS_VERSION_INT > currentVersion )
       {
         versionInfo = tr( "You are running a development version of QGIS" ) + "\n";
       }
@@ -5103,7 +5100,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
 
-      if ( vlayer->vectorType() == QGis::Point )
+      if ( vlayer->type() == QGis::Point )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5134,7 +5131,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         }
         return;
       }
-      else if ( vlayer->vectorType() == QGis::Line )
+      else if ( vlayer->type() == QGis::Line )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5153,7 +5150,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
       }
-      else if ( vlayer->vectorType() == QGis::Polygon )
+      else if ( vlayer->type() == QGis::Polygon )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5182,7 +5179,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMoveVertex->setEnabled( true );
         mActionDeleteVertex->setEnabled( true );
         mActionMoveFeature->setEnabled( true );
-        if ( vlayer->vectorType() == QGis::Polygon )
+        if ( vlayer->type() == QGis::Polygon )
         {
           mActionAddRing->setEnabled( true );
           //some polygon layers contain also multipolygon features.
@@ -5672,7 +5669,7 @@ void QgisApp::warnOlderProjectVersion( QString oldVersion )
                                 "uncheck the box '%5' in the %4 menu." ) +
                             tr( "<p>Version of the project file: %1<br>Current version of QGIS: %2" ) )
                           .arg( oldVersion )
-                          .arg( QGis::qgisVersion )
+                          .arg( QGis::QGIS_VERSION )
                           .arg( "<a href=https://svn.qgis.org/trac/wiki>http://svn.qgis.org/trac/wiki</a> " )
                           .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
                           .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )

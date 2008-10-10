@@ -44,7 +44,7 @@ QgsGeomTypeDialog::~QgsGeomTypeDialog()
 {
 }
 
-QGis::WKBTYPE QgsGeomTypeDialog::selectedType() const
+QGis::WkbType QgsGeomTypeDialog::selectedType() const
 {
   if ( mPointRadioButton->isChecked() )
   {

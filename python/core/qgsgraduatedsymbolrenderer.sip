@@ -6,7 +6,7 @@ class QgsGraduatedSymbolRenderer : QgsRenderer
 %End
 
  public:
-    QgsGraduatedSymbolRenderer(QGis::VectorType type);
+    QgsGraduatedSymbolRenderer(QGis::GeometryType type);
     QgsGraduatedSymbolRenderer(const QgsGraduatedSymbolRenderer& other);
     virtual ~QgsGraduatedSymbolRenderer();
     /**Adds a new item

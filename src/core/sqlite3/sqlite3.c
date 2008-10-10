@@ -44616,7 +44616,7 @@ SQLITE_PRIVATE int sqlite3VdbeExec(
       case OP_And:              /* same as TK_AND, in1, in2, out3 */
       case OP_Or:               /* same as TK_OR, in1, in2, out3 */
       {
-        int v1, v2;    /* 0==FALSE, 1==TRUE, 2==UNKNOWN or NULL */
+        int v1, v2;    /* 0==FALSE, 1==TRUE, 2==Unknown or NULL */
 
         if ( pIn1->flags & MEM_Null )
         {

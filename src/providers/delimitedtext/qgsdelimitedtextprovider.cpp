@@ -449,7 +449,7 @@ QgsRect QgsDelimitedTextProvider::extent()
 /**
  * Return the feature type
  */
-QGis::WKBTYPE QgsDelimitedTextProvider::geometryType() const
+QGis::WkbType QgsDelimitedTextProvider::geometryType() const
 {
   return QGis::WKBPoint;
 }

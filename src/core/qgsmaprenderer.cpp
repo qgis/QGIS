@@ -44,7 +44,7 @@ QgsMapRenderer::QgsMapRenderer()
   mOverview = false;
 
   // set default map units - we use WGS 84 thus use degrees
-  setMapUnits( QGis::DEGREES );
+  setMapUnits( QGis::Degrees );
 
   mSize = QSize( 0, 0 );
 
@@ -429,7 +429,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
 }
 
-void QgsMapRenderer::setMapUnits( QGis::units u )
+void QgsMapRenderer::setMapUnits( QGis::UnitType u )
 {
   mScaleCalculator->setMapUnits( u );
 
@@ -439,7 +439,7 @@ void QgsMapRenderer::setMapUnits( QGis::units u )
   emit mapUnitsChanged();
 }
 
-QGis::units QgsMapRenderer::mapUnits() const
+QGis::UnitType QgsMapRenderer::mapUnits() const
 {
   return mScaleCalculator->mapUnits();
 }
@@ -720,27 +720,27 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   QDomElement element = myNode.toElement();
 
   // set units
-  QGis::units units;
+  QGis::UnitType units;
   if ( "meters" == element.text() )
   {
-    units = QGis::METERS;
+    units = QGis::Meters;
   }
   else if ( "feet" == element.text() )
   {
-    units = QGis::FEET;
+    units = QGis::Feet;
   }
   else if ( "degrees" == element.text() )
   {
-    units = QGis::DEGREES;
+    units = QGis::Degrees;
   }
   else if ( "unknown" == element.text() )
   {
-    units = QGis::UNKNOWN;
+    units = QGis::UnknownUnit;
   }
   else
   {
     QgsDebugMsg( "Unknown map unit type " + element.text() );
-    units = QGis::DEGREES;
+    units = QGis::Degrees;
   }
   setMapUnits( units );
 
@@ -797,16 +797,16 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 
   switch ( mapUnits() )
   {
-    case QGis::METERS:
+    case QGis::Meters:
       unitsString = "meters";
       break;
-    case QGis::FEET:
+    case QGis::Feet:
       unitsString = "feet";
       break;
-    case QGis::DEGREES:
+    case QGis::Degrees:
       unitsString = "degrees";
       break;
-    case QGis::UNKNOWN:
+    case QGis::UnknownUnit:
     default:
       unitsString = "unknown";
       break;

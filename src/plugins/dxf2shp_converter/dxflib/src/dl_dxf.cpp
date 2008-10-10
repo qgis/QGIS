@@ -140,7 +140,7 @@ bool DL_Dxf::in( const string& file, DL_CreationInterface* creationInterface )
 {
   FILE *fp;
   firstCall = true;
-  currentEntity = DL_UNKNOWN;
+  currentEntity = DL_Unknown;
   int errorCounter = 0;
 
   fp = fopen( file.c_str(), "rt" );
@@ -180,7 +180,7 @@ bool DL_Dxf::in( std::stringstream& stream,
   if ( stream.good() )
   {
     firstCall = true;
-    currentEntity = DL_UNKNOWN;
+    currentEntity = DL_Unknown;
     while ( readDxfGroups( stream, creationInterface, &errorCounter ) ) {}
     if ( errorCounter > 0 )
     {
@@ -778,7 +778,7 @@ bool DL_Dxf::processDXFGroup( DL_CreationInterface* creationInterface,
     }
     else
     {
-      currentEntity = DL_UNKNOWN;
+      currentEntity = DL_Unknown;
     }
 
     // end of old style POLYLINE entity
@@ -2186,7 +2186,7 @@ void DL_Dxf::addHatch( DL_CreationInterface* creationInterface )
     }
   }
   creationInterface->endEntity();
-  currentEntity = DL_UNKNOWN;
+  currentEntity = DL_Unknown;
 }
 
 
@@ -2220,7 +2220,7 @@ void DL_Dxf::addImage( DL_CreationInterface* creationInterface )
 
   creationInterface->addImage( id );
   creationInterface->endEntity();
-  currentEntity = DL_UNKNOWN;
+  currentEntity = DL_Unknown;
 }
 
 
@@ -2236,7 +2236,7 @@ void DL_Dxf::addImageDef( DL_CreationInterface* creationInterface )
 
   creationInterface->linkImage( id );
   creationInterface->endEntity();
-  currentEntity = DL_UNKNOWN;
+  currentEntity = DL_Unknown;
 }
 
 

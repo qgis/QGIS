@@ -28,20 +28,20 @@ public:
   // Version constants
   //
   // Version string 
-  static const char* qgisVersion;
+  static const char* QGIS_VERSION;
   // Version number used for comparing versions using the "Check QGIS Version" function
-  static const int qgisVersionInt;
+  static const int QGIS_VERSION_INT;
   // Release name
-  static const char* qgisReleaseName;
+  static const char* QGIS_RELEASE_NAME;
   // The subversion version
-  static const char* qgisSvnVersion;
+  static const char* QGIS_SVN_VERSION;
 
   // Enumerations
   //
 
   //! Used for symbology operations
   // Feature types
-  enum WKBTYPE
+  enum WkbType
   {
     WKBPoint = 1,
     WKBLineString,
@@ -51,12 +51,12 @@ public:
     WKBMultiPolygon,
     WKBUnknown
   };
-  enum VectorType
+  enum GeometryType
   {
     Point,
     Line,
     Polygon,
-    Unknown
+    UnknownGeometry
   };
   
   // TODO:
@@ -65,12 +65,12 @@ public:
   //static const char *qgisFeatureTypes[];
 
   //! map units that qgis supports
-  enum units
+  enum UnitType
   {
-    METERS,
-    FEET,
-    DEGREES,
-    UNKNOWN
+    Meters,
+    Feet,
+    Degrees,
+    UnknownUnit
   };
 
   //! User defined event types
@@ -106,7 +106,7 @@ public:
   const int ELLPS_PREFIX_LEN;
   /** Magick number that determins whether a projection srsid is a system (srs.db)
    *  or user (~/.qgis.qgis.db) defined projection. */
-  const int USER_PROJECTION_START_ID;
+  const int USER_CRS_START_ID;
 
   //
   // Constants for point symbols

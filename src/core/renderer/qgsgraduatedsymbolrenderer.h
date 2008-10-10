@@ -27,7 +27,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
 {
   public:
-    QgsGraduatedSymbolRenderer( QGis::VectorType type );
+    QgsGraduatedSymbolRenderer( QGis::GeometryType type );
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer& other );
     QgsGraduatedSymbolRenderer& operator=( const QgsGraduatedSymbolRenderer& other );
     virtual ~QgsGraduatedSymbolRenderer();

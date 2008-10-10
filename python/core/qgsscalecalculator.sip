@@ -16,10 +16,10 @@ class QgsScaleCalculator
      * Constructor
      * @param dpi Monitor resolution in dots per inch
      * @param mapUnits Units of the data on the map. Must match a value from the
-     * QGis::units enum (METERS, FEET, DEGREES)
+     * QGis::UnitType enum (Meters, Feet, Degrees)
      */
     QgsScaleCalculator(int dpi = 0, 
-                       QGis::units mapUnits = QGis::METERS);
+                       QGis::UnitType mapUnits = QGis::Meters);
 
     //! Destructor
     ~QgsScaleCalculator();
@@ -40,10 +40,10 @@ class QgsScaleCalculator
      * Set the map units
      * @param mapUnits Units of the data on the map. Must match a value from the
      */
-    void setMapUnits(QGis::units mapUnits);
+    void setMapUnits(QGis::UnitType mapUnits);
 
     /** Returns current map units */
-    QGis::units mapUnits() const;
+    QGis::UnitType mapUnits() const;
     
     /**
      * Calculate the scale

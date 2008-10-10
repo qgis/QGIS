@@ -28,14 +28,14 @@
 #include <QPainter>
 #include <QImage>
 
-QgsContinuousColorRenderer::QgsContinuousColorRenderer( QGis::VectorType type ): mMinimumSymbol( 0 ), mMaximumSymbol( 0 )
+QgsContinuousColorRenderer::QgsContinuousColorRenderer( QGis::GeometryType type ): mMinimumSymbol( 0 ), mMaximumSymbol( 0 )
 {
-  mVectorType = type;
+  mGeometryType = type;
 }
 
 QgsContinuousColorRenderer::QgsContinuousColorRenderer( const QgsContinuousColorRenderer& other )
 {
-  mVectorType = other.mVectorType;
+  mGeometryType = other.mGeometryType;
   mClassificationField = other.mClassificationField;
   mMinimumSymbol = new QgsSymbol( *other.mMinimumSymbol );
   mMaximumSymbol = new QgsSymbol( *other.mMaximumSymbol );
@@ -45,7 +45,7 @@ QgsContinuousColorRenderer& QgsContinuousColorRenderer::operator=( const QgsCont
 {
   if ( this != &other )
   {
-    mVectorType = other.mVectorType;
+    mGeometryType = other.mGeometryType;
     mClassificationField = other.mClassificationField;
     delete mMinimumSymbol;
     delete mMaximumSymbol;
@@ -93,7 +93,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
 
     QColor mincolor, maxcolor;
 
-    if ( mVectorType == QGis::Line || mVectorType == QGis::Point )
+    if ( mGeometryType == QGis::Line || mGeometryType == QGis::Point )
     {
       mincolor = mMinimumSymbol->pen().color();
       maxcolor = mMaximumSymbol->pen().color();
@@ -120,7 +120,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       blue = int ( mincolor.blue() );
     }
 
-    if ( mVectorType == QGis::Point && img )
+    if ( mGeometryType == QGis::Point && img )
     {
       // TODO we must get always new marker -> slow, but continuous color for points
       // probably is not used frequently
@@ -148,7 +148,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       *img = QgsMarkerCatalogue::instance()->imageMarker( mMinimumSymbol->pointSymbolName(),
              mMinimumSymbol->pointSize() * widthScale * rasterScaleFactor, pen, brush );
     }
-    else if ( mVectorType == QGis::Line )
+    else if ( mGeometryType == QGis::Line )
     {
       QPen linePen;
       linePen.setColor( QColor( red, green, blue ) );
@@ -182,7 +182,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
 
 int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mVectorType = vl.vectorType();
+  mGeometryType = vl.type();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 
@@ -215,7 +215,7 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   QDomNode lsymbolnode = lowernode.namedItem( "symbol" );
   if ( ! lsymbolnode.isNull() )
   {
-    QgsSymbol* lsy = new QgsSymbol( mVectorType );
+    QgsSymbol* lsy = new QgsSymbol( mGeometryType );
     lsy->readXML( lsymbolnode );
     this->setMinimumSymbol( lsy );
   }
@@ -223,7 +223,7 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   QDomNode usymbolnode = uppernode.namedItem( "symbol" );
   if ( ! usymbolnode.isNull() )
   {
-    QgsSymbol* usy = new QgsSymbol( mVectorType );
+    QgsSymbol* usy = new QgsSymbol( mGeometryType );
     usy->readXML( usymbolnode );
     this->setMaximumSymbol( usy );
   }

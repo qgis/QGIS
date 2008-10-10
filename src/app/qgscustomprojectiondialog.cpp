@@ -111,7 +111,7 @@ void QgsCustomProjectionDialog::getProjList ()
     //     database if it does not exist.
     assert(myResult == SQLITE_OK);
   }
-  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
+  // Set up the query to retrieve the projection information needed to populate the CRS list
   QString mySql = "select * from tbl_projection order by name";
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);
   // XXX Need to free memory from the error msg if one is set
@@ -799,7 +799,7 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
     if ( getRecordCount() == 0 )
     {
       mySql = QString( "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) " )
-              + " values (" + QString::number( USER_PROJECTION_START_ID ) + ",'"
+              + " values (" + QString::number( USER_CRS_START_ID ) + ",'"
               + sqlSafeString( myName ) + "','" + myProjectionAcronym
               + "','" + myEllipsoidAcronym  + "','" + sqlSafeString( myParameters )
               + "',0)"; // <-- is_geo shamelessly hard coded for now
@@ -953,7 +953,7 @@ void QgsCustomProjectionDialog::cboProjectionFamily_highlighted( const QString &
     //     database if it does not exist.
     assert(myResult == SQLITE_OK);
   }
-  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
+  // Set up the query to retrieve the projection information needed to populate the CRS list
   QString mySql = "select parameters from tbl_projection name where name='"+theText+"'";
     QgsDebugMsg(QString("Query to get proj params:%1").arg(mySql));
   myResult = sqlite3_prepare(myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail);

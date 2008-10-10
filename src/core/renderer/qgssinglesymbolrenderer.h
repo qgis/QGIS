@@ -26,7 +26,7 @@
 class CORE_EXPORT QgsSingleSymbolRenderer: public QgsRenderer
 {
   public:
-    QgsSingleSymbolRenderer( QGis::VectorType type );
+    QgsSingleSymbolRenderer( QGis::GeometryType type );
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer& other );
     QgsSingleSymbolRenderer& operator=( const QgsSingleSymbolRenderer& other );
     virtual ~QgsSingleSymbolRenderer();

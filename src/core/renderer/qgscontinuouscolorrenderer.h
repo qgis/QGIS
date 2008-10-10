@@ -31,7 +31,7 @@ class QImage;
 class CORE_EXPORT QgsContinuousColorRenderer: public QgsRenderer
 {
   public:
-    QgsContinuousColorRenderer( QGis::VectorType type );
+    QgsContinuousColorRenderer( QGis::GeometryType type );
     QgsContinuousColorRenderer( const QgsContinuousColorRenderer& other );
     QgsContinuousColorRenderer& operator=( const QgsContinuousColorRenderer& other );
     virtual ~QgsContinuousColorRenderer();

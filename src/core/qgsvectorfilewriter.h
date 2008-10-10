@@ -63,7 +63,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QgsVectorFileWriter( const QString& shapefileName,
                          const QString& fileEncoding,
                          const QgsFieldMap& fields,
-                         QGis::WKBTYPE geometryType,
+                         QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs );
 
     /** checks whether there were any errors in constructor */
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsVectorFileWriter
     static bool deleteShapeFile( QString theFileName );
   protected:
 
-    OGRGeometryH createEmptyGeometry( QGis::WKBTYPE wkbType );
+    OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
 
     OGRDataSourceH mDS;
     OGRLayerH mLayer;
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QTextCodec* mCodec;
 
     /** geometry type which is being used */
-    QGis::WKBTYPE mWkbType;
+    QGis::WkbType mWkbType;
 };
 
 #endif

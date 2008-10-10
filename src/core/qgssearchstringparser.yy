@@ -64,7 +64,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token STRING
 %token COLUMN_REF
 
-%token UNKNOWN_CHARACTER
+%token Unknown_CHARACTER
 
 %token NOT
 %token AND

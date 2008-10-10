@@ -41,7 +41,7 @@ class QgsWFSData: public QObject
       QList<QgsFeature*> &features,
       const QString& geometryAttribute,
       const QSet<QString>& thematicAttributes,
-      QGis::WKBTYPE* wkbType );
+      QGis::WkbType* wkbType );
     ~QgsWFSData();
 
     /**Does the Http GET request to the wfs server
@@ -137,7 +137,7 @@ class QgsWFSData: public QObject
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
     const QSet<QString> &mThematicAttributes;
-    QGis::WKBTYPE* mWkbType;
+    QGis::WkbType* mWkbType;
     /**True if the request is finished*/
     bool mFinished;
     /**The HTTP client object*/

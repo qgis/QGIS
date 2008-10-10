@@ -34,9 +34,9 @@ class CORE_EXPORT QgsSymbol
 
   public:
     /**Constructor*/
-    QgsSymbol( QGis::VectorType t, QString lvalue = "", QString uvalue = "", QString label = "" );
+    QgsSymbol( QGis::GeometryType t, QString lvalue = "", QString uvalue = "", QString label = "" );
     /**Constructor*/
-    QgsSymbol( QGis::VectorType t, QString lvalue, QString uvalue, QString label, QColor c );
+    QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QString label, QColor c );
     QgsSymbol( const QgsSymbol& );
     /**old constructors*/
     QgsSymbol();
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsSymbol
       @ return true in case of success*/
     virtual bool readXML( QDomNode & symbol );
     /**Returns if this symbol is point/ line or polygon*/
-    QGis::VectorType type() const {return mType;}
+    QGis::GeometryType type() const {return mType;}
 
     /**Returns the number of the rotation classification field*/
     int rotationClassificationField() const;
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsSymbol
     QString mUpperValue;
     QString mLabel;
     /**Vector type (point, line, polygon)*/
-    QGis::VectorType mType;
+    QGis::GeometryType mType;
 
     QPen mPen;
     QBrush mBrush;

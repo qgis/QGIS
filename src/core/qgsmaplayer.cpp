@@ -561,7 +561,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
       "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument myDocument( documentType );
   QDomElement myRootNode = myDocument.createElement( "qgis" );
-  myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::qgisVersion ) );
+  myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
   myDocument.appendChild( myRootNode );
 
   QString errorMsg;

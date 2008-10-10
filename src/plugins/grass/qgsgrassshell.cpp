@@ -602,7 +602,7 @@ void QgsGrassShell::printStdout()
         if ( !found )
         {
           // For now move forward
-          QgsDebugMsg( QString( "UNKNOWN ESC ignored: %1" ).arg( mStdoutBuffer.mid( 1, 5 ).data() ) );
+          QgsDebugMsg( QString( "Unknown ESC ignored: %1" ).arg( mStdoutBuffer.mid( 1, 5 ).data() ) );
           mStdoutBuffer.remove( 0, 1 );
         }
       }
@@ -650,7 +650,7 @@ void QgsGrassShell::printStdout()
             break;
 
           default : // unknown control, do nothing
-            QgsDebugMsg( QString( "UNKNOWN control char ignored: %1" ).arg( QString::number( c, 8 ).local8Bit().data() ) );
+            QgsDebugMsg( QString( "Unknown control char ignored: %1" ).arg( QString::number( c, 8 ).local8Bit().data() ) );
             mStdoutBuffer.remove( 0, 1 );
             break;
         }

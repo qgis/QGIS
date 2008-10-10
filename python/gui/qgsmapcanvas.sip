@@ -138,10 +138,10 @@ class QgsMapCanvas : QGraphicsView
     bool isDirty() const;
 
     //! Set map units (needed by project properties dialog)
-    void setMapUnits(QGis::units mapUnits);
+    void setMapUnits(QGis::UnitType mapUnits);
     //! Get the current canvas map units
 
-    QGis::units mapUnits() const;
+    QGis::UnitType mapUnits() const;
 
     //! Get the current coordinate transform
     const QgsMapToPixel * getCoordinateTransform();

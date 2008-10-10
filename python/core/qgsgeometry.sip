@@ -73,7 +73,7 @@ class QgsGeometry
     */
     SIP_PYOBJECT wkbBuffer();
 %MethodCode
-  sipRes = PyString_FromStringAndSize(sipCpp->wkbBuffer(), sipCpp->wkbSize());
+  sipRes = PyString_FromStringAndSize((const char *)sipCpp->wkbBuffer(), sipCpp->wkbSize());
 %End
     
     /** 
@@ -82,10 +82,10 @@ class QgsGeometry
     size_t wkbSize();
     
     /** Returns type of wkb (point / linestring / polygon etc.) */
-    QGis::WKBTYPE wkbType();
+    QGis::WkbType wkbType();
 
     /** Returns type of the vector */
-    QGis::VectorType vectorType();
+    QGis::GeometryType type();
 
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();

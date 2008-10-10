@@ -89,7 +89,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
     {
       //todo: make an assignment operator and a copy constructor for QgsSymbol
       QString classbreak = ( *it )->lowerValue() + " - " + ( *it )->upperValue();
-      QgsSymbol* sym = new QgsSymbol( mVectorLayer->vectorType(), ( *it )->lowerValue(), ( *it )->upperValue(), ( *it )->label() );
+      QgsSymbol* sym = new QgsSymbol( mVectorLayer->type(), ( *it )->lowerValue(), ( *it )->upperValue(), ( *it )->label() );
       sym->setPen(( *it )->pen() );
       sym->setCustomTexture(( *it )->customTexture() );
       sym->setBrush(( *it )->brush() );
@@ -148,7 +148,7 @@ void QgsGraduatedSymbolDialog::apply()
     return;
   }
 
-  QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer( mVectorLayer->vectorType() );
+  QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer( mVectorLayer->type() );
   for ( int item = 0;item < mClassListWidget->count();++item )
   {
     QString classbreak = mClassListWidget->item( item )->text();
@@ -162,13 +162,13 @@ void QgsGraduatedSymbolDialog::apply()
     QString upper_bound = it->second->upperValue();
     QString label = it->second->label();
 
-    QgsSymbol* sy = new QgsSymbol( mVectorLayer->vectorType(), lower_bound, upper_bound, label );
+    QgsSymbol* sy = new QgsSymbol( mVectorLayer->type(), lower_bound, upper_bound, label );
 
     sy->setColor( it->second->pen().color() );
     sy->setLineStyle( it->second->pen().style() );
     sy->setLineWidth( it->second->pen().widthF() );
 
-    if ( mVectorLayer->vectorType() == QGis::Point )
+    if ( mVectorLayer->type() == QGis::Point )
     {
       sy->setNamedPointSymbol( it->second->pointSymbolName() );
       sy->setPointSize( it->second->pointSize() );
@@ -176,7 +176,7 @@ void QgsGraduatedSymbolDialog::apply()
       sy->setRotationClassificationField( it->second->rotationClassificationField() );
     }
 
-    if ( mVectorLayer->vectorType() != QGis::Line )
+    if ( mVectorLayer->type() != QGis::Line )
     {
       sy->setFillColor( it->second->brush().color() );
       sy->setCustomTexture( it->second->customTexture() );//necessary?
@@ -224,7 +224,7 @@ void QgsGraduatedSymbolDialog::apply()
 void QgsGraduatedSymbolDialog::adjustClassification()
 {
   mClassListWidget->clear();
-  QGis::VectorType m_type = mVectorLayer->vectorType();
+  QGis::GeometryType m_type = mVectorLayer->type();
   QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
   double minimum = 0;
   double maximum = 0;
@@ -285,7 +285,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       pen.setColor( Qt::black );
     }
 
-    pen.setWidth( 0.4 );
+    pen.setWidth( 0.1 );
     brush.setStyle( Qt::SolidPattern );
     symbol->setPen( pen );
     symbol->setBrush( brush );
@@ -539,7 +539,7 @@ QColor QgsGraduatedSymbolDialog::getColorFromRamp( QString ramp, int step, int t
 void QgsGraduatedSymbolDialog::updateEntryIcon( QgsSymbol * thepSymbol,
     QListWidgetItem * thepItem )
 {
-  QGis::VectorType myType = mVectorLayer->vectorType();
+  QGis::GeometryType myType = mVectorLayer->type();
   switch ( myType )
   {
     case QGis::Point:

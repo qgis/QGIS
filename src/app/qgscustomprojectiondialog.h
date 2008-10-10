@@ -15,8 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCUSTOMPROJECTIONDIALOG_H
-#define QGSCUSTOMPROJECTIONDIALOG_H
+#ifndef QGSCUSTOMCRSDIALOG_H
+#define QGSCUSTOMCRSDIALOG_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
 class QDir;

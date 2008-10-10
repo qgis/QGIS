@@ -24,7 +24,7 @@
 class CORE_EXPORT QgsUniqueValueRenderer: public QgsRenderer
 {
   public:
-    QgsUniqueValueRenderer( QGis::VectorType type );
+    QgsUniqueValueRenderer( QGis::GeometryType type );
     QgsUniqueValueRenderer( const QgsUniqueValueRenderer& other );
     QgsUniqueValueRenderer& operator=( const QgsUniqueValueRenderer& other );
     virtual ~QgsUniqueValueRenderer();

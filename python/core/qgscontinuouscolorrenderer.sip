@@ -7,7 +7,7 @@ class QgsContinuousColorRenderer : QgsRenderer
 %End
 
  public:
-    QgsContinuousColorRenderer(QGis::VectorType type);
+    QgsContinuousColorRenderer(QGis::GeometryType type);
     QgsContinuousColorRenderer(const QgsContinuousColorRenderer& other);
     virtual ~QgsContinuousColorRenderer();
     /**Renders the feature using the minimum and maximum value of the classification field*/

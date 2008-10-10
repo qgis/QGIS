@@ -19,7 +19,7 @@
 
 int main( int, char ** )
 {
-  std::cout << std::endl << "PROJECTION TESTS..................." << std::endl;
+  std::cout << std::endl << "CRS TESTS..................." << std::endl;
   CppUnit::TextUi::TestRunner runner;
   runner.addTest( ProjectionCsHandlingTest::suite() );
   runner.run();

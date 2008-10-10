@@ -599,7 +599,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
           QDomNodeList symbolNodeList = currentChildElement.elementsByTagName( "symbol" );
           if ( symbolNodeList.size() > 0 )
           {
-            QgsSymbol* symbol = new QgsSymbol( vectorLayer->vectorType() );
+            QgsSymbol* symbol = new QgsSymbol( vectorLayer->type() );
             QDomNode symbolNode = symbolNodeList.at( 0 );
             symbol->readXML( symbolNode );
             childItem->setData( QVariant::fromValue(( void* )symbol ) );
@@ -616,7 +616,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
               case QGis::Polygon:
                 childItem->setIcon( QIcon( QPixmap::fromImage( symbol->getPolygonSymbolAsImage() ) ) );
                 break;
-              case QGis::Unknown:
+              case QGis::UnknownGeometry:
                 // should not occur
                 break;
             }

@@ -494,7 +494,7 @@ change
 
 /!\ Note this doesnt seem to be needed since version 4.2.3
 
-QT_EDITION_UNKNOWN to QT_EDITION_OPENSOURCE
+QT_EDITION_Unknown to QT_EDITION_OPENSOURCE
 
 Second change the default mkspec symlink so that it points to macx-g++:
 

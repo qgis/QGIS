@@ -145,8 +145,8 @@ static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
   // for GEOS < 3.0 we have own cloning function
   // because when cloning multipart geometries they're copied into more general geometry collection instance
   int type = GEOSGeomTypeId(( GEOSGeometry * ) geom );
-       
-  if (type == GEOS_MULTIPOINT || type == GEOS_MULTILINESTRING || type == GEOS_MULTIPOLYGON)
+
+  if ( type == GEOS_MULTIPOINT || type == GEOS_MULTILINESTRING || type == GEOS_MULTIPOLYGON )
   {
     QVector<GEOSGeometry *> geoms;
 
@@ -299,8 +299,9 @@ static GEOSGeometry *createGeosLineString( const QgsPolyline& polyline )
   catch ( GEOSException &e )
   {
     Q_UNUSED( e );
-    if ( coord )
-      GEOSCoordSeq_destroy( coord );
+    //MH: for strange reasons, geos3 crashes when removing the coordinate sequence
+    //if ( coord )
+    //GEOSCoordSeq_destroy( coord );
     return 0;
   }
 }
@@ -580,14 +581,14 @@ size_t QgsGeometry::wkbSize()
 }
 
 
-QGis::WKBTYPE QgsGeometry::wkbType()
+QGis::WkbType QgsGeometry::wkbType()
 {
   unsigned char *geom = wkbBuffer(); // ensure that wkb representation exists
   if ( geom )
   {
     unsigned int wkbType;
     memcpy( &wkbType, ( geom + 1 ), sizeof( wkbType ) );
-    return ( QGis::WKBTYPE ) wkbType;
+    return ( QGis::WkbType ) wkbType;
   }
   else
   {
@@ -596,7 +597,7 @@ QGis::WKBTYPE QgsGeometry::wkbType()
 }
 
 
-QGis::VectorType QgsGeometry::vectorType()
+QGis::GeometryType QgsGeometry::type()
 {
   if ( mDirtyWkb )
   {
@@ -604,7 +605,7 @@ QGis::VectorType QgsGeometry::vectorType()
     exportGeosToWkb();
   }
 
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D ||
        type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
     return QGis::Point;
@@ -615,7 +616,7 @@ QGis::VectorType QgsGeometry::vectorType()
        type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
     return QGis::Polygon;
 
-  return QGis::Unknown;
+  return QGis::UnknownGeometry;
 }
 
 bool QgsGeometry::isMultipart()
@@ -626,7 +627,7 @@ bool QgsGeometry::isMultipart()
     exportGeosToWkb();
   }
 
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type == QGis::WKBMultiPoint ||
        type == QGis::WKBMultiPoint25D ||
        type == QGis::WKBMultiLineString ||
@@ -676,7 +677,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
 
   int vertexnr = -1;
   int vertexcounter = 0;
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   double actdist = std::numeric_limits<double>::max();
   double x = 0;
   double y = 0;
@@ -957,7 +958,7 @@ void QgsGeometry::adjacentVerticies( int atVertex, int& beforeVertex, int& after
 
   int vertexcounter = 0;
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
 
   memcpy( &wkbType, ( mGeometry + 1 ), sizeof( int ) );
@@ -1235,7 +1236,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
     return FALSE;
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
   unsigned char* ptr = mGeometry + 1;
   memcpy( &wkbType, ptr, sizeof( wkbType ) );
@@ -1488,7 +1489,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   //create a new geometry buffer for the modified geometry
   unsigned char* newbuffer;
   int pointindex = 0;
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
   unsigned char* ptr = mGeometry + 1;
   memcpy( &wkbType, ptr, sizeof( wkbType ) );
@@ -1816,7 +1817,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   unsigned char* newbuffer;
 
   int pointindex = 0;
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
 
   unsigned char* ptr = mGeometry + 1;
@@ -2114,7 +2115,7 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
     return QgsPoint( 0, 0 );
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
   unsigned char* ptr;
 
@@ -2373,7 +2374,7 @@ double QgsGeometry::closestSegmentWithContext(
 {
   QgsPoint distPoint;
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
   double *thisx = NULL;
   double *thisy = NULL;
@@ -2595,7 +2596,7 @@ double QgsGeometry::closestSegmentWithContext(
 int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 {
   //bail out if this geometry is not polygon/multipolygon
-  if ( vectorType() != QGis::Polygon )
+  if ( type() != QGis::Polygon )
     return 1;
 
   //test for invalid geometries
@@ -2884,7 +2885,7 @@ int QgsGeometry::translate( double dx, double dy )
     return 1;
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
   bool hasZValue = false;
   int wkbPosition = 5;
@@ -3010,7 +3011,7 @@ int QgsGeometry::transform( QgsCoordinateTransform& ct )
     return 1;
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
   bool hasZValue = false;
   int wkbPosition = 5;
@@ -3128,7 +3129,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   int returnCode = 0;
 
   //return if this type is point/multipoint
-  if ( vectorType() == QGis::Point )
+  if ( type() == QGis::Point )
   {
     return 1; //cannot split points
   }
@@ -3170,12 +3171,12 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     }
 
     //call split function depending on geometry type
-    if ( vectorType() == QGis::Line )
+    if ( type() == QGis::Line )
     {
       returnCode = splitLinearGeometry( splitLineGeos, newGeometries );
       GEOSGeom_destroy( splitLineGeos );
     }
-    else if ( vectorType() == QGis::Polygon )
+    else if ( type() == QGis::Polygon )
     {
       returnCode = splitPolygonGeometry( splitLineGeos, newGeometries );
       GEOSGeom_destroy( splitLineGeos );
@@ -3274,7 +3275,7 @@ QgsRect QgsGeometry::boundingBox()
   unsigned char *ptr;
   char lsb;
   QgsPoint pt;
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
 
   // TODO: implement with GEOS
@@ -3528,7 +3529,7 @@ QgsRect QgsGeometry::boundingBox()
     }
 
     default:
-      QgsDebugMsg( "UNKNOWN WKBTYPE ENCOUNTERED" );
+      QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
       return QgsRect( 0, 0, 0, 0 );
       break;
 
@@ -3612,7 +3613,7 @@ QString QgsGeometry::exportToWkt()
     return false;
   }
 
-  QGis::WKBTYPE wkbType;
+  QGis::WkbType wkbType;
   bool hasZValue = false;
   double *x, *y;
 
@@ -3909,7 +3910,7 @@ bool QgsGeometry::exportWkbToGeos()
   unsigned char *ptr;
   char lsb;
   QgsPoint pt;
-  QGis::WKBTYPE wkbtype;
+  QGis::WkbType wkbtype;
   bool hasZValue = false;
 
   //wkbtype = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];
@@ -4512,7 +4513,7 @@ bool QgsGeometry::exportGeosToWkb()
     case GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
     {
       // TODO
-      QgsDebugMsg("geometry collection - not supported");
+      QgsDebugMsg( "geometry collection - not supported" );
       break;
     } // case GEOS_GEOM::GEOS_GEOMETRYCOLLECTION
 
@@ -4624,7 +4625,7 @@ bool QgsGeometry::convertToMultiType()
     return false;
   }
 
-  QGis::WKBTYPE geomType = wkbType();
+  QGis::WkbType geomType = wkbType();
 
   if ( geomType == QGis::WKBMultiPoint || geomType == QGis::WKBMultiPoint25D ||
        geomType == QGis::WKBMultiLineString || geomType == QGis::WKBMultiLineString25D ||
@@ -4644,7 +4645,7 @@ bool QgsGeometry::convertToMultiType()
 
   //copy wkbtype
   //todo
-  QGis::WKBTYPE newMultiType;
+  QGis::WkbType newMultiType;
   switch ( geomType )
   {
     case QGis::WKBPoint:
@@ -5151,7 +5152,7 @@ QgsPolygon QgsGeometry::asPolygon( unsigned char*& ptr, bool hasZValue )
 
 QgsPoint QgsGeometry::asPoint()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBPoint && type != QGis::WKBPoint25D )
     return QgsPoint( 0, 0 );
 
@@ -5161,7 +5162,7 @@ QgsPoint QgsGeometry::asPoint()
 
 QgsPolyline QgsGeometry::asPolyline()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBLineString && type != QGis::WKBLineString25D )
     return QgsPolyline();
 
@@ -5171,7 +5172,7 @@ QgsPolyline QgsGeometry::asPolyline()
 
 QgsPolygon QgsGeometry::asPolygon()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBPolygon && type != QGis::WKBPolygon25D )
     return QgsPolygon();
 
@@ -5181,7 +5182,7 @@ QgsPolygon QgsGeometry::asPolygon()
 
 QgsMultiPoint QgsGeometry::asMultiPoint()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiPoint && type != QGis::WKBMultiPoint25D )
     return QgsMultiPoint();
 
@@ -5202,7 +5203,7 @@ QgsMultiPoint QgsGeometry::asMultiPoint()
 
 QgsMultiPolyline QgsGeometry::asMultiPolyline()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiLineString && type != QGis::WKBMultiLineString25D )
     return QgsMultiPolyline();
 
@@ -5224,7 +5225,7 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline()
 
 QgsMultiPolygon QgsGeometry::asMultiPolygon()
 {
-  QGis::WKBTYPE type = wkbType();
+  QGis::WkbType type = wkbType();
   if ( type != QGis::WKBMultiPolygon && type != QGis::WKBMultiPolygon25D )
     return QgsMultiPolygon();
 

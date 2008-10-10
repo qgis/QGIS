@@ -40,8 +40,8 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
-    QGis::units mapUnits() const;
-    void setMapUnits(QGis::units u);
+    QGis::UnitType mapUnits() const;
+    void setMapUnits(QGis::UnitType u);
     
     //! sets whether map image will be for overview
     void setOverview(bool isOverview = true);

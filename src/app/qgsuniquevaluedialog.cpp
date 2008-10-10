@@ -76,7 +76,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
     {
       QgsSymbol* symbol = ( *iter );
       QString symbolvalue = symbol->lowerValue();
-      QgsSymbol* sym = new QgsSymbol( mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
+      QgsSymbol* sym = new QgsSymbol( mVectorLayer->type(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
       sym->setPen( symbol->pen() );
       sym->setCustomTexture( symbol->customTexture() );
       sym->setBrush( symbol->brush() );
@@ -128,13 +128,13 @@ QgsUniqueValueDialog::~QgsUniqueValueDialog()
 void QgsUniqueValueDialog::apply()
 {
   QgsDebugMsg( "called." );
-  QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer( mVectorLayer->vectorType() );
+  QgsUniqueValueRenderer *renderer = new QgsUniqueValueRenderer( mVectorLayer->type() );
 
   //go through mValues and add the entries to the renderer
   for ( QMap<QString, QgsSymbol*>::iterator it = mValues.begin();it != mValues.end();++it )
   {
     QgsSymbol* symbol = it.value();
-    QgsSymbol* newsymbol = new QgsSymbol( mVectorLayer->vectorType(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
+    QgsSymbol* newsymbol = new QgsSymbol( mVectorLayer->type(), symbol->lowerValue(), symbol->upperValue(), symbol->label() );
     newsymbol->setPen( symbol->pen() );
     newsymbol->setCustomTexture( symbol->customTexture() );
     newsymbol->setBrush( symbol->brush() );
@@ -179,11 +179,11 @@ void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
 {
   QPen pen;
   QBrush brush;
-  if ( mVectorLayer->vectorType() == QGis::Line )
+  if ( mVectorLayer->type() == QGis::Line )
   {
     pen.setColor( thecolor );
     pen.setStyle( Qt::SolidLine );
-    pen.setWidthF( 0.4 );
+    pen.setWidthF( 0.1 );
   }
   else
   {
@@ -191,7 +191,7 @@ void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
     brush.setStyle( Qt::SolidPattern );
     pen.setColor( Qt::black );
     pen.setStyle( Qt::SolidLine );
-    pen.setWidthF( 0.4 );
+    pen.setWidthF( 0.1 );
   }
   symbol->setPen( pen );
   symbol->setBrush( brush );
@@ -208,7 +208,7 @@ void QgsUniqueValueDialog::addClass( QString value )
     value += QString::number( i );
   }
 
-  QgsSymbol *symbol = new QgsSymbol( mVectorLayer->vectorType(), value );
+  QgsSymbol *symbol = new QgsSymbol( mVectorLayer->type(), value );
   mValues.insert( value, symbol );
 
   QListWidgetItem *item = new QListWidgetItem( value );
@@ -434,7 +434,7 @@ void QgsUniqueValueDialog::applySymbologyChanges()
 void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol * thepSymbol,
     QListWidgetItem * thepItem )
 {
-  QGis::VectorType myType = mVectorLayer->vectorType();
+  QGis::GeometryType myType = mVectorLayer->type();
   switch ( myType )
   {
     case QGis::Point:

@@ -676,7 +676,7 @@ QgsRect QgsPostgresProvider::extent()
 /**
  * Return the feature type
  */
-QGis::WKBTYPE QgsPostgresProvider::geometryType() const
+QGis::WkbType QgsPostgresProvider::geometryType() const
 {
   return geomType;
 }
@@ -743,7 +743,7 @@ QString QgsPostgresProvider::endianString()
       return QString( "XDR" );
       break;
     default :
-      return QString( "UNKNOWN" );
+      return QString( "Unknown" );
   }
 }
 

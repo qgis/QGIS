@@ -1061,14 +1061,14 @@ double QgsMapCanvas::mapUnitsPerPixel() const
 } // mapUnitsPerPixel
 
 
-void QgsMapCanvas::setMapUnits( QGis::units u )
+void QgsMapCanvas::setMapUnits( QGis::UnitType u )
 {
   QgsDebugMsg( "Setting map units to " + QString::number( static_cast<int>( u ) ) );
   mMapRenderer->setMapUnits( u );
 }
 
 
-QGis::units QgsMapCanvas::mapUnits() const
+QGis::UnitType QgsMapCanvas::mapUnits() const
 {
   return mMapRenderer->mapUnits();
 }

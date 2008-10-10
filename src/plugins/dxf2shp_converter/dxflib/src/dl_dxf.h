@@ -55,7 +55,7 @@ class DL_WriterA;
 
 #define DL_VERSION     "2.0.4.8"
 
-#define DL_UNKNOWN               0
+#define DL_Unknown               0
 #define DL_LAYER                10
 #define DL_BLOCK                11
 #define DL_ENDBLK               12

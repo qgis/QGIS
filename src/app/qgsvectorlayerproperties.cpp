@@ -689,19 +689,19 @@ QString QgsVectorLayerProperties::getMetadata()
 
   //geom type
 
-  QGis::VectorType vectorType = layer->vectorType();
+  QGis::GeometryType type = layer->type();
 
-  if ( vectorType < 0 || vectorType > QGis::Polygon )
+  if ( type < 0 || type > QGis::Polygon )
   {
     QgsDebugMsg( "Invalid vector type" );
   }
   else
   {
-    QString vectorTypeString( QGis::qgisVectorGeometryType[layer->vectorType()] );
+    QString typeString( QGis::qgisVectorGeometryType[layer->type()] );
 
     myMetadata += "<tr><td>";
     myMetadata += tr( "Geometry type of the features in this layer : " ) +
-                  vectorTypeString;
+                  typeString;
     myMetadata += "</td></tr>";
   }
 

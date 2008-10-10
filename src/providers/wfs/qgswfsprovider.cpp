@@ -110,7 +110,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 
 
 
-QGis::WKBTYPE QgsWFSProvider::geometryType() const
+QGis::WkbType QgsWFSProvider::geometryType() const
 {
   return mWKBType;
 }
@@ -740,7 +740,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QgsFeature* f = 0;
   unsigned char* wkb = 0;
   int wkbSize = 0;
-  QGis::WKBTYPE currentType;
+  QGis::WkbType currentType;
   mFeatureCount = 0;
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
@@ -793,7 +793,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2( const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2( const QDomNode& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   QDomNode geometryChild = geometryElement.firstChild();
   if ( geometryChild.isNull() )
@@ -834,7 +834,7 @@ int QgsWFSProvider::getWkbFromGML2( const QDomNode& geometryElement, unsigned ch
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2Point( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2Point( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   QDomNodeList coordList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
   if ( coordList.size() < 1 )
@@ -872,7 +872,7 @@ int QgsWFSProvider::getWkbFromGML2Point( const QDomElement& geometryElement, uns
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2Polygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2Polygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   //read all the coordinates (as QgsPoint) into memory. Each linear ring has an entry in the vector
   std::vector<std::list<QgsPoint> > ringCoordinates;
@@ -956,7 +956,7 @@ int QgsWFSProvider::getWkbFromGML2Polygon( const QDomElement& geometryElement, u
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2LineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2LineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   QDomNodeList coordinatesList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "coordinates" );
   if ( coordinatesList.size() < 1 )
@@ -1000,7 +1000,7 @@ int QgsWFSProvider::getWkbFromGML2LineString( const QDomElement& geometryElement
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2MultiPoint( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2MultiPoint( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   std::list<QgsPoint> pointList;
   std::list<QgsPoint> currentPoint;
@@ -1070,7 +1070,7 @@ int QgsWFSProvider::getWkbFromGML2MultiPoint( const QDomElement& geometryElement
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2MultiLineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2MultiLineString( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   //geoserver has
   //<gml:MultiLineString>
@@ -1183,7 +1183,7 @@ int QgsWFSProvider::getWkbFromGML2MultiLineString( const QDomElement& geometryEl
   return 0;
 }
 
-int QgsWFSProvider::getWkbFromGML2MultiPolygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WKBTYPE* type ) const
+int QgsWFSProvider::getWkbFromGML2MultiPolygon( const QDomElement& geometryElement, unsigned char** wkb, int* wkbSize, QGis::WkbType* type ) const
 {
   //first list: different polygons, second list: different rings, third list: different points
   std::list<std::list<std::list<QgsPoint> > > multiPolygonPoints;

@@ -25,7 +25,7 @@ class InstallerPlugin:
   # ----------------------------------------- #
   def __init__(self, iface):
     self.iface = iface
-    if str(QGis.qgisVersion)[0] == "0": # old plugin API
+    if str(QGis.QGIS_VERSION)[0] == "0": # old plugin API
       self.mainWindow = self.iface.getMainWindow
     else: # new plugin API
       self.mainWindow = self.iface.mainWindow
@@ -36,7 +36,7 @@ class InstallerPlugin:
     self.action = QAction(QIcon(":/plugins/installer/PluginInstaller.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
     self.action.setWhatsThis(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     self.action.setStatusTip(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
-    if str(QGis.qgisVersion)[0] == "0":
+    if str(QGis.QGIS_VERSION)[0] == "0":
       nextAction = self.mainWindow().menuBar().actions()[4].menu().actions()[1]
       self.mainWindow().menuBar().actions()[4].menu().insertAction(nextAction,self.action)
     else:

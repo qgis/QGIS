@@ -60,13 +60,11 @@ class CORE_EXPORT QgsClipper
     // The limit is set to 30,000 instead of 32768 because that things
     // still go wrong.
 
-    static const double maxX;
-    static const double minX;
-    static const double maxY;
-    static const double minY;
+    static const double MAX_X;
+    static const double MIN_X;
+    static const double MAX_Y;
+    static const double MIN_Y;
 
-    // Used when testing for equivalance to 0.0
-    static const double SMALL_NUM;
 
     // A handy way to refer to the four boundaries
     enum boundary {Xmax, Xmin, Ymax, Ymin};
@@ -80,6 +78,9 @@ class CORE_EXPORT QgsClipper
                              bool shapeOpen );
 
   private:
+
+    // Used when testing for equivalance to 0.0
+    static const double SMALL_NUM;
 
     // Trims the given feature to the given boundary. Returns the
     // trimmed feature in the outX and outY vectors.
@@ -200,20 +201,20 @@ inline bool QgsClipper::inside( const double x, const double y, boundary b )
 {
   switch ( b )
   {
-    case Xmax: // x < maxX is inside
-      if ( x < maxX )
+    case Xmax: // x < MAX_X is inside
+      if ( x < MAX_X )
         return true;
       break;
-    case Xmin: // x > minX is inside
-      if ( x > minX )
+    case Xmin: // x > MIN_X is inside
+      if ( x > MIN_X )
         return true;
       break;
-    case Ymax: // y < maxY is inside
-      if ( y < maxY )
+    case Ymax: // y < MAX_Y is inside
+      if ( y < MAX_Y )
         return true;
       break;
-    case Ymin: // y > minY is inside
-      if ( y > minY )
+    case Ymin: // y > MIN_Y is inside
+      if ( y > MIN_Y )
         return true;
       break;
   }
@@ -237,21 +238,21 @@ inline QgsPoint QgsClipper::intersect( const double x1, const double y1,
 
   switch ( b )
   {
-    case Xmax: // x = maxX boundary
-      r_n = -( x1 - maxX ) * ( maxY - minY );
-      r_d = ( x2 - x1 )   * ( maxY - minY );
+    case Xmax: // x = MAX_X boundary
+      r_n = -( x1 - MAX_X ) * ( MAX_Y - MIN_Y );
+      r_d = ( x2 - x1 )   * ( MAX_Y - MIN_Y );
       break;
-    case Xmin: // x = minX boundary
-      r_n = -( x1 - minX ) * ( maxY - minY );
-      r_d = ( x2 - x1 )   * ( maxY - minY );
+    case Xmin: // x = MIN_X boundary
+      r_n = -( x1 - MIN_X ) * ( MAX_Y - MIN_Y );
+      r_d = ( x2 - x1 )   * ( MAX_Y - MIN_Y );
       break;
-    case Ymax: // y = maxY boundary
-      r_n = ( y1 - maxY ) * ( maxX - minX );
-      r_d = -( y2 - y1 )   * ( maxX - minX );
+    case Ymax: // y = MAX_Y boundary
+      r_n = ( y1 - MAX_Y ) * ( MAX_X - MIN_X );
+      r_d = -( y2 - y1 )   * ( MAX_X - MIN_X );
       break;
-    case Ymin: // y = minY boundary
-      r_n = ( y1 - minY ) * ( maxX - minX );
-      r_d = -( y2 - y1 )   * ( maxX - minX );
+    case Ymin: // y = MIN_Y boundary
+      r_n = ( y1 - MIN_Y ) * ( MAX_X - MIN_X );
+      r_d = -( y2 - y1 )   * ( MAX_X - MIN_X );
       break;
   }
 

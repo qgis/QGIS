@@ -26,17 +26,17 @@
 //
 
 // Version string
-const char* QGis::qgisVersion = VERSION;
+const char* QGis::QGIS_VERSION = VERSION;
 
 // SVN version
-const char* QGis::qgisSvnVersion = QGSSVNVERSION;
+const char* QGis::QGIS_SVN_VERSION = QGSSVNVERSION;
 
 // Version number used for comparing versions using the
 // "Check QGIS Version" function
-const int QGis::qgisVersionInt = VERSION_INT;
+const int QGis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
-const char* QGis::qgisReleaseName = RELEASE_NAME;
+const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
 
 const char* QGis::qgisVectorGeometryType[] =
 {

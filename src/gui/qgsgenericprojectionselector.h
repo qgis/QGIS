@@ -88,4 +88,4 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
 
 };
 
-#endif // #ifndef QGSLAYERPROJECTIONSELECTOR_H
+#endif // #ifndef QGSLAYERCRSSELECTOR_H

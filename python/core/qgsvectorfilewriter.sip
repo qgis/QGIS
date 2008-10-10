@@ -36,7 +36,7 @@ public:
     QgsVectorFileWriter(const QString& shapefileName,
                         const QString& fileEncoding,
                         const QMap<int, QgsField>& fields,
-                        QGis::WKBTYPE geometryType,
+                        QGis::WkbType geometryType,
                         const QgsCoordinateReferenceSystem* srs);
     
     /** checks whether there were any errors in constructor */

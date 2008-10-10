@@ -64,7 +64,7 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
     {
       SVG,
       RASTER,
-      UNKNOWN
+      Unknown
     };
 
     //default constructor is forbidden

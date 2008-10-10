@@ -25,10 +25,10 @@
 
 // But the static members must be initialised outside the class! (or GCC 4 dies)
 
-const double QgsClipper::maxX =  30000;
-const double QgsClipper::minX = -30000;
-const double QgsClipper::maxY =  30000;
-const double QgsClipper::minY = -30000;
+const double QgsClipper::MAX_X =  30000;
+const double QgsClipper::MIN_X = -30000;
+const double QgsClipper::MAX_Y =  30000;
+const double QgsClipper::MIN_Y = -30000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
