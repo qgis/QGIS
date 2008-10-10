@@ -142,7 +142,11 @@ static GEOSGeometry *createGeosCollection( int typeId, QVector<GEOSGeometry*> ge
 
 static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
 {
-  if ( GEOSGeomTypeId(( GEOSGeometry * ) geom ) == GEOS_MULTIPOLYGON )
+  // for GEOS < 3.0 we have own cloning function
+  // because when cloning multipart geometries they're copied into more general geometry collection instance
+  int type = GEOSGeomTypeId(( GEOSGeometry * ) geom );
+       
+  if (type == GEOS_MULTIPOINT || type == GEOS_MULTILINESTRING || type == GEOS_MULTIPOLYGON)
   {
     QVector<GEOSGeometry *> geoms;
 
@@ -152,7 +156,7 @@ static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
       for ( int i = 0; i < GEOSGetNumGeometries(( GEOSGeometry * )geom ); ++i )
         geoms << GEOSGeom_clone(( GEOSGeometry * ) GEOSGetGeometryN(( GEOSGeometry * ) geom, i ) );
 
-      return createGeosCollection( GEOS_MULTIPOLYGON, geoms );
+      return createGeosCollection( type, geoms );
     }
     catch ( GEOSException &e )
     {
@@ -4508,6 +4512,7 @@ bool QgsGeometry::exportGeosToWkb()
     case GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
     {
       // TODO
+      QgsDebugMsg("geometry collection - not supported");
       break;
     } // case GEOS_GEOM::GEOS_GEOMETRYCOLLECTION
 
