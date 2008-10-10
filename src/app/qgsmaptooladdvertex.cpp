@@ -91,6 +91,14 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
 
     if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
     {
+
+      //add segment points in case of topological editing
+      int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+      if ( topologicalEditing )
+	{
+	  insertSegmentVerticesForSnap( snapResults, vlayer );
+	}
+
       snappedPointMapCoord = snapPointFromResults( snapResults, e->pos() );
       snappedPointLayerCoord = toLayerCoordinates( vlayer, snappedPointMapCoord );
 
