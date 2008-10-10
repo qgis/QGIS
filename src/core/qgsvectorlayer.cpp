@@ -1906,7 +1906,17 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 
   QList<QgsSnappingResult> filteredSnapResults; //we filter out the results that are on existing vertices
 
-  const double threshold = 0.00000001;
+  //work with a tolerance because coordinate projection may introduce some rounding
+  double threshold =  0.0000001;
+  if(mCRS && mCRS->mapUnits() == QGis::Meters)
+    {
+      threshold = 0.001; 
+    }
+  else if(mCRS && mCRS->mapUnits() == QGis::Feet)
+    {
+      threshold = 0.0001;
+    }
+  
 
   if ( snapWithContext( p, threshold, snapResults, QgsSnapper::SNAP_TO_SEGMENT ) != 0 )
   {
