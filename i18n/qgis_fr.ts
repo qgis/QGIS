@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="fr_FR">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
@@ -1720,7 +1719,7 @@ Le support Python va être désactivé.</translation>
     </message>
     <message>
         <source>Loaded default style file from </source>
-        <translation>Chargé le fichier de style par défaut de </translation>
+        <translation type="obsolete">Chargé le fichier de style par défaut de </translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
@@ -1841,6 +1840,22 @@ Le support Python va être désactivé.</translation>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>La sélection s&apos;étend au-delà du système de coordonnée de la couche</translation>
+    </message>
+    <message>
+        <source>Loading style file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> failed because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save symbology because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16115,6 +16130,14 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <source>ERROR: %1 features not deleted.</source>
         <translation>ERREUR : %1 entités non-effacées</translation>
+    </message>
+    <message>
+        <source>No renderer object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

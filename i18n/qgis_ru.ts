@@ -1244,7 +1244,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Loaded default style file from </source>
-        <translation>Стиль по умолчанию загружен из </translation>
+        <translation type="obsolete">Стиль по умолчанию загружен из </translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
@@ -1357,6 +1357,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>Выделение выходит за границы координатной системы слоя.</translation>
+    </message>
+    <message>
+        <source>Loading style file </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> failed because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not save symbology because:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12130,6 +12146,14 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>ERROR: %1 features not deleted.</source>
         <translation>ОШИБКА: не удалено %1 объектов.</translation>
+    </message>
+    <message>
+        <source>No renderer object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification field not found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
