@@ -2,6 +2,7 @@
 -- Run (from Linux):
 -- sqlite3 srs.db <postprocess_srs.sql
 
+-- Swedish RT-90 projections with increased accuracy
 REPLACE INTO tbl_srs VALUES(984,'RT90 7.5 gon V','tmerc','GRS80',
 '+proj=tmerc +lat_0=0 +lon_0=11.306250000000 +k=1.000006000000 +x_0=1500025.141 +y_0=-667.282 +ellps=GRS80 +units=m +no_defs',3019,3019,0);
 REPLACE INTO tbl_srs VALUES(985,'RT90 5 gon V','tmerc','GRS80',
@@ -14,3 +15,6 @@ REPLACE INTO tbl_srs VALUES(988,'RT90 2.5 gon O','tmerc','GRS80',
 '+proj=tmerc +lat_0=0 +lon_0=20.306316666666 +k=1.000005200000 +x_0=1500102.765 +y_0=-670.706 +ellps=GRS80 +units=m +no_defs',3023,3023,0);
 REPLACE INTO tbl_srs VALUES(989,'RT90 5 gon O','tmerc','GRS80',
 '+proj=tmerc +lat_0=0 +lon_0=22.556333333333 +k=1.000004900000 +x_0=1500121.846 +y_0=-672.557 +ellps=GRS80 +units=m +no_defs',3024,3024,0);
+
+-- S-JTSK/Krovak (Greenwich) (ticket #728)
+insert into tbl_srs values (3520,'S-JTSK (Greenwich) / Krovak','krovak','bessel','+proj=krovak +lat_0=49.5 +lon_0=24.83333333333333 +alpha=30.28813972222222 +k=0.9999 +x_0=0 +y_0=0 +ellps=bessel +pm=greenwich +units=m +no_defs','102067','102067','0'); 
