@@ -684,6 +684,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool calculateExtent();
 
+    /**
+     * \brief Prepare the URI so that we can later simply append param=value
+     * \param uri uri to prepare
+     * \retval prepared uri
+     */
+    QString prepareUri(QString uri);
 
     //! Data source URI of the WMS for this layer
     QString httpuri;

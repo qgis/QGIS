@@ -72,21 +72,7 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
-  // Prepare the URI so that we can later simply append param=value
-  baseUrl = httpuri;
-
-  if ( !( baseUrl.contains( "?" ) ) )
-  {
-    baseUrl.append( "?" );
-  }
-  else if (
-    ( baseUrl.right( 1 ) != "?" )
-    &&
-    ( baseUrl.right( 1 ) != "&" )
-  )
-  {
-    baseUrl.append( "&" );
-  }
+  baseUrl = prepareUri(httpuri);
 
   QgsDebugMsg( "baseUrl = " + baseUrl );
 
@@ -110,6 +96,23 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
 
 
   QgsDebugMsg( "QgsWmsProvider: exiting constructor." );
+}
+
+QString QgsWmsProvider::prepareUri(QString uri)
+{
+  if ( !( uri.contains( "?" ) ) )
+  {
+    uri.append( "?" );
+  }
+  else if (
+    ( uri.right( 1 ) != "?" ) &&
+    ( uri.right( 1 ) != "&" )
+  )
+  {
+    uri.append( "&" );
+  }
+
+  return uri;
 }
 
 QgsWmsProvider::~QgsWmsProvider()
@@ -376,9 +379,8 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
     crsKey = "CRS";
   }
 
-  QString url = mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref;
+  QString url = prepareUri(mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref);
 
-  url += "?";
   url += "SERVICE=WMS";
   url += "&";
   url += "VERSION=" + mCapabilities.version;
