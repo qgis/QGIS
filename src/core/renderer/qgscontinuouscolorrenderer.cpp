@@ -155,7 +155,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
       linePen.setWidthF( widthScale*mMinimumSymbol->pen().widthF() );
       p->setPen( linePen );
     }
-    else
+    else //polygon
     {
       p->setBrush( QColor( red, green, blue ) );
       if ( mDrawPolygonOutline )
@@ -166,15 +166,22 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
         p->setPen( pen );
       }
       else
+      {
         p->setPen( Qt::NoPen );
+      }
     }
     if ( selected )
     {
-      QPen pen = mMinimumSymbol->pen();
-      pen.setColor( mSelectionColor );
+      //for polygons we dont use selection colour for outline
+      //otherwise adjacent features appear merged when selected
+      if ( mGeometryType != QGis::Polygon )
+      {
+        QPen pen = mMinimumSymbol->pen();
+        pen.setColor( mSelectionColor );
+        p->setPen( pen );
+      }
       QBrush brush = mMinimumSymbol->brush();
       brush.setColor( mSelectionColor );
-      p->setPen( pen );
       p->setBrush( brush );
     }
   }
