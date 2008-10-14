@@ -162,8 +162,6 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
     {
       QPen pen = symbol->pen();
       pen.setWidthF( widthScale * pen.widthF() );
-      pen.setColor( mSelectionColor );
-      p->setPen( pen );
       if ( mGeometryType == QGis::Polygon )
       {
         QBrush brush = symbol->brush();
@@ -171,6 +169,11 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
+      else //dont draw outlines of polygons in selection colour otherwise they appear merged
+      {
+        pen.setColor( mSelectionColor );
+      }
+      p->setPen( pen );
     }
   }
 }

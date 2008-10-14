@@ -153,9 +153,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
     else
     {
       QPen pen = theSymbol->pen();
-      pen.setColor( mSelectionColor );
       pen.setWidthF( widthScale * pen.widthF() );
-      p->setPen( pen );
 
       if ( mGeometryType == QGis::Polygon )
       {
@@ -164,6 +162,11 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
+      else //dont draw outlines in selection colour for polys otherwise they appear merged 
+      {
+        pen.setColor( mSelectionColor );
+      }
+      p->setPen( pen );
     }
   }
 }
