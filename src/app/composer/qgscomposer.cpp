@@ -256,7 +256,7 @@ void QgsComposer::setupTheme()
   mActionAddNewLabel->setIcon( QgisApp::getThemeIcon( "/mActionLabel.png" ) );
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );
-  mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionPan.png" ) );
+  mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionSelectPan.png" ) );
 }
 
 void QgsComposer::connectSlots()
