@@ -357,7 +357,7 @@ void QgsMapserverExport::writeMapFile()
           break;
 
       }
-      if(lyr->type() == QgsMapLayer::RASTER)
+      if(lyr->type() == QgsMapLayer::RasterLayer)
       {
         mapFile << "RASTER";
       }
@@ -384,7 +384,7 @@ void QgsMapserverExport::writeMapFile()
   #endif
       switch (lyr->type())
       {
-        case QgsMapLayer::VECTOR:
+        case QgsMapLayer::VectorLayer:
           // get the provider type
           {
             QString providerType =
@@ -419,7 +419,7 @@ void QgsMapserverExport::writeMapFile()
             }
           }
           break;
-        case QgsMapLayer::RASTER:
+        case QgsMapLayer::RasterLayer:
           mapFile << "  DATA " << lyr->source().toLocal8Bit().data() << std::endl;
 
           break;

@@ -268,7 +268,7 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
     return;
   }
 
-  if ( theMapLayer->type() == QgsMapLayer::VECTOR ) // VECTOR
+  if ( theMapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
     vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
@@ -436,7 +436,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
   QgsMapLayer* firstLayer = firstMapLayer();
   if ( firstLayer )
   {
-    if ( firstLayer->type() == QgsMapLayer::VECTOR )
+    if ( firstLayer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( firstLayer );
       switch ( vlayer->type() )
@@ -454,7 +454,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
           return QgisApp::getThemePixmap( "/mIconLayer.png" );
       }
     }
-    else if ( firstLayer->type() == QgsMapLayer::RASTER )
+    else if ( firstLayer->type() == QgsMapLayer::RasterLayer )
     {
       QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( firstLayer );
       QPixmap myPixmap( 32, 32 );
@@ -479,7 +479,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
   // zoom to layer extent
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
                      tr( "&Zoom to layer extent" ), legend(), SLOT( legendLayerZoom() ) );
-  if ( firstLayer && firstLayer->type() == QgsMapLayer::RASTER )
+  if ( firstLayer && firstLayer->type() == QgsMapLayer::RasterLayer )
   {
     theMenu.addAction( tr( "&Zoom to best scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
   }
@@ -495,7 +495,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
 
   theMenu.addSeparator();
 
-  if ( firstLayer && firstLayer->type() == QgsMapLayer::VECTOR )
+  if ( firstLayer && firstLayer->type() == QgsMapLayer::VectorLayer )
   {
     // attribute table
     QAction* tableAction = theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );

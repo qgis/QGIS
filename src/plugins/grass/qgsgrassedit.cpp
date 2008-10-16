@@ -186,7 +186,7 @@ bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
 
   QgsDebugMsg( "layer name: " + layer->name() );
 
-  if ( layer->type() != QgsMapLayer::VECTOR )
+  if ( layer->type() != QgsMapLayer::VectorLayer )
   {
     QgsDebugMsg( "The selected layer is not vector." );
     return false;

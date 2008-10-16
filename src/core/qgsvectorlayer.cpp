@@ -89,7 +89,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
                                 QString baseName,
                                 QString providerKey,
                                 bool loadDefaultStyleFlag )
-    : QgsMapLayer( VECTOR, baseName, vectorLayerPath ),
+    : QgsMapLayer( VectorLayer, baseName, vectorLayerPath ),
     mUpdateThreshold( 0 ),     // XXX better default value?
     mDataProvider( NULL ),
     mProviderKey( providerKey ),

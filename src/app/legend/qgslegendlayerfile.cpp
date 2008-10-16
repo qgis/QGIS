@@ -229,7 +229,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 {
   QgsCoordinateReferenceSystem destCRS;
 
-  if ( mLyr.layer()->type() != QgsMapLayer::VECTOR )
+  if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
     return;
 
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mLyr.layer() );
@@ -374,7 +374,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
 
   theMenu.addSeparator();
 
-  if ( lyr->type() == QgsMapLayer::VECTOR )
+  if ( lyr->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
 
@@ -403,7 +403,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
 
     theMenu.addSeparator();
   }
-  else if ( lyr->type() == QgsMapLayer::RASTER )
+  else if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
     // TODO: what was this for?
     //QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>(lyr);

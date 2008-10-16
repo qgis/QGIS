@@ -11,11 +11,11 @@ class QgsMapLayer // TODO: problem when derived from QObject
 
 %ConvertToSubClassCode
 
-  if (sipCpp->type() == QgsMapLayer::VECTOR)
+  if (sipCpp->type() == QgsMapLayer::VectorLayer)
   {
     sipClass = sipClass_QgsVectorLayer;
   }
-  else if (sipCpp->type() == QgsMapLayer::RASTER)
+  else if (sipCpp->type() == QgsMapLayer::RasterLayer)
   {
     sipClass = sipClass_QgsRasterLayer;
   }
@@ -27,20 +27,26 @@ class QgsMapLayer // TODO: problem when derived from QObject
 %End
 
 public:
+    /** Layers enum defining the types of layers that can be added to a map */
+    enum LayerType
+    {
+        VectorLayer,
+        RasterLayer
+    };
 
     /** Constructor
-     * @param type Type of layer as defined in LAYERS enum
+     * @param type Type of layer as defined in QgsMapLayer::LayerType enum
      * @param lyrname Display Name of the layer
      */
-    QgsMapLayer(int type = 0, QString lyrname = QString::null, QString source = QString::null);
+    QgsMapLayer(QgsMapLayer::LayerType type = QgsMapLayer::VectorLayer, QString lyrname = QString::null, QString source = QString::null);
 
     /** Destructor */
     virtual ~QgsMapLayer();
 
     /** Get the type of the layer
-     * @return Integer matching a value in the LAYERS enum
+     * @return Integer matching a value in the QgsMapLayer::LayerType enum
      */
-    int type() const;
+    QgsMapLayer::LayerType type() const;
 
     /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
     QString getLayerID() const;
@@ -97,12 +103,6 @@ public:
     /** Set the visibility of the given sublayer name */
     virtual void setSubLayerVisibility(QString name, bool vis);
 
-    /** Layers enum defining the types of layers that can be added to a map */
-    enum LAYERS
-    {
-        VECTOR,
-        RASTER
-    };
 
     /** True if the layer can be edited */
     virtual bool isEditable() const = 0;

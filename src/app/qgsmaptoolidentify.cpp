@@ -87,7 +87,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     // coordinates are sent back to the server as pixel coordinates
     // not the layer's native CRS.  So identify on screen coordinates!
     if (
-      ( mLayer->type() == QgsMapLayer::RASTER )
+      ( mLayer->type() == QgsMapLayer::RasterLayer )
       &&
       ( dynamic_cast<QgsRasterLayer*>( mLayer )->providerKey() == "wms" )
     )
@@ -99,11 +99,11 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
       // convert screen coordinates to map coordinates
       QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
 
-      if ( mLayer->type() == QgsMapLayer::VECTOR )
+      if ( mLayer->type() == QgsMapLayer::VectorLayer )
       {
         identifyVectorLayer( idPoint );
       }
-      else if ( mLayer->type() == QgsMapLayer::RASTER )
+      else if ( mLayer->type() == QgsMapLayer::RasterLayer )
       {
         identifyRasterLayer( idPoint );
       }

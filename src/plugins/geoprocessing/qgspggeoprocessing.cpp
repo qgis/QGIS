@@ -94,7 +94,7 @@ void QgsPgGeoprocessing::buffer()
   {
     QgsVectorLayer *lyr = ( QgsVectorLayer* )layer;
     // check the layer to see if its a postgres layer
-    if ( layer->type() != QgsMapLayer::RASTER &&
+    if ( layer->type() != QgsMapLayer::RasterLayer &&
          lyr->providerType() == "postgres" )
     {
 

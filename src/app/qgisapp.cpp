@@ -2971,7 +2971,7 @@ void QgisApp::fileOpen()
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
                              tr( "" ) + "\n" + QString::fromLocal8Bit( e.what() ) );
-      QgsDebugMsg( "BAD LAYERS FOUND" );
+      QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
     }
 
     mMapCanvas->freeze( false );
@@ -3040,7 +3040,7 @@ bool QgisApp::addProject( QString projectFile )
   }
   catch ( std::exception & e )
   {
-    QgsDebugMsg( "BAD LAYERS FOUND" );
+    QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
 
     QMessageBox::critical( this,
                            tr( "Unable to open project" ), QString::fromLocal8Bit( e.what() ) );
@@ -4943,7 +4943,7 @@ void QgisApp::showMapTip()
     {
       //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
       // only process vector layers
-      if ( mypLayer->type() == QgsMapLayer::VECTOR )
+      if ( mypLayer->type() == QgsMapLayer::VectorLayer )
       {
         // Show the maptip if the maptips button is depressed
         if ( mMapTipsVisible )
@@ -5054,7 +5054,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionAddToOverview->setEnabled( true );
 
   /***********Vector layers****************/
-  if ( layer->type() == QgsMapLayer::VECTOR )
+  if ( layer->type() == QgsMapLayer::VectorLayer )
   {
     mActionSelect->setEnabled( true );
     mActionIdentify->setEnabled( true );
@@ -5198,7 +5198,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     }
   }
   /*************Raster layers*************/
-  else if ( layer->type() == QgsMapLayer::RASTER )
+  else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     mActionSelect->setEnabled( false );
     mActionZoomActualSize->setEnabled( true );

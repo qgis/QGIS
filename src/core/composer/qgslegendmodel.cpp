@@ -66,10 +66,10 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
 
     switch ( currentLayer->type() )
     {
-      case QgsMapLayer::VECTOR:
+      case QgsMapLayer::VectorLayer:
         addVectorLayerItems( layerItem, currentLayer );
         break;
-      case QgsMapLayer::RASTER:
+      case QgsMapLayer::RasterLayer:
         addRasterLayerItem( layerItem, currentLayer );
         break;
       default:
@@ -246,10 +246,10 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
     //and add the new ones...
     switch ( mapLayer->type() )
     {
-      case QgsMapLayer::VECTOR:
+      case QgsMapLayer::VectorLayer:
         addVectorLayerItems( layerItem, mapLayer );
         break;
-      case QgsMapLayer::RASTER:
+      case QgsMapLayer::RasterLayer:
         addRasterLayerItem( layerItem, mapLayer );
         break;
       default:
@@ -408,10 +408,10 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   //and child items of layer
   switch ( theMapLayer->type() )
   {
-    case QgsMapLayer::VECTOR:
+    case QgsMapLayer::VectorLayer:
       addVectorLayerItems( layerItem, theMapLayer );
       break;
-    case QgsMapLayer::RASTER:
+    case QgsMapLayer::RasterLayer:
       addRasterLayerItem( layerItem, theMapLayer );
       break;
     default:

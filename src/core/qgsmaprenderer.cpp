@@ -321,7 +321,7 @@ void QgsMapRenderer::render( QPainter* painter )
       QgsMapToPixel rasterMapToPixel;
       QgsMapToPixel bk_mapToPixel;
 
-      if ( ml->type() == QgsMapLayer::RASTER && fabs( rasterScaleFactor - 1.0 ) > 0.000001 )
+      if ( ml->type() == QgsMapLayer::RasterLayer && fabs( rasterScaleFactor - 1.0 ) > 0.000001 )
       {
         scaleRaster = true;
       }
@@ -386,7 +386,7 @@ void QgsMapRenderer::render( QPainter* painter )
       // TODO: emit drawingProgress((myRenderCounter++),zOrder.size());
       QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
 
-      if ( ml && ( ml->type() != QgsMapLayer::RASTER ) )
+      if ( ml && ( ml->type() != QgsMapLayer::RasterLayer ) )
       {
         // only make labels if the layer is visible
         // after scale dep viewing settings are checked

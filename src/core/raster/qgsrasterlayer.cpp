@@ -304,7 +304,7 @@ QgsRasterLayer::QgsRasterLayer(
   QString const & path,
   QString const & baseName,
   bool loadDefaultStyleFlag )
-    : QgsMapLayer( RASTER, baseName, path ),
+    : QgsMapLayer( RasterLayer, baseName, path ),
     // Constant that signals property not used.
     QSTRING_NOT_SET( "Not Set" ),
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
@@ -4572,7 +4572,7 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
                                 QStringList const & styles,
                                 QString const & format,
                                 QString const & crs )
-    : QgsMapLayer( RASTER, baseName, rasterLayerPath ),
+    : QgsMapLayer( RasterLayer, baseName, rasterLayerPath ),
     mRasterXDim( std::numeric_limits<int>::max() ),
     mRasterYDim( std::numeric_limits<int>::max() ),
     mInvertPixelsFlag( false ),
