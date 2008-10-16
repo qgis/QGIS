@@ -60,13 +60,38 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
     return;
   }
 
+  //restore the correct settings
+  const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >( layer->renderer() );
+
+  //
+  // Set up the mode combo
+  //
   modeComboBox->addItem( tr( "Equal Interval" ) );
   modeComboBox->addItem( tr( "Quantiles" ) );
   modeComboBox->addItem( tr( "Empty" ) );
 
-  //restore the correct settings
-  const QgsGraduatedSymbolRenderer* renderer = dynamic_cast < const QgsGraduatedSymbolRenderer * >( layer->renderer() );
+  if ( renderer )
+  {
+    QString myMode = "";
+    if ( renderer->mode() == QgsGraduatedSymbolRenderer::Empty )
+    {
+      myMode = tr( "Empty" );
+    }
+    else if ( renderer->mode() == QgsGraduatedSymbolRenderer::Quantile )
+    {
+      myMode = tr( "Quantiles" );
+    }
+    else
+    {
+      myMode = tr( "Equal Interval" );
+    }
+    modeComboBox->setCurrentIndex( modeComboBox->findText( myMode ) );
+  }
 
+
+  //
+  // Set up the classfield combo
+  //
   if ( renderer )
   {
     QList < QgsSymbol * >list = renderer->symbols();
@@ -81,7 +106,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
         break;
       }
     }
-    classificationComboBox->setItemText( classificationComboBox->currentIndex(), classfield );
+    classificationComboBox->setCurrentIndex( classificationComboBox->findText( classfield ) );
 
     numberofclassesspinbox->setValue( list.size() );
     //fill the items of the renderer into mValues
@@ -98,7 +123,9 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
       sym->setScaleClassificationField(( *it )->scaleClassificationField() );
       sym->setRotationClassificationField(( *it )->rotationClassificationField() );
       mEntries.insert( std::make_pair( classbreak, sym ) );
-      mClassListWidget->addItem( classbreak );
+      QListWidgetItem * mypItem = new QListWidgetItem( classbreak );
+      updateEntryIcon( sym , mypItem );
+      mClassListWidget->addItem( mypItem );
     }
 
   }
@@ -149,6 +176,25 @@ void QgsGraduatedSymbolDialog::apply()
   }
 
   QgsGraduatedSymbolRenderer* renderer = new QgsGraduatedSymbolRenderer( mVectorLayer->type() );
+
+  //
+  // First the mode
+  //
+  if ( modeComboBox->currentText() == tr( "Empty" ) )
+  {
+    renderer->setMode( QgsGraduatedSymbolRenderer::Empty );
+  }
+  else if ( modeComboBox->currentText() == tr( "Quantiles" ) )
+  {
+    renderer->setMode( QgsGraduatedSymbolRenderer::Quantile );
+  }
+  else //equal interval by default//equal interval by default
+  {
+    renderer->setMode( QgsGraduatedSymbolRenderer::EqualInterval );
+  }
+  //
+  // Now the class breaks
+  //
   for ( int item = 0;item < mClassListWidget->count();++item )
   {
     QString classbreak = mClassListWidget->item( item )->text();
@@ -251,7 +297,8 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 
   if ( provider )
   {
-    if ( modeComboBox->currentText() == tr( "Equal Interval" ) )
+    if ( modeComboBox->currentText() == tr( "Equal Interval" ) || 
+        modeComboBox->currentText() == tr( "Quantiles" ) )
     {
       minimum = provider->minimumValue( field ).toDouble();
       maximum = provider->maximumValue( field ).toDouble();
