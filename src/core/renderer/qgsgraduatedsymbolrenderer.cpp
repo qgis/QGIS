@@ -31,13 +31,14 @@
 #include <QPainter>
 
 
-QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( QGis::GeometryType type )
+QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( QGis::GeometryType type, Mode mode )
 {
   mGeometryType = type;
 }
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer& other )
 {
+  mMode = other.mMode;
   mGeometryType = other.mGeometryType;
   mClassificationField = other.mClassificationField;
   const QList<QgsSymbol*> s = other.symbols();
@@ -52,6 +53,7 @@ QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=( const QgsGrad
 {
   if ( this != &other )
   {
+    mMode = other.mMode;
     mGeometryType = other.mGeometryType;
     mClassificationField = other.mClassificationField;
     removeSymbols();
@@ -69,6 +71,25 @@ QgsGraduatedSymbolRenderer& QgsGraduatedSymbolRenderer::operator=( const QgsGrad
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
 {
 
+}
+
+
+const QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
+{
+  //mode is only really used to be able to reinstate
+  //the graduated dialog properties properly, so we 
+  //dont do anything else besides accessors and mutators in
+  //this class
+  return mMode;
+}
+
+void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode theMode )
+{
+  //mode is only really used to be able to reinstate
+  //the graduated dialog properties properly, so we 
+  //dont do anything else besides accessors and mutators in
+  //this class
+  mMode = theMode;
 }
 
 const QList<QgsSymbol*> QgsGraduatedSymbolRenderer::symbols() const
@@ -197,6 +218,8 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature* f )
 int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
   mGeometryType = vl.type();
+  QDomNode modeNode = rnode.namedItem( "mode" );
+  QString modeValue = modeNode.toElement().text();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 
@@ -205,6 +228,19 @@ int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   {
     return 1;
   }
+  if ( modeValue == "Empty" )
+  {
+    mMode = QgsGraduatedSymbolRenderer::Empty;
+  }
+  else if ( modeValue == "Quantile" )
+  {
+    mMode = QgsGraduatedSymbolRenderer::Quantile;
+  }
+  else //default
+  {
+    mMode = QgsGraduatedSymbolRenderer::EqualInterval;
+  }
+
   int classificationId = theProvider->fieldNameIndex( classificationField );
   if ( classificationId == -1 )
   {
@@ -269,6 +305,35 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   bool returnval = true;
   QDomElement graduatedsymbol = document.createElement( "graduatedsymbol" );
   layer_node.appendChild( graduatedsymbol );
+
+  //
+  // Mode field first ...
+  //
+
+  QString modeValue="";
+  if ( mMode == QgsGraduatedSymbolRenderer::Empty )
+  {
+      modeValue == "Empty";
+  }
+  else if ( QgsGraduatedSymbolRenderer::Quantile ) 
+  {
+    modeValue = "Quantile";
+  }
+  else //default
+  {
+    modeValue = "Equal Interval";
+  }
+  QDomElement modeElement = document.createElement( "mode" );
+  QDomText modeText = document.createTextNode( modeValue );
+  modeElement.appendChild( modeText );
+  graduatedsymbol.appendChild( modeElement );
+
+
+
+  //
+  // classification field now ...
+  //
+
   QDomElement classificationfield = document.createElement( "classificationfield" );
 
   const QgsVectorDataProvider* theProvider = vl.dataProvider();

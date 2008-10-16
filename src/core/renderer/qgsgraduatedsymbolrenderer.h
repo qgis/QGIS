@@ -27,56 +27,98 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
 {
   public:
-    QgsGraduatedSymbolRenderer( QGis::GeometryType type );
+    enum Mode 
+    {
+      EqualInterval,
+      Quantile,
+      Empty
+    };
+    QgsGraduatedSymbolRenderer( QGis::GeometryType type, Mode theMode = EqualInterval );
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer& other );
     QgsGraduatedSymbolRenderer& operator=( const QgsGraduatedSymbolRenderer& other );
     virtual ~QgsGraduatedSymbolRenderer();
+    
+    /** Get the mode - which is only really used to be able to reinstate
+     * the graduated dialog properties properly, so we 
+     * dont do anything else besides accessors and mutators in
+     * this class.
+     */
+    const Mode mode() const;
+
+    /** Set the mode - which is only really used to be able to reinstate
+     * the graduated dialog properties properly, so we 
+     * dont do anything else besides accessors and mutators in
+     * this class.
+     */
+    void setMode( Mode theMode );
+    
     /**Adds a new item
     \param sy a pointer to the QgsSymbol to be inserted. It has to be created using the new operator and is automatically destroyed when 'removeItems' is called or when this object is destroyed*/
     void addSymbol( QgsSymbol* sy );
+    
     /**Returns the indes of the classification field*/
     int classificationField() const;
+    
     /**Removes all symbols*/
     void removeSymbols();
+    
     /** Determines if a feature will be rendered or not
     @param f a pointer to the feature to determine if rendering will happen*/
     virtual bool willRenderFeature( QgsFeature *f );
+    
     /**Renders an OGRFeature
      \param p a painter (usually the one from the current map canvas)
      \param f a pointer to a feature to render
      \param t the transform object containing the information how to transform the map coordinates to screen coordinates*/
     void renderFeature( QPainter* p, QgsFeature& f, QImage* img, bool selected, double widthScale = 1.0, double rasterScaleFactor = 1.0 );
+    
     /**Sets the classicifation field by index
     \param field the number of the field to classify*/
     void setClassificationField( int );
+    
     /**Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
      @param vl the vector layer which will be associated with the renderer
      @return 0 in case of success, 1 if vector layer has no renderer, 2 if classification field not found
     */
     virtual int readXML( const QDomNode& rnode, QgsVectorLayer& vl );
+    
     /**Writes the contents of the renderer to a configuration file
      @ return true in case of success*/
     virtual bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const;
+    
     /** Returns true*/
     bool needsAttributes() const;
+    
     /**Returns a list of all needed attributes*/
     QgsAttributeList classificationAttributes() const;
+    
     void updateSymbolAttributes();
+    
     /**Returns the renderers name*/
     QString name() const;
+    
     /**Returns the symbols of the items*/
     const QList<QgsSymbol*> symbols() const;
+    
     /**Returns a copy of the renderer (a deep copy on the heap)*/
     QgsRenderer* clone() const;
+
   protected:
+    /** The graduation mode */
+    Mode mMode;
+    
     /**Index of the classification field (it must be a numerical field)*/
     int mClassificationField;
+    
     /**List holding the symbols for the individual classes*/
     QList<QgsSymbol*> mSymbols;
+    
     QgsSymbol *symbolForFeature( const QgsFeature* f );
+    
     /**Cached copy of all underlying symbols required attribute fields*/
     QgsAttributeList mSymbolAttributes;
+
 
 };
 
