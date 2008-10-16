@@ -22,8 +22,8 @@ class QgsDistanceArea
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCRS(long srsid);
     
-    //! sets source spatial reference system (by EPSG)
-    void setSourceEPSG(long epsgId);
+    //! sets source spatial reference system (by EpsgCrsId)
+    void setSourceEpsgCrsId(long epsgId);
 
     //! returns source spatial reference system
     long sourceCRS();

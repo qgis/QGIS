@@ -159,12 +159,12 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     }
     //
     // Test fetch of proj4 parameters from GEOGCS NAD83 OGRSpatialReference object
-    // in EPSG format
+    // in EpsgCrsId format
     // Failure occurs if datum field is not found in the proj4 parameter string
     //
     void testProjEpsgExportToProj4()
     {
-      std::cout << "\n\nGetting NAD83 proj4 parameters from an EPSG format WKT" << std::endl;
+      std::cout << "\n\nGetting NAD83 proj4 parameters from an EpsgCrsId format WKT" << std::endl;
       // set up the spatial ref
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktEpsg.ascii();
@@ -299,7 +299,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     QString wktDest;
     // WKT for an ESRI style GEOGCS in NAD83 (from states.shp shapefile)
     QString wktDestNad83;
-    // WKT for an EPSG style GEOGCS
+    // WKT for an EpsgCrsId style GEOGCS
     QString wktEpsg;
     // WKT for an ESRI style PROJCS as read from a shapefile
     QString wktAkAlbers;

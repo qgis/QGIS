@@ -1687,7 +1687,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   mySelector->setSelectedCrsId( mRasterLayer->srs().srsid() );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
     mRasterLayer->setSrs( srs );
   }
   else

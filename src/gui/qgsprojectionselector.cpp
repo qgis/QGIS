@@ -118,7 +118,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
      Label: The identifier includes a namespace prefix, a colon, a numeric or
         string code, and in some instances a comma followed by additional
         parameters. This International Standard defines three namespaces:
-        CRS, EPSG and AUTO2 [...]
+        CRS, EpsgCrsId and AUTO2 [...]
 
      URL: The identifier is a fully-qualified Uniform Resource Locator that
         references a publicly-accessible file containing a definition of the CRS
@@ -541,7 +541,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
     while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
       newItem = new QTreeWidgetItem( mUserProjList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) ) );
-      // EPSG for user projections is not always defined in some dbases.
+      // EpsgCrsId for user projections is not always defined in some dbases.
       // It's also not written from customprojections dialog.
       // display the epsg (field 2) in the second column of the list view
       // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) ) );
@@ -733,7 +733,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   QString mySearchString( sqlSafeString( leSearch->text() ) );
   // Set up the query to retreive the projection information needed to populate the list
   QString mySql;
-  if ( radEPSGID->isChecked() )
+  if ( radEpsgCrsId->isChecked() )
   {
     mySql = "select srs_id from tbl_srs where epsg=" + mySearchString;
   }

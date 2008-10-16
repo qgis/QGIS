@@ -699,7 +699,7 @@ int QgsWFSProvider::setCRSFromGML2( const QDomElement& wfsCollectionElement )
   QgsDebugMsg( "srsName is: " + srsName );
 
 
-  //extract the EPSG id
+  //extract the EpsgCrsId id
   int epsgId;
   bool conversionSuccess;
   if ( srsName.contains( "#" ) )//geoserver has "http://www.opengis.net/gml/srs/epsg.xml#4326"
@@ -719,7 +719,7 @@ int QgsWFSProvider::setCRSFromGML2( const QDomElement& wfsCollectionElement )
     }
   }
   else
-    epsgId = GEOEPSG_ID;
+    epsgId = GEO_EPSG_CRS_ID;
 
   if ( !mSourceCRS.createFromEpsg( epsgId ) )
   {

@@ -98,8 +98,8 @@ public:
   const long GEOSRID;
   /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
   const long GEOCRS_ID;
-  /**  Magic number for a geographic coord sys in EPSG ID format */
-  const long GEOEPSG_ID;
+  /**  Magic number for a geographic coord sys in EpsgCrsId ID format */
+  const long GEO_EPSG_CRS_ID;
   /** The length of teh string "+proj=" */
   const int PROJ_PREFIX_LEN;
   /** The length of teh string "+ellps=" */

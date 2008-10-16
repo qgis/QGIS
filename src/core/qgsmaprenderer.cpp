@@ -49,7 +49,7 @@ QgsMapRenderer::QgsMapRenderer()
   mSize = QSize( 0, 0 );
 
   mProjectionsEnabled = FALSE;
-  mDestCRS = new QgsCoordinateReferenceSystem( GEOEPSG_ID, QgsCoordinateReferenceSystem::EPSG ); //WGS 84
+  mDestCRS = new QgsCoordinateReferenceSystem( GEO_EPSG_CRS_ID, QgsCoordinateReferenceSystem::EpsgCrsId ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::MM;
 }
@@ -580,7 +580,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     try
     {
       QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
-      point = tr.transform( point, QgsCoordinateTransform::FORWARD );
+      point = tr.transform( point, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
     {

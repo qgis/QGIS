@@ -53,7 +53,7 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
        */
       const QString sqlSafeString(const QString theSQL);
 
-      //! Gets the current EPSG-style projection identifier
+      //! Gets the current EpsgCrsId-style projection identifier
       long selectedEpsg();
 
     public slots:
@@ -83,7 +83,7 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
        *                  list of projections by.  This is useful in (e.g.) WMS situations
        *                  where you just want to offer what the WMS server can support.
        *
-       * \note This function only deals with EPSG labels only at this time.
+       * \note This function only deals with EpsgCrsId labels only at this time.
        *
        * \warning This function's behaviour is undefined if it is called after the widget is shown.
        */

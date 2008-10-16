@@ -1749,7 +1749,7 @@ bool QgsWmsProvider::calculateExtent()
     // Convert to the user's CRS as required
     try
     {
-      extent = mCoordinateTransform->transformBoundingBox( extent, QgsCoordinateTransform::FORWARD );
+      extent = mCoordinateTransform->transformBoundingBox( extent, QgsCoordinateTransform::ForwardTransform );
     }
     catch ( QgsCsException &cse )
     {

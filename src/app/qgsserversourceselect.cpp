@@ -38,14 +38,14 @@
 #include <QMap>
 #include <QImageReader>
 #include "qgslogger.h"
+#include "qgis.h" // GEO_EPSG_CRS_ID 
 
 
-static long DEFAULT_WMS_EPSG = 4326;  // WGS 84
 
 
 QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
-    m_Epsg( DEFAULT_WMS_EPSG ),
+    m_Epsg( GEO_EPSG_CRS_ID ),
     mWmsProvider( 0 )
 {
   setupUi( this );
@@ -97,7 +97,7 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
   if ( currentCRS != -1 )
   {
     //convert CRS id to epsg
-    QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
     if ( currentRefSys.isValid() )
     {
       m_Epsg = currentRefSys.epsg();
@@ -496,8 +496,8 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
           // save first CRS in case we current m_Epsg is not available
           if ( i == crsFilter.begin() )
             defaultEpsg = epsg;
-          // prefer value of DEFAULT_WMS_EPSG if available
-          if ( epsg == DEFAULT_WMS_EPSG )
+          // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
+          if ( epsg == GEO_EPSG_CRS_ID )
             defaultEpsg = epsg;
         }
       }
@@ -653,7 +653,7 @@ QString QgsServerSourceSelect::descriptionForEpsg( long epsg )
   // We'll assume this function isn't called very often,
   // so please forgive the lack of caching of results
 
-  QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem( epsg, QgsCoordinateReferenceSystem::EPSG );
+  QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem( epsg, QgsCoordinateReferenceSystem::EpsgCrsId );
 
   return qgisSrs.description();
 }

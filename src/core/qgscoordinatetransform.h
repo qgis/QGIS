@@ -79,11 +79,11 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * of the layer and map canvas coordinate system as Wkt
      * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
      * @param theSourceWKT WKT of the map canvas coordinate system
-     * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CRS_TYPE
+     * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
     QgsCoordinateTransform( long theSourceSrid,
                             QString theDestWKT,
-                            QgsCoordinateReferenceSystem::CRS_TYPE theSourceCRSType = QgsCoordinateReferenceSystem::POSTGIS_SRID );
+                            QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
 
     //! destructor
     ~QgsCoordinateTransform();
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection
     {
-      FORWARD,     /*!< Transform from source to destination CRS. */
+      ForwardTransform,     /*!< Transform from source to destination CRS. */
       INVERSE      /*!< Transform from destination to source CRS. */
     };
 
@@ -120,62 +120,62 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     QgsCoordinateReferenceSystem& destCRS() { return mDestCRS; }
 
     /*! Transform the point from Source Coordinate System to Destination Coordinate System
-    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
     * @param p Point to transform
-    * @param direction TransformDirection (defaults to FORWARD)
+    * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsPoint in Destination Coordinate System
      */
-    QgsPoint transform( const QgsPoint p, TransformDirection direction = FORWARD ) const;
+    QgsPoint transform( const QgsPoint p, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
-    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
     * @param x x cordinate of point to transform
     * @param y y coordinate of point to transform
-    * @param direction TransformDirection (defaults to FORWARD)
+    * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsPoint in Destination Coordinate System
      */
-    QgsPoint transform( const double x, const double y, TransformDirection direction = FORWARD ) const;
+    QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform a QgsRect to the dest Coordinate system
-    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
     * It assumes that rect is a bounding box, and creates a bounding box
     * in the proejcted CS, so that all points in source rectangle is within
     * returned rectangle.
     * @param QgsRect rect to transform
-    * @param direction TransformDirection (defaults to FORWARD)
+    * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRect in Destination Coordinate System
      */
-    QgsRect transformBoundingBox( const QgsRect theRect, TransformDirection direction = FORWARD ) const;
+    QgsRect transformBoundingBox( const QgsRect theRect, TransformDirection direction = ForwardTransform ) const;
 
     // Same as for the other transform() functions, but alters the x
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
-    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = FORWARD ) const;
+    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
 
     void transformInPlace( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
-                           TransformDirection direction = FORWARD ) const;
+                           TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform a QgsRect to the dest Coordinate system
-    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
     * @param QgsRect rect to transform
-    * @param direction TransformDirection (defaults to FORWARD)
+    * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRect in Destination Coordinate System
      */
-    QgsRect transform( const QgsRect theRect, TransformDirection direction = FORWARD ) const;
+    QgsRect transform( const QgsRect theRect, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform an array of coordinates to a different Coordinate System
-    * If the direction is FORWARD then coordinates are transformed from layer CS --> map canvas CS,
+    * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.
     * @param x x cordinate of point to transform
     * @param y y coordinate of point to transform
-    * @param direction TransformDirection (defaults to FORWARD)
+    * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRect in Destination Coordinate System
      */
-    void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = FORWARD ) const;
+    void transformCoords( const int &numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 
     /*!
      * Flag to indicate whether the coordinate systems have been initialised
