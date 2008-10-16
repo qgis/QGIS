@@ -287,7 +287,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Splits features cut by the given line
        @param splitLine line that splits the layer features
        @param topologicalEditing true if topological editing is enabled
-       @return 0 in case of success*/
+       @return 0 in case of success, 4 if there is a selection but no feature split*/
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /**Changes the specified geometry such that it has no intersections with other

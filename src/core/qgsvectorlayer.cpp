@@ -1672,6 +1672,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   QgsRect bBox; //bounding box of the split line
   int returnCode = 0;
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
+  int numberOfSplitedFeatures = 0;
 
   QgsFeatureList featureList;
   const QgsFeatureIds selectedIds = selectedFeaturesIds();
@@ -1749,12 +1750,21 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
           addTopologicalPoints( *topol_it );
         }
       }
+      ++numberOfSplitedFeatures;
     }
     else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
     {
       returnCode = 3;
     }
   }
+
+  if(numberOfSplitedFeatures == 0 && selectedIds.size() > 0)
+    {
+      //There is a selection but no feature has been split.
+      //Maybe user forgot that only the selected features are split
+      returnCode = 4;
+    }
+
 
   //now add the new features to this vectorlayer
   addFeatures( newFeatures, false );
