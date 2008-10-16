@@ -248,7 +248,8 @@ QImage QgsSymbol::getLineSymbolAsImage()
   //Note by Tim: dont use premultiplied - it causes
   //artifacts on the output icon!
   QImage img( 15, 15, QImage::Format_ARGB32 );//QImage::Format_ARGB32_Premultiplied);
-  img.fill( QColor( 255, 255, 255, 255 ).rgba() );
+  //0 = fully transparent
+  img.fill( QColor( 255, 255, 255, 0 ).rgba() );
   QPainter p( &img );
   p.setRenderHints( QPainter::Antialiasing );
   p.setPen( mPen );
@@ -267,7 +268,8 @@ QImage QgsSymbol::getPolygonSymbolAsImage()
   //Note by Tim: dont use premultiplied - it causes
   //artifacts on the output icon!
   QImage img( 15, 15, QImage::Format_ARGB32 ); //, QImage::Format_ARGB32_Premultiplied);
-  img.fill( QColor( 255, 255, 255, 255 ).rgba() );
+  //0 = fully transparent
+  img.fill( QColor( 255, 255, 255, 0 ).rgba() );
   QPainter p( &img );
   p.setRenderHints( QPainter::Antialiasing );
   p.setPen( mPen );
@@ -346,12 +348,16 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
   {
     pen.setColor( selectionColor );
     QBrush brush = mBrush;
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, ( float )( mPointSize * scale * widthScale * rasterScaleFactor ),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
+        mPointSymbolName, ( float )( mPointSize * scale * widthScale *
+          rasterScaleFactor ),
                      pen, mBrush );
   }
   else
   {
-    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker( mPointSymbolName, ( float )( mPointSize * scale * widthScale * rasterScaleFactor ),
+    preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
+        mPointSymbolName, ( float )( mPointSize * scale * widthScale *
+          rasterScaleFactor ),
                      pen, mBrush );
   }
 
