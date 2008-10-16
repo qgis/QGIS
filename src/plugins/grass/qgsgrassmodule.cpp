@@ -601,7 +601,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
       {
         QgsMapLayer *layer = mCanvas->layer( i );
 
-        if ( layer->type() != QgsMapLayer::VECTOR ) continue;
+        if ( layer->type() != QgsMapLayer::VectorLayer ) continue;
 
         QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
         if ( vector->providerType() != "grass" ) continue;
@@ -673,7 +673,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
       {
         QgsMapLayer *layer = mCanvas->layer( i );
 
-        if ( layer->type() != QgsMapLayer::VECTOR ) continue;
+        if ( layer->type() != QgsMapLayer::VectorLayer ) continue;
 
         QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
         if ( vector->providerType() != "grass" ) continue;
@@ -2262,7 +2262,7 @@ void QgsGrassModuleInput::updateQgisLayers()
 
     QgsDebugMsg( "layer->type() = " + QString::number( layer->type() ) );
 
-    if ( mType == Vector && layer->type() == QgsMapLayer::VECTOR )
+    if ( mType == Vector && layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
       QgsDebugMsg( "vector->providerType() = " + vector->providerType() );
@@ -2363,7 +2363,7 @@ void QgsGrassModuleInput::updateQgisLayers()
         fields.push_back( it.value() );
       mVectorFields.push_back( fields );
     }
-    else if ( mType == Raster && layer->type() == QgsMapLayer::RASTER )
+    else if ( mType == Raster && layer->type() == QgsMapLayer::RasterLayer )
     {
       // Check if it is GRASS raster
       QString source = QDir::cleanPath( layer->source() );
@@ -2673,7 +2673,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
   {
     QgsMapLayer *layer = canvas->layer( i );
 
-    if ( mType == Ogr && layer->type() == QgsMapLayer::VECTOR )
+    if ( mType == Ogr && layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
       if ( vector->providerType() != "ogr"
@@ -2715,7 +2715,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mOgrLayers.push_back( ogrLayer );
       mOgrWheres.push_back( ogrWhere );
     }
-    else if ( mType == Gdal && layer->type() == QgsMapLayer::RASTER )
+    else if ( mType == Gdal && layer->type() == QgsMapLayer::RasterLayer )
     {
       QString uri = layer->source();
       mLayerComboBox->addItem( layer->name() );

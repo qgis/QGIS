@@ -40,7 +40,7 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 
-QgsMapLayer::QgsMapLayer( int type,
+QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
                           QString source ) :
     mTransparencyLevel( 255 ), // 0 is completely transparent
@@ -82,7 +82,7 @@ QgsMapLayer::~QgsMapLayer()
   delete mCRS;
 }
 
-int QgsMapLayer::type() const
+QgsMapLayer::LayerType QgsMapLayer::type() const
 {
   return mLayerType;
 }

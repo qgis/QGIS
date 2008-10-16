@@ -847,7 +847,7 @@ void QgsGrassMapcalc::updateMaps()
   {
     QgsMapLayer *layer = canvas->layer( i );
 
-    if ( layer->type() != QgsMapLayer::RASTER ) continue;
+    if ( layer->type() != QgsMapLayer::RasterLayer ) continue;
 
     // Check if it is GRASS raster
     QString source = QDir::cleanPath( layer->source() );

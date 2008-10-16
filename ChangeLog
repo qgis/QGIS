@@ -798,7 +798,7 @@ All that remains to do now is sort out syncronisation of layer ordering between 
    conventions (prefixed with m).
 
 
-** Import Note *** ONLY THE MAPLAYER REGISTRY SHOULD DELETE LAYERS NOW ***
+** Import Note *** ONLY THE MAPLAYER REGISTRY SHOULD DELETE QgsMapLayer::LayerType NOW ***
 
 2004-06-03 [ts] 0.3.0devel14
 ** Added getPaletteAsPixmap function to raster and display on raster props

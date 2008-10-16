@@ -116,7 +116,7 @@ void QgsGPSPlugin::run()
   for ( iter =  registry->mapLayers().begin();
         iter != registry->mapLayers().end(); ++iter )
   {
-    if ( iter.value()->type() == QgsMapLayer::VECTOR )
+    if ( iter.value()->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( iter.value() );
       if ( vLayer->providerType() == "gpx" )

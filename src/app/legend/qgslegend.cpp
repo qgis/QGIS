@@ -678,7 +678,7 @@ void QgsLegend::legendLayerShowProperties()
   a separate copy of the dialog pointer needs to be stored with each layer.
   */
 
-  if ( ml->type() == QgsMapLayer::RASTER )
+  if ( ml->type() == QgsMapLayer::RasterLayer )
   {
     QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
     if ( rlp )

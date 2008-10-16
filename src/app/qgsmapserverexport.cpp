@@ -205,7 +205,7 @@ void QgsMapserverExport::writeMapFile()
       // feature type
       QgsDebugMsg( "\tMapsrver Export checking feature type" );
       mapFile << "  TYPE ";
-      if ( lyr->type() == QgsMapLayer::VECTOR )
+      if ( lyr->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
         switch ( vlayer->geometryType() )
@@ -227,7 +227,7 @@ void QgsMapserverExport::writeMapFile()
 
         }
       }
-      if ( lyr->type() == QgsMapLayer::RASTER )
+      if ( lyr->type() == QgsMapLayer::RasterLayer )
       {
         mapFile << "RASTER";
       }
@@ -252,7 +252,7 @@ void QgsMapserverExport::writeMapFile()
       QgsDebugMsg( "\tMapsrver Export checking layer type" );
       switch ( lyr->type() )
       {
-        case QgsMapLayer::VECTOR:
+        case QgsMapLayer::VectorLayer:
           // get the provider type
         {
           QgsVectorLayer* vlyr = dynamic_cast<QgsVectorLayer*>( lyr );
@@ -286,7 +286,7 @@ void QgsMapserverExport::writeMapFile()
           }
         }
         break;
-        case QgsMapLayer::RASTER:
+        case QgsMapLayer::RasterLayer:
           mapFile << "  DATA " << lyr->source().toLocal8Bit().data() << std::endl;
 
           break;
