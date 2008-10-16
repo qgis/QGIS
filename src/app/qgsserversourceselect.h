@@ -140,7 +140,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! Populate the image encoding button group - private for now.
     void populateImageEncodingGroup( QgsWmsProvider* wmsProvider );
 
-    //! Returns a textual description for the EPSG number
+    //! Returns a textual description for the EpsgCrsId number
     QString descriptionForEpsg( long epsg );
 
     //! Name for selected connection

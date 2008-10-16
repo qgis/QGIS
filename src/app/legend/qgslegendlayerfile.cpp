@@ -282,9 +282,9 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
     destCRS = srs;
-    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID)
+    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId)
   }
   else
   {

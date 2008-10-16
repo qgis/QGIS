@@ -131,8 +131,8 @@ const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 const long GEOSRID = 4326;
 /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
 const long GEOCRS_ID = 3344;
-/**  Magic number for a geographic coord sys in EPSG ID format */
-const long GEOEPSG_ID = 4326;
+/**  Magic number for a geographic coord sys in EpsgCrsId ID format */
+const long GEO_EPSG_CRS_ID = 4326;
 /** The length of the string "+proj=" */
 const int PROJ_PREFIX_LEN = 6;
 /** The length of the string "+ellps=" */

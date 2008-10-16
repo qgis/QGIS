@@ -94,7 +94,7 @@ class QgsWFSData: public QObject
     }
 
     //helper routines
-    /**Reads attribute srsName="EPSG:..."
+    /**Reads attribute srsName="EpsgCrsId:..."
        @param epsgNr result
        @param attr attribute strings
        @return 0 in case of success*/

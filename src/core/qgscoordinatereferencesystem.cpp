@@ -61,7 +61,7 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( QString theWkt )
 }
 
 
-QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CRS_TYPE theType )
+QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long theId, CrsType theType )
     : mMapUnits( QGis::UnknownUnit ),
     mIsValidFlag( 0 ),
     mValidationHint( 0 )
@@ -75,17 +75,17 @@ QgsCoordinateReferenceSystem::~QgsCoordinateReferenceSystem()
   OSRDestroySpatialReference( mCRS );
 }
 
-void QgsCoordinateReferenceSystem::createFromId( const long theId, CRS_TYPE theType )
+void QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theType )
 {
   switch ( theType )
   {
-    case QGIS_CRSID:
+    case InternalCrsId:
       createFromSrsId( theId );
       break;
-    case POSTGIS_SRID:
+    case PostgisCrsId:
       createFromSrid( theId );
       break;
-    case EPSG:
+    case EpsgCrsId:
       createFromEpsg( theId );
       break;
     default:
@@ -180,7 +180,8 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() : QgsApplication::qgisUserDbFilePath(), "srs_id", id );
+  return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() : 
+      QgsApplication::qgisUserDbFilePath(), "srs_id", id );
 }
 
 bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long id )
@@ -434,6 +435,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   return mIsValidFlag;
 }
 
+//private method meant for internal use by this class only
 QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord( QString theSql )
 {
   QString myDatabaseFileName;
@@ -537,25 +539,24 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 }
 
 // Accessors -----------------------------------
-/*! Get the SrsId
- *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs
- */
+
 long QgsCoordinateReferenceSystem::srsid() const
 {
   return mSrsId;
 }
-/*! Get the Postgis SRID - if possible
- *  @return  long theSRID The internal postgis SRID for this CRS
- */
-long QgsCoordinateReferenceSystem::srid() const
+
+long QgsCoordinateReferenceSystem::postgisSrid() const
 {
 
   return mSRID;
 
 }
-/*! Get the Description
- * @return  QString the Description A textual description of the srs.
- */
+
+long QgsCoordinateReferenceSystem::epsg() const
+{
+  return mEpsg;
+}
+
 QString QgsCoordinateReferenceSystem::description() const
 {
   if ( mDescription.isNull() )
@@ -567,9 +568,7 @@ QString QgsCoordinateReferenceSystem::description() const
     return mDescription;
   }
 }
-/*! Get the Projection Acronym
- * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
- */
+
 QString QgsCoordinateReferenceSystem::projectionAcronym() const
 {
   if ( mProjectionAcronym.isNull() )
@@ -581,9 +580,7 @@ QString QgsCoordinateReferenceSystem::projectionAcronym() const
     return mProjectionAcronym;
   }
 }
-/*! Get the Ellipsoid Acronym
- * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
- */
+
 QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
 {
   if ( mEllipsoidAcronym.isNull() )
@@ -595,9 +592,7 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
     return mEllipsoidAcronym;
   }
 }
-/* Get the Proj Proj4String.
- * @return  QString theProj4String Proj4 format specifies that define this srs.
- */
+
 QString QgsCoordinateReferenceSystem::proj4String() const
 {
   if ( !mIsValidFlag )
@@ -611,40 +606,22 @@ QString QgsCoordinateReferenceSystem::proj4String() const
 
   return proj4String;
 }
-/*! Get this Geographic? flag
- * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
- */
+
 bool QgsCoordinateReferenceSystem::geographicFlag() const
 {
   return mGeoFlag;
 }
-/*! Get the units that the projection is in
- * @return QGis::UnitType
- */
+
 QGis::UnitType QgsCoordinateReferenceSystem::mapUnits() const
 {
   return mMapUnits;
 }
 
-/*! Set the postgis srid for this srs
- * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
- */
-long QgsCoordinateReferenceSystem::postgisSrid() const
-{
-  return mSRID ;
-}
-/*! Set the EPSG identifier for this srs
- * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
- */
-long QgsCoordinateReferenceSystem::epsg() const
-{
-  return mEpsg;
-}
 
 // Mutators -----------------------------------
 
 
-void QgsCoordinateReferenceSystem::setSrsId( long theSrsId )
+void QgsCoordinateReferenceSystem::setInternalId( long theSrsId )
 {
   mSrsId = theSrsId;
 }
@@ -685,9 +662,7 @@ void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( QString theEllipsoidAcr
 {
   mEllipsoidAcronym = theEllipsoidAcronym;
 }
-/*! Work out the projection units and set the appropriate local variable
- *
- */
+
 void QgsCoordinateReferenceSystem::setMapUnits()
 {
   if ( !mIsValidFlag )
@@ -912,7 +887,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
 
     myNode = srsNode.namedItem( "srsid" );
     myElement = myNode.toElement();
-    setSrsId( myElement.text().toLong() );
+    setInternalId( myElement.text().toLong() );
 
     myNode = srsNode.namedItem( "srid" );
     myElement = myNode.toElement();
@@ -954,7 +929,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   else
   {
     // Return default CRS if none was found in the XML.
-    createFromEpsg( GEOEPSG_ID );
+    createFromEpsg( GEO_EPSG_CRS_ID );
   }
   return true;
 }
@@ -974,7 +949,7 @@ bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & 
   mySrsElement.appendChild( mySrsIdElement );
 
   QDomElement mySridElement  = theDoc.createElement( "srid" );
-  mySridElement.appendChild( theDoc.createTextNode( QString::number( srid() ) ) );
+  mySridElement.appendChild( theDoc.createTextNode( QString::number( postgisSrid() ) ) );
   mySrsElement.appendChild( mySridElement );
 
   QDomElement myEpsgElement  = theDoc.createElement( "epsg" );

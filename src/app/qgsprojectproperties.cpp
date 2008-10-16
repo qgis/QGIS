@@ -248,7 +248,7 @@ void QgsProjectProperties::apply()
   long myCRSID = projectionSelector->selectedCrsId();
   if ( myCRSID )
   {
-    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
     myRender->setDestinationSrs( srs );
 
     // write the currently selected projections _proj string_ to project settings

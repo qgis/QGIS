@@ -866,7 +866,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   mySelector->setSelectedCrsId( layer->srs().srsid() );
   if ( mySelector->exec() )
   {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::QGIS_CRSID );
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
     layer->setSrs( srs );
   }
   else

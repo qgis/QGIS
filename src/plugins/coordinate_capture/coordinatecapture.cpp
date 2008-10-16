@@ -80,7 +80,7 @@ CoordinateCapture::~CoordinateCapture()
  */
 void CoordinateCapture::initGui()
 {
-  mEpsgId = GEOEPSG_ID;
+  mEpsgId = GEO_EPSG_CRS_ID;
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/coordinatecapture/coordinate_capture.png" ), tr( "Coordinate Capture" ), this );
   // Set the what's this text
