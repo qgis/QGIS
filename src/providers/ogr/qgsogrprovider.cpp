@@ -361,6 +361,9 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRect rect, boo
     OGR_L_SetSpatialFilter( ogrLayer, filter );
     OGR_G_DestroyGeometry( filter );
   }
+
+  //start with first feature
+  OGR_L_ResetReading( ogrLayer );
 }
 
 
