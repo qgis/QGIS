@@ -89,7 +89,9 @@ int QgsWFSData::getWFSData()
   {
     mHttp.setHost( requestUrl.host() );
   }
-  mHttp.get( mUri );
+
+  //mHttp.get( mUri );
+  mHttp.get(requestUrl.path() + "?" + QString(requestUrl.encodedQuery()));
 
 
   //loop to read the data
