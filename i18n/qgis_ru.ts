@@ -8177,6 +8177,14 @@ p, li { white-space: pre-wrap; }
         <source>An error occured during feature splitting</source>
         <translation>При разделении объектов возникла ошибка</translation>
     </message>
+    <message>
+        <source>No feature split done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolVertexEdit</name>
