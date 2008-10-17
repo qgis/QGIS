@@ -8952,11 +8952,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No feature split done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Keine Objekttrennung vorgenommen</translation>
     </message>
     <message>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wenn Objekte ausgewählt sind, wird die Objekttrennung nur auf diese angewendet. Um alle Objekte zu trennen, muß die Auswahl aufgehoben werden.</translation>
     </message>
 </context>
 <context>
