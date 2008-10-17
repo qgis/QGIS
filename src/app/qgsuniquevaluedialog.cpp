@@ -438,7 +438,10 @@ void QgsUniqueValueDialog::updateEntryIcon( QgsSymbol * thepSymbol,
   switch ( myType )
   {
     case QGis::Point:
-      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage() ) ) );
+      {
+        int myWidthScale = 4; //magick no to try to make vector props dialog preview look same as legend
+        thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( myWidthScale ) ) ) );
+      }
       break;
     case QGis::Line:
       thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getLineSymbolAsImage() ) ) );
