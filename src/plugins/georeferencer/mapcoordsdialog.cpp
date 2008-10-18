@@ -38,7 +38,7 @@ MapCoordsDialog::MapCoordsDialog( const QgsPoint& pixelCoords, QgsMapCanvas* qgi
   mToolEmitPoint = new QgsMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( btnPointFromCanvas );
   connect(( QgsMapToolEmitPoint* )mToolEmitPoint, SIGNAL( gotPoint( QgsPoint&, Qt::MouseButton ) ),
-          this, SLOT( setXY( QgsPoint& ) ) );
+          this, SLOT( maybeSetXY( QgsPoint&, Qt::MouseButton ) ) );
 
   connect( leXCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
   connect( leYCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
@@ -70,12 +70,16 @@ void MapCoordsDialog::on_buttonCancel_clicked()
   reject();
 }
 
-void MapCoordsDialog::setXY( QgsPoint & xy )
+void MapCoordsDialog::maybeSetXY( QgsPoint & xy, Qt::MouseButton button)
 {
-  leXCoord->clear();
-  leYCoord->clear();
-  leXCoord->insert( QString::number( xy.x(), 'f', 7 ) );
-  leYCoord->insert( QString::number( xy.y(), 'f', 7 ) );
+  // Only LeftButton should set point
+  if( Qt::LeftButton == button )
+  {
+    leXCoord->clear();
+    leYCoord->clear();
+    leXCoord->insert( QString::number( xy.x(), 'f', 7 ) );
+    leYCoord->insert( QString::number( xy.y(), 'f', 7 ) );
+  }
 
   mQgisCanvas->setMapTool( mPrevMapTool );
 }
