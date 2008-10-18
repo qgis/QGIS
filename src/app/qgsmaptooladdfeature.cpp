@@ -50,7 +50,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  QGis::WkbType layerWKBType = vlayer->geometryType();
+  QGis::WkbType layerWKBType = vlayer->wkbType();
 
   //no support for adding features to 2.5D types yet
   if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D ||
@@ -86,7 +86,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   if ( mTool == CapturePoint )
   {
     //check we only use this tool for point/multipoint layers
-    if ( vlayer->type() != QGis::Point )
+    if ( vlayer->geometryType() != QGis::Point )
     {
       QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
                                 QObject::tr( "Cannot apply the 'capture point' tool on this vector layer" ) );
@@ -194,7 +194,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   else if ( mTool == CaptureLine || mTool == CapturePolygon )
   {
     //check we only use the line tool for line/multiline layers
-    if ( mTool == CaptureLine && vlayer->type() != QGis::Line )
+    if ( mTool == CaptureLine && vlayer->geometryType() != QGis::Line )
     {
       QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
                                 QObject::tr( "Cannot apply the 'capture line' tool on this vector layer" ) );
@@ -202,7 +202,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
-    if ( mTool == CapturePolygon && vlayer->type() != QGis::Polygon )
+    if ( mTool == CapturePolygon && vlayer->geometryType() != QGis::Polygon )
     {
       QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
                                 QObject::tr( "Cannot apply the 'capture polygon' tool on this vector layer" ) );

@@ -95,10 +95,10 @@ public:
   void setRenderer(QgsRenderer * r /Transfer/);
 
   /** Returns point, line or polygon */
-  QGis::GeometryType type() const;
+  QGis::GeometryType geometryType() const;
 
   /**Returns the WKBType or WKBUnknown in case of error*/
-  QGis::WkbType geometryType() const;
+  QGis::WkbType wkbType() const;
 
   /** Return the provider type for this layer */
   QString providerType() const;
