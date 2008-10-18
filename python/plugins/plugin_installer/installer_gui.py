@@ -586,7 +586,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
   def addKnownRepositories(self):
     """ update list of known repositories - in the future it will be replaced with an online fetching """
     #print "add known repositories"
-    message = "You are going to add some plugin repositories not authotized nor supported by the QGIS team, however provided by folks associated with us.\n"
+    message = "You are going to add some plugin repositories neither authorized nor supported by the QGIS team, however provided by folks associated with us.\n"
     message += "Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!"
     if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), self.tr(message), QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
       repositories.addKnownRepos()
