@@ -13,7 +13,7 @@ echo Creating qt_ts.tar
 tar -cvf i18n/qt_ts.tar i18n/qt_*.ts
 rm i18n/qt_*.ts
 echo Creating qmake project file
-$QTDIR/bin/qmake-qt4 -project -o qgis_ts.pro
+$QTDIR/bin/qmake -project -o qgis_ts.pro
 echo Updating translation files
 $QTDIR/bin/lupdate -verbose qgis_ts.pro
 echo Removing qmake project file

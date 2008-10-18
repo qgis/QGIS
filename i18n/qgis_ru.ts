@@ -826,7 +826,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation>Не удалось применить инструмент «захватить точку» на этот векторный слой </translation>
+        <translation>Не удалось применить инструмент «захватить точку» в этом векторном слое</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
@@ -838,11 +838,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation>Не удалось применить инструмент «захватить линию» на этот векторный слой </translation>
+        <translation>Не удалось применить инструмент «захватить линию» в этом векторном слое</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation>Не удалось применить инструмент «захватить полигон» на этот векторный слой </translation>
+        <translation>Не удалось применить инструмент «захватить полигон» в этом векторном слое</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1360,19 +1360,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Loading style file </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить файл стиля</translation>
     </message>
     <message>
         <source> failed because:</source>
-        <translation type="unfinished"></translation>
+        <translation>по причине:</translation>
     </message>
     <message>
         <source>Could not save symbology because:</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить символику по причине:</translation>
     </message>
     <message>
         <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить файл. Файл проекта на диске может быть испорчен. Попробуйте освободить дисковое пространство и проверить права доступа, прежде чем вы попытаетесь сохранить проект повторно.</translation>
     </message>
 </context>
 <context>
@@ -2670,7 +2670,7 @@ Errors:  %2
     </message>
     <message>
         <source></source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3447,11 +3447,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект содержит WMS-слои</translation>
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые WMS-сервера (например, UMN mapserver) имеют ограничения на значения параметров ширины и высоты (WIDTH и HEIGHT). Во время печати слоёв с этих серверов, эти лимиты могут быть превышены. В этом случае, WMS-слой не будет напечатан</translation>
     </message>
 </context>
 <context>
@@ -8179,11 +8179,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No feature split done</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделение объектов не выполнено</translation>
     </message>
     <message>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Если есть выбранные объекты, инструмент разделения применяется только к ним. Если вы хотите разделить все объекты по линии разделения, следует очистить выделение</translation>
     </message>
 </context>
 <context>
@@ -12157,11 +12157,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>No renderer object</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует объект отрисовки</translation>
     </message>
     <message>
         <source>Classification field not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле классификации не найдено</translation>
     </message>
 </context>
 <context>
