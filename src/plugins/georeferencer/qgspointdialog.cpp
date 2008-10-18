@@ -47,12 +47,16 @@ class QgsGeorefTool : public QgsMapTool
     //! Mouse press event for overriding
     virtual void canvasPressEvent( QMouseEvent * e )
     {
-      QgsPoint pnt = toMapCoordinates( e->pos() );
+      // Only add point on Qt:LeftButton
+      if ( Qt::LeftButton == e->button() )
+      {
+	QgsPoint pnt = toMapCoordinates( e->pos() );
 
-      if ( mAddPoint )
-        mDlg->showCoordDialog( pnt );
-      else
-        mDlg->deleteDataPoint( pnt );
+	if ( mAddPoint )
+	  mDlg->showCoordDialog( pnt );
+	else
+	  mDlg->deleteDataPoint( pnt );
+      }
     }
 
     virtual void canvasMoveEvent( QMouseEvent * e ) { }
