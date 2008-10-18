@@ -5100,7 +5100,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
 
-      if ( vlayer->type() == QGis::Point )
+      if ( vlayer->geometryType() == QGis::Point )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5123,7 +5123,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           //don't enable vertex move for single point
-          if ( vlayer->geometryType() != QGis::WKBPoint && vlayer->geometryType() != QGis::WKBPoint25D )
+          if ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D )
           {
             mActionMoveVertex->setEnabled( true );
           }
@@ -5131,7 +5131,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         }
         return;
       }
-      else if ( vlayer->type() == QGis::Line )
+      else if ( vlayer->geometryType() == QGis::Line )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5150,7 +5150,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
       }
-      else if ( vlayer->type() == QGis::Polygon )
+      else if ( vlayer->geometryType() == QGis::Polygon )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
@@ -5179,7 +5179,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMoveVertex->setEnabled( true );
         mActionDeleteVertex->setEnabled( true );
         mActionMoveFeature->setEnabled( true );
-        if ( vlayer->type() == QGis::Polygon )
+        if ( vlayer->geometryType() == QGis::Polygon )
         {
           mActionAddRing->setEnabled( true );
           //some polygon layers contain also multipolygon features.

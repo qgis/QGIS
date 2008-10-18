@@ -121,7 +121,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
       {
         setCoordinateSystem();
         // add single symbol renderer as default
-        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( type() );
+        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
         setRenderer( renderer );
       }
     }
@@ -129,7 +129,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     {
       setCoordinateSystem();
       // add single symbol renderer as default
-      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( type() );
+      QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
       setRenderer( renderer );
     }
     // Get the update threshold from user settings. We
@@ -918,7 +918,7 @@ void QgsVectorLayer::setRenderer( QgsRenderer * r )
   }
 }
 
-QGis::GeometryType QgsVectorLayer::type() const
+QGis::GeometryType QgsVectorLayer::geometryType() const
 {
   if ( mDataProvider )
   {
@@ -972,9 +972,9 @@ QGis::GeometryType QgsVectorLayer::type() const
   return QGis::UnknownGeometry;
 }
 
-QGis::WkbType QgsVectorLayer::geometryType() const
+QGis::WkbType QgsVectorLayer::wkbType() const
 {
-  return ( QGis::WkbType )( mGeometryType );
+  return ( QGis::WkbType )( mWkbType );
 }
 
 QgsRect QgsVectorLayer::boundingBoxOfSelected()
@@ -2177,7 +2177,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       mLayerExtent.setYMinimum( mbr.yMin() );
 
       // get and store the feature type
-      mGeometryType = mDataProvider->geometryType();
+      mWkbType = mDataProvider->geometryType();
 
       // look at the fields in the layer and set the primary
       // display field using some real fuzzy logic
@@ -2430,22 +2430,22 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   if ( !singlenode.isNull() )
   {
-    renderer = new QgsSingleSymbolRenderer( type() );
+    renderer = new QgsSingleSymbolRenderer( geometryType() );
     returnCode = renderer->readXML( singlenode, *this );
   }
   else if ( !graduatednode.isNull() )
   {
-    renderer = new QgsGraduatedSymbolRenderer( type() );
+    renderer = new QgsGraduatedSymbolRenderer( geometryType() );
     returnCode = renderer->readXML( graduatednode, *this );
   }
   else if ( !continuousnode.isNull() )
   {
-    renderer = new QgsContinuousColorRenderer( type() );
+    renderer = new QgsContinuousColorRenderer( geometryType() );
     returnCode = renderer->readXML( continuousnode, *this );
   }
   else if ( !uniquevaluenode.isNull() )
   {
-    renderer = new QgsUniqueValueRenderer( type() );
+    renderer = new QgsUniqueValueRenderer( geometryType() );
     returnCode = renderer->readXML( uniquevaluenode, *this );
   }
 
@@ -3192,7 +3192,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
   }
   if ( snap_to == QgsSnapper::SNAP_TO_SEGMENT || snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT ) // snap to segment
   {
-    if ( type() != QGis::Point ) // cannot snap to segment for points/multipoints
+    if ( geometryType() != QGis::Point ) // cannot snap to segment for points/multipoints
     {
       sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex );
 

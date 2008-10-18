@@ -157,7 +157,7 @@ void QgsSingleSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QImag
 
 int QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mGeometryType = vl.type();
+  mGeometryType = vl.geometryType();
   QgsSymbol* sy = new QgsSymbol( mGeometryType );
 
   QDomNode synode = rnode.namedItem( "symbol" );

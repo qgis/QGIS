@@ -208,7 +208,7 @@ void QgsMapserverExport::writeMapFile()
       if ( lyr->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( lyr );
-        switch ( vlayer->geometryType() )
+        switch ( vlayer->wkbType() )
         {
           case QGis::WKBPoint:
           case QGis::WKBMultiPoint:

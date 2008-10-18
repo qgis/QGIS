@@ -197,7 +197,7 @@ QgsSymbol *QgsUniqueValueRenderer::symbolForFeature( const QgsFeature *f )
 
 int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mGeometryType = vl.type();
+  mGeometryType = vl.geometryType();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 

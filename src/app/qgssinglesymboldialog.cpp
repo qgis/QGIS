@@ -75,7 +75,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
     mypItem->setText( "" );
     //store the symbol offset in the UserData role for later retrieval
     mypItem->setData( Qt::UserRole, *it );
-    if ( layer->type() != QGis::Point )
+    if ( layer->geometryType() != QGis::Point )
     {
       break;
     }
@@ -138,7 +138,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "NoBrush" ) ), tr( "No Brush" ), "NoBrush" );
   cboFillStyle->addItem( QIcon( QgsSymbologyUtils::char2PatternPixmap( "TexturePattern" ) ), tr( "Texture" ), "TexturePattern" );
 
-  if ( mVectorLayer && mVectorLayer->type() != QGis::Point )
+  if ( mVectorLayer && layer->geometryType() != QGis::Point )
   {
     mGroupPoint->setVisible( false );
     mGroupPoint->setEnabled( false );
@@ -162,7 +162,7 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
       else
       {
         // Take values from an example instance
-        QgsSingleSymbolRenderer exampleRenderer = QgsSingleSymbolRenderer( mVectorLayer->type() );
+        QgsSingleSymbolRenderer exampleRenderer = QgsSingleSymbolRenderer( mVectorLayer->geometryType() );
         set( exampleRenderer.symbols().first() );
       }
     }
@@ -307,10 +307,10 @@ void QgsSingleSymbolDialog::apply( QgsSymbol *sy )
 
 void QgsSingleSymbolDialog::apply()
 {
-  QgsSymbol* sy = new QgsSymbol( mVectorLayer->type() );
+  QgsSymbol* sy = new QgsSymbol( mVectorLayer->geometryType() );
   apply( sy );
 
-  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( mVectorLayer->type() );
+  QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( mVectorLayer->geometryType() );
   renderer->addSymbol( sy );
   renderer->updateSymbolAttributes();
 
@@ -423,7 +423,7 @@ void QgsSingleSymbolDialog::set( const QgsSymbol *sy )
   btnOutlineColor->setEnabled( true );
   cboOutlineStyle->setEnabled( true );
 
-  if ( mVectorLayer && mVectorLayer->type() != QGis::Line )
+  if ( mVectorLayer && mVectorLayer->geometryType() != QGis::Line )
   {
     btnFillColor->setEnabled( true );
     cboFillStyle->setEnabled( true );

@@ -217,7 +217,7 @@ QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature* f )
 
 int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mGeometryType = vl.type();
+  mGeometryType = vl.geometryType();
   QDomNode modeNode = rnode.namedItem( "mode" );
   QString modeValue = modeNode.toElement().text();
   QDomNode classnode = rnode.namedItem( "classificationfield" );

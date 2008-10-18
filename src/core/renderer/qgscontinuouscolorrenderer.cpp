@@ -189,7 +189,7 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
 
 int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
 {
-  mGeometryType = vl.type();
+  mGeometryType = vl.geometryType();
   QDomNode classnode = rnode.namedItem( "classificationfield" );
   QString classificationField = classnode.toElement().text();
 

@@ -81,7 +81,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   if ( !mDragging )
   {
     int boxSize = 0;
-    if ( vlayer->type() != QGis::Polygon )
+    if ( vlayer->geometryType() != QGis::Polygon )
     {
       //if point or line use an artificial bounding box of 10x10 pixels
       //to aid the user to click on a feature accurately

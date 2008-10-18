@@ -339,7 +339,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
     // Calculate derived attributes and insert:
     // measure distance or area depending on geometry type
-    if ( layer->type() == QGis::Line )
+    if ( layer->geometryType() == QGis::Line )
     {
       double dist = calc.measure( f_it->geometry() );
       QString str = calc.textUnit( dist, 3, mCanvas->mapUnits(), false );
@@ -357,13 +357,13 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
         mResults->addDerivedAttribute( featureNode, "endY", str );
       }
     }
-    else if ( layer->type() == QGis::Polygon )
+    else if ( layer->geometryType() == QGis::Polygon )
     {
       double area = calc.measure( f_it->geometry() );
       QString str = calc.textUnit( area, 3, mCanvas->mapUnits(), true );
       mResults->addDerivedAttribute( featureNode, QObject::tr( "Area" ), str );
     }
-    else if ( layer->type() == QGis::Point )
+    else if ( layer->geometryType() == QGis::Point )
     {
       // Include the x and y coordinates of the point as a derived attribute
       QString str;
