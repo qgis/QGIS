@@ -57,7 +57,7 @@ class QgsCoordinateTransform : QObject
     //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection{
       ForwardTransform,     /*!< Transform from source to destination CRS. */
-      INVERSE      /*!< Transform from destination to source CRS. */
+      ReverseTransform      /*!< Transform from destination to source CRS. */
     };
     
     /*! 

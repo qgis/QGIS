@@ -92,7 +92,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     enum TransformDirection
     {
       ForwardTransform,     /*!< Transform from source to destination CRS. */
-      INVERSE      /*!< Transform from destination to source CRS. */
+      ReverseTransform      /*!< Transform from destination to source CRS. */
     };
 
     /*!
