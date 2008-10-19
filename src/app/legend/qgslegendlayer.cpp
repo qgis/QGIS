@@ -439,7 +439,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
     if ( firstLayer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( firstLayer );
-      switch ( vlayer->type() )
+      switch ( vlayer->geometryType() )
       {
         case QGis::Point:
           return QgisApp::getThemePixmap( "/mIconPointLayer.png" );
