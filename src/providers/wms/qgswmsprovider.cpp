@@ -395,7 +395,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
   url += "&";
   url += "HEIGHT=" + height;
   url += "&";
-  url += "QgsMapLayer::LayerType=" + layers;
+  url += "LAYERS=" + layers;
   url += "&";
   url += "STYLES=" + styles;
   url += "&";
@@ -424,7 +424,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "HEIGHT=" + height;
   mGetFeatureInfoUrlBase += "&";
-  mGetFeatureInfoUrlBase += "QgsMapLayer::LayerType=" + layers;
+  mGetFeatureInfoUrlBase += "LAYERS=" + layers;
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "STYLES=" + styles;
   mGetFeatureInfoUrlBase += "&";
@@ -2152,7 +2152,7 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
         QString layer = QUrl::toPercentEncoding( *it );
 
         requestUrl += "&";
-        requestUrl += "QUERY_QgsMapLayer::LayerType=" + layer ;
+        requestUrl += "QUERY_LAYERS=" + layer ;
         requestUrl += "&";
         //! \todo Need to tie this into the options provided by GetCapabilities
         requestUrl += "INFO_FORMAT=text/plain";
