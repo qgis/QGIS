@@ -162,6 +162,7 @@ void CoordinateCapture::setCRS()
   if ( mySelector.exec() )
   {
     mEpsgId = mySelector.selectedEpsg();
+    mProj4Str =  mySelector.selectedProj4String();
   }
 }
 
@@ -185,7 +186,7 @@ void CoordinateCapture::update( QgsPoint thePoint )
 {
   //this is the coordinate resolved back to lat / lon
   QgsCoordinateReferenceSystem mySrs;
-  mySrs.createFromEpsg( mEpsgId ); //geo lat lon
+  mySrs.createFromProj4( mProj4Str );
   QgsCoordinateTransform myTransform( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs(), mySrs );
   QgsPoint myUserCrsPoint = myTransform.transform( thePoint );
   mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', 3 ) + "," +
