@@ -112,8 +112,8 @@ inline void ( *cast_to_fptr( void *p ) )()
   return u.f;
 }
 
-/** WKT string that represents a geographic coord sys */
-const  QString GEOWKT =
+/** Wkt string that represents a geographic coord sys */
+const  QString GEOWkt =
   "GEOGCS[\"WGS 84\", "
   "  DATUM[\"WGS_1984\", "
   "    SPHEROID[\"WGS 84\",6378137,298.257223563, "

@@ -299,7 +299,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
     tabBar->setTabEnabled( tabBar->indexOf( tabPageHistogram ), FALSE );
   }
 
-  leSpatialRefSys->setText( mRasterLayer->srs().proj4String() );
+  leSpatialRefSys->setText( mRasterLayer->srs().toProj4() );
 
   // Set text for pyramid info box
   QString pyramidFormat( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" );
@@ -1696,7 +1696,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( mRasterLayer->srs().proj4String() );
+  leSpatialRefSys->setText( mRasterLayer->srs().toProj4() );
 }
 
 void QgsRasterLayerProperties::on_cboxColorMap_currentIndexChanged( const QString& theText )

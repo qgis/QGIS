@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Print projection information from a georeferenced ASCII file containing a WKT projection description" module="g.proj">
+<qgisgrassmodule label="Print projection information from a georeferenced ASCII file containing a Wkt projection description" module="g.proj">
 	<file key="wkt" type="old" />
 	<flag key="p" />
 	<flag key="d" />

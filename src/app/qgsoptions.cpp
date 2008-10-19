@@ -80,7 +80,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     radUseGlobalProjection->setChecked( true );
   }
 
-  txtGlobalWKT->setText( settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
+  txtGlobalWkt->setText( settings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
 
   // populate combo box with ellipsoids
   getEllipsoidList();
@@ -291,7 +291,7 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Projections/defaultBehaviour", "useGlobal" );
   }
 
-  settings.setValue( "/Projections/defaultProjectionString", txtGlobalWKT->toPlainText() );
+  settings.setValue( "/Projections/defaultProjectionString", txtGlobalWkt->toPlainText() );
 
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
@@ -356,7 +356,7 @@ void QgsOptions::on_pbnSelectProjection_clicked()
 
   //find out srs id of current proj4 string
   QgsCoordinateReferenceSystem refSys;
-  if ( refSys.createFromProj4( txtGlobalWKT->toPlainText() ) )
+  if ( refSys.createFromProj4( txtGlobalWkt->toPlainText() ) )
   {
     mySelector->setSelectedCrsId( refSys.srsid() );
   }
@@ -364,8 +364,8 @@ void QgsOptions::on_pbnSelectProjection_clicked()
   if ( mySelector->exec() )
   {
     //! @todo changes this control name in gui to txtGlobalProjString
-    txtGlobalWKT->setText( mySelector->selectedProj4String() );
-    QgsDebugMsg( QString( "------ Global Default Projection Selection set to ----------\n%1" ).arg( txtGlobalWKT->toPlainText() ) );
+    txtGlobalWkt->setText( mySelector->selectedProj4String() );
+    QgsDebugMsg( QString( "------ Global Default Projection Selection set to ----------\n%1" ).arg( txtGlobalWkt->toPlainText() ) );
   }
   else
   {

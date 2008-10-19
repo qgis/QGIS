@@ -52,14 +52,14 @@ class QgsRect;
 /** \ingroup core
  * A geometry is the spatial representation of a feature.
  * Represents a geometry with input and output in formats specified by
- * (at least) the Open Geospatial Consortium (WKB / WKT), and containing
+ * (at least) the Open Geospatial Consortium (WKB / Wkt), and containing
  * various functions for geoprocessing of the geometry.
  *
  * The geometry is represented internally by the OGC WKB format or
  * as GEOS geometry. Some functions use WKB for their work, others
  * use GEOS.
  *
- * TODO: migrate completely to GEOS and only support WKB/WKT import/export.
+ * TODO: migrate completely to GEOS and only support WKB/Wkt import/export.
  *
  * @author Brendan Morley
  */
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsGeometry
     //! Destructor
     ~QgsGeometry();
 
-    /** static method that creates geometry from WKT */
+    /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt );
 
     /** construct geometry from a point */
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsGeometry
     // Private variables
 
     // All of these are mutable since there may be on-the-fly
-    // conversions between WKB, GEOS and WKT;
+    // conversions between WKB, GEOS and Wkt;
     // However the intent is the const functions do not
     // semantically change the value that this object represents.
 

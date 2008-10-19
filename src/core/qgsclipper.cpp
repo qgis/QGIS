@@ -21,7 +21,7 @@
 
 // Where has all the code gone?
 
-// It's been inlined, so is in the qgsclipper.h file.
+// It's been inlined, so its in the qgsclipper.h file.
 
 // But the static members must be initialised outside the class! (or GCC 4 dies)
 

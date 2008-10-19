@@ -34,7 +34,7 @@
 #include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
-#include <qgis.h> //defines GEOWKT
+#include <qgis.h> //defines GEOWkt
 #include <qgsmaprenderer.h> 
 #include <qgsmaplayer.h> 
 #include <qgsvectorlayer.h> 
@@ -89,7 +89,7 @@ void TestQgsMapRenderer::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1("Value",QVariant::Int,"int",10,0,"Value on lon");
   mFields.insert(0, myField1);
-  mCRS = QgsCoordinateReferenceSystem(GEOWKT);
+  mCRS = QgsCoordinateReferenceSystem(GEOWkt);
   //
   // Create the test dataset if it doesnt exist
   //

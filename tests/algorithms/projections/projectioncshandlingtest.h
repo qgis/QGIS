@@ -95,7 +95,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     void testProjImportWkt()
     {
       // create a spatial reference system object
-      std::cout << "\n\nCreating and OGRSpatialReference object from WKT" << std::endl;
+      std::cout << "\n\nCreating and OGRSpatialReference object from Wkt" << std::endl;
       OGRSpatialReferenceH myInputSpatialRefSys = OSRNewSpatialReference( NULL );
       char *pWkt = ( char* )wkt.ascii();
       CPPUNIT_ASSERT( OSRImportFromWkt( myInputSpatialRefSys, &pWkt ) == OGRERR_NONE );
@@ -164,7 +164,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     //
     void testProjEpsgExportToProj4()
     {
-      std::cout << "\n\nGetting NAD83 proj4 parameters from an EpsgCrsId format WKT" << std::endl;
+      std::cout << "\n\nGetting NAD83 proj4 parameters from an EpsgCrsId format Wkt" << std::endl;
       // set up the spatial ref
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktEpsg.ascii();
@@ -219,7 +219,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     //
     void testFetchWktAttributes()
     {
-      std::cout << "\n\nFetching states.prj WKT attributes using OGRSpatialReference::GetAttrValue" << std::endl;
+      std::cout << "\n\nFetching states.prj Wkt attributes using OGRSpatialReference::GetAttrValue" << std::endl;
       // set up the spatial ref - use the nad83 from states.prj
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktDestNad83.ascii();
@@ -230,7 +230,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       std::cout << "\tDatum: " << datum << std::endl;
     }
     //
-    // Test the WKT contained in wkt.txt in the current directory to see if
+    // Test the Wkt contained in wkt.txt in the current directory to see if
     // the datum can be determined
     //
     void testWktFromFile()
@@ -293,15 +293,15 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
     }
 
   private:
-    // WKT for default projection hardcoded in QgsCoordinateTransform class
+    // Wkt for default projection hardcoded in QgsCoordinateTransform class
     QString wkt;
-    // WKT for an ESRI style GEOGCS in NAD27
+    // Wkt for an ESRI style GEOGCS in NAD27
     QString wktDest;
-    // WKT for an ESRI style GEOGCS in NAD83 (from states.shp shapefile)
+    // Wkt for an ESRI style GEOGCS in NAD83 (from states.shp shapefile)
     QString wktDestNad83;
-    // WKT for an EpsgCrsId style GEOGCS
+    // Wkt for an EpsgCrsId style GEOGCS
     QString wktEpsg;
-    // WKT for an ESRI style PROJCS as read from a shapefile
+    // Wkt for an ESRI style PROJCS as read from a shapefile
     QString wktAkAlbers;
 };
 

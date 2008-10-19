@@ -34,7 +34,7 @@ class QgsGeometry
     ~QgsGeometry();
 
 
-    /** static method that creates geometry from WKT */
+    /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt(QString wkt) /Factory/;
     
     /** construct geometry from a point */

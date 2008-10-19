@@ -1269,7 +1269,7 @@ struct Map_info *QgsGrassProvider::layerMap( int layerId )
 
 QgsCoordinateReferenceSystem QgsGrassProvider::getCRS()
 {
-  QString WKT;
+  QString Wkt;
 
   struct Cell_head cellhd;
 
@@ -1297,14 +1297,14 @@ QgsCoordinateReferenceSystem QgsGrassProvider::getCRS()
     struct Key_Value *projinfo = G_get_projinfo();
     struct Key_Value *projunits = G_get_projunits();
     char *wkt = GPJ_grass_to_wkt( projinfo, projunits,  0, 0 );
-    WKT = QString( wkt );
+    Wkt = QString( wkt );
     free( wkt );
   }
 
   setlocale( LC_NUMERIC, oldlocale );
 
   QgsCoordinateReferenceSystem srs;
-  srs.createFromWkt( WKT );
+  srs.createFromWkt( Wkt );
 
   return srs;
 }

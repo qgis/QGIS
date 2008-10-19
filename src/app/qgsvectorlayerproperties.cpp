@@ -129,7 +129,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   updateButtons();
 
-  leSpatialRefSys->setText( layer->srs().proj4String() );
+  leSpatialRefSys->setText( layer->srs().toProj4() );
   leSpatialRefSys->setCursorPosition( 0 );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
@@ -763,7 +763,7 @@ QString QgsVectorLayerProperties::getMetadata()
     myMetadata += tr( "Layer Spatial Reference System:" );
     myMetadata += "</td></tr>";
     myMetadata += "<tr><td>";
-    myMetadata += layer->srs().proj4String().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += layer->srs().toProj4().replace( QRegExp( "\"" ), " \"" );
     myMetadata += "</td></tr>";
 
     //
@@ -775,7 +775,7 @@ QString QgsVectorLayerProperties::getMetadata()
     myMetadata += tr("Project (Output) Spatial Reference System:");
     myMetadata += "</td></tr>";
     myMetadata += "<tr><td>";
-    myMetadata += coordinateTransform->destCRS().proj4String().replace(QRegExp("\"")," \"");
+    myMetadata += coordinateTransform->destCRS().toProj4().replace(QRegExp("\"")," \"");
     myMetadata += "</td></tr>";
     */
 
@@ -875,7 +875,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   }
   delete mySelector;
 
-  leSpatialRefSys->setText( layer->srs().proj4String() );
+  leSpatialRefSys->setText( layer->srs().toProj4() );
   leSpatialRefSys->setCursorPosition( 0 );
 }
 

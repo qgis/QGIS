@@ -228,12 +228,12 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long i
     mDescription = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
     mProjectionAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) );
     mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
-    QString proj4String = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
+    QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
     mEpsg = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) ).toLong();
     int geo = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt();
     mGeoFlag = ( geo == 0 ? false : true );
-    setProj4String( proj4String );
+    setProj4String( toProj4 );
     setMapUnits();
   }
   else
@@ -264,7 +264,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
   if ( myInputResult != OGRERR_NONE )
   {
     QgsDebugMsg( "\n---------------------------------------------------------------" );
-    QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied WKT " );
+    QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied Wkt " );
     QgsDebugMsg( "INPUT: " + theWkt );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
     return mIsValidFlag;
@@ -593,18 +593,18 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
   }
 }
 
-QString QgsCoordinateReferenceSystem::proj4String() const
+QString QgsCoordinateReferenceSystem::toProj4() const
 {
   if ( !mIsValidFlag )
     return "";
 
-  QString proj4String;
+  QString toProj4;
   char *proj4src = NULL;
   OSRExportToProj4( mCRS, &proj4src );
-  proj4String = proj4src;
+  toProj4 = proj4src;
   CPLFree( proj4src );
 
-  return proj4String;
+  return toProj4;
 }
 
 bool QgsCoordinateReferenceSystem::geographicFlag() const
@@ -864,11 +864,11 @@ bool QgsCoordinateReferenceSystem::equals( QString theProj4String )
 QString QgsCoordinateReferenceSystem::toWkt() const
 {
   QString myWkt;
-  char* WKT;
-  if ( OSRExportToWkt( mCRS, &WKT ) == OGRERR_NONE )
+  char* Wkt;
+  if ( OSRExportToWkt( mCRS, &Wkt ) == OGRERR_NONE )
   {
-    myWkt = WKT;
-    OGRFree( WKT );
+    myWkt = Wkt;
+    OGRFree( Wkt );
   }
 
   return myWkt;
@@ -941,7 +941,7 @@ bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & 
   QDomElement mySrsElement  = theDoc.createElement( "spatialrefsys" );
 
   QDomElement myProj4Element  = theDoc.createElement( "proj4" );
-  myProj4Element.appendChild( theDoc.createTextNode( proj4String() ) );
+  myProj4Element.appendChild( theDoc.createTextNode( toProj4() ) );
   mySrsElement.appendChild( myProj4Element );
 
   QDomElement mySrsIdElement  = theDoc.createElement( "srsid" );
@@ -991,8 +991,8 @@ bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & 
 
 
 // Returns the whole proj4 string for the selected srsid
-//this is a static method!
-QString QgsCoordinateReferenceSystem::getProj4FromSrsId( const int theSrsId )
+//this is a static method! NOTE I've made it private for now to reduce API clutter TS
+QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
 {
 
   QString myDatabaseFileName;
@@ -1091,7 +1091,7 @@ void QgsCoordinateReferenceSystem::debugPrint()
   QgsDebugMsg( "***SpatialRefSystem***" );
   QgsDebugMsg( "* Valid : " + ( mIsValidFlag ? QString( "true" ) : QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( mSrsId ) );
-  QgsDebugMsg( "* Proj4 : " + proj4String() );
+  QgsDebugMsg( "* Proj4 : " + toProj4() );
   QgsDebugMsg( "* Desc. : " + mDescription );
   if ( mapUnits() == QGis::Meters )
   {

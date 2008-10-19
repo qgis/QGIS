@@ -410,7 +410,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
 
         char *geo_temp;
         // 'GeometryFromText' supports only 2D coordinates
-        // TODO for proper 2.5D support we would need to use 'GeomFromEWKT'
+        // TODO for proper 2.5D support we would need to use 'GeomFromEWkt'
         if ( hasMoreDimensions )
           OGR_G_SetCoordinateDimension( geom, 2 );
         OGR_G_ExportToWkt( geom, &geo_temp );

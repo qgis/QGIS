@@ -57,7 +57,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void title( QString const & title );
 
     /*! Accessor for projection */
-    QString projectionWKT();
+    QString projectionWkt();
 
     /*! Indicates that the projection switch is on */
     bool isProjected();

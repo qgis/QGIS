@@ -472,7 +472,7 @@ bool QgsMapRenderer::projectionsEnabled()
 
 void QgsMapRenderer::setDestinationSrs( const QgsCoordinateReferenceSystem& srs )
 {
-  QgsDebugMsg( "* Setting destCRS : = " + srs.proj4String() );
+  QgsDebugMsg( "* Setting destCRS : = " + srs.toProj4() );
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( srs.srsid() ) );
   if ( *mDestCRS != srs )
   {
@@ -488,7 +488,7 @@ const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationSrs()
 {
   QgsDebugMsg( "* Returning destCRS" );
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ) );
-  QgsDebugMsg( "* DestCRS.proj4() = " + mDestCRS->proj4String() );
+  QgsDebugMsg( "* DestCRS.proj4() = " + mDestCRS->toProj4() );
   return *mDestCRS;
 }
 

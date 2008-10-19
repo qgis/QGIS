@@ -443,13 +443,13 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   // QgsCoordinateTransform for this layer
   // NOTE: we must do this before getMetadata is called
 
-  QString mySourceWKT = getProjectionWKT();
+  QString mySourceWkt = getProjectionWkt();
 
   QgsDebugMsg( "--------------------------------------------------------------------------------------" );
-  QgsDebugMsg( "using wkt:\n" + mySourceWKT );
+  QgsDebugMsg( "using wkt:\n" + mySourceWkt );
   QgsDebugMsg( "--------------------------------------------------------------------------------------" );
 
-  mCRS->createFromWkt( mySourceWKT );
+  mCRS->createFromWkt( mySourceWkt );
   //get the project projection, defaulting to this layer's projection
   //if none exists....
   if ( !mCRS->isValid() )
@@ -598,20 +598,20 @@ bool QgsRasterLayer::readFile( QString const & fileName )
 
 } // QgsRasterLayer::readFile
 
-QString QgsRasterLayer::getProjectionWKT()
+QString QgsRasterLayer::getProjectionWkt()
 {
-  QString myWKTString;
+  QString myWktString;
   QgsCoordinateReferenceSystem myCRS;
-  myWKTString = QString( GDALGetProjectionRef( mGdalDataset ) );
-  myCRS.createFromWkt( myWKTString );
+  myWktString = QString( GDALGetProjectionRef( mGdalDataset ) );
+  myCRS.createFromWkt( myWktString );
   if ( !myCRS.isValid() )
   {
     //try to get the gcp srs from the raster layer if available
-    myWKTString = QString( GDALGetGCPProjection( mGdalDataset ) );
+    myWktString = QString( GDALGetGCPProjection( mGdalDataset ) );
 
 // What is the purpose of this piece of code?
 // Sideeffects from validate()?
-//    myCRS.createFromWkt(myWKTString);
+//    myCRS.createFromWkt(myWktString);
 //    if (!myCRS.isValid())
 //    {
 //      // use force and make CRS valid!
@@ -620,7 +620,7 @@ QString QgsRasterLayer::getProjectionWKT()
 
   }
 
-  return myWKTString;
+  return myWktString;
 }
 
 void QgsRasterLayer::closeDataset()
@@ -3235,7 +3235,7 @@ QString QgsRasterLayer::getMetadata()
   myMetadata += tr( "Layer Spatial Reference System: " );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
-  myMetadata += mCRS->proj4String();
+  myMetadata += mCRS->toProj4();
   myMetadata += "</p>\n";
 
   // output coordinate system
@@ -3245,7 +3245,7 @@ QString QgsRasterLayer::getMetadata()
       myMetadata += tr("Project Spatial Reference System: ");
       myMetadata += "</p>\n";
       myMetadata += "<p>";
-      myMetadata +=  mCoordinateTransform->destCRS().proj4String();
+      myMetadata +=  mCoordinateTransform->destCRS().toProj4();
       myMetadata += "</p>\n";
       */
 

@@ -90,8 +90,8 @@ public:
      */
     QString identifyAsText(const QgsPoint & point);
 
-    /** \brief Query gdal to find out the WKT projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
-    QString getProjectionWKT();
+    /** \brief Query gdal to find out the Wkt projection string for this layer. This implements the virtual method of the same name defined in QgsMapLayer*/
+    QString getProjectionWkt();
 
     /** \brief Returns the number of raster units per each raster pixel. For rasters with world file, this is normally the first row (without the sign) in that file */
     double rasterUnitsPerPixel();

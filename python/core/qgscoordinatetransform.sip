@@ -35,20 +35,20 @@ class QgsCoordinateTransform : QObject
     /*!
      * Constructs a QgsCoordinateTransform using the Well Known Text representation
      * of the layer and map canvas coordinate systems
-     * @param theSourceWKT WKT, typically of the layer's coordinate system
-     * @param theDestWKT WKT, typically of the map canvas coordinate system
+     * @param theSourceWkt Wkt, typically of the layer's coordinate system
+     * @param theDestWkt Wkt, typically of the map canvas coordinate system
      */
-    QgsCoordinateTransform(QString theSourceWKT, QString theDestWKT  );
+    QgsCoordinateTransform(QString theSourceWkt, QString theDestWkt  );
 
     /*!
      * Constructs a QgsCoordinateTransform using a Spatial Reference Id
      * of the layer and map canvas coordinate system as Wkt
      * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
-     * @param theSourceWKT WKT of the map canvas coordinate system
+     * @param theSourceWkt Wkt of the map canvas coordinate system
      * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
      */
     QgsCoordinateTransform(long theSourceSrid,  
-                           QString theDestWKT,
+                           QString theDestWkt,
                            QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId  );
 
      //! destructor
