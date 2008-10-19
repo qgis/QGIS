@@ -119,6 +119,8 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
     //!epsg id for showin in geoedit box
     long mEpsgId;
+    //!proj4 string for coordinate translation
+    QString mProj4Str; 
 
     ////////////////////////////////////////////////////////////////////
     //
