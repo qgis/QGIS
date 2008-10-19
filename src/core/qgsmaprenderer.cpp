@@ -518,10 +518,10 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRect& extent, Qgs
         // Note: ll = lower left point
         //   and ur = upper right point
         QgsPoint ll = tr.transform( extent.xMin(), extent.yMin(),
-                                    QgsCoordinateTransform::INVERSE );
+                                    QgsCoordinateTransform::ReverseTransform );
 
         QgsPoint ur = tr.transform( extent.xMax(), extent.yMax(),
-                                    QgsCoordinateTransform::INVERSE );
+                                    QgsCoordinateTransform::ReverseTransform );
 
         if ( ll.x() > ur.x() )
         {
@@ -531,12 +531,12 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRect& extent, Qgs
         }
         else // no need to split
         {
-          extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::INVERSE );
+          extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
         }
       }
       else // can't cross 180
       {
-        extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::INVERSE );
+        extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
       }
     }
     catch ( QgsCsException &cse )
@@ -601,7 +601,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     try
     {
       QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
-      point = tr.transform( point, QgsCoordinateTransform::INVERSE );
+      point = tr.transform( point, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {
@@ -623,7 +623,7 @@ QgsRect QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRect re
     try
     {
       QgsCoordinateTransform tr( theLayer->srs(), *mDestCRS );
-      rect = tr.transform( rect, QgsCoordinateTransform::INVERSE );
+      rect = tr.transform( rect, QgsCoordinateTransform::ReverseTransform );
     }
     catch ( QgsCsException &cse )
     {

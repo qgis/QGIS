@@ -436,7 +436,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   QString dir;
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  if (( pj_is_latlong( mDestinationProjection ) && ( direction == INVERSE ) )
+  if (( pj_is_latlong( mDestinationProjection ) && ( direction == ReverseTransform ) )
       || ( pj_is_latlong( mSourceProjection ) && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
@@ -448,10 +448,10 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
   }
   int projResult;
-  if ( direction == INVERSE )
+  if ( direction == ReverseTransform )
   {
 #if 0
-    QgsDebugMsg( "!!!! INVERSE PROJ4 TRANSFORM !!!!" );
+    QgsDebugMsg( "!!!! ReverseTransform PROJ4 TRANSFORM !!!!" );
     QgsDebugMsg( QString( "     numPoint: %1" ).arg( numPoints ) );
     QgsDebugMsg( QString( "     x       : %1" ).arg( x ) );
     QgsDebugMsg( QString( "     y       : %1" ).arg( y ) );
@@ -505,7 +505,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   // if the result is lat/long, convert the results from radians back
   // to degrees
   if (( pj_is_latlong( mDestinationProjection ) && ( direction == ForwardTransform ) )
-      || ( pj_is_latlong( mSourceProjection ) && ( direction == INVERSE ) ) )
+      || ( pj_is_latlong( mSourceProjection ) && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
