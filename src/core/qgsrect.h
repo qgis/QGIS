@@ -90,7 +90,7 @@ class CORE_EXPORT QgsRect
     void combineExtentWith( double x, double y );
     //! test if rectangle is empty
     bool isEmpty() const;
-    //! returns string representation in WKT form
+    //! returns string representation in Wkt form
     QString asWktCoordinates() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;

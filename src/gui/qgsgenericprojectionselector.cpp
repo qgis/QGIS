@@ -75,13 +75,13 @@ void QgsGenericProjectionSelector::setSelectedEpsg( long theID )
 
 QString QgsGenericProjectionSelector::selectedProj4String()
 {
-  //@NOTE dont use getSelectedWKT as that just returns the name part!
+  //@NOTE dont use getSelectedWkt as that just returns the name part!
   return projectionSelector->selectedProj4String();
 }
 
 long QgsGenericProjectionSelector::selectedCrsId()
 {
-  //@NOTE dont use getSelectedWKT as that just returns the name part!
+  //@NOTE dont use getSelectedWkt as that just returns the name part!
   return projectionSelector->selectedCrsId();
 }
 

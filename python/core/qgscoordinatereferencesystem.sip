@@ -24,7 +24,7 @@ class QgsCoordinateReferenceSystem
         ~QgsCoordinateReferenceSystem();
         
         /*! 
-         * Constructs a CRS object from a WKT string
+         * Constructs a CRS object from a Wkt string
          * @param theWkt A String containing a valid Wkt def
          */
         explicit QgsCoordinateReferenceSystem(QString theWkt);
@@ -59,14 +59,14 @@ class QgsCoordinateReferenceSystem
          */
         bool createFromSrid(const long theSrid);
 
-        /*! Set up this srs using a WKT spatial ref sys definition. 
+        /*! Set up this srs using a Wkt spatial ref sys definition. 
          * The wkt will be converted to a proj4 string using OGR helper
          * functions. After this the srs databasses will be searched for matches.
          * First the system level read only srs.db will be checked
          * and then the users ~/.qgis/qgis.db database will be checked for a match.
          * @note Any members will be overwritten during this process.
          * @note SRID and EpsgCrsId may be blank if no match can be found on srs db.
-         * @param theWkt The WKT for the desired spatial reference system.
+         * @param theWkt The Wkt for the desired spatial reference system.
          * @return bool TRUE if sucess else false
          */
         bool createFromWkt(const QString theWkt);
@@ -161,10 +161,6 @@ class QgsCoordinateReferenceSystem
          *  is inconclusive.
          */
          bool equals(QString theProj4String);
-         /*! A helper to get an wkt representation of this srs
-          * @return string containing Wkt of the srs
-          */
-         QString toWkt() const;
 
          /*! Restores state from the given Dom node.
          * @param theNode The node from which state will be restored
@@ -187,12 +183,6 @@ class QgsCoordinateReferenceSystem
          * @return bool True on success, False on failure
          */
           bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
-
-         /** A static helper function to find out the proj4 string for a srsid
-           * @param int theSrsId The srsid used for the lookup
-           * @return QString The proj4 string
-         */
-         static QString getProj4FromSrsId(const int theSrsId);
 
          /** Sets custom function to force valid CRS
           *  QGIS uses implementation in QgisGui::customSrsValidation
@@ -229,13 +219,17 @@ class QgsCoordinateReferenceSystem
          * @note A zero length string will be returned if the ellipsoidAcronym is uninitialised
          */
         QString ellipsoidAcronym () const;
+         /*! A helper to get an wkt representation of this srs
+          * @return string containing Wkt of the srs
+          */
+         QString toWkt() const;
         /** Get the Proj Proj4String. If proj and ellps keys are found in the parameters,
          * they will be stripped out and the Projection and ellipsoid acronyms will be
          * overridden with these.
          * @return  QString theProj4String Proj4 format specifies that define this srs.
-         * @note A zero length string will be returned if the proj4String is uninitialised
+         * @note A zero length string will be returned if the toProj4 is uninitialised
          */
-        QString proj4String() const;
+        QString toProj4() const;
         /*! Get this Geographic? flag
          * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
          */

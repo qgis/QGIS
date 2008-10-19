@@ -29,7 +29,7 @@
 #include <qgscoordinatereferencesystem.h> //needed for creating a srs
 #include <qgsapplication.h> //search path for srs.db
 #include <qgsfield.h>
-#include <qgis.h> //defines GEOWKT
+#include <qgis.h> //defines GEOWkt
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
@@ -100,7 +100,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1("Field1",QVariant::String,"String",10,0,"Field 1 comment");
   mFields.insert(0, myField1);
-  mCRS = QgsCoordinateReferenceSystem(GEOWKT);
+  mCRS = QgsCoordinateReferenceSystem(GEOWkt);
   mPoint1 = QgsPoint(10.0,10.0);
   mPoint2 = QgsPoint(15.0,10.0);
   mPoint3 = QgsPoint(15.0,12.0);

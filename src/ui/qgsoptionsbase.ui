@@ -828,7 +828,7 @@
         </widget>
        </item>
        <item row="1" column="0" >
-        <widget class="QTextBrowser" name="txtGlobalWKT" />
+        <widget class="QTextBrowser" name="txtGlobalWkt" />
        </item>
        <item row="0" column="0" >
         <widget class="QGroupBox" name="grpProjectionBehaviour" >
@@ -1092,7 +1092,7 @@
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
-  <tabstop>txtGlobalWKT</tabstop>
+  <tabstop>txtGlobalWkt</tabstop>
   <tabstop>pbnSelectProjection</tabstop>
   <tabstop>grpLocale</tabstop>
   <tabstop>cboLocale</tabstop>

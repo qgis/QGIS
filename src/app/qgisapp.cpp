@@ -260,7 +260,7 @@ static QgsMessageOutput* messageOutputViewer_()
  */
 static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
-  QString proj4String;
+  QString toProj4;
   QSettings mySettings;
   QString myDefaultProjectionOption =
     mySettings.value( "/Projections/defaultBehaviour" ).toString();
@@ -271,9 +271,9 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 
     QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not speficied
-    proj4String = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
+    toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
     QgsCoordinateReferenceSystem defaultCRS;
-    if ( defaultCRS.createFromProj4( proj4String ) )
+    if ( defaultCRS.createFromProj4( toProj4 ) )
     {
       mySelector->setSelectedCrsId( defaultCRS.srsid() );
     }
@@ -291,10 +291,10 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
   }
   else if ( myDefaultProjectionOption == "useProject" )
   {
-    // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWKT'
-    proj4String = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
-    QgsDebugMsg( "Layer srs set from project: " + proj4String );
-    srs->createFromProj4( proj4String );
+    // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
+    toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
+    QgsDebugMsg( "Layer srs set from project: " + toProj4 );
+    srs->createFromProj4( toProj4 );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
@@ -2309,7 +2309,7 @@ void QgisApp::addDatabaseLayer()
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QString connInfo = dbs->connInfo();
-    // for each selected table, connect to the database, parse the WKT geometry,
+    // for each selected table, connect to the database, parse the Wkt geometry,
     // and build a canvasitem for it
     // readWKB(connInfo,tables);
     QStringList::Iterator it = tables.begin();

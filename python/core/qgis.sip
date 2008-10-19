@@ -89,8 +89,8 @@ public:
 };
 
 
-  /** WKT string that represents a geographic coord sys */
-  const  QString GEOWKT;
+  /** Wkt string that represents a geographic coord sys */
+  const  QString GEOWkt;
   
   /** PROJ4 string that represents a geographic coord sys */
   const QString GEOPROJ4;

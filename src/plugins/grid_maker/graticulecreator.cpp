@@ -16,7 +16,7 @@
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
 #include <qgsgeometry.h> //each feature needs a geometry
 #include <qgspoint.h> //we will use point geometry
-#include <qgis.h> //defines GEOWKT
+#include <qgis.h> //defines GEOWkt
 #include <qgslogger.h>
 
 #include <QFileInfo>
@@ -42,7 +42,7 @@ GraticuleCreator::GraticuleCreator( QString theOutputFileName )
   mFields.insert( 5, myField6 );
   mFields.insert( 6, myField7 );
   mFields.insert( 7, myField8 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( GEOWkt );
   mFileName = theOutputFileName;
 
 }

@@ -460,7 +460,7 @@ void QgsGrassNewMapset::setGrassProjection()
       char *wkt = NULL;
       if (( errcode = OSRExportToWkt( hCRS, &wkt ) ) != OGRERR_NONE )
       {
-        QgsDebugMsg( QString( "OGR can't get WKT-style parameter string\nOGR Error code was %1" ).arg( errcode ) );
+        QgsDebugMsg( QString( "OGR can't get Wkt-style parameter string\nOGR Error code was %1" ).arg( errcode ) );
       }
       else
       {

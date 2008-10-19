@@ -1138,11 +1138,11 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   OGRSpatialReferenceH reference = NULL;
   QgsCoordinateReferenceSystem mySpatialRefSys;
   mySpatialRefSys.validate();
-  QString myWKT = mySpatialRefSys.toWkt();
+  QString myWkt = mySpatialRefSys.toWkt();
 
-  if ( !myWKT.isNull()  &&  myWKT.length() != 0 )
+  if ( !myWkt.isNull()  &&  myWkt.length() != 0 )
   {
-    reference = OSRNewSpatialReference( myWKT.toLocal8Bit().data() );
+    reference = OSRNewSpatialReference( myWkt.toLocal8Bit().data() );
   }
 
   // Map the qgis geometry type to the OGR geometry type
@@ -1247,13 +1247,13 @@ QgsCoordinateReferenceSystem QgsOgrProvider::getCRS()
     char * ppszProj4;
     OSRExportToProj4( mySpatialRefSys, &ppszProj4 );
     QgsDebugMsg( ppszProj4 );
-    char    *pszWKT = NULL;
-    OSRExportToWkt( mySpatialRefSys, &pszWKT );
-    QString myWKTString = QString( pszWKT );
-    OGRFree( pszWKT );
+    char    *pszWkt = NULL;
+    OSRExportToWkt( mySpatialRefSys, &pszWkt );
+    QString myWktString = QString( pszWkt );
+    OGRFree( pszWkt );
 
-    // create CRS from WKT
-    srs.createFromWkt( myWKTString );
+    // create CRS from Wkt
+    srs.createFromWkt( myWktString );
   }
 
   return srs;
