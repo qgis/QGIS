@@ -618,7 +618,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
 
   sqlite3_finalize( ppStmt );
 
-  // Set up the query to retreive the projection information needed to populate the list
+  // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someown
   //changes the underlying view TS
   sql = "select description, srs_id, epsg, is_geo, name, parameters from vw_srs ";
@@ -731,7 +731,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   QgsDebugMsg( "pbnFind..." );
 
   QString mySearchString( sqlSafeString( leSearch->text() ) );
-  // Set up the query to retreive the projection information needed to populate the list
+  // Set up the query to retrieve the projection information needed to populate the list
   QString mySql;
   if ( radEpsgCrsId->isChecked() )
   {

@@ -490,7 +490,7 @@ QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
     //     database if it does not exist.
     assert( myResult == 0 );
   }
-  // Set up the query to retreive the projection information needed to populate the ELLIPSOID list
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
