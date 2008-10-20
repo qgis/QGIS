@@ -311,8 +311,8 @@ void QgsMapCanvas::setOverview( QgsMapOverviewCanvas* overview )
   if ( mMapOverview )
   {
     // disconnect old map overview if exists
-    disconnect( mMapRenderer, SIGNAL( projectionsEnabled( bool ) ),
-                mMapOverview, SLOT( projectionsEnabled( bool ) ) );
+    disconnect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+                mMapOverview, SLOT( hasCrsTransformEnabled( bool ) ) );
     disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
                 mMapOverview, SLOT( destinationSrsChanged() ) );
 
@@ -324,8 +324,8 @@ void QgsMapCanvas::setOverview( QgsMapOverviewCanvas* overview )
   if ( overview )
   {
     // connect to the map render to copy its projection settings
-    connect( mMapRenderer, SIGNAL( projectionsEnabled( bool ) ),
-             overview,     SLOT( projectionsEnabled( bool ) ) );
+    connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ),
+             overview,     SLOT( hasCrsTransformEnabled( bool ) ) );
     connect( mMapRenderer, SIGNAL( destinationSrsChanged() ),
              overview,     SLOT( destinationSrsChanged() ) );
   }
@@ -524,9 +524,9 @@ void QgsMapCanvas::zoomToPreviousExtent()
 } // zoomToPreviousExtent
 
 
-bool QgsMapCanvas::projectionsEnabled()
+bool QgsMapCanvas::hasCrsTransformEnabled()
 {
-  return mMapRenderer->projectionsEnabled();
+  return mMapRenderer->hasCrsTransformEnabled();
 }
 
 void QgsMapCanvas::mapUnitsChanged()

@@ -272,7 +272,7 @@ void QgsMapOverviewCanvas::updateFullExtent( const QgsRect& rect )
   reflectChangedExtent();
 }
 
-void QgsMapOverviewCanvas::projectionsEnabled( bool flag )
+void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )
 {
   mMapRenderer->setProjectionsEnabled( flag );
 }

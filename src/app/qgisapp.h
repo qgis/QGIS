@@ -509,7 +509,7 @@ class QgisApp : public QMainWindow
     void showExtents();
     void showStatusMessage( QString theMessage );
     void updateMouseCoordinatePrecision();
-    void projectionsEnabled( bool theFlag );
+    void hasCrsTransformEnabled( bool theFlag );
     void destinationSrsChanged();
     //    void debugHook();
     //! Add a vector layer to the map

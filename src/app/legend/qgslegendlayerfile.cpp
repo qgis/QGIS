@@ -270,7 +270,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 
   destCRS = vlayer->srs();
   // Find out if we have projections enabled or not
-  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->projectionsEnabled() )
+  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
   {
     destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
   }

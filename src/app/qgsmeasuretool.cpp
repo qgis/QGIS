@@ -123,9 +123,9 @@ void QgsMeasureTool::updateProjection()
 
   // set source CRS and projections enabled flag
   // QgsMapRenderer* mapRender = mCanvas->mapRenderer();
-  // mCalc->setProjectionsEnabled(mapRender->projectionsEnabled());
+  // mCalc->setProjectionsEnabled(mapRender->hasCrsTransformEnabled());
   // int srsid = mapRender->destinationSrs().srsid();
-  // mCalc->setSourceCRS(srsid);
+  // mCalc->setSourceCrs(srsid);
 
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
   int myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();

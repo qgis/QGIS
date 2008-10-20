@@ -243,9 +243,9 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
   // init distance/area calculator
   QgsDistanceArea calc;
-  calc.setProjectionsEnabled( mCanvas->projectionsEnabled() ); // project?
+  calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
   calc.setEllipsoid( ellipsoid );
-  calc.setSourceCRS( layer->srs().srsid() );
+  calc.setSourceCrs( layer->srs().srsid() );
 
   mFeatureList.clear();
   QApplication::setOverrideCursor( Qt::WaitCursor );

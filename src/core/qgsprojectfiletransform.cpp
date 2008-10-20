@@ -105,13 +105,13 @@ void QgsProjectFileTransform::transform081to090()
 
       QDomElement properties = qgis.firstChildElement( "properties" );
       QDomElement spatial = properties.firstChildElement( "SpatialRefSys" );
-      QDomElement projectionsEnabled = spatial.firstChildElement( "ProjectionsEnabled" );
+      QDomElement hasCrsTransformEnabled = spatial.firstChildElement( "ProjectionsEnabled" );
       // Type is 'int', and '1' if on.
       // Create an element
       QDomElement projection = mDom.createElement( "projections" );
-      QgsDebugMsg( QString( "Projection flag: " ) + projectionsEnabled.text() );
+      QgsDebugMsg( QString( "Projection flag: " ) + hasCrsTransformEnabled.text() );
       // Set flag from ProjectionsEnabled
-      projection.appendChild( mDom.createTextNode( projectionsEnabled.text() ) );
+      projection.appendChild( mDom.createTextNode( hasCrsTransformEnabled.text() ) );
       // Set new element as child of <mapcanvas>
       mapCanvas.appendChild( projection );
 
@@ -128,11 +128,11 @@ void QgsProjectFileTransform::transform081to090()
       // Find the coordinatetransform
       QDomNode coordinateTransform = mapLayer.namedItem( "coordinatetransform" );
       // Find the sourcesrs
-      QDomNode sourceCRS = coordinateTransform.namedItem( "sourcesrs" );
+      QDomNode sourceCrs = coordinateTransform.namedItem( "sourcesrs" );
       // Rename to srs
-      sourceCRS.toElement().setTagName( "srs" );
+      sourceCrs.toElement().setTagName( "srs" );
       // Re-parent to maplayer
-      mapLayer.appendChild( sourceCRS );
+      mapLayer.appendChild( sourceCrs );
       // Re-move coordinatetransform
       // Take the destination CRS of the first layer and use for mapcanvas projection
       if ( ! doneDestination )

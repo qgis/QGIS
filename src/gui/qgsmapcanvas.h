@@ -253,7 +253,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool renderFlag() {return mRenderFlag;};
 
     /** A simple helper method to find out if on the fly projections are enabled or not */
-    bool projectionsEnabled();
+    bool hasCrsTransformEnabled();
 
     /** The map units may have changed, so cope with that */
     void mapUnitsChanged();

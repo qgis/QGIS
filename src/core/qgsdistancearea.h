@@ -45,18 +45,18 @@ class CORE_EXPORT QgsDistanceArea
     void setProjectionsEnabled( bool flag );
 
     //! returns projections enabled flag
-    bool projectionsEnabled() { return mProjectionsEnabled; }
+    bool hasCrsTransformEnabled() { return mProjectionsEnabled; }
 
     //! sets source spatial reference system (by QGIS CRS)
-    void setSourceCRS( long srsid );
+    void setSourceCrs( long srsid );
 
     //! sets source spatial reference system (by EpsgCrsId)
     void setSourceEpsgCrsId( long epsgId );
 
     //! returns source spatial reference system
-    long sourceCRS() { return mSourceRefSys; }
+    long sourceCrs() { return mSourceRefSys; }
     //! What sort of coordinate system is being used?
-    bool geographic() { return mCoordTransform->sourceCRS().geographicFlag(); }
+    bool geographic() { return mCoordTransform->sourceCrs().geographicFlag(); }
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid( const QString& ellipsoid );
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsDistanceArea
     //! returns ellipsoid's semi minor axis
     double ellipsoidSemiMinor() { return mSemiMinor; }
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInvFlattening() { return mInvFlattening; }
+    double ellipsoidInverseFlattening() { return mInvFlattening; }
 
     //! general measurement (line distance or polygon area)
     double measure( QgsGeometry* geometry );
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsDistanceArea
     double measurePolygon( const QList<QgsPoint>& points );
 
     //! compute bearing - in radians
-    double getBearing( const QgsPoint& p1, const QgsPoint& p2 );
+    double bearing( const QgsPoint& p1, const QgsPoint& p2 );
 
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea );
 

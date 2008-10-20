@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
   public slots:
 
-    void projectionsEnabled( bool flag );
+    void hasCrsTransformEnabled( bool flag );
 
     void destinationSrsChanged();
 

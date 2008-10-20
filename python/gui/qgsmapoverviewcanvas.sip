@@ -30,7 +30,7 @@ class QgsMapOverviewCanvas : QWidget
     
   public slots:
     
-    void projectionsEnabled(bool flag);
+    void hasCrsTransformEnabled(bool flag);
     
     void destinationSrsChanged();
     

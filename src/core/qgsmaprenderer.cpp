@@ -301,7 +301,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
       bool split = false;
 
-      if ( projectionsEnabled() )
+      if ( hasCrsTransformEnabled() )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
@@ -395,7 +395,7 @@ void QgsMapRenderer::render( QPainter* painter )
         {
           bool split = false;
 
-          if ( projectionsEnabled() )
+          if ( hasCrsTransformEnabled() )
           {
             QgsRect r1 = mExtent;
             split = splitLayersExtent( ml, r1, r2 );
@@ -461,11 +461,11 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
     mDistArea->setProjectionsEnabled( enabled );
     updateFullExtent();
-    emit projectionsEnabled( enabled );
+    emit hasCrsTransformEnabled( enabled );
   }
 }
 
-bool QgsMapRenderer::projectionsEnabled()
+bool QgsMapRenderer::hasCrsTransformEnabled()
 {
   return mProjectionsEnabled;
 }
@@ -477,7 +477,7 @@ void QgsMapRenderer::setDestinationSrs( const QgsCoordinateReferenceSystem& srs 
   if ( *mDestCRS != srs )
   {
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( srs.srsid() ) );
-    mDistArea->setSourceCRS( srs.srsid() );
+    mDistArea->setSourceCrs( srs.srsid() );
     *mDestCRS = srs;
     updateFullExtent();
     emit destinationSrsChanged();
@@ -497,7 +497,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRect& extent, Qgs
 {
   bool split = false;
 
-  if ( projectionsEnabled() )
+  if ( hasCrsTransformEnabled() )
   {
     try
     {
@@ -513,7 +513,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRect& extent, Qgs
       // extent separately.
       static const double splitCoord = 180.0;
 
-      if ( tr.sourceCRS().geographicFlag() )
+      if ( tr.sourceCrs().geographicFlag() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point
@@ -553,7 +553,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRect& extent, Qgs
 
 QgsRect QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRect extent )
 {
-  if ( projectionsEnabled() )
+  if ( hasCrsTransformEnabled() )
   {
     try
     {
@@ -575,7 +575,7 @@ QgsRect QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRec
 
 QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point )
 {
-  if ( projectionsEnabled() )
+  if ( hasCrsTransformEnabled() )
   {
     try
     {
@@ -596,7 +596,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
 
 QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point )
 {
-  if ( projectionsEnabled() )
+  if ( hasCrsTransformEnabled() )
   {
     try
     {
@@ -618,7 +618,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
 
 QgsRect QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRect rect )
 {
-  if ( projectionsEnabled() )
+  if ( hasCrsTransformEnabled() )
   {
     try
     {
@@ -844,7 +844,7 @@ bool QgsMapRenderer::writeXML( QDomNode & theNode, QDomDocument & theDoc )
   QDomElement projNode = theDoc.createElement( "projections" );
   theNode.appendChild( projNode );
 
-  QDomText projText = theDoc.createTextNode( QString::number( projectionsEnabled() ) );
+  QDomText projText = theDoc.createTextNode( QString::number( hasCrsTransformEnabled() ) );
   projNode.appendChild( projText );
 
   // destination CRS
