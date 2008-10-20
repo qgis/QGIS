@@ -110,9 +110,9 @@ void QgsNewConnection::testConnection()
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
 
-  QgsLogger::debug( "PQconnectdb(" + uri.connInfo() + ");" );
+  QgsLogger::debug( "PQconnectdb(" + uri.connectionInfo() + ");" );
 
-  PGconn *pd = PQconnectdb( uri.connInfo().toLocal8Bit().data() );
+  PGconn *pd = PQconnectdb( uri.connectionInfo().toLocal8Bit().data() );
   if ( PQstatus( pd ) == CONNECTION_OK )
   {
     // Database successfully opened; we can now issue SQL commands.

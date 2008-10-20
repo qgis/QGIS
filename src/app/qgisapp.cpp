@@ -2308,17 +2308,17 @@ void QgisApp::addDatabaseLayer()
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    QString connInfo = dbs->connInfo();
+    QString connectionInfo = dbs->connectionInfo();
     // for each selected table, connect to the database, parse the Wkt geometry,
     // and build a canvasitem for it
-    // readWKB(connInfo,tables);
+    // readWKB(connectionInfo,tables);
     QStringList::Iterator it = tables.begin();
     while ( it != tables.end() )
     {
 
       // create the layer
       //qWarning("creating layer");
-      QgsVectorLayer *layer = new QgsVectorLayer( connInfo + " table=" + *it, *it, "postgres" );
+      QgsVectorLayer *layer = new QgsVectorLayer( connectionInfo + " table=" + *it, *it, "postgres" );
       if ( layer->isValid() )
       {
         // register this layer with the central layers registry
@@ -2371,7 +2371,7 @@ void QgisApp::addWmsLayer()
   if ( wmss->exec() )
   {
 
-    addRasterLayer( wmss->connInfo(),
+    addRasterLayer( wmss->connectionInfo(),
                     wmss->connName(),
                     "wms",
                     wmss->selectedLayers(),

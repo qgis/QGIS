@@ -420,7 +420,7 @@ void QgsSpit::dbConnect()
                        settings.value( key + "/username" ).toString(),
                        password );
 
-    conn = PQconnectdb( uri.connInfo().toUtf8() );
+    conn = PQconnectdb( uri.connectionInfo().toUtf8() );
   }
 
   if ( conn == NULL || PQstatus( conn ) != CONNECTION_OK )

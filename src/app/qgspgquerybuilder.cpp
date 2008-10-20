@@ -42,11 +42,11 @@ QgsPgQueryBuilder::QgsPgQueryBuilder( QgsDataSourceURI *uri,
   setupGuiViews();
   // The query builder must make its own connection to the database when
   // using this constructor
-  QString connInfo = mUri->connInfo();
+  QString connectionInfo = mUri->connectionInfo();
 
-  QgsDebugMsg( "Attempting connect using: " + connInfo );
+  QgsDebugMsg( "Attempting connect using: " + connectionInfo );
 
-  mPgConnection = PQconnectdb( connInfo.toLocal8Bit().data() ); // use what is set based on locale; after connecting, use Utf8
+  mPgConnection = PQconnectdb( connectionInfo.toLocal8Bit().data() ); // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( mPgConnection ) == CONNECTION_OK )
   {

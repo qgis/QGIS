@@ -39,7 +39,7 @@ class CORE_EXPORT QgsDataSourceURI
     QgsDataSourceURI( QString uri );
 
     //! return connection part of URI
-    QString connInfo() const;
+    QString connectionInfo() const;
 
     //! return complete uri
     QString uri() const;

@@ -81,14 +81,14 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   QgsDebugMsg( "Table name is " + mTableName );
   QgsDebugMsg( "SQL is " + sqlWhereClause );
-  QgsDebugMsg( "Connection info is " + mUri.connInfo() );
+  QgsDebugMsg( "Connection info is " + mUri.connectionInfo() );
 
   QgsDebugMsg( "Geometry column is: " + geometryColumn );
   QgsDebugMsg( "Schema is: " + mSchemaName );
   QgsDebugMsg( "Table name is: " + mTableName );
 
   connectionRW = NULL;
-  connectionRO = Conn::connectDb( mUri.connInfo(), true );
+  connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
   if ( connectionRO == NULL )
   {
     valid = false;
@@ -205,7 +205,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 #ifdef POSTGRESQL_THREADS
   QgsDebugMsg( "About to touch mExtentThread" );
-  mExtentThread.setConnInfo( mUri.connInfo );
+  mExtentThread.setConnInfo( mUri.connectionInfo );
   mExtentThread.setTableName( mTableName );
   mExtentThread.setSqlWhereClause( sqlWhereClause );
   mExtentThread.setGeometryColumn( geometryColumn );
@@ -215,7 +215,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   QgsDebugMsg( "Main thread just dispatched mExtentThread" );
 
   QgsDebugMsg( "About to touch mCountThread" );
-  mCountThread.setConnInfo( mUri.connInfo );
+  mCountThread.setConnInfo( mUri.connectionInfo );
   mCountThread.setTableName( mTableName );
   mCountThread.setSqlWhereClause( sqlWhereClause );
   mCountThread.setGeometryColumn( geometryColumn );

@@ -666,7 +666,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       if ( connectionRW )
         return connectionRW;
 
-      connectionRW = Conn::connectDb( mUri.connInfo(), false );
+      connectionRW = Conn::connectDb( mUri.connectionInfo(), false );
 
       return connectionRW;
     }

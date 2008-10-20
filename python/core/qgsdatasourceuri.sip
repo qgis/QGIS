@@ -20,7 +20,7 @@ public:
   QgsDataSourceURI(QString uri);
    
   //! connection info
-  QString connInfo() const;
+  QString connectionInfo() const;
 
   //! complete uri
   QString uri() const;

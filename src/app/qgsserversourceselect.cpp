@@ -319,9 +319,9 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   connStringParts += settings.value( key + "/url" ).toString();
 
   m_connName = cmbConnections->currentText();
-  m_connInfo = connStringParts.join( " " );
+  m_connectionInfo = connStringParts.join( " " );
 
-  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( m_connInfo ) );
+  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( m_connectionInfo ) );
 
 
   // TODO: Create and bind to data provider
@@ -330,7 +330,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   mWmsProvider =
-    ( QgsWmsProvider* ) pReg->getProvider( "wms", m_connInfo );
+    ( QgsWmsProvider* ) pReg->getProvider( "wms", m_connectionInfo );
 
   if ( mWmsProvider )
   {
@@ -528,9 +528,9 @@ QString QgsServerSourceSelect::connName()
   return m_connName;
 }
 
-QString QgsServerSourceSelect::connInfo()
+QString QgsServerSourceSelect::connectionInfo()
 {
-  return m_connInfo;
+  return m_connectionInfo;
 }
 
 QStringList QgsServerSourceSelect::selectedLayers()
