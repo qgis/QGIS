@@ -74,7 +74,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
 }
 
 
-const QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
+QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
 {
   //mode is only really used to be able to reinstate
   //the graduated dialog properties properly, so we 
