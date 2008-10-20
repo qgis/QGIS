@@ -72,7 +72,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
       return 0;
     }
 
-    feature.setFeatureId( mFeatures[*mFeatureIterator]->featureId() );
+    feature.setFeatureId( mFeatures[*mFeatureIterator]->id() );
     if ( mFetchGeom )
     {
       QgsGeometry* geometry = mFeatures[*mFeatureIterator]->geometry();
@@ -305,7 +305,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
 
   for ( QList<QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
   {
-    QgsDebugMsg( "feature " + QString::number(( *it )->featureId() ) );
+    QgsDebugMsg( "feature " + QString::number(( *it )->id() ) );
     mSpatialIndex->insertFeature( **it );
   }
 

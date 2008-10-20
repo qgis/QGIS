@@ -616,7 +616,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   {
     feature.setGeometryAndOwnership( 0, 0 );
   }
-  feature.setFeatureId( mFeatureQueue.front().featureId() );
+  feature.setFeatureId( mFeatureQueue.front().id() );
   feature.setAttributeMap( mFeatureQueue.front().attributeMap() );
 
   mFeatureQueue.pop();

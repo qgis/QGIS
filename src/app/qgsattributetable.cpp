@@ -501,7 +501,7 @@ void QgsAttributeTable::putFeatureInTable( int row, const QgsFeature& fet )
   }
 
   //id-field
-  int id = fet.featureId();
+  int id = fet.id();
   QTableWidgetItem *twi = new QTableWidgetItem( QString::number( id ) );
   twi->setTextAlignment( Qt::AlignRight | Qt::AlignVCenter );
   setItem( row, 0, twi );

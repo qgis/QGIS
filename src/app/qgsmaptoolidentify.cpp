@@ -317,12 +317,12 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     featureCount++;
 
     QTreeWidgetItem* featureNode = mResults->addNode( "foo" );
-    featureNode->setData( 0, Qt::UserRole, QVariant( f_it->featureId() ) ); // save feature id
-    lastFeatureId = f_it->featureId();
+    featureNode->setData( 0, Qt::UserRole, QVariant( f_it->id() ) ); // save feature id
+    lastFeatureId = f_it->id();
     featureNode->setText( 0, fieldIndex );
 
     if ( layer->isEditable() )
-      mResults->addEdit( featureNode, f_it->featureId() );
+      mResults->addEdit( featureNode, f_it->id() );
 
     const QgsAttributeMap& attr = f_it->attributeMap();
 
@@ -476,7 +476,7 @@ void QgsMapToolIdentify::editFeature( int featureId )
 {
   for ( QgsFeatureList::iterator it = mFeatureList.begin(); it != mFeatureList.end(); it++ )
   {
-    if ( it->featureId() == featureId )
+    if ( it->id() == featureId )
     {
       editFeature( *it );
       break;
@@ -503,7 +503,7 @@ void QgsMapToolIdentify::editFeature( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
     {
       if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
-        layer->changeAttributeValue( f.featureId(), it.key(), it.value() );
+        layer->changeAttributeValue( f.id(), it.key(), it.value() );
     }
   }
   delete ad;

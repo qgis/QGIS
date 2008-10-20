@@ -94,7 +94,7 @@ bool QgsSpatialIndex::featureInfo( QgsFeature& f, Tools::Geometry::Region& r, lo
   if ( !g )
     return false;
 
-  id = f.featureId();
+  id = f.id();
   r = rectToRegion( g->boundingBox() );
   return true;
 }
