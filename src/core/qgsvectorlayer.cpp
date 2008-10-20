@@ -3435,7 +3435,7 @@ void QgsVectorLayer::setCoordinateSystem()
   //
 
   // get CRS directly from provider
-  *mCRS = mDataProvider->getCRS();
+  *mCRS = mDataProvider->crs();
 
   //QgsCoordinateReferenceSystem provides a mechanism for FORCE a srs to be valid
   //which is inolves falling back to system, project or user selected

@@ -71,7 +71,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     const QgsFieldMap & fields() const;
     void begin();
 
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
     /* Inherited from QgsDataProvider */
 

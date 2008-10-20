@@ -135,7 +135,7 @@ void QgsWFSProvider::begin()
   mFeatureIterator = mSelectedFeatures.begin();
 }
 
-QgsCoordinateReferenceSystem QgsWFSProvider::getCRS()
+QgsCoordinateReferenceSystem QgsWFSProvider::crs()
 {
   return mSourceCRS;
 }

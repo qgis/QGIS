@@ -843,7 +843,7 @@ QString QgsGPXProvider::description() const
   return GPX_DESCRIPTION;
 } // QgsGPXProvider::description()
 
-QgsCoordinateReferenceSystem QgsGPXProvider::getCRS()
+QgsCoordinateReferenceSystem QgsGPXProvider::crs()
 {
   return QgsCoordinateReferenceSystem(); // use default CRS - it's WGS84
 }

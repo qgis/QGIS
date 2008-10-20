@@ -1230,7 +1230,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   return true;
 }
 
-QgsCoordinateReferenceSystem QgsOgrProvider::getCRS()
+QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 {
   QgsDebugMsg( "entering." );
 

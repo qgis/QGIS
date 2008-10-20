@@ -175,7 +175,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      */
     bool isValid();
 
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
   protected:
 

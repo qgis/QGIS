@@ -1267,7 +1267,7 @@ struct Map_info *QgsGrassProvider::layerMap( int layerId )
 }
 
 
-QgsCoordinateReferenceSystem QgsGrassProvider::getCRS()
+QgsCoordinateReferenceSystem QgsGrassProvider::crs()
 {
   QString Wkt;
 

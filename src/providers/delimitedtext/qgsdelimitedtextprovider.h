@@ -152,7 +152,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     bool isValid();
 
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
     /* new functions */
 
