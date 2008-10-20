@@ -404,7 +404,7 @@ QgsGeometry* QgsGeometry::fromWkt( QString wkt )
   GEOSWKTReader_destroy( reader );
   return g;
 #else
-  return fromGeosGeom( GEOSGeomFromWkt( wkt.toLocal8Bit().data() ) );
+  return fromGeosGeom( GEOSGeomFromWKT( wkt.toLocal8Bit().data() ) );
 #endif
 }
 
