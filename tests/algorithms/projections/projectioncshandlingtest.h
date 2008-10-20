@@ -266,12 +266,12 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       CPPUNIT_ASSERT( myInputSpatialRefSys.importFromWkt( &pWkt ) == OGRERR_NONE );
       std::cout << "\tGetting proj4 paramters with morph to ESRI form" << std::endl;
       CPPUNIT_ASSERT( myInputSpatialRefSys.morphFromESRI() == OGRERR_NONE );
-      OGRSpatialReference oTargetCRS;
+      OGRSpatialReference oTarcrs;
       char *pWgs84 = ( char * )wkt.ascii();
-      oTargetCRS.importFromWkt( &pWgs84 );
+      oTarcrs.importFromWkt( &pWgs84 );
       OGRCoordinateTransformation *poCT;
       poCT = OGRCreateCoordinateTransformation( &myInputSpatialRefSys,
-             &oTargetCRS );
+             &oTarcrs );
       double x = 0.0;
       double y = 0.0;
       poCT->Transform( 1, &x, &y );
@@ -283,7 +283,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       std::cout << "\tPROJ4: " << proj4src << std::endl;
 
       std::cout << "Testing inverse transform" << std::endl;
-      poCT = OGRCreateCoordinateTransformation( &oTargetCRS, &myInputSpatialRefSys );
+      poCT = OGRCreateCoordinateTransformation( &oTarcrs, &myInputSpatialRefSys );
       x = -154.0;
       y = 50.0;
       poCT->Transform( 1, &x, &y );

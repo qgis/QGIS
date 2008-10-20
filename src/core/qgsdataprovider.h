@@ -60,7 +60,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem getCRS() = 0;
+    virtual QgsCoordinateReferenceSystem crs() = 0;
 
 
     /**

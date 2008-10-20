@@ -2711,7 +2711,7 @@ void QgsPostgresProvider::showMessageBox( const QString& title,
 }
 
 
-QgsCoordinateReferenceSystem QgsPostgresProvider::getCRS()
+QgsCoordinateReferenceSystem QgsPostgresProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
   srs.createFromSrid( srid.toInt() );

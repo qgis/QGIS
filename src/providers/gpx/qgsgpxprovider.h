@@ -139,7 +139,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     /** return description */
     virtual QString description() const;
 
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
 
     /* new functions */

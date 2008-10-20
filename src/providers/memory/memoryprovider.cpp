@@ -218,7 +218,7 @@ bool QgsMemoryProvider::isValid()
   return ( mWkbType != QGis::WKBUnknown );
 }
 
-QgsCoordinateReferenceSystem QgsMemoryProvider::getCRS()
+QgsCoordinateReferenceSystem QgsMemoryProvider::crs()
 {
   // TODO: make provider projection-aware
   return QgsCoordinateReferenceSystem(); // return default CRS

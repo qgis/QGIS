@@ -510,7 +510,7 @@ int QgsDelimitedTextProvider::capabilities() const
 }
 
 
-QgsCoordinateReferenceSystem QgsDelimitedTextProvider::getCRS()
+QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs()
 {
   // TODO: make provider projection-aware
   return QgsCoordinateReferenceSystem(); // return default CRS

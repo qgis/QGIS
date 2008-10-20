@@ -2194,7 +2194,7 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
 }
 
 
-QgsCoordinateReferenceSystem QgsWmsProvider::getCRS()
+QgsCoordinateReferenceSystem QgsWmsProvider::crs()
 {
   // TODO: implement
   return QgsCoordinateReferenceSystem();

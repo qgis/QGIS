@@ -374,7 +374,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
     /**
      * Add the list of WMS layer names to be rendered by this server

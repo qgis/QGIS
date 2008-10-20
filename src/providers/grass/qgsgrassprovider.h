@@ -195,7 +195,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     bool isValid();
 
-    QgsCoordinateReferenceSystem getCRS();
+    QgsCoordinateReferenceSystem crs();
 
     // ----------------------------------- Edit ----------------------------------
 

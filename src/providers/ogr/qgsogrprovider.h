@@ -45,7 +45,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 
 
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
 
     /**

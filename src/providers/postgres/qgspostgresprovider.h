@@ -73,7 +73,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem getCRS();
+    virtual QgsCoordinateReferenceSystem crs();
 
     /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
      *  @param fetchAttributes list of attributes which should be fetched
