@@ -5220,6 +5220,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
 
+    //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
+    //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both
+    
+    //Enable the Identify tool ( GDAL datasets draw without a provider )
+    //but turn off if data provider exists and has no Identify capabilities
+    mActionIdentify->setEnabled( true );
     const QgsRasterLayer* vlayer = dynamic_cast<const QgsRasterLayer*>( layer );
     const QgsRasterDataProvider* dprovider = vlayer->dataProvider();
     if ( dprovider )
