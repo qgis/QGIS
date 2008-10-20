@@ -379,7 +379,7 @@ void QgsAttributeTableDisplay::doSearch( QString searchString )
   {
     if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap() ) )
     {
-      mSearchIds << f.featureId();
+      mSearchIds << f.id();
     }
 
     // check if there were errors during evaluating

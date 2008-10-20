@@ -66,7 +66,7 @@ class CORE_EXPORT QgsFeature
      * Get the feature id for this feature
      * @return Feature id
      */
-    int featureId() const;
+    int id() const;
 
     /**
      * Set the feature id for this feature
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsFeature
      * Reset the dirtiness of the feature.  (i.e. make clean)
      * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
      */
-    void resetDirty();
+    void clean();
 
     /**
      * Get the geometry object associated with this feature

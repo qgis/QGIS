@@ -84,7 +84,7 @@ QgsFeature::~QgsFeature()
  * Get the feature id for this feature
  * @return Feature id
  */
-int QgsFeature::featureId() const
+int QgsFeature::id() const
 {
   return mFid;
 }
@@ -204,7 +204,7 @@ bool QgsFeature::isDirty() const
   return mDirty;
 }
 
-void QgsFeature::resetDirty()
+void QgsFeature::clean()
 {
   mDirty = false;
 }

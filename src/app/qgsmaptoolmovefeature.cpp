@@ -107,7 +107,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   }
 
   mStartPointMapCoords = toMapCoordinates( e->pos() );
-  mMovedFeature = cf.featureId(); //todo: take the closest feature, not the first one...
+  mMovedFeature = cf.id(); //todo: take the closest feature, not the first one...
   mRubberBand = createRubberBand();
   mRubberBand->setToGeometry( cf.geometry(), *vlayer );
   mRubberBand->setColor( Qt::red );

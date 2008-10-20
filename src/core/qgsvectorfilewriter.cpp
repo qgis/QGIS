@@ -348,7 +348,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   // write all features
   while ( provider->nextFeature( fet ) )
   {
-    if ( onlySelected && !ids.contains( fet.featureId() ) )
+    if ( onlySelected && !ids.contains( fet.id() ) )
       continue;
 
     if ( shallTransform )

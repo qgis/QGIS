@@ -56,7 +56,7 @@ bool QgsVectorDataProvider::featureAtId( int featureId,
 
   while ( nextFeature( feature ) )
   {
-    if ( feature.featureId() == featureId )
+    if ( feature.id() == featureId )
       return TRUE;
   }
 

@@ -2967,7 +2967,7 @@ void QgsGrassModuleSelection::updateSelection()
   int i = 0;
   while ( provider->nextFeature( feature ) )
   {
-    if ( !selected.contains( feature.featureId() ) )
+    if ( !selected.contains( feature.id() ) )
       continue;
 
     QgsAttributeMap attr = feature.attributeMap();
