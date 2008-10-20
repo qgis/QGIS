@@ -64,7 +64,7 @@ class QgsCoordinateTransform : QObject
      * Set the source (layer) QgsCoordinateReferenceSystem
      * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
      */
-    void setSourceCRS(const QgsCoordinateReferenceSystem& theCRS);
+    void setSourceCrs(const QgsCoordinateReferenceSystem& theCRS);
 
     /*! 
      * Mutator for dest QgsCoordinateReferenceSystem 
@@ -76,7 +76,7 @@ class QgsCoordinateTransform : QObject
      * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
      * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsCoordinateReferenceSystem& sourceCRS();
+    QgsCoordinateReferenceSystem& sourceCrs();
 
     /*! 
      * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system

@@ -56,7 +56,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   setMapUnits( myUnit );
 
   //see if the user wants on the fly projection enabled
-  bool myProjectionEnabled = myRender->projectionsEnabled();
+  bool myProjectionEnabled = myRender->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
   long myCRSID = myRender->destinationSrs().srsid();

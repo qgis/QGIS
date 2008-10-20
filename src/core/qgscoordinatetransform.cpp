@@ -99,7 +99,7 @@ QgsCoordinateTransform::~QgsCoordinateTransform()
   }
 }
 
-void QgsCoordinateTransform::setSourceCRS( const QgsCoordinateReferenceSystem& theCRS )
+void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem& theCRS )
 {
   mSourceCRS = theCRS;
   initialise();

@@ -99,7 +99,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * Set the source (layer) QgsCoordinateReferenceSystem
      * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
      */
-    void setSourceCRS( const QgsCoordinateReferenceSystem& theCRS );
+    void setSourceCrs( const QgsCoordinateReferenceSystem& theCRS );
 
     /*!
      * Mutator for dest QgsCoordinateReferenceSystem
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
      * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
      * @return QgsCoordinateReferenceSystem of the layer's coordinate system
      */
-    QgsCoordinateReferenceSystem& sourceCRS() { return mSourceCRS; }
+    QgsCoordinateReferenceSystem& sourceCrs() { return mSourceCRS; }
 
     /*!
      * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
@@ -289,9 +289,9 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateTransfor
     }
 
     mySummary += "\n\tSource Spatial Ref Sys  : ";
-    if (r.sourceCRS())
+    if (r.sourceCrs())
     {
-      mySummary << r.sourceCRS();
+      mySummary << r.sourceCrs();
     }
     else
     {

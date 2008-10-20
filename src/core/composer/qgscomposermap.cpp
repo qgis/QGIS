@@ -113,7 +113,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRect& extent, const QSize
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
   theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
-  theMapRenderer.setProjectionsEnabled( mMapRenderer->projectionsEnabled() );
+  theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
   theMapRenderer.setDestinationSrs( mMapRenderer->destinationSrs() );
 
   QgsRenderContext* theRendererContext = theMapRenderer.rendererContext();

@@ -69,7 +69,7 @@ class QgsMapRenderer : QObject
     void setProjectionsEnabled(bool enabled);
     
     //! returns true if projections are enabled for this layer set
-    bool projectionsEnabled();
+    bool hasCrsTransformEnabled();
     
     //! sets destination spatial reference system
     void setDestinationSrs(const QgsCoordinateReferenceSystem& srs);
@@ -99,7 +99,7 @@ class QgsMapRenderer : QObject
     
     void setProgress(int current, int total);
     
-    void projectionsEnabled(bool flag);
+    void hasCrsTransformEnabled(bool flag);
     
     void destinationSrsChanged();
     

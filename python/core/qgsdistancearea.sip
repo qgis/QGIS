@@ -17,16 +17,16 @@ class QgsDistanceArea
     void setProjectionsEnabled(bool flag);
 
     //! returns projections enabled flag
-    bool projectionsEnabled();
+    bool hasCrsTransformEnabled();
     
     //! sets source spatial reference system (by QGIS CRS)
-    void setSourceCRS(long srsid);
+    void setSourceCrs(long srsid);
     
     //! sets source spatial reference system (by EpsgCrsId)
     void setSourceEpsgCrsId(long epsgId);
 
     //! returns source spatial reference system
-    long sourceCRS();
+    long sourceCrs();
     //! What sort of coordinate system is being used?
     bool geographic();
 
@@ -41,7 +41,7 @@ class QgsDistanceArea
     //! returns ellipsoid's semi minor axis
     double ellipsoidSemiMinor();
     //! returns ellipsoid's inverse flattening
-    double ellipsoidInvFlattening();
+    double ellipsoidInverseFlattening();
     
     //! general measurement (line distance or polygon area)
     double measure(QgsGeometry* geometry);
@@ -56,7 +56,7 @@ class QgsDistanceArea
     double measurePolygon(const QList<QgsPoint>& points);
     
     //! compute bearing - in radians
-    double getBearing(const QgsPoint& p1, const QgsPoint& p2);
+    double bearing(const QgsPoint& p1, const QgsPoint& p2);
 
     static QString textUnit(double value, int decimals, QGis::UnitType u, bool isArea);    
 

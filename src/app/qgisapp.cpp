@@ -1493,7 +1493,7 @@ void QgisApp::setupConnections()
   //signal when mouse moved over window (coords display in status bar)
   connect( mMapCanvas, SIGNAL( xyCoordinates( QgsPoint & ) ), this, SLOT( showMouseCoordinate( QgsPoint & ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
-  connect( mMapCanvas->mapRenderer(), SIGNAL( projectionsEnabled( bool ) ), this, SLOT( projectionsEnabled( bool ) ) );
+  connect( mMapCanvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( hasCrsTransformEnabled( bool ) ) );
   connect( mMapCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( destinationSrsChanged() ) );
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( showExtents() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( showScale( double ) ) );
@@ -4811,7 +4811,7 @@ void QgisApp::destinationSrsChanged()
 
 }
 
-void QgisApp::projectionsEnabled( bool theFlag )
+void QgisApp::hasCrsTransformEnabled( bool theFlag )
 {
   // save this information to project
   QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", ( theFlag ? 1 : 0 ) );
@@ -4996,14 +4996,14 @@ void QgisApp::projectProperties()
   //connect (pp,SIGNAL(refresh()), mMapCanvas, SLOT(refresh()));
 
   QgsMapRenderer* myRender = mMapCanvas->mapRenderer();
-  bool wasProjected = myRender->projectionsEnabled();
+  bool wasProjected = myRender->hasCrsTransformEnabled();
   long oldCRSID = myRender->destinationSrs().srsid();
 
   // Display the modal dialog box.
   pp->exec();
 
   long newCRSID = myRender->destinationSrs().srsid();
-  bool isProjected = myRender->projectionsEnabled();
+  bool isProjected = myRender->hasCrsTransformEnabled();
 
   // projections have been turned on/off or dest CRS has changed while projections are on
   if ( wasProjected != isProjected || ( isProjected && oldCRSID != newCRSID ) )

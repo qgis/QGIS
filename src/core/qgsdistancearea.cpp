@@ -60,18 +60,18 @@ void QgsDistanceArea::setProjectionsEnabled( bool flag )
   mProjectionsEnabled = flag;
 }
 
-void QgsDistanceArea::setSourceCRS( long srsid )
+void QgsDistanceArea::setSourceCrs( long srsid )
 {
   QgsCoordinateReferenceSystem srcCRS;
   srcCRS.createFromSrsId( srsid );
-  mCoordTransform->setSourceCRS( srcCRS );
+  mCoordTransform->setSourceCrs( srcCRS );
 }
 
 void QgsDistanceArea::setSourceEpsgCrsId( long epsgId )
 {
   QgsCoordinateReferenceSystem srcCRS;
   srcCRS.createFromEpsg( epsgId );
-  mCoordTransform->setSourceCRS( srcCRS );
+  mCoordTransform->setSourceCrs( srcCRS );
 }
 
 
@@ -404,7 +404,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 }
 
 
-double QgsDistanceArea::getBearing( const QgsPoint& p1, const QgsPoint& p2 )
+double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
 {
   QgsPoint pp1 = p1, pp2 = p2;
   if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
