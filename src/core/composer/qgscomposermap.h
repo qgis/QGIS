@@ -187,7 +187,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     /**For the generation of new unique ids*/
     static int mCurrentComposerId;
 
-    /**Etablishes signal/slot connection for update in case of layer change*/
+    /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
 
     /**Returns the zoom factor of the graphics view. If no
