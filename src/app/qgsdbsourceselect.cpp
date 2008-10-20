@@ -386,17 +386,17 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
 
   // Need to escape the password to allow for single quotes and backslashes
 
-  QgsDebugMsg( "Connection info: " + uri.connInfo() );
+  QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
   if ( makeConnection )
   {
-    m_connInfo = uri.connInfo();
-    //qDebug(m_connInfo);
+    m_connectionInfo = uri.connectionInfo();
+    //qDebug(m_connectionInfo);
     // Tidy up an existing connection if one exists.
     if ( pd != 0 )
       PQfinish( pd );
 
-    pd = PQconnectdb( m_connInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+    pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
     if ( PQstatus( pd ) == CONNECTION_OK )
     {
       //qDebug("Connection succeeded");
@@ -458,9 +458,9 @@ QStringList QgsDbSourceSelect::selectedTables()
   return m_selectedTables;
 }
 
-QString QgsDbSourceSelect::connInfo()
+QString QgsDbSourceSelect::connectionInfo()
 {
-  return m_connInfo;
+  return m_connectionInfo;
 }
 
 void QgsDbSourceSelect::setSql( const QModelIndex& index )
@@ -516,7 +516,7 @@ void QgsDbSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
   if ( mColumnTypeThread == NULL )
   {
     mColumnTypeThread = new QgsGeomColumnTypeThread();
-    mColumnTypeThread->setConnInfo( m_connInfo );
+    mColumnTypeThread->setConnInfo( m_connectionInfo );
   }
   mColumnTypeThread->addGeometryColumn( schema, table, column );
 }

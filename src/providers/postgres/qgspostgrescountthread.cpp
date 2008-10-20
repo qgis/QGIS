@@ -47,7 +47,7 @@ QgsPostgresCountThread::~QgsPostgresCountThread()
 
 void QgsPostgresCountThread::setConnInfo( QString s )
 {
-  connInfo = s;
+  connectionInfo = s;
 }
 
 void QgsPostgresCountThread::setTableName( QString s )
@@ -74,12 +74,12 @@ void QgsPostgresCountThread::setGeometryColumn( QString s )
 void QgsPostgresCountThread::run()
 {
 //  // placeholders for now.
-//  QString connInfo;
+//  QString connectionInfo;
 
   QgsDebugMsg( "QgsPostgresCountThread: Started running." );
 
   // Open another connection to the database
-  PGconn *connection = PQconnectdb( connInfo.toUtf8() );
+  PGconn *connection = PQconnectdb( connectionInfo.toUtf8() );
 
   // get the extents
 

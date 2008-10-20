@@ -100,10 +100,10 @@ void QgsPgGeoprocessing::buffer()
 
       QgsDataSourceURI uri( lyr->source() );
 
-      QgsDebugMsg( "data source = " + uri.connInfo() );
+      QgsDebugMsg( "data source = " + uri.connectionInfo() );
 
       // connect to the database and check the capabilities
-      PGconn *capTest = PQconnectdb( uri.connInfo().toUtf8() );
+      PGconn *capTest = PQconnectdb( uri.connectionInfo().toUtf8() );
       if ( PQstatus( capTest ) == CONNECTION_OK )
       {
         postgisVersion( capTest );
@@ -135,7 +135,7 @@ void QgsPgGeoprocessing::buffer()
           }
         }
         // connect to the database
-        PGconn *conn = PQconnectdb( uri.connInfo().toUtf8() );
+        PGconn *conn = PQconnectdb( uri.connectionInfo().toUtf8() );
         if ( PQstatus( conn ) == CONNECTION_OK )
         {
           // populate the schema drop-down
@@ -305,7 +305,7 @@ void QgsPgGeoprocessing::buffer()
                   if ( bb->addLayerToMap() )
                   {
                     // create the connection string
-                    QString newLayerSource = uri.connInfo();
+                    QString newLayerSource = uri.connectionInfo();
                     QgsDebugMsg( "newLayerSource: " + newLayerSource );
 
                     // add the schema.table and geometry column

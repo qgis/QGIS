@@ -269,36 +269,36 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
   return pval;
 }
 
-QString QgsDataSourceURI::connInfo() const
+QString QgsDataSourceURI::connectionInfo() const
 {
-  QString connInfo = "dbname='" + mDatabase + "'";
+  QString connectionInfo = "dbname='" + mDatabase + "'";
 
   if ( mHost != "" )
   {
-    connInfo += " host=" + mHost;
+    connectionInfo += " host=" + mHost;
     if ( mPort != "" )
-      connInfo += " port=" + mPort;
+      connectionInfo += " port=" + mPort;
   }
 
   if ( mUsername != "" )
   {
-    connInfo += " user='" + mUsername + "'"; //needs to be escaped
+    connectionInfo += " user='" + mUsername + "'"; //needs to be escaped
 
     if ( mPassword != "" )
     {
       QString p = mPassword;
       p.replace( '\\', "\\\\" );
       p.replace( '\'', "\\'" );
-      connInfo += " password='" + p + "'";
+      connectionInfo += " password='" + p + "'";
     }
   }
 
-  return connInfo;
+  return connectionInfo;
 }
 
 QString QgsDataSourceURI::uri() const
 {
-  return connInfo()
+  return connectionInfo()
          + QString( " table=%1 (%2) sql=%3" )
          .arg( quotedTablename() )
          .arg( mGeometryColumn )

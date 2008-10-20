@@ -48,7 +48,7 @@ class QgsSpit : public QDialog, private Ui::QgsSpitBase
     //! Return a list of selected tables
     QStringList selectedTables();
     //! Return the connection info
-    QString connInfo();
+    QString connectionInfo();
     //! Create a new PostgreSQL connection
     void newConnection();
     //! Edit a PostgreSQL connection

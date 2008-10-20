@@ -70,7 +70,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
-    QString connInfo();
+    QString connectionInfo();
     // Store the selected database
     void dbChanged();
     // Utility function to construct the query for finding out the
@@ -133,7 +133,7 @@ class QgsDbSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QString m_connInfo;
+    QString m_connectionInfo;
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;

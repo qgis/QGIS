@@ -111,7 +111,7 @@ class QgsPostgresExtentThread : public QThread
     /**
      *
      */
-    QString connInfo;
+    QString connectionInfo;
 
     /**
      * Name of the table with no schema
