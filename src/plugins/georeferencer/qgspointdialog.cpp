@@ -21,6 +21,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTextStream>
+#include <QSettings>
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -562,6 +563,11 @@ void QgsPointDialog::initialize()
   mToolAddPoint->setAction( mActionAddPoint );
   mToolDeletePoint = new QgsGeorefTool( mCanvas, this, FALSE /* addPoint */ );
   mToolDeletePoint->setAction( mActionDeletePoint );
+
+  QSettings mySettings;
+  int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
+  double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
+  mCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
   // set the currently supported transforms
   cmbTransformType->addItem( tr( "Linear" ) );
