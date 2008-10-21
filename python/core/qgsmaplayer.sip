@@ -192,6 +192,73 @@ public:
 
     /** A convenience function to capitalise the layer name */
     static QString capitaliseLayerName(const QString name);
+
+	/** Retrieve the default style for this layer if one
+     * exists (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * @param a reference to a flag that will be set to false if
+     * we did not manage to load the default style.
+     * @return a QString with any status messages
+     * @see also loadNamedStyle ();
+     */
+    virtual QString loadDefaultStyle( bool & theResultFlag );
+
+    /** Retrieve a named style for this layer if one
+     * exists (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * @param QString theURI - the file name or other URI for the
+     * style file. First an attempt will be made to see if this
+     * is a file and load that, if that fails the qgis.db styles
+     * table will be consulted to see if there is a style who's
+     * key matches the URI.
+     * @param a reference to a flag that will be set to false if
+     * we did not manage to load the default style.
+     * @return a QString with any status messages
+     * @see also loadDefaultStyle ();
+     */
+    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag );
+
+    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
+
+    /** Save the properties of this layer as the default style
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * @param a reference to a flag that will be set to false if
+     * we did not manage to save the default style.
+     * @return a QString with any status messages
+     * @see also loadNamedStyle () and saveNamedStyle()
+     */
+    virtual QString saveDefaultStyle( bool & theResultFlag );
+
+    /** Save the properties of this layer as a named style
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * @param QString theURI - the file name or other URI for the
+     * style file. First an attempt will be made to see if this
+     * is a file and save to that, if that fails the qgis.db styles
+     * table will be used to create a style entry who's
+     * key matches the URI.
+     * @param a reference to a flag that will be set to false if
+     * we did not manage to save the default style.
+     * @return a QString with any status messages
+     * @see also saveDefaultStyle ();
+     */
+    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
+
+    /** Read the symbology for the current layer from the Dom node supplied.
+     * @param QDomNode node that will contain the symbology definition for this layer.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success.
+    */
+    virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
+
+    /** Write the symbology for the layer into the docment provided.
+     *  @param QDomNode the node that will have the style element added to it.
+     *  @param QDomDocument the document that will have the QDomNode added.
+     * @param errorMessage reference to string that will be updated with any error messages
+     *  @return true in case of success.
+     */
+    virtual bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const = 0;	
     
 public slots:
 
