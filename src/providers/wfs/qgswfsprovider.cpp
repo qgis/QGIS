@@ -73,16 +73,14 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
     }
 
     feature.setFeatureId( mFeatures[*mFeatureIterator]->id() );
-    if ( mFetchGeom )
-    {
-      QgsGeometry* geometry = mFeatures[*mFeatureIterator]->geometry();
-      unsigned char *geom = geometry->wkbBuffer();
-      int geomSize = geometry->wkbSize();
 
-      unsigned char* copiedGeom = new unsigned char[geomSize];
-      memcpy( copiedGeom, geom, geomSize );
-      feature.setGeometryAndOwnership( copiedGeom, geomSize );
-    }
+    //we need geometry anyway, e.g. for intersection tests
+    QgsGeometry* geometry = mFeatures[*mFeatureIterator]->geometry();
+    unsigned char *geom = geometry->wkbBuffer();
+    int geomSize = geometry->wkbSize();
+    unsigned char* copiedGeom = new unsigned char[geomSize];
+    memcpy( copiedGeom, geom, geomSize );
+    feature.setGeometryAndOwnership( copiedGeom, geomSize );
 
     const QgsAttributeMap& attributes = mFeatures[*mFeatureIterator]->attributeMap();
     for ( QgsAttributeList::const_iterator it = mAttributesToFetch.begin(); it != mAttributesToFetch.end(); ++it )
@@ -92,7 +90,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
     ++mFeatureIterator;
     if ( mUseIntersect )
     {
-      if ( feature.geometry()->intersects( mSpatialFilter ) )
+      if ( feature.geometry() && feature.geometry()->intersects( mSpatialFilter ) )
       {
         return true;
       }
