@@ -100,6 +100,13 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   //
   // First prepare the paintdevice that the marker will be drawn onto
   //
+
+  // Introduce a minimum size, we don't want it to disappear.
+  if ( size < 4 )
+  {
+    size = 4;
+  }
+    
   QImage myImage;
   if ( fullName.left( 5 ) == "hard:" )
   {
@@ -109,7 +116,6 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   {
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
-    if ( size < 1 ) size = 1;
     //QPixmap myPixmap = QPixmap(width,height);
     myImage = QImage( size, size, QImage::Format_ARGB32_Premultiplied );
   }
@@ -218,7 +224,8 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, doubl
   int r = ( s - 2 * lw ) / 2 - 1;
   QgsDebugMsg( QString( "Hard marker radius %1" ).arg( r ) );
 
-  if ( name == "circle" )
+  // If radius is 0, draw a circle, so it wont disappear.
+  if ( name == "circle" || r < 1)
   {
     // "A stroked ellipse has a size of rectangle.size() plus the pen width."
     // (from Qt doc)
