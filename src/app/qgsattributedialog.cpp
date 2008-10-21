@@ -284,6 +284,11 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     mpWidgets << myWidget;
     ++index;
   }
+  // Set focus to first widget in list, to help entering data without moving the mouse.
+  if ( mpWidgets.size() > 0 )
+  {
+    mpWidgets.first()->setFocus( Qt::OtherFocusReason );
+  }
   restoreGeometry();
 }
 
