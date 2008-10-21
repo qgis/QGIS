@@ -4187,6 +4187,8 @@ void QgisApp::loadPythonSupport()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
+    QgsPluginRegistry::instance()->setPythonUtils(mPythonUtils);
+    
     mActionShowPythonDialog = new QAction( tr( "Python Console" ), this );
     connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
 
