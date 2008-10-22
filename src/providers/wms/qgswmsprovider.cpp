@@ -72,7 +72,7 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
-  baseUrl = prepareUri(httpuri);
+  baseUrl = prepareUri( httpuri );
 
   QgsDebugMsg( "baseUrl = " + baseUrl );
 
@@ -98,7 +98,7 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
   QgsDebugMsg( "QgsWmsProvider: exiting constructor." );
 }
 
-QString QgsWmsProvider::prepareUri(QString uri)
+QString QgsWmsProvider::prepareUri( QString uri )
 {
   if ( !( uri.contains( "?" ) ) )
   {
@@ -379,7 +379,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
     crsKey = "CRS";
   }
 
-  QString url = prepareUri(mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref);
+  QString url = prepareUri( mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref );
 
   url += "SERVICE=WMS";
   url += "&";

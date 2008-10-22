@@ -242,41 +242,41 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     *  @return  long theSrsId The internal sqlite3 srs.db primary key for this srs
     */
     long srsid() const;
-    
+
     /*! Get the postgis srid for this srs
      * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
      */
     long postgisSrid() const;
-    
+
     /*! Get the EpsgCrsId identifier for this srs
      * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
      */
     long epsg() const;
-    
+
     /*! Get the Description
      * @return  QString the Description A textual description of the srs.
      * @note A zero length string will be returned if the description is uninitialised
      */
     QString description() const;
-    
+
     /*! Get the Projection Acronym
      * @return  QString theProjectionAcronym The official proj4 acronym for the projection family
      * @note A zero length string will be returned if the projectionAcronym is uninitialised
      */
     QString projectionAcronym() const;
-    
+
     /*! Get the Ellipsoid Acronym
      * @return  QString theEllipsoidAcronym The official proj4 acronym for the ellipoid
      * @note A zero length string will be returned if the ellipsoidAcronym is uninitialised
      */
     QString ellipsoidAcronym() const;
-    
+
     /*! A helper to get an wkt representation of this srs
      * @return string containing Wkt of the srs
      */
     QString toWkt() const;
 
-    /** Get the Proj Proj4 string representation of this srs. 
+    /** Get the Proj Proj4 string representation of this srs.
      * If proj and ellps keys are found in the parameters,
      * they will be stripped out and the Projection and ellipsoid acronyms will be
      * overridden with these.
@@ -284,12 +284,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note A zero length string will be returned if the toProj4 is uninitialised
      */
     QString toProj4() const;
-    
+
     /*! Get this Geographic? flag
      * @return  bool theGeoFlag Whether this is a geographic or projected coordinate system
      */
     bool geographicFlag() const;
-    
+
     /*! Get the units that the projection is in
      * @return QGis::UnitType that gives the units for the coordinate system
      */
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString validationHint();
     // Mutators -----------------------------------
-    // We dont want to expose these to the public api since they wont create 
+    // We dont want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
     /** A static helper function to find out the proj4 string for a srsid

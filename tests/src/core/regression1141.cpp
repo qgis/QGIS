@@ -46,17 +46,17 @@
  */
 class Regression1141: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(){};// will be called before each testfunction is executed.
-    void cleanup(){};// will be called after every testfunction.
+    void init() {};// will be called before each testfunction is executed.
+    void cleanup() {};// will be called after every testfunction.
 
     /** This method tests that we can create a shpfile with diacriticals in its name
      *    and with fields that have diacriticals in their names*/
     void diacriticalTest();
-    
+
   private:
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
@@ -71,11 +71,11 @@ void Regression1141::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance(QgsApplication::pluginPath());
+  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
   // compute our test file name:
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   mFileName = myTmpDir +  "ąęćń.shp";
@@ -143,13 +143,13 @@ void Regression1141::diacriticalTest()
 
     QVERIFY( mError == QgsVectorFileWriter::NoError );
     // Now check we can delete it again ok
-    QVERIFY(QgsVectorFileWriter::deleteShapeFile(mFileName));
+    QVERIFY( QgsVectorFileWriter::deleteShapeFile( mFileName ) );
 
   } //file exists
 }
 
 
-QTEST_MAIN(Regression1141)
-    
+QTEST_MAIN( Regression1141 )
+
 #include "moc_regression1141.cxx"
-    
+

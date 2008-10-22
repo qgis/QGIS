@@ -4187,8 +4187,8 @@ void QgisApp::loadPythonSupport()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsPluginRegistry::instance()->setPythonUtils(mPythonUtils);
-    
+    QgsPluginRegistry::instance()->setPythonUtils( mPythonUtils );
+
     mActionShowPythonDialog = new QAction( tr( "Python Console" ), this );
     connect( mActionShowPythonDialog, SIGNAL( triggered() ), this, SLOT( showPythonDialog() ) );
 
@@ -5224,7 +5224,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
     //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both
-    
+
     //Enable the Identify tool ( GDAL datasets draw without a provider )
     //but turn off if data provider exists and has no Identify capabilities
     mActionIdentify->setEnabled( true );

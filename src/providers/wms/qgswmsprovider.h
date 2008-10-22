@@ -689,7 +689,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param uri uri to prepare
      * \retval prepared uri
      */
-    QString prepareUri(QString uri);
+    QString prepareUri( QString uri );
 
     //! Data source URI of the WMS for this layer
     QString httpuri;

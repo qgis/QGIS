@@ -349,16 +349,16 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
     pen.setColor( selectionColor );
     QBrush brush = mBrush;
     preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
-        mPointSymbolName, ( float )( mPointSize * scale * widthScale *
-          rasterScaleFactor ),
-                     pen, mBrush );
+                       mPointSymbolName, ( float )( mPointSize * scale * widthScale *
+                                                    rasterScaleFactor ),
+                       pen, mBrush );
   }
   else
   {
     preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
-        mPointSymbolName, ( float )( mPointSize * scale * widthScale *
-          rasterScaleFactor ),
-                     pen, mBrush );
+                       mPointSymbolName, ( float )( mPointSize * scale * widthScale *
+                                                    rasterScaleFactor ),
+                       pen, mBrush );
   }
 
   QMatrix rotationMatrix;

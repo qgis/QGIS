@@ -70,10 +70,10 @@ void MapCoordsDialog::on_buttonCancel_clicked()
   reject();
 }
 
-void MapCoordsDialog::maybeSetXY( QgsPoint & xy, Qt::MouseButton button)
+void MapCoordsDialog::maybeSetXY( QgsPoint & xy, Qt::MouseButton button )
 {
   // Only LeftButton should set point
-  if( Qt::LeftButton == button )
+  if ( Qt::LeftButton == button )
   {
     leXCoord->clear();
     leYCoord->clear();

@@ -51,12 +51,12 @@ class QgsGeorefTool : public QgsMapTool
       // Only add point on Qt:LeftButton
       if ( Qt::LeftButton == e->button() )
       {
-	QgsPoint pnt = toMapCoordinates( e->pos() );
+        QgsPoint pnt = toMapCoordinates( e->pos() );
 
-	if ( mAddPoint )
-	  mDlg->showCoordDialog( pnt );
-	else
-	  mDlg->deleteDataPoint( pnt );
+        if ( mAddPoint )
+          mDlg->showCoordDialog( pnt );
+        else
+          mDlg->deleteDataPoint( pnt );
       }
     }
 

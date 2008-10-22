@@ -297,8 +297,8 @@ void QgsGraduatedSymbolDialog::adjustClassification()
 
   if ( provider )
   {
-    if ( modeComboBox->currentText() == tr( "Equal Interval" ) || 
-        modeComboBox->currentText() == tr( "Quantiles" ) )
+    if ( modeComboBox->currentText() == tr( "Equal Interval" ) ||
+         modeComboBox->currentText() == tr( "Quantiles" ) )
     {
       minimum = provider->minimumValue( field ).toDouble();
       maximum = provider->maximumValue( field ).toDouble();
@@ -590,11 +590,11 @@ void QgsGraduatedSymbolDialog::updateEntryIcon( QgsSymbol * thepSymbol,
   switch ( myType )
   {
     case QGis::Point:
-      {
-        int myWidthScale = 4; //magick no to try to make vector props dialog preview look same as legend
-        thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( myWidthScale ) ) ) );
-      }
-      break;
+    {
+      int myWidthScale = 4; //magick no to try to make vector props dialog preview look same as legend
+      thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getPointSymbolAsImage( myWidthScale ) ) ) );
+    }
+    break;
     case QGis::Line:
       thepItem->setIcon( QIcon( QPixmap::fromImage( thepSymbol->getLineSymbolAsImage() ) ) );
       break;

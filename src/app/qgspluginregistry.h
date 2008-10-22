@@ -51,7 +51,7 @@ class QgsPluginRegistry
     //! Unload plugins
     void unloadAll();
     //! Save pointer for python utils (needed for unloading python plugins)
-    void setPythonUtils(QgsPythonUtils* pythonUtils);
+    void setPythonUtils( QgsPythonUtils* pythonUtils );
   protected:
     //! protected constructor
     QgsPluginRegistry();

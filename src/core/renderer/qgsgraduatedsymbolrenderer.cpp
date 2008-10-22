@@ -77,7 +77,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
 QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
 {
   //mode is only really used to be able to reinstate
-  //the graduated dialog properties properly, so we 
+  //the graduated dialog properties properly, so we
   //dont do anything else besides accessors and mutators in
   //this class
   return mMode;
@@ -86,7 +86,7 @@ QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
 void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode theMode )
 {
   //mode is only really used to be able to reinstate
-  //the graduated dialog properties properly, so we 
+  //the graduated dialog properties properly, so we
   //dont do anything else besides accessors and mutators in
   //this class
   mMode = theMode;
@@ -183,7 +183,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
-      else //dont draw outlines in selection colour for polys otherwise they appear merged 
+      else //dont draw outlines in selection colour for polys otherwise they appear merged
       {
         pen.setColor( mSelectionColor );
       }
@@ -310,12 +310,12 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   // Mode field first ...
   //
 
-  QString modeValue="";
+  QString modeValue = "";
   if ( mMode == QgsGraduatedSymbolRenderer::Empty )
   {
-      modeValue == "Empty";
+    modeValue == "Empty";
   }
-  else if ( QgsGraduatedSymbolRenderer::Quantile ) 
+  else if ( QgsGraduatedSymbolRenderer::Quantile )
   {
     modeValue = "Quantile";
   }

@@ -4883,24 +4883,24 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
   }
 
   bool splitDone = true;
-  int nGeometriesThis = GEOSGetNumGeometries(mGeos); //original number of geometries
-  if(testedGeometries.size() == nGeometriesThis)
-    {
-      splitDone = false;
-    }
+  int nGeometriesThis = GEOSGetNumGeometries( mGeos ); //original number of geometries
+  if ( testedGeometries.size() == nGeometriesThis )
+  {
+    splitDone = false;
+  }
 
   mergeGeometriesMultiTypeSplit( testedGeometries );
 
   //no split done, preserve original geometry
-  if(!splitDone)
+  if ( !splitDone )
+  {
+    for ( int i = 0; i < testedGeometries.size(); ++i )
     {
-      for(int i = 0; i < testedGeometries.size(); ++i)
-	{
-	  GEOSGeom_destroy(testedGeometries[i]);
-	}
-      return 1;
+      GEOSGeom_destroy( testedGeometries[i] );
     }
-  else if(testedGeometries.size() > 0) //split successfull
+    return 1;
+  }
+  else if ( testedGeometries.size() > 0 ) //split successfull
   {
     GEOSGeom_destroy( mGeos );
     mGeos = testedGeometries[0];
