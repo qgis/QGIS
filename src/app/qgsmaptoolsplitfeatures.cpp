@@ -80,10 +80,10 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
     int returnCode = vlayer->splitFeatures( mCaptureList, topologicalEditing );
-    if(returnCode == 4)
-      {
-	QMessageBox::warning(0, tr("No feature split done"), tr("If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection"));
-      }
+    if ( returnCode == 4 )
+    {
+      QMessageBox::warning( 0, tr( "No feature split done" ), tr( "If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection" ) );
+    }
     else if ( returnCode != 0 )
     {
       //several intersections but only one split (most likely line)

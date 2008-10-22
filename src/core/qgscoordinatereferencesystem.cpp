@@ -180,8 +180,8 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() : 
-      QgsApplication::qgisUserDbFilePath(), "srs_id", id );
+  return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() :
+                     QgsApplication::qgisUserDbFilePath(), "srs_id", id );
 }
 
 bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long id )

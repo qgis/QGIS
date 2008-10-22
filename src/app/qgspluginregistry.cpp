@@ -34,12 +34,12 @@ QgsPluginRegistry *QgsPluginRegistry::instance()
 }
 
 QgsPluginRegistry::QgsPluginRegistry()
-  : mPythonUtils(NULL)
+    : mPythonUtils( NULL )
 {
 // constructor does nothing
 }
 
-void QgsPluginRegistry::setPythonUtils(QgsPythonUtils* pythonUtils)
+void QgsPluginRegistry::setPythonUtils( QgsPythonUtils* pythonUtils )
 {
   mPythonUtils = pythonUtils;
 }
@@ -102,19 +102,19 @@ void QgsPluginRegistry::unloadAll()
         it != plugins.end();
         it++ )
   {
-    if (isPythonPlugin(it->second->name()))
+    if ( isPythonPlugin( it->second->name() ) )
     {
-      if (mPythonUtils)
-        mPythonUtils->unloadPlugin(it->second->library());
+      if ( mPythonUtils )
+        mPythonUtils->unloadPlugin( it->second->library() );
       else
-        QgsDebugMsg("warning: python utils is NULL");
+        QgsDebugMsg( "warning: python utils is NULL" );
     }
     else
     {
       if ( it->second->plugin() )
         it->second->plugin()->unload();
       else
-        QgsDebugMsg("warning: plugin is NULL:" + it->second->name());
+        QgsDebugMsg( "warning: plugin is NULL:" + it->second->name() );
     }
   }
 }

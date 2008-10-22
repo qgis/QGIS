@@ -106,7 +106,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   {
     size = 4;
   }
-    
+
   QImage myImage;
   if ( fullName.left( 5 ) == "hard:" )
   {
@@ -225,7 +225,7 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, doubl
   QgsDebugMsg( QString( "Hard marker radius %1" ).arg( r ) );
 
   // If radius is 0, draw a circle, so it wont disappear.
-  if ( name == "circle" || r < 1)
+  if ( name == "circle" || r < 1 )
   {
     // "A stroked ellipse has a size of rectangle.size() plus the pen width."
     // (from Qt doc)

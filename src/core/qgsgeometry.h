@@ -245,10 +245,10 @@ class CORE_EXPORT QgsGeometry
     @param topological true if topological editing is enabled
     @topologyTestPoints OUT: points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QList<QgsPoint>& splitLine, 
-        QList<QgsGeometry*>&newGeometries, 
-        bool topological, 
-        QList<QgsPoint>& topologyTestPoints );
+    int splitGeometry( const QList<QgsPoint>& splitLine,
+                       QList<QgsGeometry*>&newGeometries,
+                       bool topological,
+                       QList<QgsPoint>& topologyTestPoints );
 
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect

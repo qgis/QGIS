@@ -54,7 +54,7 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
     mSnapper = new QgsSnapper( canvas->mapRenderer() );
   }
   else
-  { 
+  {
     mSnapper = 0;
   }
 }
