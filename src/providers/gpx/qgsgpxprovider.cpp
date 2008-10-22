@@ -229,7 +229,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
         //create QgsGeometry and use it for intersection test
         //if geometry is to be fetched, it is attached to the feature, otherwise we delete it
         QgsGeometry* theGeometry = new QgsGeometry();
-        theGeometry->setWkbAndOwnership(( unsigned char * )geo, 9 + 16 * nPoints );
+        theGeometry->fromWkb(( unsigned char * )geo, 9 + 16 * nPoints );
         bool intersection = theGeometry->intersects( b );//use geos for precise intersection test
 
         if ( !intersection )
@@ -344,7 +344,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
         //create QgsGeometry and use it for intersection test
         //if geometry is to be fetched, it is attached to the feature, otherwise we delete it
         QgsGeometry* theGeometry = new QgsGeometry();
-        theGeometry->setWkbAndOwnership(( unsigned char * )geo, 9 + 16 * totalPoints );
+        theGeometry->fromWkb(( unsigned char * )geo, 9 + 16 * totalPoints );
         bool intersection = theGeometry->intersects( b );//use geos for precise intersection test
 
         if ( !intersection ) //no intersection, delete geometry and move on
@@ -522,7 +522,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList & flist )
 
 bool QgsGPXProvider::addFeature( QgsFeature& f )
 {
-  unsigned char* geo = f.geometry()->wkbBuffer();
+  unsigned char* geo = f.geometry()->asWkb();
   QGis::WkbType wkbType = f.geometry()->wkbType();
   bool success = false;
   GPSObject* obj = NULL;

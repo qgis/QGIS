@@ -477,7 +477,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   bool returnValue = true;
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRFeatureH feature = OGR_F_Create( fdef );
-  unsigned char* wkb = f.geometry()->wkbBuffer();
+  unsigned char* wkb = f.geometry()->asWkb();
 
   if ( f.geometry()->wkbSize() > 0 )
   {
@@ -688,7 +688,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     }
 
     //create an OGRGeometry
-    if ( OGR_G_CreateFromWkb( it->wkbBuffer(),
+    if ( OGR_G_CreateFromWkb( it->asWkb(),
                               OGR_L_GetSpatialRef( ogrLayer ),
                               &theNewGeometry,
                               it->wkbSize() ) != OGRERR_NONE )
