@@ -392,7 +392,7 @@ static QgsGeometry *fromGeosGeom( GEOSGeometry *geom )
     return 0;
 
   QgsGeometry* g = new QgsGeometry;
-  g->setGeos( geom );
+  g->fromGeos( geom );
   return g;
 }
 
@@ -538,7 +538,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 } // QgsGeometry::operator=( QgsGeometry const & rhs )
 
 
-void QgsGeometry::setWkbAndOwnership( unsigned char * wkb, size_t length )
+void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
 {
   // delete any existing WKB geometry before assigning new one
   if ( mGeometry )
@@ -559,7 +559,7 @@ void QgsGeometry::setWkbAndOwnership( unsigned char * wkb, size_t length )
   mDirtyGeos  = TRUE;
 }
 
-unsigned char * QgsGeometry::wkbBuffer()
+unsigned char * QgsGeometry::asWkb()
 {
   if ( mDirtyWkb )
   {
@@ -583,7 +583,7 @@ size_t QgsGeometry::wkbSize()
 
 QGis::WkbType QgsGeometry::wkbType()
 {
-  unsigned char *geom = wkbBuffer(); // ensure that wkb representation exists
+  unsigned char *geom = asWkb(); // ensure that wkb representation exists
   if ( geom )
   {
     unsigned int wkbType;
@@ -640,7 +640,7 @@ bool QgsGeometry::isMultipart()
 }
 
 
-void QgsGeometry::setGeos( GEOSGeometry* geos )
+void QgsGeometry::fromGeos( GEOSGeometry* geos )
 {
   // TODO - make this more heap-friendly
 
@@ -939,7 +939,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
 }
 
 
-void QgsGeometry::adjacentVerticies( int atVertex, int& beforeVertex, int& afterVertex )
+void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex )
 {
   // TODO: implement with GEOS
   if ( mDirtyWkb )

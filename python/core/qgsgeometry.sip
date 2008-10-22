@@ -59,25 +59,25 @@ class QgsGeometry
        Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
        This class will take ownership of the buffer.
     */
-    void setWkbAndOwnership(unsigned char * wkb /Array/, size_t length /ArraySize/);
+    void fromWkb(unsigned char * wkb /Array/, size_t length /ArraySize/);
 %MethodCode
-  // create copy of Python's string and pass it to setWkbAndOwnership()
+  // create copy of Python's string and pass it to fromWkb()
   unsigned char * copy = new unsigned char[a1];
   memcpy(copy, a0, a1);
-  sipCpp->setWkbAndOwnership(copy, a1);
+  sipCpp->fromWkb(copy, a1);
 %End
     
     /** 
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    SIP_PYOBJECT wkbBuffer();
+    SIP_PYOBJECT asWkb();
 %MethodCode
-  sipRes = PyString_FromStringAndSize((const char *)sipCpp->wkbBuffer(), sipCpp->wkbSize());
+  sipRes = PyString_FromStringAndSize((const char *)sipCpp->asWkb(), sipCpp->wkbSize());
 %End
     
     /** 
-       Returns the size of the WKB in wkbBuffer().
+       Returns the size of the WKB in asWkb().
     */
     size_t wkbSize();
     
@@ -94,7 +94,7 @@ class QgsGeometry
        Set the geometry, feeding in a geometry in GEOS format.
     */
     // TODO: unsupported class... would be possible to use PyGEOS?
-    //void setGeos(geos::Geometry* geos);
+    //void fromGeos(geos::Geometry* geos);
 
     double distance(QgsGeometry& geom);
 
@@ -116,7 +116,7 @@ class QgsGeometry
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVerticies(int atVertex, int& beforeVertex /Out/, int& afterVertex /Out/);
+    void adjacentVertices(int atVertex, int& beforeVertex /Out/, int& afterVertex /Out/);
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)

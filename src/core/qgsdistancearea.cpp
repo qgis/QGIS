@@ -176,7 +176,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 
 double QgsDistanceArea::measure( QgsGeometry* geometry )
 {
-  unsigned char* wkb = geometry->wkbBuffer();
+  unsigned char* wkb = geometry->asWkb();
   unsigned char* ptr;
   unsigned int wkbType;
   double res, resTotal = 0;

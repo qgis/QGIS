@@ -96,15 +96,25 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect( const QgsRect& rect );
+    /**
+      Set the geometry, feeding in a geometry in GEOS format.
+      This class will take ownership of the buffer.
+     */
+    void fromGeos( GEOSGeometry* geos );
+    /**
+      Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
+      This class will take ownership of the buffer.
+     */
+    void fromWkb( unsigned char * wkb, size_t length );
 
     /**
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * wkbBuffer();
+    unsigned char * asWkb();
 
     /**
-       Returns the size of the WKB in wkbBuffer().
+       Returns the size of the WKB in asWkb().
     */
     size_t wkbSize();
 
@@ -117,17 +127,7 @@ class CORE_EXPORT QgsGeometry
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();
 
-    /**
-      Set the geometry, feeding in a geometry in GEOS format.
-      This class will take ownership of the buffer.
-     */
-    void setGeos( GEOSGeometry* geos );
 
-    /**
-      Set the geometry, feeding in the buffer containing OGC Well-Known Binary and the buffer's length.
-      This class will take ownership of the buffer.
-     */
-    void setWkbAndOwnership( unsigned char * wkb, size_t length );
 
 
     double distance( QgsGeometry& geom );
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsGeometry
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVerticies( int atVertex, int& beforeVertex, int& afterVertex );
+    void adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex );
 
 
     /** Insert a new vertex before the given vertex index,
@@ -245,7 +245,10 @@ class CORE_EXPORT QgsGeometry
     @param topological true if topological editing is enabled
     @topologyTestPoints OUT: points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints );
+    int splitGeometry( const QList<QgsPoint>& splitLine, 
+        QList<QgsGeometry*>&newGeometries, 
+        bool topological, 
+        QList<QgsPoint>& topologyTestPoints );
 
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect

@@ -2075,7 +2075,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 
 void QgsPostgresProvider::appendGeomString( QgsGeometry *geom, QString &geomString ) const
 {
-  unsigned char *buf = geom->wkbBuffer();
+  unsigned char *buf = geom->asWkb();
   for ( uint i = 0; i < geom->wkbSize(); ++i )
   {
     if ( connectionRW->useWkbHex() )
@@ -2118,7 +2118,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
       QgsDebugMsg( "iterating over the map of changed geometries..." );
 
-      if ( iter->wkbBuffer() )
+      if ( iter->asWkb() )
       {
         QgsDebugMsg( "iterating over feature id " + QString::number( iter.key() ) );
 

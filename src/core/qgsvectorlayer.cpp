@@ -3301,7 +3301,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
 #endif
 
   QgsGeometry* geom = fet.geometry();
-  unsigned char* feature = geom->wkbBuffer();
+  unsigned char* feature = geom->asWkb();
 
   QGis::WkbType wkbType = geom->wkbType();
 

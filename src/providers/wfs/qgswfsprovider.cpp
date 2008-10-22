@@ -76,7 +76,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 
     //we need geometry anyway, e.g. for intersection tests
     QgsGeometry* geometry = mFeatures[*mFeatureIterator]->geometry();
-    unsigned char *geom = geometry->wkbBuffer();
+    unsigned char *geom = geometry->asWkb();
     int geomSize = geometry->wkbSize();
     unsigned char* copiedGeom = new unsigned char[geomSize];
     memcpy( copiedGeom, geom, geomSize );

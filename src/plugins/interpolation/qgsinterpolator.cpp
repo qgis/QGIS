@@ -107,7 +107,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, double attributeValu
   }
 
   bool hasZValue = false;
-  unsigned char* currentWkbPtr = geom->wkbBuffer();
+  unsigned char* currentWkbPtr = geom->asWkb();
   vertexData theVertex; //the current vertex
 
   QGis::WkbType wkbType = geom->wkbType();
