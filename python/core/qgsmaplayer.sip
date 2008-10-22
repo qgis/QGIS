@@ -243,22 +243,7 @@ public:
      * @return a QString with any status messages
      * @see also saveDefaultStyle ();
      */
-    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
-
-    /** Read the symbology for the current layer from the Dom node supplied.
-     * @param QDomNode node that will contain the symbology definition for this layer.
-     * @param errorMessage reference to string that will be updated with any error messages
-     * @return true in case of success.
-    */
-    virtual bool readSymbology( const QDomNode& node, QString& errorMessage ) = 0;
-
-    /** Write the symbology for the layer into the docment provided.
-     *  @param QDomNode the node that will have the style element added to it.
-     *  @param QDomDocument the document that will have the QDomNode added.
-     * @param errorMessage reference to string that will be updated with any error messages
-     *  @return true in case of success.
-     */
-    virtual bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const = 0;	
+    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );	
     
 public slots:
 
