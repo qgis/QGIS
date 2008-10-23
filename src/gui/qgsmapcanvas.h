@@ -45,7 +45,6 @@ class QGraphicsScene;
 
 class QgsMapToPixel;
 class QgsMapLayer;
-class QgsMapLayerInterface;
 class QgsLegend;
 class QgsLegendView;
 class QgsRubberBand;
