@@ -23,6 +23,7 @@
 
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
+#include "qgsconfig.h"
 
 #include <QApplication>
 #include <QUrl>
@@ -77,7 +78,15 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QUrl qurl( httpurl );
 
-  http = new QHttp( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
+  http = new QHttp( ); 
+  // Create a header so we can set the user agent (Per WMS RFC).
+  QHttpRequestHeader header("GET", qurl.host());
+  // Set host in the header
+  header.setValue( "Host", qurl.host() );
+  // Set the user agent to Quantum GIS plus the version name
+  header.setValue( "User-agent", QString("Quantum GIS - ") + VERSION );
+  // Set the host in the QHttp object
+  http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
 
   if ( httphost.isEmpty() )
   {
@@ -107,13 +116,18 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   QString pathAndQuery = httpurl.remove( 0,
                                          httpurl.indexOf( qurl.path() ) );
 
+
   if ( !postData ) //do request with HTTP GET
   {
-    httpid = http->get( pathAndQuery );
+    header.setRequest("GET", pathAndQuery);
+    // do GET using header containing user-agent
+    httpid = http->request(header); 
   }
   else //do request with HTTP POST
   {
-    httpid = http->post( pathAndQuery, *postData );
+    header.setRequest("POST", pathAndQuery);
+    // do POST using header containing user-agent
+    httpid = http->request(header, *postData); 
   }
 
   connect( http, SIGNAL( requestStarted( int ) ),
