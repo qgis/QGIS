@@ -469,7 +469,7 @@
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Konwertuje warstwy wektorowe pomiędzy formatami wspieranymi przez bibliotekę OGR</translation>
     </message>
 </context>
 <context>
@@ -1360,11 +1360,11 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Dxf2Shp Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwerter Dxf2Shp</translation>
     </message>
     <message>
         <source>Converts from dxf to shp file format</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuje plik DXF do formatu shape</translation>
     </message>
     <message>
         <source>Interpolating...</source>
@@ -1380,7 +1380,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka do interpolacji w oparciu o wierzchołki z warstwy wektorowej</translation>
     </message>
     <message>
         <source>Version 0.001</source>
@@ -1392,7 +1392,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuje warstwy wektorowe pomiędzy formatami wspieranymi przez bibliotekę OGR</translation>
     </message>
     <message>
         <source>CRS Exception</source>
@@ -1619,7 +1619,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Toggle map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Przełącz renderowanie mapy</translation>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
@@ -2149,7 +2149,7 @@ Zapisz projekt pod nową nazwą</translation>
     </message>
     <message>
         <source>Capture Points</source>
-        <translation>Dodaj punkt</translation>
+        <translation>Dodaj punkty</translation>
     </message>
     <message>
         <source>Capture Line</source>
@@ -2465,7 +2465,7 @@ Zapisz projekt pod nową nazwą</translation>
     </message>
     <message>
         <source>Map Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Podpowiedzi na mapie</translation>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
@@ -2547,7 +2547,7 @@ Hide most toolbars</comment>
     </message>
     <message>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -2599,7 +2599,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Asystent wydruku</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -2608,11 +2608,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Asystent wydruku</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cofnij</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
@@ -2620,11 +2620,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Cofnij ostatnią operację</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>Wytnij</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -2636,7 +2636,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiuj</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -2648,7 +2648,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Wklej</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
@@ -2720,11 +2720,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Save Selection as Shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrane jako shape...</translation>
     </message>
     <message>
         <source>Save the selection as a shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrane jako shape</translation>
     </message>
     <message>
         <source>Properties...</source>
@@ -2789,7 +2789,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Edycja</translation>
     </message>
     <message>
         <source>Panels</source>
@@ -3083,15 +3083,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update action</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj akcję</translation>
     </message>
     <message>
         <source>Update the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj wybraną akcję</translation>
     </message>
     <message>
         <source>Capture output</source>
-        <translation type="unfinished"></translation>
+        <translation>Przechwyć wynik</translation>
     </message>
     <message>
         <source>Captures any output from the action</source>
@@ -3111,7 +3111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Action properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości akcji</translation>
     </message>
     <message>
         <source>Name</source>
@@ -3135,7 +3135,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Przechwyć</translation>
     </message>
     <message>
         <source>Clicking the button will let you select an application to use as the action</source>
@@ -3291,7 +3291,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Kliknij aby przełączyć edycję tabeli</translation>
+        <translation>Przełącz edycję tabeli</translation>
     </message>
 </context>
 <context>
@@ -3374,7 +3374,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Cofnij</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
@@ -3382,7 +3382,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wytnij</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -3390,7 +3390,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiuj</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -3398,7 +3398,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wklej</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
@@ -3676,7 +3676,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Cofnij</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
@@ -3684,7 +3684,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wytnij</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
@@ -3692,7 +3692,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kopiuj</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -3700,7 +3700,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wklej</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
@@ -7126,7 +7126,7 @@ at line </source>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Etykieta tekstowa</translation>
     </message>
 </context>
 <context>
@@ -8374,11 +8374,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Points</source>
-        <translation>punktach</translation>
+        <translation>Punkty</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation>jednostkach mapy</translation>
+        <translation>Jednostki mapy</translation>
     </message>
     <message>
         <source>%</source>
@@ -8394,7 +8394,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Over</source>
-        <translation>Nad</translation>
+        <translation>Na</translation>
     </message>
     <message>
         <source>Left</source>
@@ -8410,19 +8410,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Above Right</source>
-        <translation>Górny prawy</translation>
+        <translation>Powyżej z prawej</translation>
     </message>
     <message>
         <source>Below Right</source>
-        <translation>Dolny prawy</translation>
+        <translation>Poniżej z prawej</translation>
     </message>
     <message>
         <source>Above Left</source>
-        <translation>Górny lewy</translation>
+        <translation>Powyżej z lewej</translation>
     </message>
     <message>
         <source>Below Left</source>
-        <translation>Dolny lewy</translation>
+        <translation>Poniżej z lewej</translation>
     </message>
     <message>
         <source>Size:</source>
@@ -8430,11 +8430,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size is in map units</source>
-        <translation>jednostkach mapy</translation>
+        <translation>Rozmiar jest w jednostkach mapy</translation>
     </message>
     <message>
         <source>Size is in points</source>
-        <translation>punktach</translation>
+        <translation>Rozmiar jest w punktach</translation>
     </message>
     <message>
         <source>Position</source>
@@ -8450,7 +8450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednostki rozmiaru czcionek</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -8462,39 +8462,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednostki rozmiaru bufora</translation>
     </message>
     <message>
         <source>Offset units</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednostki przesunięcia</translation>
     </message>
     <message>
         <source>Field containing label</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole zawierające etykiety</translation>
     </message>
     <message>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślna etykieta</translation>
     </message>
     <message>
         <source>Data defined style</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl oparty na danych</translation>
     </message>
     <message>
         <source>Data defined alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównanie oparte na danych</translation>
     </message>
     <message>
         <source>Data defined buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor oparty na danych</translation>
     </message>
     <message>
         <source>Data defined position</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokalizacja oparta na danych</translation>
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Przeźroczystość czcionki</translation>
     </message>
     <message>
         <source>Color</source>
@@ -8502,15 +8502,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykiety bufora?</translation>
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar bufora</translation>
     </message>
     <message>
         <source>Transparency</source>
@@ -8518,51 +8518,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>X Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie X (punkty)</translation>
     </message>
     <message>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesunięcie Y (punkty)</translation>
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodzaj czcionki</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Pogrubione</translation>
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Pochylone</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Podkreślone</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar</translation>
     </message>
     <message>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednostki rozmiaru</translation>
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędna X</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Współrzędna Y</translation>
     </message>
     <message encoding="UTF-8">
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <source>Multiline labels?</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykiety wielowierszowe?</translation>
     </message>
 </context>
 <context>
@@ -8623,11 +8623,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Zoom to best scale (100%)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Powiększ do najlepszej skali (100%)</translation>
     </message>
     <message>
         <source>&amp;Show in overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż w podglądzie</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -8643,11 +8643,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save selection as shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrane jako shape...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
         <translation>&amp;Właściwości</translation>
+    </message>
+    <message>
+        <source>More layers</source>
+        <translation type="obsolete">Więcej warstw</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8714,7 +8718,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Show in overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż w podglądzie</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -8730,7 +8734,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save selection as shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrane jako shape...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -9146,7 +9150,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie do %1 zakończone pomyślnie</translation>
     </message>
 </context>
 <context>
@@ -10035,7 +10039,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr:</translation>
     </message>
     <message>
         <source>Display only plugins containing this word in their metadata</source>
@@ -10277,7 +10281,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Filtr</translation>
     </message>
     <message>
         <source>Plugin Directory:</source>
@@ -11073,7 +11077,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Band %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał %1</translation>
     </message>
 </context>
 <context>
@@ -11088,7 +11092,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Freak Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Szalone</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -11108,7 +11112,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>n/a</translation>
     </message>
     <message>
         <source>Write access denied</source>
@@ -11148,11 +11152,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Discrete</source>
-        <translation type="unfinished"></translation>
+        <translation>Dyskretna</translation>
     </message>
     <message>
         <source>Equal interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Równe przedziały</translation>
     </message>
     <message>
         <source>Quantiles</source>
@@ -11252,7 +11256,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished"></translation>
+        <translation>DOmyślny styl</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
@@ -11264,19 +11268,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany format stylu:</translation>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished">Paleta</translation>
+        <translation>Mapa kolorów</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation>Liniowy(a)</translation>
+        <translation>Liniowa</translation>
     </message>
     <message>
         <source>Exact</source>
-        <translation type="unfinished"></translation>
+        <translation>Szczegółowa</translation>
     </message>
     <message>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
@@ -11288,7 +11292,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślny</translation>
     </message>
     <message>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
@@ -11395,7 +11399,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Chart Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ wykresu</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -11415,7 +11419,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Render as</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderuj jako</translation>
     </message>
     <message>
         <source>...</source>
@@ -11443,11 +11447,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Three band color</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompozycja barwna (trzy kanały)</translation>
     </message>
     <message>
         <source>Single band gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeden kanał</translation>
     </message>
     <message>
         <source>Color map</source>
@@ -11455,7 +11459,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Odwróć kolory mapy</translation>
     </message>
     <message>
         <source>Std. deviation</source>
@@ -11463,7 +11467,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Custom min / max values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartości min / max użytkownika</translation>
     </message>
     <message>
         <source>Load min / max values from band</source>
@@ -11471,7 +11475,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Estimate (faster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Oszacowane (szybciej)</translation>
     </message>
     <message>
         <source>Load</source>
@@ -11479,7 +11483,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Actual (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rzeczywiste (wolniej)</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
@@ -11487,7 +11491,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Bieżący</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
@@ -11499,11 +11503,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślny</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Etykieta tekstowa</translation>
     </message>
     <message>
         <source>Transparency</source>
@@ -11511,7 +11515,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Ogólna przeźroczystość</translation>
     </message>
     <message>
         <source>No data value</source>
@@ -11523,27 +11527,27 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Custom transparency options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje przeźroczystości użytkownika</translation>
     </message>
     <message>
         <source>Transparency band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał przeźroczystości</translation>
     </message>
     <message>
         <source>Transparent pixel list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista pikseli przeźroczystości</translation>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wartości ręcznie</translation>
     </message>
     <message>
         <source>Add Values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wartości z ekranu</translation>
     </message>
     <message>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń wybrany wiersz</translation>
     </message>
     <message>
         <source>Default values</source>
@@ -11559,11 +11563,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba klas</translation>
     </message>
     <message>
         <source>Color interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolacja koloru</translation>
     </message>
     <message>
         <source>Classification mode</source>
@@ -11571,7 +11575,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Widoczność zależna od skali</translation>
     </message>
     <message>
         <source>Maximum</source>
@@ -11583,15 +11587,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło warstwy</translation>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished">Nazwa wyświetlana</translation>
+        <translation>Nazwa wyświetlana</translation>
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdzielczość piramidy</translation>
     </message>
     <message>
         <source>Resampling method</source>
@@ -11603,23 +11607,23 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Line graph</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykres liniowy</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Wykres słupkowy</translation>
     </message>
     <message>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba kolumn</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopuszczać z poza zakresu?</translation>
     </message>
     <message>
         <source>Allow approximation</source>
-        <translation type="unfinished"></translation>
+        <translation>Zezwól na aproksymację</translation>
     </message>
     <message>
         <source>RGB mode band selection and scaling</source>
@@ -11627,43 +11631,43 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Red band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał czerwony</translation>
     </message>
     <message>
         <source>Green band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał zielony</translation>
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał niebieski</translation>
     </message>
     <message>
         <source>Red min</source>
-        <translation type="unfinished"></translation>
+        <translation>Czerwony min</translation>
     </message>
     <message>
         <source>Red max</source>
-        <translation type="unfinished"></translation>
+        <translation>Czerwony max</translation>
     </message>
     <message>
         <source>Green min</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielony min</translation>
     </message>
     <message>
         <source>Green max</source>
-        <translation type="unfinished"></translation>
+        <translation>Zielony max</translation>
     </message>
     <message>
         <source>Blue min</source>
-        <translation type="unfinished"></translation>
+        <translation>Niebieski min</translation>
     </message>
     <message>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
+        <translation>Niebieski max</translation>
     </message>
     <message>
         <source>Single band properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Właściwości kanału</translation>
     </message>
     <message>
         <source>Gray band</source>
@@ -11671,7 +11675,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Use standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj odchylenia standardowego</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
@@ -11691,35 +11695,35 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwaga:</translation>
     </message>
     <message>
         <source>Default R:1 G:2 B:3</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie R:1 G:2 B:3</translation>
     </message>
     <message>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj wpis</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortuj</translation>
     </message>
     <message>
         <source>Load color map from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj mapę kolorów z kanału</translation>
     </message>
     <message>
         <source>Load color map from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj mapę kolorów z pliku</translation>
     </message>
     <message>
         <source>Export color map to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj mapę kolorów do pliku</translation>
     </message>
     <message>
         <source>Generate new color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj nową mapę kolorów</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
@@ -11739,7 +11743,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Uwagi</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -11750,7 +11754,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Build pyramids internally if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Zbuduj piramidę wewnętrznie jeśli to możliwe</translation>
     </message>
 </context>
 <context>
@@ -12934,7 +12938,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DOmyślny styl</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
@@ -12946,7 +12950,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nieznany format stylu:</translation>
     </message>
     <message>
         <source>id</source>
@@ -13424,7 +13428,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">n/a</translation>
     </message>
     <message>
         <source>Can Identify</source>
@@ -13582,11 +13586,11 @@ Should the existing classes be deleted before classification?</source>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished"></translation>
+        <translation>Konwertuje plik DXF do formatu shape</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dxf2Shp</translation>
     </message>
 </context>
 <context>
