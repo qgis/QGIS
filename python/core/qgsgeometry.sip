@@ -233,7 +233,7 @@ not disjoint with existing polygons of the feature*/
     /** Returns a geometry representing all the points in this geometry and other (a 
      * union geometry operation). 
      * @note this operation is not called union since its a reserved word in C++.*/
-    QgsGeometry* combine( QgsGeometry* geometry );
+    QgsGeometry* combine( QgsGeometry* geometry ) /Factory/;
     
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
     QgsGeometry* difference(QgsGeometry* geometry) /Factory/;
