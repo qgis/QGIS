@@ -119,6 +119,7 @@
 #include "qgspastetransformations.h"
 #include "qgspluginitem.h"
 #include "qgspluginmanager.h"
+#include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
@@ -1846,7 +1847,7 @@ void QgisApp::restoreSessionPlugins( QString thePluginDirString )
   {
     QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
 
-
+    QString baseName = QFileInfo(myFullPath).baseName();
     QLibrary *myLib = new QLibrary( myFullPath );
     bool loaded = myLib->load();
     if ( loaded )
@@ -1858,15 +1859,15 @@ void QgisApp::restoreSessionPlugins( QString thePluginDirString )
       if ( myName && myDescription  && myVersion )
       {
         //check if the plugin was active on last session
-        QString myEntryName = myName();
+        
         // Windows stores a "true" value as a 1 in the registry so we
         // have to use readBoolEntry in this function
 
-        if ( mySettings.value( "/Plugins/" + myEntryName ).toBool() )
+        if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
         {
           //QgsDebugMsg("Loading plugin: " + myEntryName);
 
-          loadPlugin( myName(), myDescription(), myFullPath );
+          loadPlugin( myFullPath, myName() );
         }
         else
         {
@@ -4142,7 +4143,7 @@ void QgisApp::showPluginManager()
       }
       else
       {
-        loadPlugin( plugin.name(), plugin.description(), plugin.fullPath() );
+        loadPlugin( plugin.fullPath(), plugin.name() );
       }
       it++;
     }
@@ -4209,9 +4210,9 @@ void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
 
 
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-
+  
   // is loaded already?
-  if ( pRegistry->library( pluginName ).isEmpty() )
+  if ( ! pRegistry->isLoaded(packageName) )
   {
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
@@ -4219,7 +4220,7 @@ void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
     // TODO: test success
 
     // add to plugin registry
-    pRegistry->addPythonPlugin( packageName, pluginName );
+    pRegistry->addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true) );
 
     // add to settings
     QSettings settings;
@@ -4230,13 +4231,15 @@ void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
   }
 }
 
-void QgisApp::loadPlugin( QString name, QString description, QString theFullPathName )
+void QgisApp::loadPlugin( QString theFullPathName, QString name )
 {
   QSettings settings;
   // first check to see if its already loaded
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-  QString lib = pRegistry->library( name );
-  if ( lib.length() > 0 )
+  
+  QString baseName = QFileInfo(theFullPathName).baseName();
+  
+  if ( pRegistry->isLoaded(baseName) )
   {
     // plugin is loaded
     // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
@@ -4269,9 +4272,9 @@ void QgisApp::loadPlugin( QString name, QString description, QString theFullPath
             {
               pl->initGui();
               // add it to the plugin registry
-              pRegistry->addPlugin( myLib->fileName(), name, pl );
+              pRegistry->addPlugin(baseName, QgsPluginMetadata(myLib->fileName(), name, pl) );
               //add it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + name, true );
+              settings.setValue( "/Plugins/" + baseName, true );
             }
             else
             {
@@ -4280,7 +4283,7 @@ void QgisApp::loadPlugin( QString name, QString description, QString theFullPath
                                     "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." ).arg
                                     ( myError ) );
               //disable it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + name, false );
+              settings.setValue( "/Plugins/" + baseName, false );
             }
           }
           else
@@ -4290,6 +4293,8 @@ void QgisApp::loadPlugin( QString name, QString description, QString theFullPath
 
         }
         break;
+/*
+        // TODO: to be removed completely
         case QgisPlugin::MAPLAYER:
         {
           // Map layer - requires interaction with the canvas
@@ -4320,6 +4325,7 @@ void QgisApp::loadPlugin( QString name, QString description, QString theFullPath
           }
         }
         break;
+*/
         default:
           // type is unknown
           QgsDebugMsg( "Plugin " + theFullPathName + " did not return a valid type and cannot be loaded" );

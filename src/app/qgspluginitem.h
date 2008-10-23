@@ -26,7 +26,7 @@ Class to contain information about a loadable plugin, including its name, descri
 class QgsPluginItem
 {
   public:
-    QgsPluginItem( QString name = 0, QString description = 0, QString fullPath = 0, QString type = 0, bool python = false );
+    QgsPluginItem( QString name = 0, QString fullPath = 0, QString type = 0, bool python = false );
     QString name();
     QString description();
     QString fullPath();
