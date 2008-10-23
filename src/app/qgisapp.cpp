@@ -189,7 +189,6 @@
 class QTreeWidgetItem;
 
 /* typedefs for plugins */
-typedef QgsMapLayerInterface *create_it();
 typedef QgisPlugin *create_ui( QgisInterface * qI );
 typedef QString name_t();
 typedef QString description_t();
@@ -4293,39 +4292,6 @@ void QgisApp::loadPlugin( QString theFullPathName, QString name )
 
         }
         break;
-/*
-        // TODO: to be removed completely
-        case QgisPlugin::MAPLAYER:
-        {
-          // Map layer - requires interaction with the canvas
-          create_it *cf = ( create_it * ) cast_to_fptr( myLib->resolve( "classFactory" ) );
-          if ( cf )
-          {
-            QgsMapLayerInterface *pl = cf();
-            if ( pl )
-            {
-              // set the main window pointer for the plugin
-              pl->setQgisMainWindow( this );
-              pl->initGui();
-              //add it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + name, true );
-
-            }
-            else
-            {
-              // something went wrong
-              QMessageBox::warning( this, tr( "Error Loading Plugin" ), tr( "There was an error loading %1." ) );
-              //add it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + name, false );
-            }
-          }
-          else
-          {
-            QgsDebugMsg( "Unable to find the class factory for " + theFullPathName );
-          }
-        }
-        break;
-*/
         default:
           // type is unknown
           QgsDebugMsg( "Plugin " + theFullPathName + " did not return a valid type and cannot be loaded" );
