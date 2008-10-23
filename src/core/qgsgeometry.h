@@ -276,8 +276,10 @@ class CORE_EXPORT QgsGeometry
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( QgsGeometry* geometry );
 
-    /** Returns a geometry representing all the points in this geometry and other. */
-    QgsGeometry* Union( QgsGeometry* geometry );
+    /** Returns a geometry representing all the points in this geometry and other (a 
+     * union geometry operation). 
+     * @note this operation is not called union since its a reserved word in C++.*/
+    QgsGeometry* combine( QgsGeometry* geometry );
 
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
     QgsGeometry* difference( QgsGeometry* geometry );

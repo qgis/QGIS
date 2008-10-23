@@ -227,7 +227,7 @@ void TestQgsGeometry::intersectionCheck2()
 void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
-  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->Union( mpPolygonGeometryC );
+  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryC );
   qDebug( "Geometry Type: " + wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit() );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBMultiPolygon );
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
@@ -240,7 +240,7 @@ void TestQgsGeometry::unionCheck1()
 void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
-  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->Union( mpPolygonGeometryB );
+  QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryB );
   qDebug( "Geometry Type: " + wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit() );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypUnionGeometry->asPolygon();

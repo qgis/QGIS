@@ -5347,7 +5347,7 @@ QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::Union( QgsGeometry* geometry )
+QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
 {
   if ( geometry == NULL )
   {
