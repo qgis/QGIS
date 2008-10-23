@@ -385,7 +385,7 @@ class QgisApp : public QMainWindow
     //! load python support if possible
     void loadPythonSupport();
     //! plugin loader
-    void loadPlugin( QString name, QString description, QString mFullPath );
+    void loadPlugin( QString mFullPath, QString name );
     //! python plugin loader
     void loadPythonPlugin( QString packageName, QString pluginName );
     //! Find the QMenu with the given name (ie the user visible text on the menu item)

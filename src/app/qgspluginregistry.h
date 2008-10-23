@@ -19,45 +19,63 @@
 
 #ifndef QGSPLUGINREGISTRY_H
 #define QGSPLUGINREGISTRY_H
-#include <map>
+
+#include <QMap>
+
 class QgsPluginMetadata;
 class QgsPythonUtils;
 class QgisPlugin;
 class QString;
+
 /**
 * \class QgsPluginRegistry
 * \brief This class tracks plugins that are currently loaded an provides
 * a means to fetch a pointer to a plugin and unload it
+*
+* plugin key is:
+* - C++ plugins: base name of plugin library, e.g. libgrassplugin
+* - Python plugins: module name (directory) of plugin, e.g. plugin_installer
 */
 class QgsPluginRegistry
 {
   public:
     //! Returns the instance pointer, creating the object on the first call
     static QgsPluginRegistry* instance();
-    //! Return the full path to the plugins library using the plugin name as a key
-    QString library( QString pluginKey );
-    //! Retrieve the metadata for a plugin by name
-    QgsPluginMetadata * pluginMetadata( QString name );
-    //! Retrieve a pointer to a loaded plugin by name
-    QgisPlugin * plugin( QString name );
+    
+    //! Check whether this module is loaded
+    bool isLoaded( QString key );
+    
+    //! Retrieve library of the plugin
+    QString library( QString key );
+    
+    //! Retrieve a pointer to a loaded plugin
+    QgisPlugin * plugin( QString key );
+    
     //! Return whether the plugin is pythonic
-    bool isPythonPlugin( QString name );
+    bool isPythonPlugin( QString key );
+    
     //! Add a plugin to the map of loaded plugins
-    void addPlugin( QString _library, QString _name, QgisPlugin * _plugin );
-    //! Add a plugin written in python
-    void addPythonPlugin( QString packageName, QString pluginName );
+    void addPlugin( QString key, QgsPluginMetadata metadata );
+    
     //! Remove a plugin from the list of loaded plugins
-    void removePlugin( QString name );
+    void removePlugin( QString key );
+    
     //! Unload plugins
     void unloadAll();
+    
     //! Save pointer for python utils (needed for unloading python plugins)
     void setPythonUtils( QgsPythonUtils* pythonUtils );
+    
+    //! Dump list of plugins
+    void dump();
+  
   protected:
     //! protected constructor
     QgsPluginRegistry();
+  
   private:
     static QgsPluginRegistry* _instance;
-    std::map<QString, QgsPluginMetadata*> plugins;
+    QMap<QString, QgsPluginMetadata> mPlugins;
     QgsPythonUtils* mPythonUtils;
 };
 #endif //QgsPluginRegistry_H
