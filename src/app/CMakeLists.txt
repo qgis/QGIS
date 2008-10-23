@@ -98,7 +98,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsidentifyresults.h
   qgslabeldialog.h
   qgsludialog.h
-  qgsmaplayerinterface.h
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
