@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRenderContext
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
-    void setCoordTransform( QgsCoordinateTransform* t );
+    void setCoordinateTransform( QgsCoordinateTransform* t );
     void setMapToPixel( const QgsMapToPixel& mtp ) {mMapToPixel = mtp;}
     void setExtent( const QgsRect& extent ) {mExtent = extent;}
     void setDrawEditingInformation( bool b ) {mDrawEditingInformation = b;}

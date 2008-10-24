@@ -231,7 +231,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
   mRenderContext.setDrawEditingInformation( !mOverview );
   mRenderContext.setPainter( painter );
-  mRenderContext.setCoordTransform( 0 );
+  mRenderContext.setCoordinateTransform( 0 );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   mRenderContext.setRenderingStopped( false );
@@ -313,7 +313,7 @@ void QgsMapRenderer::render( QPainter* painter )
         ct = NULL;
       }
 
-      mRenderContext.setCoordTransform( ct );
+      mRenderContext.setCoordinateTransform( ct );
 
       //decide if we have to scale the raster
       //this is necessary in case QGraphicsScene is used
@@ -407,7 +407,7 @@ void QgsMapRenderer::render( QPainter* painter )
             ct = NULL;
           }
 
-          mRenderContext.setCoordTransform( ct );
+          mRenderContext.setCoordinateTransform( ct );
 
           ml->drawLabels( mRenderContext );
           if ( split )

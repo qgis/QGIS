@@ -28,7 +28,7 @@ QgsRenderContext::~QgsRenderContext()
   delete mCoordTransform;
 }
 
-void QgsRenderContext::setCoordTransform( QgsCoordinateTransform* t )
+void QgsRenderContext::setCoordinateTransform( QgsCoordinateTransform* t )
 {
   delete mCoordTransform;
   mCoordTransform = t;
