@@ -264,7 +264,7 @@ class CORE_EXPORT QgsProject : public QObject
     void writeProject( QDomDocument & );
 
     //! emitted when an old project file is read.
-    void warnOlderProjectVersion( QString );
+    void oldProjectVersionWarning( QString );
 
   private:
 

@@ -88,14 +88,14 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   {
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon( tmpPoints );
+    double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
     QgsPoint p1( mTool->points().last() ), p2( point );
 
-    double d = mTool->canvas()->mapRenderer()->distArea()->measureLine( p1, p2 );
+    double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     item->setText( 0, QLocale::system().toString( d, 'f', 2 ) );
     editTotal->setText( formatDistance( mTotal + d ) );
@@ -107,7 +107,7 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    double area = mTool->canvas()->mapRenderer()->distArea()->measurePolygon( mTool->points() );
+    double area = mTool->canvas()->mapRenderer()->distanceArea()->measurePolygon( mTool->points() );
     editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
@@ -116,7 +116,7 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
 
     QgsPoint p1 = mTool->points()[last], p2 = mTool->points()[last+1];
 
-    double d = mTool->canvas()->mapRenderer()->distArea()->measureLine( p1, p2 );
+    double d = mTool->canvas()->mapRenderer()->distanceArea()->measureLine( p1, p2 );
 
     mTotal += d;
     editTotal->setText( formatDistance( mTotal ) );

@@ -82,12 +82,12 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void updateScale();
 
     //! Return the measuring object
-    QgsDistanceArea* distArea() { return mDistArea; }
+    QgsDistanceArea* distanceArea() { return mDistArea; }
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 
     //! sets whether map image will be for overview
-    void setOverview( bool isOverview = true ) { mOverview = isOverview; }
+    void enableOverviewMode( bool isOverview = true ) { mOverview = isOverview; }
 
     void setOutputSize( QSize size, int dpi );
 

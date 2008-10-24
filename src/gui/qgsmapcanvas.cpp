@@ -306,7 +306,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
 
 } // addLayer
 
-void QgsMapCanvas::setOverview( QgsMapOverviewCanvas* overview )
+void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
 {
   if ( mMapOverview )
   {

@@ -1399,7 +1399,7 @@ void QgsLegend::updateOverview()
   mMapCanvas->updateOverview();
 }
 
-void QgsLegend::setOverviewAllLayers( bool isInOverview )
+void QgsLegend::enableOverviewModeAllLayers( bool isInOverview )
 {
   QTreeWidgetItem* theItem = firstItem();
   while ( theItem )

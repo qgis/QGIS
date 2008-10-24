@@ -1506,8 +1506,8 @@ void QgisApp::setupConnections()
   connect( mStopRenderButton, SIGNAL( clicked() ), this, SLOT( stopRendering() ) );
 
   // Connect warning dialog from project reading
-  connect( QgsProject::instance(), SIGNAL( warnOlderProjectVersion( QString ) ),
-           this, SLOT( warnOlderProjectVersion( QString ) ) );
+  connect( QgsProject::instance(), SIGNAL( oldProjectVersionWarning( QString ) ),
+           this, SLOT( oldProjectVersionWarning( QString ) ) );
 
 }
 void QgisApp::createCanvas()
@@ -1580,7 +1580,7 @@ void QgisApp::createOverview()
   // add to the Panel submenu
   mPanelMenu->addAction( mOverviewDock->toggleViewAction() );
 
-  mMapCanvas->setOverview( overviewCanvas );
+  mMapCanvas->enableOverviewMode( overviewCanvas );
 
   // moved here to set anti aliasing to both map canvas and overview
   QSettings mySettings;
@@ -3469,7 +3469,7 @@ void QgisApp::addAllToOverview()
 {
   if ( mMapLegend )
   {
-    mMapLegend->setOverviewAllLayers( true );
+    mMapLegend->enableOverviewModeAllLayers( true );
   }
 
   // notify the project we've made a change
@@ -3481,7 +3481,7 @@ void QgisApp::removeAllFromOverview()
 {
   if ( mMapLegend )
   {
-    mMapLegend->setOverviewAllLayers( false );
+    mMapLegend->enableOverviewModeAllLayers( false );
   }
 
   // notify the project we've made a change
@@ -5627,7 +5627,7 @@ void QgisApp::newBookmark()
 // Slot that gets called when the project file was saved with an older
 // version of QGIS
 
-void QgisApp::warnOlderProjectVersion( QString oldVersion )
+void QgisApp::oldProjectVersionWarning( QString oldVersion )
 {
   QSettings settings;
 

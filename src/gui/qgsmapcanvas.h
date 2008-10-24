@@ -110,7 +110,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     void updateOverview();
 
-    void setOverview( QgsMapOverviewCanvas* overview );
+    void enableOverviewMode( QgsMapOverviewCanvas* overview );
 
     QgsMapCanvasMap* map();
 

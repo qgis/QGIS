@@ -797,8 +797,8 @@ bool QgsProject::read()
     QgsProjectFileTransform projectFile( *doc, fileVersion );
 
     //! Shows a warning when an old project file is read.
-    emit warnOlderProjectVersion( fileVersion.text() );
-    QgsDebugMsg( "Emitting warnOlderProjectVersion(oldVersion)." );
+    emit oldProjectVersionWarning( fileVersion.text() );
+    QgsDebugMsg( "Emitting oldProjectVersionWarning(oldVersion)." );
 
     projectFile.dump();
 
