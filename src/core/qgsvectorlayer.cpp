@@ -2426,7 +2426,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
 
   QgsRenderer * renderer = 0;
-  int returnCode;
+  int returnCode = 1;
 
   if ( !singlenode.isNull() )
   {
