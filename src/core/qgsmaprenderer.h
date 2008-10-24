@@ -47,8 +47,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /**Output units for pen width and point marker width/height*/
     enum OutputUnits
     {
-      MM, //millimeters
-      PIXEL
+      Millimeters,
+      Pixels
       //MAP_UNITS probably supported in future versions
     };
 
