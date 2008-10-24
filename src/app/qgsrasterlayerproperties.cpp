@@ -95,9 +95,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   connect( mColormapTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleColormapTreeWidgetDoubleClick( QTreeWidgetItem*, int ) ) );
 
   // set up the scale based layer visibility stuff....
-  chkUseScaleDependentRendering->setChecked( lyr->scaleBasedVisibility() );
-  spinMinimumScale->setValue(( int )lyr->minScale() );
-  spinMaximumScale->setValue(( int )lyr->maxScale() );
+  chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
+  spinMinimumScale->setValue(( int )lyr->minimumScale() );
+  spinMaximumScale->setValue(( int )lyr->maximumScale() );
 
   // build GUI components
   cboxColorMap->addItem( tr( "Grayscale" ) );
@@ -1439,9 +1439,9 @@ void QgsRasterLayerProperties::apply()
 
 
   // set up the scale based layer visibility stuff....
-  mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  mRasterLayer->setMinScale( spinMinimumScale->value() );
-  mRasterLayer->setMaxScale( spinMaximumScale->value() );
+  mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mRasterLayer->setMinimumScale( spinMinimumScale->value() );
+  mRasterLayer->setMaximumScale( spinMaximumScale->value() );
 
   //update the legend pixmap
   pixmapLegend->setPixmap( mRasterLayer->getLegendQPixmap() );
@@ -1688,7 +1688,7 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mRasterLayer->setSrs( srs );
+    mRasterLayer->setCrs( srs );
   }
   else
   {

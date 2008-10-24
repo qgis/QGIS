@@ -334,7 +334,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 
   if ( mWmsProvider )
   {
-    connect( mWmsProvider, SIGNAL( setStatus( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+    connect( mWmsProvider, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
 
     // WMS Provider all set up; let's get some layers
 
@@ -622,18 +622,18 @@ void QgsServerSourceSelect::showError( QgsWmsProvider * wms )
 {
 //   QMessageBox::warning(
 //     this,
-//     wms->errorCaptionString(),
+//     wms->lastErrorTitle(),
 //     tr("Could not understand the response.  The") + " " + wms->name() + " " +
 //       tr("provider said") + ":\n" +
-//       wms->errorString()
+//       wms->lastError()
 //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( wms->errorCaptionString() );
+  mv->setWindowTitle( wms->lastErrorTitle() );
   mv->setMessageAsPlainText(
     tr( "Could not understand the response.  The" ) + " " + wms->name() + " " +
     tr( "provider said" ) + ":\n" +
-    wms->errorString()
+    wms->lastError()
   );
   mv->showMessage( true ); // Is deleted when closed
 }

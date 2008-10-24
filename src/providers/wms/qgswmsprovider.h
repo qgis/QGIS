@@ -288,8 +288,8 @@ struct QgsWmsLayerProperty
   std::vector<QgsWmsDataListUrlProperty>      dataListUrl;
   std::vector<QgsWmsFeatureListUrlProperty>   featureListUrl;
   std::vector<QgsWmsStyleProperty>            style;
-  double                                      minScaleDenominator;
-  double                                      maxScaleDenominator;
+  double                                      minimumScaleDenominator;
+  double                                      maximumScaleDenominator;
   std::vector<QgsWmsLayerProperty>            layer;      // nested layers
 
   // WMS layer attributes
@@ -355,7 +355,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param[out] layers   The list of layers will be placed here.
      *
      * \retval FALSE if the layers could not be retrieved or parsed -
-     *         see errorString() for more info
+     *         see lastError() for more info
      *
      * \todo Document this better, make static
      */
@@ -424,7 +424,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** \brief   Renders the layer as an image
      *
      *  \return  A QImage - if the attempt to retrieve data for the draw was unsuccessful, returns 0
-     *           and more information can be found in errorString() and errorCaptionString()
+     *           and more information can be found in lastError() and lastErrorTitle()
      *
      *  \todo    Add pixel depth parameter (intended to match the display or printer device)
      *
@@ -522,7 +522,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorCaptionString();
+    QString lastErrorTitle();
 
     /**
      * \brief   Returns the verbose error text for the last error in this provider
@@ -533,7 +533,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * call a QMessageBox to display the contents.
      */
 
-    QString errorString();
+    QString lastError();
 
     /** return a provider name
 
@@ -569,10 +569,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
   signals:
 
     /** \brief emit a signal to notify of a progress event */
-    void setProgress( int theProgress, int theTotalSteps );
+    void progressChanged( int theProgress, int theTotalSteps );
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-    void setStatus( QString const &  theStatusQString );
+    void statusChanged( QString const &  theStatusQString );
 
 
   public slots:
@@ -588,7 +588,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param forceRefresh  if true, ignores any previous response cached in memory
      *                      and always contact the server for a new copy.
      * \retval FALSE if the capabilities document could not be retrieved or parsed -
-     *         see errorString() for more info
+     *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.
      *
@@ -599,7 +599,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Common URL retreival code for the differing WMS request types
      *
-     * \retval 0 if an error occured - use errorString() and errorCaptionString() for details
+     * \retval 0 if an error occured - use lastError() and lastErrorTitle() for details
      *
      */
     QByteArray retrieveUrl( QString url );
@@ -610,7 +610,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
       bool downloadCapabilitiesURI(QString const &  uri);
     */
 
-    //! \return FALSE if the capabilities document could not be parsed - see errorString() for more info
+    //! \return FALSE if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
 
     //! parse the WMS Service XML element
@@ -680,7 +680,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
      * \retval FALSE if the capabilities document could not be retrieved or parsed -
-     *         see errorString() for more info
+     *         see lastError() for more info
      */
     bool calculateExtent();
 

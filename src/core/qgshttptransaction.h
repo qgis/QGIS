@@ -105,7 +105,7 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     void setProgress( int theProgress, int theTotalSteps );
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
-    void setStatus( QString theStatusQString );
+    void statusChanged( QString theStatusQString );
 
 
   private:

@@ -737,7 +737,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       return false;
     } //todo
 
-    bool isSymbologyCompatible( const QgsMapLayer& other ) const
+    bool hasCompatibleSymbology( const QgsMapLayer& other ) const
     {
       //preventwarnings
       if ( other.type() < 0 )
@@ -753,7 +753,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorCaptionString();
+    QString lastErrorTitle();
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -761,7 +761,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorString();
+    QString lastError();
 
     /** Returns the data provider
      *

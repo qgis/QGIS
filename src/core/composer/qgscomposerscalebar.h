@@ -77,7 +77,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     double boxContentSpace() const {return mBoxContentSpace;}
     void setBoxContentSpace( double space ) {mBoxContentSpace = space;}
 
-    double segmentMM() const {return mSegmentMM;}
+    double segmentMillimeters() const {return mSegmentMillimeters;}
 
     /**Apply default settings (scale bar 1/5 of map item width)*/
     void applyDefaultSettings();
@@ -151,10 +151,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     double mBoxContentSpace;
 
     /**Width of a segment (in mm)*/
-    double mSegmentMM;
+    double mSegmentMillimeters;
 
-    /**Calculates with of a segment in mm and stores it in mSegmentMM*/
-    void refreshSegmentMM();
+    /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
+    void refreshSegmentMillimeters();
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H

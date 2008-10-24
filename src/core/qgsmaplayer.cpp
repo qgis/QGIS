@@ -198,17 +198,17 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   }
 
   // use scale dependent visibility flag
-  QString scaleBasedVisibility = element.attribute( "scaleBasedVisibilityFlag" );
-  if ( "1" == scaleBasedVisibility )
+  QString hasScaleBasedVisibility = element.attribute( "hasScaleBasedVisibilityFlag" );
+  if ( "1" == hasScaleBasedVisibility )
   {
-    setScaleBasedVisibility( true );
+    toggleScaleBasedVisibility( true );
   }
   else
   {
-    setScaleBasedVisibility( false );
+    toggleScaleBasedVisibility( false );
   }
-  setMinScale( element.attribute( "minScale" ).toFloat() );
-  setMaxScale( element.attribute( "maxScale" ).toFloat() );
+  setMinimumScale( element.attribute( "minimumScale" ).toFloat() );
+  setMaximumScale( element.attribute( "maximumScale" ).toFloat() );
 
   // set name
   mnl = layer_node.namedItem( "layername" );
@@ -244,16 +244,16 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomElement maplayer = document.createElement( "maplayer" );
 
   // use scale dependent visibility flag
-  if ( scaleBasedVisibility() )
+  if ( hasScaleBasedVisibility() )
   {
-    maplayer.setAttribute( "scaleBasedVisibilityFlag", 1 );
+    maplayer.setAttribute( "hasScaleBasedVisibilityFlag", 1 );
   }
   else
   {
-    maplayer.setAttribute( "scaleBasedVisibilityFlag", 0 );
+    maplayer.setAttribute( "hasScaleBasedVisibilityFlag", 0 );
   }
-  maplayer.setAttribute( "minScale", minScale() );
-  maplayer.setAttribute( "maxScale", maxScale() );
+  maplayer.setAttribute( "minimumScale", minimumScale() );
+  maplayer.setAttribute( "maximumScale", maximumScale() );
 
   // ID
   QDomElement id = document.createElement( "id" );
@@ -324,12 +324,12 @@ void QgsMapLayer::invalidTransformInput()
 }
 
 
-QString QgsMapLayer::errorCaptionString()
+QString QgsMapLayer::lastErrorTitle()
 {
   return QString();
 }
 
-QString QgsMapLayer::errorString()
+QString QgsMapLayer::lastError()
 {
   return QString();
 }
@@ -341,33 +341,33 @@ void QgsMapLayer::connectNotify( const char * signal )
 
 
 
-void QgsMapLayer::setScaleBasedVisibility( bool theVisibilityFlag )
+void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
 {
   mScaleBasedVisibility = theVisibilityFlag;
 }
 
-bool QgsMapLayer::scaleBasedVisibility()
+bool QgsMapLayer::hasScaleBasedVisibility()
 {
   return mScaleBasedVisibility;
 }
 
-void QgsMapLayer::setMinScale( float theMinScale )
+void QgsMapLayer::setMinimumScale( float theMinScale )
 {
   mMinScale = theMinScale;
 }
 
-float QgsMapLayer::minScale()
+float QgsMapLayer::minimumScale()
 {
   return mMinScale;
 }
 
 
-void QgsMapLayer::setMaxScale( float theMaxScale )
+void QgsMapLayer::setMaximumScale( float theMaxScale )
 {
   mMaxScale = theMaxScale;
 }
 
-float QgsMapLayer::maxScale()
+float QgsMapLayer::maximumScale()
 {
   return mMaxScale;
 }
@@ -393,7 +393,7 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
   return *mCRS;
 }
 
-void QgsMapLayer::setSrs( const QgsCoordinateReferenceSystem& srs )
+void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs )
 {
   *mCRS = srs;
 }

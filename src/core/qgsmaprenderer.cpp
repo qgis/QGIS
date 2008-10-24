@@ -284,13 +284,13 @@ void QgsMapRenderer::render( QPainter* painter )
     }
 
     QgsDebugMsg( "Rendering layer " + ml->name() );
-    QgsDebugMsg( "  Layer minscale " + QString( "%1" ).arg( ml->minScale() ) );
-    QgsDebugMsg( "  Layer maxscale " + QString( "%1" ).arg( ml->maxScale() ) );
-    QgsDebugMsg( "  Scale dep. visibility enabled? " + QString( "%1" ).arg( ml->scaleBasedVisibility() ) );
+    QgsDebugMsg( "  Layer minscale " + QString( "%1" ).arg( ml->minimumScale() ) );
+    QgsDebugMsg( "  Layer maxscale " + QString( "%1" ).arg( ml->maximumScale() ) );
+    QgsDebugMsg( "  Scale dep. visibility enabled? " + QString( "%1" ).arg( ml->hasScaleBasedVisibility() ) );
     QgsDebugMsg( "  Input extent: " + ml->extent().toString() );
 
-    if (( ml->scaleBasedVisibility() && ml->minScale() < mScale && ml->maxScale() > mScale )
-        || ( !ml->scaleBasedVisibility() ) )
+    if (( ml->hasScaleBasedVisibility() && ml->minimumScale() < mScale && ml->maximumScale() > mScale )
+        || ( !ml->hasScaleBasedVisibility() ) )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -390,8 +390,8 @@ void QgsMapRenderer::render( QPainter* painter )
       {
         // only make labels if the layer is visible
         // after scale dep viewing settings are checked
-        if (( ml->scaleBasedVisibility() && ml->minScale() < mScale  && ml->maxScale() > mScale )
-            || ( !ml->scaleBasedVisibility() ) )
+        if (( ml->hasScaleBasedVisibility() && ml->minimumScale() < mScale  && ml->maximumScale() > mScale )
+            || ( !ml->hasScaleBasedVisibility() ) )
         {
           bool split = false;
 

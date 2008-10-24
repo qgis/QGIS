@@ -39,8 +39,8 @@ class Qgis2Map:
     self.mapName = ''
     self.width = ''
     self.height = ''
-    self.minScale = ''
-    self.maxScale = ''
+    self.minimumScale = ''
+    self.maximumScale = ''
     self.template = ''
     self.header = ''
     self.footer = ''
@@ -54,8 +54,8 @@ class Qgis2Map:
     self.mapName = mapname
     self.width = width
     self.height = height
-    #self.minScale = minscale
-    #self.maxScale = maxscale
+    #self.minimumScale = minscale
+    #self.maximumScale = maxscale
     self.template = template
     self.header = header
     self.footer = footer
@@ -213,10 +213,10 @@ class Qgis2Map:
     self.outFile.write("    END\n\n")
 
     self.outFile.write("    #Scale range at which web interface will operate\n")
-    if self.minScale != "":
-      self.outFile.write("    MINSCALE " + self.minScale + "\n") 
-    if self.maxScale != "":
-      self.outFile.write("    MAXSCALE " + self.maxScale + "\n") 
+    if self.minimumScale != "":
+      self.outFile.write("    MINSCALE " + self.minimumScale + "\n") 
+    if self.maximumScale != "":
+      self.outFile.write("    MAXSCALE " + self.maximumScale + "\n") 
 
     self.outFile.write("    # Template and header/footer settings\n")
     self.outFile.write("    # Only the template parameter is required to display a map. See MapServer documentation\n")
@@ -283,9 +283,9 @@ class Qgis2Map:
         self.outFile.write("    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n")
  
       # Set min/max scales
-      if lyr.getAttribute('scaleBasedVisibilityFlag').encode('utf-8') == 1:
-        self.outFile.write("    MINSCALE " + lyr.getAttribute('minScale').encode('utf-8') + "\n")
-        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maxScale').encode('utf-8') + "\n")
+      if lyr.getAttribute('hasScaleBasedVisibilityFlag').encode('utf-8') == 1:
+        self.outFile.write("    MINSCALE " + lyr.getAttribute('minimumScale').encode('utf-8') + "\n")
+        self.outFile.write("    MAXSCALE " + lyr.getAttribute('maximumScale').encode('utf-8') + "\n")
 
       # data
       dataString = lyr.getElementsByTagName("datasource")[0].childNodes[0].nodeValue.encode('utf-8')
@@ -361,11 +361,11 @@ class Qgis2Map:
       # the proj4 text string needs to be reformatted to make mapserver happy
       self.outFile.write(self.formatProj4(proj4Text))
       self.outFile.write("    END\n")
-      scaleDependent = lyr.getAttribute("scaleBasedVisibilityFlag").encode('utf-8')
+      scaleDependent = lyr.getAttribute("hasScaleBasedVisibilityFlag").encode('utf-8')
       if scaleDependent == '1':
         # get the min and max scale settings
-        minscale = lyr.getAttribute("minScale").encode('utf-8')
-        maxscale = lyr.getAttribute("maxScale").encode('utf-8')
+        minscale = lyr.getAttribute("minimumScale").encode('utf-8')
+        maxscale = lyr.getAttribute("maximumScale").encode('utf-8')
         if minscale > '':
           self.outFile.write("    MINSCALE " + minscale + "\n")
         if maxscale > '':

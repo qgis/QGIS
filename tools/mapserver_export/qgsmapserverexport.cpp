@@ -280,11 +280,11 @@ void QgsMapserverExport::writeMapFile()
       {
         mapFile << "  FOOTER " << txtWebFooter->text().toLocal8Bit().data() << std::endl;
       }
-      QString minScale = txtMinScale->text().isEmpty()?"#MINSCALE":"MINSCALE";
-      QString maxScale = txtMinScale->text().isEmpty()?"  #MAXSCALE ":"  MAXSCALE ";
+      QString minimumScale = txtMinScale->text().isEmpty()?"#MINSCALE":"MINSCALE";
+      QString maximumScale = txtMinScale->text().isEmpty()?"  #MAXSCALE ":"  MAXSCALE ";
       // write min and maxscale
-      mapFile << minScale.toLocal8Bit().data() << txtMinScale->text().toLocal8Bit().data() << std::endl;
-      mapFile << maxScale.toLocal8Bit().data() << txtMaxScale->text().toLocal8Bit().data() << std::endl;
+      mapFile << minimumScale.toLocal8Bit().data() << txtMinScale->text().toLocal8Bit().data() << std::endl;
+      mapFile << maximumScale.toLocal8Bit().data() << txtMaxScale->text().toLocal8Bit().data() << std::endl;
       // write comments about the imagepath and image url
       mapFile << "# Set IMAGEPATH to the path where mapserver should\n" <<
         "# write its output\n" <<

@@ -5296,7 +5296,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer * theRasterLayer )
                     SLOT( showProgress( int, int ) ) );
   // connect up any request the raster may make to update the statusbar message
   QObject::connect( theRasterLayer,
-                    SIGNAL( setStatus( QString ) ),
+                    SIGNAL( statusChanged( QString ) ),
                     this,
                     SLOT( showStatusMessage( QString ) ) );
   // notify the project we've made a change

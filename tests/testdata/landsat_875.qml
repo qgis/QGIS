@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis projectname="" version="0.9.2-Ganymede" >
-        <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" type="raster" >
+        <maplayer minimumScale="1" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0" type="raster" >
             <id>landsat_clip20080125220410500</id>
             <datasource>landsat_clip.tif</datasource>
             <layername>landsat_clip</layername>

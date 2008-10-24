@@ -60,7 +60,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( const QgsLegendItem*
         {
           QgsMapLayer* childlayer = llf->layer();
           const QgsMapLayer* newlayer = ( dynamic_cast<const QgsLegendLayerFile*>( li ) )->layer();
-          if ( newlayer->isSymbologyCompatible( *childlayer ) )
+          if ( newlayer->hasCompatibleSymbology( *childlayer ) )
           {
             return INSERT;
           }
@@ -101,7 +101,7 @@ bool QgsLegendLayerFileGroup::insert( QgsLegendItem* newItem )
       return false;
     }
     QgsMapLayer* newLayer = ( dynamic_cast<QgsLegendLayerFile*>( newItem ) )->layer();
-    if ( newLayer->isSymbologyCompatible( *thelayer ) )
+    if ( newLayer->hasCompatibleSymbology( *thelayer ) )
     {
       insertChild( childCount(), newItem );
       return true;
