@@ -833,7 +833,7 @@ void QgsRasterLayerProperties::sync()
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
-  txtbMetadata->setHtml( mRasterLayer->getMetadata() );
+  txtbMetadata->setHtml( mRasterLayer->metadata() );
 
 } // QgsRasterLayerProperties::sync()
 
@@ -1629,7 +1629,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   pixmapLegend->repaint();
   //populate the metadata tab's text browser widget with gdal metadata info
   QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml( mRasterLayer->getMetadata() );
+  txtbMetadata->setHtml( mRasterLayer->metadata() );
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
 }
 

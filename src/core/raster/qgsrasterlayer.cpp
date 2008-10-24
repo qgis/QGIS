@@ -441,7 +441,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
 
   // Get the layer's projection info and set up the
   // QgsCoordinateTransform for this layer
-  // NOTE: we must do this before getMetadata is called
+  // NOTE: we must do this before metadata is called
 
   QString mySourceWkt = getProjectionWkt();
 
@@ -462,7 +462,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
   //that they match the coordinate system of this layer
   QgsDebugMsg( "Layer registry has " + QString::number( QgsMapLayerRegistry::instance()->count() ) + "layers" );
 
-  getMetadata();
+  metadata();
 
   // Use the affine transform to get geo coordinates for
   // the corners of the raster
@@ -3010,7 +3010,7 @@ void QgsRasterLayer::updateProgress( int theProgress, int theMax )
 
 
 
-// convenience function for building getMetadata() HTML table cells
+// convenience function for building metadata() HTML table cells
 static
 QString
 makeTableCell_( QString const & value )
@@ -3020,7 +3020,7 @@ makeTableCell_( QString const & value )
 
 
 
-// convenience function for building getMetadata() HTML table cells
+// convenience function for building metadata() HTML table cells
 static
 QString
 makeTableCells_( QStringList const & values )
@@ -3061,7 +3061,7 @@ cStringList2Q_( char ** stringList )
 
 
 
-QString QgsRasterLayer::getMetadata()
+QString QgsRasterLayer::metadata()
 {
   QString myMetadata ;
   myMetadata += "<p class=\"glossy\">" + tr( "Driver:" ) + "</p>\n";
@@ -3081,7 +3081,7 @@ QString QgsRasterLayer::getMetadata()
   if ( !mProviderKey.isEmpty() )
   {
     // Insert provider-specific (e.g. WMS-specific) metadata
-    myMetadata += mDataProvider->getMetadata();
+    myMetadata += mDataProvider->metadata();
   }
   else
   {

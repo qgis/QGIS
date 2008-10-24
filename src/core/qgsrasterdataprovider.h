@@ -113,7 +113,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    virtual QString getMetadata() = 0;
+    virtual QString metadata() = 0;
 
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update

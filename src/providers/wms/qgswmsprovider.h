@@ -496,7 +496,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString getMetadata();
+    QString metadata();
 
 
     /**

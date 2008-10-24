@@ -1823,7 +1823,7 @@ int QgsWmsProvider::capabilities() const
 }
 
 
-QString QgsWmsProvider::getMetadata()
+QString QgsWmsProvider::metadata()
 {
 
   QString myMetadataQString = "";
