@@ -1025,7 +1025,6 @@ bool QgsProject::write()
                                        "may be corrupted on disk. Try clearing some space on the volume and "
                                        "check file permissions before pressing save again." ) +
                           imp_->file.fileName() );
-    return false;
   }
 
   dirty( false );               // reset to pristine state
