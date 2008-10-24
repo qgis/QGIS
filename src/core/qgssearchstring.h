@@ -66,7 +66,7 @@ class CORE_EXPORT QgsSearchString
     bool isEmpty();
 
     //! clear search string
-    void setEmpty();
+    void clear();
 
   private:
     //! search string and coresponding tree
