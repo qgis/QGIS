@@ -113,8 +113,11 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // includes the scheme, host and port (the
   // http://www.address.bit:80), so remove that from the url before
   // executing an http GET.
-  QString pathAndQuery = httpurl.remove( 0,
-                                         httpurl.indexOf( qurl.path() ) );
+  // 
+  // gsherman 2008-10-24 - Not sure if the above still holds true. Commenting
+  // out the removal for testing purposes
+  QString pathAndQuery = httpurl;//.remove( 0,
+                                  //       httpurl.indexOf( qurl.path() ) );
 
 
   if ( !postData ) //do request with HTTP GET
