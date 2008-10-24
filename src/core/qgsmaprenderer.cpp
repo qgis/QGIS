@@ -51,7 +51,7 @@ QgsMapRenderer::QgsMapRenderer()
   mProjectionsEnabled = FALSE;
   mDestCRS = new QgsCoordinateReferenceSystem( GEO_EPSG_CRS_ID, QgsCoordinateReferenceSystem::EpsgCrsId ); //WGS 84
 
-  mOutputUnits = QgsMapRenderer::MM;
+  mOutputUnits = QgsMapRenderer::Millimeters;
 }
 
 QgsMapRenderer::~QgsMapRenderer()
@@ -241,7 +241,7 @@ void QgsMapRenderer::render( QPainter* painter )
   //because sometimes QPainter units are in a local coord sys (e.g. in case of QGraphicsScene)
   double sceneDpi = mScaleCalculator->dpi();
   double scaleFactor = 1.0;
-  if ( mOutputUnits == QgsMapRenderer::MM )
+  if ( mOutputUnits == QgsMapRenderer::Millimeters )
   {
     scaleFactor = sceneDpi / 25.4;
   }
