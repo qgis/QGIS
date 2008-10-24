@@ -20,15 +20,15 @@
 #include "qgsprovidercountcalcevent.h"
 #include "qgis.h"
 
-QgsProviderCountCalcEvent::QgsProviderCountCalcEvent( long numberFeatures )
+QgsProviderCountCalcEvent::QgsProviderCountCalcEvent( long featuresCounted )
     : QEvent( static_cast<QEvent::Type>( QGis::ProviderCountCalcEvent ) ),
-    n( numberFeatures )
+    n( featuresCounted )
 {
   // NO-OP
 }
 
 
-long QgsProviderCountCalcEvent::numberFeatures() const
+long QgsProviderCountCalcEvent::featuresCounted() const
 {
   return n;
 }
