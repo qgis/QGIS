@@ -146,7 +146,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool copySymbologySettings( const QgsMapLayer& other );
 
     /** Returns true if this layer can be in the same symbology group with another layer */
-    bool isSymbologyCompatible( const QgsMapLayer& other ) const;
+    bool hasCompatibleSymbology( const QgsMapLayer& other ) const;
 
     /** Returns a pointer to the renderer */
     const QgsRenderer* renderer() const;

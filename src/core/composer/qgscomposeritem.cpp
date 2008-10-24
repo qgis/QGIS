@@ -554,14 +554,14 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->restore();
 }
 
-double QgsComposerItem::textWidthMM( const QFont& font, const QString& text ) const
+double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetrics fontMetrics( metricsFont );
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
-double QgsComposerItem::fontAscentMM( const QFont& font ) const
+double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetrics fontMetrics( metricsFont );

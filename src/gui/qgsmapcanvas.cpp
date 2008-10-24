@@ -1209,16 +1209,16 @@ void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
 {
 //   QMessageBox::warning(
 //     this,
-//     mapLayer->errorCaptionString(),
+//     mapLayer->lastErrorTitle(),
 //     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
-//       mapLayer->errorString()
+//       mapLayer->lastError()
 //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( mapLayer->errorCaptionString() );
+  mv->setWindowTitle( mapLayer->lastErrorTitle() );
   mv->setMessageAsPlainText(
     tr( "Could not draw" ) + " " + mapLayer->name() + " " + tr( "because" ) + ":\n" +
-    mapLayer->errorString()
+    mapLayer->lastError()
   );
   mv->exec();
   //MH

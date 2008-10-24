@@ -412,16 +412,16 @@ void QgsMapToolIdentify::showError()
 {
   //   QMessageBox::warning(
   //     this,
-  //     mapLayer->errorCaptionString(),
+  //     mapLayer->lastErrorTitle(),
   //     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
-  //       mapLayer->errorString()
+  //       mapLayer->lastError()
   //   );
 
   QgsMessageViewer * mv = new QgsMessageViewer();
-  mv->setWindowTitle( mLayer->errorCaptionString() );
+  mv->setWindowTitle( mLayer->lastErrorTitle() );
   mv->setMessageAsPlainText(
     QObject::tr( "Could not identify objects on" ) + " " + mLayer->name() + " " + QObject::tr( "because" ) + ":\n" +
-    mLayer->errorString()
+    mLayer->lastError()
   );
   mv->exec(); // deletes itself on close
 }

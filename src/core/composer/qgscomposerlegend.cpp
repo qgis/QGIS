@@ -83,13 +83,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   //font metrics
 
   //draw title
-  currentYCoordinate += fontAscentMM( mTitleFont );
+  currentYCoordinate += fontAscentMillimeters( mTitleFont );
   if ( painter )
   {
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
-  maxXCoord = 2 * mBoxSpace + textWidthMM( mTitleFont, mTitle );
+  maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
   //draw layer items
   for ( int i = 0; i < numLayerItems; ++i )
@@ -98,7 +98,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     if ( currentLayerItem )
     {
       currentYCoordinate += mLayerSpace;
-      currentYCoordinate += fontAscentMM( mLayerFont );
+      currentYCoordinate += fontAscentMillimeters( mLayerFont );
 
       //draw layer Item
       if ( painter )
@@ -106,7 +106,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
         drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
       }
 
-      maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMM( mLayerFont, currentLayerItem->text() ) );
+      maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
 
       //and child items
       drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
@@ -149,7 +149,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
   }
 
   //standerd item height
-  double itemHeight = std::max( mSymbolHeight, fontAscentMM( mItemFont ) );
+  double itemHeight = std::max( mSymbolHeight, fontAscentMillimeters( mItemFont ) );
 
   QStandardItem* currentItem;
 
@@ -201,10 +201,10 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     //finally draw text
     if ( p )
     {
-      drawText( p, currentXCoord, currentYCoord + fontAscentMM( mItemFont ) + ( realItemHeight - fontAscentMM( mItemFont ) ) / 2, currentItem->text(), mItemFont );
+      drawText( p, currentXCoord, currentYCoord + fontAscentMillimeters( mItemFont ) + ( realItemHeight - fontAscentMillimeters( mItemFont ) ) / 2, currentItem->text(), mItemFont );
     }
 
-    maxXCoord = std::max( maxXCoord, currentXCoord + textWidthMM( mItemFont, currentItem->text() ) + mBoxSpace );
+    maxXCoord = std::max( maxXCoord, currentXCoord + textWidthMillimeters( mItemFont, currentItem->text() ) + mBoxSpace );
 
     currentYCoord += realItemHeight;
   }

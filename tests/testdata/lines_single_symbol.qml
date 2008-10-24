@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="0.9.2-Ganymede" >
-  <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Line" type="vector" >
+  <maplayer minimumScale="1" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0" geometry="Line" type="vector" >
     <id>lines20080110101725388</id>
     <datasource>/Users/tim/dev/cpp/qgis/tests/testdata/lines.shp</datasource>
     <layername>lines</layername>

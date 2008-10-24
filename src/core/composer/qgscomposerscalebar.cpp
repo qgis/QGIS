@@ -28,7 +28,7 @@
 #include <QPainter>
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ), mSegmentMM( 0.0 )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ), mSegmentMillimeters( 0.0 )
 {
   applyDefaultSettings();
 }
@@ -50,7 +50,7 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
 
   //x-offset is half of first label width because labels are drawn centered
   QString firstLabel = firstLabelString();
-  double firstLabelWidth = textWidthMM( mFont, firstLabel );
+  double firstLabelWidth = textWidthMillimeters( mFont, firstLabel );
 
   mStyle->draw( painter, firstLabelWidth / 2 );
 
@@ -65,7 +65,7 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
 void QgsComposerScaleBar::setNumUnitsPerSegment( double units )
 {
   mNumUnitsPerSegment = units;
-  refreshSegmentMM();
+  refreshSegmentMillimeters();
 }
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
@@ -82,7 +82,7 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
   connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
   connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
 
-  refreshSegmentMM();
+  refreshSegmentMillimeters();
 }
 
 void QgsComposerScaleBar::invalidateCurrentMap()
@@ -92,7 +92,7 @@ void QgsComposerScaleBar::invalidateCurrentMap()
   mComposerMap = 0;
 }
 
-void QgsComposerScaleBar::refreshSegmentMM()
+void QgsComposerScaleBar::refreshSegmentMillimeters()
 {
   if ( mComposerMap )
   {
@@ -103,7 +103,7 @@ void QgsComposerScaleBar::refreshSegmentMM()
     QRectF composerItemRect = mComposerMap->rect();
 
     //calculate size depending on mNumUnitsPerSegment
-    mSegmentMM = composerItemRect.width() / composerMapRect.width() * mNumUnitsPerSegment;
+    mSegmentMillimeters = composerItemRect.width() / composerMapRect.width() * mNumUnitsPerSegment;
   }
 }
 
@@ -144,7 +144,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
     mNumUnitsPerSegment = ( nPow10 / 2 ) * powerOf10;
   }
 
-  refreshSegmentMM();
+  refreshSegmentMillimeters();
   adjustBoxSize();
 }
 
@@ -167,7 +167,7 @@ void QgsComposerScaleBar::update()
 
 void QgsComposerScaleBar::updateSegmentSize()
 {
-  refreshSegmentMM();
+  refreshSegmentMillimeters();
   update();
 }
 
@@ -179,15 +179,15 @@ void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWi
   //left segments
   for ( int i = 0; i < mNumSegmentsLeft; ++i )
   {
-    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMM / mNumSegmentsLeft ) );
-    mCurrentXCoord += mSegmentMM / mNumSegmentsLeft;
+    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMillimeters / mNumSegmentsLeft ) );
+    mCurrentXCoord += mSegmentMillimeters / mNumSegmentsLeft;
   }
 
   //right segments
   for ( int i = 0; i < mNumSegments; ++i )
   {
-    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMM ) );
-    mCurrentXCoord += mSegmentMM;
+    posWidthList.push_back( qMakePair( mCurrentXCoord, mSegmentMillimeters ) );
+    mCurrentXCoord += mSegmentMillimeters;
   }
 }
 
@@ -278,7 +278,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc )
   composerScaleBarElem.setAttribute( "numSegments", mNumSegments );
   composerScaleBarElem.setAttribute( "numSegmentsLeft", mNumSegmentsLeft );
   composerScaleBarElem.setAttribute( "numUnitsPerSegment", mNumUnitsPerSegment );
-  composerScaleBarElem.setAttribute( "segmentMM", mSegmentMM );
+  composerScaleBarElem.setAttribute( "segmentMillimeters", mSegmentMillimeters );
   composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", mNumMapUnitsPerScaleBarUnit );
   composerScaleBarElem.setAttribute( "font", mFont.toString() );
   composerScaleBarElem.setAttribute( "outlineWidth", mPen.widthF() );
@@ -321,7 +321,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   mNumSegments = itemElem.attribute( "numSegments", "2" ).toInt();
   mNumSegmentsLeft = itemElem.attribute( "numSegmentsLeft", "0" ).toInt();
   mNumUnitsPerSegment = itemElem.attribute( "numUnitsPerSegment", "1.0" ).toDouble();
-  mSegmentMM = itemElem.attribute( "segmentMM", "0.0" ).toDouble();
+  mSegmentMillimeters = itemElem.attribute( "segmentMillimeters", "0.0" ).toDouble();
   mNumMapUnitsPerScaleBarUnit = itemElem.attribute( "numMapUnitsPerScaleBarUnit", "1.0" ).toDouble();
   mPen.setWidthF( itemElem.attribute( "outlineWidth", "1.0" ).toDouble() );
   mUnitLabeling = itemElem.attribute( "unitLabel" );
@@ -345,7 +345,7 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
     mComposerMap = composerMap;
   }
 
-  refreshSegmentMM();
+  refreshSegmentMillimeters();
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );

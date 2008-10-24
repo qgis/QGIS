@@ -271,7 +271,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QgsWFSData dataReader( uri, &mExtent, &mSourceCRS, mFeatures, geometryAttribute, thematicAttributes, &mWKBType );
   QObject::connect( dataReader.http(), SIGNAL( dataReadProgress( int, int ) ), this, SLOT( handleWFSProgressMessage( int, int ) ) );
 
-  //also connect to setStatus signal of qgisapp (if it exists)
+  //also connect to statusChanged signal of qgisapp (if it exists)
   QWidget* mainWindow = 0;
 
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();

@@ -1096,7 +1096,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     QgsDebugMsg( "Wanting a '" + mProviderKey + "' provider to draw this." );
 
-    emit setStatus( QString( "Retrieving using " ) + mProviderKey );
+    emit statusChanged( QString( "Retrieving using " ) + mProviderKey );
 
     QImage* image =
       mDataProvider->draw(
@@ -1114,8 +1114,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     if ( !image )
     {
       // An error occurred.
-      mErrorCaption = mDataProvider->errorCaptionString();
-      mError        = mDataProvider->errorString();
+      mErrorCaption = mDataProvider->lastErrorTitle();
+      mError        = mDataProvider->lastError();
 
       delete myRasterViewPort;
       return FALSE;
@@ -2147,7 +2147,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
     return myRasterBandStats;
   }
   // only print message if we are actually gathering the stats
-  emit setStatus( QString( "Retrieving stats for " ) + name() );
+  emit statusChanged( QString( "Retrieving stats for " ) + name() );
   qApp->processEvents();
   QgsDebugMsg( "stats for band " + QString::number( theBandNo ) );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
@@ -2161,7 +2161,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
 
   myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
 
-  emit setStatus( QString( "Calculating stats for " ) + name() );
+  emit statusChanged( QString( "Calculating stats for " ) + name() );
   //reset the main app progress bar
   emit drawingProgress( 0, 0 );
 
@@ -4619,12 +4619,12 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
 
   // Do a passthrough for the status bar text
   connect(
-    mDataProvider, SIGNAL( setStatus( QString ) ),
+    mDataProvider, SIGNAL( statusChanged( QString ) ),
     this,           SLOT( showStatusMessage( QString ) )
   );
   QgsDebugMsg( "(8 arguments) exiting." );
 
-  emit setStatus( "QgsRasterLayer created" );
+  emit statusChanged( "QgsRasterLayer created" );
 } // QgsRasterLayer ctor
 
 
@@ -4780,17 +4780,17 @@ void QgsRasterLayer::showStatusMessage( QString const & theMessage )
 
   // Pass-through
   // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
-  emit setStatus( theMessage );
+  emit statusChanged( theMessage );
 }
 
 
-QString QgsRasterLayer::errorCaptionString()
+QString QgsRasterLayer::lastErrorTitle()
 {
   return mErrorCaption;
 }
 
 
-QString QgsRasterLayer::errorString()
+QString QgsRasterLayer::lastError()
 {
   return mError;
 }

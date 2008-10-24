@@ -138,8 +138,8 @@ const QgsComposerMap* QgsComposition::getComposerMapById( int id ) const
 int QgsComposition::pixelFontSize( double pointSize ) const
 {
   //in QgsComposition, one unit = one mm
-  double sizeMM = pointSize * 0.3527;
-  return ( sizeMM + 0.5 ); //round to nearest mm
+  double sizeMillimeters = pointSize * 0.3527;
+  return ( sizeMillimeters + 0.5 ); //round to nearest mm
 }
 
 double QgsComposition::pointFontSize( int pixelSize ) const

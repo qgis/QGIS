@@ -400,7 +400,7 @@ public:
     /**Copies the symbology settings from another layer. Returns true in case of success*/
     bool copySymbologySettings(const QgsMapLayer& other);
 
-    bool isSymbologyCompatible(const QgsMapLayer& other) const;
+    bool hasCompatibleSymbology(const QgsMapLayer& other) const;
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -408,7 +408,7 @@ public:
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorCaptionString();
+    QString lastErrorTitle();
   
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -416,7 +416,7 @@ public:
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString errorString();
+    QString lastError();
 
     /** Returns the data provider
      *

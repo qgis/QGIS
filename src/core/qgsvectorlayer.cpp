@@ -3067,7 +3067,7 @@ bool QgsVectorLayer::copySymbologySettings( const QgsMapLayer& other )
   }
 }
 
-bool QgsVectorLayer::isSymbologyCompatible( const QgsMapLayer& other ) const
+bool QgsVectorLayer::hasCompatibleSymbology( const QgsMapLayer& other ) const
 {
   // vector layers are symbology compatible if they have the same type, the same sequence of numerical/ non numerical fields and the same field names
 

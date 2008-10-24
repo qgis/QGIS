@@ -1,6 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="0.9.2-Ganymede" >
-  <maplayer minScale="1" maxScale="1e+08" scaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
+  <maplayer minimumScale="1" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
     <id>points20080109122431720</id>
     <datasource>/home/timlinux/dev/cpp/qgis/tests/testdata/points.shp</datasource>
     <layername>Points</layername>

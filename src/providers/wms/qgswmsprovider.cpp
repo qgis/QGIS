@@ -449,7 +449,7 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
 
     // Do a passthrough for the status bar text
     connect(
-            &http, SIGNAL(setStatus        (QString)),
+            &http, SIGNAL( statusChanged        (QString)),
              this,   SLOT(showStatusMessage(QString))
            );
 
@@ -569,7 +569,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
         // Do a passthrough for the status bar text
         connect(
-                &http, SIGNAL(setStatus        (QString)),
+                &http, SIGNAL( statusChanged        (QString)),
                  this,   SLOT(showStatusMessage(QString))
                );
 
@@ -625,7 +625,7 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
 
   // Do a passthrough for the status bar text
   connect(
-    &http, SIGNAL( setStatus( QString ) ),
+    &http, SIGNAL( statusChanged( QString ) ),
     this,   SLOT( showStatusMessage( QString ) )
   );
 
@@ -678,7 +678,7 @@ bool QgsWmsProvider::downloadCapabilitiesURI( QString const & uri )
 
   // Do a passthrough for the status bar text
   connect(
-    &http, SIGNAL( setStatus( QString ) ),
+    &http, SIGNAL( statusChanged( QString ) ),
     this,   SLOT( showStatusMessage( QString ) )
   );
 
@@ -1708,7 +1708,7 @@ void QgsWmsProvider::showStatusMessage( QString const & theMessage )
 {
   // Pass-through
   // TODO: See if we can connect signal-to-signal.  This is a kludge according to the Qt doc.
-  emit setStatus( theMessage );
+  emit statusChanged( theMessage );
 }
 
 
@@ -2201,13 +2201,13 @@ QgsCoordinateReferenceSystem QgsWmsProvider::crs()
 }
 
 
-QString QgsWmsProvider::errorCaptionString()
+QString QgsWmsProvider::lastErrorTitle()
 {
   return mErrorCaption;
 }
 
 
-QString QgsWmsProvider::errorString()
+QString QgsWmsProvider::lastError()
 {
   QgsDebugMsg( "returning '" + mError  + "'." );
   return mError;

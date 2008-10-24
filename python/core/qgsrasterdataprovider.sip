@@ -107,7 +107,7 @@ public:
      * call a QMessageBox to display the contents.
      *
      */
-    virtual QString errorCaptionString() = 0;
+    virtual QString lastErrorTitle() = 0;
 
     /**
      * \brief   Returns the verbose error text for the last error in this provider
@@ -118,7 +118,7 @@ public:
      * call a QMessageBox to display the contents.
      *
      */
-    virtual QString errorString() = 0;
+    virtual QString lastError() = 0;
 
 
 protected:

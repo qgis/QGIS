@@ -123,11 +123,11 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     /**Like the above, but with a rectangle for multiline text*/
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font ) const;
 
-    /**Returns the font width in MM (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double textWidthMM( const QFont& font, const QString& text ) const;
+    /**Returns the font width in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
-    /**Returns the font ascent in MM (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
-    double fontAscentMM( const QFont& font ) const;
+    /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
+    double fontAscentMillimeters( const QFont& font ) const;
 
     /**Calculates font to from point size to pixel size*/
     double pixelFontSize( double pointSize ) const;

@@ -158,7 +158,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
 
     /** Returns true if this layer can be in the same symbology group with another layer */
-    virtual bool isSymbologyCompatible( const QgsMapLayer& other ) const = 0;
+    virtual bool hasCompatibleSymbology( const QgsMapLayer& other ) const = 0;
 
     /** Accessor for transparency level. */
     unsigned int getTransparency();
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    virtual QString errorCaptionString();
+    virtual QString lastErrorTitle();
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
@@ -180,13 +180,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    virtual QString errorString();
+    virtual QString lastError();
 
     /** Returns layer's spatial reference system */
     const QgsCoordinateReferenceSystem& srs();
 
     /** Sets layer's spatial reference system */
-    void setSrs( const QgsCoordinateReferenceSystem& srs );
+    void setCrs( const QgsCoordinateReferenceSystem& srs );
 
 
     /** A convenience function to capitalise the layer name */
@@ -265,16 +265,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void invalidTransformInput();
 
     /** Accessor and mutator for the minimum scale member */
-    void setMinScale( float theMinScale );
-    float minScale();
+    void setMinimumScale( float theMinScale );
+    float minimumScale();
 
     /** Accessor and mutator for the maximum scale member */
-    void setMaxScale( float theMaxScale );
-    float maxScale();
+    void setMaximumScale( float theMaxScale );
+    float maximumScale();
 
     /** Accessor and mutator for the scale based visilibility flag */
-    void setScaleBasedVisibility( bool theVisibilityFlag );
-    bool scaleBasedVisibility();
+    void toggleScaleBasedVisibility( bool theVisibilityFlag );
+    bool hasScaleBasedVisibility();
 
   signals:
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void drawingProgress( int theProgress, int theTotalSteps );
 
     /** Emit a signal with status (e.g. to be caught by QgisApp and display a msg on status bar) */
-    void setStatus( QString theStatusQString );
+    void statusChanged( QString theStatus );
 
     /** Emit a signal that layer name has been changed */
     void layerNameChanged();

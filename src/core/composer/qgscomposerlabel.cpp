@@ -68,8 +68,8 @@ void QgsComposerLabel::setFont( const QFont& f )
 
 void QgsComposerLabel::adjustSizeToText()
 {
-  double textWidth = textWidthMM( mFont, mText );
-  double fontAscent = fontAscentMM( mFont );
+  double textWidth = textWidthMillimeters( mFont, mText );
+  double fontAscent = fontAscentMillimeters( mFont );
 
   setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1, \
                         fontAscent + 2 * mMargin + 2 * pen().widthF() + 1 ) );

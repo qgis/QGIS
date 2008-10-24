@@ -53,7 +53,7 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   {
     return;
   }
-  double barTopPosition = mScaleBar->fontAscentMM( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
+  double barTopPosition = mScaleBar->fontAscentMillimeters( mScaleBar->font() ) + mScaleBar->labelBarSpace() + mScaleBar->boxContentSpace();
   double middlePosition = barTopPosition + mScaleBar->height() / 2.0;
   double bottomPosition = barTopPosition + mScaleBar->height();
 
@@ -70,13 +70,13 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
     switch ( mTickPosition )
     {
       case DOWN:
-        p->drawLine( xOffset + segmentIt->first, barTopPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), barTopPosition );
+        p->drawLine( xOffset + segmentIt->first, barTopPosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), barTopPosition );
         break;
       case MIDDLE:
-        p->drawLine( xOffset + segmentIt->first, middlePosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), middlePosition );
+        p->drawLine( xOffset + segmentIt->first, middlePosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), middlePosition );
         break;
       case UP:
-        p->drawLine( xOffset + segmentIt->first, bottomPosition, xOffset + segmentIt->first + mScaleBar->segmentMM(), bottomPosition );
+        p->drawLine( xOffset + segmentIt->first, bottomPosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), bottomPosition );
         break;
     }
   }
@@ -84,7 +84,7 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
   //draw last tick
   if ( !segmentInfo.isEmpty() )
   {
-    double lastTickPositionX = segmentInfo.last().first + mScaleBar->segmentMM();
+    double lastTickPositionX = segmentInfo.last().first + mScaleBar->segmentMillimeters();
     p->drawLine( lastTickPositionX + xOffset, barTopPosition, lastTickPositionX + xOffset, barTopPosition + mScaleBar->height() );
   }
 

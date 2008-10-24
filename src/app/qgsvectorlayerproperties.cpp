@@ -383,9 +383,9 @@ void QgsVectorLayerProperties::reset( void )
                                            layer->displayField() ) );
 
   // set up the scale based layer visibility stuff....
-  chkUseScaleDependentRendering->setChecked( layer->scaleBasedVisibility() );
-  spinMinimumScale->setValue(( int )layer->minScale() );
-  spinMaximumScale->setValue(( int )layer->maxScale() );
+  chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
+  spinMinimumScale->setValue(( int )layer->minimumScale() );
+  spinMaximumScale->setValue(( int )layer->maximumScale() );
 
   // symbology initialization
   if ( legendtypecombobox->count() == 0 )
@@ -484,9 +484,9 @@ void QgsVectorLayerProperties::apply()
   }
 #endif
   // set up the scale based layer visibility stuff....
-  layer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  layer->setMinScale( spinMinimumScale->value() );
-  layer->setMaxScale( spinMaximumScale->value() );
+  layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  layer->setMinimumScale( spinMinimumScale->value() );
+  layer->setMaximumScale( spinMaximumScale->value() );
 
   // update the display field
   layer->setDisplayField( displayFieldComboBox->currentText() );
@@ -867,7 +867,7 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    layer->setSrs( srs );
+    layer->setCrs( srs );
   }
   else
   {
