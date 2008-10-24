@@ -41,13 +41,17 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
 
   protected:
 
-    void closeEvent( QCloseEvent* event );
-    void showEvent( QShowEvent* event );
+    void keyPressEvent( QKeyEvent *event );
+    void closeEvent( QCloseEvent *event );
+    void showEvent( QShowEvent *event );
 
   private:
 
     QgisInterface* mIface;
     QgsPythonUtils* mPythonUtils;
+
+    QStringList history;
+    int pos;
 };
 
 #endif

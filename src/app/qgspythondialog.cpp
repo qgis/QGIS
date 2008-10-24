@@ -30,6 +30,8 @@ QgsPythonDialog::QgsPythonDialog( QgisInterface* pIface, QgsPythonUtils* pythonU
 #endif
   mIface = pIface;
   mPythonUtils = pythonUtils;
+
+  pos = 0;
 }
 
 QgsPythonDialog::~QgsPythonDialog()
@@ -41,11 +43,50 @@ QString QgsPythonDialog::escapeHtml( QString text )
   return text.replace( "<", "&lt;" ).replace( ">", "&gt;" );
 }
 
+void QgsPythonDialog::keyPressEvent( QKeyEvent *ev )
+{
+  switch( ev->key() )
+  {
+  case Qt::Key_Up:
+    {
+      if(pos>0)
+      {
+        if( pos==history.size() )
+          history << edtCmdLine->text();
+        else
+          history[pos] = edtCmdLine->text();
+        pos--;
+        edtCmdLine->setText(history[pos]);
+      }
+    }
+    break;
+  case Qt::Key_Down:
+    {
+      if( pos<history.size()-1 )
+      {
+        history[pos] = edtCmdLine->text();
+        pos++;
+        edtCmdLine->setText(history[pos]);
+      }
+    }
+    break;
+  default:
+    QWidget::keyPressEvent(ev);
+    break;
+  }
+}
+
 void QgsPythonDialog::on_edtCmdLine_returnPressed()
 {
   QString command = edtCmdLine->text();
-  QString output;
 
+  if( !command.isEmpty() )
+  {
+    history << command;
+    pos = history.size();
+  }
+
+  QString output;
 
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
