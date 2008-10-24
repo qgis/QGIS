@@ -120,7 +120,7 @@ class QgsPostgresCountThread : public QThread
     /**
      * Integer that contains the row count (including non-geometry rows) of the layer
      */
-    long numberFeatures;
+    long featuresCounted;
 
 };
 

@@ -44,9 +44,9 @@ class CORE_EXPORT QgsProviderCountCalcEvent : public QEvent
 
   public:
 
-    QgsProviderCountCalcEvent( long numberFeatures );
+    QgsProviderCountCalcEvent( long featuresCounted );
 
-    long numberFeatures() const;
+    long featuresCounted() const;
 
 
   private:

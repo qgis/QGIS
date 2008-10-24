@@ -177,7 +177,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( !getGeometryDetails() ) // gets srid and geometry type
   {
     // the table is not a geometry table
-    numberFeatures = 0;
+    featuresCounted = 0;
     valid = false;
 
     QgsDebugMsg( "Invalid Postgres layer" );
@@ -686,7 +686,7 @@ QGis::WkbType QgsPostgresProvider::geometryType() const
  */
 long QgsPostgresProvider::featureCount() const
 {
-  return numberFeatures;
+  return featuresCounted;
 }
 
 const QgsField &QgsPostgresProvider::field( int index ) const
@@ -2209,11 +2209,11 @@ long QgsPostgresProvider::getFeatureCount()
   QgsDebugMsg( "Approximate Number of features as text: " +
                QString::fromUtf8( PQgetvalue( result, 0, 0 ) ) );
 
-  numberFeatures = QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toLong();
+  featuresCounted = QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toLong();
 
-  QgsDebugMsg( "Approximate Number of features: " + QString::number( numberFeatures ) );
+  QgsDebugMsg( "Approximate Number of features: " + QString::number( featuresCounted ) );
 
-  return numberFeatures;
+  return featuresCounted;
 }
 
 // TODO: use the estimateExtents procedure of PostGIS and PostgreSQL 8
@@ -2382,9 +2382,9 @@ void QgsPostgresProvider::customEvent( QEvent * e )
 
       QgsDebugMsg( "count has been calculated" );
 
-      numberFeatures = (( QgsProviderCountCalcEvent* ) e )->numberFeatures();
+      featuresCounted = (( QgsProviderCountCalcEvent* ) e )->featuresCounted();
 
-      QgsDebugMsg( "count is " + QString::number( numberFeatures ) );
+      QgsDebugMsg( "count is " + QString::number( featuresCounted ) );
 
       break;
 

@@ -243,7 +243,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Flag to indicate that spatial intersect should be used in selecting features
     bool mUseIntersect;
     int geomType;
-    long numberFeatures;
+    long featuresCounted;
 
     //! Selection rectangle
     OGRGeometryH mSelectionRectangle;

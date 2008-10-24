@@ -111,7 +111,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
     // getting the total number of features in the layer
     // TODO: This can be expensive, do we really need it!
-    numberFeatures = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+    featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
 
     // check the validity of the layer
 
@@ -410,7 +410,7 @@ QGis::WkbType QgsOgrProvider::geometryType() const
  */
 long QgsOgrProvider::featureCount() const
 {
-  return numberFeatures;
+  return featuresCounted;
 }
 
 /**
@@ -549,7 +549,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   {
     f.setFeatureId( OGR_F_GetFID( feature ) );
   }
-  ++numberFeatures;
+  ++featuresCounted;
   OGR_F_Destroy( feature );
   return returnValue;
 }
@@ -568,7 +568,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
 
   // flush features
   OGR_L_SyncToDisk( ogrLayer );
-  numberFeatures = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
   return returnvalue;
 }
 
@@ -758,7 +758,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   QString layerName = fileName.section( '.', 0, 0 );
   QString sql = "REPACK " + layerName;
   OGR_DS_ExecuteSQL( ogrDataSource, sql.toLocal8Bit().data(), NULL, NULL );
-  numberFeatures = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
   return returnvalue;
 }
 

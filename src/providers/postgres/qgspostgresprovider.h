@@ -405,7 +405,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Number of features in the layer
      */
-    long numberFeatures;
+    long featuresCounted;
 
     /**
      * Feature queue that GetNextFeature will retrieve from
