@@ -42,7 +42,7 @@ QgsSearchString::QgsSearchString( const QgsSearchString& str )
 
 QgsSearchString& QgsSearchString::operator=( const QgsSearchString & str )
 {
-  setEmpty();
+  clear();
 
   if ( str.mTree )
     mTree = new QgsSearchTreeNode( *str.mTree );
@@ -65,7 +65,7 @@ bool QgsSearchString::setString( QString str )
   // empty string
   if ( str == "" )
   {
-    setEmpty();
+    clear();
     return true;
   }
 
@@ -87,7 +87,7 @@ bool QgsSearchString::setTree( QgsSearchTreeNode* tree )
 {
   if ( tree == NULL )
   {
-    setEmpty();
+    clear();
   }
   else
   {
@@ -103,7 +103,7 @@ bool QgsSearchString::isEmpty()
   return ( mTree == NULL );
 }
 
-void QgsSearchString::setEmpty()
+void QgsSearchString::clear()
 {
   delete mTree;
   mTree = NULL;
