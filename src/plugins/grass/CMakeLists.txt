@@ -114,6 +114,7 @@ TARGET_LINK_LIBRARIES(grassplugin
   qgis_core
   qgis_gui
   qgisgrass
+  ${QT_QTSQL_LIBRARY}
   ${QT_QT3SUPPORT_LIBRARY} 
   ${GRASS_LIBRARIES}
 )
