@@ -51,7 +51,7 @@ void QgsMapToolAddVertex::canvasPressEvent( QMouseEvent * e )
   mRubberBand = 0;
 
   //snap to segments of the current layer
-  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SNAP_TO_SEGMENT ) != 0 )
+  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SnapToSegment ) != 0 )
   {
     //error
   }

@@ -1928,7 +1928,7 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
   }
 
 
-  if ( snapWithContext( p, threshold, snapResults, QgsSnapper::SNAP_TO_SEGMENT ) != 0 )
+  if ( snapWithContext( p, threshold, snapResults, QgsSnapper::SnapToSegment ) != 0 )
   {
     return 2;
   }
@@ -1939,7 +1939,7 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
   {
     //test if p is already a vertex of this geometry. If yes, don't insert it
     bool vertexAlreadyExists = false;
-    if ( snapWithContext( p, threshold, vertexSnapResults, QgsSnapper::SNAP_TO_VERTEX ) != 0 )
+    if ( snapWithContext( p, threshold, vertexSnapResults, QgsSnapper::SnapToVertex ) != 0 )
     {
       continue;
     }
@@ -3107,7 +3107,7 @@ bool QgsVectorLayer::hasCompatibleSymbology( const QgsMapLayer& other ) const
 bool QgsVectorLayer::snapPoint( QgsPoint& point, double tolerance )
 {
   QMultiMap<double, QgsSnappingResult> snapResults;
-  int result = snapWithContext( point, tolerance, snapResults, QgsSnapper::SNAP_TO_VERTEX );
+  int result = snapWithContext( point, tolerance, snapResults, QgsSnapper::SnapToVertex );
 
   if ( result != 0 )
   {
@@ -3128,7 +3128,7 @@ bool QgsVectorLayer::snapPoint( QgsPoint& point, double tolerance )
 
 int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snappingTolerance,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
-                                     QgsSnapper::SNAP_TO snap_to )
+                                     QgsSnapper::SnappingType snap_to )
 {
   if ( snappingTolerance <= 0 || !mDataProvider )
   {
@@ -3154,7 +3154,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 }
 
 void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,
-                                     QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SNAP_TO snap_to ) const
+                                     QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SnappingType snap_to ) const
 {
   if ( !geom )
   {
@@ -3167,7 +3167,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
   QgsSnappingResult snappingResultVertex;
   QgsSnappingResult snappingResultSegment;
 
-  if ( snap_to == QgsSnapper::SNAP_TO_VERTEX || snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT )
+  if ( snap_to == QgsSnapper::SnapToVertex || snap_to == QgsSnapper::SnapToVertexAndSegment )
   {
     snappedPoint = geom->closestVertex( startPoint, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
     if ( sqrDistVertexSnap < sqrSnappingTolerance )
@@ -3190,7 +3190,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint, int featureId, 
       return;
     }
   }
-  if ( snap_to == QgsSnapper::SNAP_TO_SEGMENT || snap_to == QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT ) // snap to segment
+  if ( snap_to == QgsSnapper::SnapToSegment || snap_to == QgsSnapper::SnapToVertexAndSegment ) // snap to segment
   {
     if ( geometryType() != QGis::Point ) // cannot snap to segment for points/multipoints
     {

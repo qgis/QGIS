@@ -79,7 +79,7 @@ void QgsMapToolMoveVertex::canvasPressEvent( QMouseEvent * e )
   mRubberBandMovingPoints.clear();
 
   //do snap -> new recent snapping results
-  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SNAP_TO_VERTEX ) != 0 )
+  if ( mSnapper.snapToCurrentLayer( e->pos(), mRecentSnappingResults, QgsSnapper::SnapToVertex ) != 0 )
   {
     //error
   }

@@ -38,23 +38,23 @@ class QgsSnapper
   
 public:
   /**Snap to vertex, to segment or both*/
-  enum SNAP_TO
+  enum SnappingType
     {
-      SNAP_TO_VERTEX,
-      SNAP_TO_SEGMENT,
+      SnapToVertex,
+      SnapToSegment,
       //snap to vertex and also to segment if no vertex is within the search tolerance
-      SNAP_TO_VERTEX_AND_SEGMENT
+      SnapToVertexAndSegment
     };
   
-  enum SNAP_MODE
+  enum SnappingMode
     {
       /**Only one snapping result is retured*/
-      ONE_RESULT,
+      SnapWithOneResult,
       /**Several snapping results which have the same position are returned. This is usefull for topological
        editing*/
-      SEVERAL_RESULTS_SAME_POSITION,
+      SnapWithResultsForSamePosition,
       /**All results within the given layer tolerances are returned*/
-      ALL_RESULTS_WITHIN_GIVEN_TOLERANCES
+      SnapWithResultsWithinTolerances
     };
 
   QgsSnapper(QgsMapRenderer* mapRender);
@@ -68,7 +68,7 @@ public:
   //setters
   void setLayersToSnap(const QList<QgsVectorLayer*>& layerList);
   void setTolerances(const QList<double>& toleranceList);
-  // TODO wrap void setSnapToList(const QList<QgsSnapper::SNAP_TO>& snapToList);
-  void setSnapMode(QgsSnapper::SNAP_MODE snapMode);
+  // TODO wrap void setSnapToList(const QList<QgsSnapper::SnappingType>& snapToList);
+  void setSnapMode(QgsSnapper::SnappingMode snapMode);
 
 };

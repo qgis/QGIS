@@ -59,7 +59,7 @@ void QgsMapCanvasSnapper::setMapCanvas( QgsMapCanvas* canvas )
   }
 }
 
-int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SNAP_TO snap_to, double snappingTol, const QList<QgsPoint>& excludePoints )
+int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results, QgsSnapper::SnappingType snap_to, double snappingTol, const QList<QgsPoint>& excludePoints )
 {
   results.clear();
 
@@ -70,11 +70,11 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
     if ( topologicalEditing == 0 )
     {
-      mSnapper->setSnapMode( QgsSnapper::ONE_RESULT );
+      mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
     }
     else
     {
-      mSnapper->setSnapMode( QgsSnapper::SEVERAL_RESULTS_SAME_POSITION );
+      mSnapper->setSnapMode( QgsSnapper::SnapWithResultsForSamePosition );
     }
 
     //current vector layer
@@ -91,7 +91,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
 
     QList<QgsVectorLayer*> layerList;
     QList<double> toleranceList;
-    QList<QgsSnapper::SNAP_TO> snapToList;
+    QList<QgsSnapper::SnappingType> snapToList;
 
     layerList.push_back( vlayer );
     snapToList.push_back( snap_to );
@@ -136,11 +136,11 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
     if ( topologicalEditing == 0 )
     {
-      mSnapper->setSnapMode( QgsSnapper::ONE_RESULT );
+      mSnapper->setSnapMode( QgsSnapper::SnapWithOneResult );
     }
     else
     {
-      mSnapper->setSnapMode( QgsSnapper::SEVERAL_RESULTS_SAME_POSITION );
+      mSnapper->setSnapMode( QgsSnapper::SnapWithResultsForSamePosition );
     }
 
     //read snapping settings from project
@@ -162,7 +162,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
     QList<QgsVectorLayer*> vectorLayerList;
     QList<double> toleranceDoubleList;
-    QList<QgsSnapper::SNAP_TO> snapTo;
+    QList<QgsSnapper::SnappingType> snapTo;
 
     //Use snapping information from the project
     if ( snappingDefinedInProject )
@@ -200,15 +200,15 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
         //segment or vertex
         if (( *snapIt ) == "to_vertex" )
         {
-          snapTo.push_back( QgsSnapper::SNAP_TO_VERTEX );
+          snapTo.push_back( QgsSnapper::SnapToVertex );
         }
         else if (( *snapIt ) == "to_segment" )
         {
-          snapTo.push_back( QgsSnapper::SNAP_TO_SEGMENT );
+          snapTo.push_back( QgsSnapper::SnapToSegment );
         }
         else //to vertex and segment
         {
-          snapTo.push_back( QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT );
+          snapTo.push_back( QgsSnapper::SnapToVertexAndSegment );
         }
 
       }
@@ -234,15 +234,15 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
       if ( defaultSnapString == "to segment" )
       {
-        snapTo.push_back( QgsSnapper::SNAP_TO_SEGMENT );
+        snapTo.push_back( QgsSnapper::SnapToSegment );
       }
       else if ( defaultSnapString == "to vertex and segment" )
       {
-        snapTo.push_back( QgsSnapper::SNAP_TO_VERTEX_AND_SEGMENT );
+        snapTo.push_back( QgsSnapper::SnapToVertexAndSegment );
       }
       else
       {
-        snapTo.push_back( QgsSnapper::SNAP_TO_VERTEX );
+        snapTo.push_back( QgsSnapper::SnapToVertex );
       }
 
       //default snapping tolerance
