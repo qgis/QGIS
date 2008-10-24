@@ -347,7 +347,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          double snappingTolerance,
                          QMultiMap < double,
                          QgsSnappingResult > & snappingResults,
-                         QgsSnapper::SNAP_TO snap_to );
+                         QgsSnapper::SnappingType snap_to );
 
     /** Draws the layer
      *  @return FALSE if an error occurred during drawing
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      @param snap_to snap to vertex or to segment
     */
     void snapToGeometry( const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,
-                         QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SNAP_TO snap_to ) const;
+                         QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SnappingType snap_to ) const;
 
     /**Little helper function that gives bounding box from a list of points.
     @return 0 in case of success*/

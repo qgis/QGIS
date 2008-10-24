@@ -288,7 +288,7 @@ public:
      @return 0 in case of success
   */
   int snapWithContext(const QgsPoint& startPoint, double snappingTolerance, QMultiMap<double, QgsSnappingResult>& snappingResults /Out/,
-                      QgsSnapper::SNAP_TO snap_to);
+                      QgsSnapper::SnappingType snap_to);
 
   /** Draws the layer using coordinate transformation
    *  @return FALSE if an error occurred during drawing

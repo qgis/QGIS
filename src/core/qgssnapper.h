@@ -59,23 +59,23 @@ class CORE_EXPORT QgsSnapper
 {
   public:
     /**Snap to vertex, to segment or both*/
-    enum SNAP_TO
+    enum SnappingType
     {
-      SNAP_TO_VERTEX,
-      SNAP_TO_SEGMENT,
+      SnapToVertex,
+      SnapToSegment,
       //snap to vertex and also to segment if no vertex is within the search tolerance
-      SNAP_TO_VERTEX_AND_SEGMENT
+      SnapToVertexAndSegment
     };
 
-    enum SNAP_MODE
+    enum SnappingMode
     {
       /**Only one snapping result is retured*/
-      ONE_RESULT,
+      SnapWithOneResult,
       /**Several snapping results which have the same position are returned. This is usefull for topological
        editing*/
-      SEVERAL_RESULTS_SAME_POSITION,
+      SnapWithResultsForSamePosition,
       /**All results within the given layer tolerances are returned*/
-      ALL_RESULTS_WITHIN_GIVEN_TOLERANCES
+      SnapWithResultsWithinTolerances
     };
 
     QgsSnapper( QgsMapRenderer* mapRender );
@@ -90,8 +90,8 @@ class CORE_EXPORT QgsSnapper
     //setters
     void setLayersToSnap( const QList<QgsVectorLayer*>& layerList );
     void setTolerances( const QList<double>& toleranceList );
-    void setSnapToList( const QList<QgsSnapper::SNAP_TO>& snapToList );
-    void setSnapMode( QgsSnapper::SNAP_MODE snapMode );
+    void setSnapToList( const QList<QgsSnapper::SnappingType>& snapToList );
+    void setSnapMode( QgsSnapper::SnappingMode snapMode );
 
   private:
     /**Don't use the default constructor*/
@@ -104,14 +104,14 @@ class CORE_EXPORT QgsSnapper
      of the map and about the relationship between pixel space and map space*/
     QgsMapRenderer* mMapRenderer;
     /**Snap mode to apply*/
-    QgsSnapper::SNAP_MODE mSnapMode;
+    QgsSnapper::SnappingMode mSnapMode;
     /**The layers to which snapping is applied*/
     QList<QgsVectorLayer*> mLayersToSnap;
     /**The snapping tolerances for the layers. The order must correspond to the layer list.
      Note that the tolerances are always in source coordinate systems of the layers*/
     QList<double> mSnappingTolerances;
     /**List if snap to segment of to vertex. The order must correspond to the layer list*/
-    QList<QgsSnapper::SNAP_TO> mSnapToList;
+    QList<QgsSnapper::SnappingType> mSnapToList;
 };
 
 #endif

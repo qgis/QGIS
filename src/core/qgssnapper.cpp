@@ -51,7 +51,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
 
   QList<QgsVectorLayer*>::iterator layerIt = mLayersToSnap.begin();
   QList<double>::const_iterator  toleranceIt = mSnappingTolerances.constBegin();
-  QList<QgsSnapper::SNAP_TO>::const_iterator snapToIt = mSnapToList.constBegin();
+  QList<QgsSnapper::SnappingType>::const_iterator snapToIt = mSnapToList.constBegin();
 
   QMultiMap<double, QgsSnappingResult> snappingResultList;//all snapping results
   QMultiMap<double, QgsSnappingResult> currentResultList; //snapping results of examined layer
@@ -95,12 +95,12 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
     return 0;
   }
 
-  if ( mSnapMode == QgsSnapper::ONE_RESULT )
+  if ( mSnapMode == QgsSnapper::SnapWithOneResult )
   {
     //return only closest result
     snappingResult.push_back( evalIt.value() );
   }
-  else if ( mSnapMode == QgsSnapper::SEVERAL_RESULTS_SAME_POSITION )
+  else if ( mSnapMode == QgsSnapper::SnapWithResultsForSamePosition )
   {
     //take all snapping Results within a certain tolerance because rounding differences may occur
     double tolerance = 0.000001;
@@ -138,12 +138,12 @@ void QgsSnapper::setTolerances( const QList<double>& toleranceList )
   mSnappingTolerances = toleranceList;
 }
 
-void QgsSnapper::setSnapToList( const QList<QgsSnapper::SNAP_TO>& snapToList )
+void QgsSnapper::setSnapToList( const QList<QgsSnapper::SnappingType>& snapToList )
 {
   mSnapToList = snapToList;
 }
 
-void QgsSnapper::setSnapMode( QgsSnapper::SNAP_MODE snapMode )
+void QgsSnapper::setSnapMode( QgsSnapper::SnappingMode snapMode )
 {
   mSnapMode = snapMode;
 }
