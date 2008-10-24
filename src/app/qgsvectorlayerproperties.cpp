@@ -441,7 +441,7 @@ void QgsVectorLayerProperties::reset( void )
   QString myStyle = QgsApplication::reportStyleSheet();
   teMetadata->clear();
   teMetadata->document()->setDefaultStyleSheet( myStyle );
-  teMetadata->setHtml( getMetadata() );
+  teMetadata->setHtml( metadata() );
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
@@ -478,7 +478,7 @@ void QgsVectorLayerProperties::apply()
     QString myStyle = QgsApplication::reportStyleSheet();
     teMetadata->clear();
     teMetadata->document()->setDefaultStyleSheet( myStyle );
-    teMetadata->setHtml( getMetadata() );
+    teMetadata->setHtml( metadata() );
     // update the extents of the layer (fetched from the provider)
     layer->updateExtents();
   }
@@ -655,7 +655,7 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
   }
 }
 
-QString QgsVectorLayerProperties::getMetadata()
+QString QgsVectorLayerProperties::metadata()
 {
   QString myMetadata = "<html><body>";
   myMetadata += "<table width=\"100%\">";

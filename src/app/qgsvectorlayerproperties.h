@@ -66,7 +66,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void reset();
 
     /** Get metadata about the layer in nice formatted html */
-    QString getMetadata();
+    QString metadata();
 
     /** Set transparency based on slider position */
     void sliderTransparency_valueChanged( int theValue );
