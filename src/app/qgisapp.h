@@ -548,7 +548,7 @@ class QgisApp : public QMainWindow
     void showPythonDialog();
 
     //! Shows a warning when an old project file is read.
-    void warnOlderProjectVersion( QString );
+    void oldProjectVersionWarning( QString );
 
     //! Toggle map tips on/off
     void toggleMapTips();

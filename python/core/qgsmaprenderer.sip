@@ -44,7 +44,7 @@ class QgsMapRenderer : QObject
     void setMapUnits(QGis::UnitType u);
     
     //! sets whether map image will be for overview
-    void setOverview(bool isOverview = true);
+    void enableOverviewMode(bool isOverview = true);
 
     void setOutputSize(QSize size, int dpi);
     

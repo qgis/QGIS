@@ -72,7 +72,7 @@ QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget * parent, QgsMapCanvas* mapC
   mPanningWidget = new QgsPanningWidget( this );
 
   mMapRenderer = new QgsMapRenderer;
-  mMapRenderer->setOverview();
+  mMapRenderer->enableOverviewMode();
 
   setBackgroundColor( palette().window().color() );
 }
