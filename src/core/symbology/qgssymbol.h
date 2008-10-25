@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSymbol
     /* Point symbol cache  */
     QImage mPointSymbolImageSelected;
 
-    /* Current line width scale used by mPointSymbolVectorImage */
+    /* Current line width scale used by mPointSymbolVectorImage. Equals -1.0 if not set */
     double mWidthScale;
 
     /* Point symbol cache but with line width scale mWidthScale */

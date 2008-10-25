@@ -42,7 +42,7 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mPointSymbolName( "hard:circle" ),
     mPointSize( DEFAULT_POINT_SIZE ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
-    mWidthScale( 1.0 ),
+    mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
@@ -60,7 +60,7 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mPointSymbolName( "hard:circle" ),
     mPointSize( DEFAULT_POINT_SIZE ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
-    mWidthScale( 1.0 ),
+    mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
@@ -71,7 +71,7 @@ QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
     mPointSize( DEFAULT_POINT_SIZE ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
-    mWidthScale( 1.0 ),
+    mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
@@ -85,7 +85,7 @@ QgsSymbol::QgsSymbol( QColor c )
     mPointSymbolName( "hard:circle" ),
     mPointSize( DEFAULT_POINT_SIZE ),
     mPointSymbolImage( 1, 1, QImage::Format_ARGB32_Premultiplied ),
-    mWidthScale( 1.0 ),
+    mWidthScale( -1.0 ),
     mCacheUpToDate( false ),
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
@@ -332,12 +332,14 @@ QImage QgsSymbol::getCachedPointSymbolAsImage( double widthScale,
 QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColor selectionColor, double scale,
     double rotation, double rasterScaleFactor )
 {
-  //QgsDebugMsg(QString("Symbol scale = %1, and rotation = %2").arg(scale).arg(rotation));
   if ( 1.0 == ( scale * rasterScaleFactor ) && 0 == rotation )
-  {
-    // If scale is 1.0 and rotation 0.0, use cached image.
-    return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
-  }
+    {
+      if(mWidthScale < 0 || widthScale == mWidthScale)
+	{  
+	  // If scale is 1.0 and rotation 0.0, use cached image.
+	  return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
+	}
+    }
 
   QImage preRotateImage;
   QPen pen = mPen;
