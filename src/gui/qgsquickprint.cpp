@@ -340,25 +340,33 @@ void QgsQuickPrint::printMap()
   // properly in the print
   int myMapDimensionX = ( myDrawableWidth / 100 ) * myMapHeightPercent;
   int myMapDimensionY = ( myDrawableHeight / 100 ) * myMapWidthPercent;
-  QPixmap myMapPixmap( myMapDimensionX, myMapDimensionY );
-  myMapPixmap.fill( mMapBackgroundColour );
+  
+  //QPixmap myMapPixmap( myMapDimensionX, myMapDimensionY );
+  QImage myMapImage(QSize(myMapDimensionX, myMapDimensionY), QImage::Format_ARGB32);
+  myMapImage.setDotsPerMeterX((double)(myPrinter.logicalDpiX()) / 25.4 * 1000.0);
+  myMapImage.setDotsPerMeterY((double)(myPrinter.logicalDpiY()) / 25.4 * 1000.0);
+  myMapImage.fill(0);
+  //myMapPixmap.fill( mMapBackgroundColour );
   QPainter myMapPainter;
-  myMapPainter.begin( &myMapPixmap );
+  //myMapPainter.begin( &myMapPixmap );
+  myMapPainter.begin(&myMapImage);
   // Now resize for print
-  mpMapRenderer->setOutputSize(
-    QSize( myMapDimensionX, myMapDimensionY ), myPrinter.resolution() );
-  scalePointSymbols( mySymbolScalingAmount, ScaleUp );
-  scaleTextLabels( mySymbolScalingAmount, ScaleUp );
+  mpMapRenderer->setOutputSize(QSize( myMapDimensionX, myMapDimensionY ), (myPrinter.logicalDpiX() + myPrinter.logicalDpiY()) / 2 );
+  //scalePointSymbols( mySymbolScalingAmount, ScaleUp );
+  //scaleTextLabels( mySymbolScalingAmount, ScaleUp );
   mpMapRenderer->render( &myMapPainter );
 
   myMapPainter.end();
   //draw the map pixmap onto our pdf print device
   myOriginX = myPrinter.pageRect().left() + myHorizontalSpacing;
   myOriginY += myVerticalSpacing * 2;
-  myPrintPainter.drawPixmap(
+
+  myPrintPainter.drawImage(myOriginX, myOriginY, myMapImage);
+
+  /*myPrintPainter.drawPixmap(
     myOriginX,
     myOriginY,
-    myMapPixmap );
+    myMapPixmap );*/
 
   //
   // Draw the legend
@@ -658,8 +666,8 @@ void QgsQuickPrint::printMap()
   //
 
   //reinstate the symbols scaling for screen display
-  scalePointSymbols( mySymbolScalingAmount, ScaleDown );
-  scaleTextLabels( mySymbolScalingAmount, ScaleDown );
+  //scalePointSymbols( mySymbolScalingAmount, ScaleDown );
+  //scaleTextLabels( mySymbolScalingAmount, ScaleDown );
 
 
   myPrintPainter.end();
