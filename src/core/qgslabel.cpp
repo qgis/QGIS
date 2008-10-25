@@ -408,7 +408,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   //
   if ( mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled() )
   {
-    int myBufferSize = static_cast<int>( mLabelAttributes->bufferSize() * 0.3527 * sizeScale );
+    double myBufferSize = mLabelAttributes->bufferSize() * 0.3527 * sizeScale;
     QPen bufferPen;
     if ( mLabelAttributes->bufferColorIsSet() )
     {
@@ -427,12 +427,12 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
     }
     else //draw more dense in case of logical devices
     {
-      bufferStepSize = 0.25;
+      bufferStepSize = 0.1;
     }
 
-    for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i += 0.25 )
+    for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i += bufferStepSize )
     {
-      for ( double j = dy - myBufferSize; j <= dy + myBufferSize; j += 0.25 )
+      for ( double j = dy - myBufferSize; j <= dy + myBufferSize; j += bufferStepSize )
       {
         if ( mLabelAttributes->multilineEnabled() )
           painter->drawText( QRectF( i, j - height, width, height ), alignment, text );
