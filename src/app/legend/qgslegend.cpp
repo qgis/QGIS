@@ -233,12 +233,12 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     if ( item && ( item != mItemBeingMoved ) )
     {
       QgsLegendItem::DRAG_ACTION action = dest->accept( origin );
-      if ( action == QgsLegendItem::REORDER )
+      if ( yCoordAboveCenter( dest, e->y() ) ) //over center of item
       {
-        QgsDebugMsg( "mouseMoveEvent::REORDER" );
 
-        if ( !yCoordAboveCenter( dest, e->y() ) ) //over bottom of item
+        if ( action == QgsLegendItem::REORDER || action == QgsLegendItem::INSERT )
         {
+          QgsDebugMsg( "mouseMoveEvent::REORDER/INSERT top half" );
           if ( origin->nextSibling() != dest )
           {
             if ( origin->parent() != dest->parent() )
@@ -251,37 +251,53 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
               moveItem( dest, origin );
             }
           }
+          setCurrentItem( origin );
         }
-        else //over top of item
+        else
         {
+          QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+
+          if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
+          {
+            resetToInitialPosition( mItemBeingMoved );
+          }
+          setCursor( QCursor( Qt::ForbiddenCursor ) );
+        }
+      }
+      else // below center of item
+      {
+
+        if ( action == QgsLegendItem::REORDER )
+        {
+          QgsDebugMsg( "mouseMoveEvent::REORDER bottom half" );
           if ( mItemBeingMoved != dest->nextSibling() )
           {
             //origin->moveItem(dest);
             moveItem( origin, dest );
           }
-        }
-        setCurrentItem( origin );
-      }
-      else if ( action == QgsLegendItem::INSERT )
-      {
-        QgsDebugMsg( "mouseMoveEvent::INSERT" );
-
-        setCursor( QCursor( Qt::PointingHandCursor ) );
-        if ( origin->parent() != dest )
-        {
-          insertItem( origin, dest );
           setCurrentItem( origin );
         }
-      }
-      else//no action
-      {
-        QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
-
-        if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
+        else if ( action == QgsLegendItem::INSERT )
         {
-          resetToInitialPosition( mItemBeingMoved );
+          QgsDebugMsg( "mouseMoveEvent::INSERT" );
+
+          setCursor( QCursor( Qt::PointingHandCursor ) );
+          if ( origin->parent() != dest )
+          {
+            insertItem( origin, dest );
+            setCurrentItem( origin );
+          }
         }
-        setCursor( QCursor( Qt::ForbiddenCursor ) );
+        else//no action
+        {
+          QgsDebugMsg( "mouseMoveEvent::NO_ACTION" );
+
+          if ( origin->type() == QgsLegendItem::LEGEND_LAYER_FILE && mItemBeingMovedOrigPos != getItemPos( mItemBeingMoved ) )
+          {
+            resetToInitialPosition( mItemBeingMoved );
+          }
+          setCursor( QCursor( Qt::ForbiddenCursor ) );
+        }
       }
     }
   }

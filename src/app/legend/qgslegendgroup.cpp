@@ -100,7 +100,8 @@ bool QgsLegendGroup::insert( QgsLegendItem* theItem )
 {
   if ( theItem->type() == LEGEND_LAYER )
   {
-    addChild( theItem );
+    // Always insert at top of list
+    insertChild( 0, theItem );
   }
   // XXX - mloskot - I don't know what to return
   // but this function must return a value
