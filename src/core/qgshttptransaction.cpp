@@ -116,19 +116,19 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // 
   // gsherman 2008-10-24 - Not sure if the above still holds true. Commenting
   // out the removal for testing purposes
-  QString pathAndQuery = httpurl;//.remove( 0,
-                                  //       httpurl.indexOf( qurl.path() ) );
+  // QString pathAndQuery = httpurl.remove( 0,
+  //                                       httpurl.indexOf( qurl.path() ) );
 
 
   if ( !postData ) //do request with HTTP GET
   {
-    header.setRequest("GET", pathAndQuery);
+    header.setRequest("GET", httpurl);
     // do GET using header containing user-agent
     httpid = http->request(header); 
   }
   else //do request with HTTP POST
   {
-    header.setRequest("POST", pathAndQuery);
+    header.setRequest("POST", httpurl);
     // do POST using header containing user-agent
     httpid = http->request(header, *postData); 
   }
