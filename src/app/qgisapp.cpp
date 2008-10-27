@@ -1498,6 +1498,8 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( showScale( double ) ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( updateMouseCoordinatePrecision() ) );
   connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool * ) ), this, SLOT( mapToolChanged( QgsMapTool * ) ) );
+  connect( mMapCanvas, SIGNAL( selectionChanged( QgsMapLayer * ) ),
+           this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
 
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ), mMapCanvas, SLOT( setRenderFlag( bool ) ) );
   //
@@ -5029,16 +5031,17 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
   {
+    QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+    const QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    bool layerHasSelection = ( vlayer->selectedFeatureCount() != 0 );
+
     mActionSelect->setEnabled( true );
     mActionIdentify->setEnabled( true );
     mActionZoomActualSize->setEnabled( false );
     mActionOpenTable->setEnabled( true );
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
-    mActionCopyFeatures->setEnabled( true );
-
-    const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( layer );
-    const QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    mActionCopyFeatures->setEnabled( layerHasSelection );
 
     if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {
@@ -5052,7 +5055,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionToggleEditing->setEnabled( true );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionPasteFeatures->setEnabled( vlayer->isEditable() );
+        mActionPasteFeatures->setEnabled( vlayer->isEditable() and not clipboard()->empty());
       }
       else
       {
@@ -5063,8 +5066,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //does provider allow deleting of features?
       if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures )
       {
-        mActionDeleteSelected->setEnabled( true );
-        mActionCutFeatures->setEnabled( true );
+        mActionDeleteSelected->setEnabled( layerHasSelection );
+        mActionCutFeatures->setEnabled( layerHasSelection );
       }
       else
       {

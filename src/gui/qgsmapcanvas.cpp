@@ -259,7 +259,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
       QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
       if ( isVectLyr )
       {
-        disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( refresh() ) );
+        disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
       }
     }
 
@@ -275,7 +275,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
       QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
       if ( isVectLyr )
       {
-        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( refresh() ) );
+        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT(  selectionChangedSlot() ) );
       }
     }
   }
@@ -1278,3 +1278,11 @@ void QgsMapCanvas::zoom( double scaleFactor )
   refresh();
 }
 
+void QgsMapCanvas::selectionChangedSlot()
+{
+  // Find out which layer it was that sent the signal.
+  QgsMapLayer * layer = ( QgsMapLayer * )QObject::sender();
+  
+  emit selectionChanged( layer );
+  refresh();
+}
