@@ -240,6 +240,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**Repaints the canvas map*/
     void refresh();
 
+    //! Receives signal about selection change, and pass it on with layer info
+    void selectionChangedSlot();
+
     //! Save the convtents of the map canvas to disk as an image
     void saveAsImage( QString theFileName, QPixmap * QPixmap = 0, QString = "PNG" );
 
@@ -301,7 +304,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void keyReleased( QKeyEvent * e );
 
     //! Emit map tool changed event
-    void mapToolSet( QgsMapTool *tool );
+    void mapToolSet( QgsMapTool * tool );
+
+    //! Emit map tool changed event
+    void selectionChanged( QgsMapLayer * layer );
 
   protected:
     //! Overridden key press event

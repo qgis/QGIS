@@ -84,6 +84,11 @@ class QgsClipboard
     void insert( QgsFeature& feature );
 
 
+    /*
+     *  Returns true if the internal clipboard is empty, else false.
+     */
+    bool empty();
+
   private:
 
     /** QGIS-internal vector feature clipboard.

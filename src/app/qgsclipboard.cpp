@@ -135,3 +135,7 @@ void QgsClipboard::insert( QgsFeature& feature )
   QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
 }
 
+bool QgsClipboard::empty()
+{
+  return mFeatureClipboard.empty();
+}
