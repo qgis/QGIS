@@ -472,8 +472,13 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT          = doc \
-                 src \
-                 tests
+                 src/core \
+                 src/core/composer \
+                 src/core/raster \
+                 src/core/renderer \
+                 src/core/symbology \
+                 src/gui \
+                 src/plugins
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -484,15 +489,13 @@ INPUT          = doc \
 
 FILE_PATTERNS          = *.h \
                          *.cpp \
-                         src/core/spatialindex/* \
-                         src/core/spatialindex/storagemanager/*.** \
                          *.dox 
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
 # If left blank NO is used.
 
-RECURSIVE              = YES
+RECURSIVE              = NO
 
 # The EXCLUDE tag can be used to specify files and/or directories that should 
 # excluded from the INPUT source files. This way you can easily exclude a 
