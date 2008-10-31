@@ -88,7 +88,7 @@ class CORE_EXPORT QgsLabel
     void renderLabel( QPainter* painter, const QgsRect& viewExtent,
                       const QgsCoordinateTransform* coordinateTransform,
                       const QgsMapToPixel *transform,
-                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1. );
+                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1., double rasterScaleFactor = 1.0);
 
     /** Reads the renderer configuration from an XML file
      @param rnode the Dom node to read
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsLabel
                       int dx, int dy,
                       double xoffset, double yoffset,
                       double ang,
-                      int width, int height, int alignment, double sizeScale = 1.0 );
+                      int width, int height, int alignment, double sizeScale = 1.0, double rasterScaleFactor = 1.0);
 
     /** Get label point for simple feature in map units */
     void labelPoint( std::vector<QgsPoint>&, QgsFeature &feature );

@@ -357,14 +357,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draws the layer labels using coordinate transformation */
     void drawLabels( QgsRenderContext& rendererContext );
 
-    /** \brief Draws the layer labels using coordinate transformation
-     *  \param scale size scale, applied to all values in pixels
-     */
-    void drawLabels( QPainter * p, const QgsRect& viewExtent,
-                     const QgsMapToPixel* cXf,
-                     const QgsCoordinateTransform* ct,
-                     double scale );
-
     /** returns field list in the to-be-committed state */
     const QgsFieldMap &pendingFields();
 

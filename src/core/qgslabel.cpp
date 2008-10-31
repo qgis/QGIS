@@ -86,7 +86,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
                             const QgsCoordinateTransform* coordinateTransform,
                             const QgsMapToPixel *transform,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
-                            double sizeScale )
+                            double sizeScale, double rasterScaleFactor )
 {
 
   QPen pen;
@@ -155,6 +155,11 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     double sizeMM = size * 0.3527;
     size = sizeMM * sizeScale;
   }
+  
+  //Request font larger (multiplied by rasterScaleFactor) as a workaround for the Qt font bug
+  //and scale the painter down by rasterScaleFactor when drawing the label
+  size *= rasterScaleFactor;
+
   if ( size > 0.0 )
   {
     font.setPixelSize( size );
@@ -349,7 +354,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
   {
     renderLabel( painter, overridePoint, coordinateTransform,
                  transform, text, font, pen, dx, dy,
-                 xoffset, yoffset, ang, width, height, alignment, sizeScale );
+                 xoffset, yoffset, ang, width, height, alignment, sizeScale, rasterScaleFactor );
   }
   else
   {
@@ -359,7 +364,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
     {
       renderLabel( painter, points[i], coordinateTransform,
                    transform, text, font, pen, dx, dy,
-                   xoffset, yoffset, ang, width, height, alignment, sizeScale );
+                   xoffset, yoffset, ang, width, height, alignment, sizeScale, rasterScaleFactor );
     }
   }
 }
@@ -371,7 +376,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
                             int dx, int dy,
                             double xoffset, double yoffset,
                             double ang,
-                            int width, int height, int alignment, double sizeScale )
+                            int width, int height, int alignment, double sizeScale, double rasterScaleFactor )
 {
   // Convert point to projected units
   if ( coordinateTransform )
@@ -397,10 +402,13 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
 
   x = x + xoffset * cos( rad ) - yoffset * sin( rad );
   y = y - xoffset * sin( rad ) - yoffset * cos( rad );
+  
 
   painter->save();
   painter->setFont( font );
   painter->translate( x, y );
+  //correct oversampled font size back by scaling painter down
+  painter->scale(1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor);
   painter->rotate( -ang );
 
   //
@@ -408,7 +416,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
   //
   if ( mLabelAttributes->bufferSizeIsSet() && mLabelAttributes->bufferEnabled() )
   {
-    double myBufferSize = mLabelAttributes->bufferSize() * 0.3527 * sizeScale;
+    double myBufferSize = mLabelAttributes->bufferSize() * 0.3527 * sizeScale * rasterScaleFactor;
     QPen bufferPen;
     if ( mLabelAttributes->bufferColorIsSet() )
     {
@@ -427,7 +435,7 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
     }
     else //draw more dense in case of logical devices
     {
-      bufferStepSize = 0.1;
+      bufferStepSize = 1 / rasterScaleFactor;
     }
 
     for ( double i = dx - myBufferSize; i <= dx + myBufferSize; i += bufferStepSize )

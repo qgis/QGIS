@@ -298,11 +298,6 @@ public:
   /** Draws the layer labels using coordinate transformation */
   void drawLabels(QgsRenderContext& rendererContext);
 
-  /** \brief Draws the layer labels using coordinate transformation
-   *  \param scale size scale, applied to all values in pixels
-   */
-  void drawLabels(QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* cXf, const QgsCoordinateTransform* ct, double scale);
-
   /** returns list of attributes */
   QList<int> pendingAllAttributesList();
 
