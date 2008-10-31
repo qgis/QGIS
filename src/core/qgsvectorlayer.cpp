@@ -279,20 +279,10 @@ void QgsVectorLayer::setDisplayField( QString fldName )
   }
 }
 
-void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
-{
-  QPainter* thePainter = rendererContext.painter();
-  if ( !thePainter )
-  {
-    return;
-  }
-  drawLabels( thePainter, rendererContext.extent(), &( rendererContext.mapToPixel() ), rendererContext.coordinateTransform(), rendererContext.scaleFactor() );
-}
-
 // NOTE this is a temporary method added by Tim to prevent label clipping
 // which was occurring when labeller was called in the main draw loop
 // This method will probably be removed again in the near future!
-void QgsVectorLayer::drawLabels( QPainter * p, const QgsRect& viewExtent, const QgsMapToPixel* theMapToPixelTransform, const QgsCoordinateTransform* ct, double scale )
+void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "Starting draw of labels" );
 
@@ -311,7 +301,7 @@ void QgsVectorLayer::drawLabels( QPainter * p, const QgsRect& viewExtent, const 
     {
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
-      select( attributes, viewExtent );
+      select( attributes, rendererContext.extent() );
 
       QgsFeature fet;
       while ( nextFeature( fet ) )
@@ -319,7 +309,7 @@ void QgsVectorLayer::drawLabels( QPainter * p, const QgsRect& viewExtent, const 
         if ( mRenderer->willRenderFeature( &fet ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
-          mLabel->renderLabel( p, viewExtent, ct, theMapToPixelTransform, fet, sel, 0, scale );
+          mLabel->renderLabel( rendererContext.painter(), rendererContext.extent(), rendererContext.coordinateTransform(), &(rendererContext.mapToPixel()), fet, sel, 0, rendererContext.scaleFactor(), rendererContext.rasterScaleFactor());
         }
         featureCount++;
       }
