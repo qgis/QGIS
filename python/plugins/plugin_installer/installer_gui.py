@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Copyright (C) 2008 Matthew Perry
+""" "
+Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
 
 /***************************************************************************
@@ -11,7 +11,15 @@ Copyright (C) 2008 Borys Jurgiel
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-"""
+
+ This file contains some additional quote marks (for example in the lines 2 and 20), they are
+ for compatibility with lupdate, which doesn't properly recognize the comments in Python.
+ The use of lupdate instead of pylupdate is forced by integration with rest of QGIS files,
+ which are written mainly in C++. After editing this file make sure that lupdate and pylupdate
+ find the same number of strings and balance the quotemarks if doesn't.
+" """
+
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsApplication, QgsContextHelp
@@ -30,7 +38,7 @@ def removeDir(path):
     result = QString()
     if not QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Plugin directory doesn't exist: ") + path
-    elif QFile(path).remove(): # if it's only link, just remove it without resolving.
+    elif QFile(path).remove(): # if it is only link, just remove it without resolving.
       #print " Link removing successfull: %s" % path
       pass
     else:
@@ -62,6 +70,9 @@ def removeDir(path):
 
 
 # --- class QgsPluginInstallerFetchingDialog --------------------------------------------------------------- #
+""" " C++ style header for compability with lupdate
+QgsPluginInstallerFetchingDialog::foo(){
+" """
 class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialog):
   # ----------------------------------------- #
   def __init__(self, parent):
@@ -86,7 +97,7 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
 
   # ----------------------------------------- #
   def displayState(self,key,state,state2=None):
-    messages=[self.tr("Done"),self.tr("Resolving host name..."),self.tr("Connecting..."),self.tr("Host connected. Sending request..."),self.tr("Downloading data..."),self.tr("Idle"),self.tr("Closing connection..."),self.tr("Error")]
+    messages=[self.tr("Success"),self.tr("Resolving host name..."),self.tr("Connecting..."),self.tr("Host connected. Sending request..."),self.tr("Downloading data..."),self.tr("Idle"),self.tr("Closing connection..."),self.tr("Error")]
     message = messages[state]
     if state2:
       message += " (%s%%)" % state2
@@ -107,6 +118,7 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
       self.displayState(repoName,7)
     if not repositories.fetchingInProgress():
       self.close()
+# } - C++ style footer for compability with lupdate
 # --- /class QgsPluginInstallerFetchingDialog -------------------------------------------------------------- #
 
 
@@ -114,6 +126,9 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
 
 
 # --- class QgsPluginInstallerRepositoryDialog ------------------------------------------------------------- #
+""" " C++ style header for compability with lupdate
+QgsPluginInstallerRepositoryDialog::foo(){
+" """
 class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialog):
   # ----------------------------------------- #
   def __init__(self, parent=None):
@@ -128,6 +143,7 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
   def textChanged(self, string):
     enable = (self.editName.text().count() > 0 and self.editURL.text().count() > 0)
     self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
+# } - C++ style footer for compability with lupdate
 # --- /class QgsPluginInstallerRepositoryDialog ------------------------------------------------------------ #
 
 
@@ -135,6 +151,9 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
 
 
 # --- class QgsPluginInstallerInstallingDialog --------------------------------------------------------------- #
+""" " C++ style header for compability with lupdate
+QgsPluginInstallerInstallingDialog::foo(){
+" """
 class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialog):
   # ----------------------------------------- #
   def __init__(self, parent, plugin):
@@ -148,13 +167,13 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.connect(self.buttonBox, SIGNAL("clicked(QAbstractButton*)"), self.abort)
 
     url = QUrl(plugin["url"])
-    path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
+    path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
     fileName = plugin["filename"]
     #print "Retrieving from %s" % path
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
-    self.http = QHttp(url.host())
+    self.http = QPHttp(url.host())
     self.connect(self.http, SIGNAL("stateChanged ( int )"), self.stateChanged) 
     self.connect(self.http, SIGNAL("dataReadProgress ( int , int )"), self.readProgress)
     self.connect(self.http, SIGNAL("requestFinished (int, bool)"), self.requestFinished)
@@ -195,6 +214,10 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     # make sure that the parent directory exists
     if not QDir(pluginDir).exists():
       QDir().mkpath(pluginDir)
+
+    # if the target directory already exists as a link, remove the link without resolving:
+    QFile(pluginDir+QString(QDir.separator())+self.plugin["localdir"]).remove()
+
     #print "Extracting to plugin directory (%s)" % pluginDir
     try:
       un = unzip()
@@ -221,6 +244,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.http.abort()
     self.mResult = self.tr("Aborted by user")
     self.reject()
+# } - C++ style footer for compability with lupdate
 # --- /class QgsPluginInstallerPluginErrorDialog ------------------------------------------------------------- #
 
 
@@ -228,21 +252,29 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
 
 # --- class QgsPluginInstallerPluginErrorDialog -------------------------------------------------------------- #
+""" " C++ style header for compability with lupdate
+QgsPluginInstallerPluginErrorDialog::foo(){
+" """
 class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginErrorDialog):
   # ----------------------------------------- #
   def __init__(self, parent, errorMessage):
     QDialog.__init__(self, parent)
     self.setupUi(self)
     if not errorMessage:
-      errorMessage = self.tr("No error message received. Try to restart QGIS and ensure the plugin isn't installed under different name. If it is, contact the plugin author and submit this issue, please.")
+      errorMessage = self.tr("No error message received. Try to restart QGIS and ensure the plugin isn't installed under a different name. If it is, contact the plugin author and submit this issue, please.")
     self.textBrowser.setText(errorMessage)
+# } - C++ style footer for compability with lupdate
 # --- /class QgsPluginInstallerPluginErrorDialog ------------------------------------------------------------- #
 
 
 
 
 
+ 
 # --- class QgsPluginInstallerDialog ------------------------------------------------------------------------- #
+""" " C++ style header for compability with lupdate
+QgsPluginInstallerDialog::foo(){
+" """
 class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
   # ----------------------------------------- #
   def __init__(self, parent, fl):
@@ -296,6 +328,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
       for key in repositories.allUnavailable():
         QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository: ") + key + "\n" + repositories.all()[key]["error"])
 
+    plugins.getAllInstalled()
+
 
   # ----------------------------------------- #
   def populateMostWidgets(self):
@@ -331,8 +365,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     # filling the status filter comboBox
     self.comboFilter2.clear()
     self.comboFilter2.addItem(self.tr("any status"))
-    self.comboFilter2.addItem(self.tr("not installed"))
-    self.comboFilter2.addItem(self.tr("installed"))
+    self.comboFilter2.addItem(self.tr("not installed", "plural"))
+    self.comboFilter2.addItem(self.tr("installed", "plural"))
     if plugins.isThereAnythingNew():
       self.comboFilter2.addItem(self.tr("upgradeable and news"))
 
@@ -376,22 +410,22 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
             "installed" : self.tr("This plugin is installed"),
             "upgradeable" : self.tr("This plugin is installed, but there is an updated version available"),
             "orphan" : self.tr("This plugin is installed, but I can't find it in any enabled repository"),
-            "new" : self.tr("This plugin is not installed and is seen first time"),
+            "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
             "invalid" : self.tr("This plugin seems to be invalid or have unfulfilled dependencies\nIt has been installed, but can't be loaded")}
-    status ={"not installed" : self.tr("not installed"),
-            "installed" : self.tr("installed"),
-            "upgradeable" : self.tr("upgradeable"),
-            "orphan" : self.tr("installed"),
-            "new" : self.tr("new!"),
-            "newer" : self.tr("installed"),
-            "invalid" : self.tr("invalid")}
+    status ={"not installed" : self.tr("not installed", "singular"),
+            "installed" : self.tr("installed", "singular"),
+            "upgradeable" : self.tr("upgradeable", "singular"),
+            "orphan" : self.tr("installed", "singular"),
+            "new" : self.tr("new!", "singular"),
+            "newer" : self.tr("installed", "singular"),
+            "invalid" : self.tr("invalid", "singular")}
     order = ["invalid","upgradeable","new","not installed","installed","orphan","newer"]
     def addItem(p):
       if self.filterCheck(p):
         statusTip = descrip[p["status"]]
         if p["read-only"]:
-          statusTip += "\n" + self.tr("Note that it's installed in the read-only location and you can't uninstall it")
+          statusTip += "\n" + self.tr("Note that it's a core plugin and I can't uninstall it")
         if p["status"] == "upgradeable":
           ver = p["version_inst"] + " -> " + p["version_avail"]
         elif p["status"] ==  "newer":
@@ -405,15 +439,15 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         elif p["status"] in ["not installed", "new"]:
           vd = self.tr("available version") + ": " + p["version_avail"]
         elif p["status"] == "installed":
-          vd = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("That's the newest available version.")
+          vd = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("That's the newest available version")
         elif p["status"] == "orphan":
-          vd = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("There is no version available for download.")
+          vd = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("There is no version available for download")
         else:
           vd = ""
         if p["status"] == "invalid":
           p["desc_local"] = self.tr("This plugin seems to be invalid or have unfulfilled dependencies")
           p["desc_repo"] = self.tr("This plugin seems to be invalid or have unfulfilled dependencies\nIt has been installed, but can't be loaded")
-        if p["status"] == "orphan":
+        if not p["repository"]:
           repository = self.tr("only locally available")
         else:
           repository = p["repository"]
@@ -467,7 +501,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     """ the pluginsTree has been clicked """
     buttons={"not installed":(True,False,self.tr("Install plugin")),
             "installed":(True,True,self.tr("Reinstall plugin")),
-            "upgradeable":(True,True,self.tr("Upgrade plugin",)),
+            "upgradeable":(True,True,self.tr("Upgrade plugin")),
             "orphan":(False,True,self.tr("Install/upgrade plugin")),
             "new":(True, False,self.tr("Install plugin")),
             "newer":(True,True,self.tr("Downgrade plugin")),
@@ -528,11 +562,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
           if result:
             QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
         plugins.updatePlugin(key, False)
-        self.populateMostWidgets()
         self.populatePluginTree()
         return
       plugins.updatePlugin(key, False)
-    self.populateMostWidgets()
     self.populatePluginTree()
     QMessageBox.information(self, infoString[0], infoString[1])
 
@@ -546,7 +578,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     plugin = plugins.all()[key]
     if not plugin:
       return
-
     warning = self.tr("Are you sure you want to uninstall the plugin ") + plugin["name"] + "?"
     if plugin["status"] == "orphan":
       warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
@@ -563,7 +594,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         exec ("del sys.modules[%s]" % plugin["localdir"])
       except:
         pass
-      if plugin["status"] == "orphan":
+      if not plugin["repository"]:
         plugins.remove(key)
       else:
         plugins.setPluginData(key, "status", "not installed")
@@ -586,9 +617,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
   def addKnownRepositories(self):
     """ update list of known repositories - in the future it will be replaced with an online fetching """
     #print "add known repositories"
-    message = "You are going to add some plugin repositories neither authorized nor supported by the QGIS team, however provided by folks associated with us.\n"
-    message += "Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!"
-    if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), self.tr(message), QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
+    message = self.tr("You are going to add some plugin repositories neither authorized nor supported by the QGIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!")
+    if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
       repositories.addKnownRepos()
       # refresh lists and populate widgets
       QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -704,4 +734,5 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     """ update the list of seen plugins before exit (both 'done' and 'x' buttons emit 'reject' signal) """
     plugins.updateSeenPluginsList()
     QDialog.reject(self)
+# } - C++ style footer for compability with lupdate
 # --- /class QgsPluginInstallerDialog ------------------------------------------------------------------------ #

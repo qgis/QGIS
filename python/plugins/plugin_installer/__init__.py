@@ -1,5 +1,5 @@
 """
-Copyright (C) 2008 Matthew Perry
+Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
 /***************************************************************************
  *                                                                         *
@@ -20,7 +20,7 @@ def author_name():
   return "perrygeo, borysiasty"
 
 def version():
-  return "Version 0.06.2"
+  return "Version 0.07.2"
 
 def classFactory(iface):
   from installer_plugin import InstallerPlugin

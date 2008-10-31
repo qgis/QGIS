@@ -175,7 +175,7 @@ class Ui_QgsPluginInstallerDialog(object):
 
     def retranslateUi(self, QgsPluginInstallerDialog):
         QgsPluginInstallerDialog.setWindowTitle(QtGui.QApplication.translate("QgsPluginInstallerDialog", "QGIS Python Plugin Installer", None, QtGui.QApplication.UnicodeUTF8))
-        QgsPluginInstallerDialog.setWhatsThis(QtGui.QApplication.translate("QgsPluginInstallerDialog", "QGIS Plugin Installer", None, QtGui.QApplication.UnicodeUTF8))
+        QgsPluginInstallerDialog.setWhatsThis(QtGui.QApplication.translate("QgsPluginInstallerDialog", "QGIS Python Plugin Installer", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("QgsPluginInstallerDialog", "Filter:", None, QtGui.QApplication.UnicodeUTF8))
         self.lineFilter.setToolTip(QtGui.QApplication.translate("QgsPluginInstallerDialog", "Display only plugins containing this word in their metadata", None, QtGui.QApplication.UnicodeUTF8))
         self.lineFilter.setWhatsThis(QtGui.QApplication.translate("QgsPluginInstallerDialog", "Display only plugins containing this word in their metadata", None, QtGui.QApplication.UnicodeUTF8))

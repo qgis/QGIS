@@ -17,7 +17,7 @@
    <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
   </property>
   <property name="whatsThis" >
-   <string>QGIS Plugin Installer</string>
+   <string>QGIS Python Plugin Installer</string>
   </property>
   <layout class="QGridLayout" >
    <item row="0" column="0" >

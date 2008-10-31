@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'repositorybase.ui'
 #
-# Created: Fri Sep 12 19:21:37 2008
+# Created: Wed Sep 17 14:22:09 2008
 #      by: PyQt4 UI code generator 4.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -118,6 +118,5 @@ class Ui_QgsPluginInstallerRepositoryDetailsDialog(object):
         self.checkBoxEnabled.setToolTip(QtGui.QApplication.translate("QgsPluginInstallerRepositoryDetailsDialog", "Enable or disable the repository (disabled repositories will be omitted)", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBoxEnabled.setWhatsThis(QtGui.QApplication.translate("QgsPluginInstallerRepositoryDetailsDialog", "Enable or disable the repository (disabled repositories will be omitted)", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBoxEnabled.setText(QtGui.QApplication.translate("QgsPluginInstallerRepositoryDetailsDialog", "Enabled", None, QtGui.QApplication.UnicodeUTF8))
-        self.labelInfo.setText(QtGui.QApplication.translate("QgsPluginInstallerRepositoryDetailsDialog", "[place for a warning message]", None, QtGui.QApplication.UnicodeUTF8))
 
 import resources_rc
