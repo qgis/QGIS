@@ -187,7 +187,7 @@
       <enum>QFrame::NoFrame</enum>
      </property>
      <property name="text" >
-      <string>[place for a warning message]</string>
+      <string/>
      </property>
     </widget>
    </item>

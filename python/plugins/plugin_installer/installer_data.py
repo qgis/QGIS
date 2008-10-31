@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-qgis_plugins.py
+""" "
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
 
@@ -12,23 +11,29 @@ Copyright (C) 2008 Borys Jurgiel
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-"""
+
+ This file contains some additional quote marks (for example in the lines 2 and 20), they are
+ for compatibility with lupdate, which doesn't properly recognize the comments in Python.
+ The use of lupdate instead of pylupdate is forced by integration with rest of QGIS files,
+ which are written mainly in C++. After editing this file make sure that lupdate and pylupdate
+ find the same number of strings and balance the quotemarks if doesn't.
+" """
+
 
 from PyQt4.QtCore import *
 from PyQt4.QtXml import QDomDocument
-from PyQt4.QtNetwork import QHttp, QNetworkProxy
+from PyQt4.QtNetwork import *
 from qgis.core import *
 from unzip import unzip
 
 
-
-"""
+""" "
 Data structure:
 mRepositories = dict of dicts: {repoName : {"url" string,
                                             "enabled" bool,
                                             "valid" bool,
-                                            "QHttp" QHttp,
-                                            "Relay" Relay, # Relay object for transmitting signals from QHttp with adding the repoName information
+                                            "QPHttp" QPHttp,
+                                            "Relay" Relay, # Relay object for transmitting signals from QPHttp with adding the repoName information
                                             "xmlData" QDomDocument,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
                                             "error" QString}}
@@ -45,25 +50,57 @@ mPlugins = dict of dicts {id : {"name" string,
                                 "repository" string,
                                 "localdir" string,
                                 "read-only" boolean}}
-"""
+" """
+
+
+QGIS_VER = 1
+try:
+  if str(QGis.qgisVersion)[0] == "0": 
+    QGIS_VER = 0
+except:
+  pass
 
 
 reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
 seenPluginGroup = "/Qgis/plugin-seen"
 
+
 # knownRepos: (name, url for QGIS 0.x, url for QGIS 1.x, possible depreciated url, another possible depreciated url)
 knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","",""),
-              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml","","http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml",""),
-              ("Barry Rowlingson's Repository","http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml","","",""),
+              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml","http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml",""),
               ("Borys Jurgiel's Repository","http://bwj.aster.net.pl/qgis-oldapi/plugins.xml","http://bwj.aster.net.pl/qgis/plugins.xml","",""),
               ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","","")]
 
 
 
+
+# --- class QPHttp  ----------------------------------------------------------------------- #
+# --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
+class QPHttp(QHttp):
+  def __init__(self,*args):
+    QHttp.__init__(self,*args)
+    settings = QSettings()
+    settings.beginGroup("proxy")
+    if settings.value("/proxyEnabled").toBool():
+      self.proxy=QNetworkProxy()
+      self.proxy.setType(QNetworkProxy.HttpProxy)
+      self.proxy.setHostName(settings.value("/proxyHost").toString())
+      self.proxy.setPort(settings.value("/proxyPort").toUInt()[0])
+      self.proxy.setUser(settings.value("/proxyUser").toString())
+      self.proxy.setPassword(settings.value("/proxyPassword").toString())
+      self.setProxy(self.proxy)
+    settings.endGroup()
+    return None
+# --- /class QPHttp  ---------------------------------------------------------------------- #
+
+
+
+
+
 # --- class Relay  ----------------------------------------------------------------------- #
 class Relay(QObject):
-  """ Relay object for transmitting signals from QHttp with adding the repoName information """
+  """ Relay object for transmitting signals from QPHttp with adding the repoName information """
   # ----------------------------------------- #
   def __init__(self, key):
     QObject.__init__(self)
@@ -88,38 +125,41 @@ class Relay(QObject):
 
 # --- class Repositories ----------------------------------------------------------------- #
 class Repositories(QObject):
+  """ A dict-like class for handling repositories data """
   # ----------------------------------------- #
   def __init__(self):
     QObject.__init__(self)
     self.mRepositories = {}
     self.httpId = {}   # {httpId : repoName}
-    self.QGISver = int(str(QGis.QGIS_VERSION)[0])
 
 
   # ----------------------------------------- #
   def addKnownRepos(self):
+    """ add known 3rd party repositories to QSettings """
     presentURLs = []
     for i in self.all().values():
       presentURLs += [str(i["url"])]
     for i in knownRepos:
-      if i[self.QGISver+1] and presentURLs.count(i[self.QGISver+1]) == 0:
+      if i[QGIS_VER+1] and presentURLs.count(i[QGIS_VER+1]) == 0:
         settings = QSettings()
         settings.beginGroup(reposGroup)
         repoName = QString(i[0])
         if self.all().has_key(repoName):
           repoName = repoName + "(2)"
         # add to settings
-        settings.setValue(repoName+"/url", QVariant(i[self.QGISver+1]))
+        settings.setValue(repoName+"/url", QVariant(i[QGIS_VER+1]))
         settings.setValue(repoName+"/enabled", QVariant(True))
 
 
   # ----------------------------------------- #
   def all(self):
+    """ return dict of all repositories """
     return self.mRepositories
 
 
   # ----------------------------------------- #
   def allEnabled(self):
+    """ return dict of all enabled and valid repositories """
     repos = {}
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"]:
@@ -129,6 +169,7 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def allUnavailable(self):
+    """ return dict of all unavailable repositories """
     repos = {}
     for i in self.mRepositories:
       if self.mRepositories[i]["enabled"] and self.mRepositories[i]["valid"] and self.mRepositories[i]["state"] == 3:
@@ -138,11 +179,13 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def setRepositoryData(self,reposName, key, value):
+    """ write data to the mRepositories dict """
     self.mRepositories[reposName][key] = value
 
 
   # ----------------------------------------- #
-  def rename(self,oldName, newName):
+  def rename(self, oldName, newName):
+    """ rename repository key """
     if oldName == newName:
       return
     self.mRepositories[newName] = self.mRepositories[oldName]
@@ -151,12 +194,14 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def checkingOnStart(self):
+    """ return true if checking for news and updates is enabled """
     settings = QSettings()
-    return settings.value(settingsGroup+"/checkOnStart", QVariant(True)).toBool()
+    return settings.value(settingsGroup+"/checkOnStart", QVariant(False)).toBool()
 
 
   # ----------------------------------------- #
   def setCheckingOnStart(self, state):
+    """ set state of checking for news and updates """
     settings = QSettings()
     settings.setValue(settingsGroup+"/checkOnStart", QVariant(state))
 
@@ -169,15 +214,15 @@ class Repositories(QObject):
     settings.beginGroup(reposGroup)
     # first, update the QSettings repositories if needed
     if len(settings.childGroups()) == 0: # add the default repository when there isn't any
-      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][self.QGISver+1]))
+      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][QGIS_VER+1]))
     else: # else update invalid urls
       for key in settings.childGroups():
         url = settings.value(key+"/url", QVariant()).toString()
         allOk = True
         for repo in knownRepos:
-          if repo[3] == url or repo[4] == url or (repo[self.QGISver+1] != url and repo[int(not self.QGISver)+1] == url):
-            if repo[self.QGISver+1]: #update the URL
-              settings.setValue(key+"/url", QVariant(repo[self.QGISver+1]))
+          if repo[3] == url or repo[4] == url or (repo[QGIS_VER+1] != url and repo[int(not QGIS_VER)+1] == url):
+            if repo[QGIS_VER+1]: #update the URL
+              settings.setValue(key+"/url", QVariant(repo[QGIS_VER+1]))
               settings.setValue(key+"/valid", QVariant(True))
               allOk = False
             else: # mark as invalid
@@ -191,7 +236,7 @@ class Repositories(QObject):
       self.mRepositories[key]["url"] = settings.value(key+"/url", QVariant()).toString()
       self.mRepositories[key]["enabled"] = settings.value(key+"/enabled", QVariant(True)).toBool()
       self.mRepositories[key]["valid"] = settings.value(key+"/valid", QVariant(True)).toBool()
-      self.mRepositories[key]["QHttp"] = QHttp()
+      self.mRepositories[key]["QPHttp"] = QPHttp()
       self.mRepositories[key]["Relay"] = Relay(key)
       self.mRepositories[key]["xmlData"] = QBuffer()
       self.mRepositories[key]["state"] = 0
@@ -201,20 +246,22 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def requestFetching(self,key):
+    """ start fetching the repository given by key """
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
-    self.mRepositories[key]["QHttp"] = QHttp(url.host())
-    self.connect(self.mRepositories[key]["QHttp"], SIGNAL("requestFinished (int, bool)"), self.xmlDownloaded)
-    self.connect(self.mRepositories[key]["QHttp"], SIGNAL("stateChanged ( int )"), self.mRepositories[key]["Relay"].stateChanged)
-    self.connect(self.mRepositories[key]["QHttp"], SIGNAL("dataReadProgress ( int , int )"), self.mRepositories[key]["Relay"].dataReadProgress)
+    self.mRepositories[key]["QPHttp"] = QPHttp(url.host())
+    self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("requestFinished (int, bool)"), self.xmlDownloaded)
+    self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("stateChanged ( int )"), self.mRepositories[key]["Relay"].stateChanged)
+    self.connect(self.mRepositories[key]["QPHttp"], SIGNAL("dataReadProgress ( int , int )"), self.mRepositories[key]["Relay"].dataReadProgress)
     self.connect(self.mRepositories[key]["Relay"], SIGNAL("anythingChanged(QString, int, int)"), self, SIGNAL("anythingChanged (QString, int, int)"))
-    i = self.mRepositories[key]["QHttp"].get(path, self.mRepositories[key]["xmlData"])
+    i = self.mRepositories[key]["QPHttp"].get(path, self.mRepositories[key]["xmlData"])
     self.httpId[i] = key
 
 
   # ----------------------------------------- #
   def fetchingInProgress(self):
+    """ return true if fetching repositories is still in progress """
     for key in self.mRepositories:
       if self.mRepositories[key]["state"] == 1:
         return True
@@ -223,18 +270,20 @@ class Repositories(QObject):
 
   # ----------------------------------------- #
   def killConnection(self, key):
-    if self.mRepositories[key]["QHttp"].state():
-      self.mRepositories[key]["QHttp"].abort()
+    """ kill the fetching on demand """
+    if self.mRepositories[key]["QPHttp"].state():
+      self.mRepositories[key]["QPHttp"].abort()
 
 
   # ----------------------------------------- #
   def xmlDownloaded(self,nr,state):
+    """ populate the plugins object with the fetched data """
     if not self.httpId.has_key(nr):
       return
     reposName = self.httpId[nr]
     if state:                             # fetching failed
       self.mRepositories[reposName]["state"] =  3
-      self.mRepositories[reposName]["error"] = self.mRepositories[reposName]["QHttp"].errorString()
+      self.mRepositories[reposName]["error"] = self.mRepositories[reposName]["QPHttp"].errorString()
       #print "Repository fetching failed! " , reposName , str(self.mRepositories[reposName]["error"])
     else:
       repoData = self.mRepositories[reposName]["xmlData"]
@@ -283,6 +332,7 @@ class Repositories(QObject):
 
 # --- class Plugins ---------------------------------------------------------------------- #
 class Plugins(QObject):
+  """ A dict-like class for handling plugins data """
   # ----------------------------------------- #
   def __init__(self):
     QObject.__init__(self)
@@ -291,11 +341,13 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def all(self):
+    """ return all plugins """
     return self.mPlugins
 
 
   # ----------------------------------------- #
   def keyByUrl(self, name):
+    """ return plugin key by given url """
     plugins = [i for i in self.mPlugins if self.mPlugins[i]["url"] == name]
     if plugins:
       return plugins[0]
@@ -304,6 +356,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def setPluginData(self, pluginName, key, value):
+    """ write data to the mPlugins dict """
     self.mPlugins[pluginName][key] = value
 
 
@@ -315,6 +368,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def normalizeVersion(self,ver):
+    """ remove the prefix from given version string """
     if not ver:
       return QString()
     if ver.toUpper().left(7) == "VERSION":
@@ -328,6 +382,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def compareVersions(self,a,b):
+    """ compare two plugin versions """
     # -------- #
     def classify(s):
       if s in [".","-","_"," "]:
@@ -353,20 +408,23 @@ class Plugins(QObject):
       # check if the matter is easy solvable:
       if s1 == s2:
         return 0
-      # try to compare as numeric values:
-      try:
-        if s1[0] == '0' or s2[0] == '0':
-          s1 = '0.' + s1
-          s2 = '0.' + s2
-        if float(s1) == float(s2):
-          return 0
-        elif float(s1) > float(s2):
-          return 1
-        else:
-          return 2
-      except:
-        pass
-      # set ALPHA < BETA < RC < FINAL < ANYTHING_ELSE
+      if not s1:
+        return 2
+      if not s2:
+        return 1
+      # try to compare as numeric values (but only if the first character is not 0):
+      if s1[0] != '0' and s2[0] != '0':
+        try:
+          if float(s1) == float(s2):
+            return 0
+          elif float(s1) > float(s2):
+            return 1
+          else:
+            return 2
+        except:
+          pass
+      # if the strings aren't numeric or start from 0, compare them as a strings:
+      # but first, set ALPHA < BETA < RC < FINAL < ANYTHING_ELSE
       if s1 == 'FINAL':
         s1 = 'Z' + s1
       elif not s1 in ['ALPHA','BETA','RC']:
@@ -411,6 +469,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def addPlugin(self, plugins):
+    """ add a plugin (first from given) to the mPlugins dict """
     key = plugins.keys()[0]
     plugin = plugins[key]
     plugin["version_avail"] = self.normalizeVersion(QString(plugin["version_avail"]))
@@ -421,11 +480,13 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def remove(self, key):
+    """ remove given plugin from the mPlugins dict """
     del self.mPlugins[key]
 
 
   # ----------------------------------------- #
   def updatePlugin(self, key, readOnly):
+    """ The mPlugins should contain available plugins first. Now, add installed one (add when not present, update if present) """
     try:
       exec("import "+ key)
       try:
@@ -460,7 +521,7 @@ class Plugins(QObject):
       path = QgsApplication.pkgDataPath()
     else:
       path = QgsApplication.qgisSettingsDirPath()
-    path = QDir.cleanPath(unicode(path,"utf-8") + "python/plugins/" + key)
+    path = QDir.cleanPath(unicode(path) + "python/plugins/" + key)
     normVer = self.normalizeVersion(QString(ver))
     plugin = {
         "name"          : nam,
@@ -514,9 +575,10 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def getAllInstalled(self):
     """ update the mPlugins dict with alredy installed plugins """
+    # ' PLEASE DO NOT REMOVE THIS QUOTE MARK - it is a balance for compatibility with lupdate
     # first, try to add the read-only plugins...
     try:
-      pluginDir = QDir.cleanPath(unicode(QgsApplication.pkgDataPath(),'utf-8') + "/python/plugins")
+      pluginDir = QDir.cleanPath(unicode(QgsApplication.pkgDataPath()) + "/python/plugins")
       pluginDir = QDir(pluginDir)
       pluginDir.setFilter(QDir.AllDirs)
     except:
@@ -527,7 +589,7 @@ class Plugins(QObject):
         self.updatePlugin(key, True)
     # ...then try to add locally installed ones
     try:
-      pluginDir = QDir.cleanPath(unicode(QgsApplication.qgisSettingsDirPath(),'utf-8') + "/python/plugins")
+      pluginDir = QDir.cleanPath(unicode(QgsApplication.qgisSettingsDirPath()) + "/python/plugins")
       pluginDir = QDir(pluginDir)
       pluginDir.setFilter(QDir.AllDirs)
     except:
@@ -562,6 +624,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def isThereAnythingNew(self):
+    """ return true if an upgradeable or new plugin detected """
     for i in self.mPlugins.values():
       if i["status"] in ["upgradeable","new"]:
         return True
@@ -570,6 +633,7 @@ class Plugins(QObject):
 
   # ----------------------------------------- #
   def workarounds(self):
+    """ workarounds for particular plugins with wrong metadata """
     if self.mPlugins.has_key("postgps") and self.mPlugins["postgps"]["version_avail"] == "0.2":
       self.mPlugins["postgps"]["version_avail"] = "0.01"
     if self.mPlugins.has_key("select") and self.mPlugins["select"]["version_avail"] == "0.1":
