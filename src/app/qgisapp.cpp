@@ -5055,7 +5055,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionToggleEditing->setEnabled( true );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionPasteFeatures->setEnabled( vlayer->isEditable() and not clipboard()->empty());
+        mActionPasteFeatures->setEnabled( vlayer->isEditable() && !clipboard()->empty() );
       }
       else
       {
