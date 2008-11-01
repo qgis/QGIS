@@ -315,7 +315,7 @@ QgsRasterLayer::QgsRasterLayer(
     mDataProvider( 0 )
 {
 
-  mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass stretch
+  mUserDefinedRGBMinMaxFlag = false; //defaults needed to bypass enhanceContrast
   mUserDefinedGrayMinMaxFlag = false;
   mRGBActualMinimumMaximum = false;
   mGrayActualMinimumMaximum = false;
@@ -512,8 +512,8 @@ bool QgsRasterLayer::readFile( QString const & fileName )
     QgsRasterBandStats myRasterBandStats;
     //myRasterBandStats.bandName = myColorQString ;
     myRasterBandStats.bandName = "Band " + QString::number( i );
-    myRasterBandStats.bandNo = i;
-    myRasterBandStats.statsGatheredFlag = false;
+    myRasterBandStats.bandNumber = i;
+    myRasterBandStats.statsGathered = false;
     myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
     //Store the default color table
     readColorTable( i, &myRasterBandStats.colorTable );
@@ -559,7 +559,7 @@ bool QgsRasterLayer::readFile( QString const & fileName )
 
     //Set up a new color ramp shader
     setColorShadingAlgorithm( COLOR_RAMP );
-    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
+    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
     myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
     myColorRampShader->setColorRampItemList( *getColorTable( 1 ) );
   }
@@ -888,7 +888,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap( int theBandNumber )
   {
     QgsDebugMsg( "....found paletted image" );
     QgsColorRampShader myShader;
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = myShader.getColorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = myShader.colorRampItemList();
 
     if ( readColorTable( 1, &myColorRampItemList ) )
     {
@@ -913,7 +913,7 @@ QPixmap QgsRasterLayer::getPaletteAsPixmap( int theBandNumber )
 
           myValue = myStep * ( double )( myCol + myRow * mySize );
           int c1, c2, c3;
-          myShader.generateShadedValue( myValue, &c1, &c2, &c3 );
+          myShader.shade( myValue, &c1, &c2, &c3 );
           myQImage.setPixel( myCol, myRow, qRgb( c1, c2, c3 ) );
         }
       }
@@ -1392,14 +1392,14 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myGrayValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myGrayValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
 
-      myGrayVal = myContrastEnhancement->stretch( myGrayValue );
+      myGrayVal = myContrastEnhancement->enhanceContrast( myGrayValue );
 
       if ( mInvertPixelsFlag )
       {
@@ -1463,8 +1463,8 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   }
   else
   {
-    myMinimumValue = myRasterBandStats.minVal;
-    myMaximumValue = myRasterBandStats.maxVal;
+    myMinimumValue = myRasterBandStats.minimumValue;
+    myMaximumValue = myRasterBandStats.maximumValue;
   }
 
   mRasterShader->setMinimumValue( myMinimumValue );
@@ -1490,13 +1490,13 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myPixelValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
-      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }
@@ -1578,13 +1578,13 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myPixelValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
-      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }
@@ -1667,13 +1667,13 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myPixelValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
-      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }
@@ -1748,8 +1748,8 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   }
   else
   {
-    myMinimumValue = myRasterBandStats.minVal;
-    myMaximumValue = myRasterBandStats.maxVal;
+    myMinimumValue = myRasterBandStats.minimumValue;
+    myMaximumValue = myRasterBandStats.maximumValue;
   }
 
   mRasterShader->setMinimumValue( myMinimumValue );
@@ -1777,13 +1777,13 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myPixelValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
-      if ( !mRasterShader->generateShadedValue( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
+      if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
         continue;
       }
@@ -1962,15 +1962,15 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         continue;
       }
 
-      myAlphaValue = mRasterTransparency.getAlphaValue( myRedValue, myGreenValue, myBlueValue, mTransparencyLevel );
+      myAlphaValue = mRasterTransparency.alphaValue( myRedValue, myGreenValue, myBlueValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
         continue;
       }
 
-      myStretchedRedValue = myRedContrastEnhancement->stretch( myRedValue );
-      myStretchedGreenValue = myGreenContrastEnhancement->stretch( myGreenValue );
-      myStretchedBlueValue = myBlueContrastEnhancement->stretch( myBlueValue );
+      myStretchedRedValue = myRedContrastEnhancement->enhanceContrast( myRedValue );
+      myStretchedGreenValue = myGreenContrastEnhancement->enhanceContrast( myGreenValue );
+      myStretchedBlueValue = myBlueContrastEnhancement->enhanceContrast( myBlueValue );
 
       if ( mInvertPixelsFlag )
       {
@@ -2052,10 +2052,10 @@ int QgsRasterLayer::getRasterBandNumber( QString const & theBandName )
 
     if ( myRasterBandStats.bandName == theBandName )
     {
-      QgsDebugMsg( "********** band " + QString::number( myRasterBandStats.bandNo ) +
+      QgsDebugMsg( "********** band " + QString::number( myRasterBandStats.bandNumber ) +
                    " was found in getRasterBandNumber " + theBandName );
 
-      return myRasterBandStats.bandNo;
+      return myRasterBandStats.bandNumber;
     }
   }
   QgsDebugMsg( "********** no band was found in getRasterBandNumber " + theBandName );
@@ -2088,7 +2088,7 @@ bool QgsRasterLayer::hasStats( int theBandNo )
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
     //vector starts at base 0, band counts at base1 !
-    return mRasterStatsList[theBandNo - 1].statsGatheredFlag;
+    return mRasterStatsList[theBandNo - 1].statsGathered;
   }
   else
   {
@@ -2103,12 +2103,12 @@ Calculates:
 
 <ul>
 <li>myRasterBandStats.elementCount
-<li>myRasterBandStats.minVal
-<li>myRasterBandStats.maxVal
+<li>myRasterBandStats.minimumValue
+<li>myRasterBandStats.maximumValue
 <li>myRasterBandStats.sum
 <li>myRasterBandStats.range
 <li>myRasterBandStats.mean
-<li>myRasterBandStats.sumSqrDev
+<li>myRasterBandStats.sumOfSquares
 <li>myRasterBandStats.stdDev
 <li>myRasterBandStats.colorTable
 </ul>
@@ -2139,10 +2139,10 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
   // check if we have previously gathered stats for this band...
 
   QgsRasterBandStats myRasterBandStats = mRasterStatsList[theBandNo - 1];
-  myRasterBandStats.bandNo = theBandNo;
+  myRasterBandStats.bandNumber = theBandNo;
 
   // don't bother with this if we already have stats
-  if ( myRasterBandStats.statsGatheredFlag )
+  if ( myRasterBandStats.statsGathered )
   {
     return myRasterBandStats;
   }
@@ -2271,20 +2271,20 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
           {
             //this is the first iteration so initialise vars
             myFirstIterationFlag = false;
-            myRasterBandStats.minVal = my;
-            myRasterBandStats.maxVal = my;
+            myRasterBandStats.minimumValue = my;
+            myRasterBandStats.maximumValue = my;
             ++myRasterBandStats.elementCount;
           }               //end of true part for first iteration check
           else
           {
             //this is done for all subsequent iterations
-            if ( my < myRasterBandStats.minVal )
+            if ( my < myRasterBandStats.minimumValue )
             {
-              myRasterBandStats.minVal = my;
+              myRasterBandStats.minimumValue = my;
             }
-            if ( my > myRasterBandStats.maxVal )
+            if ( my > myRasterBandStats.maximumValue )
             {
-              myRasterBandStats.maxVal = my;
+              myRasterBandStats.maximumValue = my;
             }
 
             myRasterBandStats.sum += my;
@@ -2297,7 +2297,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
 
 
   //end of first pass through data now calculate the range
-  myRasterBandStats.range = myRasterBandStats.maxVal - myRasterBandStats.minVal;
+  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
   //calculate the mean
   myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
 
@@ -2337,7 +2337,7 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
             continue; // NULL
           }
 
-          myRasterBandStats.sumSqrDev += static_cast < double >
+          myRasterBandStats.sumOfSquares += static_cast < double >
                                          ( pow( my - myRasterBandStats.mean, 2 ) );
         }
       }
@@ -2345,22 +2345,22 @@ const QgsRasterBandStats QgsRasterLayer::getRasterBandStats( int theBandNo )
   }                           //end of row wise loop
 
   //divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumSqrDev /
+  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares /
                              ( myRasterBandStats.elementCount - 1 ) ) );
 
 #ifdef QGISDEBUG
   QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "NULL", mNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MIN", myRasterBandStats.minVal, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MAX", myRasterBandStats.maxVal, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
 
   CPLFree( myData );
-  myRasterBandStats.statsGatheredFlag = true;
+  myRasterBandStats.statsGathered = true;
 
   QgsDebugMsg( "adding stats to stats collection at position " + QString::number( theBandNo - 1 ) );
   //add this band to the class stats map
@@ -3322,7 +3322,7 @@ QString QgsRasterLayer::metadata()
         myMetadata += tr( "Min Val" );
         myMetadata += "</p>\n";
         myMetadata += "<p>\n";
-        myMetadata += QString::number( myRasterBandStats.minVal, 'f', 10 );
+        myMetadata += QString::number( myRasterBandStats.minimumValue, 'f', 10 );
         myMetadata += "</p>\n";
 
         // Max Val
@@ -3330,7 +3330,7 @@ QString QgsRasterLayer::metadata()
         myMetadata += tr( "Max Val" );
         myMetadata += "</p>\n";
         myMetadata += "<p>\n";
-        myMetadata += QString::number( myRasterBandStats.maxVal, 'f', 10 );
+        myMetadata += QString::number( myRasterBandStats.maximumValue, 'f', 10 );
         myMetadata += "</p>\n";
 
         // Range
@@ -3354,7 +3354,7 @@ QString QgsRasterLayer::metadata()
         myMetadata += tr( "Sum of squares" );
         myMetadata += "</p>\n";
         myMetadata += "<p>\n";
-        myMetadata += QString::number( myRasterBandStats.sumSqrDev, 'f', 10 );
+        myMetadata += QString::number( myRasterBandStats.sumOfSquares, 'f', 10 );
         myMetadata += "</p>\n";
 
         //standard deviation
@@ -4125,10 +4125,10 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     QDomElement minEntry = document.createElement( "min" );
     QDomElement maxEntry = document.createElement( "max" );
 
-    QDomText minEntryText = document.createTextNode( QString::number( it->getMinimumValue() ) );
+    QDomText minEntryText = document.createTextNode( QString::number( it->minimumValue() ) );
     minEntry.appendChild( minEntryText );
 
-    QDomText maxEntryText = document.createTextNode( QString::number( it->getMaximumValue() ) );
+    QDomText maxEntryText = document.createTextNode( QString::number( it->maximumValue() ) );
     maxEntry.appendChild( maxEntryText );
 
     minMaxEntry.appendChild( minEntry );
@@ -4159,12 +4159,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   rasterPropertiesElement.appendChild( mNoDataValueElement );
 
 
-  if ( mRasterTransparency.getTransparentSingleValuePixelList().count() > 0 )
+  if ( mRasterTransparency.transparentSingleValuePixelList().count() > 0 )
   {
     QDomElement singleValuePixelListElement = document.createElement( "singleValuePixelList" );
 
 
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myPixelList = mRasterTransparency.getTransparentSingleValuePixelList();
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> myPixelList = mRasterTransparency.transparentSingleValuePixelList();
     QList<QgsRasterTransparency::TransparentSingleValuePixel>::iterator it;
     for ( it =  myPixelList.begin(); it != myPixelList.end(); ++it )
     {
@@ -4178,12 +4178,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     rasterPropertiesElement.appendChild( singleValuePixelListElement );
   }
 
-  if ( mRasterTransparency.getTransparentThreeValuePixelList().count() > 0 )
+  if ( mRasterTransparency.transparentThreeValuePixelList().count() > 0 )
   {
     QDomElement threeValuePixelListElement = document.createElement( "threeValuePixelList" );
 
 
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myPixelList = mRasterTransparency.getTransparentThreeValuePixelList();
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> myPixelList = mRasterTransparency.transparentThreeValuePixelList();
     QList<QgsRasterTransparency::TransparentThreeValuePixel>::iterator it;
     for ( it =  myPixelList.begin(); it != myPixelList.end(); ++it )
     {
@@ -4207,11 +4207,11 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     QDomElement customColorRampElement = document.createElement( "customColorRamp" );
 
     QDomElement customColorRampType = document.createElement( "colorRampType" );
-    QDomText customColorRampTypeText = document.createTextNode((( QgsColorRampShader* )mRasterShader->getRasterShaderFunction() )->getColorRampTypeAsQString() );
+    QDomText customColorRampTypeText = document.createTextNode((( QgsColorRampShader* )mRasterShader->rasterShaderFunction() )->colorRampTypeAsQString() );
     customColorRampType.appendChild( customColorRampTypeText );
     customColorRampElement.appendChild( customColorRampType );
 
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = (( QgsColorRampShader* )mRasterShader->getRasterShaderFunction() )->getColorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = (( QgsColorRampShader* )mRasterShader->rasterShaderFunction() )->colorRampItemList();
     QList<QgsColorRampShader::ColorRampItem>::iterator it;
     for ( it =  myColorRampItemList.begin(); it != myColorRampItemList.end(); ++it )
     {
@@ -4382,7 +4382,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   QDomNode customColorRampNode = mnl.namedItem( "customColorRamp" );
   if ( !customColorRampNode.isNull() )
   {
-    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->getRasterShaderFunction();
+    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
 
     //TODO: Remove the customColorRampType check and following if() in v2.0, added for compatability with older ( bugged ) project files
     QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
@@ -4516,12 +4516,12 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
   if ( myRasterBandStats.histogramVector->size() != theBinCount ||
-       theIgnoreOutOfRangeFlag != myRasterBandStats.histogramOutOfRangeFlag ||
-       theHistogramEstimatedFlag != myRasterBandStats.histogramEstimatedFlag )
+       theIgnoreOutOfRangeFlag != myRasterBandStats.histogramOutOfRange ||
+       theHistogramEstimatedFlag != myRasterBandStats.histogramEstimated )
   {
     myRasterBandStats.histogramVector->clear();
-    myRasterBandStats.histogramEstimatedFlag = theHistogramEstimatedFlag;
-    myRasterBandStats.histogramOutOfRangeFlag = theIgnoreOutOfRangeFlag;
+    myRasterBandStats.histogramEstimated = theHistogramEstimatedFlag;
+    myRasterBandStats.histogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
 
@@ -4537,9 +4537,9 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
      *          void *      pProgressData
      *          )
      */
-    double myerval = ( myRasterBandStats.maxVal - myRasterBandStats.minVal ) / theBinCount;
-    GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minVal - 0.1*myerval,
-                            myRasterBandStats.maxVal + 0.1*myerval, theBinCount, myHistogramArray,
+    double myerval = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) / theBinCount;
+    GDALGetRasterHistogram( myGdalBand, myRasterBandStats.minimumValue - 0.1*myerval,
+                            myRasterBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
                             theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
                             this ); //this is the arg for our custome gdal progress callback
 
@@ -4866,7 +4866,7 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
     QList<QgsRasterBandStats>::iterator myIterator = mRasterStatsList.begin();
     while ( myIterator !=  mRasterStatsList.end() )
     {
-      ( *myIterator ).statsGatheredFlag = false;
+      ( *myIterator ).statsGathered = false;
       ++myIterator;
     }
   }

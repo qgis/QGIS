@@ -11,7 +11,7 @@ public:
   enum CONTRAST_ENHANCEMENT_ALGORITHM
   {
     NO_STRETCH, //this should be the default color scaling algorithm
-    STRETCH_TO_MINMAX, //linear histogram stretch
+    STRETCH_TO_MINMAX, //linear histogram enhanceContrast
     STRETCH_AND_CLIP_TO_MINMAX,
     CLIP_TO_MINMAX,
     USER_DEFINED
@@ -43,9 +43,9 @@ public:
    *
    */
   /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-  static double getMaximumPossibleValue(QgsRasterDataType);
+  static double maximumValuePossible(QgsRasterDataType);
   /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-  static double getMinimumPossibleValue(QgsRasterDataType);
+  static double minimumValuePossible(QgsRasterDataType);
  
   /*
    *
@@ -53,10 +53,10 @@ public:
    *
    */
   /** \brief Return the maximum value for the contrast enhancement range. */
-  double getMaximumValue();
+  double maximumValue();
      
   /** \brief Return the minimum value for the contrast enhancement range. */
-  double getMinimumValue();
+  double minimumValue();
   
   CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm();
   
@@ -76,7 +76,7 @@ public:
   /** \brief Return the minimum value for the contrast enhancement range. */
   void setMinimumValue(double, bool generateTable=true);
   /** \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
-  int stretch(double);  
+  int enhanceContrast(double);  
 
 };
 

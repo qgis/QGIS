@@ -29,53 +29,7 @@ QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximu
   mCurrentColorRampItemIndex = 0;
 }
 
-bool QgsColorRampShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
-{
-
-  //Get the shaded value from the cache if it exists already
-  QColor myColor = mColorCache.value( theValue );
-  if ( myColor.isValid() )
-  {
-    *theReturnRedValue = myColor.red();
-    *theReturnGreenValue = myColor.green();
-    *theReturnBlueValue = myColor.blue();
-    return true;
-  }
-
-  //pixel value not in cache so generate new value
-
-  //Check to be sure mCurrentColorRampItemIndex is within the valid range.
-  if ( mCurrentColorRampItemIndex < 0 )
-  {
-    mCurrentColorRampItemIndex = 0;
-  }
-  else if ( mCurrentColorRampItemIndex >= mColorRampItemList.size() )
-  {
-    mCurrentColorRampItemIndex = mColorRampItemList.size() - 1;
-  }
-
-  if ( QgsColorRampShader::EXACT == mColorRampType )
-  {
-    return getExactColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
-  }
-  else if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
-  {
-    return getInterpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
-  }
-
-  return getDiscreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
-}
-
-bool QgsColorRampShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
-{
-  *theReturnRedValue = 0;
-  *theReturnGreenValue = 0;
-  *theReturnBlueValue = 0;
-
-  return false;
-}
-
-QString QgsColorRampShader::getColorRampTypeAsQString()
+QString QgsColorRampShader::colorRampTypeAsQString()
 {
   switch ( mColorRampType )
   {
@@ -92,7 +46,7 @@ QString QgsColorRampShader::getColorRampTypeAsQString()
   return QString( "Unknown" );
 }
 
-bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsColorRampShader::discreteColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   int myColorRampItemCount = mColorRampItemList.count();
   if ( myColorRampItemCount <= 0 )
@@ -132,7 +86,7 @@ bool QgsColorRampShader::getDiscreteColor( double theValue, int* theReturnRedVal
   return false; // value not found
 }
 
-bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   int myColorRampItemCount = mColorRampItemList.count();
   if ( myColorRampItemCount <= 0 )
@@ -177,7 +131,7 @@ bool QgsColorRampShader::getExactColor( double theValue, int* theReturnRedValue,
   return false; // value not found
 }
 
-bool QgsColorRampShader::getInterpolatedColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
 
   int myColorRampItemCount = mColorRampItemList.count();
@@ -267,4 +221,50 @@ void QgsColorRampShader::setColorRampType( QString theType )
   {
     mColorRampType = EXACT;
   }
+}
+
+bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+{
+
+  //Get the shaded value from the cache if it exists already
+  QColor myColor = mColorCache.value( theValue );
+  if ( myColor.isValid() )
+  {
+    *theReturnRedValue = myColor.red();
+    *theReturnGreenValue = myColor.green();
+    *theReturnBlueValue = myColor.blue();
+    return true;
+  }
+
+  //pixel value not in cache so generate new value
+
+  //Check to be sure mCurrentColorRampItemIndex is within the valid range.
+  if ( mCurrentColorRampItemIndex < 0 )
+  {
+    mCurrentColorRampItemIndex = 0;
+  }
+  else if ( mCurrentColorRampItemIndex >= mColorRampItemList.size() )
+  {
+    mCurrentColorRampItemIndex = mColorRampItemList.size() - 1;
+  }
+
+  if ( QgsColorRampShader::EXACT == mColorRampType )
+  {
+    return exactColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  }
+  else if ( QgsColorRampShader::INTERPOLATED == mColorRampType )
+  {
+    return interpolatedColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+  }
+
+  return discreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+}
+
+bool QgsColorRampShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+{
+  *theReturnRedValue = 0;
+  *theReturnGreenValue = 0;
+  *theReturnBlueValue = 0;
+
+  return false;
 }

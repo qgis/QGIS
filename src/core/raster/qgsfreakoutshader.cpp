@@ -27,8 +27,42 @@ QgsFreakOutShader::QgsFreakOutShader( double theMinimumValue, double theMaximumV
   setClassBreaks();
 }
 
+void QgsFreakOutShader::setClassBreaks()
+{
+  //set up the three class breaks for pseudocolour mapping
+  mBreakSize = mMinimumMaximumRange / 3;
+  mClassBreakMin1 = mMinimumValue;
+  mClassBreakMax1 = mClassBreakMin1 + mBreakSize;
+  mClassBreakMin2 = mClassBreakMax1;
+  mClassBreakMax2 = mClassBreakMin2 + mBreakSize;
+  mClassBreakMin3 = mClassBreakMax2;
+}
 
-bool QgsFreakOutShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+/**
+    Set the maximum value for the raster shader.
+
+    @param theValue The new maximum value
+*/
+void QgsFreakOutShader::setMaximumValue( double theValue )
+{
+  mMaximumValue = theValue;
+  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
+  setClassBreaks();
+}
+
+/**
+    Set the maximum value for the raster shader
+
+    @param theValue The new minimum value
+*/
+void QgsFreakOutShader::setMinimumValue( double theValue )
+{
+  mMinimumValue = theValue;
+  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
+  setClassBreaks();
+}
+
+bool QgsFreakOutShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   double myPixelValue = theValue;
 
@@ -75,46 +109,11 @@ bool QgsFreakOutShader::generateShadedValue( double theValue, int* theReturnRedV
   return true;
 }
 
-bool QgsFreakOutShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsFreakOutShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;
 
   return false;
-}
-
-void QgsFreakOutShader::setClassBreaks()
-{
-  //set up the three class breaks for pseudocolour mapping
-  mBreakSize = mMinimumMaximumRange / 3;
-  mClassBreakMin1 = mMinimumValue;
-  mClassBreakMax1 = mClassBreakMin1 + mBreakSize;
-  mClassBreakMin2 = mClassBreakMax1;
-  mClassBreakMax2 = mClassBreakMin2 + mBreakSize;
-  mClassBreakMin3 = mClassBreakMax2;
-}
-
-/**
-    Set the maximum value for the raster shader.
-
-    @param theValue The new maximum value
-*/
-void QgsFreakOutShader::setMaximumValue( double theValue )
-{
-  mMaximumValue = theValue;
-  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
-  setClassBreaks();
-}
-
-/**
-    Set the maximum value for the raster shader
-
-    @param theValue The new minimum value
-*/
-void QgsFreakOutShader::setMinimumValue( double theValue )
-{
-  mMinimumValue = theValue;
-  mMinimumMaximumRange = mMaximumValue - mMinimumValue;
-  setClassBreaks();
 }

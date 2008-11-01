@@ -22,7 +22,7 @@ QgsLinearMinMaxEnhancementWithClip::QgsLinearMinMaxEnhancementWithClip( QgsContr
 {
 }
 
-int QgsLinearMinMaxEnhancementWithClip::enhanceValue( double theValue )
+int QgsLinearMinMaxEnhancementWithClip::enhance( double theValue )
 {
   if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {

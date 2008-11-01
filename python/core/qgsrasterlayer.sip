@@ -218,17 +218,17 @@ public:
     void setGrayBandName(const QString & theBandNameQString);
     
     // Accessor and mutator for min max values 
-    double getMinimumValue(unsigned int theBand);
+    double minimumValue(unsigned int theBand);
 
-    double getMinimumValue(QString theBand);
+    double minimumValue(QString theBand);
 
     void setMinimumValue(unsigned int theBand, double theValue);
 
     void setMinimumValue(QString theBand, double theValue, bool theGenerateLookupTableFlag=true);
     
-    double getMaximumValue(unsigned int theBand);
+    double maximumValue(unsigned int theBand);
 
-    double getMaximumValue(QString theBand);
+    double maximumValue(QString theBand);
     
     void setMaximumValue(unsigned int theBand, double theValue);
 

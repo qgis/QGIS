@@ -11,7 +11,6 @@
 
 %Include qgis.sip
 %Include qgsapplication.sip
-%Include qgscolortable.sip
 %Include qgscontexthelp.sip
 %Include qgscontinuouscolorrenderer.sip
 %Include qgscontrastenhancement.sip

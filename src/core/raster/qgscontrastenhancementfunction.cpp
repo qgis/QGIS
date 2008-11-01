@@ -26,11 +26,35 @@ QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( QgsContrastEnhan
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
+
+int QgsContrastEnhancementFunction::enhance( double theValue )
+{
+  if ( mQgsRasterDataType == QgsContrastEnhancement::QGS_Byte )
+  {
+    return static_cast<int>( theValue );
+  }
+  else
+  {
+    return static_cast<int>(((( theValue - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) )*255.0 ) );
+  }
+}
+
+bool QgsContrastEnhancementFunction::isValueInDisplayableRange( double theValue )
+{
+  //A default check is to see if the provided value is with the range for the data type
+  if ( theValue < QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) || theValue > QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) )
+  {
+    return false;
+  }
+
+  return true;
+}
+
 void QgsContrastEnhancementFunction::setMaximumValue( double theValue )
 {
-  if ( QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType ) < theValue )
+  if ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) < theValue )
   {
-    mMaximumValue = QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType );
+    mMaximumValue = QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType );
   }
   else
   {
@@ -43,9 +67,9 @@ void QgsContrastEnhancementFunction::setMaximumValue( double theValue )
 void QgsContrastEnhancementFunction::setMinimumValue( double theValue )
 {
 
-  if ( QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) > theValue )
+  if ( QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) > theValue )
   {
-    mMinimumValue = QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType );
+    mMinimumValue = QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType );
   }
   else
   {
@@ -54,27 +78,3 @@ void QgsContrastEnhancementFunction::setMinimumValue( double theValue )
 
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
-
-int QgsContrastEnhancementFunction::enhanceValue( double theValue )
-{
-  if ( mQgsRasterDataType == QgsContrastEnhancement::QGS_Byte )
-  {
-    return static_cast<int>( theValue );
-  }
-  else
-  {
-    return static_cast<int>(((( theValue - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType ) - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) )*255.0 ) );
-  }
-}
-
-bool QgsContrastEnhancementFunction::isValueInDisplayableRange( double theValue )
-{
-  //A default check is to see if the provided value is with the range for the data type
-  if ( theValue < QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) || theValue > QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType ) )
-  {
-    return false;
-  }
-
-  return true;
-}
-

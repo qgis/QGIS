@@ -15,12 +15,12 @@ public:
    *
    */
   /** \brief Return the maximum value for the raster shader */
-  double getMaximumValue();
+  double maximumValue();
      
   /** \brief Return the minimum value for the raster shader */
-  double getMinimumValue();
+  double minimumValue();
   
-  QgsRasterShaderFunction* getRasterShaderFunction();
+  QgsRasterShaderFunction* rasterShaderFunction();
   
   /*
    *
@@ -28,9 +28,9 @@ public:
    *
    */  
   /** \brief generates and new RGB value based on one input value */
-  bool generateShadedValue(double, int*, int*, int*);
+  bool shade(double, int*, int*, int*);
   /** \brief generates and new RGB value based on original RGB value */
-  bool generateShadedValue(double, double, double, int*, int*, int*);
+  bool shade(double, double, double, int*, int*, int*);
   /** \brief A public method that allows the user to set their own shader function */
   void setRasterShaderFunction(QgsRasterShaderFunction*);
   /** \brief Set the maximum value */

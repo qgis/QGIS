@@ -10,9 +10,9 @@ public:
   virtual ~QgsRasterShaderFunction();
    
   /** \brief generates and new RGB value based on one input value */
-  virtual bool generateShadedValue(double, int*, int*, int*);
+  virtual bool shade(double, int*, int*, int*);
   /** \brief generates and new RGB value based on original RGB value */
-  virtual bool generateShadedValue(double, double, double, int*, int*, int*);
+  virtual bool shade(double, double, double, int*, int*, int*);
   
   /** \brief Set the maximum value */
   virtual void setMaximumValue(double);

@@ -105,7 +105,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   cboxColorMap->addItem( tr( "Freak Out" ) );
   cboxColorMap->addItem( tr( "Colormap" ) );
 
-  //add items to the color stretch combo box
+  //add items to the color enhanceContrast combo box
   cboxContrastEnhancementAlgorithm->addItem( tr( "No Stretch" ) );
   cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch To MinMax" ) );
   cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch And Clip To MinMax" ) );
@@ -364,7 +364,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     tableTransparency->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
 
     //populate three band transparency list
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = mRasterLayer->getRasterTransparency()->getTransparentThreeValuePixelList();
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = mRasterLayer->getRasterTransparency()->transparentThreeValuePixelList();
     for ( int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
@@ -403,7 +403,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
 
     //populate gray transparency list
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = mRasterLayer->getRasterTransparency()->getTransparentSingleValuePixelList();
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = mRasterLayer->getRasterTransparency()->transparentSingleValuePixelList();
     for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
@@ -649,18 +649,18 @@ void QgsRasterLayerProperties::sync()
     {
       if ( mRasterLayer->getRedBandName() != TRSTRING_NOT_SET )
       {
-        leRedMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getRedBandName() ) ) );
-        leRedMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getRedBandName() ) ) );
+        leRedMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getRedBandName() ) ) );
+        leRedMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getRedBandName() ) ) );
       }
       if ( mRasterLayer->getGreenBandName() != TRSTRING_NOT_SET )
       {
-        leGreenMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getGreenBandName() ) ) );
-        leGreenMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getGreenBandName() ) ) );
+        leGreenMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getGreenBandName() ) ) );
+        leGreenMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getGreenBandName() ) ) );
       }
       if ( mRasterLayer->getBlueBandName() != TRSTRING_NOT_SET )
       {
-        leBlueMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getBlueBandName() ) ) );
-        leBlueMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getBlueBandName() ) ) );
+        leBlueMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getBlueBandName() ) ) );
+        leBlueMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getBlueBandName() ) ) );
       }
       setMinimumMaximumEstimateWarning();
     }
@@ -688,8 +688,8 @@ void QgsRasterLayerProperties::sync()
     {
       if ( mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET )
       {
-        leGrayMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getGrayBandName() ) ) );
-        leGrayMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getGrayBandName() ) ) );
+        leGrayMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getGrayBandName() ) ) );
+        leGrayMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getGrayBandName() ) ) );
       }
     }
     setMinimumMaximumEstimateWarning();
@@ -855,22 +855,22 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
 
-  QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->getRasterShaderFunction();
+  QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->rasterShaderFunction();
   if ( !myRasterShaderFunction )
   {
     return;
   }
   //restore the colormap tab if layer has custom symbology
-  populateColorMapTable( myRasterShaderFunction->getColorRampItemList() );
+  populateColorMapTable( myRasterShaderFunction->colorRampItemList() );
 
   sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
 
   //restor state of 'color interpolation' combo box
-  if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->getColorRampType() )
+  if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->colorRampType() )
   {
     cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
   }
-  else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->getColorRampType() )
+  else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->colorRampType() )
   {
     cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
   }
@@ -1363,7 +1363,7 @@ void QgsRasterLayerProperties::apply()
    */
   if ( cboxColorMap->currentText() == tr( "Colormap" ) )
   {
-    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->getRasterShaderFunction();
+    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->rasterShaderFunction();
     if ( myRasterShaderFunction )
     {
       //iterate through mColormapTreeWidget and set colormap info of layer
@@ -1475,18 +1475,18 @@ void QgsRasterLayerProperties::apply()
         mRGBActualMinimumMaximum = mRasterLayer->getActualRGBMinMaxFlag();
         if ( mRasterLayer->getRedBandName() != TRSTRING_NOT_SET )
         {
-          leRedMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getRedBandName() ) ) );
-          leRedMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getRedBandName() ) ) );
+          leRedMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getRedBandName() ) ) );
+          leRedMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getRedBandName() ) ) );
         }
         if ( mRasterLayer->getGreenBandName() != TRSTRING_NOT_SET )
         {
-          leGreenMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getGreenBandName() ) ) );
-          leGreenMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getGreenBandName() ) ) );
+          leGreenMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getGreenBandName() ) ) );
+          leGreenMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getGreenBandName() ) ) );
         }
         if ( mRasterLayer->getBlueBandName() != TRSTRING_NOT_SET )
         {
-          leBlueMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getBlueBandName() ) ) );
-          leBlueMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getBlueBandName() ) ) );
+          leBlueMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getBlueBandName() ) ) );
+          leBlueMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getBlueBandName() ) ) );
         }
         setMinimumMaximumEstimateWarning();
       }
@@ -1503,8 +1503,8 @@ void QgsRasterLayerProperties::apply()
         mGrayActualMinimumMaximum = mRasterLayer->getActualGrayMinMaxFlag();
         if ( mRasterLayer->getGrayBandName() != TRSTRING_NOT_SET )
         {
-          leGrayMin->setText( QString::number( mRasterLayer->getMinimumValue( mRasterLayer->getGrayBandName() ) ) );
-          leGrayMax->setText( QString::number( mRasterLayer->getMaximumValue( mRasterLayer->getGrayBandName() ) ) );
+          leGrayMin->setText( QString::number( mRasterLayer->minimumValue( mRasterLayer->getGrayBandName() ) ) );
+          leGrayMax->setText( QString::number( mRasterLayer->maximumValue( mRasterLayer->getGrayBandName() ) ) );
         }
         setMinimumMaximumEstimateWarning();
       }
@@ -1637,8 +1637,8 @@ void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged( const QString& th
 {
   if ( mRasterLayerIsGdal && TRSTRING_NOT_SET != theText )
   {
-    leBlueMin->setText( QString::number( mRasterLayer->getMinimumValue( theText ) ) );
-    leBlueMax->setText( QString::number( mRasterLayer->getMaximumValue( theText ) ) );
+    leBlueMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
+    leBlueMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
   }
 }
 
@@ -1646,8 +1646,8 @@ void QgsRasterLayerProperties::on_cboGray_currentIndexChanged( const QString& th
 {
   if ( mRasterLayerIsGdal && TRSTRING_NOT_SET != theText )
   {
-    leGrayMin->setText( QString::number( mRasterLayer->getMinimumValue( theText ) ) );
-    leGrayMax->setText( QString::number( mRasterLayer->getMaximumValue( theText ) ) );
+    leGrayMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
+    leGrayMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
   }
 }
 
@@ -1655,8 +1655,8 @@ void QgsRasterLayerProperties::on_cboGreen_currentIndexChanged( const QString& t
 {
   if ( mRasterLayerIsGdal && TRSTRING_NOT_SET != theText )
   {
-    leGreenMin->setText( QString::number( mRasterLayer->getMinimumValue( theText ) ) );
-    leGreenMax->setText( QString::number( mRasterLayer->getMaximumValue( theText ) ) );
+    leGreenMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
+    leGreenMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
   }
 }
 
@@ -1664,8 +1664,8 @@ void QgsRasterLayerProperties::on_cboRed_currentIndexChanged( const QString& the
 {
   if ( mRasterLayerIsGdal && TRSTRING_NOT_SET != theText )
   {
-    leRedMin->setText( QString::number( mRasterLayer->getMinimumValue( theText ) ) );
-    leRedMax->setText( QString::number( mRasterLayer->getMaximumValue( theText ) ) );
+    leRedMin->setText( QString::number( mRasterLayer->minimumValue( theText ) ) );
+    leRedMax->setText( QString::number( mRasterLayer->maximumValue( theText ) ) );
   }
 }
 
@@ -1897,13 +1897,13 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->getRasterBandStats( myIteratorInt );
     //calculate the x axis min max
-    if ( myRasterBandStats.minVal < myXAxisMin || myIteratorInt == 1 )
+    if ( myRasterBandStats.minimumValue < myXAxisMin || myIteratorInt == 1 )
     {
-      myXAxisMin = static_cast < unsigned int >( myRasterBandStats.minVal );
+      myXAxisMin = static_cast < unsigned int >( myRasterBandStats.minimumValue );
     }
-    if ( myRasterBandStats.maxVal < myXAxisMax || myIteratorInt == 1 )
+    if ( myRasterBandStats.maximumValue < myXAxisMax || myIteratorInt == 1 )
     {
-      myXAxisMax = static_cast < unsigned int >( myRasterBandStats.maxVal );
+      myXAxisMax = static_cast < unsigned int >( myRasterBandStats.maximumValue );
     }
     QListWidgetItem *myItem = lstHistogramLabels->item( myIteratorInt - 1 );
     if ( myItem->isSelected() )
@@ -1994,7 +1994,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
        == QgsRasterLayer::PALETTE ) //paletted layers have hard coded color entries
   {
     QPolygonF myPolygon;
-    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->getRasterShaderFunction();
+    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->getRasterShader()->rasterShaderFunction();
     QgsDebugMsg( "Making paletted image histogram....computing band stats" );
     QgsDebugMsg( QString( "myLastBinWithData = %1" ).arg( myLastBinWithData ) );
 
@@ -2025,7 +2025,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 
         QgsDebugMsg( QString( "myMiddle = %1" ).arg( myMiddle ) );
 
-        if ( myRasterShaderFunction->generateShadedValue( myMiddle, &c1, &c2, &c3 ) )
+        if ( myRasterShaderFunction->shade( myMiddle, &c1, &c2, &c3 ) )
         {
           QgsDebugMsg( "Color not found" );
           c1 = c2 = c3 = 180; // grey
@@ -2384,8 +2384,8 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
     {
       sboxSingleBandStdDev->setValue( 0.0 );
       rbtnSingleBandMinMax->setChecked( true );
-      leGrayMin->setText( QString::number( mRasterLayer->getMinimumValue( cboGray->currentText() ) ) );
-      leGrayMax->setText( QString::number( mRasterLayer->getMaximumValue( cboGray->currentText() ) ) );
+      leGrayMin->setText( QString::number( mRasterLayer->minimumValue( cboGray->currentText() ) ) );
+      leGrayMax->setText( QString::number( mRasterLayer->maximumValue( cboGray->currentText() ) ) );
     }
     else
     {
@@ -2461,12 +2461,12 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled( bool theState )
     {
       sboxThreeBandStdDev->setValue( 0.0 );
       rbtnThreeBandMinMax->setChecked( true );
-      leRedMin->setText( QString::number( mRasterLayer->getMinimumValue( cboRed->currentText() ) ) );
-      leRedMax->setText( QString::number( mRasterLayer->getMaximumValue( cboRed->currentText() ) ) );
-      leGreenMin->setText( QString::number( mRasterLayer->getMinimumValue( cboGreen->currentText() ) ) );
-      leGreenMax->setText( QString::number( mRasterLayer->getMaximumValue( cboGreen->currentText() ) ) );
-      leBlueMin->setText( QString::number( mRasterLayer->getMinimumValue( cboBlue->currentText() ) ) );
-      leBlueMax->setText( QString::number( mRasterLayer->getMaximumValue( cboBlue->currentText() ) ) );
+      leRedMin->setText( QString::number( mRasterLayer->minimumValue( cboRed->currentText() ) ) );
+      leRedMax->setText( QString::number( mRasterLayer->maximumValue( cboRed->currentText() ) ) );
+      leGreenMin->setText( QString::number( mRasterLayer->minimumValue( cboGreen->currentText() ) ) );
+      leGreenMax->setText( QString::number( mRasterLayer->maximumValue( cboGreen->currentText() ) ) );
+      leBlueMin->setText( QString::number( mRasterLayer->minimumValue( cboBlue->currentText() ) ) );
+      leBlueMax->setText( QString::number( mRasterLayer->maximumValue( cboBlue->currentText() ) ) );
     }
     else
     {
@@ -2577,18 +2577,18 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
 
   if ( cboxClassificationMode->currentText() == tr( "Equal interval" ) )
   {
-    double currentValue = myRasterBandStats.minVal;
+    double currentValue = myRasterBandStats.minimumValue;
     double intervalDiff;
     if ( numberOfEntries > 1 )
     {
       //because the highest value is also an entry, there are (numberOfEntries - 1)
       //intervals
-      intervalDiff = ( myRasterBandStats.maxVal - myRasterBandStats.minVal ) /
+      intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
                      ( numberOfEntries - 1 );
     }
     else
     {
-      intervalDiff = myRasterBandStats.maxVal - myRasterBandStats.minVal;
+      intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
     }
 
     for ( int i = 0; i < numberOfEntries; ++i )
@@ -2841,14 +2841,14 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
       if ( rbtnActualMinMax->isChecked() )
       {
         myRasterBandStats = mRasterLayer->getRasterBandStats( mRasterLayer->getRasterBandNumber( cboRed->currentText() ) );
-        leRedMin->setText( QString::number( myRasterBandStats.minVal ) );
-        leRedMax->setText( QString::number( myRasterBandStats.maxVal ) );
+        leRedMin->setText( QString::number( myRasterBandStats.minimumValue ) );
+        leRedMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         myRasterBandStats = mRasterLayer->getRasterBandStats( mRasterLayer->getRasterBandNumber( cboGreen->currentText() ) );
-        leGreenMin->setText( QString::number( myRasterBandStats.minVal ) );
-        leGreenMax->setText( QString::number( myRasterBandStats.maxVal ) );
+        leGreenMin->setText( QString::number( myRasterBandStats.minimumValue ) );
+        leGreenMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         myRasterBandStats = mRasterLayer->getRasterBandStats( mRasterLayer->getRasterBandNumber( cboBlue->currentText() ) );
-        leBlueMin->setText( QString::number( myRasterBandStats.minVal ) );
-        leBlueMax->setText( QString::number( myRasterBandStats.maxVal ) );
+        leBlueMin->setText( QString::number( myRasterBandStats.minimumValue ) );
+        leBlueMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         mRGBActualMinimumMaximum = true;
       }
       else
@@ -2874,8 +2874,8 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
       if ( rbtnActualMinMax->isChecked() )
       {
         myRasterBandStats = mRasterLayer->getRasterBandStats( mRasterLayer->getRasterBandNumber( cboGray->currentText() ) );
-        leGrayMin->setText( QString::number( myRasterBandStats.minVal ) );
-        leGrayMax->setText( QString::number( myRasterBandStats.maxVal ) );
+        leGrayMin->setText( QString::number( myRasterBandStats.minimumValue ) );
+        leGrayMax->setText( QString::number( myRasterBandStats.maximumValue ) );
         mGrayActualMinimumMaximum = true;
       }
       else

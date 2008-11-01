@@ -22,7 +22,7 @@ QgsClipToMinMaxEnhancement::QgsClipToMinMaxEnhancement( QgsContrastEnhancement::
 {
 }
 
-int QgsClipToMinMaxEnhancement::enhanceValue( double theValue )
+int QgsClipToMinMaxEnhancement::enhance( double theValue )
 {
   if ( theValue < mMinimumValue || theValue > mMaximumValue )
   {
@@ -35,7 +35,7 @@ int QgsClipToMinMaxEnhancement::enhanceValue( double theValue )
   }
   else
   {
-    return static_cast<int>(((( theValue - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::getMaximumPossibleValue( mQgsRasterDataType ) - QgsContrastEnhancement::getMinimumPossibleValue( mQgsRasterDataType ) ) )*255.0 ) );
+    return static_cast<int>(((( theValue - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) / ( QgsContrastEnhancement::maximumValuePossible( mQgsRasterDataType ) - QgsContrastEnhancement::minimumValuePossible( mQgsRasterDataType ) ) )*255.0 ) );
   }
 }
 

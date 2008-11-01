@@ -38,12 +38,12 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     /** \brief Return the maximum value for the raster shader */
-    double getMaximumValue() { return mMaximumValue; }
+    double maximumValue() { return mMaximumValue; }
 
     /** \brief Return the minimum value for the raster shader */
-    double getMinimumValue() { return mMinimumValue; }
+    double minimumValue() { return mMinimumValue; }
 
-    QgsRasterShaderFunction* getRasterShaderFunction() { return mRasterShaderFunction; }
+    QgsRasterShaderFunction* rasterShaderFunction() { return mRasterShaderFunction; }
 
     /*
      *
@@ -51,22 +51,28 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     /** \brief generates and new RGB value based on one input value */
-    bool generateShadedValue( double, int*, int*, int* );
+    bool shade( double, int*, int*, int* );
+
     /** \brief generates and new RGB value based on original RGB value */
-    bool generateShadedValue( double, double, double, int*, int*, int* );
+    bool shade( double, double, double, int*, int*, int* );
+
     /** \brief A public method that allows the user to set their own shader function */
     void setRasterShaderFunction( QgsRasterShaderFunction* );
+
     /** \brief Set the maximum value */
     void setMaximumValue( double );
+
     /** \brief Return the minimum value */
     void setMinimumValue( double );
 
   private:
     /** \brief User defineable minimum value for the raster shader */
     double mMinimumValue;
+
     /** \brief user defineable maximum value for the raster shader */
     double mMaximumValue;
 
+    /** \brief Pointer to the shader function */
     QgsRasterShaderFunction* mRasterShaderFunction;
 };
 #endif

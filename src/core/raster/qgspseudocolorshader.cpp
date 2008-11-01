@@ -28,7 +28,7 @@ QgsPseudoColorShader::QgsPseudoColorShader( double theMinimumValue, double theMa
 }
 
 
-bool QgsPseudoColorShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsPseudoColorShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   double myPixelValue = theValue;
 
@@ -68,7 +68,7 @@ bool QgsPseudoColorShader::generateShadedValue( double theValue, int* theReturnR
   return true;
 }
 
-bool QgsPseudoColorShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsPseudoColorShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
