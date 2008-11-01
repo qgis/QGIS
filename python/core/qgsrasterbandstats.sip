@@ -39,9 +39,9 @@ class QgsRasterBandStats
     typedef QVector<int> HistogramVector;
     //HistogramVector * histogramVector;
     /** \brief whteher histogram values are estimated or completely calculated */
-    bool histogramEstimated;
+    bool isHistogramEstimated;
     /** whehter histogram compuation should include out of range values */
-    bool histogramOutOfRange;
+    bool isHistogramOutOfRange;
     /** Color table */
     //QList<QgsColorRampShader::ColorRampItem> colorTable;
 };

@@ -1136,10 +1136,14 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     QgsDebugMsg( QString( "origin y: %1" ).arg( myRasterViewPort->topLeftPoint.y() ) );
     QgsDebugMsg( QString( "(int)origin y: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ) );
 
+    //Set the transparency for the whole layer
+    QImage myAlphaChannel( image->width(), image->height(), QImage::Format_Indexed8 );
+    myAlphaChannel.fill( ( uint ) mTransparencyLevel );
+    image->setAlphaChannel( myAlphaChannel );
+
     // Since GDAL's RasterIO can't handle floating point, we have to round to
     // the nearest pixel.  Add 0.5 to get rounding instead of truncation
     // out of static_cast<int>.
-
     theQPainter->drawImage( static_cast<int>(
                               myRasterViewPort->topLeftPoint.x()
                               + 0.5    // try simulating rounding instead of truncation, to avoid off-by-one errors
@@ -4516,12 +4520,12 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
   if ( myRasterBandStats.histogramVector->size() != theBinCount ||
-       theIgnoreOutOfRangeFlag != myRasterBandStats.histogramOutOfRange ||
-       theHistogramEstimatedFlag != myRasterBandStats.histogramEstimated )
+       theIgnoreOutOfRangeFlag != myRasterBandStats.isHistogramOutOfRange ||
+       theHistogramEstimatedFlag != myRasterBandStats.isHistogramEstimated )
   {
     myRasterBandStats.histogramVector->clear();
-    myRasterBandStats.histogramEstimated = theHistogramEstimatedFlag;
-    myRasterBandStats.histogramOutOfRange = theIgnoreOutOfRangeFlag;
+    myRasterBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
+    myRasterBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
 

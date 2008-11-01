@@ -551,7 +551,8 @@ void QgsRasterLayerProperties::sync()
     tabBar->setCurrentIndex( tabBar->indexOf( tabPageMetadata ) );
     tabBar->removeTab( tabBar->indexOf( tabPageColormap ) );
     tabBar->removeTab( tabBar->indexOf( tabPageSymbology ) );
-    tabBar->removeTab( tabBar->indexOf( tabPageTransparency ) );
+    gboxNoDataValue->setEnabled( false );
+    gboxCustomTransparency->setEnabled( false );
     tabBar->removeTab( tabBar->indexOf( tabPageHistogram ) );
     tabBar->removeTab( tabBar->indexOf( tabPagePyramids ) );
   }

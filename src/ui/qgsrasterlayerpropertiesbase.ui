@@ -6,14 +6,16 @@
     <x>0</x>
     <y>0</y>
     <width>576</width>
-    <height>588</height>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Raster Layer Properties</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -50,7 +52,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -70,7 +72,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -107,16 +109,7 @@
          </property>
          <widget class="QWidget" name="rgb" >
           <layout class="QGridLayout" >
-           <property name="leftMargin" >
-            <number>0</number>
-           </property>
-           <property name="topMargin" >
-            <number>0</number>
-           </property>
-           <property name="rightMargin" >
-            <number>0</number>
-           </property>
-           <property name="bottomMargin" >
+           <property name="margin" >
             <number>0</number>
            </property>
            <item row="0" column="0" >
@@ -229,7 +222,8 @@
                    <string>...</string>
                   </property>
                   <property name="icon" >
-                   <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+                   <iconset>
+                    <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -292,7 +286,7 @@
                 <property name="orientation" >
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeHint" >
+                <property name="sizeHint" stdset="0" >
                  <size>
                   <width>119</width>
                   <height>16</height>
@@ -523,16 +517,7 @@
          </widget>
          <widget class="QWidget" name="gray" >
           <layout class="QGridLayout" >
-           <property name="leftMargin" >
-            <number>0</number>
-           </property>
-           <property name="topMargin" >
-            <number>0</number>
-           </property>
-           <property name="rightMargin" >
-            <number>0</number>
-           </property>
-           <property name="bottomMargin" >
+           <property name="margin" >
             <number>0</number>
            </property>
            <item row="0" column="0" >
@@ -701,7 +686,7 @@
                 <property name="orientation" >
                  <enum>Qt::Vertical</enum>
                 </property>
-                <property name="sizeHint" >
+                <property name="sizeHint" stdset="0" >
                  <size>
                   <width>20</width>
                   <height>40</height>
@@ -748,7 +733,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>81</width>
               <height>20</height>
@@ -768,7 +753,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>111</width>
               <height>20</height>
@@ -792,10 +777,7 @@
           <string>Contrast enhancement</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="horizontalSpacing" >
-           <number>6</number>
-          </property>
-          <property name="verticalSpacing" >
+          <property name="spacing" >
            <number>6</number>
           </property>
           <item row="0" column="0" >
@@ -842,7 +824,8 @@
              <string/>
             </property>
             <property name="icon" >
-             <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+             <iconset>
+              <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
             </property>
            </widget>
           </item>
@@ -907,7 +890,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -933,7 +916,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -952,7 +935,7 @@
         </widget>
        </item>
        <item row="0" column="1" >
-        <widget class="QGroupBox" name="groupBox_7" >
+        <widget class="QGroupBox" name="gboxNoDataValue" >
          <property name="title" >
           <string>No data value</string>
          </property>
@@ -971,7 +954,7 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="2" >
-        <widget class="QGroupBox" name="groupBox_6" >
+        <widget class="QGroupBox" name="gboxCustomTransparency" >
          <property name="title" >
           <string>Custom transparency options</string>
          </property>
@@ -1036,16 +1019,7 @@
           </item>
           <item row="2" column="2" >
            <layout class="QVBoxLayout" >
-            <property name="leftMargin" >
-             <number>11</number>
-            </property>
-            <property name="topMargin" >
-             <number>11</number>
-            </property>
-            <property name="rightMargin" >
-             <number>11</number>
-            </property>
-            <property name="bottomMargin" >
+            <property name="margin" >
              <number>11</number>
             </property>
             <item>
@@ -1057,7 +1031,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionNewAttribute.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
               </property>
              </widget>
             </item>
@@ -1073,7 +1048,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionContextHelp.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionContextHelp.png</normaloff>../../images/themes/default/mActionContextHelp.png</iconset>
               </property>
              </widget>
             </item>
@@ -1086,7 +1062,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
               </property>
              </widget>
             </item>
@@ -1099,7 +1076,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionCopySelected.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionCopySelected.png</normaloff>../../images/themes/default/mActionCopySelected.png</iconset>
               </property>
              </widget>
             </item>
@@ -1108,7 +1086,7 @@
               <property name="orientation" >
                <enum>Qt::Vertical</enum>
               </property>
-              <property name="sizeHint" >
+              <property name="sizeHint" stdset="0" >
                <size>
                 <width>20</width>
                 <height>181</height>
@@ -1125,7 +1103,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionFolder.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
               </property>
              </widget>
             </item>
@@ -1138,7 +1117,8 @@
                <string>...</string>
               </property>
               <property name="icon" >
-               <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+               <iconset>
+                <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
               </property>
              </widget>
             </item>
@@ -1169,7 +1149,7 @@
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>321</width>
            <height>45</height>
@@ -1203,7 +1183,7 @@
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>41</width>
            <height>27</height>
@@ -1223,7 +1203,8 @@
           <string>...</string>
          </property>
          <property name="icon" >
-          <iconset>../../images/themes/default/mActionNewAttribute.png</iconset>
+          <iconset>
+           <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
          </property>
         </widget>
        </item>
@@ -1235,7 +1216,7 @@
          <property name="sizeType" >
           <enum>QSizePolicy::Minimum</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>20</height>
@@ -1252,7 +1233,8 @@
           <string>...</string>
          </property>
          <property name="icon" >
-          <iconset>../../images/themes/default/mActionFolder.png</iconset>
+          <iconset>
+           <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
          </property>
         </widget>
        </item>
@@ -1265,7 +1247,8 @@
           <string>...</string>
          </property>
          <property name="icon" >
-          <iconset>../../images/themes/default/mActionFileSave.png</iconset>
+          <iconset>
+           <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
          </property>
         </widget>
        </item>
@@ -1426,16 +1409,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="3" >
@@ -1493,16 +1467,7 @@
           <string>Coordinate reference system</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="1" >
@@ -1527,7 +1492,7 @@
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>21</width>
            <height>20</height>
@@ -1651,7 +1616,7 @@
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>21</width>
            <height>20</height>
@@ -1666,16 +1631,7 @@
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>11</number>
        </property>
        <item row="0" column="0" >
@@ -1711,10 +1667,11 @@
           </sizepolicy>
          </property>
          <property name="html" >
-          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+          <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
 p, li { white-space: pre-wrap; }
-&lt;/style>&lt;/head>&lt;body style=" font-family:'Verdana'; font-size:10pt; font-weight:400; font-style:normal;">
-&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;">&lt;/p>&lt;/body>&lt;/html></string>
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif';">&lt;/p>&lt;/body>&lt;/html></string>
          </property>
         </widget>
        </item>
@@ -1826,16 +1783,7 @@ p, li { white-space: pre-wrap; }
           <string>Chart Type</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="1" >
@@ -1925,7 +1873,7 @@ p, li { white-space: pre-wrap; }
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -1985,7 +1933,7 @@ p, li { white-space: pre-wrap; }
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
