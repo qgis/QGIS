@@ -24,7 +24,7 @@ email                : ersts@amnh.org
 /** \ingroup core
  * A contrast enhancement funcion is the base class for all raster contrast enhancements.
  *
- * The purpose of a contrast enhancement is to stretch or clip a pixel value into
+ * The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
  * a specified bounding range.
  */
 class CORE_EXPORT QgsContrastEnhancementFunction
@@ -34,23 +34,28 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType, double, double );
     virtual ~QgsContrastEnhancementFunction() {}
 
-    /** \brief Mustator for the maximum value */
-    void setMaximumValue( double );
-    /** \brief Mutator for the minimum value */
-    void setMinimumValue( double );
-
     /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */
-    virtual int enhanceValue( double );
+    virtual int enhance( double );
+
     /** \brief A customicable method to indicate if the pixels is displayable */
     virtual bool isValueInDisplayableRange( double );
 
+    /** \brief Mustator for the maximum value */
+    void setMaximumValue( double );
+
+    /** \brief Mutator for the minimum value */
+    void setMinimumValue( double );
+
   protected:
-    /** \brief User defineable maximum value for the band, used for stretching */
+    /** \brief User defineable maximum value for the band, used for enhanceContrasting */
     double mMaximumValue;
-    /** \brief User defineable minimum value for the band, used for stretching */
+
+    /** \brief User defineable minimum value for the band, used for enhanceContrasting */
     double mMinimumValue;
-    /** \brief Minimum maximum range for the band, used for stretching */
+
+    /** \brief Minimum maximum range for the band, used for enhanceContrasting */
     double mMinimumMaximumRange;
+
     /** \brief Data type of the band */
     QgsContrastEnhancement::QgsRasterDataType mQgsRasterDataType;
 };

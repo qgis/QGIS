@@ -99,7 +99,7 @@ class QLibrary;
  *  number fields.
  *
  *  Note that where bands are of gdal 'undefined' type, their values may exceed the
- *  renderable range of 0-255. Because of this a linear scaling histogram stretch is
+ *  renderable range of 0-255. Because of this a linear scaling histogram enhanceContrast is
  *  applied to undefined layers to normalise the data into the 0-255 range.
  *
  *  A qgsrasterlayer band can be referred to either by name or by number (base=1). It
@@ -433,20 +433,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Accessor and mutator for minimum maximum values
     //TODO: Move these out of the header file...
     /** \brief Accessor for minimum value user for contrast enhancement */
-    double getMinimumValue( unsigned int theBand )
+    double minimumValue( unsigned int theBand )
     {
       if ( 0 < theBand && theBand <= getBandCount() )
       {
-        return mContrastEnhancementList[theBand - 1].getMinimumValue();
+        return mContrastEnhancementList[theBand - 1].minimumValue();
       }
 
       return 0.0;
     }
 
     /** \brief Accessor for minimum value user for contrast enhancement */
-    double getMinimumValue( QString theBand )
+    double minimumValue( QString theBand )
     {
-      return getMinimumValue( getRasterBandNumber( theBand ) );
+      return minimumValue( getRasterBandNumber( theBand ) );
     }
 
     /** \brief Mutator for setting the minimum value for contrast enhancement */
@@ -469,22 +469,22 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     }
 
     /** \brief Accessor for maximum value user for contrast enhancement */
-    double getMaximumValue( unsigned int theBand )
+    double maximumValue( unsigned int theBand )
     {
       if ( 0 < theBand && theBand <= getBandCount() )
       {
-        return mContrastEnhancementList[theBand - 1].getMaximumValue();
+        return mContrastEnhancementList[theBand - 1].maximumValue();
       }
 
       return 0.0;
     }
 
     /** \brief Accessor for maximum value user for contrast enhancement */
-    double getMaximumValue( QString theBand )
+    double maximumValue( QString theBand )
     {
       if ( theBand != tr( "Not Set" ) )
       {
-        return getMaximumValue( getRasterBandNumber( theBand ) );
+        return maximumValue( getRasterBandNumber( theBand ) );
       }
 
       return 0.0;

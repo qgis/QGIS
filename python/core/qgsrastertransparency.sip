@@ -29,10 +29,10 @@ public:
     // Initializer, Accessor and mutator for transparency tables.
     //
     /** \brief Mutator for transparentSingleValuePixelList */
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> getTransparentSingleValuePixelList();
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList();
     
     /** \brief Mutator for transparentThreeValuePixelList */
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> getTransparentThreeValuePixelList();
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList();
     
     /** \brief Reset to the transparency list to a single value */
     void initializeTransparentPixelList(double);
@@ -47,7 +47,7 @@ public:
     void setTransparentThreeValuePixelList(QList<QgsRasterTransparency::TransparentThreeValuePixel>);
     
     /** \brief Returns the transparency value for a single value Pixel */
-    int getAlphaValue(double, int theGlobalTransparency=255);
+    int alphaValue(double, int theGlobalTransparency=255);
     /** \brief Return the transparency value for a RGB Pixel */
-    int getAlphaValue(double, double, double, int theGlobalTransparency=255);
+    int alphaValue(double, double, double, int theGlobalTransparency=255);
 };

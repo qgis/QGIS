@@ -26,7 +26,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 class QgsContrastEnhancementFunction;
 
 /** \ingroup core
- * Manipulates raster pixel values so that they stretch or clip into a
+ * Manipulates raster pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * CONTRAST_ENHANCEMENT_ALGORITHM.
  */
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsContrastEnhancement
     enum CONTRAST_ENHANCEMENT_ALGORITHM
     {
       NO_STRETCH, //this should be the default color scaling algorithm
-      STRETCH_TO_MINMAX, //linear histogram stretch
+      STRETCH_TO_MINMAX, //linear histogram enhanceContrast
       STRETCH_AND_CLIP_TO_MINMAX,
       CLIP_TO_MINMAX,
       USER_DEFINED
@@ -78,9 +78,10 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double getMaximumPossibleValue( QgsRasterDataType );
+    static double maximumValuePossible( QgsRasterDataType );
+
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double getMinimumPossibleValue( QgsRasterDataType );
+    static double minimumValuePossible( QgsRasterDataType );
 
     /*
      *
@@ -88,10 +89,10 @@ class CORE_EXPORT QgsContrastEnhancement
      *
      */
     /** \brief Return the maximum value for the contrast enhancement range. */
-    double getMaximumValue() const { return mMaximumValue; }
+    double maximumValue() const { return mMaximumValue; }
 
     /** \brief Return the minimum value for the contrast enhancement range. */
-    double getMinimumValue() const { return mMinimumValue; }
+    double minimumValue() const { return mMinimumValue; }
 
     CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
 
@@ -100,44 +101,58 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static methods
      *
      */
+    /** \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
+    int enhanceContrast( double );
+
     /** \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped) */
     bool isValueInDisplayableRange( double );
+
     /** \brief Set the contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( CONTRAST_ENHANCEMENT_ALGORITHM, bool generateTable = true );
+
     /** \brief A public method that allows the user to set their own custom contrast enhancment function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
+
     /** \brief Set the maximum value for the contrast enhancement range. */
     void setMaximumValue( double, bool generateTable = true );
+
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
-    /** \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
-    int stretch( double );
 
   private:
     /** \brief Current contrast enhancement algorithm */
     CONTRAST_ENHANCEMENT_ALGORITHM mContrastEnhancementAlgorithm;
-    /** \brief Data type of the band */
-    QgsRasterDataType mRasterDataType;
-    /** \brief Maximum range of values for a given data type */
-    double mRasterDataTypeRange;
+
+    /** \brief Pointer to the contrast enhancement function */
+    QgsContrastEnhancementFunction* mContrastEnhancementFunction;
+
     /** \brief Flag indicating if the lookup table needs to be regenerated */
     bool mEnhancementDirty;
 
-    QgsContrastEnhancementFunction* mContrastEnhancementFunction;
-
-    /** \brief User defineable minimum value for the band, used for stretching */
-    double mMinimumValue;
-    /** \brief user defineable maximum value for the band, used for stretching */
-    double mMaximumValue;
-
     /** \brief Scalar so that values can be used as array indicies */
     double mLookupTableOffset;
+
     /** \brief Pointer to the lookup table */
     int *mLookupTable;
 
+    /** \brief User defineable minimum value for the band, used for enhanceContrasting */
+    double mMinimumValue;
+
+    /** \brief user defineable maximum value for the band, used for enhanceContrasting */
+    double mMaximumValue;
+
+    /** \brief Data type of the band */
+    QgsRasterDataType mRasterDataType;
+
+    /** \brief Maximum range of values for a given data type */
+    double mRasterDataTypeRange;
+
+
+
     /** \brief Method to generate a new lookup table */
     bool generateLookupTable();
-    /** \brief Method to calculate the actual stretched value(s) */
+
+    /** \brief Method to calculate the actual enhanceContrasted value(s) */
     int calculateContrastEnhancementValue( double );
 };
 

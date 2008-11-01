@@ -53,51 +53,60 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       EXACT
     };
 
-    bool generateShadedValue( double, int*, int*, int* );
-    bool generateShadedValue( double, double, double, int*, int*, int* );
+    /** \brief Get the custom colormap*/
+    QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList;}
 
-    /** Get the custom colormap*/
-    QList<QgsColorRampShader::ColorRampItem> getColorRampItemList() const {return mColorRampItemList;}
+    /** \brief Get the color ramp type */
+    QgsColorRampShader::COLOR_RAMP_TYPE colorRampType() {return mColorRampType;}
 
-    /**Get the color ramp type */
-    QgsColorRampShader::COLOR_RAMP_TYPE getColorRampType() {return mColorRampType;}
-    QString getColorRampTypeAsQString();
+    /** \brief Get the color ramp type as a string */
+    QString colorRampTypeAsQString();
 
-    /**Get the maximum size the color cache can be*/
-    int getMaximumColorCacheSize() { return mMaximumColorCacheSize; }
+    /** \brief Get the maximum size the color cache can be*/
+    int maximumColorCacheSize() { return mMaximumColorCacheSize; }
 
-    /**Set custom colormap */
+    /** \brief Set custom colormap */
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; } //TODO: sort on set
 
-    /**Set the color ramp type*/
+    /** \brief Set the color ramp type*/
     void setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType );
 
-    /**Set the color ramp type*/
+    /** \brief Set the color ramp type*/
     void setColorRampType( QString );
 
-    /**Set the maximum size the color cache can be */
+    /** \brief Set the maximum size the color cache can be */
     void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
 
+    /** \brief Generates and new RGB value based on one input value */
+    bool shade( double, int*, int*, int* );
 
+    /** \brief Generates and new RGB value based on original RGB value */
+    bool shade( double, double, double, int*, int*, int* );
 
   private:
-    /**Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the lower class for every pixel between two class breaks.*/
-    bool getDiscreteColor( double, int*, int*, int* );
-    /**Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the exact matching value in the color ramp item list */
-    bool getExactColor( double, int*, int*, int* );
-    /**Gets the color for a pixel value from the classification vector mValueClassification. Interpolates the color between two class breaks linearly.*/
-    bool getInterpolatedColor( double, int*, int*, int* );
+    /** Current index from which to start searching the color table*/
+    int mCurrentColorRampItemIndex;
 
-    /**This vector holds the information for classification based on values. Each item holds a value, a label and a color. The member mDiscreteClassification holds if one color is applied for all values between two class breaks (true) or if the item values are (linearly) interpolated for values between the item values (false)*/
+    /** This vector holds the information for classification based on values. Each item holds a value, a label and a color. The member mDiscreteClassification holds if one color is applied for all values between two class breaks (true) or if the item values are (linearly) interpolated for values between the item values (false)*/
     QList<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
+    /** \brief The color ramp type */
     QgsColorRampShader::COLOR_RAMP_TYPE mColorRampType;
+
+    /** \brief Cache of values that have already been looked up */
     QMap<double, QColor> mColorCache;
 
     /** Maximum size of the color cache. The color cache could eat a ton of memory if you have 32-bit data */
     int mMaximumColorCacheSize;
-    /** Current index to start searching the color table*/
-    int mCurrentColorRampItemIndex;
+
+
+
+    /** Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the lower class for every pixel between two class breaks.*/
+    bool discreteColor( double, int*, int*, int* );
+    /** Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the exact matching value in the color ramp item list */
+    bool exactColor( double, int*, int*, int* );
+    /** Gets the color for a pixel value from the classification vector mValueClassification. Interpolates the color between two class breaks linearly.*/
+    bool interpolatedColor( double, int*, int*, int* );
 };
 
 #endif

@@ -22,7 +22,7 @@ QgsLinearMinMaxEnhancement::QgsLinearMinMaxEnhancement( QgsContrastEnhancement::
 {
 }
 
-int QgsLinearMinMaxEnhancement::enhanceValue( double theValue )
+int QgsLinearMinMaxEnhancement::enhance( double theValue )
 {
   int myStretchedValue = static_cast<int>((( theValue - mMinimumValue ) / ( mMinimumMaximumRange ) ) * 255.0 );
   if ( myStretchedValue < 0 )

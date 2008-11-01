@@ -34,8 +34,8 @@ QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
   mContrastEnhancementAlgorithm = NO_STRETCH;
   mRasterDataType = theDataType;
 
-  mMinimumValue = getMinimumPossibleValue( mRasterDataType );
-  mMaximumValue = getMaximumPossibleValue( mRasterDataType );
+  mMinimumValue = minimumValuePossible( mRasterDataType );
+  mMaximumValue = maximumValuePossible( mRasterDataType );
   mRasterDataTypeRange = mMaximumValue - mMinimumValue;
 
   mLookupTableOffset = mMinimumValue * -1;
@@ -62,7 +62,7 @@ QgsContrastEnhancement::~QgsContrastEnhancement()
 /**
     Simple function to compute the maximum possible value for a data types.
 */
-double QgsContrastEnhancement::getMaximumPossibleValue( QgsRasterDataType theDataType )
+double QgsContrastEnhancement::maximumValuePossible( QgsRasterDataType theDataType )
 {
   switch ( theDataType )
   {
@@ -110,7 +110,7 @@ double QgsContrastEnhancement::getMaximumPossibleValue( QgsRasterDataType theDat
 /**
     Simple function to compute the minimum possible value for a data type.
 */
-double QgsContrastEnhancement::getMinimumPossibleValue( QgsRasterDataType theDataType )
+double QgsContrastEnhancement::minimumValuePossible( QgsRasterDataType theDataType )
 {
   switch ( theDataType )
   {
@@ -161,7 +161,30 @@ double QgsContrastEnhancement::getMinimumPossibleValue( QgsRasterDataType theDat
  * Non-Static methods
  *
  */
+/**
+    Public function to generate the enhanced for enhanceContrasted value for a given input.
 
+    @param theValue The pixel value to enhance
+*/
+int QgsContrastEnhancement::enhanceContrast( double theValue )
+{
+  if ( mEnhancementDirty )
+  {
+    generateLookupTable();
+  }
+
+  if ( mLookupTable && NO_STRETCH != mContrastEnhancementAlgorithm )
+  {
+    return mLookupTable[static_cast <int>( theValue + mLookupTableOffset )];
+  }
+  else
+  {
+    // Even if the contrast enhancement algorithms is set to NO_STRETCH
+    // The input values will still have to be scaled for all data types
+    // greater than 1 byte.
+    return mContrastEnhancementFunction->enhance( theValue );
+  }
+}
 
 /**
     Generate a new lookup table
@@ -183,7 +206,7 @@ bool QgsContrastEnhancement::generateLookupTable()
 
   for ( int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++ )
   {
-    mLookupTable[myIterator] = mContrastEnhancementFunction->enhanceValue(( double )myIterator - mLookupTableOffset );
+    mLookupTable[myIterator] = mContrastEnhancementFunction->enhance(( double )myIterator - mLookupTableOffset );
   }
 
   return true;
@@ -273,9 +296,9 @@ void QgsContrastEnhancement::setMaximumValue( double theValue, bool generateTabl
 {
   QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
 
-  if ( theValue > getMaximumPossibleValue( mRasterDataType ) )
+  if ( theValue > maximumValuePossible( mRasterDataType ) )
   {
-    mMaximumValue = getMaximumPossibleValue( mRasterDataType );
+    mMaximumValue = maximumValuePossible( mRasterDataType );
   }
   else
   {
@@ -305,9 +328,9 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
 {
   QgsDebugMsg( "called value: " + QString::number( theValue ) + " generate lookup table: " + QString::number(( int )generateTable ) );
 
-  if ( theValue < getMinimumPossibleValue( mRasterDataType ) )
+  if ( theValue < minimumValuePossible( mRasterDataType ) )
   {
-    mMinimumValue = getMinimumPossibleValue( mRasterDataType );
+    mMinimumValue = minimumValuePossible( mRasterDataType );
   }
   else
   {
@@ -324,30 +347,5 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
   if ( generateTable )
   {
     generateLookupTable();
-  }
-}
-
-/**
-    Public function to generate the enhanced for stretched value for a given input.
-
-    @param theValue The pixel value to enhance
-*/
-int QgsContrastEnhancement::stretch( double theValue )
-{
-  if ( mEnhancementDirty )
-  {
-    generateLookupTable();
-  }
-
-  if ( mLookupTable && NO_STRETCH != mContrastEnhancementAlgorithm )
-  {
-    return mLookupTable[static_cast <int>( theValue + mLookupTableOffset )];
-  }
-  else
-  {
-    // Even if the contrast enhancement algorithms is set to NO_STRETCH
-    // The input values will still have to be scaled for all data types
-    // greater than 1 byte.
-    return mContrastEnhancementFunction->enhanceValue( theValue );
   }
 }

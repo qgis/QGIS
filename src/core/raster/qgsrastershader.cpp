@@ -42,11 +42,11 @@ QgsRasterShader::~QgsRasterShader()
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShader::generateShadedValue( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   if ( 0 != mRasterShaderFunction )
   {
-    return mRasterShaderFunction->generateShadedValue( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+    return mRasterShaderFunction->shade( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
   }
 
   return false;
@@ -63,11 +63,11 @@ bool QgsRasterShader::generateShadedValue( double theValue, int* theReturnRedVal
   @param theReturnBlueValue  The blue component of the new RGB value
   @return True if the return values are valid otherwise false
 */
-bool QgsRasterShader::generateShadedValue( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsRasterShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   if ( 0 != mRasterShaderFunction )
   {
-    return mRasterShaderFunction->generateShadedValue( theRedValue, theGreenValue, theBlueValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
+    return mRasterShaderFunction->shade( theRedValue, theGreenValue, theBlueValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
   }
 
   return false;

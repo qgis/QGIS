@@ -22,7 +22,7 @@ email                : ersts@amnh.org
 #include "qgscontrastenhancementfunction.h"
 
 /** \ingroup core
- * A linear stretch enhancement that first clips to min max and then stretches
+ * A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
  * linearly between min and max.
  */
 class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhancementFunction
@@ -30,7 +30,9 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
 
   public:
     QgsLinearMinMaxEnhancementWithClip( QgsContrastEnhancement::QgsRasterDataType, double, double );
-    int enhanceValue( double );
+
+    int enhance( double );
+
     bool isValueInDisplayableRange( double );
 };
 

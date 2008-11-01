@@ -65,7 +65,6 @@ SET(QGIS_CORE_SRCS
 
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
-  raster/qgscolortable.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
   raster/qgsfreakoutshader.cpp
@@ -280,7 +279,6 @@ qgsvectorlayer.h
 
 raster/qgscliptominmaxenhancement.h
 raster/qgscolorrampshader.h
-raster/qgscolortable.h
 raster/qgscolorrampshader.h
 raster/qgscontrastenhancement.h
 raster/qgscontrastenhancementfunction.h
