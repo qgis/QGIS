@@ -277,8 +277,8 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
 {
   QgsDebugMsg( "Entering." );
 
-  QgsDebugMsg( "pixelWidth = "  + QString( pixelWidth ) );
-  QgsDebugMsg( "pixelHeight = "  + QString( pixelHeight ) );
+  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
+  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
 
   // Can we reuse the previously cached image?

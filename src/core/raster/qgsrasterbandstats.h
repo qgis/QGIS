@@ -46,8 +46,8 @@ class CORE_EXPORT QgsRasterBandStats
       stdDev = 0.0;
       sum = 0.0;
       elementCount = 0;
-      histogramEstimated = false;
-      histogramOutOfRange = false;
+      isHistogramEstimated = false;
+      isHistogramOutOfRange = false;
     }
 
     /** \brief The name of the band that these stats belong to. */
@@ -64,10 +64,10 @@ class CORE_EXPORT QgsRasterBandStats
     int elementCount;
 
     /** \brief whteher histogram values are estimated or completely calculated */
-    bool histogramEstimated;
+    bool isHistogramEstimated;
 
     /** whehter histogram compuation should include out of range values */
-    bool histogramOutOfRange;
+    bool isHistogramOutOfRange;
 
     /** \brief Store the histogram for a given layer */
     HistogramVector * histogramVector;
