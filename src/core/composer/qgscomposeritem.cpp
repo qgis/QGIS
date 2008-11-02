@@ -297,37 +297,37 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   scene()->update();
 
   //reset default action
-  mCurrentMouseMoveAction = QgsComposerItem::moveItem;
+  mCurrentMouseMoveAction = QgsComposerItem::MoveItem;
   setCursor( Qt::ArrowCursor );
 }
 
 Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos )
 {
-  QgsComposerItem::mouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
+  QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
 
-  if ( mouseAction == QgsComposerItem::moveItem )
+  if ( mouseAction == QgsComposerItem::MoveItem )
   {
     return Qt::ClosedHandCursor;
   }
-  else if ( mouseAction == QgsComposerItem::resizeDLeftUp || mouseAction == QgsComposerItem::resizeDRightDown )
+  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
   {
     return Qt::SizeFDiagCursor;
   }
-  else if ( mouseAction == QgsComposerItem::resizeDLeftDown || mouseAction == QgsComposerItem::resizeDRightUp )
+  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
   {
     return Qt::SizeBDiagCursor;
   }
-  else if ( mouseAction == QgsComposerItem::resizeUp || mouseAction == QgsComposerItem::resizeDown )
+  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
   {
     return Qt::SizeVerCursor;
   }
-  else //if(mouseAction == QgsComposerItem::resizeLeft || mouseAction == QgsComposerItem::resizeRight)
+  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
   {
     return Qt::SizeHorCursor;
   }
 }
 
-QgsComposerItem::mouseMoveAction QgsComposerItem::mouseMoveActionForPosition( const QPointF& itemCoordPos )
+QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( const QPointF& itemCoordPos )
 {
 
   //move content tool
@@ -357,38 +357,38 @@ QgsComposerItem::mouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
 
   if ( nearLeftBorder && nearUpperBorder )
   {
-    return QgsComposerItem::resizeDLeftUp;
+    return QgsComposerItem::ResizeLeftUp;
   }
   else if ( nearLeftBorder && nearLowerBorder )
   {
-    return QgsComposerItem::resizeDLeftDown;
+    return QgsComposerItem::ResizeLeftDown;
   }
   else if ( nearRightBorder && nearUpperBorder )
   {
-    return QgsComposerItem::resizeDRightUp;
+    return QgsComposerItem::ResizeRightUp;
   }
   else if ( nearRightBorder && nearLowerBorder )
   {
-    return QgsComposerItem::resizeDRightDown;
+    return QgsComposerItem::ResizeRightDown;
   }
   else if ( nearLeftBorder )
   {
-    return QgsComposerItem::resizeLeft;
+    return QgsComposerItem::ResizeLeft;
   }
   else if ( nearRightBorder )
   {
-    return QgsComposerItem::resizeRight;
+    return QgsComposerItem::ResizeRight;
   }
   else if ( nearUpperBorder )
   {
-    return QgsComposerItem::resizeUp;
+    return QgsComposerItem::ResizeUp;
   }
   else if ( nearLowerBorder )
   {
-    return QgsComposerItem::resizeDown;
+    return QgsComposerItem::ResizeDown;
   }
 
-  return QgsComposerItem::moveItem; //default
+  return QgsComposerItem::MoveItem; //default
 }
 
 
@@ -397,41 +397,41 @@ void QgsComposerItem::rectangleChange( double dx, double dy, double& mx, double&
   switch ( mCurrentMouseMoveAction )
   {
       //vertical resize
-    case QgsComposerItem::resizeUp:
+    case QgsComposerItem::ResizeUp:
       mx = 0; my = dy; rx = 0; ry = -dy;
       break;
 
-    case QgsComposerItem::resizeDown:
+    case QgsComposerItem::ResizeDown:
       mx = 0; my = 0; rx = 0; ry = dy;
       break;
 
       //horizontal resize
-    case QgsComposerItem::resizeLeft:
+    case QgsComposerItem::ResizeLeft:
       mx = dx, my = 0; rx = -dx; ry = 0;
       break;
 
-    case QgsComposerItem::resizeRight:
+    case QgsComposerItem::ResizeRight:
       mx = 0; my = 0; rx = dx, ry = 0;
       break;
 
       //diagonal resize
-    case QgsComposerItem::resizeDLeftUp:
+    case QgsComposerItem::ResizeLeftUp:
       mx = dx, my = dy; rx = -dx; ry = -dy;
       break;
 
-    case QgsComposerItem::resizeDRightDown:
+    case QgsComposerItem::ResizeRightDown:
       mx = 0; my = 0; rx = dx, ry = dy;
       break;
 
-    case QgsComposerItem::resizeDRightUp:
+    case QgsComposerItem::ResizeRightUp:
       mx = 0; my = dy, rx = dx, ry = -dy;
       break;
 
-    case QgsComposerItem::resizeDLeftDown:
+    case QgsComposerItem::ResizeLeftDown:
       mx = dx, my = 0; rx = -dx; ry = dy;
       break;
 
-    case QgsComposerItem::moveItem:
+    case QgsComposerItem::MoveItem:
       mx = dx; my = dy; rx = 0, ry = 0;
       break;
   }
