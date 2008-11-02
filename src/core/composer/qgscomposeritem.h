@@ -35,17 +35,17 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
   public:
 
     /**Describes the action (move or resize in different directon) to be done during mouse move*/
-    enum mouseMoveAction
+    enum MouseMoveAction
     {
-      moveItem,
-      resizeUp,
-      resizeDown,
-      resizeLeft,
-      resizeRight,
-      resizeDLeftUp,
-      resizeDRightUp,
-      resizeDLeftDown,
-      resizeDRightDown
+      MoveItem,
+      ResizeUp,
+      ResizeDown,
+      ResizeLeft,
+      ResizeRight,
+      ResizeLeftUp,
+      ResizeRightUp,
+      ResizeLeftDown,
+      ResizeRightDown
     };
 
     QgsComposerItem( QgsComposition* composition );
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
 
     QgsComposition* mComposition;
 
-    QgsComposerItem::mouseMoveAction mCurrentMouseMoveAction;
+    QgsComposerItem::MouseMoveAction mCurrentMouseMoveAction;
     /**Start point of the last mouse move action (in scene coordinates)*/
     QPointF mMouseMoveStartPos;
     /**Position of the last mouse move event (in item coordinates)*/
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     Qt::CursorShape cursorForPosition( const QPointF& itemCoordPos );
 
     /**Finds out which mouse move action to choose depending on the cursor position inside the widget*/
-    QgsComposerItem::mouseMoveAction mouseMoveActionForPosition( const QPointF& itemCoordPos );
+    QgsComposerItem::MouseMoveAction mouseMoveActionForPosition( const QPointF& itemCoordPos );
 
     /**Calculate rectangle changes according to mouse move (dx, dy) and the current mouse move action
        @param dx x-coordinate move of cursor
