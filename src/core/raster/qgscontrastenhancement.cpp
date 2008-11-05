@@ -31,7 +31,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
   mLookupTable = 0;
   mContrastEnhancementFunction = 0;
   mEnhancementDirty = false;
-  mContrastEnhancementAlgorithm = NO_STRETCH;
+  mContrastEnhancementAlgorithm = NoEnhancement;
   mRasterDataType = theDataType;
 
   mMinimumValue = minimumValuePossible( mRasterDataType );
@@ -173,13 +173,13 @@ int QgsContrastEnhancement::enhanceContrast( double theValue )
     generateLookupTable();
   }
 
-  if ( mLookupTable && NO_STRETCH != mContrastEnhancementAlgorithm )
+  if ( mLookupTable && NoEnhancement != mContrastEnhancementAlgorithm )
   {
     return mLookupTable[static_cast <int>( theValue + mLookupTableOffset )];
   }
   else
   {
-    // Even if the contrast enhancement algorithms is set to NO_STRETCH
+    // Even if the contrast enhancement algorithms is set to NoEnhancement
     // The input values will still have to be scaled for all data types
     // greater than 1 byte.
     return mContrastEnhancementFunction->enhance( theValue );
@@ -194,7 +194,7 @@ bool QgsContrastEnhancement::generateLookupTable()
   mEnhancementDirty = false;
 
   if ( 0 == mContrastEnhancementFunction ) { return false; }
-  if ( NO_STRETCH == mContrastEnhancementAlgorithm ) { return false; }
+  if ( NoEnhancement == mContrastEnhancementAlgorithm ) { return false; }
   if ( QGS_Byte != mRasterDataType && QGS_UInt16 != mRasterDataType && QGS_Int16 != mRasterDataType ) { return false; }
   if ( !mLookupTable ) { return false; }
 
@@ -234,7 +234,7 @@ bool QgsContrastEnhancement::isValueInDisplayableRange( double theValue )
     @param theAlgorithm The new contrast enhancement algorithm
     @param generateTable Flag to overide automatic look up table generation
 */
-void QgsContrastEnhancement::setContrastEnhancementAlgorithm( CONTRAST_ENHANCEMENT_ALGORITHM theAlgorithm, bool generateTable )
+void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm theAlgorithm, bool generateTable )
 {
   QgsDebugMsg( "called algorithm: " + QString::number(( int )theAlgorithm ) + " generate lookup table: " + QString::number(( int )generateTable ) );
 
@@ -242,16 +242,16 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( CONTRAST_ENHANCEME
   {
     switch ( theAlgorithm )
     {
-      case STRETCH_TO_MINMAX :
+      case StretchToMinimumMaximum :
         mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
         break;
-      case STRETCH_AND_CLIP_TO_MINMAX :
+      case StretchAndClipToMinimumMaximum :
         mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
         break;
-      case CLIP_TO_MINMAX :
+      case ClipToMinimumMaximum :
         mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
         break;
-      case USER_DEFINED :
+      case UserDefined :
         //Do nothing
         break;
       default:
@@ -281,7 +281,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
   if ( 0 != theFunction )
   {
     mContrastEnhancementFunction = theFunction;
-    mContrastEnhancementAlgorithm = USER_DEFINED;
+    mContrastEnhancementAlgorithm = UserDefined;
     generateLookupTable();
   }
 }

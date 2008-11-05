@@ -8,13 +8,13 @@ class QgsContrastEnhancement
 public:
  
   /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
-  enum CONTRAST_ENHANCEMENT_ALGORITHM
+  enum ContrastEnhancementAlgorithm
   {
-    NO_STRETCH, //this should be the default color scaling algorithm
-    STRETCH_TO_MINMAX, //linear histogram enhanceContrast
-    STRETCH_AND_CLIP_TO_MINMAX,
-    CLIP_TO_MINMAX,
-    USER_DEFINED
+    NoEnhancement, //this should be the default color scaling algorithm
+    StretchToMinimumMaximum, //linear histogram enhanceContrast
+    StretchAndClipToMinimumMaximum,
+    ClipToMinimumMaximum,
+    UserDefined
   };
     
   /*! These are exactly the same as GDAL pixel data types */
@@ -58,7 +58,7 @@ public:
   /** \brief Return the minimum value for the contrast enhancement range. */
   double minimumValue();
   
-  CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm();
+  ContrastEnhancementAlgorithm contrastEnhancementAlgorithm();
   
   /*
    *
@@ -68,7 +68,7 @@ public:
   /** \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped) */
   bool isValueInDisplayableRange(double);
   /** \brief Set the contrast enhancement algorithm */
-  void setContrastEnhancementAlgorithm(CONTRAST_ENHANCEMENT_ALGORITHM, bool generateTable=true);
+  void setContrastEnhancementAlgorithm(ContrastEnhancementAlgorithm, bool generateTable=true);
   /** \brief A public method that allows the user to set their own custom contrast enhancment function */
   void setContrastEnhancementFunction(QgsContrastEnhancementFunction*);
   /** \brief Set the maximum value for the contrast enhancement range. */

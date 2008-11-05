@@ -158,7 +158,7 @@ int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* r
     return 2;
   }
 
-  QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rasterLayer->getLegendQPixmap( true ) ), "" );
+  QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rasterLayer->legendAsPixmap( true ) ), "" );
 
   int currentRowCount = layerItem->rowCount();
   layerItem->setChild( currentRowCount, 0, currentSymbolItem );
@@ -363,7 +363,7 @@ void QgsLegendModel::updateRasterClassificationItem( QStandardItem* classificati
     return;
   }
 
-  QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rl->getLegendQPixmap( true ) ), "" );
+  QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rl->legendAsPixmap( true ) ), "" );
   parentItem->insertRow( 0, currentSymbolItem );
   parentItem->removeRow( 1 );
 }
@@ -585,7 +585,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
         QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
         if ( rasterLayer )
         {
-          childItem->setIcon( QIcon( rasterLayer->getLegendQPixmap( true ) ) );
+          childItem->setIcon( QIcon( rasterLayer->legendAsPixmap( true ) ) );
         }
         layerItem->setChild( layerItem->rowCount(), 0, childItem );
       }

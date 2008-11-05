@@ -158,10 +158,10 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     bool ignoreSpinBoxEvent;
 
     /** \brief Flag to indicate if Gray minimum maximum values are actual minimum maximum values */
-    bool mGrayActualMinimumMaximum;
+    bool mGrayMinimumMaximumEstimated;
 
     /** \brief Flag to indicate if RGB minimum maximum values are actual minimum maximum values */
-    bool mRGBActualMinimumMaximum;
+    bool mRGBMinimumMaximumEstimated;
 
     /** \brief Pointer to the raster layer that this property dilog changes the behaviour of. */
     QgsRasterLayer * mRasterLayer;

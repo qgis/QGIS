@@ -119,12 +119,12 @@ void TestQgsRasterLayer::isValid()
 
 void TestQgsRasterLayer::pseudoColor()
 {
-  mpRasterLayer->setDrawingStyle( QgsRasterLayer::SINGLE_BAND_PSEUDO_COLOR );
-  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PSEUDO_COLOR );
+  mpRasterLayer->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
+  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColor );
   mpRasterLayer->setContrastEnhancementAlgorithm(
-    QgsContrastEnhancement::STRETCH_TO_MINMAX, false );
-  mpRasterLayer->setMinimumValue( mpRasterLayer->getGrayBandName(), 0.0, false );
-  mpRasterLayer->setMaximumValue( mpRasterLayer->getGrayBandName(), 10.0 );
+    QgsContrastEnhancement::StretchToMinimumMaximum, false );
+  mpRasterLayer->setMinimumValue( mpRasterLayer->grayBandName(), 0.0, false );
+  mpRasterLayer->setMaximumValue( mpRasterLayer->grayBandName(), 10.0 );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster_pseudo" ) );
 }
@@ -149,11 +149,11 @@ void TestQgsRasterLayer::landsatBasic875Qml()
 }
 void TestQgsRasterLayer::checkDimensions()
 {
-  QVERIFY( mpRasterLayer->getRasterXDim() == 10 );
-  QVERIFY( mpRasterLayer->getRasterYDim() == 10 );
+  QVERIFY( mpRasterLayer->width() == 10 );
+  QVERIFY( mpRasterLayer->height() == 10 );
   // regression check for ticket #832
-  // note getRasterBandStats call is base 1
-  QVERIFY( mpRasterLayer->getRasterBandStats( 1 ).elementCount == 100 );
+  // note bandStatistics call is base 1
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).elementCount == 100 );
 }
 
 void TestQgsRasterLayer::buildExternalOverviews()
@@ -174,7 +174,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   //
 
   bool myInternalFlag = false;
-  QgsRasterLayer::RasterPyramidList myPyramidList = mypLayer->buildRasterPyramidList();
+  QgsRasterLayer::RasterPyramidList myPyramidList = mypLayer->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
@@ -190,7 +190,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   //
   // Lets verify we have pyramids now...
   //
-  myPyramidList = mypLayer->buildRasterPyramidList();
+  myPyramidList = mypLayer->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
