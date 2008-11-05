@@ -198,7 +198,7 @@ bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedVa
   return false;
 }
 
-void QgsColorRampShader::setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType )
+void QgsColorRampShader::setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType )
 {
   //When the ramp type changes we need to clear out the cache
   mColorCache.clear();

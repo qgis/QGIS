@@ -46,7 +46,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       QColor color;
     };
 
-    enum COLOR_RAMP_TYPE
+    enum ColorRamp_TYPE
     {
       INTERPOLATED,
       DISCRETE,
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const {return mColorRampItemList;}
 
     /** \brief Get the color ramp type */
-    QgsColorRampShader::COLOR_RAMP_TYPE colorRampType() {return mColorRampType;}
+    QgsColorRampShader::ColorRamp_TYPE colorRampType() {return mColorRampType;}
 
     /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ) { mColorRampItemList = theList; } //TODO: sort on set
 
     /** \brief Set the color ramp type*/
-    void setColorRampType( QgsColorRampShader::COLOR_RAMP_TYPE theColorRampType );
+    void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
 
     /** \brief Set the color ramp type*/
     void setColorRampType( QString );
@@ -87,11 +87,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** Current index from which to start searching the color table*/
     int mCurrentColorRampItemIndex;
 
+    //TODO: Consider pulling this out as a separate class and internally storing as a QMap rather than a QList
     /** This vector holds the information for classification based on values. Each item holds a value, a label and a color. The member mDiscreteClassification holds if one color is applied for all values between two class breaks (true) or if the item values are (linearly) interpolated for values between the item values (false)*/
     QList<QgsColorRampShader::ColorRampItem> mColorRampItemList;
 
     /** \brief The color ramp type */
-    QgsColorRampShader::COLOR_RAMP_TYPE mColorRampType;
+    QgsColorRampShader::ColorRamp_TYPE mColorRampType;
 
     /** \brief Cache of values that have already been looked up */
     QMap<double, QColor> mColorCache;
@@ -103,8 +104,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
 
     /** Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the lower class for every pixel between two class breaks.*/
     bool discreteColor( double, int*, int*, int* );
+
     /** Gets the color for a pixel value from the classification vector mValueClassification. Assigns the color of the exact matching value in the color ramp item list */
     bool exactColor( double, int*, int*, int* );
+
     /** Gets the color for a pixel value from the classification vector mValueClassification. Interpolates the color between two class breaks linearly.*/
     bool interpolatedColor( double, int*, int*, int* );
 };

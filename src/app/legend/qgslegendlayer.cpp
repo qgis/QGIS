@@ -391,7 +391,7 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
 void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 {
   SymbologyList itemList;
-  QPixmap legendpixmap = layer->getLegendQPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
+  QPixmap legendpixmap = layer->legendAsPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
   itemList.push_back( std::make_pair( "", legendpixmap ) );
 
   changeSymbologySettings( layer, itemList );
@@ -458,7 +458,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap() const
     {
       QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( firstLayer );
       QPixmap myPixmap( 32, 32 );
-      rlayer->drawThumbnail( &myPixmap );
+      rlayer->thumbnailAsPixmap( &myPixmap );
       return myPixmap;
     }
   }

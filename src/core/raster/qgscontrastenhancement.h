@@ -28,7 +28,7 @@ class QgsContrastEnhancementFunction;
 /** \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
- * CONTRAST_ENHANCEMENT_ALGORITHM.
+ * ContrastEnhancementAlgorithm.
  */
 class CORE_EXPORT QgsContrastEnhancement
 {
@@ -36,13 +36,13 @@ class CORE_EXPORT QgsContrastEnhancement
   public:
 
     /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
-    enum CONTRAST_ENHANCEMENT_ALGORITHM
+    enum ContrastEnhancementAlgorithm
     {
-      NO_STRETCH, //this should be the default color scaling algorithm
-      STRETCH_TO_MINMAX, //linear histogram enhanceContrast
-      STRETCH_AND_CLIP_TO_MINMAX,
-      CLIP_TO_MINMAX,
-      USER_DEFINED
+      NoEnhancement,                  //this should be the default color scaling algorithm
+      StretchToMinimumMaximum,        //linear histogram enhanceContrast
+      StretchAndClipToMinimumMaximum,
+      ClipToMinimumMaximum,
+      UserDefined
     };
 
     /** These are exactly the same as GDAL pixel data types
@@ -94,7 +94,7 @@ class CORE_EXPORT QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     double minimumValue() const { return mMinimumValue; }
 
-    CONTRAST_ENHANCEMENT_ALGORITHM getContrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
+    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
 
     /*
      *
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsContrastEnhancement
     bool isValueInDisplayableRange( double );
 
     /** \brief Set the contrast enhancement algorithm */
-    void setContrastEnhancementAlgorithm( CONTRAST_ENHANCEMENT_ALGORITHM, bool generateTable = true );
+    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
 
     /** \brief A public method that allows the user to set their own custom contrast enhancment function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsContrastEnhancement
 
   private:
     /** \brief Current contrast enhancement algorithm */
-    CONTRAST_ENHANCEMENT_ALGORITHM mContrastEnhancementAlgorithm;
+    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
 
     /** \brief Pointer to the contrast enhancement function */
     QgsContrastEnhancementFunction* mContrastEnhancementFunction;
