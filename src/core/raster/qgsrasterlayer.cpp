@@ -3154,7 +3154,7 @@ void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingA
         mRasterShader->setRasterShaderFunction( new QgsPseudoColorShader() );
         break;
       case FreakOutShader:
-        mRasterShader->setRasterShaderFunction( new QgsFreakOutShaderShader() );
+        mRasterShader->setRasterShaderFunction( new QgsFreakOutShader() );
         break;
       case ColorRampShader:
         mRasterShader->setRasterShaderFunction( new QgsColorRampShader() );
