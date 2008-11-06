@@ -55,11 +55,11 @@ public:
     /** \brief This enumerator describes the types of shading that can be used */
     enum ColorShadingAlgorithm
     {
-      UndefinedShadingAlgorithm,
-      PseudoColor,
-      FreakOut,
-      ColorRamp,
-      UserDefined
+      UndefinedShader,
+      PseudoColorShader,
+      FreakOutShader,
+      ColorRampShader,
+      UserDefinedShader
     };
 
     /** \brief This enumerator describes the different kinds of drawing we can do */
@@ -214,7 +214,7 @@ public:
     void setRGBMinimumMaximumEstimated( bool theBool );
 
     /** \brief Mutator to alter the number of standard deviations that should be plotted */
-    void setStandardDeviationsToPlot( double theStdDevsToPlot );
+    void setStandardDeviations( double theStdDevsToPlot );
 
     /** \brief Mutator for mUserDefinedGrayMinimumMaximum */
     void setUserDefinedGrayMinimumMaximum( bool theBool );
@@ -223,7 +223,7 @@ public:
     void setUserDefinedRGBMinimumMaximum( bool theBool );
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
-    double standardDeviationsToPlot() const;
+    double standardDeviations() const;
 
     /** \brief  Accessor for transparent band name mapping */
     QString transparentBandName() const;

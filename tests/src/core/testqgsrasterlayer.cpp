@@ -120,7 +120,7 @@ void TestQgsRasterLayer::isValid()
 void TestQgsRasterLayer::pseudoColor()
 {
   mpRasterLayer->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColor );
+  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColorShader );
   mpRasterLayer->setContrastEnhancementAlgorithm(
     QgsContrastEnhancement::StretchToMinimumMaximum, false );
   mpRasterLayer->setMinimumValue( mpRasterLayer->grayBandName(), 0.0, false );

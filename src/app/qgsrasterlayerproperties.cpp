@@ -588,19 +588,19 @@ void QgsRasterLayerProperties::sync()
        mRasterLayer->drawingStyle() == QgsRasterLayer::PalettedSingleBandPseudoColor ||
        mRasterLayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
   {
-    if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::PseudoColor )
+    if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::PseudoColorShader )
     {
       cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Pseudocolor" ) ) );
     }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::FreakOut )
+    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::FreakOutShader )
     {
       cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Freak Out" ) ) );
     }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::ColorRamp )
+    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::ColorRampShader )
     {
       cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "Colormap" ) ) );
     }
-    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::UserDefined )
+    else if ( mRasterLayer->colorShadingAlgorithm() == QgsRasterLayer::UserDefinedShader )
     {
       cboxColorMap->setCurrentIndex( cboxColorMap->findText( tr( "User Defined" ) ) );
     }
@@ -638,7 +638,7 @@ void QgsRasterLayerProperties::sync()
     }
     else
     {
-      sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+      sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviations() );
       rbtnThreeBandStdDev->setChecked( true );
       rbtnThreeBandMinMax->setChecked( false );
     }
@@ -677,7 +677,7 @@ void QgsRasterLayerProperties::sync()
     }
     else
     {
-      sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+      sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviations() );
       rbtnSingleBandStdDev->setChecked( true );
       rbtnSingleBandMinMax->setChecked( false );
     }
@@ -709,7 +709,7 @@ void QgsRasterLayerProperties::sync()
   {
     cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
   }
-  else if ( QgsContrastEnhancement::UserDefined == mRasterLayer->contrastEnhancementAlgorithm() )
+  else if ( QgsContrastEnhancement::UserDefinedEnhancement == mRasterLayer->contrastEnhancementAlgorithm() )
   {
     cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "User Defined" ) ) );
   }
@@ -851,7 +851,7 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
 
-  if ( QgsRasterLayer::ColorRamp != mRasterLayer->colorShadingAlgorithm() )
+  if ( QgsRasterLayer::ColorRampShader != mRasterLayer->colorShadingAlgorithm() )
   {
     return;
   }
@@ -1059,15 +1059,15 @@ void QgsRasterLayerProperties::apply()
   //If UserDefined do nothing, user defined can only be set programatically
   if ( cboxColorMap->currentText() == tr( "Pseudocolor" ) )
   {
-    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColor );
+    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColorShader );
   }
   else if ( cboxColorMap->currentText() == tr( "Freak Out" ) )
   {
-    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::FreakOut );
+    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::FreakOutShader );
   }
   else if ( cboxColorMap->currentText() == tr( "Colormap" ) )
   {
-    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::ColorRamp );
+    mRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::ColorRampShader );
   }
 
   //set the color scaling algorithm
@@ -1086,7 +1086,7 @@ void QgsRasterLayerProperties::apply()
   {
     mRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::ClipToMinimumMaximum, false );
   }
-  else if ( QgsContrastEnhancement::UserDefined == mRasterLayer->contrastEnhancementAlgorithm() )
+  else if ( QgsContrastEnhancement::UserDefinedEnhancement == mRasterLayer->contrastEnhancementAlgorithm() )
   {
     //do nothing
   }
@@ -1117,17 +1117,17 @@ void QgsRasterLayerProperties::apply()
         mRasterLayer->setMinimumValue( cboBlue->currentText(), leBlueMin->text().toDouble(), false );
         mRasterLayer->setMaximumValue( cboBlue->currentText(), leBlueMax->text().toDouble() );
       }
-      mRasterLayer->setStandardDeviationsToPlot( 0.0 );
+      mRasterLayer->setStandardDeviations( 0.0 );
       mRasterLayer->setUserDefinedRGBMinimumMaximum( true );
     }
     else if ( rbtnThreeBandStdDev->isEnabled() && rbtnThreeBandStdDev->isChecked() )
     {
-      mRasterLayer->setStandardDeviationsToPlot( sboxThreeBandStdDev->value() );
+      mRasterLayer->setStandardDeviations( sboxThreeBandStdDev->value() );
       mRasterLayer->setUserDefinedRGBMinimumMaximum( false );
     }
     else
     {
-      mRasterLayer->setStandardDeviationsToPlot( 0.0 );
+      mRasterLayer->setStandardDeviations( 0.0 );
       mRasterLayer->setUserDefinedRGBMinimumMaximum( false );
     }
   }
@@ -1142,17 +1142,17 @@ void QgsRasterLayerProperties::apply()
         mRasterLayer->setMinimumValue( cboGray->currentText(), leGrayMin->text().toDouble(), false );
         mRasterLayer->setMaximumValue( cboGray->currentText(), leGrayMax->text().toDouble() );
       }
-      mRasterLayer->setStandardDeviationsToPlot( 0.0 );
+      mRasterLayer->setStandardDeviations( 0.0 );
       mRasterLayer->setUserDefinedGrayMinimumMaximum( true );
     }
     else if ( rbtnSingleBandStdDev->isEnabled() && rbtnSingleBandStdDev->isChecked() )
     {
-      mRasterLayer->setStandardDeviationsToPlot( sboxSingleBandStdDev->value() );
+      mRasterLayer->setStandardDeviations( sboxSingleBandStdDev->value() );
       mRasterLayer->setUserDefinedGrayMinimumMaximum( false );
     }
     else
     {
-      mRasterLayer->setStandardDeviationsToPlot( 0.0 );
+      mRasterLayer->setStandardDeviations( 0.0 );
       mRasterLayer->setUserDefinedGrayMinimumMaximum( false );
     }
   }
@@ -1468,7 +1468,7 @@ void QgsRasterLayerProperties::apply()
     {
       if ( rbtnThreeBandStdDev->isEnabled() )
       {
-        sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+        sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviations() );
       }
 
       if ( rbtnThreeBandMinMax->isEnabled() )
@@ -1496,7 +1496,7 @@ void QgsRasterLayerProperties::apply()
     {
       if ( rbtnSingleBandStdDev->isEnabled() )
       {
-        sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+        sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviations() );
       }
 
       if ( rbtnSingleBandMinMax->isEnabled() )
@@ -2390,7 +2390,7 @@ void QgsRasterLayerProperties::on_rbtnSingleBand_toggled( bool theState )
     }
     else
     {
-      sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+      sboxSingleBandStdDev->setValue( mRasterLayer->standardDeviations() );
       rbtnSingleBandStdDev->setChecked( true );
     }
 
@@ -2471,7 +2471,7 @@ void QgsRasterLayerProperties::on_rbtnThreeBand_toggled( bool theState )
     }
     else
     {
-      sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviationsToPlot() );
+      sboxThreeBandStdDev->setValue( mRasterLayer->standardDeviations() );
       rbtnThreeBandStdDev->setChecked( true );
     }
 

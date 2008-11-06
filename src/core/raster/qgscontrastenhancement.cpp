@@ -251,7 +251,7 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
       case ClipToMinimumMaximum :
         mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
         break;
-      case UserDefined :
+      case UserDefinedEnhancement :
         //Do nothing
         break;
       default:
@@ -281,7 +281,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
   if ( 0 != theFunction )
   {
     mContrastEnhancementFunction = theFunction;
-    mContrastEnhancementAlgorithm = UserDefined;
+    mContrastEnhancementAlgorithm = UserDefinedEnhancement;
     generateLookupTable();
   }
 }
