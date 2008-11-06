@@ -306,7 +306,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emit map tool changed event
     void mapToolSet( QgsMapTool * tool );
 
-    //! Emit map tool changed event
+    //! Emitted when selection in any layer gets changed
     void selectionChanged( QgsMapLayer * layer );
 
   protected:
