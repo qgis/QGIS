@@ -42,7 +42,7 @@ class CORE_EXPORT QgsContrastEnhancement
       StretchToMinimumMaximum,        //linear histogram enhanceContrast
       StretchAndClipToMinimumMaximum,
       ClipToMinimumMaximum,
-      UserDefined
+      UserDefinedEnhancement
     };
 
     /** These are exactly the same as GDAL pixel data types

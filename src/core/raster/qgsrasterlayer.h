@@ -165,7 +165,7 @@ class QLibrary;
  *  color palettes inverted using the setTransparency and setInvertHistogram methods.
  *
  *  Pseudocolor images can have their output adjusted to a given number of standard
- *  deviations using the setStandardDeviationsToPlot method.
+ *  deviations using the setStandardDeviations method.
  *
  *  The final area of functionality you may be interested in is band mapping. Band mapping
  *  allows you to choose arbitrary band -> color mappings and is applicable only to Palette
@@ -221,11 +221,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief This enumerator describes the types of shading that can be used */
     enum ColorShadingAlgorithm
     {
-      UndefinedShadingAlgorithm,
-      PseudoColor,
-      FreakOut,
-      ColorRamp,
-      UserDefined
+      UndefinedShader,
+      PseudoColorShader,
+      FreakOutShader,
+      ColorRampShader,
+      UserDefinedShader
     };
 
     /** \brief This enumerator describes the different kinds of drawing we can do */
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setRGBMinimumMaximumEstimated( bool theBool ) { mRGBMinimumMaximumEstimated = theBool; }
 
     /** \brief Mutator to alter the number of standard deviations that should be plotted */
-    void setStandardDeviationsToPlot( double theStdDevsToPlot ) { mStandardDeviations = theStdDevsToPlot; }
+    void setStandardDeviations( double theStandardDeviations ) { mStandardDeviations = theStandardDeviations; }
 
     /** \brief Mutator for mUserDefinedGrayMinimumMaximum */
     void setUserDefinedGrayMinimumMaximum( bool theBool ) { mUserDefinedGrayMinimumMaximum = theBool; }
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
-    double standardDeviationsToPlot() const { return mStandardDeviations; }
+    double standardDeviations() const { return mStandardDeviations; }
 
     /** \brief  Accessor for transparent band name mapping */
     QString transparentBandName() const { return mTransparencyBandName; }

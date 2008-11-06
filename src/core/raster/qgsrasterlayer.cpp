@@ -1179,23 +1179,23 @@ QString QgsRasterLayer::colorShadingAlgorithmAsString() const
 {
   switch ( mColorShadingAlgorithm )
   {
-    case PseudoColor:
-      return QString( "PseudoColor" );
+    case PseudoColorShader:
+      return QString( "PseudoColorShader" );
       break;
-    case FreakOut:
-      return QString( "FreakOut" );
+    case FreakOutShader:
+      return QString( "FreakOutShader" );
       break;
-    case ColorRamp:
-      return QString( "ColorRamp" );
+    case ColorRampShader:
+      return QString( "ColorRampShader" );
       break;
-    case UserDefined:
-      return QString( "UserDefined" );
+    case UserDefinedShader:
+      return QString( "UserDefinedShader" );
       break;
     default:
       break;
   }
 
-  return QString( "UndefinedShadingAlgorithm" );
+  return QString( "UndefinedShader" );
 }
 
 /**
@@ -1252,7 +1252,7 @@ QString QgsRasterLayer::contrastEnhancementAlgorithmAsString() const
     case QgsContrastEnhancement::ClipToMinimumMaximum:
       return QString( "ClipToMinimumMaximum" );
       break;
-    case QgsContrastEnhancement::UserDefined:
+    case QgsContrastEnhancement::UserDefinedEnhancement:
       return QString( "UserDefined" );
       break;
   }
@@ -1980,7 +1980,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = 255;
             int myGreen = static_cast < int >((( 255 / myRangeSize ) * ( my - myClassBreakMin1 ) ) * 3 );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -1993,7 +1993,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
             int myGreen = 255;
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myGreen = myBlue;
             }
@@ -2006,7 +2006,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = 0;
             int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin3 ) / 1 ) * 3 ) ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = myGreen;
               myGreen = 255 - myGreen;
@@ -2023,7 +2023,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = 0;
             int myGreen = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin1 ) / 1 ) * 3 ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -2036,7 +2036,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
             int myGreen = 255;
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myGreen = myBlue;
             }
@@ -2049,7 +2049,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             int myBlue = 255;
             int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * ( my - myClassBreakMin3 ) ) * 3 ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -2238,7 +2238,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = 255;
             int myGreen = static_cast < int >((( 255 / myRangeSize ) * ( my - myClassBreakMin1 ) ) * 3 );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -2251,7 +2251,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
             int myGreen = 255;
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myGreen = myBlue;
             }
@@ -2264,7 +2264,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = 0;
             int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin3 ) / 1 ) * 3 ) ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = myGreen;
               myGreen = 255 - myGreen;
@@ -2281,7 +2281,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = 0;
             int myGreen = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin1 ) / 1 ) * 3 ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -2294,7 +2294,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
             int myGreen = 255;
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myGreen = myBlue;
             }
@@ -2307,7 +2307,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             int myBlue = 255;
             int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * ( my - myClassBreakMin3 ) ) * 3 ) );
             // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOut )
+            if ( mColorShadingAlgorithm == FreakOutShader )
             {
               myRed = 255 - myGreen;
             }
@@ -3150,16 +3150,16 @@ void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingA
 
     switch ( theShadingAlgorithm )
     {
-      case PseudoColor:
+      case PseudoColorShader:
         mRasterShader->setRasterShaderFunction( new QgsPseudoColorShader() );
         break;
-      case FreakOut:
-        mRasterShader->setRasterShaderFunction( new QgsFreakOutShader() );
+      case FreakOutShader:
+        mRasterShader->setRasterShaderFunction( new QgsFreakOutShaderShader() );
         break;
-      case ColorRamp:
+      case ColorRampShader:
         mRasterShader->setRasterShaderFunction( new QgsColorRampShader() );
         break;
-      case UserDefined:
+      case UserDefinedShader:
         //do nothing
         break;
       default:
@@ -3174,16 +3174,16 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString theShaderAlgorithm )
 {
   QgsDebugMsg( "called with [" + theShaderAlgorithm + "]" );
 
-  if ( theShaderAlgorithm == "PseudoColor" )
-    setColorShadingAlgorithm( PseudoColor );
-  else if ( theShaderAlgorithm == "FreakOut" )
-    setColorShadingAlgorithm( FreakOut );
-  else if ( theShaderAlgorithm == "ColorRamp" )
-    setColorShadingAlgorithm( ColorRamp );
-  else if ( theShaderAlgorithm == "UserDefined" )
-    setColorShadingAlgorithm( UserDefined );
+  if ( theShaderAlgorithm == "PseudoColorShader" )
+    setColorShadingAlgorithm( PseudoColorShader );
+  else if ( theShaderAlgorithm == "FreakOutShader" )
+    setColorShadingAlgorithm( FreakOutShader );
+  else if ( theShaderAlgorithm == "ColorRampShader" )
+    setColorShadingAlgorithm( ColorRampShader );
+  else if ( theShaderAlgorithm == "UserDefinedShader" )
+    setColorShadingAlgorithm( UserDefinedShader );
   else
-    setColorShadingAlgorithm( UndefinedShadingAlgorithm );
+    setColorShadingAlgorithm( UndefinedShader );
 }
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag)
@@ -3219,7 +3219,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QString theAlgorithm, bool
   }
   else if ( theAlgorithm == "UserDefined" )
   {
-    setContrastEnhancementAlgorithm( QgsContrastEnhancement::UserDefined, theGenerateLookupTableFlag );
+    setContrastEnhancementAlgorithm( QgsContrastEnhancement::UserDefinedEnhancement, theGenerateLookupTableFlag );
   }
   else
   {
@@ -3365,13 +3365,13 @@ void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFuncti
   if ( theFunction )
   {
     mRasterShader->setRasterShaderFunction( theFunction );
-    mColorShadingAlgorithm = QgsRasterLayer::UserDefined;
+    mColorShadingAlgorithm = QgsRasterLayer::UserDefinedShader;
   }
   else
   {
     //If NULL as passed in, set a default shader function to prevent segfaults
     mRasterShader->setRasterShaderFunction( new QgsRasterShaderFunction() );
-    mColorShadingAlgorithm = QgsRasterLayer::UserDefined;
+    mColorShadingAlgorithm = QgsRasterLayer::UserDefinedShader;
   }
 }
 
@@ -3518,7 +3518,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   snode = mnl.namedItem( "mStandardDeviations" );
   myElement = snode.toElement();
-  setStandardDeviationsToPlot( myElement.text().toDouble() );
+  setStandardDeviations( myElement.text().toDouble() );
 
   snode = mnl.namedItem( "mUserDefinedRGBMinimumMaximum" );
   myElement = snode.toElement();
@@ -3918,7 +3918,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 
   // <mStandardDeviations>
   QDomElement mStandardDeviationsElement = document.createElement( "mStandardDeviations" );
-  QDomText    mStandardDeviationsText    = document.createTextNode( QString::number( standardDeviationsToPlot() ) );
+  QDomText    mStandardDeviationsText    = document.createTextNode( QString::number( standardDeviations() ) );
 
   mStandardDeviationsElement.appendChild( mStandardDeviationsText );
 
@@ -4074,7 +4074,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   /*
    * Color Ramp tab
    */
-  if ( QgsRasterLayer::ColorRamp ==  colorShadingAlgorithm() )
+  if ( QgsRasterLayer::ColorRampShader ==  colorShadingAlgorithm() )
   {
     QDomElement customColorRampElement = document.createElement( "customColorRamp" );
 
@@ -5157,7 +5157,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     mDrawingStyle = PalettedColor; //sensible default
 
     //Set up a new color ramp shader
-    setColorShadingAlgorithm( ColorRamp );
+    setColorShadingAlgorithm( ColorRampShader );
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
     myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
     myColorRampShader->setColorRampItemList( *colorTable( 1 ) );
