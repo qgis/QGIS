@@ -63,15 +63,19 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Zoom to full extent of map layers
     virtual void zoomFull() = 0;
-    //! Zoom to previous view extent
+
+  //! Zoom to previous view extent
     virtual void zoomToPrevious() = 0;
-    //! Zoome to extent of the active layer
+    
+    //! Zoom to extent of the active layer
     virtual void zoomToActiveLayer() = 0;
 
     //! Add a vector layer
     virtual QgsVectorLayer* addVectorLayer( QString vectorLayerPath, QString baseName, QString providerKey ) = 0;
+    
     //! Add a raster layer given a raster layer file name
     virtual QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName = QString() ) = 0;
+
     //! Add a WMS layer
     virtual QgsRasterLayer* addRasterLayer( const QString& url, const QString& layerName, const QString& providerKey, const QStringList& layers,
                                             const QStringList& styles, const QString& format, const QString& crs ) = 0;
@@ -86,20 +90,13 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
+
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
+    
     //! Add toolbar with specified name
     virtual QToolBar * addToolBar( QString name ) = 0;
-    // TODO: is this deprecated in favour of QgsContextHelp?
-    /** Open a url in the users browser. By default the QGIS doc directory is used
-     * as the base for the URL. To open a URL that is not relative to the installed
-     * QGIS documentation, set useQgisDocDirectory to false.
-     * @param url URL to open
-     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
-     * url to the QGIS documentation directory path (<prefix>/share/doc)
-     */
-    virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0;
-
+    
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
 
@@ -120,9 +117,21 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action ) = 0;
+
     /** Remove window from Window menu. Calling this is necessary only for
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
+
+    // TODO: is this deprecated in favour of QgsContextHelp?
+    /** Open a url in the users browser. By default the QGIS doc directory is used
+     * as the base for the URL. To open a URL that is not relative to the installed
+     * QGIS documentation, set useQgisDocDirectory to false.
+     * @param url URL to open
+     * @param useQgisDocDirectory If true, the URL will be formed by concatenating
+     * url to the QGIS documentation directory path (<prefix>/share/doc)
+     */
+    virtual void openURL( QString url, bool useQgisDocDirectory = true ) = 0;
+
 
     /** Accessors for inserting items into menus and toolbars.
      * An item can be inserted before any existing action.
@@ -257,7 +266,7 @@ class GUI_EXPORT QgisInterface : public QObject
 #ifdef WIN32
 #  define QGISEXTERN extern "C" __declspec( dllexport )
 #  ifdef _MSC_VER
-// do not warn about C bindings returing QString
+// do not warn about C bindings returning QString
 #    pragma warning(disable:4190)
 #  endif
 #else
