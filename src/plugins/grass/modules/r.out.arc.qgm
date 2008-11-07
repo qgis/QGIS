@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Converts GRASS raster into ESRI ARCGRID" module="r.out.arc">
+<qgisgrassmodule label="Convert GRASS raster into ESRI ARCGRID" module="r.out.arc">
 	<option key="input" />
 	<option key="dp" answer="2"/>
 	<flag key="h" />
