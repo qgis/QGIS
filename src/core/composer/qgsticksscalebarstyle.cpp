@@ -20,12 +20,12 @@
 
 QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
 {
-  mTickPosition = MIDDLE;
+  mTickPosition = TicksMiddle;
 }
 
 QgsTicksScaleBarStyle::QgsTicksScaleBarStyle(): QgsScaleBarStyle( 0 )
 {
-  mTickPosition = MIDDLE;
+  mTickPosition = TicksMiddle;
 }
 
 QgsTicksScaleBarStyle::~QgsTicksScaleBarStyle()
@@ -37,11 +37,11 @@ QString QgsTicksScaleBarStyle::name() const
 {
   switch ( mTickPosition )
   {
-    case UP:
+    case TicksUp:
       return "Line Ticks Up";
-    case DOWN:
+    case TicksDown:
       return "Line Ticks Down";
-    case MIDDLE:
+    case TicksMiddle:
       return "Line Ticks Middle";
   }
   return "";  // to make gcc happy
@@ -69,13 +69,13 @@ void QgsTicksScaleBarStyle::draw( QPainter* p, double xOffset ) const
     p->drawLine( segmentIt->first + xOffset, barTopPosition, segmentIt->first + xOffset, barTopPosition + mScaleBar->height() );
     switch ( mTickPosition )
     {
-      case DOWN:
+      case TicksDown:
         p->drawLine( xOffset + segmentIt->first, barTopPosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), barTopPosition );
         break;
-      case MIDDLE:
+      case TicksMiddle:
         p->drawLine( xOffset + segmentIt->first, middlePosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), middlePosition );
         break;
-      case UP:
+      case TicksUp:
         p->drawLine( xOffset + segmentIt->first, bottomPosition, xOffset + segmentIt->first + mScaleBar->segmentMillimeters(), bottomPosition );
         break;
     }

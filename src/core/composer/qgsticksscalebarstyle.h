@@ -27,9 +27,9 @@ class CORE_EXPORT QgsTicksScaleBarStyle: public QgsScaleBarStyle
   public:
     enum TickPosition
     {
-      UP,
-      DOWN,
-      MIDDLE
+      TicksUp,
+      TicksDown,
+      TicksMiddle
     };
 
     QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar );

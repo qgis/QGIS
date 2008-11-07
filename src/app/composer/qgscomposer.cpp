@@ -456,7 +456,7 @@ void QgsComposer::on_mActionPrint_activated( void )
     //set user-defined resolution
     if ( mComposition )
     {
-      printer.setResolution( mComposition->printoutResolution() );
+      printer.setResolution( mComposition->printResolution() );
     }
     QPainter p( &printer );
 
@@ -489,8 +489,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   }
 
   // Image size
-  int width = ( int )( mComposition->printoutResolution() * mComposition->paperWidth() / 25.4 );
-  int height = ( int )( mComposition-> printoutResolution() * mComposition->paperHeight() / 25.4 );
+  int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
+  int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
 
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1 x %2" ).arg( width ).arg( height ) );
@@ -592,8 +592,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   mView->setScene( 0 );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-  image.setDotsPerMeterX( mComposition->printoutResolution() / 25.4 * 1000 );
-  image.setDotsPerMeterY( mComposition->printoutResolution() / 25.4 * 1000 );
+  image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
+  image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
   image.fill( 0 );
   QPainter p( &image );
   QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
