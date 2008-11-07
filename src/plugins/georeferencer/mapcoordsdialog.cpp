@@ -37,7 +37,7 @@ MapCoordsDialog::MapCoordsDialog( const QgsPoint& pixelCoords, QgsMapCanvas* qgi
 
   mToolEmitPoint = new QgsMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( btnPointFromCanvas );
-  connect(( QgsMapToolEmitPoint* )mToolEmitPoint, SIGNAL( gotPoint( QgsPoint&, Qt::MouseButton ) ),
+  connect(( QgsMapToolEmitPoint* )mToolEmitPoint, SIGNAL( canvasClicked( QgsPoint&, Qt::MouseButton ) ),
           this, SLOT( maybeSetXY( QgsPoint&, Qt::MouseButton ) ) );
 
   connect( leXCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );

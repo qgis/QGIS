@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
     //! renders map using QgsMapRenderer to mPixmap
     void render();
 
-    void setBgColor( const QColor& color ) { mBgColor = color; }
+    void setBackgroundColor( const QColor& color ) { mBgColor = color; }
 
     void setPanningOffset( const QPoint& point );
 

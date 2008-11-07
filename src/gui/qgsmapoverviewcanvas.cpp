@@ -90,7 +90,7 @@ void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 }
 
 
-void QgsMapOverviewCanvas::reflectChangedExtent()
+void QgsMapOverviewCanvas::drawExtentRect()
 {
   const QgsRect& extent = mMapCanvas->extent();
 
@@ -247,7 +247,7 @@ void QgsMapOverviewCanvas::refresh()
   update();
 
   // update panning widget
-  reflectChangedExtent();
+  drawExtentRect();
 }
 
 
@@ -269,7 +269,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
 void QgsMapOverviewCanvas::updateFullExtent( const QgsRect& rect )
 {
   mMapRenderer->setExtent( rect );
-  reflectChangedExtent();
+  drawExtentRect();
 }
 
 void QgsMapOverviewCanvas::hasCrsTransformEnabled( bool flag )

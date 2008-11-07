@@ -463,7 +463,7 @@ void QgsMapCanvas::setExtent( QgsRect const & r )
   emit extentsChanged();
   updateScale();
   if ( mMapOverview )
-    mMapOverview->reflectChangedExtent();
+    mMapOverview->drawExtentRect();
   mLastExtent = current;
 
   // notify canvas items of change
@@ -1000,7 +1000,7 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
 void QgsMapCanvas::setCanvasColor( const QColor & theColor )
 {
   // background of map's pixmap
-  mMap->setBgColor( theColor );
+  mMap->setBackgroundColor( theColor );
 
   // background of the QGraphicsView
   QBrush bgBrush( theColor );
