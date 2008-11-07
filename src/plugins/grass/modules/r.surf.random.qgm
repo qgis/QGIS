@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Produces a raster map layer of uniform random deviates whose range can be expressed by the user" module="r.surf.random">
+<qgisgrassmodule label="Produce raster of uniform random deviates with user-defined range" module="r.surf.random">
 	<option key="min" />
 	<option key="max" />
 	<option key="output" />

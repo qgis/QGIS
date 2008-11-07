@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Generates a raster map layer with contiguous areas grown by one cell" module="r.grow">
+<qgisgrassmodule label="Generate raster with contiguous areas grown by one cell" module="r.grow">
 	<option key="input"/>
 	<option key="new"/>
 	<option key="metric"/>
