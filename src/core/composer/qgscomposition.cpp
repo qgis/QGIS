@@ -30,7 +30,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ): QGraphicsScene( 0
   mPaperItem->setBrush( Qt::white );
   addItem( mPaperItem );
   mPaperItem->setZValue( 0 );
-  mPrintoutResolution = 300; //hardcoded default
+  mPrintResolution = 300; //hardcoded default
 }
 
 QgsComposition::QgsComposition(): QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 )

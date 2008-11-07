@@ -41,7 +41,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   //read printout resolution from composition
   if ( mComposition )
   {
-    mResolutionLineEdit->setText( QString::number( mComposition->printoutResolution() ) );
+    mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
   }
 }
 
@@ -281,12 +281,12 @@ void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& te
   int resolution = text.toInt( &conversionOk );
   if ( conversionOk && mComposition )
   {
-    mComposition->setPrintoutResolution( resolution );
+    mComposition->setPrintResolution( resolution );
   }
   else if ( mComposition )
   {
     //set screen resolution per default
     QPrinter resolutionInfo( QPrinter::ScreenResolution );
-    mComposition->setPrintoutResolution( resolutionInfo.resolution() );
+    mComposition->setPrintResolution( resolutionInfo.resolution() );
   }
 }

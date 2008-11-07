@@ -210,15 +210,15 @@ void QgsComposerScaleBar::setStyle( const QString& styleName )
     QgsTicksScaleBarStyle* tickStyle = new QgsTicksScaleBarStyle( this );
     if ( styleName == tr( "Line Ticks Middle" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::MIDDLE );
+      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksMiddle );
     }
     else if ( styleName == tr( "Line Ticks Down" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::DOWN );
+      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksDown );
     }
     else if ( styleName == tr( "Line Ticks Up" ) )
     {
-      tickStyle->setTickPosition( QgsTicksScaleBarStyle::UP );
+      tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksUp );
     }
     mStyle = tickStyle;
   }
