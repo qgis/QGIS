@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Outputs a raster map layer showing the cumulative cost of moving between different geographic locations on an input raster map layer whose cell category values represent cost" module="r.cost">
+<qgisgrassmodule label="Output raster showing the cumulative cost of moving between different geographic locations based on cost input raster" module="r.cost">
 	<option key="input"/>
 	<option key="output"/>
 	<option key="start_rast"/>
