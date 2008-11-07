@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Tabulates the mutual occurrence (coincidence) of categories for two raster map layers" module="r.coin">
+<qgisgrassmodule label="Tabulates the mutual occurrence (coincidence) of categories for two rasters" module="r.coin">
 	<option key="map1" />
 	<option key="map2" />
 	<option key="units" />

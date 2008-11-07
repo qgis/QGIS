@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import GDAL supported raster file into a binary raster map layer and create a fitted location" module="r.in.gdal">
+<qgisgrassmodule label="Import GDAL supported raster into GRASS raster and create fitted location" module="r.in.gdal">
 	<flag key="o" answer="off" hidden="yes" />
 	<flag key="e" answer="on" hidden="yes" />
 	<file key="input" />

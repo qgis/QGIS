@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Reclasses a raster map greater or less than user specified area size (in hectares)" module="r.reclass.area">
+<qgisgrassmodule label="Reclassify raster greater or less than user-defined area size (in hectares)" module="r.reclass.area">
 	<option key="input" />
 	<option key="lesser" />
 	<option key="greater" />

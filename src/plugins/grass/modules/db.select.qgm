@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Prints result of selection from database based on SQL" module="db.select">
+<qgisgrassmodule label="Print result of SQL selection from database" module="db.select">
 	<option key="table" />
 	<option key="database" answer="$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/" />
 	<option key="driver" />
