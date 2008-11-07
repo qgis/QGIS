@@ -226,6 +226,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     // currently used by pan map tool
     //! Ends pan action and redraws the canvas.
     void panActionEnd( QPoint releasePoint );
+
     //! Called when mouse is moving and pan is activated
     void panAction( QMouseEvent * event );
 

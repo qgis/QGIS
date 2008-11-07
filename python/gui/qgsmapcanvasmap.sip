@@ -38,7 +38,7 @@ class QgsMapCanvasMap : QGraphicsRectItem
     //! renders map using QgsMapRender to mPixmap
     void render();
     
-    void setBgColor(const QColor& color);
+    void setBackgroundColor(const QColor& color);
     
     void setPanningOffset(const QPoint& point);
     

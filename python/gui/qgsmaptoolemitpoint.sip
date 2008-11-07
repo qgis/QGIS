@@ -21,5 +21,5 @@ class QgsMapToolEmitPoint : QgsMapTool
   signals:
     
     //! signal emitted on canvas click
-    void gotPoint(QgsPoint& point, Qt::MouseButton button);
+    void canvasClicked(QgsPoint& point, Qt::MouseButton button);
 };

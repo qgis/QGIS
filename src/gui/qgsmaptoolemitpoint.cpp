@@ -32,7 +32,7 @@ void QgsMapToolEmitPoint::canvasMoveEvent( QMouseEvent * e )
 void QgsMapToolEmitPoint::canvasPressEvent( QMouseEvent * e )
 {
   QgsPoint pnt = toMapCoordinates( e->pos() );
-  emit gotPoint( pnt, e->button() );
+  emit canvasClicked( pnt, e->button() );
 }
 
 void QgsMapToolEmitPoint::canvasReleaseEvent( QMouseEvent * e )
