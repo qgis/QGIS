@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Exports a GRASS raster map to a 8/24bit TIFF image file at the pixel resolution of the currently defined region" module="r.out.tiff">
+<qgisgrassmodule label="Export GRASS raster to 8/24bit TIFF image at the resolution of the current region" module="r.out.tiff">
 	<option key="input" />
 	<option key="compression" />
 	<flag key="p" />

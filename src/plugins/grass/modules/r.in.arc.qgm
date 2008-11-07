@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Convert an ESRI ARC/INFO ascii raster file (GRID) into a (binary) raster map layer" module="r.in.arc">
+<qgisgrassmodule label="Convert ESRI ARC/INFO ascii raster (GRID) into a GRASS raster" module="r.in.arc">
 	<file key="input" type="old" />
 	<option key="type" />
 	<option key="mult" />
