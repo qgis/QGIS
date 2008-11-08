@@ -11,9 +11,9 @@ PREFIXBACKTRACK=../../../..
 # Edit version when any library is upgraded
 LIBGDAL=libgdal.1.dylib
 LNKGDAL=libgdal.1.dylib
-LIBGEOS=libgeos.3.0.0.dylib
+LIBGEOS=libgeos.3.0.1.dylib
 LNKGEOS=libgeos.3.dylib
-LIBGEOSC=libgeos_c.1.4.1.dylib
+LIBGEOSC=libgeos_c.1.4.2.dylib
 LNKGEOSC=libgeos_c.1.dylib
 LIBPROJ=libproj.0.5.5.dylib
 LNKPROJ=libproj.0.dylib

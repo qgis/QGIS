@@ -182,6 +182,7 @@
 		<string>ar</string>
 		<string>cs_CZ</string>
 		<string>de</string>
+		<string>el_GR</string>
 		<string>es</string>
 		<string>fr</string>
 		<string>hu</string>
@@ -191,6 +192,7 @@
 		<string>lo</string>
 		<string>lt</string>
 		<string>lv</string>
+		<string>ka</string>
 		<string>mn</string>
 		<string>nl</string>
 		<string>pl_PL</string>
@@ -198,6 +200,7 @@
 		<string>ro</string>
 		<string>ru</string>
 		<string>sk</string>
+		<string>sq_AL</string>
 		<string>sv</string>
 		<string>th</string>
 		<string>tr</string>

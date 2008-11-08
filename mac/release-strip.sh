@@ -39,8 +39,8 @@ strip -x $PREFIX/lib/QtXml.framework/Versions/4/QtXml
 strip -x $PREFIX/../plugins/imageformats/libqjpeg.dylib
 
 strip -x $PREFIX/lib/libgdal.1.dylib
-strip -x $PREFIX/lib/libgeos.3.0.0.dylib
-strip -x $PREFIX/lib/libgeos_c.1.4.1.dylib
+strip -x $PREFIX/lib/libgeos.3.0.1.dylib
+strip -x $PREFIX/lib/libgeos_c.1.4.2.dylib
 strip -x $PREFIX/lib/libproj.0.5.5.dylib
 strip -x $PREFIX/lib/libsqlite3.0.dylib
 strip -x $PREFIX/lib/libxerces-c.28.0.dylib
@@ -51,7 +51,7 @@ strip -x $PREFIX/lib/libtiff.3.dylib
 strip -x $PREFIX/lib/libgeotiff.1.2.4.dylib
 strip -x $PREFIX/lib/libjasper.1.0.0.dylib
 strip -x $PREFIX/lib/libexpat.1.5.2.dylib
-strip -x $PREFIX/lib/libfftw3.3.1.2.dylib
+strip -x $PREFIX/lib/libfftw3.3.1.3.dylib
 strip -x $PREFIX/lib/libgsl.0.dylib
 strip -x $PREFIX/lib/libgslcblas.0.dylib
 strip -x $PREFIX/lib/libpq.5.1.dylib
@@ -78,7 +78,7 @@ if test -f $PREFIX/lib/libqgispython.dylib; then
 	do
 		strip -x $PREFIX/lib/$FRAMEWORK.framework/Versions/4/$FRAMEWORK
 	done
-	strip -x $PREFIX/lib/libQtCLucene.4.4.2.dylib
+	strip -x $PREFIX/lib/libQtCLucene.4.4.3.dylib
 
 	strip -x $PREFIX/share/qgis/python/qgis/core.so
 	strip -x $PREFIX/share/qgis/python/qgis/gui.so

@@ -10,7 +10,7 @@ LNKJPEG=libjpeg.62.dylib
 LIBPNG=libpng12.0.dylib
 LNKPNG=libpng12.0.dylib
 
-QTPREFIX=/usr/local/Trolltech/Qt-4.4.2
+QTPREFIX=/usr/local/Trolltech/Qt-4.4.3
 QTFRAMEWORKS="QtCore QtGui QtNetwork QtSql QtSvg QtXml Qt3Support"
 
 # Copy Qt frameworks to application bundle
