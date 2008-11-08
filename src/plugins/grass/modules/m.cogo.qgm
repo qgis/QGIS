@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="A simple utility for converting bearing and distance measurements to coordinates and vice versa. It assumes a cartesian coordinate system" module="m.cogo">
+<qgisgrassmodule label="Converting bearing and distance measurements to coordinates and vice versa" module="m.cogo">
 	<file key="input" type="old" />
 	<option key="coord" />
 	<flag key="r" />

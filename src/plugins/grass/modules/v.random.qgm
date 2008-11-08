@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Randomly generate 2D/3D GRASS vector points" module="v.random">
+<qgisgrassmodule label="Randomly generate 2D/3D vector points" module="v.random">
 	<option key="n" answer="1" hidden="no"/>
 	<option key="zmin" answer="0.0" hidden="no"/>
 	<option key="zmax" answer="0.0" hidden="no"/>

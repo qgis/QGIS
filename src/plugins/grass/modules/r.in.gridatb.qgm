@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Imports GRIDATB.FOR map file (TOPMODEL) into GRASS raster map" module="r.in.gridatb">
+<qgisgrassmodule label="Import GRIDATB.FOR map file (TOPMODEL) into GRASS raster" module="r.in.gridatb">
 	<file key="input" type="old" />
 	<option key="output" />
 </qgisgrassmodule>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Calculates the volume of data clumps, and produces a GRASS vector points map containing the calculated centroids of these clumps" module="r.volume">
+<qgisgrassmodule label="Calculate volume of data clumps, and produces a vector with centroids of clumps" module="r.volume">
 	<flag key="f" />
 	<option key="data" />
 	<option key="clump" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Break lines at each intersection of vector map" module="v.clean">
+<qgisgrassmodule label="Break lines at each intersection of vector" module="v.clean">
 	<option key="input" typeoption="type"/>
 	<option key="tool" answer="break" hidden="yes"/>
 	<option key="output"/>
