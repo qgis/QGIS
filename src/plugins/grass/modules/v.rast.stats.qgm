@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Calculates univariate statistics from a raster map based on vector objects" module="v.rast.stats">
+<qgisgrassmodule label="Calculate univariate statistics from raster based on vector objects" module="v.rast.stats">
 	<option key="raster"/>
 	<option key="vector" typemask="area"/>
 	<option key="colprefix"/>

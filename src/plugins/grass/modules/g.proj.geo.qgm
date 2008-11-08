@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Print projection information from a georeferenced file (raster, vector or image)" module="g.proj">
+<qgisgrassmodule label="Print projection information from georeferenced file (raster, vector or image)" module="g.proj">
 	<file key="georef" type="old" />
 	<flag key="p" />
 	<flag key="d" />

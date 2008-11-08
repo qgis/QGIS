@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import GDAL supported raster file into GRASS raster" module="r.in.gdal">
+<qgisgrassmodule label="Import GDAL supported raster to GRASS raster" module="r.in.gdal">
 	<flag key="o" answer="on" hidden="yes" />
 	<flag key="e" answer="off" hidden="yes" />
 	<file key="input" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import SRTM HGT files into GRASS" module="r.in.srtm">
+<qgisgrassmodule label="Import SRTM HGT files to GRASS raster" module="r.in.srtm">
 	<file key="input" type="old" />
 	<flag key="1" />
 	<option key="output" />

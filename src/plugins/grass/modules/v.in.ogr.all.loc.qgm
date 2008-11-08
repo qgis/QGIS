@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import all the OGR/PostGIS vector layers in a given data source and create a fitted location" module="v.in.ogr">
+<qgisgrassmodule label="Import all OGR/PostGIS vectors in a given data source and create a fitted location" module="v.in.ogr">
 	<flag key="o" answer="off" hidden="yes" />
 	<flag key="z" answer="off" hidden="no" />
 	<flag key="e" answer="off" hidden="no" />
