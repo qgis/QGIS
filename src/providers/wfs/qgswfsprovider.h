@@ -69,7 +69,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     long featureCount() const;
     uint fieldCount() const;
     const QgsFieldMap & fields() const;
-    void begin();
+    void rewind();
 
     virtual QgsCoordinateReferenceSystem crs();
 
@@ -114,7 +114,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QgsSpatialIndex *mSpatialIndex;
     /**Vector where the ids of the selected features are inserted*/
     QList<int> mSelectedFeatures;
-    /**Iterator on the feature vector for use in begin(), nextFeature(), etc...*/
+    /**Iterator on the feature vector for use in rewind(), nextFeature(), etc...*/
     QList<int>::iterator mFeatureIterator;
     /**Vector where the features are inserted*/
     QList<QgsFeature*> mFeatures;

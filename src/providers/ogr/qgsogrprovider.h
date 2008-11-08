@@ -120,7 +120,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual QgsRect extent();
 
     /** Restart reading features from previous select operation */
-    virtual void begin();
+    virtual void rewind();
 
     /**Writes a list of features to the file*/
     virtual bool addFeatures( QgsFeatureList & flist );
