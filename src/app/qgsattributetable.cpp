@@ -457,7 +457,7 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
     QTableWidgetItem *twi = new QTableWidgetItem( fldIt->name() );
     twi->setData( AttributeIndex, fldIt.key() );
     twi->setData( AttributeName, fldIt->name() );
-    twi->setData( AttributeType, fldIt->type() );
+    twi->setData( QgsAttributeTable::AttributeType, (int)(fldIt->type()));
     setHorizontalHeaderItem( h, twi );
 
     mAttrIdxMap.insert( fldIt.key(), h );
