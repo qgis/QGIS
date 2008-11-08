@@ -18,6 +18,7 @@ Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: qgis-plugin-grass, python-qgis
+Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages, analyzes, and displays
  databases of geographic information. Quantum GIS (QGIS) supports shapefile
@@ -31,7 +32,7 @@ Package: libqgis-core1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<=0.9.2rc1)
-Conflicts: libqgis1
+Conflicts: libqgis1, uim-qt3
 Description: Quantum GIS - shared core library
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -43,7 +44,7 @@ Package: libqgis-gui1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: qgis (<=0.9.2rc1)
-Conflicts: libqgis1
+Conflicts: libqgis1, uim-qt3
 Description: Quantum GIS - shared gui library
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
