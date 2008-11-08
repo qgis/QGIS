@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Blend color components for two raster maps by given ratio" module="r.blend">
+<qgisgrassmodule label="Blend color components for two rasters by given ratio" module="r.blend">
 	<option key="first"/>
 	<option key="second"/>
 	<option key="output"/>

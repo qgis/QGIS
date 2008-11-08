@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Generate images with textural features from a raster map (first serie of indices)" module="r.texture">
+<qgisgrassmodule label="Generate images with textural features from raster (first serie of indices)" module="r.texture">
 	<option key="input" />
 	<option key="size" />
 	<option key="distance" />
