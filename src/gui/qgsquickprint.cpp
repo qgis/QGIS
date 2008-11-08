@@ -229,7 +229,6 @@ void QgsQuickPrint::printMap()
   //sensible default to prevent divide by zero
   if ( 0 == myOriginalDpi ) myOriginalDpi = 96;
   QSize myOriginalSize = mpMapRenderer->outputSize();
-  int mySymbolScalingAmount = myPrintResolutionDpi / myOriginalDpi;
 
   //define the font sizes and family
   int myMapTitleFontSize = 24;
