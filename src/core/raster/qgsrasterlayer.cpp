@@ -78,11 +78,11 @@ QgsRasterLayer::QgsRasterLayer(
     // Constant that signals property not used.
     QSTRING_NOT_SET( "Not Set" ),
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
+    mStandardDeviations( 0 ),
+    mDataProvider( 0 ),
     mWidth( std::numeric_limits<int>::max() ),
     mHeight( std::numeric_limits<int>::max() ),
-    mInvertColor( false ),
-    mStandardDeviations( 0 ),
-    mDataProvider( 0 )
+    mInvertColor( false )
 {
 
   mUserDefinedRGBMinimumMaximum = false; //defaults needed to bypass enhanceContrast
@@ -138,15 +138,14 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
                                 QString const & format,
                                 QString const & crs )
     : QgsMapLayer( RasterLayer, baseName, rasterLayerPath ),
+    mStandardDeviations( 0 ),
+    mDataProvider( 0 ),
+    mEditable( false ),
     mWidth( std::numeric_limits<int>::max() ),
     mHeight( std::numeric_limits<int>::max() ),
     mInvertColor( false ),
-    mStandardDeviations( 0 ),
-    mProviderKey( providerKey ),
-    mDataProvider( 0 ),
-    mEditable( false ),
-    mModified( false )
-
+    mModified( false ),
+    mProviderKey( providerKey )
 {
   QgsDebugMsg( "(8 arguments) starting. with layer list of " +
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
