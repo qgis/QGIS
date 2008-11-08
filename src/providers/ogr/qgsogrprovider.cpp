@@ -458,7 +458,7 @@ const QgsFieldMap & QgsOgrProvider::fields() const
   return mAttributeFields;
 }
 
-void QgsOgrProvider::begin()
+void QgsOgrProvider::rewind()
 {
   OGR_L_ResetReading( ogrLayer );
 }

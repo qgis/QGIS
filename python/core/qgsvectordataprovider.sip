@@ -112,7 +112,7 @@ class QgsVectorDataProvider : QgsDataProvider
       virtual QString dataComment() const;
       
       /** Restart reading features from previous select operation */
-      virtual void begin() = 0;
+      virtual void rewind() = 0;
 
       /**
        * Returns the minimum value of an attributs

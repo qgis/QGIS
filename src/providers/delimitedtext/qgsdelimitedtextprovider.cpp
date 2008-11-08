@@ -434,7 +434,7 @@ void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,
   {
     mSelectionRectangle = rect;
   }
-  begin();
+  rewind();
 }
 
 
@@ -476,7 +476,7 @@ const QgsFieldMap & QgsDelimitedTextProvider::fields() const
   return attributeFields;
 }
 
-void QgsDelimitedTextProvider::begin()
+void QgsDelimitedTextProvider::rewind()
 {
   // Reset feature id to 0
   mFid = 0;

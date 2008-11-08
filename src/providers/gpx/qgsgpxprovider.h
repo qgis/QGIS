@@ -93,7 +93,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual const QgsFieldMap & fields() const;
 
     /** Restart reading features from previous select operation */
-    virtual void begin();
+    virtual void rewind();
 
     /**
      * Adds a list of features

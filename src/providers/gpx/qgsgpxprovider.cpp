@@ -425,7 +425,7 @@ void QgsGPXProvider::select( QgsAttributeList fetchAttributes,
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
 
-  begin();
+  rewind();
 }
 
 
@@ -482,7 +482,7 @@ const QgsFieldMap& QgsGPXProvider::fields() const
 }
 
 
-void QgsGPXProvider::begin()
+void QgsGPXProvider::rewind()
 {
   if ( mFeatureType == WaypointType )
     mWptIter = data->waypointsBegin();
