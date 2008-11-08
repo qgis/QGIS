@@ -1228,7 +1228,7 @@ void QgsRasterLayer::computeMinimumMaximumEstimates( QString theBand, double* th
  */
 QgsContrastEnhancement* QgsRasterLayer::contrastEnhancement( unsigned int theBand )
 {
-  if ( 0 < theBand && theBand <= ( int ) bandCount() )
+  if ( 0 < theBand && theBand <= bandCount() )
   {
      return &mContrastEnhancementList[theBand - 1];
   }

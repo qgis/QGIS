@@ -473,7 +473,7 @@ int DualEdgeTriangulation::baseEdgeOfTriangle( Point3D* point )
   int nulls = 0;//number of left-of-tests, which returned 0. 1 means, that the point is on a line, 2 means that it is on an existing point
   int numinstabs = 0;//number of suspect left-of-tests due to 'leftOfTresh'
   int runs = 0;//counter for the number of iterations in the loop to prevent an endless loop
-  int firstendp, secendp, thendp, fouendp;//four numbers of endpoints in cases when two left-of-test are 0
+  int firstendp = 0, secendp = 0, thendp = 0, fouendp = 0; //four numbers of endpoints in cases when two left-of-test are 0
 
   while ( true )
   {

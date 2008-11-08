@@ -771,6 +771,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief List containing the contrast enhancements for each band */
     ContrastEnhancementList mContrastEnhancementList;
 
+    /** \brief Number of stddev to plot (0) to ignore. Not applicable to all layer types */
+    double mStandardDeviations;
+
     /**  [ data provider interface ] Pointer to data provider derived from the abstract base class QgsDataProvider */
     QgsRasterDataProvider* mDataProvider;
 
@@ -805,6 +808,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Whether this raster has overviews / pyramids or not */
     bool mHasPyramids;
+
+    /** \brief  Raster width */
+    int mWidth;
 
     /** \brief  Raster height */
     int mHeight;
@@ -847,9 +853,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
     bool mRGBMinimumMaximumEstimated;
 
-    /** \brief Number of stddev to plot (0) to ignore. Not applicable to all layer types */
-    double mStandardDeviations;
-
     /** \brief The band to be associated with transparency */
     QString mTransparencyBandName;
 
@@ -861,9 +864,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
-
-    /** \brief  Raster width */
-    int mWidth;
 };
 
 #endif
