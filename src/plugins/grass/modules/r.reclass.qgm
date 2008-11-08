@@ -3,6 +3,6 @@
 
 <qgisgrassmodule label="Reclass a raster using a reclassification rules file" module="r.reclass">
 	<option key="input"/>
-	<file key="rules" type="old" filters="Txt (*.txt), Csv (*.csv)" />
+	<file key="rules" type="old" />
 	<option key="output" />
 </qgisgrassmodule>

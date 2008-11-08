@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Fills lake from seed at given level" module="r.lake">
+<qgisgrassmodule label="Fill lake from seed at given level" module="r.lake">
 	<option key="dem" />
 	<option key="wl" />
 	<option key="xy" />

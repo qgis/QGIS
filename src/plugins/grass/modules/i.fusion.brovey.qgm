@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Brovey transform to merge multispectral and high-res pancromatic channels" module="i.fusion.brovey">
+<qgisgrassmodule label="Brovey transform to merge multispectral and high-res panchromatic channels" module="i.fusion.brovey">
 	<flag key="l" />
 	<flag key="q" />
 	<flag key="s" />

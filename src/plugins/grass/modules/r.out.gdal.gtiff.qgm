@@ -4,6 +4,6 @@
 <qgisgrassmodule label="Export raster to Geo TIFF" module="r.out.gdal">
 	<option key="input" region="no"/>
 	<option key="format" answer="GTiff" hidden="yes" />
-	<option key="type" />
+	<option key="type" label="Choose appropriate format"/>
 	<file key="output" type="new" filters="Geo TIFF (*.tif *.tiff)" />
 </qgisgrassmodule>
