@@ -86,8 +86,8 @@ class GUI_EXPORT QgsMapCanvasLayer
 };
 
 
-/*! \class QgsMapCanvas
- * \brief Map canvas class for displaying all GIS data types.
+/** \ingroup gui
+ * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
 class GUI_EXPORT QgsMapCanvas : public QGraphicsView
