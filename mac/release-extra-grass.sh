@@ -7,7 +7,7 @@ PREFIX=qgis1.0.0.app/Contents/MacOS
 # Edit version when any library is upgraded
 LNKGDAL=libgdal.1.dylib
 LNKPROJ=libproj.0.dylib
-LIBFFTW=libfftw3.3.1.2.dylib
+LIBFFTW=libfftw3.3.1.3.dylib
 LNKFFTW=libfftw3.3.dylib
 GRASSVER=6.3.0
 GRASSLIB=/usr/local/grass-$GRASSVER/lib

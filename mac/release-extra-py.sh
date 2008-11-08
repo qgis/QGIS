@@ -8,9 +8,9 @@ BUNDLE=qgis1.0.0.app/Contents/MacOS
 LNKGDAL=libgdal.1.dylib
 LNKGEOSC=libgeos_c.1.dylib
 
-QTPREFIX=/usr/local/Trolltech/Qt-4.4.2
+QTPREFIX=/usr/local/Trolltech/Qt-4.4.3
 QTFRAMEWORKS="QtAssistant QtHelp QtOpenGL QtScript QtTest QtWebKit QtXmlPatterns phonon"
-LIBQTCL=libQtCLucene.4.4.2.dylib
+LIBQTCL=libQtCLucene.4.4.3.dylib
 LNKQTCL=libQtCLucene.4.dylib
 
 SITEPKG=/Library/Python/2.5/site-packages
