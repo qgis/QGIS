@@ -171,7 +171,7 @@ void QgsAttributeTable::columnClicked( int col )
   QList < int >::iterator it;
   for ( it = idsOfSelected.begin(); it != idsOfSelected.end(); ++it )
   {
-    selectRowWithId(( *it ) );
+    selectRowWithId( *it );
   }
   connect( this, SIGNAL( itemSelectionChanged() ), this, SLOT( handleChangedSelections() ) );
 
@@ -226,7 +226,7 @@ void QgsAttributeTable::selectRowWithId( int id )
 
 void QgsAttributeTable::sortColumn( int col, bool ascending )
 {
-  int type = horizontalHeaderItem( col )->data( QgsAttributeTable::AttributeType ).toInt();
+  int type = horizontalHeaderItem( col )->data( AttributeType ).toInt();
   qsort( 0, rowCount() - 1, col, ascending, type != QVariant::Int && type != QVariant::Double );
 }
 
@@ -437,6 +437,19 @@ void QgsAttributeTable::copySelectedRows()
   clipboard->setText( toClipboard, QClipboard::Clipboard );
 }
 
+void QgsAttributeTable::addFeatureToTable( QgsVectorLayer *layer, int id )
+{
+  blockSignals( true );
+
+  QgsFeature f;
+  if ( layer->featureAtId( id, f, false, true ) == 0 )
+  {
+    putFeatureInTable( rowCount(), f );
+  }
+
+  blockSignals( false );
+}
+
 void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
 {
   blockSignals( true );
@@ -457,7 +470,7 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
     QTableWidgetItem *twi = new QTableWidgetItem( fldIt->name() );
     twi->setData( AttributeIndex, fldIt.key() );
     twi->setData( AttributeName, fldIt->name() );
-    twi->setData( QgsAttributeTable::AttributeType, (int)(fldIt->type()));
+    twi->setData( AttributeType, ( int ) fldIt->type() );
     setHorizontalHeaderItem( h, twi );
 
     mAttrIdxMap.insert( fldIt.key(), h );
@@ -596,27 +609,26 @@ void QgsAttributeTable::bringSelectedToTop()
   blockSignals( false );
 }
 
-void QgsAttributeTable::selectRowsWithId( const QgsFeatureIds& ids )
+void QgsAttributeTable::selectRowsWithId( const QgsFeatureIds &ids, QgsVectorLayer *layer )
 {
-  /*
+#if 0
   // if selecting rows takes too much time we can use progress dialog
-  QProgressDialog progress( tr("Updating selection..."), tr("Abort"), 0, mSelected.size(), tabledisplay);
-  int i=0;
-  for(std::set<int>::iterator iter=mSelected.begin();iter!=mSelected.end();++iter)
+  QProgressDialog progress( tr( "Updating selection..." ), tr( "Abort" ), 0, mSelected.size(), tabledisplay );
+  int i = 0;
+  for ( std::set<int>::iterator iter = mSelected.begin();iter != mSelected.end();++iter )
   {
     ++i;
-    progress.setValue(i);
+    progress.setValue( i );
     qApp->processEvents();
-    if(progress.wasCanceled())
+    if ( progress.wasCanceled() )
     {
       //deselect the remaining features if action was canceled
-      mSelected.erase(iter,--mSelected.end());
+      mSelected.erase( iter, --mSelected.end() );
       break;
-      }
-    selectRowWithId(*iter);//todo: avoid that the table gets repainted during each selection
+    }
+    selectRowWithId( *iter );//todo: avoid that the table gets repainted during each selection
   }
-  */
-
+#endif
 
   // to select more rows at once effectively, we stop sending signals to handleChangedSelections()
   // otherwise it will repaint map everytime row is selected
@@ -627,6 +639,12 @@ void QgsAttributeTable::selectRowsWithId( const QgsFeatureIds& ids )
   QgsFeatureIds::const_iterator it;
   for ( it = ids.begin(); it != ids.end(); it++ )
   {
+    if ( layer && !rowIdMap.contains( *it ) )
+    {
+      // add feature if we do not already have it
+      addFeatureToTable( layer, *it );
+    }
+
     selectRowWithId( *it );
   }
 
@@ -754,7 +772,7 @@ void QgsAttributeTable::addAttribute( int attr, const QgsField &fld )
   QTableWidgetItem *twi = new QTableWidgetItem( fld.name() );
   twi->setData( AttributeIndex, attr );
   twi->setData( AttributeName, fld.name() );
-  twi->setData( AttributeType, fld.type() );
+  twi->setData( AttributeType, ( int ) fld.type() );
 
   insertColumn( columnCount() );
   setHorizontalHeaderItem( columnCount() - 1, twi );

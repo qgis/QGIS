@@ -244,7 +244,7 @@ void QgsAttributeTableDisplay::setAttributeActions( const QgsAttributeAction &ac
 
 void QgsAttributeTableDisplay::selectRowsWithId( const QgsFeatureIds &ids )
 {
-  tblAttributes->selectRowsWithId( ids );
+  tblAttributes->selectRowsWithId( ids, mLayer );
 }
 
 void QgsAttributeTableDisplay::setTheme()

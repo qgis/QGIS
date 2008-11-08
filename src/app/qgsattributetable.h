@@ -87,7 +87,7 @@ class QgsAttributeTable : public QTableWidget
     /**Swaps the selected rows such that the selected ones are on the top of the table*/
     void bringSelectedToTop();
     /** Selects rows with chosen feature IDs */
-    void selectRowsWithId( const QgsFeatureIds& ids );
+    void selectRowsWithId( const QgsFeatureIds& ids, QgsVectorLayer *layer = 0 );
     /** Shows only rows with chosen feature IDs, others get hidden */
     void showRowsWithId( const QgsFeatureIds& ids );
     /** Shows all rows */
@@ -95,6 +95,10 @@ class QgsAttributeTable : public QTableWidget
 
     /**Fills the contents of a provider into this table*/
     void fillTable( QgsVectorLayer *layer );
+
+    /** adds a feature to the current table */
+    void addFeatureToTable( QgsVectorLayer *layer, int id );
+
     void addAttribute( int idx, const QgsField &fld );
     void deleteAttribute( int idx );
 
