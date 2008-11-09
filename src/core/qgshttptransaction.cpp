@@ -78,13 +78,13 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QUrl qurl( httpurl );
 
-  http = new QHttp( ); 
+  http = new QHttp( );
   // Create a header so we can set the user agent (Per WMS RFC).
-  QHttpRequestHeader header("GET", qurl.host());
+  QHttpRequestHeader header( "GET", qurl.host() );
   // Set host in the header
   header.setValue( "Host", qurl.host() );
   // Set the user agent to Quantum GIS plus the version name
-  header.setValue( "User-agent", QString("Quantum GIS - ") + VERSION );
+  header.setValue( "User-agent", QString( "Quantum GIS - " ) + VERSION );
   // Set the host in the QHttp object
   http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
 
@@ -113,7 +113,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // includes the scheme, host and port (the
   // http://www.address.bit:80), so remove that from the url before
   // executing an http GET.
-  // 
+  //
   // gsherman 2008-10-24 - Not sure if the above still holds true. Commenting
   // out the removal for testing purposes
   // QString pathAndQuery = httpurl.remove( 0,
@@ -122,15 +122,15 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   if ( !postData ) //do request with HTTP GET
   {
-    header.setRequest("GET", httpurl);
+    header.setRequest( "GET", httpurl );
     // do GET using header containing user-agent
-    httpid = http->request(header); 
+    httpid = http->request( header );
   }
   else //do request with HTTP POST
   {
-    header.setRequest("POST", httpurl);
+    header.setRequest( "POST", httpurl );
     // do POST using header containing user-agent
-    httpid = http->request(header, *postData); 
+    httpid = http->request( header, *postData );
   }
 
   connect( http, SIGNAL( requestStarted( int ) ),
@@ -412,21 +412,21 @@ void QgsHttpTransaction::dataStateChanged( int state )
       QgsDebugMsg( "A host name lookup is in progress." );
 
       emit statusChanged( QString( QObject::tr( "Looking up '%1'" ) )
-                      .arg( httphost ) );
+                          .arg( httphost ) );
       break;
 
     case QHttp::Connecting:
       QgsDebugMsg( "An attempt to connect to the host is in progress." );
 
       emit statusChanged( QString( QObject::tr( "Connecting to '%1'" ) )
-                      .arg( httphost ) );
+                          .arg( httphost ) );
       break;
 
     case QHttp::Sending:
       QgsDebugMsg( "The client is sending its request to the server." );
 
       emit statusChanged( QString( QObject::tr( "Sending request '%1'" ) )
-                      .arg( httpurl ) );
+                          .arg( httpurl ) );
       break;
 
     case QHttp::Reading:

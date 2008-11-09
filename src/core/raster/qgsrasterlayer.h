@@ -208,7 +208,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                     const QStringList & layers = QStringList(),
                     const QStringList & styles = QStringList(),
                     const QString & format = QString(),
-                    const QString & crs = QString());
+                    const QString & crs = QString() );
 
 
     /** \brief The destructor */
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       MultiBandSingleGandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor                  //a layer containing 2 or more bands, mapped to RGB color space.
-                                      //In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      //In the case of a multiband with only two bands, one band will be mapped to more than one color.
     };
 
     /** \brief This enumerator describes the type of raster layer */
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
     void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
-    
+
     /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
     void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
 
@@ -681,9 +681,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor */
     void drawMultiBandSingleBandPseudoColor( QPainter * theQPainter,
-                                             QgsRasterViewPort * theRasterViewPort,
-                                             const QgsMapToPixel* theQgsMapToPixel,
-                                             int theBandNoInt );
+        QgsRasterViewPort * theRasterViewPort,
+        const QgsMapToPixel* theQgsMapToPixel,
+        int theBandNoInt );
 
     /** \brief Drawing routine for single band with a color map */
     void drawPalettedSingleBandColor( QPainter * theQPainter,
@@ -701,7 +701,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void drawPalettedSingleBandPseudoColor( QPainter * theQPainter,
                                             QgsRasterViewPort * theRasterViewPort,
                                             const QgsMapToPixel* theQgsMapToPixel,
-                                            int theBandNoInt);
+                                            int theBandNoInt );
 
     /** \brief Drawing routine for paletted multiband image */
     void drawPalettedMultiBandColor( QPainter * theQPainter,
@@ -742,7 +742,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Read a raster value given position from memory block created by readData() */
     inline double readValue( void *data, GDALDataType type, int index );
-    
+
     /** \brief Update the layer if it is outdated */
     bool update();
 
@@ -794,7 +794,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Pointer to the gdaldataset (possibly warped vrt) */
     GDALDatasetH mGdalDataset;
 
-     /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
     double mGeoTransform[6];
 
     /** \brief The band to be associated with the grayscale only output - usually 1 */

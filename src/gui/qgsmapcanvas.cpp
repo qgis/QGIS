@@ -275,7 +275,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
       QgsVectorLayer *isVectLyr = dynamic_cast < QgsVectorLayer * >( currentLayer );
       if ( isVectLyr )
       {
-        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT(  selectionChangedSlot() ) );
+        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
       }
     }
   }
@@ -453,7 +453,7 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   {
     QgsDebugMsg( "Empty extent - keeping old extent with new center!" );
     QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
-               QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
+                    QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
     mMapRenderer->setExtent( e );
   }
   else
@@ -1282,7 +1282,7 @@ void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
   QgsMapLayer * layer = ( QgsMapLayer * )QObject::sender();
-  
+
   emit selectionChanged( layer );
   refresh();
 }

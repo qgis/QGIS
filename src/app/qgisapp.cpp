@@ -1847,7 +1847,7 @@ void QgisApp::restoreSessionPlugins( QString thePluginDirString )
   {
     QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
 
-    QString baseName = QFileInfo(myFullPath).baseName();
+    QString baseName = QFileInfo( myFullPath ).baseName();
     QLibrary *myLib = new QLibrary( myFullPath );
     bool loaded = myLib->load();
     if ( loaded )
@@ -1859,7 +1859,7 @@ void QgisApp::restoreSessionPlugins( QString thePluginDirString )
       if ( myName && myDescription  && myVersion )
       {
         //check if the plugin was active on last session
-        
+
         // Windows stores a "true" value as a 1 in the registry so we
         // have to use readBoolEntry in this function
 
@@ -4210,9 +4210,9 @@ void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
 
 
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-  
+
   // is loaded already?
-  if ( ! pRegistry->isLoaded(packageName) )
+  if ( ! pRegistry->isLoaded( packageName ) )
   {
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
@@ -4220,7 +4220,7 @@ void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
     // TODO: test success
 
     // add to plugin registry
-    pRegistry->addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true) );
+    pRegistry->addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true ) );
 
     // add to settings
     QSettings settings;
@@ -4236,10 +4236,10 @@ void QgisApp::loadPlugin( QString theFullPathName, QString name )
   QSettings settings;
   // first check to see if its already loaded
   QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-  
-  QString baseName = QFileInfo(theFullPathName).baseName();
-  
-  if ( pRegistry->isLoaded(baseName) )
+
+  QString baseName = QFileInfo( theFullPathName ).baseName();
+
+  if ( pRegistry->isLoaded( baseName ) )
   {
     // plugin is loaded
     // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
@@ -4272,7 +4272,7 @@ void QgisApp::loadPlugin( QString theFullPathName, QString name )
             {
               pl->initGui();
               // add it to the plugin registry
-              pRegistry->addPlugin(baseName, QgsPluginMetadata(myLib->fileName(), name, pl) );
+              pRegistry->addPlugin( baseName, QgsPluginMetadata( myLib->fileName(), name, pl ) );
               //add it to the qsettings file [ts]
               settings.setValue( "/Plugins/" + baseName, true );
             }

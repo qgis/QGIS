@@ -889,7 +889,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
           }
 
           myRasterBandStats.sumOfSquares += static_cast < double >
-                                         ( pow( my - myRasterBandStats.mean, 2 ) );
+                                            ( pow( my - myRasterBandStats.mean, 2 ) );
         }
       }
     }                       //end of column wise loop
@@ -1203,7 +1203,7 @@ QString QgsRasterLayer::colorShadingAlgorithmAsString() const
  */
 void QgsRasterLayer::computeMinimumMaximumEstimates( int theBand, double* theMinMax )
 {
-  if( 0 == theMinMax ) { return; }
+  if ( 0 == theMinMax ) { return; }
 
   if ( 0 < theBand && theBand <= ( int ) bandCount() )
   {
@@ -1229,7 +1229,7 @@ QgsContrastEnhancement* QgsRasterLayer::contrastEnhancement( unsigned int theBan
 {
   if ( 0 < theBand && theBand <= bandCount() )
   {
-     return &mContrastEnhancementList[theBand - 1];
+    return &mContrastEnhancementList[theBand - 1];
   }
 
   return 0;
@@ -1504,7 +1504,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     //Set the transparency for the whole layer
     QImage myAlphaChannel( image->width(), image->height(), QImage::Format_Indexed8 );
-    myAlphaChannel.fill( ( uint ) mTransparencyLevel );
+    myAlphaChannel.fill(( uint ) mTransparencyLevel );
     image->setAlphaChannel( myAlphaChannel );
 
     // Since GDAL's RasterIO can't handle floating point, we have to round to
@@ -1873,7 +1873,7 @@ QString QgsRasterLayer::lastErrorTitle()
   return mErrorCaption;
 }
 
-/** 
+/**
  * This is an overloaded version of the legendAsPixmap( bool ) assumes false for the legend name flag.
  * @return a pixmap representing a legend image
  */
@@ -3185,7 +3185,7 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString theShaderAlgorithm )
     setColorShadingAlgorithm( UndefinedShader );
 }
 
-void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag)
+void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
   QList<QgsContrastEnhancement>::iterator myIterator = mContrastEnhancementList.begin();
   while ( myIterator !=  mContrastEnhancementList.end() )
@@ -3334,7 +3334,7 @@ void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, boo
   }
 }
 
-void QgsRasterLayer::setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag  )
+void QgsRasterLayer::setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag )
 {
   if ( theBand != tr( "Not Set" ) )
   {
@@ -4506,7 +4506,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
  */
 
 void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
-    const QgsMapToPixel* theQgsMapToPixel, int theBandNo)
+    const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
   QgsDebugMsg( "entered." );
   //Invalid band number, segfault prevention
