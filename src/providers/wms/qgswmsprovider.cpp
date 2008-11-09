@@ -1412,10 +1412,10 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
         // TODO: overwrite inherited
         QgsWmsBoundingBoxProperty bbox;
         bbox.box = QgsRectangle( e1.attribute( "minx" ).toDouble(),
-                            e1.attribute( "miny" ).toDouble(),
-                            e1.attribute( "maxx" ).toDouble(),
-                            e1.attribute( "maxy" ).toDouble()
-                          );
+                                 e1.attribute( "miny" ).toDouble(),
+                                 e1.attribute( "maxx" ).toDouble(),
+                                 e1.attribute( "maxy" ).toDouble()
+                               );
         bbox.crs = e1.attribute( "CRS" );
         layerProperty.boundingBox.push_back( bbox );
       }

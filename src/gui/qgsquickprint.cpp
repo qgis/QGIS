@@ -339,15 +339,15 @@ void QgsQuickPrint::printMap()
   // properly in the print
   int myMapDimensionX = ( myDrawableWidth / 100 ) * myMapHeightPercent;
   int myMapDimensionY = ( myDrawableHeight / 100 ) * myMapWidthPercent;
-  
-  QImage myMapImage(QSize(myMapDimensionX, myMapDimensionY), QImage::Format_ARGB32);
-  myMapImage.setDotsPerMeterX((double)(myPrinter.logicalDpiX()) / 25.4 * 1000.0);
-  myMapImage.setDotsPerMeterY((double)(myPrinter.logicalDpiY()) / 25.4 * 1000.0);
-  myMapImage.fill(0);
+
+  QImage myMapImage( QSize( myMapDimensionX, myMapDimensionY ), QImage::Format_ARGB32 );
+  myMapImage.setDotsPerMeterX(( double )( myPrinter.logicalDpiX() ) / 25.4 * 1000.0 );
+  myMapImage.setDotsPerMeterY(( double )( myPrinter.logicalDpiY() ) / 25.4 * 1000.0 );
+  myMapImage.fill( 0 );
   QPainter myMapPainter;
-  myMapPainter.begin(&myMapImage);
+  myMapPainter.begin( &myMapImage );
   // Now resize for print
-  mpMapRenderer->setOutputSize(QSize( myMapDimensionX, myMapDimensionY ), (myPrinter.logicalDpiX() + myPrinter.logicalDpiY()) / 2 );
+  mpMapRenderer->setOutputSize( QSize( myMapDimensionX, myMapDimensionY ), ( myPrinter.logicalDpiX() + myPrinter.logicalDpiY() ) / 2 );
   mpMapRenderer->render( &myMapPainter );
 
   myMapPainter.end();
@@ -355,7 +355,7 @@ void QgsQuickPrint::printMap()
   myOriginX = myPrinter.pageRect().left() + myHorizontalSpacing;
   myOriginY += myVerticalSpacing * 2;
 
-  myPrintPainter.drawImage(myOriginX, myOriginY, myMapImage);
+  myPrintPainter.drawImage( myOriginX, myOriginY, myMapImage );
 
   //
   // Draw the legend
@@ -414,7 +414,7 @@ void QgsQuickPrint::printMap()
         //
         // Single symbol
         //
-        double widthScale =   (myPrinter.logicalDpiX() + myPrinter.logicalDpiY()) / 2.0 / 25.4;
+        double widthScale = ( myPrinter.logicalDpiX() + myPrinter.logicalDpiY() ) / 2.0 / 25.4;
 
         if ( 1 == mySymbolList.size() )
         {
@@ -425,8 +425,8 @@ void QgsQuickPrint::printMap()
           if ( mypSymbol->type() == QGis::Point )
           {
             QImage myImage;
-            myImage = mypSymbol->getPointSymbolAsImage(widthScale);
-            myPrintPainter.drawImage(myLegendXPos, myLegendYPos, myImage);
+            myImage = mypSymbol->getPointSymbolAsImage( widthScale );
+            myPrintPainter.drawImage( myLegendXPos, myLegendYPos, myImage );
           }
           else if ( mypSymbol->type() == QGis::Line )
           {
@@ -502,8 +502,8 @@ void QgsQuickPrint::printMap()
             if ( mypSymbol->type() == QGis::Point )
             {
               QImage myImage;
-              myImage = mypSymbol->getPointSymbolAsImage(widthScale);
-              myPrintPainter.drawImage(myLegendXPos, myLegendYPos, myImage);
+              myImage = mypSymbol->getPointSymbolAsImage( widthScale );
+              myPrintPainter.drawImage( myLegendXPos, myLegendYPos, myImage );
             }
             else if ( mypSymbol->type() == QGis::Line )
             {

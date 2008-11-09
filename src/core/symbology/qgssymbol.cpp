@@ -333,13 +333,13 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
     double rotation, double rasterScaleFactor )
 {
   if ( 1.0 == ( scale * rasterScaleFactor ) && 0 == rotation )
+  {
+    if ( mWidthScale < 0 || widthScale == mWidthScale )
     {
-      if(mWidthScale < 0 || widthScale == mWidthScale)
-	{  
-	  // If scale is 1.0 and rotation 0.0, use cached image.
-	  return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
-	}
+      // If scale is 1.0 and rotation 0.0, use cached image.
+      return getCachedPointSymbolAsImage( widthScale, selected, selectionColor );
     }
+  }
 
   QImage preRotateImage;
   QPen pen = mPen;

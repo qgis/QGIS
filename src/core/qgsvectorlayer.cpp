@@ -309,7 +309,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
         if ( mRenderer->willRenderFeature( &fet ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
-          mLabel->renderLabel( rendererContext.painter(), rendererContext.extent(), rendererContext.coordinateTransform(), &(rendererContext.mapToPixel()), fet, sel, 0, rendererContext.scaleFactor(), rendererContext.rasterScaleFactor());
+          mLabel->renderLabel( rendererContext.painter(), rendererContext.extent(), rendererContext.coordinateTransform(), &( rendererContext.mapToPixel() ), fet, sel, 0, rendererContext.scaleFactor(), rendererContext.rasterScaleFactor() );
         }
         featureCount++;
       }
@@ -3127,7 +3127,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
   QList<QgsFeature> featureList;
   QgsRectangle searchRect( startPoint.x() - snappingTolerance, startPoint.y() - snappingTolerance,
-                      startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
+                           startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
 
   select( QgsAttributeList(), searchRect, true, true );

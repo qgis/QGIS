@@ -45,34 +45,34 @@ QString QgsPythonDialog::escapeHtml( QString text )
 
 void QgsPythonDialog::keyPressEvent( QKeyEvent *ev )
 {
-  switch( ev->key() )
+  switch ( ev->key() )
   {
-  case Qt::Key_Up:
+    case Qt::Key_Up:
     {
-      if(pos>0)
+      if ( pos > 0 )
       {
-        if( pos==history.size() )
+        if ( pos == history.size() )
           history << edtCmdLine->text();
         else
           history[pos] = edtCmdLine->text();
         pos--;
-        edtCmdLine->setText(history[pos]);
+        edtCmdLine->setText( history[pos] );
       }
     }
     break;
-  case Qt::Key_Down:
+    case Qt::Key_Down:
     {
-      if( pos<history.size()-1 )
+      if ( pos < history.size() - 1 )
       {
         history[pos] = edtCmdLine->text();
         pos++;
-        edtCmdLine->setText(history[pos]);
+        edtCmdLine->setText( history[pos] );
       }
     }
     break;
-  default:
-    QWidget::keyPressEvent(ev);
-    break;
+    default:
+      QWidget::keyPressEvent( ev );
+      break;
   }
 }
 
@@ -80,7 +80,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
 {
   QString command = edtCmdLine->text();
 
-  if( !command.isEmpty() )
+  if ( !command.isEmpty() )
   {
     history << command;
     pos = history.size();

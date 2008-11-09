@@ -291,12 +291,12 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, doubl
     thepPainter->drawPolygon( pa );
   }
 
-  else if (name == "arrow")
+  else if ( name == "arrow" )
   {
     int oneEight = r / 4;
     int quarter = r / 2;
 
-    QPolygon pa(7);
+    QPolygon pa( 7 );
     pa.setPoint( 0, x_c, y_c - r );
     pa.setPoint( 1, x_c + quarter,  y_c - quarter );
     pa.setPoint( 2, x_c + oneEight, y_c - quarter );
@@ -304,7 +304,7 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, doubl
     pa.setPoint( 4, x_c - oneEight, y_c + r );
     pa.setPoint( 5, x_c - oneEight, y_c - quarter );
     pa.setPoint( 6, x_c - quarter,  y_c - quarter );
-    thepPainter->drawPolygon ( pa );
+    thepPainter->drawPolygon( pa );
   }
   thepPainter->end();
 }

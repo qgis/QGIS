@@ -155,7 +155,7 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
     double sizeMM = size * 0.3527;
     size = sizeMM * sizeScale;
   }
-  
+
   //Request font larger (multiplied by rasterScaleFactor) as a workaround for the Qt font bug
   //and scale the painter down by rasterScaleFactor when drawing the label
   size *= rasterScaleFactor;
@@ -402,13 +402,13 @@ void QgsLabel::renderLabel( QPainter* painter, QgsPoint point,
 
   x = x + xoffset * cos( rad ) - yoffset * sin( rad );
   y = y - xoffset * sin( rad ) - yoffset * cos( rad );
-  
+
 
   painter->save();
   painter->setFont( font );
   painter->translate( x, y );
   //correct oversampled font size back by scaling painter down
-  painter->scale(1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor);
+  painter->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
   painter->rotate( -ang );
 
   //
