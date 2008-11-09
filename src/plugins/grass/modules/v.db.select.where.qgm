@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Prints vector map attributes with SQL" module="v.db.select">
+<qgisgrassmodule label="Display vector map attributes with SQL" module="v.db.select">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" type="integer,double,varchar"/>
 	<option key="where" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Open 3D-View in NVIZ" module="nviz">
+<qgisgrassmodule label="3D-Viewer (NVIZ)" module="nviz">
 	<option key="elevation" />
 	<option key="color" />
 	<option key="vector" />

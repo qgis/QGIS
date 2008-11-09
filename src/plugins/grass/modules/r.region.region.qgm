@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Sets the boundary definitions to current or default region" module="r.region">
+<qgisgrassmodule label="Set boundary definitions to current or default region" module="r.region">
 	<option key="map" />
 	<flag key="c" />
 	<flag key="d" />

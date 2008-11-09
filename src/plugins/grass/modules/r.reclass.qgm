@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Reclass a raster using a reclassification rules file" module="r.reclass">
+<qgisgrassmodule label="Reclass raster using reclassification rules" module="r.reclass">
 	<option key="input"/>
 	<file key="rules" type="old" />
 	<option key="output" />

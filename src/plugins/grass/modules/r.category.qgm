@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Print category values and labels associated with user-defined rasters" module="r.category">
+<qgisgrassmodule label="Display raster category values and labels" module="r.category">
 	<option key="map" />
 </qgisgrassmodule>

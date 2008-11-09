@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Vector based generalization" module="v.generalize">
+<qgisgrassmodule label="Simplify vector" module="v.generalize">
 	<option key="input" typeoption="type" layeroption="layer" />
 	<option key="method" />
 	<option key="threshold" ansewr="1.0" />
