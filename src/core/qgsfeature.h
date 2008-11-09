@@ -23,7 +23,7 @@ email                : sherman at mrcc.com
 #include <QList>
 
 class QgsGeometry;
-class QgsRect;
+class QgsRectangle;
 class QgsFeature;
 
 // key = field index, value = field value

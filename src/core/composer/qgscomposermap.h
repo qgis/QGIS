@@ -19,7 +19,7 @@
 
 //#include "ui_qgscomposermapbase.h"
 #include "qgscomposeritem.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPixmap>
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     @param extent map extent
     @param size size in scene coordinates
     @param dpi scene dpi*/
-    void draw( QPainter *painter, const QgsRect& extent, const QSize& size, int dpi );
+    void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     void setNewScale( double scaleDenominator );
 
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
-    void setNewExtent( const QgsRect& extent );
+    void setNewExtent( const QgsRectangle& extent );
 
     PreviewMode previewMode() {return mPreviewMode;}
     void setPreviewMode( PreviewMode m ) {mPreviewMode = m;}
@@ -111,7 +111,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     // Set cache outdated
     void setCacheUpdated( bool u = false );
 
-    QgsRect extent() const {return mExtent;}
+    QgsRectangle extent() const {return mExtent;}
 
     const QgsMapRenderer* mapRenderer() const {return mMapRenderer;}
 
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     // Map region in map units realy used for rendering
     // It can be the same as mUserExtent, but it can be bigger in on dimension if mCalculate==Scale,
     // so that full rectangle in paper is used.
-    QgsRect mExtent;
+    QgsRectangle mExtent;
 
     // Cache used in composer preview
     // NOTE:  QCanvasView is slow with bigger images but the spped does not decrease with image size.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
     double mLastScaleFactorX;
 
     /**Store the last map extent to decide if cache needs to be updatet*/
-    QgsRect mCachedMapExtent;
+    QgsRectangle mCachedMapExtent;
 
     /**Offset in x direction for showing map cache image*/
     double mXOffset;

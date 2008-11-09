@@ -112,7 +112,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   QgsPoint ll = transform->toMapCoordinates( mSelectRect.left(), mSelectRect.bottom() );
   QgsPoint ur = transform->toMapCoordinates( mSelectRect.right(), mSelectRect.top() );
 
-  QgsRect search( ll.x(), ll.y(), ur.x(), ur.y() );
+  QgsRectangle search( ll.x(), ll.y(), ur.x(), ur.y() );
 
   // if Ctrl key is pressed, selected features will be added to selection
   // instead of removing old selection

@@ -21,12 +21,12 @@
 
 #include <cassert>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsbookmarkitem.h"
 #include "qgslogger.h"
 
 QgsBookmarkItem::QgsBookmarkItem( QString name, QString projectTitle,
-                                  QgsRect viewExtent, int srid, QString dbPath )
+                                  QgsRectangle viewExtent, int srid, QString dbPath )
     : mName( name ), mProjectTitle( projectTitle ), mViewExtent( viewExtent ),
     mSrid( srid ), mUserDbPath( dbPath )
 {
@@ -59,10 +59,10 @@ void QgsBookmarkItem::store()
   sqlStream << "insert into tbl_bookmarks values(null,'" <<
   mName << "','" <<
   mProjectTitle << "'," <<
-  mViewExtent.xMin() << "," <<
-  mViewExtent.yMin() << "," <<
-  mViewExtent.xMax() << "," <<
-  mViewExtent.yMax() << "," <<
+  mViewExtent.xMinimum() << "," <<
+  mViewExtent.yMinimum() << "," <<
+  mViewExtent.xMaximum() << "," <<
+  mViewExtent.yMaximum() << "," <<
   mSrid << ")";
 
   QgsDebugMsg( QString( "Storing bookmark using: %1" ).arg( sql ) );

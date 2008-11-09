@@ -47,19 +47,19 @@ class QgsScaleCalculator
     
     /**
      * Calculate the scale
-     * @param mapExtent QgsRect containing the current map extent
+     * @param mapExtent QgsRectangle containing the current map extent
      * @param canvasWidth Width of the map canvas in pixel (physical) units
      * @return scale of current map view
      */
-    double calculate(QgsRect &mapExtent, int canvasWidth);
+    double calculate(QgsRectangle &mapExtent, int canvasWidth);
 
     /**
      * Calculate the distance between to points in geographic coordinates.
      * Used to calculate scale for map views with geographic (decimal degree)
      * data.
-     * @param mapExtent QgsRect containing the current map extent
+     * @param mapExtent QgsRectangle containing the current map extent
      */
-    double calculateGeographicDistance(QgsRect &mapExtent);
+    double calculateGeographicDistance(QgsRectangle &mapExtent);
 
 };
 

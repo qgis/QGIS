@@ -36,10 +36,10 @@ class QgsMapCanvasItem : QGraphicsItem
     void setPanningOffset(const QPoint& point);
 
     //! returns canvas item rectangle
-    QgsRect rect() const;
+    QgsRectangle rect() const;
     
     //! sets canvas item rectangle
-    void setRect(const QgsRect& r);
+    void setRect(const QgsRectangle& r);
     
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates(const QPoint& point);

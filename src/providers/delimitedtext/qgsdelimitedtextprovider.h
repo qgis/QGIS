@@ -65,7 +65,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      *                     false if a test based on bounding box is sufficient
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false );
 
@@ -145,7 +145,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     /**
      * Return the extent for this data layer
      */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /**
      * Returns true if this is a valid delimited file
@@ -185,11 +185,11 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     int mYFieldIndex;
 
     //! Layer extent
-    QgsRect mExtent;
+    QgsRectangle mExtent;
 
     //! Current selection rectangle
 
-    QgsRect mSelectionRectangle;
+    QgsRectangle mSelectionRectangle;
 
     //! Text file
     QFile *mFile;

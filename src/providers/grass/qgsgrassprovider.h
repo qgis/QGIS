@@ -132,7 +132,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      * @note This function works only until first edit operation! (category index used)
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false );
 
@@ -164,7 +164,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /** Return the extent for this data layer
      */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /**
      * Get the field information for the layer

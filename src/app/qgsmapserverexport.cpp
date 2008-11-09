@@ -21,7 +21,7 @@ email                : sherman at mrcc.com
 #include "qgshelpviewer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
@@ -166,9 +166,9 @@ void QgsMapserverExport::writeMapFile()
       // extent
       mapFile << "\n# Extent based on full extent of QGIS view" << std::endl;
       mapFile << "EXTENT ";
-      QgsRect extent = map->extent();
-      mapFile << extent.xMin() << " " << extent.yMin() << " ";
-      mapFile << extent.xMax() << " " << extent.yMax() << std::endl;
+      QgsRectangle extent = map->extent();
+      mapFile << extent.xMinimum() << " " << extent.yMinimum() << " ";
+      mapFile << extent.xMaximum() << " " << extent.yMaximum() << std::endl;
       // units
       mapFile << "UNITS " << cmbMapUnits->currentText().toLocal8Bit().data() << std::endl;
       // image info

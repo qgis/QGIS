@@ -36,7 +36,7 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgis.h"
 
@@ -87,7 +87,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     mDelimiter.replace( "\\t", "\t" ); // replace "\t" with a real tabulator
 
   // Set the selection rectangle to null
-  mSelectionRectangle = QgsRect();
+  mSelectionRectangle = QgsRectangle();
   // assume the layer is invalid until proven otherwise
   mValid = false;
   if ( mFileName.isEmpty() || mDelimiter.isEmpty() || xField.isEmpty() || yField.isEmpty() )
@@ -118,7 +118,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   // now we have the file opened and ready for parsing
 
   // set the initial extent
-  mExtent = QgsRect();
+  mExtent = QgsRectangle();
 
   QMap<int, bool> couldBeInt;
   QMap<int, bool> couldBeDouble;
@@ -419,7 +419,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 
 
 void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,
-                                       QgsRect rect,
+                                       QgsRectangle rect,
                                        bool fetchGeometry,
                                        bool useIntersect )
 {
@@ -441,7 +441,7 @@ void QgsDelimitedTextProvider::select( QgsAttributeList fetchAttributes,
 
 
 // Return the extent of the layer
-QgsRect QgsDelimitedTextProvider::extent()
+QgsRectangle QgsDelimitedTextProvider::extent()
 {
   return mExtent;
 }
@@ -500,8 +500,8 @@ bool QgsDelimitedTextProvider::boundsCheck( double x, double y )
   if ( mSelectionRectangle.isEmpty() )
     return true;
 
-  return ( x <= mSelectionRectangle.xMax() ) && ( x >= mSelectionRectangle.xMin() ) &&
-         ( y <= mSelectionRectangle.yMax() ) && ( y >= mSelectionRectangle.yMin() );
+  return ( x <= mSelectionRectangle.xMaximum() ) && ( x >= mSelectionRectangle.xMinimum() ) &&
+         ( y <= mSelectionRectangle.yMaximum() ) && ( y >= mSelectionRectangle.yMinimum() );
 }
 
 int QgsDelimitedTextProvider::capabilities() const

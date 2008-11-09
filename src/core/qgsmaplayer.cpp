@@ -32,7 +32,7 @@
 #include <sqlite3.h>
 
 #include "qgslogger.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
@@ -123,7 +123,7 @@ QString const & QgsMapLayer::source() const
   return mDataSource;
 }
 
-QgsRect QgsMapLayer::extent() const
+QgsRectangle QgsMapLayer::extent() const
 {
   return mLayerExtent;
 }

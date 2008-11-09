@@ -47,7 +47,7 @@ typedef QVector<QgsPolyline> QgsMultiPolyline;
 /** a collection of QgsPolygons that share a common collection of attributes */
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
-class QgsRect;
+class QgsRectangle;
 
 /** \ingroup core
  * A geometry is the spatial representation of a feature.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometry
     /** construct geometry from a multipolygon */
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** construct geometry from a rectangle */
-    static QgsGeometry* fromRect( const QgsRect& rect );
+    static QgsGeometry* fromRect( const QgsRectangle& rect );
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
@@ -256,10 +256,10 @@ class CORE_EXPORT QgsGeometry
     int makeDifference( QgsGeometry* other );
 
     /**Returns the bounding box of this feature*/
-    QgsRect boundingBox();
+    QgsRectangle boundingBox();
 
     /** Test for intersection with a rectangle (uses GEOS) */
-    bool intersects( const QgsRect& r );
+    bool intersects( const QgsRectangle& r );
     /** Test for intersection with a geoemetry (uses GEOS) */
     bool intersects( QgsGeometry* geometry );
 

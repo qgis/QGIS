@@ -152,9 +152,9 @@ GPSData::GPSData()
 }
 
 
-QgsRect GPSData::getExtent() const
+QgsRectangle GPSData::getExtent() const
 {
-  return QgsRect( xMin, yMin, xMax, yMax );
+  return QgsRectangle( xMin, yMin, xMax, yMax );
 }
 
 void GPSData::setNoDataExtent()

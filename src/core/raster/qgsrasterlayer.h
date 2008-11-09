@@ -55,7 +55,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 // Forward declarations
 //
 class QgsMapToPixel;
-class QgsRect;
+class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
 class QgsRasterLayerProperties;

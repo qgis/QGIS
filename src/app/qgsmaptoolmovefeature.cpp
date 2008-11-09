@@ -72,7 +72,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   QgsPoint layerCoords = toLayerCoordinates(( QgsMapLayer* )vlayer, e->pos() );
   QSettings settings;
   double searchRadius = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  QgsRect selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
+  QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                       layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
   vlayer->select( QgsAttributeList(), selectRect, true );

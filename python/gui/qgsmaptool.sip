@@ -85,7 +85,7 @@ class QgsMapTool : QObject
     QgsPoint toLayerCoordinates(QgsMapLayer* layer, const QgsPoint& point);
     
     //! trnasformation of the rect from map coordinates to layer's coordinates
-    QgsRect toLayerCoordinates(QgsMapLayer* layer, const QgsRect& rect);
+    QgsRectangle toLayerCoordinates(QgsMapLayer* layer, const QgsRectangle& rect);
 
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoordinates(const QgsPoint& point);

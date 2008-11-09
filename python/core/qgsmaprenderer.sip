@@ -23,10 +23,10 @@ class QgsMapRenderer : QObject
     void render(QPainter* painter);
     
     //! sets extent and checks whether suitable (returns false if not)
-    bool setExtent(const QgsRect& extent);
+    bool setExtent(const QgsRectangle& extent);
     
     //! returns current extent
-    QgsRect extent();
+    QgsRectangle extent();
     
     const QgsMapToPixel* coordinateTransform();
     
@@ -54,7 +54,7 @@ class QgsMapRenderer : QObject
     QSize outputSize();
     
     //! transform extent in layer's CRS to extent in output CRS
-    QgsRect layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRect extent);
+    QgsRectangle layerExtentToOutputExtent(QgsMapLayer* theLayer, QgsRectangle extent);
     
     //! transform coordinates from layer's CRS to output CRS
     QgsPoint layerToMapCoordinates(QgsMapLayer* theLayer, QgsPoint point);
@@ -63,7 +63,7 @@ class QgsMapRenderer : QObject
     QgsPoint mapToLayerCoordinates(QgsMapLayer* theLayer, QgsPoint point);
 
     //! transform rect's coordinates from output CRS to layer's CRS
-    QgsRect mapToLayerCoordinates(QgsMapLayer* theLayer, QgsRect rect);
+    QgsRectangle mapToLayerCoordinates(QgsMapLayer* theLayer, QgsRectangle rect);
     
     //! sets whether to use projections for this layer set
     void setProjectionsEnabled(bool enabled);
@@ -78,7 +78,7 @@ class QgsMapRenderer : QObject
     const QgsCoordinateReferenceSystem& destinationSrs();
 
     //! returns current extent of layer set
-    QgsRect fullExtent();
+    QgsRectangle fullExtent();
     
     //! returns current layer set
     QStringList& layerSet();
@@ -126,7 +126,7 @@ class QgsMapRenderer : QObject
      * source CRS coordinates, and if it was split, returns true, and
      * also sets the contents of the r2 parameter
      */
-    bool splitLayersExtent(QgsMapLayer* layer, QgsRect& extent, QgsRect& r2);
+    bool splitLayersExtent(QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2);
 
 };
 

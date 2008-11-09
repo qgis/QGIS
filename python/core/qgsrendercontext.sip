@@ -16,7 +16,7 @@ class QgsRenderContext
 
   const QgsCoordinateTransform* coordinateTransform() const;
 
-  const QgsRect& extent() const;
+  const QgsRectangle& extent() const;
 
   const QgsMapToPixel& mapToPixel() const;
 
@@ -35,7 +35,7 @@ class QgsRenderContext
   /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
   void setCoordinateTransform(QgsCoordinateTransform* t);
   void setMapToPixel(const QgsMapToPixel& mtp);
-  void setExtent(const QgsRect& extent);
+  void setExtent(const QgsRectangle& extent);
   void setDrawEditingInformation(bool b);
   void setRenderingStopped(bool stopped);
   void setScaleFactor(double factor);

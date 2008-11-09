@@ -30,7 +30,7 @@
 #include "qgsgeometry.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsmaptopixel.h"
 #include "qgscoordinatetransform.h"
 
@@ -82,7 +82,7 @@ QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
   }
 }
 
-void QgsLabel::renderLabel( QPainter * painter, const QgsRect& viewExtent,
+void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
                             const QgsCoordinateTransform* coordinateTransform,
                             const QgsMapToPixel *transform,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,

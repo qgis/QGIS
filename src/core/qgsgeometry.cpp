@@ -23,7 +23,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgslogger.h"
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
@@ -491,14 +491,14 @@ QgsGeometry* QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
   }
 }
 
-QgsGeometry* QgsGeometry::fromRect( const QgsRect& rect )
+QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
 {
   QgsPolyline ring;
-  ring.append( QgsPoint( rect.xMin(), rect.yMin() ) );
-  ring.append( QgsPoint( rect.xMax(), rect.yMin() ) );
-  ring.append( QgsPoint( rect.xMax(), rect.yMax() ) );
-  ring.append( QgsPoint( rect.xMin(), rect.yMax() ) );
-  ring.append( QgsPoint( rect.xMin(), rect.yMin() ) );
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  ring.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
+  ring.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
 
   QgsPolygon polygon;
   polygon.append( ring );
@@ -3258,7 +3258,7 @@ int QgsGeometry::makeDifference( QgsGeometry* other )
   return 0;
 }
 
-QgsRect QgsGeometry::boundingBox()
+QgsRectangle QgsGeometry::boundingBox()
 {
   double xmin =  std::numeric_limits<double>::max();
   double ymin =  std::numeric_limits<double>::max();
@@ -3287,7 +3287,7 @@ QgsRect QgsGeometry::boundingBox()
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return QgsRect( 0, 0, 0, 0 );
+    return QgsRectangle( 0, 0, 0, 0 );
   }
   // consider endian when fetching feature type
   //wkbType = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4]; //MH: Does not work for 25D geometries
@@ -3530,14 +3530,14 @@ QgsRect QgsGeometry::boundingBox()
 
     default:
       QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
-      return QgsRect( 0, 0, 0, 0 );
+      return QgsRectangle( 0, 0, 0, 0 );
       break;
 
   }
-  return QgsRect( xmin, ymin, xmax, ymax );
+  return QgsRectangle( xmin, ymin, xmax, ymax );
 }
 
-bool QgsGeometry::intersects( const QgsRect& r )
+bool QgsGeometry::intersects( const QgsRectangle& r )
 {
   QgsGeometry* g = fromRect( r );
   bool res = intersects( g );

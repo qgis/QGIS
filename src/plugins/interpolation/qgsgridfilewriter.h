@@ -18,7 +18,7 @@
 #ifndef QGSGRIDFILEWRITER_H
 #define QGSGRIDFILEWRITER_H
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include <QString>
 #include <QTextStream>
 
@@ -29,7 +29,7 @@ class QgsInterpolator;
 class QgsGridFileWriter
 {
   public:
-    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRect extent, int nCols, int nRows );
+    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows );
     ~QgsGridFileWriter();
 
     /**Writes the grid file.
@@ -45,7 +45,7 @@ class QgsGridFileWriter
 
     QgsInterpolator* mInterpolator;
     QString mOutputFilePath;
-    QgsRect mInterpolationExtent;
+    QgsRectangle mInterpolationExtent;
     int mNumColumns;
     int mNumRows;
 

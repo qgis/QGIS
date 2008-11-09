@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include "qgslogger.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmaplayerregistry.h"

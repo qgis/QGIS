@@ -24,7 +24,7 @@
 #include <math.h>
 
 #include "qgscoordinatetransform.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 
 #include "qgshttptransaction.h"
@@ -273,7 +273,7 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
 }
 
 
-QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int pixelHeight )
+QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "Entering." );
 
@@ -318,18 +318,18 @@ QImage* QgsWmsProvider::draw( QgsRect  const & viewExtent, int pixelWidth, int p
   if ( changeXY )
   {
     bbox = QString( "%1,%2,%3,%4" ).
-           arg( viewExtent.yMin(), 0, 'f' ).
-           arg( viewExtent.xMin(), 0, 'f' ).
-           arg( viewExtent.yMax(), 0, 'f' ).
-           arg( viewExtent.xMax(), 0, 'f' );
+           arg( viewExtent.yMinimum(), 0, 'f' ).
+           arg( viewExtent.xMinimum(), 0, 'f' ).
+           arg( viewExtent.yMaximum(), 0, 'f' ).
+           arg( viewExtent.xMaximum(), 0, 'f' );
   }
   else
   {
     bbox = QString( "%1,%2,%3,%4" ).
-           arg( viewExtent.xMin(), 0, 'f' ).
-           arg( viewExtent.yMin(), 0, 'f' ).
-           arg( viewExtent.xMax(), 0, 'f' ).
-           arg( viewExtent.yMax(), 0, 'f' );
+           arg( viewExtent.xMinimum(), 0, 'f' ).
+           arg( viewExtent.yMinimum(), 0, 'f' ).
+           arg( viewExtent.xMaximum(), 0, 'f' ).
+           arg( viewExtent.yMaximum(), 0, 'f' );
   }
 
   // Width in WMS format
@@ -1383,7 +1383,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
         QgsDebugMsg( "      LLBB is: '"  + e1.attribute( "maxy" )  + "'." );
 #endif
 
-        layerProperty.ex_GeographicBoundingBox = QgsRect(
+        layerProperty.ex_GeographicBoundingBox = QgsRectangle(
               e1.attribute( "minx" ).toDouble(),
               e1.attribute( "miny" ).toDouble(),
               e1.attribute( "maxx" ).toDouble(),
@@ -1404,14 +1404,14 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
         nBLat = nBoundLatitudeElem.text().toDouble( &nBOk );
         if ( wBOk && eBOk && sBOk && nBOk )
         {
-          layerProperty.ex_GeographicBoundingBox = QgsRect( wBLong, sBLat, eBLong, nBLat );
+          layerProperty.ex_GeographicBoundingBox = QgsRectangle( wBLong, sBLat, eBLong, nBLat );
         }
       }
       else if ( e1.tagName() == "BoundingBox" )
       {
         // TODO: overwrite inherited
         QgsWmsBoundingBoxProperty bbox;
-        bbox.box = QgsRect( e1.attribute( "minx" ).toDouble(),
+        bbox.box = QgsRectangle( e1.attribute( "minx" ).toDouble(),
                             e1.attribute( "miny" ).toDouble(),
                             e1.attribute( "maxx" ).toDouble(),
                             e1.attribute( "maxy" ).toDouble()
@@ -1656,7 +1656,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
 
 
 
-QgsRect QgsWmsProvider::extent()
+QgsRectangle QgsWmsProvider::extent()
 {
   if ( extentDirty )
   {
@@ -1744,7 +1744,7 @@ bool QgsWmsProvider::calculateExtent()
   {
     QgsDebugMsg( "Sublayer Iterator: " + *it );
     // This is the extent for the layer name in *it
-    QgsRect extent = extentForLayer.find( *it )->second;
+    QgsRectangle extent = extentForLayer.find( *it )->second;
 
     // Convert to the user's CRS as required
     try

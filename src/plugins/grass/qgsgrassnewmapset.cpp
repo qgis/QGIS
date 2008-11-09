@@ -602,9 +602,9 @@ void QgsGrassNewMapset::setRegionPage()
     mRegionButton->show();
     mSetRegionFrame->show();
 
-    QgsRect ext = mIface->mapCanvas()->extent();
+    QgsRectangle ext = mIface->mapCanvas()->extent();
 
-    if ( ext.xMin() >= ext.xMax() || ext.yMin() >= ext.yMax() )
+    if ( ext.xMinimum() >= ext.xMaximum() || ext.yMinimum() >= ext.yMaximum() )
     {
       mCurrentRegionButton->setEnabled( false );
     }
@@ -627,9 +627,9 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
 
   QgsDebugMsg( QString( "current project srsid = %1" ).arg( srsid ) );
 
-  QgsRect ext = mIface->mapCanvas()->extent();
+  QgsRectangle ext = mIface->mapCanvas()->extent();
   bool extSet = false;
-  if ( ext.xMin() < ext.xMax() && ext.yMin() < ext.yMax() )
+  if ( ext.xMinimum() < ext.xMaximum() && ext.yMinimum() < ext.yMaximum() )
   {
     extSet = true;
   }
@@ -641,10 +641,10 @@ void QgsGrassNewMapset::setGrassRegionDefaults()
        )
      )
   {
-    mNorthLineEdit->setText( QString::number( ext.yMax() ) );
-    mSouthLineEdit->setText( QString::number( ext.yMin() ) );
-    mEastLineEdit->setText( QString::number( ext.xMax() ) );
-    mWestLineEdit->setText( QString::number( ext.xMin() ) );
+    mNorthLineEdit->setText( QString::number( ext.yMaximum() ) );
+    mSouthLineEdit->setText( QString::number( ext.yMinimum() ) );
+    mEastLineEdit->setText( QString::number( ext.xMaximum() ) );
+    mWestLineEdit->setText( QString::number( ext.xMinimum() ) );
   }
   else if ( mCellHead.proj == PROJECTION_XY )
   {
@@ -947,7 +947,7 @@ void QgsGrassNewMapset::setCurrentRegion()
 {
   QgsDebugMsg( "entered." );
 
-  QgsRect ext = mIface->mapCanvas()->extent();
+  QgsRectangle ext = mIface->mapCanvas()->extent();
 
   int srsid = QgsProject::instance()->readNumEntry(
                 "SpatialRefSys", "/ProjectCRSID", 0 );
@@ -959,8 +959,8 @@ void QgsGrassNewMapset::setCurrentRegion()
   std::vector<QgsPoint> points;
 
   // TODO: this is not perfect
-  points.push_back( QgsPoint( ext.xMin(), ext.yMin() ) );
-  points.push_back( QgsPoint( ext.xMax(), ext.yMax() ) );
+  points.push_back( QgsPoint( ext.xMinimum(), ext.yMinimum() ) );
+  points.push_back( QgsPoint( ext.xMaximum(), ext.yMaximum() ) );
 
   // TODO add a method, this code is copy-paste from setSelectedRegion
   if ( srs.isValid() && mSrs.isValid()

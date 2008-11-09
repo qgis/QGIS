@@ -89,7 +89,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      *                     false if a test based on bounding box is sufficient
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false ) = 0;
 

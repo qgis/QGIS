@@ -20,10 +20,10 @@
 #include <QFile>
 #include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRect extent, int nCols, int nRows ): mInterpolator( i ), mOutputFilePath( outputPath ), mInterpolationExtent( extent ), mNumColumns( nCols ), mNumRows( nRows )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows ): mInterpolator( i ), mOutputFilePath( outputPath ), mInterpolationExtent( extent ), mNumColumns( nCols ), mNumRows( nRows )
 {
-  mCellSizeX = ( mInterpolationExtent.xMax() - mInterpolationExtent.xMin() ) / mNumColumns;
-  mCellSizeY = ( mInterpolationExtent.yMax() - mInterpolationExtent.yMin() ) / mNumRows;
+  mCellSizeX = ( mInterpolationExtent.xMaximum() - mInterpolationExtent.xMinimum() ) / mNumColumns;
+  mCellSizeY = ( mInterpolationExtent.yMaximum() - mInterpolationExtent.yMinimum() ) / mNumRows;
 }
 
 QgsGridFileWriter::QgsGridFileWriter(): mInterpolator( 0 )
@@ -55,7 +55,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   outStream.setRealNumberPrecision( 8 );
   writeHeader( outStream );
 
-  double currentYValue = mInterpolationExtent.yMax();
+  double currentYValue = mInterpolationExtent.yMaximum();
   double currentXValue;
   double interpolatedValue;
 
@@ -68,7 +68,7 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
 
   for ( int i = 0; i < mNumRows; ++i )
   {
-    currentXValue = mInterpolationExtent.xMin();
+    currentXValue = mInterpolationExtent.xMinimum();
     for ( int j = 0; j < mNumColumns; ++j )
     {
       if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
@@ -103,8 +103,8 @@ int QgsGridFileWriter::writeHeader( QTextStream& outStream )
 {
   outStream << "NCOLS " << mNumColumns << endl;
   outStream << "NROWS " << mNumRows << endl;
-  outStream << "XLLCORNER " << mInterpolationExtent.xMin() << endl;
-  outStream << "YLLCORNER " <<  mInterpolationExtent.yMin() << endl;
+  outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << endl;
+  outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << endl;
   if ( mCellSizeX == mCellSizeY ) //standard way
   {
     outStream << "CELLSIZE " << mCellSizeX << endl;

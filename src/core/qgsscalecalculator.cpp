@@ -20,7 +20,7 @@
 #include <assert.h>
 #include <math.h>
 #include "qgslogger.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsscalecalculator.h"
 
 QgsScaleCalculator::QgsScaleCalculator( double dpi, QGis::UnitType mapUnits )
@@ -49,7 +49,7 @@ QGis::UnitType QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRect &mapExtent, int canvasWidth )
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, int canvasWidth )
 {
   double conversionFactor = 0;
   double delta = 0;
@@ -60,11 +60,11 @@ double QgsScaleCalculator::calculate( const QgsRect &mapExtent, int canvasWidth 
     case QGis::Meters:
       // convert meters to inches
       conversionFactor = 39.3700787;
-      delta = mapExtent.xMax() - mapExtent.xMin();
+      delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
     case QGis::Feet:
       conversionFactor = 12.0;
-      delta = mapExtent.xMax() - mapExtent.xMin();
+      delta = mapExtent.xMaximum() - mapExtent.xMinimum();
       break;
     case QGis::Degrees:
       // degrees require conversion to meters first
@@ -86,7 +86,7 @@ double QgsScaleCalculator::calculate( const QgsRect &mapExtent, int canvasWidth 
 }
 
 
-double  QgsScaleCalculator::calculateGeographicDistance( const QgsRect &mapExtent )
+double  QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapExtent )
 {
   // need to calculate the x distance in meters
   // We'll use the middle latitude for the calculation
@@ -107,12 +107,12 @@ double  QgsScaleCalculator::calculateGeographicDistance( const QgsRect &mapExten
   // - Use the Halversine formula to calculate the distance from -90 to
   //   +90 degrees at the mean latitude.
   // - Scale this distance by the number of degrees between
-  //   mapExtent.xMin() and mapExtent.xMax();
+  //   mapExtent.xMinimum() and mapExtent.xMaximum();
   // - For a slight improvemnt, allow for the ellipsoid shape of earth.
 
 
   // For a longitude change of 180 degrees
-  double lat = ( mapExtent.yMax() + mapExtent.yMin() ) * 0.5;
+  double lat = ( mapExtent.yMaximum() + mapExtent.yMinimum() ) * 0.5;
   const static double rads = ( 4.0 * atan( 1.0 ) ) / 180.0;
   double a = pow( cos( lat * rads ), 2 );
   double c = 2.0 * atan2( sqrt( a ), sqrt( 1.0 - a ) );
@@ -122,7 +122,7 @@ double  QgsScaleCalculator::calculateGeographicDistance( const QgsRect &mapExten
   const static double e = 0.0810820288;
   double radius = ra * ( 1.0 - e * e ) /
                   pow( 1.0 - e * e * sin( lat * rads ) * sin( lat * rads ), 1.5 );
-  double meters = ( mapExtent.xMax() - mapExtent.xMin() ) / 180.0 * radius * c;
+  double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
   QgsDebugMsg( "Distance across map extent (m): " + QString::number( meters ) );
 

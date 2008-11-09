@@ -20,7 +20,7 @@
 #define QGSBOOKMARKITEM_H
 
 #include <QString>
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 /*!
  * \class QgsBookmarkItem
@@ -32,7 +32,7 @@ class QgsBookmarkItem
   public:
     //! Constructs a bookmark item
     QgsBookmarkItem( QString name, QString projectTitle,
-                     QgsRect viewExtent, int srid, QString databasePath );
+                     QgsRectangle viewExtent, int srid, QString databasePath );
     //! Default destructor
     ~QgsBookmarkItem();
     //! Store the bookmark in the database
@@ -43,7 +43,7 @@ class QgsBookmarkItem
     //! Project that this bookmark was created from
     QString mProjectTitle;
     //! Extent of the view for the bookmark
-    QgsRect mViewExtent;
+    QgsRectangle mViewExtent;
     //! SRID of the canvas coordinate system when the bookmark was created
     int mSrid;
     //! Full path to the user database

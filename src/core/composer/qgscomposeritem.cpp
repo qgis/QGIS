@@ -24,7 +24,7 @@
 #include "qgscomposeritem.h"
 
 #include <limits>
-#include "qgsrect.h" //just for debugging
+#include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter

@@ -25,7 +25,7 @@
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 extern "C"
 {

@@ -18,7 +18,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgslogger.h"
 
 #include "SpatialIndex.h"
@@ -78,13 +78,13 @@ QgsSpatialIndex:: ~QgsSpatialIndex()
   delete mStorageManager;
 }
 
-Tools::Geometry::Region QgsSpatialIndex::rectToRegion( QgsRect rect )
+Tools::Geometry::Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
 {
   double pt1[2], pt2[2];
-  pt1[0] = rect.xMin();
-  pt1[1] = rect.yMin();
-  pt2[0] = rect.xMax();
-  pt2[1] = rect.yMax();
+  pt1[0] = rect.xMinimum();
+  pt1[1] = rect.yMinimum();
+  pt2[0] = rect.xMaximum();
+  pt2[1] = rect.yMaximum();
   return Tools::Geometry::Region( pt1, pt2, 2 );
 }
 
@@ -138,7 +138,7 @@ bool QgsSpatialIndex::deleteFeature( QgsFeature& f )
   return mRTree->deleteData( r, id );
 }
 
-QList<int> QgsSpatialIndex::intersects( QgsRect rect )
+QList<int> QgsSpatialIndex::intersects( QgsRectangle rect )
 {
   QList<int> list;
   QgisVisitor visitor( list );

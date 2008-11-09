@@ -16,7 +16,7 @@ email                : sherman at mrcc.com
 
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes

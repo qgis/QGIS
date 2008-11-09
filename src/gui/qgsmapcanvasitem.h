@@ -18,7 +18,7 @@
 #define QGSMAPCANVASITEM_H
 
 #include <QGraphicsItem>
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 class QgsMapCanvas;
 class QPainter;
@@ -60,10 +60,10 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void setPanningOffset( const QPoint& point );
 
     //! returns canvas item rectangle
-    QgsRect rect() const;
+    QgsRectangle rect() const;
 
     //! sets canvas item rectangle
-    void setRect( const QgsRect& r );
+    void setRect( const QgsRectangle& r );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( const QPoint& point );
@@ -77,7 +77,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsMapCanvas* mMapCanvas;
 
     //! canvas item rectangle (in map coordinates)
-    QgsRect mRect;
+    QgsRectangle mRect;
 
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items

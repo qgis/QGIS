@@ -297,9 +297,9 @@ void QgsMapserverExport::writeMapFile()
       // extent
       mapFile << "\n# Extent based on full extent of QGIS view" << std::endl;
       mapFile << "EXTENT ";
-      QgsRect extent = map->extent();
-      mapFile << extent.xMin() << " " << extent.yMin() << " ";
-      mapFile << extent.xMax() << " " << extent.yMax() << std::endl;
+      QgsRectangle extent = map->extent();
+      mapFile << extent.xMinimum() << " " << extent.yMinimum() << " ";
+      mapFile << extent.xMaximum() << " " << extent.yMaximum() << std::endl;
       // units
       mapFile << "UNITS " << cmbMapUnits->currentText().toLocal8Bit().data() << std::endl;
       // image info

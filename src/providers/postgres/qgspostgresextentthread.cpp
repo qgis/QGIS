@@ -25,7 +25,7 @@
 #include <QEvent>
 
 #include "qgis.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 
 #include "qgspostgresextentthread.h"
@@ -132,7 +132,7 @@ void QgsPostgresExtentThread::run()
   s = box3d.substr( 0, box3d.find_first_of( " " ) );
   double maxy = strtod( s.c_str(), NULL );
 
-  layerExtent = new QgsRect( minx, miny, maxx, maxy );
+  layerExtent = new QgsRectangle( minx, miny, maxx, maxy );
 
   /*
     layerExtent.setXMaximum(maxx);
@@ -142,7 +142,7 @@ void QgsPostgresExtentThread::run()
   */
 
 
-  QgsDebugMsg( QString( "Set extents to: %1, %2 %3, %4" ).arg( layerExtent->xMin() ).arg( layerExtent->yMin() ).arg( layerExtent->xMax() ).arg( layerExtent->yMax() ) );
+  QgsDebugMsg( QString( "Set extents to: %1, %2 %3, %4" ).arg( layerExtent->xMinimum() ).arg( layerExtent->yMinimum() ).arg( layerExtent->xMaximum() ).arg( layerExtent->yMaximum() ) );
 
   // clear query result
   PQclear( result );

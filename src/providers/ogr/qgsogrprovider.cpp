@@ -254,7 +254,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   }
 
   OGRFeatureH fet;
-  QgsRect selectionRect;
+  QgsRectangle selectionRect;
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) != NULL )
   {
@@ -284,7 +284,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
       if ( mUseIntersect )
       {
         //precise test for intersection with search rectangle
-        //first make QgsRect from OGRPolygon
+        //first make QgsRectangle from OGRPolygon
         OGREnvelope env;
         memset( &env, 0, sizeof( env ) );
         if ( mSelectionRectangle )
@@ -327,7 +327,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   }
 }
 
-void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRect rect, bool fetchGeometry, bool useIntersect )
+void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
 {
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
@@ -383,7 +383,7 @@ unsigned char * QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 }
 
 
-QgsRect QgsOgrProvider::extent()
+QgsRectangle QgsOgrProvider::extent()
 {
   OGREnvelope *ext = ( OGREnvelope * ) extent_;
   mExtentRect.set( ext->MinX, ext->MinY, ext->MaxX, ext->MaxY );

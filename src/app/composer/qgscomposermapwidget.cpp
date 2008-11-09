@@ -149,13 +149,13 @@ void QgsComposerMapWidget::on_mSetToMapCanvasExtentButton_clicked()
     const QgsMapRenderer* renderer = mComposerMap->mapRenderer();
     if ( renderer )
     {
-      QgsRect canvasExtent = renderer->extent();
+      QgsRectangle canvasExtent = renderer->extent();
 
       //fill text into line edits
-      mXMinLineEdit->setText( QString::number( canvasExtent.xMin() ) );
-      mXMaxLineEdit->setText( QString::number( canvasExtent.xMax() ) );
-      mYMinLineEdit->setText( QString::number( canvasExtent.yMin() ) );
-      mYMaxLineEdit->setText( QString::number( canvasExtent.yMax() ) );
+      mXMinLineEdit->setText( QString::number( canvasExtent.xMinimum() ) );
+      mXMaxLineEdit->setText( QString::number( canvasExtent.xMaximum() ) );
+      mYMinLineEdit->setText( QString::number( canvasExtent.yMinimum() ) );
+      mYMaxLineEdit->setText( QString::number( canvasExtent.yMaximum() ) );
 
       mComposerMap->setNewExtent( canvasExtent );
     }
@@ -229,11 +229,11 @@ void QgsComposerMapWidget::updateGuiElements()
     }
 
     //composer map extent
-    QgsRect composerMapExtent = mComposerMap->extent();
-    mXMinLineEdit->setText( QString::number( composerMapExtent.xMin(), 'f', 3 ) );
-    mXMaxLineEdit->setText( QString::number( composerMapExtent.xMax(), 'f', 3 ) );
-    mYMinLineEdit->setText( QString::number( composerMapExtent.yMin(), 'f', 3 ) );
-    mYMaxLineEdit->setText( QString::number( composerMapExtent.yMax(), 'f', 3 ) );
+    QgsRectangle composerMapExtent = mComposerMap->extent();
+    mXMinLineEdit->setText( QString::number( composerMapExtent.xMinimum(), 'f', 3 ) );
+    mXMaxLineEdit->setText( QString::number( composerMapExtent.xMaximum(), 'f', 3 ) );
+    mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
+    mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
   }
 }
 
@@ -256,7 +256,7 @@ void QgsComposerMapWidget::updateComposerExtentFromGui()
   ymax = mYMaxLineEdit->text().toDouble( &conversionSuccess );
   if ( !conversionSuccess ) {return;}
 
-  QgsRect newExtent( xmin, ymin, xmax, ymax );
+  QgsRectangle newExtent( xmin, ymin, xmax, ymax );
   mComposerMap->setNewExtent( newExtent );
 }
 

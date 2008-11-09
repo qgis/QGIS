@@ -248,14 +248,14 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRect QgsCoordinateTransform::transform( const QgsRect theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag ) return theRect;
   // transform x
-  double x1 = theRect.xMin();
-  double y1 = theRect.yMin();
-  double x2 = theRect.xMax();
-  double y2 = theRect.yMax();
+  double x1 = theRect.xMinimum();
+  double y1 = theRect.yMinimum();
+  double x2 = theRect.xMaximum();
+  double y2 = theRect.yMaximum();
 
   // Number of points to reproject------+
   //                                    |
@@ -275,16 +275,16 @@ QgsRect QgsCoordinateTransform::transform( const QgsRect theRect, TransformDirec
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "Rect projection..." );
-  QgsLogger::debug( "Xmin : ", theRect.xMin(), 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "Xmin : ", theRect.xMinimum(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", x1, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Ymin : ", theRect.yMin(), 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "Ymin : ", theRect.yMinimum(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", y1, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Xmax : ", theRect.xMax(), 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "Xmax : ", theRect.xMaximum(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", x2, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "Ymax : ", theRect.yMax(), 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "Ymax : ", theRect.yMaximum(), 1, __FILE__, __FUNCTION__, __LINE__ );
   QgsLogger::debug( "-->", y2, 1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
-  return QgsRect( x1, y1, x2, y2 );
+  return QgsRectangle( x1, y1, x2, y2 );
 }
 
 void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
@@ -335,9 +335,9 @@ void QgsCoordinateTransform::transformInPlace( std::vector<double>& x,
 }
 
 
-QgsRect QgsCoordinateTransform::transformBoundingBox( const QgsRect rect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction ) const
 {
-  // Calculate the bounding box of a QgsRect in the source CRS
+  // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).
   // This is done by looking at a number of points spread evenly
   // across the rectangle
@@ -347,7 +347,7 @@ QgsRect QgsCoordinateTransform::transformBoundingBox( const QgsRect rect, Transf
 
   static const int numP = 8;
 
-  QgsRect bb_rect;
+  QgsRectangle bb_rect;
   bb_rect.setMinimal();
 
   // We're interfacing with C-style vectors in the
@@ -364,13 +364,13 @@ QgsRect QgsCoordinateTransform::transformBoundingBox( const QgsRect rect, Transf
   double dx = rect.width()  / ( double )( numP - 1 );
   double dy = rect.height() / ( double )( numP - 1 );
 
-  double pointY = rect.yMin();
+  double pointY = rect.yMinimum();
 
   for ( int i = 0; i < numP ; i++ )
   {
 
     // Start at right edge
-    double pointX = rect.xMin();
+    double pointX = rect.xMinimum();
 
     for ( int j = 0; j < numP; j++ )
     {

@@ -137,16 +137,16 @@ class QgsPostgresExtentThread : public QThread
     QObject* callbackObject;
     //QgsPostgresProvider* callbackObject;
 
-//  typedef void (QgsPostgresProvider::*tFunction)(QgsRect* rect);
+//  typedef void (QgsPostgresProvider::*tFunction)(QgsRectangle* rect);
 
 //  QgsPostgresProvider  *cInst;
 //  tFunction             pFunction;
-//  QgsRectCallbackTemplate<QgsPostgresExtentThread> callbackFunction;
+//  QgsRectangleCallbackTemplate<QgsPostgresExtentThread> callbackFunction;
 
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRect* layerExtent;
+    QgsRectangle* layerExtent;
 
 };
 

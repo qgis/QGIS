@@ -32,7 +32,7 @@
 #include <qgsfield.h>
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
-#include <qgsrect.h>
+#include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 
 #include "qgsprovidercountcalcevent.h"
@@ -512,7 +512,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
   }
 }
 
-void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRect rect, bool fetchGeometry, bool useIntersect )
+void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
 {
   QString cursorName = QString( "qgisf%1" ).arg( providerId );
 
@@ -659,16 +659,16 @@ QgsDataSourceURI& QgsPostgresProvider::getURI()
   return mUri;
 }
 
-void QgsPostgresProvider::setExtent( QgsRect& newExtent )
+void QgsPostgresProvider::setExtent( QgsRectangle& newExtent )
 {
-  layerExtent.setXMaximum( newExtent.xMax() );
-  layerExtent.setXMinimum( newExtent.xMin() );
-  layerExtent.setYMaximum( newExtent.yMax() );
-  layerExtent.setYMinimum( newExtent.yMin() );
+  layerExtent.setXMaximum( newExtent.xMaximum() );
+  layerExtent.setXMinimum( newExtent.xMinimum() );
+  layerExtent.setYMaximum( newExtent.yMaximum() );
+  layerExtent.setYMinimum( newExtent.yMinimum() );
 }
 
 // TODO - make this function return the real extent_
-QgsRect QgsPostgresProvider::extent()
+QgsRectangle QgsPostgresProvider::extent()
 {
   return layerExtent;      //extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
 }
@@ -2331,10 +2331,10 @@ void QgsPostgresProvider::calculateExtents()
   QTextOStream( &xMsg ).precision( 18 );
   QTextOStream( &xMsg ).width( 18 );
   QTextOStream( &xMsg ) << "QgsPostgresProvider: Set extents to: "
-  << layerExtent.xMin() << ", "
-  << layerExtent.yMin() << " "
-  << layerExtent.xMax() << ", "
-  << layerExtent.yMax();
+  << layerExtent.xMinimum() << ", "
+  << layerExtent.yMinimum() << " "
+  << layerExtent.xMaximum() << ", "
+  << layerExtent.yMaximum();
   QgsDebugMsg( xMsg );
 #endif
 #endif
@@ -2358,7 +2358,7 @@ void QgsPostgresProvider::customEvent( QEvent * e )
       // extent with it.
 
       {
-        QgsRect* r = (( QgsProviderExtentCalcEvent* ) e )->layerExtent();
+        QgsRectangle* r = (( QgsProviderExtentCalcEvent* ) e )->layerExtent();
         setExtent( *r );
       }
 

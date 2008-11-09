@@ -69,7 +69,7 @@ typedef SInt32 SRefCon;
 #include <qgssvnversion.h>
 #include "qgsexception.h"
 #include "qgsproject.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgslogger.h"
 
 static const char * const ident_ = "$Id$";
@@ -641,7 +641,7 @@ int main( int argc, char *argv[] )
     else
     {
       // set extent from parsed values
-      QgsRect rect( coords[0], coords[1], coords[2], coords[3] );
+      QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
     }
   }
