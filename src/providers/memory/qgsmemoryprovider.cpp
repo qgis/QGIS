@@ -150,7 +150,7 @@ bool QgsMemoryProvider::featureAtId( int featureId,
 
 
 void QgsMemoryProvider::select( QgsAttributeList fetchAttributes,
-                                QgsRect rect,
+                                QgsRectangle rect,
                                 bool fetchGeometry,
                                 bool useIntersect )
 {
@@ -187,7 +187,7 @@ void QgsMemoryProvider::rewind()
 }
 
 
-QgsRect QgsMemoryProvider::extent()
+QgsRectangle QgsMemoryProvider::extent()
 {
   return mExtent;
 }
@@ -370,7 +370,7 @@ void QgsMemoryProvider::updateExtent()
 {
   if ( mFeatures.count() == 0 )
   {
-    mExtent = QgsRect();
+    mExtent = QgsRectangle();
   }
   else
   {

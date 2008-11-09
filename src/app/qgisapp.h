@@ -52,7 +52,7 @@ class QgsProviderRegistry;
 class QgsPythonDialog;
 class QgsPythonUtils;
 class QgsRasterLayer;
-class QgsRect;
+class QgsRectangle;
 class QgsVectorLayer;
 
 #include <QMainWindow>
@@ -116,7 +116,7 @@ class QgisApp : public QMainWindow
     void addMapLayer( QgsMapLayer *theMapLayer );
 
     /** Set the extents of the map canvas */
-    void setExtent( QgsRect theRect );
+    void setExtent( QgsRectangle theRect );
     //! Remove all layers from the map and legend - reimplements same method from qgisappbase
     void removeAllLayers();
     /** Open a raster or vector file; ignore other files.

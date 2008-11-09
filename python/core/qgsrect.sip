@@ -1,25 +1,25 @@
 
-/*! \class QgsRect
+/*! \class QgsRectangle
  * \brief A rectangle specified with double values.
  *
- * QgsRect is used to store a rectangle when double values are required. 
+ * QgsRectangle is used to store a rectangle when double values are required. 
  * Examples are storing a layer extent or the current view extent of a map
  */
-class QgsRect
+class QgsRectangle
 {
 %TypeHeaderCode
-#include <qgsrect.h>
+#include <qgsrectangle.h>
 %End
 
  public:
     //! Constructor
-    QgsRect(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
+    QgsRectangle(double xmin=0, double ymin=0, double xmax=0, double ymax=0);
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRect(const QgsPoint & p1, const QgsPoint & p2);
+    QgsRectangle(const QgsPoint & p1, const QgsPoint & p2);
     //! Copy constructor
-    QgsRect(const QgsRect &other);
+    QgsRectangle(const QgsRectangle &other);
     //! Destructor
-    ~QgsRect();
+    ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
     //normalised after construction. 
     void set(const QgsPoint& p1, const QgsPoint& p2);
@@ -38,13 +38,13 @@ class QgsRect
     // and max corner is at min. It is NOT normalized.
     void setMinimal();
     //! Get the x maximum value (right side of rectangle)
-    double xMax() const;
+    double xMaximum() const;
     //! Get the x maximum value (right side of rectangle)
-    double xMin() const;
+    double xMinimum() const;
     //! Get the x minimum value (left side of rectangle)
-    double yMax() const;
+    double yMaximum() const;
     //! Get the y maximum value (top side of rectangle)
-    double yMin() const;
+    double yMinimum() const;
     //! Normalize the rectangle so it has non-negative width/height
     void normalize();
     //! Width of the rectangle
@@ -58,11 +58,11 @@ class QgsRect
     //! Expand the rectangle to support zoom out scaling
     void expand(double, const QgsPoint *c = 0);
     //! return the intersection with the given rectangle
-    QgsRect intersect(QgsRect *rect);
+    QgsRectangle intersect(QgsRectangle *rect);
     //! returns true when rectangle intersects with other rectangle
-    bool intersects(const QgsRect& rect) const;
+    bool intersects(const QgsRectangle& rect) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
-    void combineExtentWith(QgsRect *rect);
+    void combineExtentWith(QgsRectangle *rect);
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith(double x, double y);
     //! test if rectangle is empty
@@ -78,14 +78,14 @@ class QgsRect
     /*! Comparison operator
       @return True if rectangles are equal
     */
-    bool operator==(const QgsRect &r1) const;
+    bool operator==(const QgsRectangle &r1) const;
     /*! Comparison operator
     @return False if rectangles are equal
      */
-    bool operator!=(const QgsRect &r1) const;
+    bool operator!=(const QgsRectangle &r1) const;
    
     /** updates rectangle to include passed argument */
-    void unionRect(const QgsRect& rect);
+    void unionRect(const QgsRectangle& rect);
  
   
 };

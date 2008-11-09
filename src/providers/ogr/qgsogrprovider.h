@@ -16,7 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 
 class QgsFeature;
@@ -61,7 +61,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      *                     false if a test based on bounding box is sufficient
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false );
 
@@ -117,7 +117,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** Return the extent for this data layer
      */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /** Restart reading features from previous select operation */
     virtual void rewind();
@@ -230,7 +230,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /**This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
-    QgsRect mExtentRect;
+    QgsRectangle mExtentRect;
     OGRLayerH ogrLayer;
 
     // OGR Driver that was actually used to open the layer

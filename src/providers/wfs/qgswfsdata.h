@@ -25,7 +25,7 @@
 #include <list>
 #include <set>
 #include <stack>
-class QgsRect;
+class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
 
@@ -36,7 +36,7 @@ class QgsWFSData: public QObject
   public:
     QgsWFSData(
       const QString& uri,
-      QgsRect* extent,
+      QgsRectangle* extent,
       QgsCoordinateReferenceSystem* srs,
       QList<QgsFeature*> &features,
       const QString& geometryAttribute,
@@ -107,7 +107,7 @@ class QgsWFSData: public QObject
     QString readTsFromAttribute( const XML_Char** attr ) const;
     /**Creates a rectangle from a coordinate string.
      @return 0 in case of success*/
-    int createBBoxFromCoordinateString( QgsRect* bb, const QString& coordString ) const;
+    int createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const;
     /**Creates a set of points from a coordinate string.
        @param points list that will contain the created points
        @param coordString the text containing the coordinates
@@ -129,7 +129,7 @@ class QgsWFSData: public QObject
     QString mUri;
     //results are members such that handler routines are able to manipulate them
     /**Bounding box of the layer*/
-    QgsRect* mExtent;
+    QgsRectangle* mExtent;
     /**Source srs of the layer*/
     QgsCoordinateReferenceSystem* mSrs;
     /**The features of the layer*/

@@ -415,12 +415,12 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
 
 
 
-QgsRect QgsMapCanvas::extent() const
+QgsRectangle QgsMapCanvas::extent() const
 {
   return mMapRenderer->extent();
 } // extent
 
-QgsRect QgsMapCanvas::fullExtent() const
+QgsRectangle QgsMapCanvas::fullExtent() const
 {
   return mMapRenderer->fullExtent();
 } // extent
@@ -440,19 +440,19 @@ void QgsMapCanvas::updateFullExtent()
   refresh();
 }
 
-void QgsMapCanvas::setExtent( QgsRect const & r )
+void QgsMapCanvas::setExtent( QgsRectangle const & r )
 {
   if ( mDrawing )
   {
     return;
   }
 
-  QgsRect current = extent();
+  QgsRectangle current = extent();
 
   if ( r.isEmpty() )
   {
     QgsDebugMsg( "Empty extent - keeping old extent with new center!" );
-    QgsRect e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
+    QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
                QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
     mMapRenderer->setExtent( e );
   }
@@ -496,7 +496,7 @@ void QgsMapCanvas::zoomToFullExtent()
     return;
   }
 
-  QgsRect extent = fullExtent();
+  QgsRectangle extent = fullExtent();
   // If the full extent is an empty set, don't do the zoom
   if ( !extent.isEmpty() )
   {
@@ -517,7 +517,7 @@ void QgsMapCanvas::zoomToPreviousExtent()
     return;
   }
 
-  QgsRect current = extent();
+  QgsRectangle current = extent();
   setExtent( mLastExtent );
   mLastExtent = current;
   refresh();
@@ -558,7 +558,7 @@ void QgsMapCanvas::zoomToSelected()
 
   if ( lyr )
   {
-    QgsRect rect = mMapRenderer->layerExtentToOutputExtent( lyr, lyr->boundingBoxOfSelected() );
+    QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( lyr, lyr->boundingBoxOfSelected() );
 
     // no selected features, only one selected point feature
     //or two point features with the same x- or y-coordinates
@@ -601,17 +601,17 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
   {
     // Don't want to interfer with mouse events
 
-    QgsRect currentExtent = mMapRenderer->extent();
-    double dx = fabs(( currentExtent.xMax() - currentExtent.xMin() ) / 4 );
-    double dy = fabs(( currentExtent.yMax() - currentExtent.yMin() ) / 4 );
+    QgsRectangle currentExtent = mMapRenderer->extent();
+    double dx = fabs(( currentExtent.xMaximum() - currentExtent.xMinimum() ) / 4 );
+    double dy = fabs(( currentExtent.yMaximum() - currentExtent.yMinimum() ) / 4 );
 
     switch ( e->key() )
     {
       case Qt::Key_Left:
         QgsDebugMsg( "Pan left" );
 
-        currentExtent.setXMinimum( currentExtent.xMin() - dx );
-        currentExtent.setXMaximum( currentExtent.xMax() - dx );
+        currentExtent.setXMinimum( currentExtent.xMinimum() - dx );
+        currentExtent.setXMaximum( currentExtent.xMaximum() - dx );
         setExtent( currentExtent );
         refresh();
         break;
@@ -619,8 +619,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Right:
         QgsDebugMsg( "Pan right" );
 
-        currentExtent.setXMinimum( currentExtent.xMin() + dx );
-        currentExtent.setXMaximum( currentExtent.xMax() + dx );
+        currentExtent.setXMinimum( currentExtent.xMinimum() + dx );
+        currentExtent.setXMaximum( currentExtent.xMaximum() + dx );
         setExtent( currentExtent );
         refresh();
         break;
@@ -628,8 +628,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Up:
         QgsDebugMsg( "Pan up" );
 
-        currentExtent.setYMaximum( currentExtent.yMax() + dy );
-        currentExtent.setYMinimum( currentExtent.yMin() + dy );
+        currentExtent.setYMaximum( currentExtent.yMaximum() + dy );
+        currentExtent.setYMinimum( currentExtent.yMinimum() + dy );
         setExtent( currentExtent );
         refresh();
         break;
@@ -637,8 +637,8 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
       case Qt::Key_Down:
         QgsDebugMsg( "Pan down" );
 
-        currentExtent.setYMaximum( currentExtent.yMax() - dy );
-        currentExtent.setYMinimum( currentExtent.yMin() - dy );
+        currentExtent.setYMaximum( currentExtent.yMaximum() - dy );
+        currentExtent.setYMinimum( currentExtent.yMinimum() - dy );
         setExtent( currentExtent );
         refresh();
         break;
@@ -879,7 +879,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
                           mousePos.y() + (( oldCenter.y() - mousePos.y() ) * scaleFactor ) );
 
       // same as zoomWithCenter (no coordinate transformations are needed)
-      QgsRect extent = mMapRenderer->extent();
+      QgsRectangle extent = mMapRenderer->extent();
       extent.scale( scaleFactor, &newCenter );
       setExtent( extent );
       refresh();
@@ -902,7 +902,7 @@ void QgsMapCanvas::zoom( bool zoomIn )
 {
   double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
 
-  QgsRect r = mMapRenderer->extent();
+  QgsRectangle r = mMapRenderer->extent();
   r.scale( scaleFactor );
   setExtent( r );
   refresh();
@@ -919,7 +919,7 @@ void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 
   // transform the mouse pos to map coordinates
   QgsPoint center  = getCoordinateTransform()->toMapPoint( x, y );
-  QgsRect r = mMapRenderer->extent();
+  QgsRectangle r = mMapRenderer->extent();
   r.scale( scaleFactor, &center );
   setExtent( r );
   refresh();
@@ -1122,29 +1122,29 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   double dy = fabs( end.y() - start.y() );
 
   // modify the extent
-  QgsRect r = mMapRenderer->extent();
+  QgsRectangle r = mMapRenderer->extent();
 
   if ( end.x() < start.x() )
   {
-    r.setXMinimum( r.xMin() + dx );
-    r.setXMaximum( r.xMax() + dx );
+    r.setXMinimum( r.xMinimum() + dx );
+    r.setXMaximum( r.xMaximum() + dx );
   }
   else
   {
-    r.setXMinimum( r.xMin() - dx );
-    r.setXMaximum( r.xMax() - dx );
+    r.setXMinimum( r.xMinimum() - dx );
+    r.setXMaximum( r.xMaximum() - dx );
   }
 
   if ( end.y() < start.y() )
   {
-    r.setYMaximum( r.yMax() + dy );
-    r.setYMinimum( r.yMin() + dy );
+    r.setYMaximum( r.yMaximum() + dy );
+    r.setYMinimum( r.yMinimum() + dy );
 
   }
   else
   {
-    r.setYMaximum( r.yMax() - dy );
-    r.setYMinimum( r.yMin() - dy );
+    r.setYMaximum( r.yMaximum() - dy );
+    r.setYMinimum( r.yMinimum() - dy );
 
   }
 
@@ -1272,7 +1272,7 @@ void QgsMapCanvas::zoom( double scaleFactor )
     return;
   }
 
-  QgsRect r = mMapRenderer->extent();
+  QgsRectangle r = mMapRenderer->extent();
   r.scale( scaleFactor );
   setExtent( r );
   refresh();

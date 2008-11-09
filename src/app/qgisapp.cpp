@@ -126,7 +126,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsserversourceselect.h"
 #include "qgsvectordataprovider.h"
@@ -4608,7 +4608,7 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 
 }
 
-void QgisApp::setExtent( QgsRect theRect )
+void QgisApp::setExtent( QgsRectangle theRect )
 {
   mMapCanvas->setExtent( theRect );
 }
@@ -4856,7 +4856,7 @@ void QgisApp::showExtents()
     return;
   }
   // update the statusbar with the current extents.
-  QgsRect myExtents = mMapCanvas->extent();
+  QgsRectangle myExtents = mMapCanvas->extent();
   mCoordsLabel->setText( QString( tr( "Extents: " ) ) + myExtents.toString( true ) );
   //ensure the label is big enough
   if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )

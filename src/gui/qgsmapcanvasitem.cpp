@@ -57,13 +57,13 @@ QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point )
 }
 
 
-QgsRect QgsMapCanvasItem::rect() const
+QgsRectangle QgsMapCanvasItem::rect() const
 {
   return mRect;
 }
 
 
-void QgsMapCanvasItem::setRect( const QgsRect& rect )
+void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
 {
   mRect = rect;
   //updatePosition();
@@ -71,8 +71,8 @@ void QgsMapCanvasItem::setRect( const QgsRect& rect )
   QRectF r; // empty rect by default
   if ( !mRect.isEmpty() )
   {
-    r.setTopLeft( toCanvasCoordinates( QgsPoint( mRect.xMin(), mRect.yMin() ) ) );
-    r.setBottomRight( toCanvasCoordinates( QgsPoint( mRect.xMax(), mRect.yMax() ) ) );
+    r.setTopLeft( toCanvasCoordinates( QgsPoint( mRect.xMinimum(), mRect.yMinimum() ) ) );
+    r.setBottomRight( toCanvasCoordinates( QgsPoint( mRect.xMaximum(), mRect.yMaximum() ) ) );
     r = r.normalized();
   }
 

@@ -26,7 +26,7 @@ class QgsMapCanvas;
 class QKeyEvent;
 class QMouseEvent;
 class QgsPoint;
-class QgsRect;
+class QgsRectangle;
 class QPoint;
 class QAction;
 class QAbstractButton;
@@ -117,7 +117,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
 
     //! trnasformation of the rect from map coordinates to layer's coordinates
-    QgsRect toLayerCoordinates( QgsMapLayer* layer, const QgsRect& rect );
+    QgsRectangle toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect );
 
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoordinates( const QgsPoint& point );

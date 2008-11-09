@@ -26,7 +26,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterviewport.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -1315,7 +1315,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
-  const QgsRect& theViewExtent = rendererContext.extent();
+  const QgsRectangle& theViewExtent = rendererContext.extent();
   QPainter* theQPainter = rendererContext.painter();
 
   if ( !theQPainter )
@@ -1324,7 +1324,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   // clip raster extent to view extent
-  QgsRect myRasterExtent = theViewExtent.intersect( &mLayerExtent );
+  QgsRectangle myRasterExtent = theViewExtent.intersect( &mLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
     // nothing to do
@@ -1347,8 +1347,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   // calculate raster pixel offsets from origin to clipped rect
   // we're only interested in positive offsets where the origin of the raster
   // is northwest of the origin of the view
-  myRasterViewPort->rectXOffsetFloat = ( theViewExtent.xMin() - mLayerExtent.xMin() ) / fabs( mGeoTransform[1] );
-  myRasterViewPort->rectYOffsetFloat = ( mLayerExtent.yMax() - theViewExtent.yMax() ) / fabs( mGeoTransform[5] );
+  myRasterViewPort->rectXOffsetFloat = ( theViewExtent.xMinimum() - mLayerExtent.xMinimum() ) / fabs( mGeoTransform[1] );
+  myRasterViewPort->rectYOffsetFloat = ( mLayerExtent.yMaximum() - theViewExtent.yMaximum() ) / fabs( mGeoTransform[5] );
 
   if ( myRasterViewPort->rectXOffsetFloat < 0 )
   {
@@ -1374,10 +1374,10 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
   // the raw raster data, but rasterio will seamlessly scale the up to whatever the screen coordinats are
   // e.g. a 600x800 display window (see next section below)
-  myRasterViewPort->clippedXMin = ( myRasterExtent.xMin() - mGeoTransform[0] ) / mGeoTransform[1];
-  myRasterViewPort->clippedXMax = ( myRasterExtent.xMax() - mGeoTransform[0] ) / mGeoTransform[1];
-  myRasterViewPort->clippedYMin = ( myRasterExtent.yMin() - mGeoTransform[3] ) / mGeoTransform[5];
-  myRasterViewPort->clippedYMax = ( myRasterExtent.yMax() - mGeoTransform[3] ) / mGeoTransform[5];
+  myRasterViewPort->clippedXMin = ( myRasterExtent.xMinimum() - mGeoTransform[0] ) / mGeoTransform[1];
+  myRasterViewPort->clippedXMax = ( myRasterExtent.xMaximum() - mGeoTransform[0] ) / mGeoTransform[1];
+  myRasterViewPort->clippedYMin = ( myRasterExtent.yMinimum() - mGeoTransform[3] ) / mGeoTransform[5];
+  myRasterViewPort->clippedYMax = ( myRasterExtent.yMaximum() - mGeoTransform[3] ) / mGeoTransform[5];
 
   // Sometimes the Ymin/Ymax are reversed.
   if ( myRasterViewPort->clippedYMin > myRasterViewPort->clippedYMax )
@@ -1412,8 +1412,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  myRasterViewPort->topLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMin(), myRasterExtent.yMax() );
-  myRasterViewPort->bottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMax(), myRasterExtent.yMin() );
+  myRasterViewPort->topLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
+  myRasterViewPort->bottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
 
   myRasterViewPort->drawableAreaXDim = static_cast<int>( fabs(( myRasterViewPort->clippedWidth / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[1] ) ) + 0.5 );
   myRasterViewPort->drawableAreaYDim = static_cast<int>( fabs(( myRasterViewPort->clippedHeight / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5 );
@@ -1426,10 +1426,10 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   QgsDebugMsg( QString( "rectYOffset = %1" ).arg( myRasterViewPort->rectYOffset ) );
   QgsDebugMsg( QString( "rectYOffsetFloat = %1" ).arg( myRasterViewPort->rectYOffsetFloat ) );
 
-  QgsDebugMsg( QString( "myRasterExtent.xMin() = %1" ).arg( myRasterExtent.xMin() ) );
-  QgsDebugMsg( QString( "myRasterExtent.xMax() = %1" ).arg( myRasterExtent.xMax() ) );
-  QgsDebugMsg( QString( "myRasterExtent.yMin() = %1" ).arg( myRasterExtent.yMin() ) );
-  QgsDebugMsg( QString( "myRasterExtent.yMax() = %1" ).arg( myRasterExtent.yMax() ) );
+  QgsDebugMsg( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ) );
+  QgsDebugMsg( QString( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ) );
+  QgsDebugMsg( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ) );
+  QgsDebugMsg( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ) );
 
   QgsDebugMsg( QString( "topLeftPoint.x() = %1" ).arg( myRasterViewPort->topLeftPoint.x() ) );
   QgsDebugMsg( QString( "bottomRightPoint.x() = %1" ).arg( myRasterViewPort->bottomRightPoint.x() ) );
@@ -1779,7 +1779,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
 
   QgsDebugMsg( QString::number( x ) + ", " + QString::number( y ) );
 
-  if ( x < mLayerExtent.xMin() || x > mLayerExtent.xMax() || y < mLayerExtent.yMin() || y > mLayerExtent.yMax() )
+  if ( x < mLayerExtent.xMinimum() || x > mLayerExtent.xMaximum() || y < mLayerExtent.yMinimum() || y > mLayerExtent.yMaximum() )
   {
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
@@ -1790,12 +1790,12 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   else
   {
     /* Calculate the row / column where the point falls */
-    double xres = ( mLayerExtent.xMax() - mLayerExtent.xMin() ) / mWidth;
-    double yres = ( mLayerExtent.yMax() - mLayerExtent.yMin() ) / mHeight;
+    double xres = ( mLayerExtent.xMaximum() - mLayerExtent.xMinimum() ) / mWidth;
+    double yres = ( mLayerExtent.yMaximum() - mLayerExtent.yMinimum() ) / mHeight;
 
     // Offset, not the cell index -> flor
-    int col = ( int ) floor(( x - mLayerExtent.xMin() ) / xres );
-    int row = ( int ) floor(( mLayerExtent.yMax() - y ) / yres );
+    int col = ( int ) floor(( x - mLayerExtent.xMinimum() ) / xres );
+    int row = ( int ) floor(( mLayerExtent.yMaximum() - y ) / yres );
 
     QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
@@ -3096,16 +3096,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           mDataProvider->setImageCrs( crs );
 
           // get the extent
-          QgsRect mbr = mDataProvider->extent();
+          QgsRectangle mbr = mDataProvider->extent();
 
           // show the extent
           QString s = mbr.toString();
           QgsDebugMsg( "Extent of layer: " + s );
           // store the extent
-          mLayerExtent.setXMaximum( mbr.xMax() );
-          mLayerExtent.setXMinimum( mbr.xMin() );
-          mLayerExtent.setYMaximum( mbr.yMax() );
-          mLayerExtent.setYMinimum( mbr.yMin() );
+          mLayerExtent.setXMaximum( mbr.xMaximum() );
+          mLayerExtent.setXMinimum( mbr.xMinimum() );
+          mLayerExtent.setYMaximum( mbr.yMaximum() );
+          mLayerExtent.setYMinimum( mbr.yMinimum() );
 
           // upper case the first letter of the layer name
           QgsDebugMsg( "mLayerName: " + name() );

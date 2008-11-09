@@ -2961,7 +2961,7 @@ void QgsGrassModuleSelection::updateSelection()
   if ( keyField < 0 ) return;
 
   QString cats;
-  provider->select( allAttributes, QgsRect(), true );
+  provider->select( allAttributes, QgsRectangle(), true );
   QgsFeature feature;
 
   int i = 0;

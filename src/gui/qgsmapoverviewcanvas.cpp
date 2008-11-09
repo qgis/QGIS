@@ -92,7 +92,7 @@ void QgsMapOverviewCanvas::resizeEvent( QResizeEvent* e )
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
-  const QgsRect& extent = mMapCanvas->extent();
+  const QgsRectangle& extent = mMapCanvas->extent();
 
   // show only when valid extent is set
   if ( extent.isEmpty() )
@@ -102,8 +102,8 @@ void QgsMapOverviewCanvas::drawExtentRect()
   }
 
   const QgsMapToPixel* cXf = mMapRenderer->coordinateTransform();
-  QgsPoint ll( extent.xMin(), extent.yMin() );
-  QgsPoint ur( extent.xMax(), extent.yMax() );
+  QgsPoint ll( extent.xMinimum(), extent.yMinimum() );
+  QgsPoint ur( extent.xMaximum(), extent.yMaximum() );
   if ( cXf )
   {
     // transform the points before drawing
@@ -186,8 +186,8 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent * e )
     QRect rect = mPanningWidget->geometry();
 
     QgsPoint center = cXf->toMapCoordinates( rect.center() );
-    QgsRect oldExtent = mMapCanvas->extent();
-    QgsRect ext;
+    QgsRectangle oldExtent = mMapCanvas->extent();
+    QgsRectangle ext;
     ext.setXMinimum( center.x() - oldExtent.width() / 2 );
     ext.setXMaximum( center.x() + oldExtent.width() / 2 );
     ext.setYMinimum( center.y() - oldExtent.height() / 2 );
@@ -266,7 +266,7 @@ void QgsMapOverviewCanvas::setLayerSet( const QStringList& layerSet )
   mMapRenderer->setLayerSet( layerSet );
 }
 
-void QgsMapOverviewCanvas::updateFullExtent( const QgsRect& rect )
+void QgsMapOverviewCanvas::updateFullExtent( const QgsRectangle& rect )
 {
   mMapRenderer->setExtent( rect );
   drawExtentRect();

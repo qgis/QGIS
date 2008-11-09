@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsrect.cpp  -  description
+                          qgsrectangle.cpp  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -23,29 +23,29 @@
 #include <QTextStream>
 
 #include "qgspoint.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgslogger.h"
 
-QgsRect::QgsRect( double newxmin, double newymin, double newxmax, double newymax )
+QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
     : xmin( newxmin ), ymin( newymin ), xmax( newxmax ), ymax( newymax )
 {
   normalize();
 }
 
-QgsRect::QgsRect( QgsPoint const & p1, QgsPoint const & p2 )
+QgsRectangle::QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 )
 {
   set( p1, p2 );
 }
 
-QgsRect::QgsRect( const QgsRect &r )
+QgsRectangle::QgsRectangle( const QgsRectangle &r )
 {
-  xmin = r.xMin();
-  ymin = r.yMin();
-  xmax = r.xMax();
-  ymax = r.yMax();
+  xmin = r.xMinimum();
+  ymin = r.yMinimum();
+  xmax = r.xMaximum();
+  ymax = r.yMaximum();
 }
 
-void QgsRect::set( const QgsPoint& p1, const QgsPoint& p2 )
+void QgsRectangle::set( const QgsPoint& p1, const QgsPoint& p2 )
 {
   xmin = p1.x();
   xmax = p2.x();
@@ -54,7 +54,7 @@ void QgsRect::set( const QgsPoint& p1, const QgsPoint& p2 )
   normalize();
 }
 
-void QgsRect::set( double xmin_, double ymin_, double xmax_, double ymax_ )
+void QgsRectangle::set( double xmin_, double ymin_, double xmax_, double ymax_ )
 {
   xmin = xmin_;
   ymin = ymin_;
@@ -63,7 +63,7 @@ void QgsRect::set( double xmin_, double ymin_, double xmax_, double ymax_ )
   normalize();
 }
 
-void QgsRect::normalize()
+void QgsRectangle::normalize()
 {
   if ( xmin > xmax )
   {
@@ -73,10 +73,10 @@ void QgsRect::normalize()
   {
     std::swap( ymin, ymax );
   }
-} // QgsRect::normalize()
+} // QgsRectangle::normalize()
 
 
-void QgsRect::setMinimal()
+void QgsRectangle::setMinimal()
 {
   xmin = std::numeric_limits<double>::max();
   ymin = std::numeric_limits<double>::max();
@@ -84,7 +84,7 @@ void QgsRect::setMinimal()
   ymax = -std::numeric_limits<double>::max();
 }
 
-void QgsRect::scale( double scaleFactor, const QgsPoint * cp )
+void QgsRectangle::scale( double scaleFactor, const QgsPoint * cp )
 {
   // scale from the center
   double centerX, centerY;
@@ -106,7 +106,7 @@ void QgsRect::scale( double scaleFactor, const QgsPoint * cp )
   ymax = centerY + newHeight / 2.0;
 }
 
-void QgsRect::expand( double scaleFactor, const QgsPoint * cp )
+void QgsRectangle::expand( double scaleFactor, const QgsPoint * cp )
 {
   // scale from the center
   double centerX, centerY;
@@ -129,23 +129,23 @@ void QgsRect::expand( double scaleFactor, const QgsPoint * cp )
   ymax = centerY + newHeight;
 }
 
-QgsRect QgsRect::intersect( QgsRect * rect ) const
+QgsRectangle QgsRectangle::intersect( QgsRectangle * rect ) const
 {
-  QgsRect intersection = QgsRect();
-  //If they don't actually intersect an empty QgsRect should be returned
+  QgsRectangle intersection = QgsRectangle();
+  //If they don't actually intersect an empty QgsRectangle should be returned
   if ( !rect || !intersects( *rect ) )
   {
     return intersection;
   }
 
-  intersection.setXMinimum( xmin > rect->xMin() ? xmin : rect->xMin() );
-  intersection.setXMaximum( xmax < rect->xMax() ? xmax : rect->xMax() );
-  intersection.setYMinimum( ymin > rect->yMin() ? ymin : rect->yMin() );
-  intersection.setYMaximum( ymax < rect->yMax() ? ymax : rect->yMax() );
+  intersection.setXMinimum( xmin > rect->xMinimum() ? xmin : rect->xMinimum() );
+  intersection.setXMaximum( xmax < rect->xMaximum() ? xmax : rect->xMaximum() );
+  intersection.setYMinimum( ymin > rect->yMinimum() ? ymin : rect->yMinimum() );
+  intersection.setYMaximum( ymax < rect->yMaximum() ? ymax : rect->yMaximum() );
   return intersection;
 }
 
-bool QgsRect::intersects( const QgsRect& rect ) const
+bool QgsRectangle::intersects( const QgsRectangle& rect ) const
 {
   double x1 = ( xmin > rect.xmin ? xmin : rect.xmin );
   double x2 = ( xmax < rect.xmax ? xmax : rect.xmax );
@@ -157,18 +157,18 @@ bool QgsRect::intersects( const QgsRect& rect ) const
 }
 
 
-void QgsRect::combineExtentWith( QgsRect * rect )
+void QgsRectangle::combineExtentWith( QgsRectangle * rect )
 {
 
-  xmin = (( xmin < rect->xMin() ) ? xmin : rect->xMin() );
-  xmax = (( xmax > rect->xMax() ) ? xmax : rect->xMax() );
+  xmin = (( xmin < rect->xMinimum() ) ? xmin : rect->xMinimum() );
+  xmax = (( xmax > rect->xMaximum() ) ? xmax : rect->xMaximum() );
 
-  ymin = (( ymin < rect->yMin() ) ? ymin : rect->yMin() );
-  ymax = (( ymax > rect->yMax() ) ? ymax : rect->yMax() );
+  ymin = (( ymin < rect->yMinimum() ) ? ymin : rect->yMinimum() );
+  ymax = (( ymax > rect->yMaximum() ) ? ymax : rect->yMaximum() );
 
 }
 
-void QgsRect::combineExtentWith( double x, double y )
+void QgsRectangle::combineExtentWith( double x, double y )
 {
 
   xmin = (( xmin < x ) ? xmin : x );
@@ -179,7 +179,7 @@ void QgsRect::combineExtentWith( double x, double y )
 
 }
 
-bool QgsRect::isEmpty() const
+bool QgsRectangle::isEmpty() const
 {
   if ( xmax <= xmin || ymax <= ymin )
   {
@@ -191,7 +191,7 @@ bool QgsRect::isEmpty() const
   }
 }
 
-QString QgsRect::asWktCoordinates() const
+QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
     QString::number( xmin, 'f', 16 ) + " " +
@@ -203,7 +203,7 @@ QString QgsRect::asWktCoordinates() const
 }
 
 // Return a string representation of the rectangle with automatic or high precision
-QString QgsRect::toString( bool automaticPrecision ) const
+QString QgsRectangle::toString( bool automaticPrecision ) const
 {
   if ( automaticPrecision )
   {
@@ -223,7 +223,7 @@ QString QgsRect::toString( bool automaticPrecision ) const
 
 // overloaded version of above fn to allow precision to be set
 // Return a string representation of the rectangle with high precision
-QString QgsRect::toString( int thePrecision ) const
+QString QgsRectangle::toString( int thePrecision ) const
 {
 
   QString rep = QString::number( xmin, 'f', thePrecision ) +
@@ -241,7 +241,7 @@ QString QgsRect::toString( int thePrecision ) const
 
 
 // Return the rectangle as a set of polygon coordinates
-QString QgsRect::asPolygon() const
+QString QgsRectangle::asPolygon() const
 {
 //   QString rep = tmp.sprintf("%16f %16f,%16f %16f,%16f %16f,%16f %16f,%16f %16f",
 //     xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin);
@@ -261,47 +261,47 @@ QString QgsRect::asPolygon() const
 
   return rep;
 
-} // QgsRect::asPolygon() const
+} // QgsRectangle::asPolygon() const
 
 
-bool QgsRect::operator==( const QgsRect & r1 ) const
+bool QgsRectangle::operator==( const QgsRectangle & r1 ) const
 {
-  return ( r1.xMax() == xMax() &&
-           r1.xMin() == xMin() &&
-           r1.yMax() == yMax() &&
-           r1.yMin() == yMin() );
+  return ( r1.xMaximum() == xMaximum() &&
+           r1.xMinimum() == xMinimum() &&
+           r1.yMaximum() == yMaximum() &&
+           r1.yMinimum() == yMinimum() );
 }
 
 
-bool QgsRect::operator!=( const QgsRect & r1 ) const
+bool QgsRectangle::operator!=( const QgsRectangle & r1 ) const
 {
   return ( ! operator==( r1 ) );
 }
 
 
-QgsRect & QgsRect::operator=( const QgsRect & r )
+QgsRectangle & QgsRectangle::operator=( const QgsRectangle & r )
 {
   if ( &r != this )
   {
-    xmax = r.xMax();
-    xmin = r.xMin();
-    ymax = r.yMax();
-    ymin = r.yMin();
+    xmax = r.xMaximum();
+    xmin = r.xMinimum();
+    ymax = r.yMaximum();
+    ymin = r.yMinimum();
   }
 
   return *this;
 }
 
 
-void QgsRect::unionRect( const QgsRect& r )
+void QgsRectangle::unionRect( const QgsRectangle& r )
 {
-  if ( r.xMin() < xMin() ) setXMinimum( r.xMin() );
-  if ( r.xMax() > xMax() ) setXMaximum( r.xMax() );
-  if ( r.yMin() < yMin() ) setYMinimum( r.yMin() );
-  if ( r.yMax() > yMax() ) setYMaximum( r.yMax() );
+  if ( r.xMinimum() < xMinimum() ) setXMinimum( r.xMinimum() );
+  if ( r.xMaximum() > xMaximum() ) setXMaximum( r.xMaximum() );
+  if ( r.yMinimum() < yMinimum() ) setYMinimum( r.yMinimum() );
+  if ( r.yMaximum() > yMaximum() ) setYMaximum( r.yMaximum() );
 }
 
-bool QgsRect::isFinite() const
+bool QgsRectangle::isFinite() const
 {
   if ( std::numeric_limits<double>::has_infinity )
   {

@@ -21,7 +21,7 @@
 #define QGSPROVIDEREXTENTCALCEVENT_H
 
 #include <QEvent>
-class QgsRect;
+class QgsRectangle;
 
 /** \ingroup core
  * A custom event that is designed to be fired when a layer extent has been fully calculated.
@@ -45,14 +45,14 @@ class CORE_EXPORT QgsProviderExtentCalcEvent : public QEvent
 
   public:
 
-    QgsProviderExtentCalcEvent( QgsRect* layerExtent );
+    QgsProviderExtentCalcEvent( QgsRectangle* layerExtent );
 
-    QgsRect* layerExtent() const;
+    QgsRectangle* layerExtent() const;
 
 
   private:
 
-    QgsRect* le;
+    QgsRectangle* le;
 
 };
 

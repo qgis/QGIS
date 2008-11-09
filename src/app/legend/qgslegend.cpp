@@ -1754,7 +1754,7 @@ void QgsLegend::legendLayerZoom()
 
   QgsMapLayer* theLayer;
   bool first( true );
-  QgsRect extent;
+  QgsRectangle extent;
 
   for ( std::list<QgsLegendLayerFile*>::iterator it = layerFiles.begin(); it != layerFiles.end(); ++it )
   {
@@ -1762,7 +1762,7 @@ void QgsLegend::legendLayerZoom()
     if ( !theLayer )
       continue;
 
-    QgsRect lyrExtent = mMapCanvas->mapRenderer()->layerExtentToOutputExtent( theLayer, theLayer->extent() );
+    QgsRectangle lyrExtent = mMapCanvas->mapRenderer()->layerExtentToOutputExtent( theLayer, theLayer->extent() );
 
     if ( !lyrExtent.isFinite() )
       lyrExtent = theLayer->extent();

@@ -719,7 +719,7 @@ QString QgsVectorLayerProperties::metadata()
 
   //-------------
 
-  QgsRect myExtent = layer->extent();
+  QgsRectangle myExtent = layer->extent();
   myMetadata += "<tr class=\"glossy\"><td>";
   myMetadata += tr( "Extents:" );
   myMetadata += "</td></tr>";
@@ -727,13 +727,13 @@ QString QgsVectorLayerProperties::metadata()
   myMetadata += "<tr><td>";
   myMetadata += tr( "In layer spatial reference system units : " ) +
                 tr( "xMin,yMin " ) +
-                QString::number( myExtent.xMin() ) +
+                QString::number( myExtent.xMinimum() ) +
                 "," +
-                QString::number( myExtent.yMin() ) +
+                QString::number( myExtent.yMinimum() ) +
                 tr( " : xMax,yMax " ) +
-                QString::number( myExtent.xMax() ) +
+                QString::number( myExtent.xMaximum() ) +
                 "," +
-                QString::number( myExtent.yMax() );
+                QString::number( myExtent.yMaximum() );
   myMetadata += "</td></tr>";
 
   //extents in project cs
@@ -742,17 +742,17 @@ QString QgsVectorLayerProperties::metadata()
   {
     /*
     // TODO: currently disabled, will revisit later [MD]
-    QgsRect myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
+    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
     myMetadata += "<tr><td>";
     myMetadata += tr("In project spatial reference system units : ") +
     tr("xMin,yMin ") +
-    QString::number(myProjectedExtent.xMin()) +
+    QString::number(myProjectedExtent.xMinimum()) +
     "," +
-    QString::number( myProjectedExtent.yMin()) +
+    QString::number( myProjectedExtent.yMinimum()) +
     tr(" : xMax,yMax ") +
-    QString::number(myProjectedExtent.xMax()) +
+    QString::number(myProjectedExtent.xMaximum()) +
     "," +
-    QString::number(myProjectedExtent.yMax());
+    QString::number(myProjectedExtent.yMaximum());
     myMetadata += "</td></tr>";
     */
 

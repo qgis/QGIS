@@ -25,7 +25,7 @@
 #include <vector>
 
 #include "qgsrasterdataprovider.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 #include <QString>
 #include <QStringList>
@@ -151,7 +151,7 @@ struct QgsWmsServiceProperty
 struct QgsWmsBoundingBoxProperty
 {
   QString   crs;
-  QgsRect   box;    // consumes minx, miny, maxx, maxy.
+  QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
   double    resx;   // spatial resolution (in CRS units)
   double    resy;   // spatial resolution (in CRS units)
 };
@@ -278,7 +278,7 @@ struct QgsWmsLayerProperty
   QString                                     abstract;
   QStringList                                 keywordList;
   std::vector<QString>                        crs;        // coord ref sys
-  QgsRect                                     ex_GeographicBoundingBox;
+  QgsRectangle                                     ex_GeographicBoundingBox;
   std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
   std::vector<QgsWmsDimensionProperty>        dimension;
   QgsWmsAttributionProperty                   attribution;
@@ -434,7 +434,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
      *           shared across library boundaries
      */
-    QImage * draw( QgsRect const &  viewExtent, int pixelWidth, int pixelHeight );
+    QImage * draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
 
 
 //  /** Experimental function only **/
@@ -444,7 +444,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     /** Return the extent for this data layer
     */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
      * pointer and setting it to 0
@@ -710,7 +710,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRect layerExtent;
+    QgsRectangle layerExtent;
 
     /**
      * Capabilities of the WMS Server (raw)
@@ -740,7 +740,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * extents per layer (in WMS CRS:84 datum)
      */
-    std::map<QString, QgsRect> extentForLayer;
+    std::map<QString, QgsRectangle> extentForLayer;
 
     /**
      * available CRSs per layer
@@ -786,7 +786,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * The previous parameter to draw().
      */
-    QgsRect cachedViewExtent;
+    QgsRectangle cachedViewExtent;
 
     /**
      * The previous parameter to draw().

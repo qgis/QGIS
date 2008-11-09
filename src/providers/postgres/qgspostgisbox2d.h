@@ -22,7 +22,7 @@
 
 #include <string>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 /*!
  * \brief   PostgreSQL/PostGIS "box3d" representation and transformation
@@ -40,7 +40,7 @@
 
  */
 
-class QgsPostGisBox2d : public QgsRect
+class QgsPostGisBox2d : public QgsRectangle
 {
 
   public:

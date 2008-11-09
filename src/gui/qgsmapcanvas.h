@@ -23,7 +23,7 @@
 #include <memory>
 #include <deque>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgspoint.h"
 #include "qgis.h"
 
@@ -129,12 +129,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     double mapUnitsPerPixel() const;
 
     //! Returns the current zoom exent of the map canvas
-    QgsRect extent() const;
+    QgsRectangle extent() const;
     //! Returns the combined exent for all layers on the map canvas
-    QgsRect fullExtent() const;
+    QgsRectangle fullExtent() const;
 
     //! Set the extent of the map canvas
-    void setExtent( QgsRect const & r );
+    void setExtent( QgsRectangle const & r );
 
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
@@ -409,7 +409,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapTool* mLastNonZoomMapTool;
 
     //! recently used extent
-    QgsRect mLastExtent;
+    QgsRectangle mLastExtent;
 
     //! Scale factor multiple for default zoom in/out
     double mWheelZoomFactor;

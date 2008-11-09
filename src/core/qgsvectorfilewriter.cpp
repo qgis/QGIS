@@ -329,7 +329,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   QgsAttributeList allAttr = provider->attributeIndexes();
   QgsFeature fet;
 
-  provider->select( allAttr, QgsRect(), true );
+  provider->select( allAttr, QgsRectangle(), true );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 

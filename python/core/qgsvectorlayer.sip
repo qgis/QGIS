@@ -65,7 +65,7 @@ public:
   int selectedFeatureCount();
   
   /** Select features found within the search rectangle (in layer's coordinates) */
-  void select(QgsRect & rect, bool lock);
+  void select(QgsRectangle & rect, bool lock);
   
   /** Select not selected features and deselect selected ones */
   void invertSelection();
@@ -79,8 +79,8 @@ public:
   /** Change selection to the new set of features */
   void setSelectedFeatures(const QSet<int>& ids);
 
-  /** Returns the bounding box of the selected features. If there is no selection, QgsRect(0,0,0,0) is returned */
-  QgsRect boundingBoxOfSelected();
+  /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
+  QgsRectangle boundingBoxOfSelected();
 
   /** Copies the symbology settings from another layer. Returns true in case of success */
   bool copySymbologySettings(const QgsMapLayer& other);
@@ -158,7 +158,7 @@ public:
   virtual QString subsetString();
 
   void select(QList<int> fetchAttributes = QList<int>(),
-              QgsRect rect = QgsRect(),
+              QgsRectangle rect = QgsRectangle(),
               bool fetchGeometry = true,
               bool useIntersect = false);
 

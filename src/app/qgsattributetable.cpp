@@ -479,7 +479,7 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
   QgsFeatureList features;
   if ( layer->selectedFeatureCount() == 0 )
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRect(), false );
+    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false );
 
     QgsFeature f;
     while ( layer->nextFeature( f ) )

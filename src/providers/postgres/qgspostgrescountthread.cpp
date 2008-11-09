@@ -22,7 +22,7 @@
 #include <QApplication>
 
 #include "qgis.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 #include "qgsprovidercountcalcevent.h"
 

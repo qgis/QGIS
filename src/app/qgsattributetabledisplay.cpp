@@ -372,7 +372,7 @@ void QgsAttributeTableDisplay::doSearch( QString searchString )
 
   mSearchIds.clear();
 
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRect(), false );
+  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
 
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )

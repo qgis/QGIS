@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswfsdata.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QBuffer>
 #include <QUrl>
@@ -28,7 +28,7 @@ const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 
 QgsWFSData::QgsWFSData(
   const QString& uri,
-  QgsRect* extent,
+  QgsRectangle* extent,
   QgsCoordinateReferenceSystem* srs,
   QList<QgsFeature*> &features,
   const QString& geometryAttribute,
@@ -453,7 +453,7 @@ QString QgsWFSData::readTsFromAttribute( const XML_Char** attr ) const
   return " ";
 }
 
-int QgsWFSData::createBBoxFromCoordinateString( QgsRect* bb, const QString& coordString ) const
+int QgsWFSData::createBBoxFromCoordinateString( QgsRectangle* bb, const QString& coordString ) const
 {
   if ( !bb )
   {

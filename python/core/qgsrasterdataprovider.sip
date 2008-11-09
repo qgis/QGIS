@@ -57,7 +57,7 @@ public:
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      */
-    virtual QImage* draw(const QgsRect & viewExtent, int pixelWidth, int pixelHeight) = 0;
+    virtual QImage* draw(const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight) = 0;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether

@@ -42,7 +42,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      *                     false if a test based on bounding box is sufficient
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false );
 
@@ -168,7 +168,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     /**
      * Return the extent for this data layer
      */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /**
      * Returns true if this is a valid provider
@@ -186,7 +186,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     // fields
     QgsFieldMap mFields;
     QGis::WkbType mWkbType;
-    QgsRect mExtent;
+    QgsRectangle mExtent;
 
     // features
     QgsFeatureMap mFeatures;
@@ -194,7 +194,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     // selection
     QgsAttributeList mSelectAttrs;
-    QgsRect mSelectRect;
+    QgsRectangle mSelectRect;
     QgsGeometry* mSelectRectGeom;
     bool mSelectGeometry, mSelectUseIntersect;
     QgsFeatureMap::iterator mSelectIterator;

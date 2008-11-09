@@ -52,7 +52,7 @@ class QgsVectorDataProvider : QgsDataProvider
        *                     false if a test based on bounding box is sufficient
        */
       virtual void select(QList<int> fetchAttributes = QList<int>(),
-                          QgsRect rect = QgsRect(),
+                          QgsRectangle rect = QgsRectangle(),
                           bool fetchGeometry = true,
                           bool useIntersect = false) = 0;
 

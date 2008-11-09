@@ -32,7 +32,7 @@ class QgsPoint;
 class QgsFeature;
 class QgsField;
 class QgsLabelAttributes;
-class QgsRect;
+class QgsRectangle;
 class QgsMapToPixel;
 class QgsCoordinateTransform;
 
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsLabel
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
      */
-    void renderLabel( QPainter* painter, const QgsRect& viewExtent,
+    void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
                       const QgsCoordinateTransform* coordinateTransform,
                       const QgsMapToPixel *transform,
                       QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0, double sizeScale = 1., double rasterScaleFactor = 1.0);

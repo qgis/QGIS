@@ -30,7 +30,7 @@
 #include <QString>
 #include <QTextStream>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max
@@ -146,10 +146,10 @@ class GPSData
         to use a GPSData object in QGIS without parsing a datafile into it. */
     GPSData();
 
-    /** This function returns a pointer to a dynamically allocated QgsRect
+    /** This function returns a pointer to a dynamically allocated QgsRectangle
         which is the bounding box for this dataset. You'll have to deallocate it
         yourself. */
-    QgsRect getExtent() const;
+    QgsRectangle getExtent() const;
 
     /** Sets a default sensible extent. Only applies when there are no actual data. */
     void setNoDataExtent();

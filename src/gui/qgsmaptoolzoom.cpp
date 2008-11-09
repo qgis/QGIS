@@ -83,7 +83,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     QgsPoint ll = coordinateTransform->toMapCoordinates( mZoomRect.left(), mZoomRect.bottom() );
     QgsPoint ur = coordinateTransform->toMapCoordinates( mZoomRect.right(), mZoomRect.top() );
 
-    QgsRect r;
+    QgsRectangle r;
     r.setXMinimum( ll.x() );
     r.setYMinimum( ll.y() );
     r.setXMaximum( ur.x() );
@@ -99,7 +99,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     if ( mZoomOut )
     {
       QgsPoint cer = r.center();
-      QgsRect extent = mCanvas->extent();
+      QgsRectangle extent = mCanvas->extent();
 
       double sf;
       if ( mZoomRect.width() > mZoomRect.height() )

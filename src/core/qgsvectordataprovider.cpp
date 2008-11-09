@@ -52,7 +52,7 @@ bool QgsVectorDataProvider::featureAtId( int featureId,
     bool fetchGeometry,
     QgsAttributeList fetchAttributes )
 {
-  select( fetchAttributes, QgsRect(), fetchGeometry );
+  select( fetchAttributes, QgsRectangle(), fetchGeometry );
 
   while ( nextFeature( feature ) )
   {
@@ -311,7 +311,7 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values )
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
-  select( keys, QgsRect(), false );
+  select( keys, QgsRectangle(), false );
 
   QSet<QString> set;
   values.clear();
@@ -345,7 +345,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
 
   QgsFeature f;
   QgsAttributeList keys = mCacheMinValues.keys();
-  select( keys, QgsRect(), false );
+  select( keys, QgsRectangle(), false );
 
   while ( nextFeature( f ) )
   {

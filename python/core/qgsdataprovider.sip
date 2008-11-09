@@ -40,9 +40,9 @@ class QgsDataProvider : QObject
       
       /**
        * Get the extent of the layer
-       * @return QgsRect containing the extent of the layer
+       * @return QgsRectangle containing the extent of the layer
       */
-      virtual QgsRect extent() = 0;
+      virtual QgsRectangle extent() = 0;
 
       
       /**

@@ -24,7 +24,7 @@ extern "C"
 #include <libpq-fe.h>
 }
 #include "qgsvectordataprovider.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include <list>
 #include <queue>
 #include <fstream>
@@ -83,7 +83,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *                     false if a test based on bounding box is sufficient
      */
     virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRect rect = QgsRect(),
+                         QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false );
 
@@ -151,11 +151,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Changes the stored extent for this layer to the supplied extent.
      * For example, this is called when the extent worker thread has a result.
      */
-    void setExtent( QgsRect& newExtent );
+    void setExtent( QgsRectangle& newExtent );
 
     /** Return the extent for this data layer
     */
-    virtual QgsRect extent();
+    virtual QgsRectangle extent();
 
     /**  * Get the name of the primary key for the layer
     */
@@ -400,7 +400,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRect layerExtent;
+    QgsRectangle layerExtent;
 
     /**
      * Number of features in the layer

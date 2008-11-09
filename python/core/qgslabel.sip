@@ -44,7 +44,7 @@ public:
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
     */
-    void renderLabel ( QPainter* painter, QgsRect& viewExtent, 
+    void renderLabel ( QPainter* painter, QgsRectangle& viewExtent, 
                        QgsCoordinateTransform* coordinateTransform,
                        QgsMapToPixel *transform,
                        QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes=0, double sizeScale = 1, double rasterScaleFactor = 1);

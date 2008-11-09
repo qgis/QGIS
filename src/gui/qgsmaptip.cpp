@@ -89,7 +89,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, Qgs
 
     // create the search rectangle
     double searchRadius = mpMapCanvas->extent().width() * ( identifyValue / 100.0 );
-    QgsRect r;
+    QgsRectangle r;
     r.setXMinimum( mapPosition.x() - searchRadius );
     r.setXMaximum( mapPosition.x() + searchRadius );
     r.setYMinimum( mapPosition.y() - searchRadius );

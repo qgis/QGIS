@@ -90,7 +90,7 @@ QgsComposerMap::~QgsComposerMap()
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
-void QgsComposerMap::draw( QPainter *painter, const QgsRect& extent, const QSize& size, int dpi )
+void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
 {
   if ( !painter )
   {
@@ -156,7 +156,7 @@ void QgsComposerMap::cache( void )
   double mapUnitsPerPixel = mExtent.width() / w;
 
   // WARNING: ymax in QgsMapToPixel is device height!!!
-  QgsMapToPixel transform( mapUnitsPerPixel, h, mExtent.yMin(), mExtent.xMin() );
+  QgsMapToPixel transform( mapUnitsPerPixel, h, mExtent.yMinimum(), mExtent.xMinimum() );
 
   mCachePixmap.fill( QColor( 255, 255, 255 ) );
 
@@ -270,10 +270,10 @@ void QgsComposerMap::moveContent( double dx, double dy )
     double xMoveMapCoord = mExtent.width() * xRatio;
     double yMoveMapCoord = -( mExtent.height() * yRatio );
 
-    mExtent.setXMinimum( mExtent.xMin() + xMoveMapCoord );
-    mExtent.setXMaximum( mExtent.xMax() + xMoveMapCoord );
-    mExtent.setYMinimum( mExtent.yMin() + yMoveMapCoord );
-    mExtent.setYMaximum( mExtent.yMax() + yMoveMapCoord );
+    mExtent.setXMinimum( mExtent.xMinimum() + xMoveMapCoord );
+    mExtent.setXMaximum( mExtent.xMaximum() + xMoveMapCoord );
+    mExtent.setYMinimum( mExtent.yMinimum() + yMoveMapCoord );
+    mExtent.setYMaximum( mExtent.yMaximum() + yMoveMapCoord );
     emit extentChanged();
     cache();
     update();
@@ -295,14 +295,14 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
   double zoomFactor = settings.value( "/qgis/zoom_factor", 2.0 ).toDouble();
 
   //find out new center point
-  double centerX = ( mExtent.xMax() + mExtent.xMin() ) / 2;
-  double centerY = ( mExtent.yMax() + mExtent.yMin() ) / 2;
+  double centerX = ( mExtent.xMaximum() + mExtent.xMinimum() ) / 2;
+  double centerY = ( mExtent.yMaximum() + mExtent.yMinimum() ) / 2;
 
   if ( zoomMode != 0 )
   {
     //find out map coordinates of mouse position
-    double mapMouseX = mExtent.xMin() + ( x / rect().width() ) * ( mExtent.xMax() - mExtent.xMin() );
-    double mapMouseY = mExtent.yMin() + ( 1 - ( y / rect().height() ) ) * ( mExtent.yMax() - mExtent.yMin() );
+    double mapMouseX = mExtent.xMinimum() + ( x / rect().width() ) * ( mExtent.xMaximum() - mExtent.xMinimum() );
+    double mapMouseY = mExtent.yMinimum() + ( 1 - ( y / rect().height() ) ) * ( mExtent.yMaximum() - mExtent.yMinimum() );
     if ( zoomMode == 1 ) //zoom and recenter
     {
       centerX = mapMouseX;
@@ -319,13 +319,13 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
 
   if ( delta > 0 )
   {
-    newIntervalX = ( mExtent.xMax() - mExtent.xMin() ) / zoomFactor;
-    newIntervalY = ( mExtent.yMax() - mExtent.yMin() ) / zoomFactor;
+    newIntervalX = ( mExtent.xMaximum() - mExtent.xMinimum() ) / zoomFactor;
+    newIntervalY = ( mExtent.yMaximum() - mExtent.yMinimum() ) / zoomFactor;
   }
   else if ( delta < 0 )
   {
-    newIntervalX = ( mExtent.xMax() - mExtent.xMin() ) * zoomFactor;
-    newIntervalY = ( mExtent.yMax() - mExtent.yMin() ) * zoomFactor;
+    newIntervalX = ( mExtent.xMaximum() - mExtent.xMinimum() ) * zoomFactor;
+    newIntervalY = ( mExtent.yMaximum() - mExtent.yMinimum() ) * zoomFactor;
   }
   else //no need to zoom
   {
@@ -352,14 +352,14 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
 
   //QGraphicsRectItem::update();
   double newHeight = mExtent.width() * h / w ;
-  mExtent = QgsRect( mExtent.xMin(), mExtent.yMin(), mExtent.xMax(), mExtent.yMin() + newHeight );
+  mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
   mCacheUpdated = false;
   emit extentChanged();
   cache();
   update();
 }
 
-void QgsComposerMap::setNewExtent( const QgsRect& extent )
+void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
 {
   if ( mExtent == extent )
   {
@@ -386,10 +386,10 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
 
   double scaleRatio = scaleDenominator / currentScaleDenominator;
 
-  double newXMax = mExtent.xMin() + scaleRatio * ( mExtent.xMax() - mExtent.xMin() );
-  double newYMax = mExtent.yMin() + scaleRatio * ( mExtent.yMax() - mExtent.yMin() );
+  double newXMax = mExtent.xMinimum() + scaleRatio * ( mExtent.xMaximum() - mExtent.xMinimum() );
+  double newYMax = mExtent.yMinimum() + scaleRatio * ( mExtent.yMaximum() - mExtent.yMinimum() );
 
-  QgsRect newExtent( mExtent.xMin(), mExtent.yMin(), newXMax, newYMax );
+  QgsRectangle newExtent( mExtent.xMinimum(), mExtent.yMinimum(), newXMax, newYMax );
   mExtent = newExtent;
   mCacheUpdated = false;
   emit extentChanged();
@@ -491,10 +491,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc )
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
-  extentElem.setAttribute( "xmin", QString::number( mExtent.xMin() ) );
-  extentElem.setAttribute( "xmax", QString::number( mExtent.xMax() ) );
-  extentElem.setAttribute( "ymin", QString::number( mExtent.yMin() ) );
-  extentElem.setAttribute( "ymax", QString::number( mExtent.yMax() ) );
+  extentElem.setAttribute( "xmin", QString::number( mExtent.xMinimum() ) );
+  extentElem.setAttribute( "xmax", QString::number( mExtent.xMaximum() ) );
+  extentElem.setAttribute( "ymin", QString::number( mExtent.yMinimum() ) );
+  extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
   mCacheUpdated = false;
@@ -539,7 +539,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     ymin = extentElem.attribute( "ymin" ).toDouble();
     ymax = extentElem.attribute( "ymax" ).toDouble();
 
-    mExtent = QgsRect( xmin, ymin, xmax, ymax );
+    mExtent = QgsRectangle( xmin, ymin, xmax, ymax );
   }
 
   mDrawing = false;

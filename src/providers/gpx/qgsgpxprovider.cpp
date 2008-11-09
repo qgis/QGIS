@@ -40,7 +40,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 #include "qgsgpxprovider.h"
 #include "gpsdata.h"
 #include "qgslogger.h"
@@ -209,9 +209,9 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 
       if ( rte->points.size() == 0 )
         continue;
-      const QgsRect& b( *mSelectionRectangle );
-      if (( rte->xMax >= b.xMin() ) && ( rte->xMin <= b.xMax() ) &&
-          ( rte->yMax >= b.yMin() ) && ( rte->yMin <= b.yMax() ) )
+      const QgsRectangle& b( *mSelectionRectangle );
+      if (( rte->xMax >= b.xMinimum() ) && ( rte->xMin <= b.xMaximum() ) &&
+          ( rte->yMax >= b.yMinimum() ) && ( rte->yMin <= b.yMaximum() ) )
       {
         // some wkb voodoo
         int nPoints = rte->points.size();
@@ -313,9 +313,9 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
       if ( totalPoints == 0 )
         continue;
       QgsDebugMsg( "GPX feature track total points: " + QString::number( totalPoints ) );
-      const QgsRect& b( *mSelectionRectangle );
-      if (( trk->xMax >= b.xMin() ) && ( trk->xMin <= b.xMax() ) &&
-          ( trk->yMax >= b.yMin() ) && ( trk->yMin <= b.yMax() ) )
+      const QgsRectangle& b( *mSelectionRectangle );
+      if (( trk->xMax >= b.xMinimum() ) && ( trk->xMin <= b.xMaximum() ) &&
+          ( trk->yMax >= b.yMinimum() ) && ( trk->yMin <= b.yMaximum() ) )
       {
         // some wkb voodoo
         char* geo = new char[9 + 16 * totalPoints];
@@ -407,7 +407,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 }
 
 void QgsGPXProvider::select( QgsAttributeList fetchAttributes,
-                             QgsRect rect,
+                             QgsRectangle rect,
                              bool fetchGeometry,
                              bool useIntersect )
 {
@@ -416,11 +416,11 @@ void QgsGPXProvider::select( QgsAttributeList fetchAttributes,
 
   if ( rect.isEmpty() )
   {
-    mSelectionRectangle = new QgsRect( extent() );
+    mSelectionRectangle = new QgsRectangle( extent() );
   }
   else
   {
-    mSelectionRectangle = new QgsRect( rect );
+    mSelectionRectangle = new QgsRectangle( rect );
   }
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
@@ -431,7 +431,7 @@ void QgsGPXProvider::select( QgsAttributeList fetchAttributes,
 
 
 // Return the extent of the layer
-QgsRect QgsGPXProvider::extent()
+QgsRectangle QgsGPXProvider::extent()
 {
   return data->getExtent();
 }
@@ -822,10 +822,10 @@ QVariant QgsGPXProvider::defaultValue( int fieldId )
  */
 bool QgsGPXProvider::boundsCheck( double x, double y )
 {
-  bool inBounds = ((( x <= mSelectionRectangle->xMax() ) &&
-                    ( x >= mSelectionRectangle->xMin() ) ) &&
-                   (( y <= mSelectionRectangle->yMax() ) &&
-                    ( y >= mSelectionRectangle->yMin() ) ) );
+  bool inBounds = ((( x <= mSelectionRectangle->xMaximum() ) &&
+                    ( x >= mSelectionRectangle->xMinimum() ) ) &&
+                   (( y <= mSelectionRectangle->yMaximum() ) &&
+                    ( y >= mSelectionRectangle->yMinimum() ) ) );
   QString hit = inBounds ? "true" : "false";
   return inBounds;
 }

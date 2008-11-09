@@ -138,7 +138,7 @@ QgsCoordinateReferenceSystem QgsWFSProvider::crs()
   return mSourceCRS;
 }
 
-QgsRect QgsWFSProvider::extent()
+QgsRectangle QgsWFSProvider::extent()
 {
   return mExtent;
 }
@@ -149,7 +149,7 @@ bool QgsWFSProvider::isValid()
 }
 
 void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
-                             QgsRect rect,
+                             QgsRectangle rect,
                              bool fetchGeometry,
                              bool useIntersect )
 {
@@ -580,7 +580,7 @@ int QgsWFSProvider::guessAttributesFromFile( const QString& uri, QString& geomet
   return 0;
 }
 
-int QgsWFSProvider::getExtentFromGML2( QgsRect* extent, const QDomElement& wfsCollectionElement ) const
+int QgsWFSProvider::getExtentFromGML2( QgsRectangle* extent, const QDomElement& wfsCollectionElement ) const
 {
   QDomNodeList boundedByList = wfsCollectionElement.elementsByTagNameNS( GML_NAMESPACE, "boundedBy" );
   if ( boundedByList.length() < 1 )

@@ -423,7 +423,7 @@ void QgsGrassProvider::resetSelection( bool sel )
 }
 
 void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
-                               QgsRect rect,
+                               QgsRectangle rect,
                                bool fetchGeometry,
                                bool useIntersect )
 {
@@ -461,8 +461,8 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
   if ( !useIntersect )
   { // select by bounding boxes only
     BOUND_BOX box;
-    box.N = rect.yMax(); box.S = rect.yMin();
-    box.E = rect.xMax(); box.W = rect.xMin();
+    box.N = rect.yMaximum(); box.S = rect.yMinimum();
+    box.E = rect.xMaximum(); box.W = rect.xMinimum();
     box.T = PORT_DOUBLE_MAX; box.B = -PORT_DOUBLE_MAX;
     if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == BOUNDARY )
     {
@@ -480,11 +480,11 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
 
     Polygon = Vect_new_line_struct();
 
-    Vect_append_point( Polygon, rect.xMin(), rect.yMin(), 0 );
-    Vect_append_point( Polygon, rect.xMax(), rect.yMin(), 0 );
-    Vect_append_point( Polygon, rect.xMax(), rect.yMax(), 0 );
-    Vect_append_point( Polygon, rect.xMin(), rect.yMax(), 0 );
-    Vect_append_point( Polygon, rect.xMin(), rect.yMin(), 0 );
+    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
+    Vect_append_point( Polygon, rect.xMaximum(), rect.yMinimum(), 0 );
+    Vect_append_point( Polygon, rect.xMaximum(), rect.yMaximum(), 0 );
+    Vect_append_point( Polygon, rect.xMinimum(), rect.yMaximum(), 0 );
+    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
 
     if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == BOUNDARY )
     {
@@ -512,12 +512,12 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
 
 
 
-QgsRect QgsGrassProvider::extent()
+QgsRectangle QgsGrassProvider::extent()
 {
   BOUND_BOX box;
   Vect_get_map_box( mMap, &box );
 
-  return QgsRect( box.W, box.S, box.E, box.N );
+  return QgsRectangle( box.W, box.S, box.E, box.N );
 }
 
 /**

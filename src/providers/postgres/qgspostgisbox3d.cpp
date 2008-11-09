@@ -22,7 +22,7 @@
 
 #include <QString>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 #include "qgspostgisbox3d.h"
 #include "qgslogger.h"

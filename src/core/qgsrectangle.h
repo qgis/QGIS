@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsrect.h  -  description
+                          qgsrectangle.h  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -29,20 +29,20 @@ class QString;
 /** \ingroup core
  * A rectangle specified with double values.
  *
- * QgsRect is used to store a rectangle when double values are required.
+ * QgsRectangle is used to store a rectangle when double values are required.
  * Examples are storing a layer extent or the current view extent of a map
  */
-class CORE_EXPORT QgsRect
+class CORE_EXPORT QgsRectangle
 {
   public:
     //! Constructor
-    QgsRect( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
+    QgsRectangle( double xmin = 0, double ymin = 0, double xmax = 0, double ymax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
-    QgsRect( QgsPoint const & p1, QgsPoint const & p2 );
+    QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 );
     //! Copy constructor
-    QgsRect( const QgsRect &other );
+    QgsRectangle( const QgsRectangle &other );
     //! Destructor
-    ~QgsRect();
+    ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is
     //normalised after construction.
     void set( const QgsPoint& p1, const QgsPoint& p2 );
@@ -61,13 +61,13 @@ class CORE_EXPORT QgsRect
     // and max corner is at min. It is NOT normalized.
     void setMinimal();
     //! Get the x maximum value (right side of rectangle)
-    double xMax() const;
+    double xMaximum() const;
     //! Get the x maximum value (right side of rectangle)
-    double xMin() const;
+    double xMinimum() const;
     //! Get the x minimum value (left side of rectangle)
-    double yMax() const;
+    double yMaximum() const;
     //! Get the y maximum value (top side of rectangle)
-    double yMin() const;
+    double yMinimum() const;
     //! Normalize the rectangle so it has non-negative width/height
     void normalize();
     //! Width of the rectangle
@@ -81,11 +81,11 @@ class CORE_EXPORT QgsRect
     //! Expand the rectangle to support zoom out scaling
     void expand( double, const QgsPoint *c = 0 );
     //! return the intersection with the given rectangle
-    QgsRect intersect( QgsRect *rect ) const;
+    QgsRectangle intersect( QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle
-    bool intersects( const QgsRect& rect ) const;
+    bool intersects( const QgsRectangle& rect ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
-    void combineExtentWith( QgsRect *rect );
+    void combineExtentWith( QgsRectangle *rect );
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith( double x, double y );
     //! test if rectangle is empty
@@ -101,18 +101,18 @@ class CORE_EXPORT QgsRect
     /*! Comparison operator
       @return True if rectangles are equal
     */
-    bool operator==( const QgsRect &r1 ) const;
+    bool operator==( const QgsRectangle &r1 ) const;
     /*! Comparison operator
     @return False if rectangles are equal
      */
-    bool operator!=( const QgsRect &r1 ) const;
+    bool operator!=( const QgsRectangle &r1 ) const;
     /*! Assignment operator
-     * @param r1 QgsRect to assign from
+     * @param r1 QgsRectangle to assign from
      */
-    QgsRect & operator=( const QgsRect &r1 );
+    QgsRectangle & operator=( const QgsRectangle &r1 );
 
     /** updates rectangle to include passed argument */
-    void unionRect( const QgsRect& rect );
+    void unionRect( const QgsRectangle& rect );
 
     /** Returns true if the rectangle has finite boundaries. Will
         return false if any of the rectangle boundaries are NaN or Inf. */
@@ -131,65 +131,65 @@ class CORE_EXPORT QgsRect
 };
 
 
-inline QgsRect::~QgsRect()
+inline QgsRectangle::~QgsRectangle()
 {
 }
 
-inline void QgsRect::setXMinimum( double x )
+inline void QgsRectangle::setXMinimum( double x )
 {
   xmin = x;
 }
 
-inline void QgsRect::setXMaximum( double x )
+inline void QgsRectangle::setXMaximum( double x )
 {
   xmax = x;
 }
 
-inline void QgsRect::setYMinimum( double y )
+inline void QgsRectangle::setYMinimum( double y )
 {
   ymin = y;
 }
 
-inline void QgsRect::setYMaximum( double y )
+inline void QgsRectangle::setYMaximum( double y )
 {
   ymax = y;
 }
 
-inline double QgsRect::xMax() const
+inline double QgsRectangle::xMaximum() const
 {
   return xmax;
 }
 
-inline double QgsRect::xMin() const
+inline double QgsRectangle::xMinimum() const
 {
   return xmin;
 }
 
-inline double QgsRect::yMax() const
+inline double QgsRectangle::yMaximum() const
 {
   return ymax;
 }
 
-inline double QgsRect::yMin() const
+inline double QgsRectangle::yMinimum() const
 {
   return ymin;
 }
 
-inline double QgsRect::width() const
+inline double QgsRectangle::width() const
 {
   return xmax - xmin;
 }
 
-inline double QgsRect::height() const
+inline double QgsRectangle::height() const
 {
   return ymax - ymin;
 }
 
-inline QgsPoint QgsRect::center() const
+inline QgsPoint QgsRectangle::center() const
 {
   return QgsPoint( xmin + width() / 2,  ymin + height() / 2 );
 }
-inline std::ostream& operator << ( std::ostream& os, const QgsRect &r )
+inline std::ostream& operator << ( std::ostream& os, const QgsRectangle &r )
 {
   return os << r.toString().toLocal8Bit().data();
 }

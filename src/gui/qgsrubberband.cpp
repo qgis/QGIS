@@ -319,7 +319,7 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    QgsRect r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY,
+    QgsRectangle r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY,
                it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
 
     for ( int i = 0; i < mPoints.size(); ++i )
@@ -336,7 +336,7 @@ void QgsRubberBand::updateRect()
   }
   else
   {
-    setRect( QgsRect() );
+    setRect( QgsRectangle() );
   }
   setVisible( mPoints.size() > 0 );
 }

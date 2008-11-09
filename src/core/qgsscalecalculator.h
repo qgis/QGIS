@@ -23,7 +23,7 @@
 #include <qgis.h>
 
 class QString;
-class QgsRect;
+class QgsRectangle;
 
 /** \ingroup core
  * Calculates scale for a given combination of canvas size, map extent,
@@ -67,19 +67,19 @@ class CORE_EXPORT QgsScaleCalculator
 
     /**
      * Calculate the scale
-     * @param mapExtent QgsRect containing the current map extent
+     * @param mapExtent QgsRectangle containing the current map extent
      * @param canvasWidth Width of the map canvas in pixel (physical) units
      * @return scale of current map view
      */
-    double calculate( const QgsRect &mapExtent, int canvasWidth );
+    double calculate( const QgsRectangle &mapExtent, int canvasWidth );
 
     /**
      * Calculate the distance between two points in geographic coordinates.
      * Used to calculate scale for map views with geographic (decimal degree)
      * data.
-     * @param mapExtent QgsRect containing the current map extent
+     * @param mapExtent QgsRectangle containing the current map extent
      */
-    double calculateGeographicDistance( const QgsRect &mapExtent );
+    double calculateGeographicDistance( const QgsRectangle &mapExtent );
 
   private:
 

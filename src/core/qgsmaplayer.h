@@ -24,7 +24,7 @@
 
 #include <QObject>
 
-#include "qgsrect.h"
+#include "qgsrectangle.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void drawLabels( QgsRenderContext& rendererContext );
 
     /** Return the extent of the layer as a QRect */
-    QgsRect extent() const;
+    QgsRectangle extent() const;
 
     /*! Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     unsigned int mTransparencyLevel;
 
     /** Extent of the layer */
-    QgsRect mLayerExtent;
+    QgsRectangle mLayerExtent;
 
     /** Indicates if the layer is valid and can be drawn */
     bool mValid;

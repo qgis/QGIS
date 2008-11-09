@@ -108,7 +108,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   QgsAttributeList attrs;
   attrs.append( fieldIndex );
 
-  provider->select( attrs, QgsRect(), false );
+  provider->select( attrs, QgsRectangle(), false );
 
   lstValues->setCursor( Qt::WaitCursor );
   // Block for better performance
@@ -195,7 +195,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
   const QgsFieldMap& fields = provider->fields();
   QgsAttributeList allAttributes = provider->attributeIndexes();
 
-  provider->select( allAttributes, QgsRect(), false );
+  provider->select( allAttributes, QgsRectangle(), false );
 
   while ( provider->nextFeature( feat ) )
   {

@@ -56,7 +56,7 @@ QgsPoint QgsMapTool::toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point
   return mCanvas->mapRenderer()->layerToMapCoordinates( layer, point );
 }
 
-QgsRect QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRect& rect )
+QgsRectangle QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRectangle& rect )
 {
   return mCanvas->mapRenderer()->mapToLayerCoordinates( layer, rect );
 }

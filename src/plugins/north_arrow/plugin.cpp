@@ -308,7 +308,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );
 
-      QgsRect extent = mapCanvas.extent();
+      QgsRectangle extent = mapCanvas.extent();
       QgsPoint p1( extent.center() );
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
