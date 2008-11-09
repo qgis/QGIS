@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import ASCII raster to GRASS raster" module="r.in.ascii">
+<qgisgrassmodule label="Import ASCII raster" module="r.in.ascii">
 	<file key="input" type="old" />
 	<option key="mult" />
 	<option key="nv" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Assign a new value to a column, result of operation on column/s, only if the result of a query is TRUE" module="v.db.update">
+<qgisgrassmodule label="Assign new value to column as result of operation on columns only if the result of query is TRUE" module="v.db.update">
 	<option key="map" layeroption="layer" />
 	<field key="column" layer="map" type="integer,double,varchar,string" label="Attribute field" />
 	<option key="qcolumn" />

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Find the nearest element in vector 'to' for elements in vector 'from'. Various information about this relation may be uploaded to the attribute table of input vector 'from'" module="v.distance">
+<qgisgrassmodule label="Find nearest element in vector 'to' for elements in vector 'from'. Various information about this relation may be uploaded to attribute table of input vector 'from'" module="v.distance">
 	<option key="from" typemask="point" layeroption="from_layer"/>
 	<option key="to" typeoption="to_type" layeroption="to_layer"/>
 	<option key="upload"/>

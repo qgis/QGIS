@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Create a new raster by combining other rasters" module="r.patch">
+<qgisgrassmodule label="Create new raster by combining other rasters" module="r.patch">
 	<flag key="z" answer="off" hidden="no" />
 	<file key="input" label="Type in map names separated by a comma" />
 	<option key="output" />

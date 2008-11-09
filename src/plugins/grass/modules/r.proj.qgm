@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Re-project a raster from a location to the current location" module="r.proj">
+<qgisgrassmodule label="Re-project raster from a location to the current location" module="r.proj">
 	<option key="input" />
 	<option key="dbase"/>
 	<option key="location"/>

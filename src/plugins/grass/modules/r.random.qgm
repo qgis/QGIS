@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Creates a random vector point map contained in a raster" module="r.random">
+<qgisgrassmodule label="Create random vector point contained in raster" module="r.random">
 	<option key="input"/>
 	<option key="n" answer="1" hidden="no"/>
 	<option key="vector_output" />
