@@ -912,6 +912,8 @@ Error validating server certificate for 'https://svn.qgis.org:443':
 
 == Starting the compile ==
 
+/!\ ***Note:*** The next section describes howto build debian packages
+
 I compile my development version of QGIS into my ~/apps directory to avoid
 conflicts with Ubuntu packages that may be under /usr. This way for example
 you can use the binary packages of QGIS on your system along side with your
@@ -949,6 +951,43 @@ make install
 ```
 
 It may take a little while to build depending on your platform.
+
+== Building Debian packages ==
+
+Instead of creating a personal installation as in the previous step you can
+also create debian package.  This is done from the qgis root directory, where
+you'll find a debian directory.
+
+First you need to install the debian packaging tools once:
+
+```
+apt-get install build-essential
+```
+
+The QGIS packages will be created with:
+
+```
+dpkg-buildpackage -us -us -b
+```
+
+/!\ ***Note:*** If ``dpkg-buildpackage`` complains about unmet build dependencies
+you can install them using ``apt-get`` and re-run the command.
+
+/!\ ***Note:*** If you have ``libqgis1-dev`` installed, you need to remove it first
+using ``dpkg -r libqgis1-dev``.  Otherwise ``dpkg-buildpackage`` will complain about at
+build conflict.
+
+The the packages are created in the parent directory (ie. one level up).
+Install them using dpkg.  E.g.:
+
+```
+sudo dpkg -i \
+	../qgis_1.0preview16_amd64.deb \
+	../libqgis-gui1_1.0preview16_amd64.deb \
+	../libqgis-core1_1.0preview16_amd64.deb \
+	../qgis-plugin-grass_1.0preview16_amd64.deb \
+	../python-qgis_1.0preview16_amd64.deb
+```
 
 == Running QGIS ==
 
@@ -1989,14 +2028,14 @@ The following people have contributed to this document:
  - MSVC install additions Tim Sutton 2007
  - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
 
-
 - Windows MSVC Section (Simplified install)
  - Tim Sutton 2007
  - Juergen Fischer 2007
 
 - OSX Section
- - Tim Sutton, 2007
+ - Tim Sutton 2007
  - With special thanks to Tom Elwertowski and William Kyngesburye
 
 - GNU/Linux Section
  - Tim Sutton 2006
+ - Debian package section: Juergen Fischer 2008
