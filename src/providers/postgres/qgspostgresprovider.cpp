@@ -45,7 +45,6 @@
 
 #include "qgspostgisbox3d.h"
 #include "qgslogger.h"
-#include "qgslogger.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
@@ -423,6 +422,10 @@ bool QgsPostgresProvider::declareCursor(
       else if ( type == "bool" )
       {
         query += QString( ",boolout(%1)" ).arg( quotedIdentifier( fieldname ) );
+      }
+      else if ( type == "geometry")
+      {
+        query += QString(",asewkt(%1)").arg(quotedIdentifier(fieldname));
       }
       else
       {
@@ -826,6 +829,7 @@ void QgsPostgresProvider::loadFields()
                   fieldTypeName == "bpchar" ||
                   fieldTypeName == "varchar" ||
                   fieldTypeName == "bool" ||
+                  fieldTypeName == "geometry" ||
                   fieldTypeName == "money" ||
                   fieldTypeName.startsWith( "time" ) ||
                   fieldTypeName.startsWith( "date" ) )
@@ -1802,6 +1806,10 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
             values += "," + defVal;
           }
         }
+        else if( fit->typeName()=="geometry" )
+        {
+          values += QString(",geomfromewkt(%1)").arg( quotedValue( it->toString() ) );
+        }
         else
         {
           values += "," + quotedValue( it->toString() );
@@ -1810,7 +1818,14 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       else
       {
         // value is not unique => add parameter
-        values += QString( ",$%1" ).arg( defaultValues.size() + 3 );
+        if( fit->typeName()=="geometry" )
+        {
+          values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + 3 );
+        }
+        else
+        {
+          values += QString( ",$%1" ).arg( defaultValues.size() + 3 );
+        }
         defaultValues.append( defVal );
         fieldId.append( it.key() );
       }
@@ -2032,15 +2047,15 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       {
         try
         {
-          QString fieldName = field( siter.key() ).name();
+          QgsField fld = field( siter.key() );
 
           if ( !first )
             sql += ",";
           else
             first = false;
 
-          sql += QString( "%1=%2" )
-                 .arg( quotedIdentifier( fieldName ) )
+          sql += QString( fld.typeName()!="geometry" ? "%1=%2" : "%1=geomfromewkt(%2)" )
+                 .arg( quotedIdentifier( fld.name() ) )
                  .arg( quotedValue( siter->toString() ) );
         }
         catch ( PGFieldNotFound )
@@ -2635,16 +2650,22 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
   if ( res )
   {
     int errorStatus = PQresultStatus( res );
-#ifdef QGISDEBUG
     if ( errorStatus != PGRES_COMMAND_OK )
     {
+#ifdef QGISDEBUG
       QString err = QString( "Query: %1 returned %2 [%3]" )
                     .arg( query )
                     .arg( errorStatus )
                     .arg( PQresultErrorMessage( res ) );
       QgsDebugMsgLevel( err, 3 );
-    }
 #endif
+      if( openCursors )
+      {
+        PQexecNR( "ROLLBACK" );
+        QgsDebugMsg( QString("Re-starting read-only transaction after errornous statement - state of %1 cursors lost" ).arg( openCursors ) );
+        PQexecNR( "BEGIN READ ONLY" );
+      }
+    }
     return errorStatus == PGRES_COMMAND_OK;
   }
   else
