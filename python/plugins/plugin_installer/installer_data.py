@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" "
+"""
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
 
@@ -11,13 +11,7 @@ Copyright (C) 2008 Borys Jurgiel
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
- This file contains some additional quote marks (for example in the lines 2 and 20), they are
- for compatibility with lupdate, which doesn't properly recognize the comments in Python.
- The use of lupdate instead of pylupdate is forced by integration with rest of QGIS files,
- which are written mainly in C++. After editing this file make sure that lupdate and pylupdate
- find the same number of strings and balance the quotemarks if doesn't.
-" """
+"""
 
 
 from PyQt4.QtCore import *
@@ -27,7 +21,7 @@ from qgis.core import *
 from unzip import unzip
 
 
-""" "
+"""
 Data structure:
 mRepositories = dict of dicts: {repoName : {"url" string,
                                             "enabled" bool,
@@ -50,7 +44,7 @@ mPlugins = dict of dicts {id : {"name" string,
                                 "repository" string,
                                 "localdir" string,
                                 "read-only" boolean}}
-" """
+"""
 
 
 QGIS_VER = 1
@@ -487,6 +481,13 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def updatePlugin(self, key, readOnly):
     """ The mPlugins should contain available plugins first. Now, add installed one (add when not present, update if present) """
+    if readOnly:
+      path = QgsApplication.pkgDataPath()
+    else:
+      path = QgsApplication.qgisSettingsDirPath()
+    path = QDir.cleanPath(unicode(path) + "python/plugins/" + key)
+    if not QDir(path).exists():
+      return
     try:
       exec("import "+ key)
       try:
@@ -517,11 +518,6 @@ class Plugins(QObject):
       desc  = ""
       auth  = ""
       homepage  = ""
-    if readOnly:
-      path = QgsApplication.pkgDataPath()
-    else:
-      path = QgsApplication.qgisSettingsDirPath()
-    path = QDir.cleanPath(unicode(path) + "python/plugins/" + key)
     normVer = self.normalizeVersion(QString(ver))
     plugin = {
         "name"          : nam,
@@ -575,7 +571,6 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def getAllInstalled(self):
     """ update the mPlugins dict with alredy installed plugins """
-    # ' PLEASE DO NOT REMOVE THIS QUOTE MARK - it is a balance for compatibility with lupdate
     # first, try to add the read-only plugins...
     try:
       pluginDir = QDir.cleanPath(unicode(QgsApplication.pkgDataPath()) + "/python/plugins")

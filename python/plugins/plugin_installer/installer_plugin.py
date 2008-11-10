@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" "
+"""
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
 
@@ -11,13 +11,7 @@ Copyright (C) 2008 Borys Jurgiel
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
- This file contains some additional quote marks (for example in the lines 2 and 20), they are
- for compatibility with lupdate, which doesn't properly recognize the comments in Python.
- The use of lupdate instead of pylupdate is forced by integration with rest of QGIS files,
- which are written mainly in C++. After editing this file make sure that lupdate and pylupdate
- find the same number of strings and balance the quotemarks if doesn't.
-" """
+"""
 
 
 from PyQt4.QtCore import *
@@ -28,7 +22,7 @@ from installer_data import *
 import resources_rc
 
 
-class InstallerPlugin:
+class InstallerPlugin():
   # ----------------------------------------- #
   def __init__(self, iface):
     self.iface = iface
