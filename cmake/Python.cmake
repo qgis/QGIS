@@ -63,15 +63,15 @@ IF (PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
     
     IF (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND SIP_INCLUDE_DIR)
       # check for SIP version
-      # minimal version is 4.5
-      SET (SIP_MIN_VERSION 040500)
+      # minimal version is 4.7 (to support universal builds)
+      SET (SIP_MIN_VERSION 040700)
       TRY_RUN_PYTHON (RES "import sip\nprint '%x' % sip.SIP_VERSION" SIP_VERSION)
       IF (SIP_VERSION EQUAL "${SIP_MIN_VERSION}" OR SIP_VERSION GREATER "${SIP_MIN_VERSION}")
         SET (SIP_IS_GOOD TRUE)
       ENDIF (SIP_VERSION EQUAL "${SIP_MIN_VERSION}" OR SIP_VERSION GREATER "${SIP_MIN_VERSION}")
     
       IF (NOT SIP_IS_GOOD)
-        MESSAGE (STATUS "SIP is required in version 4.5 or later!")
+        MESSAGE (STATUS "SIP is required in version 4.7 or later!")
       ENDIF (NOT SIP_IS_GOOD)
     ELSE (HAVE_SIP_MODULE AND SIP_BINARY_PATH AND SIP_INCLUDE_DIR)
       IF (NOT HAVE_SIP_MODULE)
