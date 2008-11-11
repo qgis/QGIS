@@ -166,8 +166,8 @@ public:
 
 
   /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
-   @return 0 in case of success*/
-  int featureAtId(int featureId, QgsFeature& f, bool fetchGeometries = true, bool fetchAttributes = true);
+   @return true in case of success*/
+  bool featureAtId(int featureId, QgsFeature& f, bool fetchGeometries = true, bool fetchAttributes = true);
 
   /** Adds a feature
       @param alsoUpdateExtent    If True, will also go to the effort of e.g. updating the extents.

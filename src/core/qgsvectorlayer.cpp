@@ -1301,13 +1301,13 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
   return false;
 }
 
-int QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
+bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
 {
   if ( !mDataProvider )
-    return 1;
+    return false;
 
   if ( mDeletedFeatureIds.contains( featureId ) )
-    return 2;
+    return false;
 
   if ( fetchGeometries && mChangedGeometries.contains( featureId ) )
   {
@@ -1359,7 +1359,7 @@ int QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeometr
       if ( fetchAttributes )
         f.setAttributeMap( iter->attributeMap() );
 
-      return 0;
+      return true;
     }
   }
 
@@ -1369,17 +1369,17 @@ int QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeometr
     if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, mDataProvider->attributeIndexes() ) )
     {
       updateFeatureAttributes( f );
-      return 0;
+      return true;
     }
   }
   else
   {
     if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, QgsAttributeList() ) )
     {
-      return 0;
+      return true;
     }
   }
-  return 3;
+  return false;
 }
 
 bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )

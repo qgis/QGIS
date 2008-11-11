@@ -451,7 +451,7 @@ void QgsMapToolIdentify::highlightFeature( int featureId )
   mRubberBand = 0;
 
   QgsFeature feat;
-  if ( layer->featureAtId( featureId, feat, true, false ) != 0 )
+  if ( ! layer->featureAtId( featureId, feat, true, false ) )
   {
     return;
   }
