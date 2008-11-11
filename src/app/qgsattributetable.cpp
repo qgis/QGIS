@@ -442,7 +442,7 @@ void QgsAttributeTable::addFeatureToTable( QgsVectorLayer *layer, int id )
   blockSignals( true );
 
   QgsFeature f;
-  if ( layer->featureAtId( id, f, false, true ) == 0 )
+  if ( layer->featureAtId( id, f, false, true ) )
   {
     putFeatureInTable( rowCount(), f );
   }
