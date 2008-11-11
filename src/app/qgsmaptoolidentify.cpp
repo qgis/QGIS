@@ -465,7 +465,7 @@ void QgsMapToolIdentify::highlightFeature( int featureId )
 
   if ( mRubberBand )
   {
-    mRubberBand->setToGeometry( feat.geometry(), *layer );
+    mRubberBand->setToGeometry( feat.geometry(), layer );
     mRubberBand->setWidth( 2 );
     mRubberBand->setColor( Qt::red );
     mRubberBand->show();
