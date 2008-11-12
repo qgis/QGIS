@@ -14,6 +14,7 @@ typedef QVector< QVector<QgsPoint> > QgsMultiPolyline;
 /** a collection of QgsPolygons that share a common collection of attributes */
 typedef QVector< QVector< QVector<QgsPoint> > > QgsMultiPolygon;
 
+typedef unsigned int size_t;
     
 class QgsGeometry
 {
@@ -52,7 +53,6 @@ class QgsGeometry
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect(const QgsRectangle& rect) /Factory/;
         
-    typedef unsigned int size_t;
 
     
     /** 
