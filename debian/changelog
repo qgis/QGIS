@@ -1,6 +1,12 @@
+qgis (1.0preview17) experimental; urgency=low
+
+  * include quickprint and coordinate capture plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 12 Nov 2008 12:57:46 +0100
+
 qgis (1.0preview16) experimental; urgency=low
 
-  * new upstream preview release (preview II).
+  * new upstream preview release (1.0preview2).
   * introduce conflict with uim-qt3 (fixes GUI issues on Ubuntu intrepid)
 
  -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 Nov 2008 12:10:21 +0100
