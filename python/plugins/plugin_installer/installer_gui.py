@@ -363,7 +363,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         return False
     if self.comboFilter2.currentIndex() == 1 and not plugin["status"] in ["not installed","new"]:
       return False
-    if self.comboFilter2.currentIndex() == 2 and not plugin["status"] in ["installed","upgradeable","newer","orphan","invalid"]:
+    if self.comboFilter2.currentIndex() == 2 and not plugin["status"] in ["installed","upgradeable","newer","orphan"]:
       return False
     if self.comboFilter2.currentIndex() == 3 and not plugin["status"] in ["upgradeable","new"]:
       return False
@@ -381,47 +381,63 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
   # ----------------------------------------- #
   def populatePluginTree(self):
     """ fill up the pluginTree """
-    descrip={"not installed" : self.tr("This plugin is not installed"),
+    statusTips={"not installed" : self.tr("This plugin is not installed"),
             "installed" : self.tr("This plugin is installed"),
             "upgradeable" : self.tr("This plugin is installed, but there is an updated version available"),
             "orphan" : self.tr("This plugin is installed, but I can't find it in any enabled repository"),
             "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
-            "invalid" : self.tr("This plugin seems to be invalid or have unfulfilled dependencies\nIt has been installed, but can't be loaded")}
-    status ={"not installed" : self.tr("not installed", "singular"),
+            "incompatible" : self.tr("This plugin is incompatible and probably won't work with your Quantum GIS version"),
+            "broken" : self.tr("This plugin probably depends on some components missing in your system\nIt has been installed, but can't be loaded")}
+    statuses ={"not installed" : self.tr("not installed", "singular"),
             "installed" : self.tr("installed", "singular"),
             "upgradeable" : self.tr("upgradeable", "singular"),
             "orphan" : self.tr("installed", "singular"),
             "new" : self.tr("new!", "singular"),
             "newer" : self.tr("installed", "singular"),
-            "invalid" : self.tr("invalid", "singular")}
-    order = ["invalid","upgradeable","new","not installed","installed","orphan","newer"]
+            "incompatible" : self.tr("invalid", "singular"),
+            "broken" : self.tr("invalid", "singular")}
+    orderInvalid = ["incompatible","broken"]
+    orderValid = ["upgradeable","new","not installed","installed","orphan","newer"]
     def addItem(p):
       if self.filterCheck(p):
-        statusTip = descrip[p["status"]]
-        if p["read-only"]:
-          statusTip += "\n" + self.tr("Note that it's an uninsatallable core plugin")
-        if p["status"] == "upgradeable":
-          ver = p["version_inst"] + " -> " + p["version_avail"]
-        elif p["status"] ==  "newer":
-          ver = p["version_inst"] + " (" + p["version_avail"] + ")"
-        elif p["status"] in ["not installed", "new", "invalid"]:
-          ver = p["version_avail"]
+        statusTip=""
+        if p["error"]:
+          statusTip = statusTips[p["error"]]
         else:
-          ver = p["version_inst"]
-        if p["status"] in ["upgradeable","newer"]:
-          verTip = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("available version") + ": " + p["version_avail"]
+          statusTip = statusTips[p["status"]]
+        if p["read-only"]:
+          statusTip = statusTip + "\n" + self.tr("Note that it's an uninsatallable core plugin")
+        installedVersion = p["version_inst"]
+        if not installedVersion:
+          installedVersion = "?"
+        availableVersion = p["version_avail"]
+        if not availableVersion:
+          availableVersion = "?"
+        if p["status"] == "upgradeable":
+          ver = installedVersion + " -> " + availableVersion
+        elif p["status"] ==  "newer":
+          ver = installedVersion + " (" + availableVersion + ")"
         elif p["status"] in ["not installed", "new"]:
-          verTip = self.tr("available version") + ": " + p["version_avail"]
+          ver = availableVersion
+        else:
+          ver = installedVersion
+        if p["status"] in ["upgradeable","newer"]:
+          verTip = self.tr("installed version") + ": " + installedVersion + "\n" + self.tr("available version") + ": " + availableVersion
+        elif p["status"] in ["not installed", "new"]:
+          verTip = self.tr("available version") + ": " + availableVersion
         elif p["status"] == "installed":
-          verTip = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("That's the newest available version")
+          verTip = self.tr("installed version") + ": " + installedVersion + "\n" + self.tr("That's the newest available version")
         elif p["status"] == "orphan":
-          verTip = self.tr("installed version") + ": " + p["version_inst"] + "\n" + self.tr("There is no version available for download")
+          verTip = self.tr("installed version") + ": " + installedVersion + "\n" + self.tr("There is no version available for download")
         else:
           verTip = ""
-        if p["status"] == "invalid":
-          desc = self.tr("This plugin seems to be invalid or have unfulfilled dependencies")
-          descTip = self.tr("This plugin seems to be invalid or have unfulfilled dependencies\nIt has been installed, but can't be loaded")
+        if p["error"] == "broken":
+          desc = self.tr("This plugin is invalid or has unfulfilled dependencies")
+          descTip = statusTips[p["error"]]
+        elif p["error"] == "incompatible":
+          desc = self.tr("This plugin is designed for a higher version of Quantum GIS")
+          descTip = statusTips[p["error"]]
         else:
           desc = p["desc_local"]
           descTip = p["desc_repo"]
@@ -432,7 +448,10 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         else:
           repository = p["repository"]
         a = QTreeWidgetItem(self.treePlugins)
-        a.setText(0,status[p["status"]])
+        if p["error"]:
+          a.setText(0,statuses[p["error"]])
+        else:
+          a.setText(0,statuses[p["status"]])
         a.setToolTip(0,statusTip)
         a.setText(1,p["name"])
         a.setText(2,ver)
@@ -448,9 +467,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
         a.setToolTip(5,p["url"])
         # set fonts and colours
         for i in [0,1,2,3,4,5]:
-          if p["status"] == "invalid":
+          if p["error"]:
             a.setForeground(i,QBrush(QColor(Qt.red)))
-          if p["status"] in ["new","upgradeable","invalid"]:
+          if p["status"] in ["new","upgradeable"] or p["error"]:
             font = QFont()
             font.setWeight(QFont.Bold)
             a.setFont(i,font)
@@ -458,9 +477,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     if not plugins.all():
       return
     self.treePlugins.clear()
-    for i in order:
+    for i in orderInvalid:
       for p in plugins.all().values():
-        if p["status"] == i:
+        if p["error"] == i:
+          addItem(p)
+    for i in orderValid:
+      for p in plugins.all().values():
+        if p["status"] == i and not p["error"]:
           addItem(p)
     # resize the columns
     for i in [0,1,2,3,4,5]:
@@ -482,8 +505,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
             "upgradeable":(True,True,self.tr("Upgrade plugin")),
             "orphan":(False,True,self.tr("Install/upgrade plugin")),
             "new":(True, False,self.tr("Install plugin")),
-            "newer":(True,True,self.tr("Downgrade plugin")),
-            "invalid":(False,True,self.tr("Reinstall plugin"))}
+            "newer":(True,True,self.tr("Downgrade plugin"))}
     self.buttonInstall.setEnabled(False)
     self.buttonInstall.setText(self.tr("Install/upgrade plugin"))
     self.buttonUninstall.setEnabled(False)
@@ -557,7 +579,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     if not plugin:
       return
     warning = self.tr("Are you sure you want to uninstall the following plugin?") + "\n" + plugin["name"]
-    if plugin["status"] == "orphan":
+    if plugin["status"] == "orphan" and not plugin["error"]:
       warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
     if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
       return

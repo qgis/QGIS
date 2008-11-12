@@ -26,7 +26,7 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def __init__(self, iface):
     self.iface = iface
-    if QGIS_VER: # new plugin API
+    if QGIS_MAJOR_VER: # new plugin API
       self.mainWindow = self.iface.mainWindow
     else: # old plugin API
       self.mainWindow = self.iface.getMainWindow
@@ -37,7 +37,7 @@ class InstallerPlugin():
     self.action = QAction(QIcon(":/plugins/installer/plugin_installer.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
     self.action.setWhatsThis(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     self.action.setStatusTip(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
-    if QGIS_VER: # new plugin API
+    if QGIS_MAJOR_VER: # new plugin API
       nextAction = self.iface.actionManagePlugins()
       self.iface.pluginMenu().insertAction(nextAction,self.action)
     else: # old plugin API

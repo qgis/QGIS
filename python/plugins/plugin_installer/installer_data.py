@@ -19,6 +19,7 @@ from PyQt4.QtXml import QDomDocument
 from PyQt4.QtNetwork import *
 from qgis.core import *
 from unzip import unzip
+from version_compare import compareVersions, normalizeVersion
 
 
 """
@@ -37,7 +38,8 @@ mPlugins = dict of dicts {id : {"name" string,
                                 "desc_repo" string,
                                 "desc_local" string,
                                 "author" string,
-                                "status" string,    ("not installed", "installed", "upgradeable", "orphan", "new", "newer", "invalid")
+                                "status" string,      ("not installed", "installed", "upgradeable", "orphan", "new", "newer")
+                                "error" string,       ("", "broken", "incompatible" )
                                 "homepage" string,
                                 "url" string,
                                 "filename" string,
@@ -47,12 +49,12 @@ mPlugins = dict of dicts {id : {"name" string,
 """
 
 
-QGIS_VER = 1
 try:
-  if str(QGis.qgisVersion)[0] == "0": 
-    QGIS_VER = 0
+  QGIS_VER = QGis.qgisVersion
+  QGIS_MAJOR_VER = 0
 except:
-  pass
+  QGIS_VER = QGis.QGIS_VERSION
+  QGIS_MAJOR_VER = 1
 
 
 reposGroup = "/Qgis/plugin-repos"
@@ -134,14 +136,14 @@ class Repositories(QObject):
     for i in self.all().values():
       presentURLs += [str(i["url"])]
     for i in knownRepos:
-      if i[QGIS_VER+1] and presentURLs.count(i[QGIS_VER+1]) == 0:
+      if i[QGIS_MAJOR_VER+1] and presentURLs.count(i[QGIS_MAJOR_VER+1]) == 0:
         settings = QSettings()
         settings.beginGroup(reposGroup)
         repoName = QString(i[0])
         if self.all().has_key(repoName):
           repoName = repoName + "(2)"
         # add to settings
-        settings.setValue(repoName+"/url", QVariant(i[QGIS_VER+1]))
+        settings.setValue(repoName+"/url", QVariant(i[QGIS_MAJOR_VER+1]))
         settings.setValue(repoName+"/enabled", QVariant(True))
 
 
@@ -208,15 +210,15 @@ class Repositories(QObject):
     settings.beginGroup(reposGroup)
     # first, update the QSettings repositories if needed
     if len(settings.childGroups()) == 0: # add the default repository when there isn't any
-      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][QGIS_VER+1]))
+      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][QGIS_MAJOR_VER+1]))
     else: # else update invalid urls
       for key in settings.childGroups():
         url = settings.value(key+"/url", QVariant()).toString()
         allOk = True
         for repo in knownRepos:
-          if repo[3] == url or repo[4] == url or (repo[QGIS_VER+1] != url and repo[int(not QGIS_VER)+1] == url):
-            if repo[QGIS_VER+1]: #update the URL
-              settings.setValue(key+"/url", QVariant(repo[QGIS_VER+1]))
+          if repo[3] == url or repo[4] == url or (repo[QGIS_MAJOR_VER+1] != url and repo[int(not QGIS_MAJOR_VER)+1] == url):
+            if repo[QGIS_MAJOR_VER+1]: #update the URL
+              settings.setValue(key+"/url", QVariant(repo[QGIS_MAJOR_VER+1]))
               settings.setValue(key+"/valid", QVariant(True))
               allOk = False
             else: # mark as invalid
@@ -299,12 +301,14 @@ class Repositories(QObject):
             "url"           : pluginNodes.item(i).firstChildElement("download_url").text().trimmed(),
             "filename"      : pluginNodes.item(i).firstChildElement("file_name").text().trimmed(),
             "status"        : "not installed",
+            "error"         : "",
             "version_inst"  : "",
             "repository"    : reposName,
             "localdir"      : name,
             "read-only"     : False}
-          plugins.addPlugin(plugin)
-
+          #if compatible, add the plugin to list
+          if compareVersions(QGIS_VER, pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().trimmed()) < 2:
+            plugins.addPlugin(plugin)
         plugins.workarounds()
         self.mRepositories[reposName]["state"] = 2
       else:
@@ -361,114 +365,13 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def normalizeVersion(self,ver):
-    """ remove the prefix from given version string """
-    if not ver:
-      return QString()
-    if ver.toUpper().left(7) == "VERSION":
-      ver.remove(0,7)
-    elif ver.toUpper().left(4) == "VER.":
-      ver.remove(0,4)
-    if ver[0] == " ":
-      ver.remove(0,1)
-    return ver
-
-
-  # ----------------------------------------- #
-  def compareVersions(self,a,b):
-    """ compare two plugin versions """
-    # -------- #
-    def classify(s):
-      if s in [".","-","_"," "]:
-        return 0
-      try:
-        float(s)
-        return 1
-      except:
-        return 2
-    # -------- #
-    def chop(s):
-      s2 = [s[0]]
-      for i in range(1,len(s)):
-        if classify(s[i]) == 0:
-          pass
-        elif classify(s[i]) == classify(s[i-1]):
-          s2[len(s2)-1] += s[i]
-        else:
-          s2 += [s[i]]
-      return s2
-    # -------- #
-    def compare(s1,s2):
-      # check if the matter is easy solvable:
-      if s1 == s2:
-        return 0
-      if not s1:
-        return 2
-      if not s2:
-        return 1
-      # try to compare as numeric values (but only if the first character is not 0):
-      if s1[0] != '0' and s2[0] != '0':
-        try:
-          if float(s1) == float(s2):
-            return 0
-          elif float(s1) > float(s2):
-            return 1
-          else:
-            return 2
-        except:
-          pass
-      # if the strings aren't numeric or start from 0, compare them as a strings:
-      # but first, set ALPHA < BETA < RC < FINAL < ANYTHING_ELSE
-      if s1 == 'FINAL':
-        s1 = 'Z' + s1
-      elif not s1 in ['ALPHA','BETA','RC']:
-        s1 = 'ZZ' + s1
-      if s2 == 'FINAL':
-        s2 = 'Z' + s2
-      elif not s2 in ['ALPHA','BETA','RC']:
-        s2 = 'ZZ' + s2
-      # the real test:
-      if s1 > s2:
-        return 1
-      else:
-        return 2
-    # -------- #
-    if not a or not b:
-      return 0
-    a = unicode(a).upper()
-    b = unicode(b).upper()
-    if a == b:
-      return 0
-
-    v1 = chop(a)
-    v2 = chop(b)
-    l = len(v1)
-    if l > len(v2):
-      l = len(v2)
-
-    for i in range(l):
-      if compare(v1[i],v2[i]):
-        return compare(v1[i],v2[i])
-
-    if len(v1) > l:
-      return compare(v1[l],u'')
-    if len(v2) > l:
-      return compare(u'',v2[l])
-    # if everything else fails...
-    if unicode(a) > unicode(b):
-      return 1
-    else:
-      return 2
-
-
-  # ----------------------------------------- #
   def addPlugin(self, plugins):
     """ add a plugin (first from given) to the mPlugins dict """
     key = plugins.keys()[0]
     plugin = plugins[key]
-    plugin["version_avail"] = self.normalizeVersion(QString(plugin["version_avail"]))
-    plugin["version_inst"] = self.normalizeVersion(QString(plugin["version_inst"]))
-    if not self.mPlugins.has_key(key) or self.compareVersions(self.mPlugins[key]["version_avail"],plugin["version_avail"]) == 2:
+    plugin["version_avail"] = normalizeVersion(plugin["version_avail"])
+    plugin["version_inst"] = normalizeVersion(plugin["version_inst"])
+    if not self.mPlugins.has_key(key) or compareVersions(self.mPlugins[key]["version_avail"],plugin["version_avail"]) == 2:
       self.mPlugins[key] = plugin # add the plugin if not present yet or if is newer than existing one
 
 
@@ -485,7 +388,7 @@ class Plugins(QObject):
       path = QgsApplication.pkgDataPath()
     else:
       path = QgsApplication.qgisSettingsDirPath()
-    path = QDir.cleanPath(unicode(path) + "python/plugins/" + key)
+    path = QDir.cleanPath(unicode(path) + "/python/plugins/" + key)
     if not QDir(path).exists():
       return
     try:
@@ -510,15 +413,22 @@ class Plugins(QObject):
         exec("homepage = %s.homepage()" % key)
       except:
         homepage = ""
-      stat = ""
+      try:
+        exec("qgisMinimumVersion = %s.qgisMinimumVersion()" % key)
+        if compareVersions(QGIS_VER, qgisMinimumVersion) == 2:
+          error = "incompatible"
+        else:
+          error = ""
+      except:
+        error = ""
     except:
       nam   = key
-      stat  = "invalid"
       ver   = ""
       desc  = ""
       auth  = ""
       homepage  = ""
-    normVer = self.normalizeVersion(QString(ver))
+      error = "broken"
+    normVer = normalizeVersion(ver)
     plugin = {
         "name"          : nam,
         "version_inst"  : normVer,
@@ -529,7 +439,8 @@ class Plugins(QObject):
         "homepage"      : homepage,
         "url"           : path,
         "filename"      : "",
-        "status"        : stat,
+        "status"        : "",
+        "error"         : error,
         "repository"    : "",
         "localdir"      : key,
         "read-only"     : readOnly}
@@ -538,12 +449,11 @@ class Plugins(QObject):
     else:
       self.mPlugins[key]["localdir"] = plugin["localdir"]
       self.mPlugins[key]["read-only"] = plugin["read-only"]
-      if plugin["status"] == "invalid":
-        self.mPlugins[key]["status"] = plugin["status"]
-      else:
-        self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority, except invalid plugins
-        self.mPlugins[key]["version_inst"] = plugin["version_inst"]
-        self.mPlugins[key]["desc_local"] = plugin["desc_local"]
+      self.mPlugins[key]["error"] = plugin["error"]
+      if plugin["name"]:
+        self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority
+      self.mPlugins[key]["version_inst"] = plugin["version_inst"]
+      self.mPlugins[key]["desc_local"] = plugin["desc_local"]
     # set status
     #
     # installed   available   status
@@ -553,16 +463,16 @@ class Plugins(QObject):
     # same        same        "installed"
     # less        greater     "upgradeable"
     # greater     less        "newer"
-    # *marked as invalid*     "invalid"
-    if self.mPlugins[key]["status"] == "invalid":
-      pass
+    
+    if not self.mPlugins[key]["version_avail"]:
+      self.mPlugins[key]["status"] = "orphan"
+    elif self.mPlugins[key]["error"] == "broken":
+      self.mPlugins[key]["status"] = "installed"
     elif not self.mPlugins[key]["version_inst"]:
       self.mPlugins[key]["status"] = "not installed"
-    elif not self.mPlugins[key]["version_avail"]:
-      self.mPlugins[key]["status"] = "orphan"
-    elif self.compareVersions(self.mPlugins[key]["version_avail"],self.mPlugins[key]["version_inst"]) == 0:
+    elif compareVersions(self.mPlugins[key]["version_avail"],self.mPlugins[key]["version_inst"]) == 0:
       self.mPlugins[key]["status"] = "installed"
-    elif self.compareVersions(self.mPlugins[key]["version_avail"],self.mPlugins[key]["version_inst"]) == 1:
+    elif compareVersions(self.mPlugins[key]["version_avail"],self.mPlugins[key]["version_inst"]) == 1:
       self.mPlugins[key]["status"] = "upgradeable"
     else:
       self.mPlugins[key]["status"] = "newer"
@@ -576,12 +486,13 @@ class Plugins(QObject):
       pluginDir = QDir.cleanPath(unicode(QgsApplication.pkgDataPath()) + "/python/plugins")
       pluginDir = QDir(pluginDir)
       pluginDir.setFilter(QDir.AllDirs)
+      for key in pluginDir.entryList():
+        key = str(key)
+        if not key in [".",".."]:
+          self.updatePlugin(key, True)
     except:
-      return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
-    for key in pluginDir.entryList():
-      key = str(key)
-      if not key in [".",".."]:
-        self.updatePlugin(key, True)
+      # return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the system plugin directory")
+      pass # it's not necessary to stop due to this error
     # ...then try to add locally installed ones
     try:
       pluginDir = QDir.cleanPath(unicode(QgsApplication.qgisSettingsDirPath()) + "/python/plugins")
