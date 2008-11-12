@@ -23,7 +23,7 @@ usr/lib/qgis/libgridmakerplugin.so
 usr/lib/qgis/libnortharrowplugin.so
 usr/lib/qgis/libogrprovider.so
 usr/lib/qgis/libpostgresprovider.so
-#usr/lib/qgis/libquickprintplugin.so
+usr/lib/qgis/libquickprintplugin.so
 usr/lib/qgis/libscalebarplugin.so
 usr/lib/qgis/libspitplugin.so
 usr/lib/qgis/libwfsplugin.so
@@ -33,3 +33,4 @@ usr/lib/qgis/libmemoryprovider.so
 usr/lib/qgis/libdxf2shpconverterplugin.so
 usr/lib/qgis/libinterpolationplugin.so 
 usr/lib/qgis/libogrconverterplugin.so
+usr/lib/qgis/libcoordinatecaptureplugin.so
