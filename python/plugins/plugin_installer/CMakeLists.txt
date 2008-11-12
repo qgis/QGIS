@@ -23,5 +23,6 @@ repoUnavailable.png
 resources.qrc
 resources_rc.py
 unzip.py
+version_compare.py
 )
 INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/plugin_installer)
