@@ -8,8 +8,6 @@ class QgsFeature
     
   public:
 
-    typedef unsigned int size_t;
-    
     //! Constructor
     QgsFeature(int id = 0, QString typeName = "" );
 
