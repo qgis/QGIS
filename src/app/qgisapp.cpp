@@ -187,11 +187,6 @@
 
 class QTreeWidgetItem;
 
-/* typedefs for plugins */
-typedef QgisPlugin *create_ui( QgisInterface * qI );
-typedef QString name_t();
-typedef QString description_t();
-typedef int type_t();
 
 // IDs for locating particular menu items
 const int BEFORE_RECENT_PATHS = 123;
@@ -397,7 +392,8 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   // load any plugins that were running in the last session
   mSplash->showMessage( tr( "Restoring loaded plugins" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
-  restoreSessionPlugins( QgsApplication::pluginPath() );
+  QgsPluginRegistry::instance()->setQgisInterface( mQgisInterface );
+  QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -1827,109 +1823,7 @@ void QgisApp::about()
   abt->activateWindow();
 }
 
-/** Load up any plugins used in the last session
-*/
 
-void QgisApp::restoreSessionPlugins( QString thePluginDirString )
-{
-  QSettings mySettings;
-
-#ifdef WIN32
-  QString pluginExt = "*.dll";
-#else
-  QString pluginExt = "*.so*";
-#endif
-
-  // check all libs in the current plugin directory and get name and descriptions
-  QDir myPluginDir( thePluginDirString, pluginExt, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
-
-  for ( uint i = 0; i < myPluginDir.count(); i++ )
-  {
-    QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
-
-    QString baseName = QFileInfo( myFullPath ).baseName();
-    QLibrary *myLib = new QLibrary( myFullPath );
-    bool loaded = myLib->load();
-    if ( loaded )
-    {
-
-      name_t * myName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
-      description_t *  myDescription = ( description_t * )  cast_to_fptr( myLib->resolve( "description" ) );
-      version_t *  myVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
-      if ( myName && myDescription  && myVersion )
-      {
-        //check if the plugin was active on last session
-
-        // Windows stores a "true" value as a 1 in the registry so we
-        // have to use readBoolEntry in this function
-
-        if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
-        {
-          //QgsDebugMsg("Loading plugin: " + myEntryName);
-
-          loadPlugin( myFullPath, myName() );
-        }
-        else
-        {
-          //QgsDebugMsg("Plugin was not active last session, leaving disabled: " + myEntryName);
-        }
-      }
-      else
-      {
-        //QgsDebugMsg("Failed to get name, description, or type for " + myLib->fileName());
-      }
-    }
-    else
-    {
-      //QgsDebugMsg("Failed to load " + myLib->fileName());
-      //QgsDebugMsg("Reason: " + myLib->errorString());
-    }
-    delete myLib;
-  }
-
-  QString pluginName, description, version;
-
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
-  {
-
-    // check for python plugins system-wide
-    QStringList pluginList = mPythonUtils->pluginList();
-    std::cout << "Loading python plugins" << std::endl; // OK
-
-
-    for ( int i = 0; i < pluginList.size(); i++ )
-    {
-      QString packageName = pluginList[i];
-
-      // import plugin's package
-      if ( !mPythonUtils->loadPlugin( packageName ) )
-        continue;
-
-      // get information from the plugin
-      // if there are some problems, don't continue with metadata retreival
-      pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
-      if ( pluginName != "__error__" )
-      {
-        description = mPythonUtils->getPluginMetadata( packageName, "description" );
-        if ( description != "__error__" )
-          version = mPythonUtils->getPluginMetadata( packageName, "version" );
-      }
-
-      if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )
-      {
-        QMessageBox::warning( this, tr( "Python error" ), tr( "Error when reading metadata of plugin " ) + packageName );
-        continue;
-      }
-
-      if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
-      {
-        loadPythonPlugin( packageName, pluginName );
-      }
-    }
-  }
-  std::cout << "Plugin loading completed" << std::endl;  // OK
-
-}
 
 
 /**
@@ -4131,6 +4025,7 @@ void QgisApp::showPluginManager()
   pm->resizeColumnsToContents();
   if ( pm->exec() )
   {
+    QgsPluginRegistry* pRegistry = QgsPluginRegistry::instance();
     // load selected plugins
     std::vector < QgsPluginItem > pi = pm->getSelectedPlugins();
     std::vector < QgsPluginItem >::iterator it = pi.begin();
@@ -4139,11 +4034,11 @@ void QgisApp::showPluginManager()
       QgsPluginItem plugin = *it;
       if ( plugin.isPython() )
       {
-        loadPythonPlugin( plugin.fullPath(), plugin.name() );
+        pRegistry->loadPythonPlugin( plugin.fullPath() );
       }
       else
       {
-        loadPlugin( plugin.fullPath(), plugin.name() );
+        pRegistry->loadCppPlugin( plugin.fullPath() );
       }
       it++;
     }
@@ -4200,112 +4095,6 @@ void QgisApp::loadPythonSupport()
   }
 }
 
-void QgisApp::loadPythonPlugin( QString packageName, QString pluginName )
-{
-  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
-  {
-    QgsDebugMsg( "Python is not enabled in QGIS." );
-    return;
-  }
-
-
-  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-
-  // is loaded already?
-  if ( ! pRegistry->isLoaded( packageName ) )
-  {
-    mPythonUtils->loadPlugin( packageName );
-    mPythonUtils->startPlugin( packageName );
-
-    // TODO: test success
-
-    // add to plugin registry
-    pRegistry->addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true ) );
-
-    // add to settings
-    QSettings settings;
-    settings.setValue( "/PythonPlugins/" + packageName, true );
-    std::cout << "Loaded : " << pluginName.toLocal8Bit().constData() << " (package: "
-              << packageName.toLocal8Bit().constData() << ")" << std::endl; // OK
-
-  }
-}
-
-void QgisApp::loadPlugin( QString theFullPathName, QString name )
-{
-  QSettings settings;
-  // first check to see if its already loaded
-  QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-
-  QString baseName = QFileInfo( theFullPathName ).baseName();
-
-  if ( pRegistry->isLoaded( baseName ) )
-  {
-    // plugin is loaded
-    // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
-  }
-  else
-  {
-    QLibrary *myLib = new QLibrary( theFullPathName );
-
-    QString myError; //we will only show detailed diagnostics if something went wrong
-    myError += "Library name is " + myLib->fileName() + " " + QString( __LINE__ ) + " in " + QString( __FUNCTION__ ) + "\n";
-
-    bool loaded = myLib->load();
-    if ( loaded )
-    {
-      myError += "Attempting to resolve the classFactory function " +  QString( __LINE__ ) + " in " + QString( __FUNCTION__ ) + "\n";
-
-      type_t *pType = ( type_t * ) cast_to_fptr( myLib->resolve( "type" ) );
-
-      switch ( pType() )
-      {
-        case QgisPlugin::RENDERER:
-        case QgisPlugin::UI:
-        {
-          // UI only -- doesn't use mapcanvas
-          create_ui *cf = ( create_ui * ) cast_to_fptr( myLib->resolve( "classFactory" ) );
-          if ( cf )
-          {
-            QgisPlugin *pl = cf( mQgisInterface );
-            if ( pl )
-            {
-              pl->initGui();
-              // add it to the plugin registry
-              pRegistry->addPlugin( baseName, QgsPluginMetadata( myLib->fileName(), name, pl ) );
-              //add it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + baseName, true );
-            }
-            else
-            {
-              // something went wrong
-              QMessageBox::warning( this, tr( "Error Loading Plugin" ), tr( "There was an error loading a plugin."
-                                    "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." ).arg
-                                    ( myError ) );
-              //disable it to the qsettings file [ts]
-              settings.setValue( "/Plugins/" + baseName, false );
-            }
-          }
-          else
-          {
-            QgsDebugMsg( "Unable to find the class factory for " + theFullPathName );
-          }
-
-        }
-        break;
-        default:
-          // type is unknown
-          QgsDebugMsg( "Plugin " + theFullPathName + " did not return a valid type and cannot be loaded" );
-          break;
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "Failed to load " + theFullPathName );
-    }
-    delete myLib;
-  }
-}
 
 
 void QgisApp::checkQgisVersion()

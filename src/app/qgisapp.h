@@ -378,16 +378,10 @@ class QgisApp : public QMainWindow
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
     void zoomActualSize();
-    //! load any plugins used in the last qgis session
-    void restoreSessionPlugins( QString thePluginDirString );
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
     void loadPythonSupport();
-    //! plugin loader
-    void loadPlugin( QString mFullPath, QString name );
-    //! python plugin loader
-    void loadPythonPlugin( QString packageName, QString pluginName );
     //! Find the QMenu with the given name (ie the user visible text on the menu item)
     QMenu* getPluginMenu( QString menuName );
     //! Add the action to the submenu with the given name under the plugin menu
