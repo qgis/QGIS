@@ -227,7 +227,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     self.http.abort()
     self.mResult = self.tr("Aborted by user")
     self.reject()
-# --- /class QgsPluginInstallerPluginErrorDialog ------------------------------------------------------------- #
+# --- /class QgsPluginInstallerInstallingDialog ------------------------------------------------------------- #
 
 
 
@@ -248,7 +248,6 @@ class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginEr
 
 
 
- 
 # --- class QgsPluginInstallerDialog ------------------------------------------------------------------------- #
 class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
@@ -390,8 +389,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             "orphan" : self.tr("This plugin is installed, but I can't find it in any enabled repository"),
             "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
-            "incompatible" : self.tr("This plugin is incompatible and probably won't work with your Quantum GIS version"),
-            "broken" : self.tr("This plugin probably depends on some components missing in your system\nIt has been installed, but can't be loaded")}
+            "incompatible" : self.tr("This plugin is incompatible with your Quantum GIS version and probably won't work"),
+            "dependent" : self.tr("The Python module is missing on your system.\nFor more information, please visit its homepage"),
+            "broken" : self.tr("This plugin seems to be broken\nIt has been installed, but can't be loaded")}
     statuses ={"not installed" : self.tr("not installed", "singular"),
             "installed" : self.tr("installed", "singular"),
             "upgradeable" : self.tr("upgradeable", "singular"),
@@ -399,8 +399,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             "new" : self.tr("new!", "singular"),
             "newer" : self.tr("installed", "singular"),
             "incompatible" : self.tr("invalid", "singular"),
+            "dependent" : self.tr("invalid", "singular"),
             "broken" : self.tr("invalid", "singular")}
-    orderInvalid = ["incompatible","broken"]
+    orderInvalid = ["incompatible","broken","dependent"]
     orderValid = ["upgradeable","new","not installed","installed","orphan","newer"]
     def addItem(p):
       if self.filterCheck(p):
@@ -436,10 +437,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         else:
           verTip = ""
         if p["error"] == "broken":
-          desc = self.tr("This plugin is invalid or has unfulfilled dependencies")
+          desc = self.tr("This plugin is broken")
           descTip = statusTips[p["error"]]
         elif p["error"] == "incompatible":
-          desc = self.tr("This plugin is designed for a higher version of Quantum GIS")
+          desc = self.tr("This plugin requires a newer version of Quantum GIS") + " (" + self.tr("at least")+ " " + p["error_details"] + ")"
+          descTip = statusTips[p["error"]]
+        elif p["error"] == "dependent":
+          desc = self.tr("This plugin requires a missing module") + " (" + p["error_details"] + ")"
           descTip = statusTips[p["error"]]
         else:
           desc = p["desc_local"]
@@ -535,54 +539,81 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     """ install currently selected plugin """
     if not self.treePlugins.currentItem():
       return
+    infoString = ('','')
     key = plugins.keyByUrl(self.treePlugins.currentItem().toolTip(5))
     plugin = plugins.all()[key]
+    previousStatus = plugin["status"]
     if not plugin:
       return
-
-    if plugin["status"] == "newer":
+    if plugin["status"] == "newer" and not plugin["error"]: # ask for confirmation if user downgrades an usable plugin
       if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
         return
-
     dlg = QgsPluginInstallerInstallingDialog(self,plugin)
     dlg.exec_()
 
     if dlg.result():
       infoString = (self.tr("Plugin installation failed"), dlg.result())
+    elif not QDir(QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/" + key)).exists():
+      infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
+      QApplication.setOverrideCursor(Qt.WaitCursor)
+      self.getAllAvailablePlugins()
+      QApplication.restoreOverrideCursor()
     else:
-      path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/" + key)
-      if not QDir(path).exists():
-        infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        self.getAllAvailablePlugins()
-        QApplication.restoreOverrideCursor()
+      try:
+        exec ("sys.path_importer_cache.clear()")
+        exec ("import %s" % plugin["localdir"])
+        exec ("reload (%s)" % plugin["localdir"])
+      except:
+        pass
+      plugins.updatePlugin(key, False)
+      plugin = plugins.all()[key]
+      if not plugin["error"]:
+        if previousStatus in ["not installed", "new"]:
+          infoString = (self.tr("Plugin installed successfully"),
+          self.tr("Python plugin installed.\nYou have to enable it in the Plugin Manager."))
+        else:
+          infoString = (self.tr("Plugin reinstalled successfully"),
+          self.tr("Python plugin reinstalled.\nYou have to restart Quantum GIS to reload it."))
       else:
-        try:
-          exec ("sys.path_importer_cache.clear()")
-          exec ("del sys.modules[%s]" % plugin["localdir"]) # remove old version if exist
-        except:
-          pass
-        try:
-          exec ("import %s" % plugin["localdir"])
-          exec ("reload (%s)" % plugin["localdir"])
-          if plugin["status"] == "not installed" or plugin["status"] == "new":
-            infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nYou have to enable it in the Plugin Manager."))
+        if plugin["error"] == "incompatible":
+          message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
+          message += " <b>" + plugin["error_details"] + "</b>"
+        elif plugin["error"] == "dependent":
+          message = self.tr("The plugin depends on some components missing on your system. Please install the following Python module:")
+          message += "<b> " + plugin["error_details"] + "</b>"
+        else:
+          message = self.tr("The plugin is broken. Python said:")
+          message += "<br><b>" + plugin["error_details"] + "</b>"
+        dlg = QgsPluginInstallerPluginErrorDialog(self,message)
+        dlg.exec_()
+        if dlg.result():
+          # revert installation
+          plugins.setPluginData(key, "status", "not installed")
+          plugins.setPluginData(key, "version_inst", "")
+          plugins.setPluginData(key, "desc_local", "")
+          plugins.setPluginData(key, "error", "")
+          plugins.setPluginData(key, "error_details", "")
+          pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
+          removeDir(pluginDir)
+          if QDir(pluginDir).exists():
+            infoString = (self.tr("Plugin uninstall failed"), result)
+            try:
+              exec ("sys.path_importer_cache.clear()")
+              exec ("import %s" % plugin["localdir"])
+              exec ("reload (%s)" % plugin["localdir"])
+            except:
+              pass
+            plugins.updatePlugin(key, False)
           else:
-            infoString = (self.tr("Plugin installed successfully"),self.tr("Python plugin reinstalled.\nYou have to restart Quantum GIS to reload it."))
-        except Exception, error:
-          dlg = QgsPluginInstallerPluginErrorDialog(self,error.message)
-          dlg.exec_()
-          if dlg.result():
-            pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
-            result = removeDir(pluginDir)
-            if result:
-              QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
-          plugins.updatePlugin(key, False)
-          self.populatePluginTree()
-          return
-        plugins.updatePlugin(key, False)
+            try:
+              exec ("del sys.modules[%s]" % plugin["localdir"])
+            except:
+              pass
+            if not plugin["repository"]:
+              plugins.remove(key)
     self.populatePluginTree()
-    QMessageBox.information(self, infoString[0], infoString[1])
+    if infoString[0]:
+      QMessageBox.information(self, infoString[0], infoString[1])
 
 
   # ----------------------------------------- #
@@ -603,7 +634,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     #print "Uninstalling plugin", plugin["name"], pluginDir
     result = removeDir(pluginDir)
     if result:
-      QApplication.restoreOverrideCursor()
       QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
     else:
       try:
@@ -616,8 +646,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         plugins.setPluginData(key, "status", "not installed")
         plugins.setPluginData(key, "version_inst", "")
         plugins.setPluginData(key, "desc_local", "")
+        plugins.setPluginData(key, "error", "")
+        plugins.setPluginData(key, "error_details", "")
       self.populatePluginTree()
-      QApplication.restoreOverrideCursor()
       QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin uninstalled successfully"))
 
 

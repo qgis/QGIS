@@ -13,14 +13,20 @@ Copyright (C) 2008 Borys Jurgiel
 def name():
   return "Plugin Installer"
 
+def version():
+  return "Version 0.9.2"
+
 def description():
   return "Downloads and installs QGIS python plugins"
 
-def author_name():
+def qgisMinimumVersion():
+  return "0.9"
+
+def authorName():
   return "perrygeo, borysiasty"
 
-def version():
-  return "Version 0.9.1"
+def homepage():
+  return "http://bwj.aster.net.pl/qgis/"
 
 def classFactory(iface):
   from installer_plugin import InstallerPlugin
