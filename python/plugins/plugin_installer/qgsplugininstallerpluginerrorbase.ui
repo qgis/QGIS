@@ -1,7 +1,7 @@
 <ui version="4.0" >
- <author>Matthew Perry, Borys Jurgiel</author>
- <class>QgsPluginInstallerPluginErrorDialog</class>
- <widget class="QDialog" name="QgsPluginInstallerPluginErrorDialog" >
+ <author>Borys Jurgiel</author>
+ <class>QgsPluginInstallerPluginErrorDialogBase</class>
+ <widget class="QDialog" name="QgsPluginInstallerPluginErrorDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -122,7 +122,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsPluginInstallerPluginErrorDialog</receiver>
+   <receiver>QgsPluginInstallerPluginErrorDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -138,7 +138,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsPluginInstallerPluginErrorDialog</receiver>
+   <receiver>QgsPluginInstallerPluginErrorDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >

@@ -1,31 +1,31 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'fetchingbase.ui'
+# Form implementation generated from reading ui file 'qgsplugininstallerfetchingbase.ui'
 #
-# Created: Fri Sep 12 19:21:37 2008
-#      by: PyQt4 UI code generator 4.3
+# Created: Wed Nov 12 23:21:49 2008
+#      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
 
-class Ui_QgsPluginInstallerFetchingDialog(object):
-    def setupUi(self, QgsPluginInstallerFetchingDialog):
-        QgsPluginInstallerFetchingDialog.setObjectName("QgsPluginInstallerFetchingDialog")
-        QgsPluginInstallerFetchingDialog.resize(QtCore.QSize(QtCore.QRect(0,0,521,332).size()).expandedTo(QgsPluginInstallerFetchingDialog.minimumSizeHint()))
-        QgsPluginInstallerFetchingDialog.setWindowIcon(QtGui.QIcon(":/plugins/installer/qgis-icon.png"))
+class Ui_QgsPluginInstallerFetchingDialogBase(object):
+    def setupUi(self, QgsPluginInstallerFetchingDialogBase):
+        QgsPluginInstallerFetchingDialogBase.setObjectName("QgsPluginInstallerFetchingDialogBase")
+        QgsPluginInstallerFetchingDialogBase.resize(QtCore.QSize(QtCore.QRect(0,0,521,332).size()).expandedTo(QgsPluginInstallerFetchingDialogBase.minimumSizeHint()))
+        QgsPluginInstallerFetchingDialogBase.setWindowIcon(QtGui.QIcon(":/plugins/installer/qgis-icon.png"))
 
-        self.gridlayout = QtGui.QGridLayout(QgsPluginInstallerFetchingDialog)
+        self.gridlayout = QtGui.QGridLayout(QgsPluginInstallerFetchingDialogBase)
         self.gridlayout.setObjectName("gridlayout")
 
         spacerItem = QtGui.QSpacerItem(249,10,QtGui.QSizePolicy.Minimum,QtGui.QSizePolicy.Fixed)
         self.gridlayout.addItem(spacerItem,1,0,1,1)
 
-        self.label1 = QtGui.QLabel(QgsPluginInstallerFetchingDialog)
+        self.label1 = QtGui.QLabel(QgsPluginInstallerFetchingDialogBase)
         self.label1.setObjectName("label1")
         self.gridlayout.addWidget(self.label1,2,0,1,1)
 
-        self.progressBar = QtGui.QProgressBar(QgsPluginInstallerFetchingDialog)
+        self.progressBar = QtGui.QProgressBar(QgsPluginInstallerFetchingDialogBase)
         self.progressBar.setProperty("value",QtCore.QVariant(24))
         self.progressBar.setAlignment(QtCore.Qt.AlignHCenter)
         self.progressBar.setTextDirection(QtGui.QProgressBar.TopToBottom)
@@ -41,7 +41,7 @@ class Ui_QgsPluginInstallerFetchingDialog(object):
         spacerItem2 = QtGui.QSpacerItem(140,27,QtGui.QSizePolicy.MinimumExpanding,QtGui.QSizePolicy.Minimum)
         self.hboxlayout.addItem(spacerItem2)
 
-        self.buttonSkip = QtGui.QPushButton(QgsPluginInstallerFetchingDialog)
+        self.buttonSkip = QtGui.QPushButton(QgsPluginInstallerFetchingDialogBase)
 
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -60,7 +60,7 @@ class Ui_QgsPluginInstallerFetchingDialog(object):
         self.hboxlayout.addItem(spacerItem3)
         self.gridlayout.addLayout(self.hboxlayout,5,0,1,1)
 
-        self.treeWidget = QtGui.QTreeWidget(QgsPluginInstallerFetchingDialog)
+        self.treeWidget = QtGui.QTreeWidget(QgsPluginInstallerFetchingDialogBase)
         self.treeWidget.setEnabled(True)
         self.treeWidget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.treeWidget.setProperty("showDropIndicator",QtCore.QVariant(False))
@@ -71,15 +71,15 @@ class Ui_QgsPluginInstallerFetchingDialog(object):
         self.treeWidget.setObjectName("treeWidget")
         self.gridlayout.addWidget(self.treeWidget,0,0,1,1)
 
-        self.retranslateUi(QgsPluginInstallerFetchingDialog)
-        QtCore.QObject.connect(self.buttonSkip,QtCore.SIGNAL("clicked()"),QgsPluginInstallerFetchingDialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(QgsPluginInstallerFetchingDialog)
+        self.retranslateUi(QgsPluginInstallerFetchingDialogBase)
+        QtCore.QObject.connect(self.buttonSkip,QtCore.SIGNAL("clicked()"),QgsPluginInstallerFetchingDialogBase.reject)
+        QtCore.QMetaObject.connectSlotsByName(QgsPluginInstallerFetchingDialogBase)
 
-    def retranslateUi(self, QgsPluginInstallerFetchingDialog):
-        QgsPluginInstallerFetchingDialog.setWindowTitle(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialog", "Fetching repositories", None, QtGui.QApplication.UnicodeUTF8))
-        self.label1.setText(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialog", "Overall progress:", None, QtGui.QApplication.UnicodeUTF8))
-        self.buttonSkip.setText(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialog", "Abort fetching", None, QtGui.QApplication.UnicodeUTF8))
-        self.treeWidget.headerItem().setText(0,QtGui.QApplication.translate("QgsPluginInstallerFetchingDialog", "Repository", None, QtGui.QApplication.UnicodeUTF8))
-        self.treeWidget.headerItem().setText(1,QtGui.QApplication.translate("QgsPluginInstallerFetchingDialog", "State", None, QtGui.QApplication.UnicodeUTF8))
+    def retranslateUi(self, QgsPluginInstallerFetchingDialogBase):
+        QgsPluginInstallerFetchingDialogBase.setWindowTitle(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialogBase", "Fetching repositories", None, QtGui.QApplication.UnicodeUTF8))
+        self.label1.setText(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialogBase", "Overall progress:", None, QtGui.QApplication.UnicodeUTF8))
+        self.buttonSkip.setText(QtGui.QApplication.translate("QgsPluginInstallerFetchingDialogBase", "Abort fetching", None, QtGui.QApplication.UnicodeUTF8))
+        self.treeWidget.headerItem().setText(0,QtGui.QApplication.translate("QgsPluginInstallerFetchingDialogBase", "Repository", None, QtGui.QApplication.UnicodeUTF8))
+        self.treeWidget.headerItem().setText(1,QtGui.QApplication.translate("QgsPluginInstallerFetchingDialogBase", "State", None, QtGui.QApplication.UnicodeUTF8))
 
 import resources_rc

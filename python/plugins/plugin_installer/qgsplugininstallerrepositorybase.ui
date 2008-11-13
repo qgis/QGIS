@@ -1,7 +1,7 @@
 <ui version="4.0" >
- <author>Matthew Perry, Borys Jurgiel</author>
- <class>QgsPluginInstallerRepositoryDetailsDialog</class>
- <widget class="QDialog" name="QgsPluginInstallerRepositoryDetailsDialog" >
+ <author>Borys Jurgiel</author>
+ <class>QgsPluginInstallerRepositoryDetailsDialogBase</class>
+ <widget class="QDialog" name="QgsPluginInstallerRepositoryDetailsDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -210,7 +210,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>QgsPluginInstallerRepositoryDetailsDialog</receiver>
+   <receiver>QgsPluginInstallerRepositoryDetailsDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -226,7 +226,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>QgsPluginInstallerRepositoryDetailsDialog</receiver>
+   <receiver>QgsPluginInstallerRepositoryDetailsDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

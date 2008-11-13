@@ -62,7 +62,7 @@ file: installer_gui.py
 --------------------*/
 
 // common functions
-  translate("QgsPluginInstaller","Plugin directory doesn't exist:")
+  translate("QgsPluginInstaller","Nothing to remove! Plugin directory doesn't exist:")
   translate("QgsPluginInstaller","Failed to remove the directory:")
   translate("QgsPluginInstaller","Check permissions or remove it manually")
 
@@ -92,8 +92,7 @@ QgsPluginInstallerInstallingDialog::foo()
   tr("Error")
 
  // def requestFinished
-  tr("Failed to unzip file to the following directory:")
-  tr("Check permissions")
+  tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:")
 
  // def abort
   tr("Aborted by user")
@@ -103,7 +102,7 @@ QgsPluginInstallerInstallingDialog::foo()
 QgsPluginInstallerPluginErrorDialog::foo()
 {
  // def __init__
-  tr("No error message received. Try to restart Quantum GIS and ensure the plugin isn't installed under a different name. If it is, contact the plugin author and submit this issue, please.")
+  tr("no error message received")
 }
 
 QgsPluginInstallerDialog::foo()
@@ -174,7 +173,11 @@ QgsPluginInstallerDialog::foo()
   tr("Install/upgrade plugin")
 
  // def installPlugin
+  tr("QGIS Python Plugin Installer")
+  tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!")
   tr("Plugin installation failed")
+  tr("Plugin has disappeared")
+  tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.")
   tr("Plugin installed successfully")
   tr("Python plugin installed.\nYou have to enable it in the Plugin Manager.")
   tr("Plugin installed successfully")
