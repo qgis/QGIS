@@ -389,9 +389,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             "orphan" : self.tr("This plugin is installed, but I can't find it in any enabled repository"),
             "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
-            "incompatible" : self.tr("This plugin is incompatible with your Quantum GIS version and probably won't work"),
-            "dependent" : self.tr("The Python module is missing on your system.\nFor more information, please visit its homepage"),
-            "broken" : self.tr("This plugin seems to be broken\nIt has been installed, but can't be loaded")}
+            "incompatible" : self.tr("This plugin is incompatible with your Quantum GIS version and probably won't work."),
+            "dependent" : self.tr("The required Python module is not installed.\nFor more information, please visit its homepage."),
+            "broken" : self.tr("This plugin seems to be broken.\nIt has been installed but can't be loaded.\nHere is the error message:")}
     statuses ={"not installed" : self.tr("not installed", "singular"),
             "installed" : self.tr("installed", "singular"),
             "upgradeable" : self.tr("upgradeable", "singular"),
@@ -405,13 +405,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     orderValid = ["upgradeable","new","not installed","installed","orphan","newer"]
     def addItem(p):
       if self.filterCheck(p):
-        statusTip=""
-        if p["error"]:
-          statusTip = statusTips[p["error"]]
-        else:
-          statusTip = statusTips[p["status"]]
+        statusTip = statusTips[p["status"]]
         if p["read-only"]:
-          statusTip = statusTip + "\n" + self.tr("Note that it's an uninsatallable core plugin")
+          statusTip = statusTip + "\n" + self.tr("Note that it's an uninstallable core plugin")
         installedVersion = p["version_inst"]
         if not installedVersion:
           installedVersion = "?"
@@ -438,13 +434,16 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           verTip = ""
         if p["error"] == "broken":
           desc = self.tr("This plugin is broken")
-          descTip = statusTips[p["error"]]
+          descTip = statusTips[p["error"]] + "\n" + p["error_details"]
+          statusTip = descTip
         elif p["error"] == "incompatible":
           desc = self.tr("This plugin requires a newer version of Quantum GIS") + " (" + self.tr("at least")+ " " + p["error_details"] + ")"
           descTip = statusTips[p["error"]]
+          statusTip = descTip
         elif p["error"] == "dependent":
           desc = self.tr("This plugin requires a missing module") + " (" + p["error_details"] + ")"
           descTip = statusTips[p["error"]]
+          statusTip = descTip
         else:
           desc = p["desc_local"]
           descTip = p["desc_repo"]
@@ -579,7 +578,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
           message += " <b>" + plugin["error_details"] + "</b>"
         elif plugin["error"] == "dependent":
-          message = self.tr("The plugin depends on some components missing on your system. Please install the following Python module:")
+          message = self.tr("The plugin depends on some components missing on this system. You need to install the following Python module in order to enable it:")
           message += "<b> " + plugin["error_details"] + "</b>"
         else:
           message = self.tr("The plugin is broken. Python said:")
