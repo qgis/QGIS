@@ -1,7 +1,7 @@
 <ui version="4.0" >
- <author>Matthew Perry, Borys Jurgiel</author>
- <class>QgsPluginInstallerFetchingDialog</class>
- <widget class="QDialog" name="QgsPluginInstallerFetchingDialog" >
+ <author>Borys Jurgiel</author>
+ <class>QgsPluginInstallerFetchingDialogBase</class>
+ <widget class="QDialog" name="QgsPluginInstallerFetchingDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -183,7 +183,7 @@
   <connection>
    <sender>buttonSkip</sender>
    <signal>clicked()</signal>
-   <receiver>QgsPluginInstallerFetchingDialog</receiver>
+   <receiver>QgsPluginInstallerFetchingDialogBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >

@@ -1,7 +1,7 @@
 <ui version="4.0" >
  <author>Matthew Perry, Borys Jurgiel</author>
- <class>QgsPluginInstallerDialog</class>
- <widget class="QDialog" name="QgsPluginInstallerDialog" >
+ <class>QgsPluginInstallerDialogBase</class>
+ <widget class="QDialog" name="QgsPluginInstallerDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -416,7 +416,7 @@
   <connection>
    <sender>buttonClose</sender>
    <signal>released()</signal>
-   <receiver>QgsPluginInstallerDialog</receiver>
+   <receiver>QgsPluginInstallerDialogBase</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel" >

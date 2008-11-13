@@ -1,7 +1,7 @@
 <ui version="4.0" >
- <author>Matthew Perry, Borys Jurgiel</author>
- <class>QgsPluginInstallerInstallingDialog</class>
- <widget class="QDialog" name="QgsPluginInstallerInstallingDialog" >
+ <author>Borys Jurgiel</author>
+ <class>QgsPluginInstallerInstallingDialogBase</class>
+ <widget class="QDialog" name="QgsPluginInstallerInstallingDialogBase" >
   <property name="geometry" >
    <rect>
     <x>0</x>

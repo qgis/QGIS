@@ -18,11 +18,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import QgsApplication, QgsContextHelp
 import sys, time
-from fetchingbase import Ui_QgsPluginInstallerFetchingDialog
-from installingbase import Ui_QgsPluginInstallerInstallingDialog
-from repositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialog
-from pluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialog
-from guibase import Ui_QgsPluginInstallerDialog
+from qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
+from qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
+from qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
+from qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
+from qgsplugininstallerbase import Ui_QgsPluginInstallerDialogBase
 from installer_data import *
 
 
@@ -31,7 +31,7 @@ from installer_data import *
 def removeDir(path):
     result = QString()
     if not QFile(path).exists():
-      result = QCoreApplication.translate("QgsPluginInstaller","Plugin directory doesn't exist:")+"\n"+path
+      result = QCoreApplication.translate("QgsPluginInstaller","Nothing to remove! Plugin directory doesn't exist:")+"\n"+path
     elif QFile(path).remove(): # if it is only link, just remove it without resolving.
       #print " Link removing successfull: %s" % path
       pass
@@ -51,7 +51,7 @@ def removeDir(path):
           #print " Directory removing successfull: %s" % item
           pass
     if QFile(path).exists():
-      result = QCoreApplication.translate("QgsPluginInstaller","Failed to remove the directory:")+" "+path+"\n"+QCoreApplication.translate("QgsPluginInstaller","Check permissions or remove it manually")
+      result = QCoreApplication.translate("QgsPluginInstaller","Failed to remove the directory:")+"\n"+path+"\n"+QCoreApplication.translate("QgsPluginInstaller","Check permissions or remove it manually")
     # restore plugin directory if removed by QDir().rmpath()
     pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins")
     if not QDir(pluginDir).exists():
@@ -64,7 +64,7 @@ def removeDir(path):
 
 
 # --- class QgsPluginInstallerFetchingDialog --------------------------------------------------------------- #
-class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialog):
+class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDialogBase):
   # ----------------------------------------- #
   def __init__(self, parent):
     QDialog.__init__(self, parent)
@@ -116,7 +116,7 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
 
 
 # --- class QgsPluginInstallerRepositoryDialog ------------------------------------------------------------- #
-class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialog):
+class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialogBase):
   # ----------------------------------------- #
   def __init__(self, parent=None):
     QDialog.__init__(self, parent)
@@ -137,7 +137,7 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
 
 
 # --- class QgsPluginInstallerInstallingDialog --------------------------------------------------------------- #
-class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialog):
+class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
   # ----------------------------------------- #
   def __init__(self, parent, plugin):
     QDialog.__init__(self, parent)
@@ -209,7 +209,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
       removeDir(QDir.cleanPath(pluginDir+"/"+self.plugin["localdir"])) # remove old plugin if exists
       un.extract(tmpPath, pluginDir) # final extract.
     except:
-      self.mResult = self.tr("Failed to unzip file to the following directory:") + "\n" + pluginDir + "\n" + self.tr("Check permissions")
+      self.mResult = self.tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:") + "\n" + pluginDir
       self.reject()
       return
 
@@ -234,13 +234,13 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
 
 
 # --- class QgsPluginInstallerPluginErrorDialog -------------------------------------------------------------- #
-class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginErrorDialog):
+class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginErrorDialogBase):
   # ----------------------------------------- #
   def __init__(self, parent, errorMessage):
     QDialog.__init__(self, parent)
     self.setupUi(self)
     if not errorMessage:
-      errorMessage = self.tr("No error message received. Try to restart Quantum GIS and ensure the plugin isn't installed under a different name. If it is, contact the plugin author and submit this issue, please.")
+      errorMessage = self.tr("no error message received")
     self.textBrowser.setText(errorMessage)
 # --- /class QgsPluginInstallerPluginErrorDialog ------------------------------------------------------------- #
 
@@ -250,7 +250,7 @@ class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginEr
 
  
 # --- class QgsPluginInstallerDialog ------------------------------------------------------------------------- #
-class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
+class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   def __init__(self, parent, fl):
     QDialog.__init__(self, parent, fl)
@@ -260,8 +260,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     self.connect(self.lineFilter, SIGNAL("textChanged (QString)"), self.filterChanged)
     self.connect(self.comboFilter1, SIGNAL("currentIndexChanged (int)"), self.filterChanged)
     self.connect(self.comboFilter2, SIGNAL("currentIndexChanged (int)"), self.filterChanged)
-    # grab the click on the treePlugins
-    self.connect(self.treePlugins, SIGNAL("itemSelectionChanged()"), self.treeClicked)
+    # grab clicks on trees
+    self.connect(self.treePlugins, SIGNAL("itemSelectionChanged()"), self.pluginTreeClicked)
+    self.connect(self.treeRepositories, SIGNAL("itemSelectionChanged()"), self.repositoryTreeClicked)
     # buttons
     self.connect(self.buttonInstall, SIGNAL("clicked()"), self.installPlugin)
     self.connect(self.buttonUninstall, SIGNAL("clicked()"), self.uninstallPlugin)
@@ -279,6 +280,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
       self.checkUpdates.setCheckState(Qt.Checked)
     else:
       self.checkUpdates.setCheckState(Qt.Unchecked)
+    self.buttonEditRep.setEnabled(False)
+    self.buttonDeleteRep.setEnabled(False)
 
     self.populateMostWidgets()
 
@@ -498,17 +501,19 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
 
 
   # ----------------------------------------- #
-  def treeClicked(self):
+  def pluginTreeClicked(self):
     """ the pluginsTree has been clicked """
     buttons={"not installed":(True,False,self.tr("Install plugin")),
             "installed":(True,True,self.tr("Reinstall plugin")),
             "upgradeable":(True,True,self.tr("Upgrade plugin")),
             "orphan":(False,True,self.tr("Install/upgrade plugin")),
-            "new":(True, False,self.tr("Install plugin")),
+            "new":(True,False,self.tr("Install plugin")),
             "newer":(True,True,self.tr("Downgrade plugin"))}
     self.buttonInstall.setEnabled(False)
     self.buttonInstall.setText(self.tr("Install/upgrade plugin"))
     self.buttonUninstall.setEnabled(False)
+    if not self.treePlugins.selectedItems():
+      return
     item = self.treePlugins.currentItem()
     if not item:
       return
@@ -535,36 +540,47 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
     if not plugin:
       return
 
+    if plugin["status"] == "newer":
+      if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!"), QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
+        return
+
     dlg = QgsPluginInstallerInstallingDialog(self,plugin)
     dlg.exec_()
 
     if dlg.result():
       infoString = (self.tr("Plugin installation failed"), dlg.result())
     else:
-      try:
-        exec ("sys.path_importer_cache.clear()")
-        exec ("del sys.modules[%s]" % plugin["localdir"]) # remove old version if exist
-      except:
-        pass
-      try:
-        exec ("import %s" % plugin["localdir"])
-        exec ("reload (%s)" % plugin["localdir"])
-        if plugin["status"] == "not installed" or plugin["status"] == "new":
-          infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nYou have to enable it in the Plugin Manager."))
-        else:
-          infoString = (self.tr("Plugin installed successfully"),self.tr("Python plugin reinstalled.\nYou have to restart Quantum GIS to reload it."))
-      except Exception, error:
-        dlg = QgsPluginInstallerPluginErrorDialog(self,error.message)
-        dlg.exec_()
-        if dlg.result():
-          pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
-          result = removeDir(pluginDir)
-          if result:
-            QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
+      path = QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/" + key)
+      if not QDir(path).exists():
+        infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.getAllAvailablePlugins()
+        QApplication.restoreOverrideCursor()
+      else:
+        try:
+          exec ("sys.path_importer_cache.clear()")
+          exec ("del sys.modules[%s]" % plugin["localdir"]) # remove old version if exist
+        except:
+          pass
+        try:
+          exec ("import %s" % plugin["localdir"])
+          exec ("reload (%s)" % plugin["localdir"])
+          if plugin["status"] == "not installed" or plugin["status"] == "new":
+            infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nYou have to enable it in the Plugin Manager."))
+          else:
+            infoString = (self.tr("Plugin installed successfully"),self.tr("Python plugin reinstalled.\nYou have to restart Quantum GIS to reload it."))
+        except Exception, error:
+          dlg = QgsPluginInstallerPluginErrorDialog(self,error.message)
+          dlg.exec_()
+          if dlg.result():
+            pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
+            result = removeDir(pluginDir)
+            if result:
+              QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
+          plugins.updatePlugin(key, False)
+          self.populatePluginTree()
+          return
         plugins.updatePlugin(key, False)
-        self.populatePluginTree()
-        return
-      plugins.updatePlugin(key, False)
     self.populatePluginTree()
     QMessageBox.information(self, infoString[0], infoString[1])
 
@@ -603,6 +619,17 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialog):
       self.populatePluginTree()
       QApplication.restoreOverrideCursor()
       QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin uninstalled successfully"))
+
+
+  # ----------------------------------------- #
+  def repositoryTreeClicked(self):
+    """ the repositoryTree has been clicked """
+    if self.treeRepositories.selectedItems():
+      self.buttonEditRep.setEnabled(True)
+      self.buttonDeleteRep.setEnabled(True)
+    else:
+      self.buttonEditRep.setEnabled(False)
+      self.buttonDeleteRep.setEnabled(False)
 
 
   # ----------------------------------------- #

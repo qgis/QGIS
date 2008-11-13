@@ -463,7 +463,6 @@ class Plugins(QObject):
     # same        same        "installed"
     # less        greater     "upgradeable"
     # greater     less        "newer"
-    
     if not self.mPlugins[key]["version_avail"]:
       self.mPlugins[key]["status"] = "orphan"
     elif self.mPlugins[key]["error"] == "broken":
