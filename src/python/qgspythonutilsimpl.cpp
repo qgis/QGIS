@@ -87,17 +87,17 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString(
     "def qgis_except_hook_msg(type, value, tb, msg):\n"
     "  lst = traceback.format_exception(type, value, tb)\n"
-    "  if msg == None: msg = '" + QObject::tr( "An error has occured while executing Python code:" ) + "'\n"
+    "  if msg == None: msg = '" + QObject::tr( "An error has occured while executing Python code:" ).replace("'", "\\'") + "'\n"
     "  txt = '<font color=\"red\">'+msg+'</font><br><br>'\n"
     "  for s in lst:\n"
     "    txt += s\n"
-    "  txt += '<br>" + QObject::tr( "Python version:" ) + "<br>' + sys.version + '<br><br>'\n"
-    "  txt += '" + QObject::tr( "Python path:" ) + "' + str(sys.path)\n"
+    "  txt += '<br>" + QObject::tr( "Python version:" ).replace("'", "\\'") + "<br>' + sys.version + '<br><br>'\n"
+    "  txt += '" + QObject::tr( "Python path:" ).replace("'", "\\'") + "' + str(sys.path)\n"
     "  txt = txt.replace('\\n', '<br>')\n"
     "  txt = txt.replace('  ', '&nbsp; ')\n" // preserve whitespaces for nicer output
     "  \n"
     "  msg = QgsMessageOutput.createMessageOutput()\n"
-    "  msg.setTitle('" + QObject::tr( "Python error" ) + "')\n"
+    "  msg.setTitle('" + QObject::tr( "Python error" ).replace("'", "\\'") + "')\n"
     "  msg.setMessage(txt, QgsMessageOutput.MessageHtml)\n"
     "  msg.showMessage()\n" );
   runString(
