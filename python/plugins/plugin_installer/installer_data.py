@@ -39,7 +39,8 @@ mPlugins = dict of dicts {id : {"name" string,
                                 "desc_local" string,
                                 "author" string,
                                 "status" string,      ("not installed", "installed", "upgradeable", "orphan", "new", "newer")
-                                "error" string,       ("", "broken", "incompatible" )
+                                "error" string,       ("", "broken", "incompatible", "dependent")
+                                "error_details" string,
                                 "homepage" string,
                                 "url" string,
                                 "filename" string,
@@ -51,7 +52,10 @@ mPlugins = dict of dicts {id : {"name" string,
 
 try:
   QGIS_VER = QGis.qgisVersion
-  QGIS_MAJOR_VER = 0
+  if QGIS_VER[0] == "1":
+    QGIS_MAJOR_VER = 1
+  else:
+    QGIS_MAJOR_VER = 0
 except:
   QGIS_VER = QGis.QGIS_VERSION
   QGIS_MAJOR_VER = 1
@@ -302,6 +306,7 @@ class Repositories(QObject):
             "filename"      : pluginNodes.item(i).firstChildElement("file_name").text().trimmed(),
             "status"        : "not installed",
             "error"         : "",
+            "error_details" : "",
             "version_inst"  : "",
             "repository"    : reposName,
             "localdir"      : name,
@@ -391,47 +396,63 @@ class Plugins(QObject):
     path = QDir.cleanPath(unicode(path) + "/python/plugins/" + key)
     if not QDir(path).exists():
       return
+    nam   = ""
+    ver   = ""
+    desc  = ""
+    auth  = ""
+    homepage  = ""
+    error = ""
+    errorDetails = ""
     try:
       exec("import "+ key)
       try:
         exec("nam = %s.name()" % key)
       except:
-        nam = ""
+        pass
       try:
         exec("ver = %s.version()" % key)
       except:
-        ver = ""
+        pass
       try:
         exec("desc = %s.description()" % key)
       except:
-        desc = ""
+        pass
       try:
-        exec("auth = %s.author_name()" % key)
+        exec("auth = %s.authorName()" % key)
       except:
-        auth = ""
+        pass
       try:
         exec("homepage = %s.homepage()" % key)
       except:
-        homepage = ""
+        pass
       try:
         exec("qgisMinimumVersion = %s.qgisMinimumVersion()" % key)
         if compareVersions(QGIS_VER, qgisMinimumVersion) == 2:
           error = "incompatible"
-        else:
-          error = ""
+          errorDetails = qgisMinimumVersion
       except:
-        error = ""
-    except:
-      nam   = key
-      ver   = ""
-      desc  = ""
-      auth  = ""
-      homepage  = ""
+        pass
+      #try:
+      #  exec ("%s.classFactory(QgisInterface)" % key)
+      #except Exception, error:
+      #  error = error.message
+    except Exception, error:
+      error = error.message
+
+    if not nam:
+      nam = key
+    if error[:16] == "No module named ":
+      mona = error.replace("No module named ","")
+      if mona != key:
+        error = "dependent"
+        errorDetails = mona
+    if not error in ["", "dependent", "incompatible"]:
+      errorDetails = error
       error = "broken"
-    normVer = normalizeVersion(ver)
+
     plugin = {
         "name"          : nam,
-        "version_inst"  : normVer,
+        "version_inst"  : normalizeVersion(ver),
         "version_avail" : "",
         "desc_local"    : desc,
         "desc_repo"     : "",
@@ -441,16 +462,19 @@ class Plugins(QObject):
         "filename"      : "",
         "status"        : "",
         "error"         : error,
+        "error_details" : errorDetails,
         "repository"    : "",
         "localdir"      : key,
         "read-only"     : readOnly}
+
     if not self.mPlugins.has_key(key):
       self.mPlugins[key] = plugin   # just add a new plugin
     else:
       self.mPlugins[key]["localdir"] = plugin["localdir"]
       self.mPlugins[key]["read-only"] = plugin["read-only"]
       self.mPlugins[key]["error"] = plugin["error"]
-      if plugin["name"]:
+      self.mPlugins[key]["error_details"] = plugin["error_details"]
+      if plugin["name"] and plugin["name"] != key:
         self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority
       self.mPlugins[key]["version_inst"] = plugin["version_inst"]
       self.mPlugins[key]["desc_local"] = plugin["desc_local"]
@@ -465,7 +489,7 @@ class Plugins(QObject):
     # greater     less        "newer"
     if not self.mPlugins[key]["version_avail"]:
       self.mPlugins[key]["status"] = "orphan"
-    elif self.mPlugins[key]["error"] == "broken":
+    elif self.mPlugins[key]["error"] in ["broken","dependent"]:
       self.mPlugins[key]["status"] = "installed"
     elif not self.mPlugins[key]["version_inst"]:
       self.mPlugins[key]["status"] = "not installed"
