@@ -64,7 +64,7 @@ class CORE_EXPORT QgsMarkerCatalogue
     QStringList mList;
 
     /** Hard coded */
-    void hardMarker( QPainter * thepPainter, QString name, double size, QPen pen, QBrush brush, bool qtBug = true );
+    void hardMarker( QPainter * thepPainter, int imageSize, QString name, double size, QPen pen, QBrush brush, bool qtBug = true );
 
 };
 
