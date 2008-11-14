@@ -14,7 +14,6 @@ email                : blazek@itc.it
  *                                                                         *
  ***************************************************************************/
 #include <cmath>
-#include <iostream>
 #include <assert.h>
 
 #include <QPen>
@@ -24,7 +23,8 @@ email                : blazek@itc.it
 #include <QString>
 #include <QStringList>
 #include <QRect>
-#include <QPolygon>
+#include <QPointF>
+#include <QPolygonF>
 #include <QDir>
 #include <QPicture>
 #include <QSvgRenderer>
@@ -33,6 +33,13 @@ email                : blazek@itc.it
 #include "qgsapplication.h"
 #include "qgsmarkercatalogue.h"
 #include "qgslogger.h"
+
+// MSVC compiler doesn't have defined M_PI in math.h
+#ifndef M_PI
+#define M_PI          3.14159265358979323846
+#endif
+
+#define DEG2RAD(x)    ((x)*M_PI/180)
 
 //#define IMAGEDEBUG
 
@@ -46,10 +53,13 @@ QgsMarkerCatalogue::QgsMarkerCatalogue()
   mList.append( "hard:circle" );
   mList.append( "hard:rectangle" );
   mList.append( "hard:diamond" );
+  mList.append( "hard:pentagon" );
   mList.append( "hard:cross" );
   mList.append( "hard:cross2" );
   mList.append( "hard:triangle" );
+  mList.append( "hard:equilateral_triangle" );
   mList.append( "hard:star" );
+  mList.append( "hard:regular_star" );
   mList.append( "hard:arrow" );
 
   // SVG
@@ -109,16 +119,20 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
   }
 
   QImage myImage;
+  int imageSize;
   if ( fullName.left( 5 ) == "hard:" )
   {
-    myImage = QImage( size + 1, size + 1, QImage::Format_ARGB32_Premultiplied );
+    int pw = ( ( pen.width()==0 ? 1 : pen.width() ) + 1 ) / 2 * 2;	// make even (round up); handle cosmetic pen
+    imageSize = ( (int) size + pw ) / 2 * 2 + 1;	//  make image width, height odd; account for pen width
+    myImage = QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
   }
   else
   {
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
     //QPixmap myPixmap = QPixmap(width,height);
-    myImage = QImage( size, size, QImage::Format_ARGB32_Premultiplied );
+    imageSize = ( (int) size ) / 2 * 2 + 1;	//  make image width, height odd
+    myImage = QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
   }
 
   // starting with transparent QImage
@@ -134,7 +148,7 @@ QImage QgsMarkerCatalogue::imageMarker( QString fullName, double size, QPen pen,
 
   if ( fullName.left( 5 ) == "hard:" )
   {
-    hardMarker( &myPainter, fullName.mid( 5 ), size, pen, brush, qtBug );
+    hardMarker( &myPainter, imageSize, fullName.mid( 5 ), size, pen, brush, qtBug );
 #ifdef IMAGEDEBUG
     QgsDebugMsg( "*** Saving hard marker to hardMarker.png ***" );
 #ifdef QGISDEBUG
@@ -181,7 +195,7 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
 
   if ( fullName.left( 5 ) == "hard:" )
   {
-    hardMarker( &myPainter, fullName.mid( 5 ), size, pen, brush, qtBug );
+    hardMarker( &myPainter, (int) size, fullName.mid( 5 ), size, pen, brush, qtBug );
     return myPicture;
   }
   else if ( fullName.left( 4 ) == "svg:" )
@@ -199,30 +213,30 @@ void QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, do
   mySVG.render( thepPainter );
 }
 
-void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, double s, QPen pen, QBrush brush, bool qtBug )
+void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QString name, double s, QPen pen, QBrush brush, bool qtBug )
 {
   // Size of polygon symbols is calculated so that the boundingbox is circumscribed
   // around a circle with diameter mPointSize
 
-  double half = s / 2; // number of points from center
-
-  QgsDebugMsg( QString( "Hard marker size %1" ).arg( s ) );
-
-  // Find out center coordinates.
-  double x_c = s / 2;
-  double y_c = x_c;
-
-  // Also width must be odd otherwise there are discrepancies visible in canvas!
-  double lw = pen.widthF();//(int)(2*floor((double)pen.widthF()/2)+1); // -> lw > 0
-  pen.setWidthF( lw );
-  thepPainter->setPen( pen );
-  thepPainter->setBrush( brush );
-  QRect box;
+#if 0
+  s = s - pen.widthF();	// to make the overall size of the symbol at the specified size
+#else
+  // the size of the base symbol is at the specified size; the outline is applied additionally
+#endif
 
   // Circle radius, is used for other figures also, when compensating for line
   // width is necessary.
+  double r = s / 2;	// get half the size of the figure to be rendered (the radius)
 
-  int r = ( s - 2 * lw ) / 2 - 1;
+  QgsDebugMsg( QString( "Hard marker size %1" ).arg( s ) );
+
+  // Find out center coordinates of the QImage to draw on.
+  double x_c = (double) ( imageSize / 2 ) + 0.5;	// add 1/2 pixel for proper rounding when the figure's coordinates are added
+  double y_c = x_c;		// is square image
+
+  thepPainter->setPen( pen );
+  thepPainter->setBrush( brush );
+
   QgsDebugMsg( QString( "Hard marker radius %1" ).arg( r ) );
 
   // If radius is 0, draw a circle, so it wont disappear.
@@ -230,80 +244,106 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, QString name, doubl
   {
     // "A stroked ellipse has a size of rectangle.size() plus the pen width."
     // (from Qt doc)
-    // It doesn't seem like it is centered, however. Fudge...
-    // Is this a Qt bug or feature?
-    x_c -= (( lw + 5 ) / 4 );
-    y_c -= (( lw + 5 ) / 4 );
 
-    thepPainter->drawEllipse( QRectF( x_c - r, y_c - r, x_c + r, y_c + r ) );
+    thepPainter->drawEllipse( QRectF( x_c - r, y_c - r, s, s ) );	// x,y,w,h
   }
   else if ( name == "rectangle" )
   {
-    // Same fudge as for circle...
-    x_c -= (( lw + 5 ) / 4 );
-    y_c -= (( lw + 5 ) / 4 );
-
-    thepPainter->drawRect( x_c - r, y_c - r, x_c + r, y_c + r );
+    thepPainter->drawRect( QRectF( x_c - r, y_c - r, s, s ) );		// x,y,w,h
   }
   else if ( name == "diamond" )
   {
-    QPolygon pa( 4 );
-    pa.setPoint( 0, x_c - r, y_c );
-    pa.setPoint( 1, x_c, y_c + r );
-    pa.setPoint( 2, x_c + r, y_c );
-    pa.setPoint( 3, x_c, y_c - r );
+    QPolygonF pa;
+    pa << QPointF( x_c - r, y_c )
+       << QPointF( x_c, y_c + r )
+       << QPointF( x_c + r, y_c )
+       << QPointF( x_c, y_c - r );
+    thepPainter->drawPolygon( pa );
+  }
+  else if ( name == "pentagon" )
+  {
+    QPolygonF pa;
+    pa << QPointF( x_c + ( r * sin( DEG2RAD( 288.0 ) ) ), y_c - ( r * cos( DEG2RAD( 288.0 ) ) ) )
+       << QPointF( x_c + ( r * sin( DEG2RAD( 216.0 ) ) ), y_c - ( r * cos( DEG2RAD( 216.0 ) ) ) )
+       << QPointF( x_c + ( r * sin( DEG2RAD( 144.0 ) ) ), y_c - ( r * cos( DEG2RAD( 144.0 ) ) ) )
+       << QPointF( x_c + ( r * sin( DEG2RAD( 72.0 ) ) ), y_c - ( r * cos( DEG2RAD( 72.0 ) ) ) )
+       << QPointF( x_c, y_c - r );
     thepPainter->drawPolygon( pa );
   }
   else if ( name == "cross" )
   {
-    thepPainter->drawLine( x_c - half, y_c, x_c + half, y_c ); // horizontal
-    thepPainter->drawLine( x_c, y_c - half, x_c, y_c + half ); // vertical
+    thepPainter->drawLine( QPointF( x_c - r, y_c ), QPointF( x_c + r, y_c ) ); // horizontal
+    thepPainter->drawLine( QPointF( x_c, y_c - r ), QPointF( x_c, y_c + r ) ); // vertical
   }
   else if ( name == "cross2" )
   {
-    thepPainter->drawLine( x_c - half, y_c - half, x_c + half, y_c + half );
-    thepPainter->drawLine( x_c - half, y_c + half, x_c + half, y_c - half );
+    thepPainter->drawLine( QPointF( x_c - r, y_c - r ), QPointF( x_c + r, y_c + r ) );
+    thepPainter->drawLine( QPointF( x_c - r, y_c + r ), QPointF( x_c + r, y_c - r ) );
   }
   else if ( name == "triangle" )
   {
-    QPolygon pa( 3 );
-
-    pa.setPoint( 0, x_c - r, y_c + r );
-    pa.setPoint( 1, x_c + r, y_c + r );
-    pa.setPoint( 2, x_c, y_c - r );
+    QPolygonF pa;
+    pa << QPointF( x_c - r, y_c + r )
+       << QPointF( x_c + r, y_c + r )
+       << QPointF( x_c, y_c - r );
+    thepPainter->drawPolygon( pa );
+  }
+  else if ( name == "equilateral_triangle" )
+  {
+    QPolygonF pa;
+    pa << QPointF( x_c + ( r * sin( DEG2RAD( 240.0 ) ) ), y_c - ( r * cos( DEG2RAD( 240.0 ) ) ) )
+       << QPointF( x_c + ( r * sin( DEG2RAD( 120.0 ) ) ), y_c - ( r * cos( DEG2RAD( 120.0 ) ) ) )
+       << QPointF( x_c, y_c - r );	// 0
     thepPainter->drawPolygon( pa );
   }
   else if ( name == "star" )
   {
-    int oneSixth = 2 * r / 6;
+    double oneSixth = 2 * r / 6;
 
-    QPolygon pa( 10 );
-    pa.setPoint( 0, x_c, y_c - half );
-    pa.setPoint( 1, x_c - oneSixth, y_c - oneSixth );
-    pa.setPoint( 2, x_c - half, y_c - oneSixth );
-    pa.setPoint( 3, x_c - oneSixth, y_c );
-    pa.setPoint( 4, x_c - half, y_c + half );
-    pa.setPoint( 5, x_c, y_c + oneSixth );
-    pa.setPoint( 6, x_c + half, y_c + half );
-    pa.setPoint( 7, x_c + oneSixth, y_c );
-    pa.setPoint( 8, x_c + half, y_c - oneSixth );
-    pa.setPoint( 9, x_c + oneSixth, y_c - oneSixth );
+    QPolygonF pa;
+    pa << QPointF( x_c, y_c - r )
+       << QPointF( x_c - oneSixth, y_c - oneSixth )
+       << QPointF( x_c - r, y_c - oneSixth )
+       << QPointF( x_c - oneSixth, y_c )
+       << QPointF( x_c - r, y_c + r )
+       << QPointF( x_c, y_c + oneSixth )
+       << QPointF( x_c + r, y_c + r )
+       << QPointF( x_c + oneSixth, y_c )
+       << QPointF( x_c + r, y_c - oneSixth )
+       << QPointF( x_c + oneSixth, y_c - oneSixth );
     thepPainter->drawPolygon( pa );
   }
+  else if ( name == "regular_star" )
+  {
+    // control the 'fatness' of the star:  cos(72)/cos(36) gives the classic star shape
+    double inner_r = r * cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
 
+    QPolygonF pa;
+    pa << QPointF( x_c + ( inner_r * sin( DEG2RAD( 324.0 ) ) ), y_c - ( inner_r * cos( DEG2RAD( 324.0 ) ) ) )	// 324
+       << QPointF( x_c + ( r * sin( DEG2RAD( 288.0 ) ) ), y_c - ( r * cos( DEG2RAD( 288 ) ) ) )			// 288
+       << QPointF( x_c + ( inner_r * sin( DEG2RAD( 252.0 ) ) ), y_c - ( inner_r * cos( DEG2RAD( 252.0 ) ) ) )	// 252
+       << QPointF( x_c + ( r * sin( DEG2RAD( 216.0 ) ) ), y_c - ( r * cos( DEG2RAD( 216.0 ) ) ) )		// 216
+       << QPointF( x_c, y_c + ( inner_r ) )									// 180
+       << QPointF( x_c + ( r * sin( DEG2RAD( 144.0 ) ) ), y_c - ( r * cos( DEG2RAD( 144.0 ) ) ) )		// 144
+       << QPointF( x_c + ( inner_r * sin( DEG2RAD( 108.0 ) ) ), y_c - ( inner_r * cos( DEG2RAD( 108.0 ) ) ) )	// 108
+       << QPointF( x_c + ( r * sin( DEG2RAD( 72.0 ) ) ), y_c - ( r * cos( DEG2RAD( 72.0 ) ) ) )			//  72
+       << QPointF( x_c + ( inner_r * sin( DEG2RAD( 36.0 ) ) ), y_c - ( inner_r * cos( DEG2RAD( 36.0 ) ) ) )	//  36
+       << QPointF( x_c, y_c - r );										//   0
+    thepPainter->drawPolygon( pa );
+  }
   else if ( name == "arrow" )
   {
-    int oneEight = r / 4;
-    int quarter = r / 2;
+    double oneEight = r / 4;
+    double quarter = r / 2;
 
-    QPolygon pa( 7 );
-    pa.setPoint( 0, x_c, y_c - r );
-    pa.setPoint( 1, x_c + quarter,  y_c - quarter );
-    pa.setPoint( 2, x_c + oneEight, y_c - quarter );
-    pa.setPoint( 3, x_c + oneEight, y_c + r );
-    pa.setPoint( 4, x_c - oneEight, y_c + r );
-    pa.setPoint( 5, x_c - oneEight, y_c - quarter );
-    pa.setPoint( 6, x_c - quarter,  y_c - quarter );
+    QPolygonF pa;
+    pa << QPointF( x_c, y_c - r )
+       << QPointF( x_c + quarter,  y_c - quarter )
+       << QPointF( x_c + oneEight, y_c - quarter )
+       << QPointF( x_c + oneEight, y_c + r )
+       << QPointF( x_c - oneEight, y_c + r )
+       << QPointF( x_c - oneEight, y_c - quarter )
+       << QPointF( x_c - quarter,  y_c - quarter );
     thepPainter->drawPolygon( pa );
   }
   thepPainter->end();
