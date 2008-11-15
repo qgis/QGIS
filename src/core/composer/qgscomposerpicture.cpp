@@ -101,6 +101,9 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     mMode = Unknown;
   }
 
+  //mImage = QImage(mImage.width(), mImage.height(), QImage::Format_ARGB32 );
+  //setSceneRect
+
   QFileInfo sourceFileInfo( mSourceFile );
   QString sourceFileSuffix = sourceFileInfo.suffix();
   if ( sourceFileSuffix.compare( "svg", Qt::CaseInsensitive ) == 0 )
@@ -133,6 +136,11 @@ void QgsComposerPicture::setPictureFile( const QString& path )
       mMode = Unknown;
     }
   }
+
+  if(mMode != Unknown) //make sure we start with a new QImage
+    {
+      setSceneRect(QRectF(transform().dx(), transform().dy(), rect().width(), rect().height()));
+    }
   emit settingsChanged();
 }
 
