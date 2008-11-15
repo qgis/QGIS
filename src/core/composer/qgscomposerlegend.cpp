@@ -97,14 +97,18 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     currentLayerItem = rootItem->child( i );
     if ( currentLayerItem )
     {
-      currentYCoordinate += mLayerSpace;
-      currentYCoordinate += fontAscentMillimeters( mLayerFont );
+      //Let the user omit the layer title item by having an empty layer title string
+      if(!currentLayerItem->text().isEmpty())
+	{
+	  currentYCoordinate += mLayerSpace;
+	  currentYCoordinate += fontAscentMillimeters( mLayerFont );
 
-      //draw layer Item
-      if ( painter )
-      {
-        drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
-      }
+	  //draw layer Item
+	  if ( painter )
+	    {
+	      drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
+	    }
+	}
 
       maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
 
