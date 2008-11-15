@@ -146,6 +146,7 @@ void QgsMapToolIdentify::identifyRasterLayer( const QgsPoint& point )
   }
   else
   {
+    mResults->raise();
     mResults->clear();
   }
 
