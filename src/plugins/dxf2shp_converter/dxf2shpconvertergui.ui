@@ -5,20 +5,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>453</width>
-    <height>221</height>
+    <width>500</width>
+    <height>220</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>100</width>
-    <height>100</height>
+    <width>350</width>
+    <height>220</height>
    </size>
   </property>
   <property name="maximumSize" >
    <size>
-    <width>472</width>
-    <height>373</height>
+    <width>500</width>
+    <height>300</height>
    </size>
   </property>
   <property name="windowTitle" >
@@ -68,7 +68,7 @@ p, li { white-space: pre-wrap; }
    <item row="2" column="0" colspan="4" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+      <sizepolicy vsizetype="Maximum" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -76,7 +76,7 @@ p, li { white-space: pre-wrap; }
      <property name="minimumSize" >
       <size>
        <width>0</width>
-       <height>80</height>
+       <height>50</height>
       </size>
      </property>
      <property name="title" >
