@@ -24,13 +24,14 @@ Developers guide for QGIS
       1.7.1. Tabs
       1.7.2. Indentation
       1.7.3. Braces
-    1.8. Coding Style
-      1.8.1. Where-ever Possible Generalize Code
-      1.8.2. Prefer Having Constants First in Predicates
-      1.8.3. Whitespace Can Be Your Friend
-      1.8.4. Add Trailing Identifying Comments
-      1.8.5. Use Braces Even for Single Line Statements
-      1.8.6. Book recommendations
+    1.8. API Compatibility
+    1.9. Coding Style
+      1.9.1. Where-ever Possible Generalize Code
+      1.9.2. Prefer Having Constants First in Predicates
+      1.9.3. Whitespace Can Be Your Friend
+      1.9.4. Add Trailing Identifying Comments
+      1.9.5. Use Braces Even for Single Line Statements
+      1.9.6. Book recommendations
   2. SVN Access
     2.1. Accessing the Repository
     2.2. Anonymous Access
@@ -273,13 +274,41 @@ Braces should start on the line following the expression:
 
 
 
-	1.8. Coding Style
+	1.8. API Compatibility
+	======================
+
+From QGIS 1.0 we will provide a stable, backwards compatible API. This will
+provide a stable basis for people to develop against, knowing their code will
+work against any of the 1.x QGIS releases (although recompiling may be
+required).Cleanups to the API should be done in a manner similar to the
+Trolltech developers e.g.
+
+
+  class Foo 
+  {
+    public:
+      /** This method will be deprecated, you are encouraged to use 
+        doSomethingBetter() rather.
+        @see doSomethingBetter()
+       */
+      bool doSomething();
+  
+      /** Does something a better way.
+        @note This method was introduced in QGIS version 1.1
+       */
+      bool doSomethingBetter();
+  
+  }
+
+
+
+	1.9. Coding Style
 	=================
 
 Here are described some programming hints and tips that will hopefully reduce errors, development time, and maintenance.
 
 
-		1.8.1. Where-ever Possible Generalize Code
+		1.9.1. Where-ever Possible Generalize Code
 		==========================================
 
 
@@ -294,7 +323,7 @@ This will:
 maintain for others
 
 
-		1.8.2. Prefer Having Constants First in Predicates
+		1.9.2. Prefer Having Constants First in Predicates
 		==================================================
 
 Prefer to put constants first in predicates. 
@@ -308,7 +337,7 @@ logic bugs.  The compiler will generate an error if you accidentally use "=" ins
 inherently cannot be assigned values.
 
 
-		1.8.3. Whitespace Can Be Your Friend
+		1.9.3. Whitespace Can Be Your Friend
 		====================================
 
 Adding spaces between operators, statements, and functions makes it easier for humans to parse code.
@@ -326,7 +355,7 @@ or this:
 
 
 
-		1.8.4. Add Trailing Identifying Comments
+		1.9.4. Add Trailing Identifying Comments
 		========================================
 
 Adding comments at the end of function, struct and class implementations makes it easier to find them later.
@@ -346,7 +375,7 @@ E.g.,
 
 
 
-		1.8.5. Use Braces Even for Single Line Statements
+		1.9.5. Use Braces Even for Single Line Statements
 		=================================================
 
 Using braces for code in if/then blocks or similar code structures even for single line statements means that adding another 
@@ -378,7 +407,7 @@ So, prefer this:
 
 
 
-		1.8.6. Book recommendations
+		1.9.6. Book recommendations
 		===========================
 
  * Effective C++ (http://www.awprofessional.com/title/0321334876), Scott Meyers
@@ -1234,10 +1263,10 @@ guidelines are followed in layout and design of GUIs.
 
  1. Group related elements using group boxes:
    Try to identify elements that can be grouped together and then use 
-   group boxes with a label identify the topic of that group. 
+   group boxes with a label to identify the topic of that group. 
    Avoid using group boxes with only a single widget / item inside.
- 2. Capitalise first letter only in group box labels:
-   Group box labels should be written as a phrase with leading capital letter,
+ 2. Capitalise first letter only in labels:
+   Labels (and group box labels) should be written as a phrase with leading capital letter,
    and all remaing words written with lower case first letters 
  3. Do not end labels for widgets or group boxes with a colon:
    Adding a colon causes visual noise and does not impart additional meaning,
