@@ -69,7 +69,6 @@ QgsRectangle QgsMapRenderer::extent() const
 
 void QgsMapRenderer::updateScale()
 {
-
   mScale = mScaleCalculator->calculate( mExtent, mSize.width() );
 }
 
@@ -248,6 +247,7 @@ void QgsMapRenderer::render( QPainter* painter )
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
   mRenderContext.setScaleFactor( scaleFactor );
   mRenderContext.setRasterScaleFactor( rasterScaleFactor );
+  mRenderContext.setRendererScale( mScale );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
@@ -289,8 +289,7 @@ void QgsMapRenderer::render( QPainter* painter )
     QgsDebugMsg( "  Scale dep. visibility enabled? " + QString( "%1" ).arg( ml->hasScaleBasedVisibility() ) );
     QgsDebugMsg( "  Input extent: " + ml->extent().toString() );
 
-    if (( ml->hasScaleBasedVisibility() && ml->minimumScale() < mScale && ml->maximumScale() > mScale )
-        || ( !ml->hasScaleBasedVisibility() ) )
+    if ( !ml->hasScaleBasedVisibility() || (ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -390,8 +389,7 @@ void QgsMapRenderer::render( QPainter* painter )
       {
         // only make labels if the layer is visible
         // after scale dep viewing settings are checked
-        if (( ml->hasScaleBasedVisibility() && ml->minimumScale() < mScale  && ml->maximumScale() > mScale )
-            || ( !ml->hasScaleBasedVisibility() ) )
+        if ( !ml->hasScaleBasedVisibility() || (ml->minimumScale() < mScale && mScale < ml->maximumScale() ))
         {
           bool split = false;
 

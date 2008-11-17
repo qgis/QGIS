@@ -54,6 +54,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
 void QgsLabelDialog::init( )
 {
   QgsDebugMsg( "entering." );
+
   QgsLabelAttributes * myLabelAttributes = mLabel->layerAttributes();
   //populate a string list with all the field names which will be used to set up the
   //data bound combos
@@ -133,6 +134,10 @@ void QgsLabelDialog::init( )
   cboAngleField->addItems( myFieldStringList );
   cboAngleField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Angle ), myFieldStringList ) );
 
+  // set up the scale based layer visibility stuff....
+  chkUseScaleDependentRendering->setChecked( mLabel->scaleBasedVisibility() );
+  spinMinimumScale->setValue(( int )mLabel->minScale() );
+  spinMaximumScale->setValue(( int )mLabel->maxScale() );
 
   //
   //set the non-databound fields up now
@@ -197,7 +202,16 @@ void QgsLabelDialog::init( )
     spinXOffset->setValue( 0 );
     spinYOffset->setValue( 0 );
   }
-  spinAngle->setValue( static_cast<int>( myLabelAttributes->angle() ) );
+  spinAngle->setRange( -1, 360 );
+  spinAngle->setSpecialValueText( tr("Auto") );
+  if( myLabelAttributes->angleIsAuto() )
+  {
+    spinAngle->setValue( -1 );
+  }
+  else
+  {
+    spinAngle->setValue( static_cast<int>( myLabelAttributes->angle() ) );
+  }
 
   //the values here may seem a bit counterintuitive - basically everything
   //is the reverse of the way you think it should be...
@@ -242,6 +256,7 @@ void QgsLabelDialog::init( )
   spinBufferSize->setValue( static_cast<int>( myLabelAttributes->bufferSize() ) );
   //TODO - transparency attributes for buffers
 
+  listWidget->setItemSelected( listWidget->item(0), true);
 }
 
 
@@ -335,8 +350,9 @@ void QgsLabelDialog::apply()
     myTypeInt = QgsLabelAttributes::MapUnits;
   }
   myLabelAttributes->setOffset( spinXOffset->value(), spinYOffset->value(), myTypeInt );
+  myLabelAttributes->setAutoAngle( spinAngle->value() == -1 );
   myLabelAttributes->setAngle( spinAngle->value() );
-
+  
   //the values here may seem a bit counterintuitive - basically everything
   //is the reverse of the way you think it should be...
   //TODO investigate in QgsLabel why this needs to be the case
@@ -382,6 +398,10 @@ void QgsLabelDialog::apply()
   mLabel->setLabelField( QgsLabel::Alignment,  fieldIndexFromName( cboAlignmentField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Angle,  fieldIndexFromName( cboAngleField->currentText() ) );
 
+  // set up the scale based layer visibility stuff....
+  mLabel->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mLabel->setMinScale( spinMinimumScale->value() );
+  mLabel->setMaxScale( spinMaximumScale->value() );
 }
 
 int QgsLabelDialog::fieldIndexFromName( QString name )

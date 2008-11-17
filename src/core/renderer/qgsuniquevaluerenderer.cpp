@@ -132,13 +132,11 @@ void QgsUniqueValueRenderer::renderFeature( QPainter* p, QgsFeature& f, QImage* 
       //first find out the value for the scale classification attribute
       const QgsAttributeMap& attrs = f.attributeMap();
       fieldScale = sqrt( fabs( attrs[symbol->scaleClassificationField()].toDouble() ) );
-      QgsDebugMsg( QString( "Feature has field scale factor %1" ).arg( fieldScale ) );
     }
     if ( symbol->rotationClassificationField() >= 0 )
     {
       const QgsAttributeMap& attrs = f.attributeMap();
       rotation = attrs[symbol->rotationClassificationField()].toDouble();
-      QgsDebugMsg( QString( "Feature has rotation factor %1" ).arg( rotation ) );
     }
     *img = symbol->getPointSymbolAsImage( widthScale, selected, mSelectionColor,
                                           fieldScale, rotation, rasterScaleFactor );

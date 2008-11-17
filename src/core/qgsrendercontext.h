@@ -56,6 +56,8 @@ class CORE_EXPORT QgsRenderContext
 
     bool drawEditingInformation() const {return mDrawEditingInformation;}
 
+    double rendererScale() const {return mRendererScale;}
+
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
@@ -66,6 +68,7 @@ class CORE_EXPORT QgsRenderContext
     void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
     void setScaleFactor( double factor ) {mScaleFactor = factor;}
     void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
+    void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
 
   private:
@@ -94,6 +97,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**Factor to scale rasters*/
     double mRasterScaleFactor;
+
+    /** renderer scale */
+    double mRendererScale;
 };
 
 #endif

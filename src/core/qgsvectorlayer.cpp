@@ -286,7 +286,10 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "Starting draw of labels" );
 
-  if ( mRenderer && mLabelOn )
+  if ( mRenderer && mLabelOn &&
+       (!label()->scaleBasedVisibility() ||
+        (label()->minScale()<=rendererContext.rendererScale() &&
+                              rendererContext.rendererScale()<=label()->maxScale())) )
   {
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
@@ -1967,8 +1970,6 @@ bool QgsVectorLayer::hasLabelsEnabled( void )
   return mLabelOn;
 }
 
-
-
 bool QgsVectorLayer::startEditing()
 {
   if ( !mDataProvider )
@@ -2056,6 +2057,12 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     QDomElement e = displayFieldNode.toElement();
     setDisplayField( e.text() );
   }
+
+  // use scale dependent visibility flag
+  QDomElement e = layer_node.toElement();
+  label()->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0") == "1" );
+  label()->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
+  label()->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
 
   QDomNode editTypesNode = layer_node.namedItem( "edittypes" );
   if ( !editTypesNode.isNull() )
@@ -2224,7 +2231,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   if ( mapLayerNode.isNull() || ( "maplayer" != mapLayerNode.nodeName() ) )
   {
-    qDebug( "QgsVectorLayer::writeXML() can't find <maplayer>" );
+    QgsDebugMsg( "can't find <maplayer>" );
     return false;
   }
 
@@ -2232,6 +2239,11 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // set the geometry type
   mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[type()] );
+
+  // use scale dependent visibility flag
+  mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
+  mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
+  mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
 
   // add provider node
 
@@ -2353,54 +2365,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
       layer_node.appendChild( dField );
     }
 
-    std::stringstream labelXML;
-
-    myLabel->writeXML( labelXML );
-
-    QDomDocument labelDom;
-
-    std::string rawXML;
-    std::string temp_str;
-    QString     errorMsg;
-    int         errorLine;
-    int         errorColumn;
-
-    // start with bogus XML header
-    rawXML  = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n";
-
-    temp_str = labelXML.str();
-
-    rawXML   += temp_str;
-
-#ifdef QGISDEBUG
-    std::cout << rawXML << std::endl << std::flush; // OK
-
-#endif
-    const char * s = rawXML.c_str(); // debugger probe
-    // Use the const char * form of the xml to make non-stl qt happy
-    if ( ! labelDom.setContent( QString::fromUtf8( s ), &errorMsg, &errorLine, &errorColumn ) )
-    {
-      qDebug(( "XML import error at line %d column %d " + errorMsg ).toLocal8Bit().data(), errorLine, errorColumn );
-
-      return false;
-    }
-
-    // lastChild() because the first two nodes are the <xml> and
-    // <!DOCTYPE> nodes; the label node follows that, and is (hopefully)
-    // the last node.
-    QDomNode labelDomNode = document.importNode( labelDom.lastChild(), true );
-
-    if ( ! labelDomNode.isNull() )
-    {
-      layer_node.appendChild( labelDomNode );
-    }
-    else
-    {
-      qDebug( "not able to import label Dom node" );
-
-      // XXX return false?
-    }
-
+    myLabel->writeXML( layer_node, document );
   }
 
   return true;
@@ -3533,3 +3498,4 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
 
   return mRanges[ fields[idx].name()];
 }
+

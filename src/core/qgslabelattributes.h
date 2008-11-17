@@ -140,6 +140,9 @@ class  CORE_EXPORT QgsLabelAttributes
     bool   angleIsSet( void ) const;
     double angle( void ) const;
 
+    bool   angleIsAuto( void ) const;
+    void   setAutoAngle(bool state);
+
     /* Alignment */
     void setAlignment( int alignment );
     bool alignmentIsSet( void ) const;
@@ -207,6 +210,7 @@ class  CORE_EXPORT QgsLabelAttributes
     /** Angle (degrees) */
     double mAngle;
     bool   mAngleIsSet;
+    bool   mAngleIsAuto;
 
     /** Alignment */
     int  mAlignment;
