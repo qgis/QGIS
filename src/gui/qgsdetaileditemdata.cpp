@@ -20,6 +20,7 @@
 QgsDetailedItemData::QgsDetailedItemData()
 {
   mRenderAsWidgetFlag = false;
+  mEnabledFlag = true;
 }
 
 QgsDetailedItemData::~QgsDetailedItemData()
@@ -83,3 +84,12 @@ bool QgsDetailedItemData::isRenderedAsWidget() const
   return mRenderAsWidgetFlag;
 }
 
+void QgsDetailedItemData::setEnabled( bool theFlag )
+{
+  mEnabledFlag = theFlag;
+}
+
+bool QgsDetailedItemData::isEnabled() const
+{
+  return mEnabledFlag;
+}
