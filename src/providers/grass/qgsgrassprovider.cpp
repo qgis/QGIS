@@ -1524,11 +1524,12 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   // TODO: Is it necessary for build/close ?
   G__setenv(( char * ) "MAPSET", map->mapset.toAscii().data() );
 
-  Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
 #if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
+  Vect_build_partial( map->map, GV_BUILD_NONE );
   Vect_build( map.map ); 
 #else 
+  Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
   Vect_build( map->map, stderr );
 #endif
 
