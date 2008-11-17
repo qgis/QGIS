@@ -37,6 +37,7 @@ class GUI_EXPORT QgsDetailedItemData
     void setIcon( const QPixmap theIcon );
     void setCheckable( const bool theFlag );
     void setChecked( const bool theFlag );
+    void setEnabled( bool theFlag );
     /** This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
@@ -50,6 +51,7 @@ class GUI_EXPORT QgsDetailedItemData
     QPixmap icon() const;
     bool isCheckable() const;
     bool isChecked() const;
+    bool isEnabled() const;
     bool isRenderedAsWidget() const;
 
   private:
@@ -59,6 +61,7 @@ class GUI_EXPORT QgsDetailedItemData
     QPixmap mPixmap;
     bool mCheckableFlag;
     bool mCheckedFlag;
+    bool mEnabledFlag;
     bool mRenderAsWidgetFlag;
 };
 

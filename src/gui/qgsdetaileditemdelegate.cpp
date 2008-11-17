@@ -102,6 +102,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
   //
   //bool myCheckState = theIndex.model()->data(theIndex, Qt::CheckStateRole).toBool();
   mpCheckBox->setChecked( theData.isChecked() );
+  mpCheckBox->setEnabled( theData.isEnabled() );
   QPixmap myCbxPixmap( mpCheckBox->size() );
   mpCheckBox->render( &myCbxPixmap ); //we will draw this onto the widget further down
 
