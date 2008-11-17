@@ -23,12 +23,14 @@
 #include <QList>
 #include <QMap>
 
+#include "qgspoint.h"
+
 class QDomNode;
+class QDomDocument;
 class QString;
 class QPainter;
 class QPaintDevice;
 
-class QgsPoint;
 class QgsFeature;
 class QgsField;
 class QgsLabelAttributes;
@@ -82,6 +84,11 @@ class CORE_EXPORT QgsLabel
       LabelFieldCount
     };
 
+    struct labelpoint {
+      QgsPoint p;
+      double angle;
+    };
+
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
      */
@@ -96,7 +103,7 @@ class CORE_EXPORT QgsLabel
     void readXML( const QDomNode& node );
 
     /** Writes the contents of the renderer to a configuration file */
-    void writeXML( std::ostream& xml );
+    void writeXML( QDomNode & label_node, QDomDocument & document );
 
     //! add vector of required fields to existing list of fields
     void addRequiredFields( QgsAttributeList& fields );
@@ -123,6 +130,18 @@ class CORE_EXPORT QgsLabel
     */
     QString fieldValue( int attr, QgsFeature& feature );
 
+    /** Accessor and mutator for the minimum scale member */
+    void setMinScale( float theMinScale );
+    float minScale();
+
+    /** Accessor and mutator for the maximum scale member */
+    void setMaxScale( float theMaxScale );
+    float maxScale();
+
+    /** Accessor and mutator for the scale based visilibility flag */
+    void setScaleBasedVisibility( bool theVisibilityFlag );
+    bool scaleBasedVisibility();
+
   private:
     /** Does the actual rendering of a label at the given point
      *
@@ -137,10 +156,10 @@ class CORE_EXPORT QgsLabel
                       int width, int height, int alignment, double sizeScale = 1.0, double rasterScaleFactor = 1.0 );
 
     /** Get label point for simple feature in map units */
-    void labelPoint( std::vector<QgsPoint>&, QgsFeature &feature );
+    void labelPoint( std::vector<labelpoint>&, QgsFeature &feature );
 
     /** Get label point for the given feature in wkb format. */
-    unsigned char* labelPoint( QgsPoint& point, unsigned char* wkb, size_t wkblen );
+    unsigned char* labelPoint( labelpoint& point, unsigned char* wkb, size_t wkblen );
 
     /** Color to draw selected features */
     QColor mSelectionColor;
@@ -156,6 +175,13 @@ class CORE_EXPORT QgsLabel
 
     //! Label field indexes
     std::vector<int> mLabelFieldIdx;
+
+    /** Minimum scale at which this label should be displayed */
+    float mMinScale;
+    /** Maximum scale at which this label should be displayed */
+    float mMaxScale;
+    /** A flag that tells us whether to use the above vars to restrict the label's visibility */
+    bool mScaleBasedVisibility;
 };
 
 #endif

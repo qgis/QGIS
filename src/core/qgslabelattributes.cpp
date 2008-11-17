@@ -41,6 +41,7 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
     mOffsetIsSet( false ),
     mAngle( 0.0 ),
     mAngleIsSet( false ),
+    mAngleIsAuto( false ),
     mAlignment( 0 ),
     mAlignmentIsSet( false ),
     mBufferEnabledFlag( false ),
@@ -69,6 +70,7 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
 
     setOffset( 0, 0, PointUnits );
     setAngle( 0 );
+    setAutoAngle(false);
 
     setAlignment( Qt::AlignCenter );
     setColor( QColor( 0, 0, 0 ) );
@@ -148,6 +150,16 @@ bool QgsLabelAttributes::angleIsSet( void ) const
 double QgsLabelAttributes::angle( void ) const
 {
   return mAngle;
+}
+
+bool QgsLabelAttributes::angleIsAuto() const
+{
+  return mAngleIsAuto;
+}
+
+void QgsLabelAttributes::setAutoAngle ( bool state )
+{
+  mAngleIsAuto = state;
 }
 
 /* Alignment */
