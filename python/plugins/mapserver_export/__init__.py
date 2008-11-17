@@ -18,14 +18,17 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-# load MapServerExport class from file mapserverexport.py
-from mapserverexport import MapServerExport 
+
 def name(): 
   return "MapServer Export" 
 def description():
   return "Export a saved QGIS project file to a MapServer map file"
 def version(): 
   return "Version 0.1" 
+def qgisMinimumVersion(): 
+  return "1.0" 
 def classFactory(iface): 
+  # load MapServerExport class from file mapserverexport.py
+  from mapserverexport import MapServerExport 
   return MapServerExport(iface) 
 
