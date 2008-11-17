@@ -1040,7 +1040,11 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   if ( level == 1 )
   {
     QgsGrass::resetError();
-    Vect_build( map.map, stderr );
+#if GRASS_VERSION_MAJOR >= 6 && GRASS_VERSION_MINOR >= 4 
+    Vect_build( map.map );
+#else
+    Vect_build( map.map, stderr ); 
+#endif
 
     if ( QgsGrass::getError() == QgsGrass::FATAL )
     {
@@ -1520,7 +1524,11 @@ bool QgsGrassProvider::closeEdit( bool newMap )
   G__setenv(( char * ) "MAPSET", map->mapset.toAscii().data() );
 
   Vect_build_partial( map->map, GV_BUILD_NONE, NULL );
+#if GRASS_VERSION_MAJOR >= 6 && GRASS_VERSION_MINOR >= 4 
+  Vect_build( map.map ); 
+#else 
   Vect_build( map->map, stderr );
+#endif
 
   // If a new map was created close the map and return
   if ( newMap )
