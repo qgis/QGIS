@@ -68,6 +68,9 @@ public:
     bool   angleIsSet ( ) const;
     double angle ( ) const;
 
+    bool   angleIsAuto( ) const;
+    void   setAutoAngle(bool state);
+
     /* Alignment */
     void setAlignment ( int alignment );
     bool alignmentIsSet ( ) const;
