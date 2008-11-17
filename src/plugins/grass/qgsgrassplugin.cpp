@@ -479,7 +479,12 @@ void QgsGrassPlugin::newVector()
     return;
   }
 
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
+  ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
+  Vect_build( &Map );
+#else
   Vect_build( &Map, stderr );
+#endif
   Vect_set_release_support( &Map );
   Vect_close( &Map );
 
