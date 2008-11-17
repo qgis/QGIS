@@ -14,6 +14,7 @@
 %Include qgsmapcanvas.sip
 %Include qgsmapcanvasitem.sip
 %Include qgsmapcanvasmap.sip
+%Include qgsmapcanvassnapper.sip
 %Include qgsmaptool.sip
 %Include qgsmaptoolemitpoint.sip
 %Include qgsmaptoolpan.sip

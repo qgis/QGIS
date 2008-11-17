@@ -57,6 +57,16 @@ public:
       SnapWithResultsWithinTolerances
     };
 
+    struct SnapLayer
+    {
+      /**The layer to which snapping is applied*/
+      QgsVectorLayer* mLayer;
+      /**The snapping tolerances for the layers, always in source coordinate systems of the layer*/
+      double mTolerance;
+      /**What snapping type to use (snap to segment or to vertex)*/
+      QgsSnapper::SnappingType mSnapTo;
+    };  
+    
   QgsSnapper(QgsMapRenderer* mapRender);
   ~QgsSnapper();
   /**Does the snapping operation
@@ -66,9 +76,7 @@ public:
   int snapPoint(const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludeList);
 
   //setters
-  void setLayersToSnap(const QList<QgsVectorLayer*>& layerList);
-  void setTolerances(const QList<double>& toleranceList);
-  // TODO wrap void setSnapToList(const QList<QgsSnapper::SnappingType>& snapToList);
+  void setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers );
   void setSnapMode(QgsSnapper::SnappingMode snapMode);
 
 };

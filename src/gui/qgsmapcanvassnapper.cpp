@@ -89,29 +89,25 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
       return 3;
     }
 
-    QList<QgsVectorLayer*> layerList;
-    QList<double> toleranceList;
-    QList<QgsSnapper::SnappingType> snapToList;
-
-    layerList.push_back( vlayer );
-    snapToList.push_back( snap_to );
+    QgsSnapper::SnapLayer snapLayer;
+    snapLayer.mLayer = vlayer;
+    snapLayer.mSnapTo = snap_to;
 
     QSettings settings;
 
     if ( snappingTol < 0 )
     {
       //use search tolerance for vertex editing
-      toleranceList.push_back( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 50 ).toDouble() );
+      snapLayer.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 50 ).toDouble();
     }
     else
     {
-      toleranceList.push_back( snappingTol );
+      snapLayer.mTolerance = snappingTol;
     }
 
-
-    mSnapper->setLayersToSnap( layerList );
-    mSnapper->setTolerances( toleranceList );
-    mSnapper->setSnapToList( snapToList );
+    QList<QgsSnapper::SnapLayer> snapLayers;
+    snapLayers.append( snapLayer );
+    mSnapper->setSnapLayers( snapLayers );
 
     if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
     {
@@ -160,9 +156,8 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       return 1; //lists must have the same size, otherwise something is wrong
     }
 
-    QList<QgsVectorLayer*> vectorLayerList;
-    QList<double> toleranceDoubleList;
-    QList<QgsSnapper::SnappingType> snapTo;
+    QList<QgsSnapper::SnapLayer> snapLayers;
+    QgsSnapper::SnapLayer snapLayer;
 
     //Use snapping information from the project
     if ( snappingDefinedInProject )
@@ -190,27 +185,28 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
           vlayer = dynamic_cast<QgsVectorLayer*>( layer );
           if ( vlayer )
           {
-            vectorLayerList.push_back( vlayer );
+            snapLayer.mLayer = vlayer;
           }
         }
 
         //tolerance
-        toleranceDoubleList.push_back( tolIt->toDouble() );
+        snapLayer.mTolerance = tolIt->toDouble();
 
         //segment or vertex
         if (( *snapIt ) == "to_vertex" )
         {
-          snapTo.push_back( QgsSnapper::SnapToVertex );
+          snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
         }
         else if (( *snapIt ) == "to_segment" )
         {
-          snapTo.push_back( QgsSnapper::SnapToSegment );
+          snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
         }
         else //to vertex and segment
         {
-          snapTo.push_back( QgsSnapper::SnapToVertexAndSegment );
+          snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
         }
 
+        snapLayers.append(snapLayer);
       }
     }
     else //nothing in project. Use default snapping tolerance to vertex of current layer
@@ -227,31 +223,31 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
         return 3;
       }
 
-      vectorLayerList.push_back( currentVectorLayer );
+      snapLayer.mLayer = currentVectorLayer;
       QSettings settings;
 
       //default snap mode
       QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "to vertex" ).toString();
       if ( defaultSnapString == "to segment" )
       {
-        snapTo.push_back( QgsSnapper::SnapToSegment );
+        snapLayer.mSnapTo = QgsSnapper::SnapToSegment;
       }
       else if ( defaultSnapString == "to vertex and segment" )
       {
-        snapTo.push_back( QgsSnapper::SnapToVertexAndSegment );
+        snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
       }
       else
       {
-        snapTo.push_back( QgsSnapper::SnapToVertex );
+        snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
       }
 
       //default snapping tolerance
-      toleranceDoubleList.push_back( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
+      snapLayer.mTolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
+    
+      snapLayers.append(snapLayer);
     }
 
-    mSnapper->setLayersToSnap( vectorLayerList );
-    mSnapper->setTolerances( toleranceDoubleList );
-    mSnapper->setSnapToList( snapTo );
+    mSnapper->setSnapLayers( snapLayers );
 
     if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
     {
