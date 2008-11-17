@@ -152,6 +152,48 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
+bool QgsPluginRegistry::checkQgisVersion(QString minVersion)
+{
+  QStringList minVersionParts = minVersion.split('.');
+  // qgis version must be in form x.y.z or just x.y
+  if (minVersionParts.count() != 2 && minVersionParts.count() != 3)
+    return false;
+  
+  int minVerMajor, minVerMinor, minVerBugfix=0;
+  bool ok;
+  minVerMajor = minVersionParts.at(0).toInt(&ok);
+  if (!ok) return false;
+  minVerMinor = minVersionParts.at(1).toInt(&ok);
+  if (!ok) return false;
+  if (minVersionParts.count() == 3)
+  {
+    minVerBugfix = minVersionParts.at(2).toInt(&ok);
+    if (!ok) return false;
+  }
+  
+  // our qgis version - cut release name after version number
+  QString qgisVersion = QString(QGis::QGIS_VERSION).section( '-', 0, 0 );
+  QStringList qgisVersionParts = qgisVersion.split( "." );
+
+  int qgisMajor = qgisVersionParts.at( 0 ).toInt();
+  int qgisMinor = qgisVersionParts.at( 1 ).toInt();
+  int qgisBugfix= qgisVersionParts.at( 2 ).toInt();
+
+  // first check major version
+  if (minVerMajor > qgisMajor) return false;
+  if (minVerMajor < qgisMajor) return true;
+  
+  // if same, check minor version
+  if (minVerMinor > qgisMinor) return false;
+  if (minVerMinor < qgisMinor) return true;
+  
+  // if still same, check bugfix version
+  if (minVerBugfix > qgisBugfix) return false;
+  
+  // looks like min version is the same as our version - that's fine
+  return true;
+}
+
 
 void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 {
@@ -160,22 +202,30 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     QgsDebugMsg( "Python is not enabled in QGIS." );
     return;
   }
+  
+  QSettings settings;
 
   // is loaded already?
   if ( ! isLoaded( packageName ) )
   {
+    // if plugin is not compatible, disable it
+    if ( ! isPythonPluginCompatible( packageName ) )
+    {
+      settings.setValue( "/PythonPlugins/" + packageName, false );
+      return;
+    }
+    
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
 
     // TODO: test success
-
+    
     QString pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
 
     // add to plugin registry
     addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true ) );
 
     // add to settings
-    QSettings settings;
     settings.setValue( "/PythonPlugins/" + packageName, true );
     std::cout << "Loaded : " << pluginName.toLocal8Bit().constData() << " (package: "
         << packageName.toLocal8Bit().constData() << ")" << std::endl; // OK
@@ -362,5 +412,19 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
     return false;
   }
   
+  return true;
+}
+
+bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
+{
+  QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
+  if (minVersion == "__error__" || !checkQgisVersion(minVersion))
+  {
+    //QMessageBox::information(mQgisInterface->mainWindow(),
+    //   QObject::tr("Incompatible plugin"),
+    //   QObject::tr("Plugin \"%1\" is not compatible with this version of Quantum GIS.\nIt will be disabled.").arg(pluginName));
+    //settings.setValue( "/PythonPlugins/" + packageName, false );
+    return false;
+  }
   return true;
 }

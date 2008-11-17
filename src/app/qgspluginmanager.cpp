@@ -147,6 +147,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
     QString version     = mPythonUtils->getPluginMetadata( packageName, "version" );
 
     if ( pluginName == "???" || description == "???" || version == "???" ) continue;
+    
+    bool isCompatible = QgsPluginRegistry::instance()->isPythonPluginCompatible( packageName );
+    QString compatibleString; // empty by default
+    if (!isCompatible)
+      compatibleString = "  " + tr("[ incompatible ]");
 
     // filtering will be done on the display role so give it name and desription
     // user wont see this text since we are using a custome delegate
@@ -156,9 +161,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
     mypDetailItem->setData( packageName, PLUGIN_BASE_NAME_ROLE ); //for matching in registry later
     mypDetailItem->setCheckable( false );
     mypDetailItem->setEditable( false );
+    mypDetailItem->setEnabled( isCompatible );
     // setData in the delegate with a variantised QgsDetailedItemData
     QgsDetailedItemData myData;
-    myData.setTitle( pluginName + " (" + version + ")" );
+    myData.setTitle( pluginName + " (" + version + ")" + compatibleString );
+    myData.setEnabled( isCompatible );
     myData.setDetail( description );
     //myData.setIcon(pixmap); //todo use a python logo here
     myData.setCheckable( true );
@@ -476,13 +483,9 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &theIndex )
     QStandardItem* mypItem = mModelPlugins->itemFromIndex( realIndex );
     QgsDetailedItemData myData =
       qVariantValue<QgsDetailedItemData>( mypItem->data( PLUGIN_DATA_ROLE ) );
-    if ( myData.isChecked() )
+    if ( myData.isEnabled() )
     {
-      myData.setChecked( false );
-    }
-    else
-    {
-      myData.setChecked( true );
+      myData.setChecked( ! myData.isChecked() );
     }
     QVariant myVariant = qVariantFromValue( myData );
     mypItem->setData( myVariant, PLUGIN_DATA_ROLE );
