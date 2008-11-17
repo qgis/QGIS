@@ -30,6 +30,8 @@ class QgsRenderContext
 
   bool drawEditingInformation() const;
 
+  double rendererScale() const;
+
   //setters
 
   /**Sets coordinate transformation. QgsRenderContext takes ownership and deletes if necessary*/
@@ -40,5 +42,6 @@ class QgsRenderContext
   void setRenderingStopped(bool stopped);
   void setScaleFactor(double factor);
   void setRasterScaleFactor(double factor);
+  void setRendererScale( double scale );
   void setPainter(QPainter* p);
 };

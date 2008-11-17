@@ -41,6 +41,11 @@ public:
   LabelFieldCount
 };
 
+    struct labelpoint {
+      QgsPoint p;
+      double angle;
+    };
+    
     /** \brief render label
      *  \param sizeScale global scale factor for size in pixels, labels in map units are not scaled
     */
@@ -55,7 +60,7 @@ public:
     void readXML(const QDomNode& node);
 
     /** Writes the contents of the renderer to a configuration file */
-    // TODO: wrap void writeXML(std::ostream& xml);
+    void writeXML( QDomNode & label_node, QDomDocument & document );
 
     //! add vector of required fields to existing list of fields
     void addRequiredFields ( QList<int> & fields );
@@ -81,6 +86,19 @@ public:
      *  otherwise returns empty string
     */
     QString fieldValue ( int attr, QgsFeature& feature );
+
+
+    /** Accessor and mutator for the minimum scale member */
+    void setMinScale( float theMinScale );
+    float minScale();
+
+    /** Accessor and mutator for the maximum scale member */
+    void setMaxScale( float theMaxScale );
+    float maxScale();
+
+    /** Accessor and mutator for the scale based visilibility flag */
+    void setScaleBasedVisibility( bool theVisibilityFlag );
+    bool scaleBasedVisibility();
 
 };
 
