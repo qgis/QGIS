@@ -78,6 +78,16 @@ class CORE_EXPORT QgsSnapper
       SnapWithResultsWithinTolerances
     };
 
+    struct SnapLayer
+    {
+      /**The layer to which snapping is applied*/
+      QgsVectorLayer* mLayer;
+      /**The snapping tolerances for the layers, always in source coordinate systems of the layer*/
+      double mTolerance;
+      /**What snapping type to use (snap to segment or to vertex)*/
+      QgsSnapper::SnappingType mSnapTo;
+    };
+    
     QgsSnapper( QgsMapRenderer* mapRender );
     ~QgsSnapper();
     /**Does the snapping operation
@@ -88,9 +98,7 @@ class CORE_EXPORT QgsSnapper
     int snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
 
     //setters
-    void setLayersToSnap( const QList<QgsVectorLayer*>& layerList );
-    void setTolerances( const QList<double>& toleranceList );
-    void setSnapToList( const QList<QgsSnapper::SnappingType>& snapToList );
+    void setSnapLayers( const QList<QgsSnapper::SnapLayer>& snapLayers );
     void setSnapMode( QgsSnapper::SnappingMode snapMode );
 
   private:
@@ -105,13 +113,8 @@ class CORE_EXPORT QgsSnapper
     QgsMapRenderer* mMapRenderer;
     /**Snap mode to apply*/
     QgsSnapper::SnappingMode mSnapMode;
-    /**The layers to which snapping is applied*/
-    QList<QgsVectorLayer*> mLayersToSnap;
-    /**The snapping tolerances for the layers. The order must correspond to the layer list.
-     Note that the tolerances are always in source coordinate systems of the layers*/
-    QList<double> mSnappingTolerances;
-    /**List if snap to segment of to vertex. The order must correspond to the layer list*/
-    QList<QgsSnapper::SnappingType> mSnapToList;
+    /**List of layers to which snapping is applied*/
+    QList<QgsSnapper::SnapLayer> mSnapLayers;
 };
 
 #endif
