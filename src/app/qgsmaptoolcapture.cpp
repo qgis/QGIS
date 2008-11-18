@@ -83,6 +83,8 @@ void QgsMapToolCapture::deactivate()
   delete mRubberBand;
   mRubberBand = 0;
   mCaptureList.clear();
+
+  QgsMapTool::deactivate();
 }
 
 int QgsMapToolCapture::addVertex( const QPoint& p )

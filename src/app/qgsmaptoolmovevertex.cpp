@@ -188,6 +188,8 @@ void QgsMapToolMoveVertex::canvasReleaseEvent( QMouseEvent * e )
 void QgsMapToolMoveVertex::deactivate()
 {
   removeRubberBands();
+
+  QgsMapTool::deactivate();
 }
 
 void QgsMapToolMoveVertex::removeRubberBands()

@@ -121,4 +121,6 @@ void QgsMapToolAddVertex::deactivate()
 {
   delete mRubberBand;
   mRubberBand = 0;
+
+  QgsMapTool::deactivate();
 }
