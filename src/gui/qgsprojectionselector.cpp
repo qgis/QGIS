@@ -132,7 +132,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   {
     QStringList parts = i->split( ":" );
 
-    if ( parts.at( 0 ) == "EPSG" )
+    if ( parts.at( 0 ) == "EPSG" && parts.size()>=2 )
     {
       epsgParts.push_back( parts.at( 1 ) );
     }
