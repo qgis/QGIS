@@ -18,6 +18,7 @@
 #include "qgscomposerlegend.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprenderer.h"
 #include "qgssymbol.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -91,29 +92,41 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
-  //draw layer items
+  //draw only visible layer items
+  QgsMapRenderer* theMapRenderer = mComposition->mapRenderer();
+  QStringList visibleLayerIds;
+  if(theMapRenderer)
+    {
+      visibleLayerIds = theMapRenderer->layerSet();
+    }
+  
+
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
     if ( currentLayerItem )
     {
-      //Let the user omit the layer title item by having an empty layer title string
-      if(!currentLayerItem->text().isEmpty())
+      QString currentLayerId = currentLayerItem->data().toString();
+      if(visibleLayerIds.contains(currentLayerId))
 	{
-	  currentYCoordinate += mLayerSpace;
-	  currentYCoordinate += fontAscentMillimeters( mLayerFont );
-
-	  //draw layer Item
-	  if ( painter )
+	  //Let the user omit the layer title item by having an empty layer title string
+	  if(!currentLayerItem->text().isEmpty())
 	    {
-	      drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
+	      currentYCoordinate += mLayerSpace;
+	      currentYCoordinate += fontAscentMillimeters( mLayerFont );
+
+	      //draw layer Item
+	      if ( painter )
+		{
+		  drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
+		}
 	    }
+
+	  maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
+
+	  //and child items
+	  drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
 	}
-
-      maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
-
-      //and child items
-      drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
     }
   }
 
@@ -133,6 +146,17 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   size.setHeight( currentYCoordinate );
   size.setWidth( maxXCoord );
+
+  //adjust box if width or height is to small
+  if(painter && currentYCoordinate > rect().width())
+    {
+      setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), currentYCoordinate));
+    }
+  if(painter && maxXCoord > rect().height())
+    {
+      setSceneRect( QRectF( transform().dx(), transform().dy(), maxXCoord, rect().height()));
+    }
+  
   return size;
 }
 
