@@ -434,6 +434,15 @@ QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString funct
     PyErr_Clear();
     retval = "__error__";
   }
+  else if ( PyUnicode_Check( obj ) )
+  {
+    PyObject* utf8 = PyUnicode_AsUTF8String( obj );
+    if (utf8)
+      retval = QString::fromUtf8( PyString_AS_STRING( utf8 ) );
+    else
+      retval = "__error__";
+    Py_XDECREF( utf8 );
+  }
   else if ( PyString_Check( obj ) )
   {
     retval = PyString_AS_STRING( obj );
