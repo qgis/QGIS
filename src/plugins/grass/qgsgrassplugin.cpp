@@ -45,6 +45,7 @@
 extern "C"
 {
 #include <grass/Vect.h>
+#include <grass/version.h>
 }
 
 static const QString pluginVersion = QObject::tr( "Version 0.1" );
