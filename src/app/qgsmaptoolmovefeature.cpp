@@ -150,4 +150,6 @@ void QgsMapToolMoveFeature::deactivate()
   //delete rubber band
   delete mRubberBand;
   mRubberBand = 0;
+
+  QgsMapTool::deactivate();
 }

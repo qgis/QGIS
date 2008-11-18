@@ -93,4 +93,6 @@ void QgsMapToolDeleteVertex::deactivate()
 {
   delete mCross;
   mCross = 0;
+
+  QgsMapTool::deactivate();
 }
