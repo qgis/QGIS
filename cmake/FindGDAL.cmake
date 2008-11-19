@@ -49,6 +49,25 @@ ELSE(WIN32)
     # MESSAGE("DBG GDAL_CONFIG ${GDAL_CONFIG}")
     
     IF (GDAL_CONFIG) 
+
+      ## extract gdal version 
+      EXEC_PROGRAM(${GDAL_CONFIG}
+        ARGS --version
+        OUTPUT_VARIABLE GDAL_VERSION )
+      STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
+      STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
+  
+      # MESSAGE("DBG GDAL_VERSION ${GDAL_VERSION}")
+      # MESSAGE("DBG GDAL_VERSION_MAJOR ${GDAL_VERSION_MAJOR}")
+      # MESSAGE("DBG GDAL_VERSION_MINOR ${GDAL_VERSION_MINOR}")
+  
+      # check for gdal version
+      # version 1.2.5 is known NOT to be supported (missing CPL_STDCALL macro)
+      # According to INSTALL, 1.4.0+ is required
+      IF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
+          MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
+      ENDIF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
+
       # set INCLUDE_DIR to prefix+include
       EXEC_PROGRAM(${GDAL_CONFIG}
         ARGS --prefix
