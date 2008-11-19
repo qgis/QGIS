@@ -1,4 +1,5 @@
 <!DOCTYPE TS><TS>
+<defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
     <message>
@@ -15,11 +16,11 @@
     </message>
     <message>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation type="unfinished"></translation>
+        <translation>დაწკაპეთ კოორდინატების საჩვენებლად გამოსაყენებელი კოორდინატთა ათვლის სისტემის ასარჩევად</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატი თქვენს არჩეულ CRS-ში</translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
@@ -42,15 +43,15 @@
     </message>
     <message>
         <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="unfinished"></translation>
+        <translation>ეს არის საწყისი მდგომარეობა. იმისთვის რომ რამე სასარგებლო გამოგივიდეთ, თქვენ უნდა შეცვალოთ კოდი...სამუშაოს ათვისებისთვის და მეტი ინფორმაციის მისაღებად - გააგრძელეთ კითხვა.</translation>
     </message>
     <message>
         <source>Documentation:</source>
-        <translation type="unfinished"></translation>
+        <translation>დოკუმენტაცია:</translation>
     </message>
     <message>
         <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="unfinished"></translation>
+        <translation>თქვენ ნამდვილად გესაჭიროებათ QGIS-ის API-ის დოკუმენტაციის წაკითხვა:</translation>
     </message>
     <message>
         <source>In particular look at the following classes:</source>
@@ -90,11 +91,11 @@
     </message>
     <message>
         <source>This file contains the documentation you are reading now!</source>
-        <translation type="unfinished"></translation>
+        <translation>ეს ფაილი შეიცავს იმ დოკუმენტაციას, რომელსაც თქვენ ახლა კითხულობთ!</translation>
     </message>
     <message>
         <source>Getting developer help:</source>
-        <translation type="unfinished"></translation>
+        <translation>დახმარება პროგრამისტებისათვის:</translation>
     </message>
     <message>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
@@ -102,7 +103,7 @@
     </message>
     <message>
         <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt; QGIS-ის პროგრამისტთა საფოსტო მიმოწერაზე, ან &lt;/li&gt;&lt;li&gt; IRC (#qgis არხით freenode.net-ზე)&lt;/li&gt;</translation>
     </message>
     <message>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
@@ -110,7 +111,7 @@
     </message>
     <message>
         <source>Have fun and thank you for choosing QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>მადლობას გიხდით QGIS-ის გამოყენებისთვის, ისიამოვნეთ.</translation>
     </message>
 </context>
 <context>
@@ -132,7 +133,7 @@
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">არჩევა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OGR Converter</source>
@@ -140,7 +141,7 @@
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>დაკავშირება ვერ მოხერხდა: &apos;</translation>
     </message>
     <message>
         <source>Open OGR file</source>
@@ -148,7 +149,7 @@
     </message>
     <message>
         <source>OGR File Data Source (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR-ის მონაცემთა წყარო (*.*)</translation>
     </message>
     <message>
         <source>Open Directory</source>
@@ -199,15 +200,15 @@
     </message>
     <message>
         <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="unfinished"></translation>
+        <translation>ეს არის საწყისი მდგომარეობა. იმისთვის რომ რამე სასარგებლო გამოგივიდეთ, თქვენ უნდა შეცვალოთ კოდი...სამუშაოს ათვისებისთვის და მეტი ინფორმაციის მისაღებად - გააგრძელეთ კითხვა.</translation>
     </message>
     <message>
         <source>Documentation:</source>
-        <translation type="unfinished"></translation>
+        <translation>დოკუმენტაცია:</translation>
     </message>
     <message>
         <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="unfinished"></translation>
+        <translation>თქვენ ნამდვილად გესაჭიროებათ QGIS-ის API-ის დოკუმენტაციის წაკითხვა:</translation>
     </message>
     <message>
         <source>In particular look at the following classes:</source>
@@ -247,11 +248,11 @@
     </message>
     <message>
         <source>This file contains the documentation you are reading now!</source>
-        <translation type="unfinished"></translation>
+        <translation>ეს ფაილი შეიცავს იმ დოკუმენტაციას, რომელსაც თქვენ ახლა კითხულობთ!</translation>
     </message>
     <message>
         <source>Getting developer help:</source>
-        <translation type="unfinished"></translation>
+        <translation>დახმარება პროგრამისტებისათვის:</translation>
     </message>
     <message>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
@@ -259,7 +260,7 @@
     </message>
     <message>
         <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt; QGIS-ის პროგრამისტთა საფოსტო მიმოწერაზე, ან &lt;/li&gt;&lt;li&gt; IRC (#qgis არხით freenode.net-ზე)&lt;/li&gt;</translation>
     </message>
     <message>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
@@ -267,14 +268,14 @@
     </message>
     <message>
         <source>Have fun and thank you for choosing QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>მადლობას გიხდით QGIS-ის გამოყენებისთვის, ისიამოვნეთ.</translation>
     </message>
 </context>
 <context>
     <name>MapCoordsDialogBase</name>
     <message>
         <source>Enter map coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ რუკის კოორდინატები</translation>
     </message>
     <message>
         <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
@@ -305,7 +306,7 @@
     <name>OgrConverterGuiBase</name>
     <message>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR ფენის გარდამქმნელი</translation>
     </message>
     <message>
         <source>Source</source>
@@ -325,7 +326,7 @@
     </message>
     <message>
         <source>Remote source</source>
-        <translation type="unfinished"></translation>
+        <translation>მოშორებული წყარი</translation>
     </message>
     <message>
         <source>Dataset</source>
@@ -333,7 +334,7 @@
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">არჩევა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Layer</source>
@@ -341,18 +342,18 @@
     </message>
     <message>
         <source>Target</source>
-        <translation type="unfinished"></translation>
+        <translation>სამიზნე</translation>
     </message>
 </context>
 <context>
     <name>OgrPlugin</name>
     <message>
         <source>Run OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR ფენის გარდამქნელის გაშვება</translation>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation>გარდაქმნის ვექტორულ ფენებს OGR ბიბლიოთეკის მიერ მხარდაჭერილ ფორმატებში</translation>
     </message>
     <message>
         <source>OG&amp;R Converter</source>
@@ -363,15 +364,15 @@
     <name>QFileDialog</name>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის პარამეტრების სტილის ფაილიდან ჩატცირთვა (.qml)</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის პარამეტრების სტილის ფაილად შენახვა (.qml)</translation>
     </message>
     <message>
         <source>Save experiment report to portable document format (.pdf)</source>
-        <translation type="unfinished"></translation>
+        <translation>ექსპერიმენტის მოხსენების PDF ფორმატში შენახვა (.pdf)</translation>
     </message>
 </context>
 <context>
@@ -386,15 +387,15 @@
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis ფაილები (*.qgs)</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა ვექტორული ფენა</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>მიმდინარე ფენა არ არის ვექტორული ფენა</translation>
     </message>
     <message>
         <source>2.5D shape type not supported</source>
@@ -414,7 +415,7 @@
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენა არ არის რედაქტირებადი</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
@@ -422,7 +423,7 @@
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების არასწორი ხელსაწყო</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
@@ -430,7 +431,7 @@
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატის გარდაქმნის შეცდომა</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -458,11 +459,11 @@
     </message>
     <message>
         <source>Error, could not add island</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა, კუნძულის დამატება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიქმნა პრობლემა გეომეტრიის ტიპთან დაკავშირებით</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
@@ -498,11 +499,11 @@
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished"></translation>
+        <translation>დიაპაზონი</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>სიგრძე</translation>
     </message>
     <message>
         <source>Area</source>
@@ -610,7 +611,7 @@
     </message>
     <message>
         <source> sq.deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>კვ.გრად.</translation>
     </message>
     <message>
         <source> degree</source>
@@ -626,15 +627,15 @@
     </message>
     <message>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>მიღებულია %1 ბაიტი %2-დან</translation>
     </message>
     <message>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>მიღებულია %1 ბაიტი (ზომა უცნობია)</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა დაკავშირებული</translation>
     </message>
     <message>
         <source>Looking up &apos;%1&apos;</source>
@@ -642,15 +643,15 @@
     </message>
     <message>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>დაკავშირება &apos;%1&apos;-თან</translation>
     </message>
     <message>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>მოთხოვნის გაგზავნა -  &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Receiving reply</source>
-        <translation type="unfinished"></translation>
+        <translation>პასუხის მიღება</translation>
     </message>
     <message>
         <source>Response is complete</source>
@@ -658,7 +659,7 @@
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation type="unfinished"></translation>
+        <translation>კავშირის დახურვა</translation>
     </message>
     <message>
         <source>Label</source>
@@ -666,7 +667,7 @@
     </message>
     <message>
         <source>Loading style file </source>
-        <translation type="unfinished"></translation>
+        <translation>სტილის ფაილის ჩატვირთვა</translation>
     </message>
     <message>
         <source> failed because:</source>
@@ -678,11 +679,11 @@
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished"></translation>
+        <translation>დირექტორია რომელიც შეიცავს თქვენს მონაცემებს უნდა იყოს ჩაწერადი!</translation>
     </message>
     <message>
         <source>Created default style file as </source>
-        <translation type="unfinished"></translation>
+        <translation>შეიქმნა ნაგულისმები სტილის ფაილი როგორც</translation>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1 Check file permissions and retry.</source>
@@ -698,7 +699,7 @@
     </message>
     <message>
         <source> at line </source>
-        <translation type="unfinished"></translation>
+        <translation>სტრიქონთან</translation>
     </message>
     <message>
         <source> column </source>
@@ -714,7 +715,7 @@
     </message>
     <message>
         <source> is not writeable.</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა ჩაწერადი.</translation>
     </message>
     <message>
         <source>Please adjust permissions (if possible) and try again.</source>
@@ -771,7 +772,7 @@
     </message>
     <message>
         <source>Draws copyright information</source>
-        <translation type="unfinished"></translation>
+        <translation>ათავსებს ინფორმაციას საავტორო უფლებების შესახებ</translation>
     </message>
     <message>
         <source>Version 0.2</source>
@@ -791,7 +792,7 @@
     </message>
     <message>
         <source>Converts from dxf to shp file format</source>
-        <translation type="unfinished"></translation>
+        <translation>გარდაქმნის dxf-ს shp ფორმატში</translation>
     </message>
     <message>
         <source>PostgreSQL Geoprocessing</source>
@@ -831,7 +832,7 @@
     </message>
     <message>
         <source>New centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ცენტროიდი</translation>
     </message>
     <message>
         <source>New point</source>
@@ -843,11 +844,11 @@
     </message>
     <message>
         <source>Undo last point</source>
-        <translation type="unfinished"></translation>
+        <translation>უკანასნელი წერტილის დაბრუნება</translation>
     </message>
     <message>
         <source>Close line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის ჩაკეტვა</translation>
     </message>
     <message>
         <source>Select vertex</source>
@@ -855,7 +856,7 @@
     </message>
     <message>
         <source>Select new position</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი მდებარეობის არჩევა</translation>
     </message>
     <message>
         <source>Select line segment</source>
@@ -879,7 +880,7 @@
     </message>
     <message>
         <source>Select element</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის არჩევა</translation>
     </message>
     <message>
         <source>New location</source>
@@ -899,7 +900,7 @@
     </message>
     <message>
         <source>Split the line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის გაწყვეტა</translation>
     </message>
     <message>
         <source>Release the line</source>
@@ -917,7 +918,7 @@
     <message>
         <source>&lt;br&gt;Mapset: </source>
         <comment>Metadata in GRASS Browser</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;რუკათა ნაკრები: </translation>
     </message>
     <message>
         <source>Location: </source>
@@ -925,7 +926,7 @@
     </message>
     <message>
         <source>&lt;br&gt;Mapset: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;რუკათა ნაკრები: </translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
@@ -933,11 +934,11 @@
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation type="unfinished"></translation>
+        <translation>რასტრული თავსართის გახსნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>რიგები</translation>
     </message>
     <message>
         <source>Columns</source>
@@ -945,11 +946,11 @@
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>N-S გარჩევადობა</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>E-W გარჩევადობა</translation>
     </message>
     <message>
         <source>North</source>
@@ -1001,11 +1002,11 @@
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>წერტილები</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზები</translation>
     </message>
     <message>
         <source>Boundaries</source>
@@ -1013,7 +1014,7 @@
     </message>
     <message>
         <source>Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>ცენტროიდები</translation>
     </message>
     <message>
         <source>Faces</source>
@@ -1025,7 +1026,7 @@
     </message>
     <message>
         <source>Areas</source>
-        <translation type="unfinished"></translation>
+        <translation>არეები</translation>
     </message>
     <message>
         <source>Islands</source>
@@ -1033,11 +1034,11 @@
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>ზედა</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>ქვედა</translation>
     </message>
     <message>
         <source>yes</source>
@@ -1057,7 +1058,7 @@
     </message>
     <message>
         <source>Features</source>
-        <translation type="unfinished"></translation>
+        <translation>თვისებები</translation>
     </message>
     <message>
         <source>Driver</source>
@@ -1077,7 +1078,7 @@
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
@@ -1093,7 +1094,7 @@
     </message>
     <message>
         <source>Interpolating...</source>
-        <translation type="unfinished"></translation>
+        <translation>ინტერპოლაცია...</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -1121,7 +1122,7 @@
     </message>
     <message>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR ფენის გარდამქმნელი</translation>
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
@@ -1129,7 +1130,7 @@
     </message>
     <message>
         <source>[menuitemname]</source>
-        <translation type="unfinished">[menuitemname]</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>[plugindescription]</source>
@@ -1210,11 +1211,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Mapset is already in use.</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები უკვე გამოიყენება.</translation>
     </message>
     <message>
         <source>Cannot start </source>
-        <translation type="unfinished"></translation>
+        <translation>გაშვება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Temporary directory </source>
@@ -1222,15 +1223,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source> exist but is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation>არსებობს მაგრამ არაა ჩაწერადი</translation>
     </message>
     <message>
         <source>Cannot create temporary directory </source>
-        <translation type="unfinished"></translation>
+        <translation>დროებითი დირექტორიის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Cannot create </source>
-        <translation type="unfinished"></translation>
+        <translation>შერ შეიქმნა</translation>
     </message>
     <message>
         <source>Cannot remove mapset lock: </source>
@@ -1250,11 +1251,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cannot read region</source>
-        <translation type="unfinished"></translation>
+        <translation>რეგიონის წაკითხვა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Couldn&apos;t load SIP module.</source>
-        <translation type="unfinished"></translation>
+        <translation>SIP მოდულის ჩატვირთვა ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>Python support will be disabled.</source>
@@ -1262,31 +1263,31 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Couldn&apos;t load PyQt4.</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQt4-ის ჩატვირთვა ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>Couldn&apos;t load PyQGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQGIS-ის ჩატვირთვა ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა Python-ის კოდის შესრულებისას:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python-ის ვერსია:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python-ის გეზი:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Python-ის შეცდომა</translation>
+        <translation>Python-ის შეცდომა</translation>
     </message>
     <message>
         <source>An error occured during execution of following code:</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა შემდეგი კოდის შესრულებისას:</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin </source>
@@ -1302,19 +1303,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Error while unloading plugin </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error Loading Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
-%1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error when reading metadata of plugin </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1336,7 +1324,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Checking database</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ბაზის შემოწმება</translation>
     </message>
     <message>
         <source>Reading settings</source>
@@ -1344,7 +1332,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Setting up the GUI</source>
-        <translation type="unfinished"></translation>
+        <translation>გრაფიკული ინტერფეისის გამართვა</translation>
     </message>
     <message>
         <source>Checking provider plugins</source>
@@ -1360,15 +1348,15 @@ Please contact the developers.
     </message>
     <message>
         <source>Initializing file filters</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილური ფილტრების ინიციალიზება</translation>
     </message>
     <message>
         <source>Restoring window state</source>
-        <translation type="unfinished"></translation>
+        <translation>ფანჯრების მდგომარეობის აღდგენა</translation>
     </message>
     <message>
         <source>QGIS Ready!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS მზადაა!</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
@@ -1428,7 +1416,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Save map as image</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის გამოსახულების სახით შენახვა</translation>
     </message>
     <message>
         <source>&amp;Print Composer</source>
@@ -1466,7 +1454,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Undo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>უკანასკნელი ოპერაციის დაბრუნება</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
@@ -1482,7 +1470,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>ას&amp;ლი</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -1577,7 +1565,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეულის წაშლა</translation>
     </message>
     <message>
         <source>Add Vertex</source>
@@ -1613,7 +1601,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Ctrl++</source>
@@ -1622,7 +1610,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>დაპატარავება</translation>
     </message>
     <message>
         <source>Ctrl+-</source>
@@ -1631,11 +1619,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Select Features</source>
-        <translation type="unfinished"></translation>
+        <translation>თვისებების არჩევა</translation>
     </message>
     <message>
         <source>Identify Features</source>
-        <translation type="unfinished"></translation>
+        <translation>თვისებების იდენტიფიცირება</translation>
     </message>
     <message>
         <source>I</source>
@@ -1648,7 +1636,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Measure Line </source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის გაზომვა</translation>
     </message>
     <message>
         <source>M</source>
@@ -1657,11 +1645,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Measure a Line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის გაზომვა</translation>
     </message>
     <message>
         <source>Measure Area</source>
-        <translation type="unfinished"></translation>
+        <translation>არეს გაზომვა</translation>
     </message>
     <message>
         <source>J</source>
@@ -1670,11 +1658,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Measure an Area</source>
-        <translation type="unfinished"></translation>
+        <translation>არეს გაზომვა</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>სრულად გადიდება</translation>
     </message>
     <message>
         <source>F</source>
@@ -1700,7 +1688,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Zoom Last</source>
-        <translation type="unfinished"></translation>
+        <translation>წინა მასშტაბი</translation>
     </message>
     <message>
         <source>Zoom to Last Extent</source>
@@ -1724,7 +1712,7 @@ Please contact the developers.
     </message>
     <message>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი სანიშნე...</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
@@ -1733,11 +1721,11 @@ Please contact the developers.
     </message>
     <message>
         <source>New Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი სანიშნე</translation>
     </message>
     <message>
         <source>Show Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>სანიშნეების ჩვენება</translation>
     </message>
     <message>
         <source>B</source>
@@ -1759,7 +1747,7 @@ Please contact the developers.
     </message>
     <message>
         <source>New Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ვექტორული ფენა...</translation>
     </message>
     <message>
         <source>N</source>
@@ -1768,11 +1756,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Create a New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ვექტორული ფენის შექმნა</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>ვექტორული ფენის დამატება...</translation>
     </message>
     <message>
         <source>V</source>
@@ -1798,7 +1786,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS ფენის დამატება...</translation>
     </message>
     <message>
         <source>D</source>
@@ -1807,11 +1795,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Add a PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი PostGIS ფენის დამატება</translation>
     </message>
     <message>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS ფენის დამატება...</translation>
     </message>
     <message>
         <source>W</source>
@@ -1824,11 +1812,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>ატრიბუტების ცხრილის გახსნა</translation>
     </message>
     <message>
         <source>Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების ჩართვა</translation>
     </message>
     <message>
         <source>Toggles the editing state of the current layer</source>
@@ -2001,7 +1989,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Toggles between a predefined size and the window size set by the user</source>
@@ -2009,11 +1997,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Bring All to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველაფრის წინ გამოტანა</translation>
     </message>
     <message>
         <source>Bring forward all open windows</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველა ღია ფანჯრის წინ გამოტანა</translation>
     </message>
     <message>
         <source>Help Contents</source>
@@ -2035,7 +2023,7 @@ Please contact the developers.
     </message>
     <message>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-ის სათაო გვერდი</translation>
     </message>
     <message>
         <source>Ctrl+H</source>
@@ -2044,11 +2032,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Check Qgis Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Qgis-ის ვერსიის შემოწმება</translation>
     </message>
     <message>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-ის უახლოეს ვერსიაზე შემოწმება (საჭიროებს ინტერნეტთან წვდომას)</translation>
     </message>
     <message>
         <source>About</source>
@@ -2072,7 +2060,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>პანელები</translation>
     </message>
     <message>
         <source>Toolbars</source>
@@ -2084,7 +2072,7 @@ Please contact the developers.
     </message>
     <message>
         <source>&amp;Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ფენა</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -2108,7 +2096,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Manage Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენების მართვა</translation>
     </message>
     <message>
         <source>Digitizing</source>
@@ -2140,11 +2128,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის კოორდინატების კურსორის მიმდინარე მდებარეობასთან ახლოს ჩვენება. ეკრანის განახლება ხდება თაგუნას გადაადგილებასთან ერთად.</translation>
     </message>
     <message>
         <source>Scale </source>
-        <translation>მასტაბირება</translation>
+        <translation>მასშტაბი</translation>
     </message>
     <message>
         <source>Current map scale</source>
@@ -2152,11 +2140,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Displays the current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>აჩვენებს რუკის მიმდინარე მასშტაბს</translation>
     </message>
     <message>
         <source>Current map scale (formatted as x:y)</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის მიმდინარე მასშტაბი (წარმოდგენილი როგორც x:y)</translation>
     </message>
     <message>
         <source>Stop map rendering</source>
@@ -2182,7 +2170,9 @@ Please contact the developers.
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა ხატულების რესურსების შემდეგი მისამართიდან მიღებისას: 
+ %1
+ გამოსვლა...</translation>
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
@@ -2190,7 +2180,7 @@ Please contact the developers.
     </message>
     <message>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა ათვლის სისტემის მდგომარეობა - დაწყაპეთ კოორდინატთა ათვლის სისტემის დიალოგის საჩვენებლად</translation>
     </message>
     <message>
         <source>Ready</source>
@@ -2218,20 +2208,21 @@ Please contact the developers.
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>თქვენ იყენებთ QGIS-ის %1 ვერსიას, რომელიაც აგებულია %2 გამოცემის კოდით.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation> QGIS-ის ეს ვერსია აგებულია PostgreSQL-ის მხარდაჭერით.</translation>
     </message>
     <message>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation> QGIS-ის ამ ვერსიას არ გააჩნია PostgreSQL-ის მხარდაჭერა.</translation>
     </message>
     <message>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+ეს ბინარული ფაილი აგებულია Qt %1-თვის და ამ მომენტში ის გაშვებულია Qt %2-ით</translation>
     </message>
     <message>
         <source>Version</source>
@@ -2279,7 +2270,11 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python-ის შეცდომა</translation>
+        <translation>Python-ის შეცდომა</translation>
+    </message>
+    <message>
+        <source>Error when reading metadata of plugin </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
@@ -2291,11 +2286,11 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Invalid Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>არასწორი მონაცემთა წყარო</translation>
     </message>
     <message>
         <source>Invalid Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>არასწორი ფენა</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded.</source>
@@ -2311,7 +2306,11 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა QGIS-ის პროექტის წაკითხვისას</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation></translation>
     </message>
     <message>
         <source>Try to find missing layers?</source>
@@ -2363,7 +2362,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენა არაა არჩეული</translation>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
@@ -2411,7 +2410,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების შეწყვეტა</translation>
     </message>
     <message>
         <source>Do you want to save the changes to layer %1?</source>
@@ -2434,10 +2433,19 @@ Errors:  %2
     </message>
     <message>
         <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
+        <translation>არასწორი მასშტაბი</translation>
     </message>
     <message>
         <source>Python Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
+%1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2458,11 +2466,11 @@ Errors:  %2
     </message>
     <message>
         <source>QGIS Version Information</source>
-        <translation type="unfinished"></translation>
+        <translation>ინფორმაცია QGIS-ის ვერსიის შესახებ</translation>
     </message>
     <message>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - უკანასკნელი გამოცემის შემდგომი ცვლილებები SVN-ში </translation>
     </message>
     <message>
         <source>Unable to get current version information from server</source>
@@ -2538,11 +2546,11 @@ Errors:  %2
     </message>
     <message>
         <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ ახალი სანიშნის სახელი:</translation>
     </message>
     <message>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="unfinished"></translation>
+        <translation>სანიშნის შექმნა ვერ მოხერხდა. თქვენი სამომხმარებლო მონაცემთა ბაზა ან არ არსებობს ან დაზიანებულია</translation>
     </message>
     <message>
         <source>Project file is older</source>
@@ -2585,10 +2593,6 @@ Errors:  %2
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -2600,16 +2604,36 @@ Errors:  %2
 <context>
     <name>QgsAbout</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">სახელი</translation>
-    </message>
-    <message>
-        <source>About Quantum GIS</source>
+        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Name</source>
+        <translation>სახელი</translation>
+    </message>
+    <message>
+        <source>Website</source>
+        <translation>ვებგვერდი</translation>
+    </message>
+    <message>
+        <source>Available QGIS Data Provider Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available Qt Database Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available Qt Image Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About Quantum GIS</source>
+        <translation>Quantum GIS-ის შესახებ</translation>
+    </message>
+    <message>
         <source>About</source>
-        <translation type="unfinished">შესახებ</translation>
+        <translation>პროგრამის შესახებ</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -2635,7 +2659,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-ის სათაო გვერდი</translation>
     </message>
     <message>
         <source>Join our user mailing list</source>
@@ -2643,11 +2667,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>What&apos;s New</source>
-        <translation type="unfinished"></translation>
+        <translation>რა არის ახალი</translation>
     </message>
     <message>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation>შემმუშავებლები</translation>
     </message>
     <message>
         <source>Providers</source>
@@ -2655,7 +2679,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sponsors</source>
-        <translation type="unfinished"></translation>
+        <translation>სპონსორები</translation>
     </message>
     <message>
         <source>Ok</source>
@@ -2708,11 +2732,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Enter the action name here</source>
-        <translation type="unfinished"></translation>
+        <translation>აქ შეიყვანეთ მოქმედების სახელი</translation>
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
@@ -2720,11 +2744,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">მოქმედება</translation>
+        <translation>მოქმედება</translation>
     </message>
     <message>
         <source>Enter the action command here</source>
-        <translation type="unfinished"></translation>
+        <translation>აქ შეიყვანეთ მოქმედების ბრძანება</translation>
     </message>
     <message>
         <source>Browse for action</source>
@@ -2740,7 +2764,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>The valid attribute names for this layer</source>
@@ -2752,7 +2776,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Insert field</source>
-        <translation type="unfinished"></translation>
+        <translation>ველის ჩასმა</translation>
     </message>
     <message>
         <source>Captures any output from the action</source>
@@ -2780,7 +2804,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Insert action</source>
-        <translation type="unfinished"></translation>
+        <translation>მოქმედების ჩასმა</translation>
     </message>
     <message>
         <source>Update the selected action</source>
@@ -2788,7 +2812,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update action</source>
-        <translation type="unfinished"></translation>
+        <translation>მოქმედების განახლება</translation>
     </message>
     <message>
         <source>Move the selected action up</source>
@@ -2796,7 +2820,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move up</source>
-        <translation type="unfinished"></translation>
+        <translation>აწევა</translation>
     </message>
     <message>
         <source>Move the selected action down</source>
@@ -2804,15 +2828,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move down</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩაწევა</translation>
     </message>
     <message>
         <source>Remove the selected action</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული მოქმედების ამოღება</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>ამოღება</translation>
     </message>
 </context>
 <context>
@@ -2851,28 +2875,20 @@ p, li { white-space: pre-wrap; }
         <source>Run action</source>
         <translation>მოქმედების შესრულება</translation>
     </message>
-    <message>
-        <source>Updating selection...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="unfinished">შეწყვეტა</translation>
-    </message>
 </context>
 <context>
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>ატრიბუტების ცხრილი</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეულის ამოღება</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეულის ზევით აწევა</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -2880,7 +2896,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩევანის ინვერსია</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -2888,11 +2904,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული სტრიქონების გაცვლის ბუფერში კოპირება (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>აკოპირებს არჩეულ სტრიქონებს გაცვლის ბუფერში</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -2932,18 +2948,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების რეჟიმის გადართვა</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation>დაწკაპეთ ცხრილის რედაქტირების ჩართვისთვის</translation>
     </message>
 </context>
 <context>
     <name>QgsAttributeTableDisplay</name>
     <message>
         <source>select</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩევა</translation>
     </message>
     <message>
         <source>select and bring to top</source>
@@ -2955,67 +2971,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished"></translation>
+        <translation>ატრიბუტების ცხრილი -</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">ფაილი</translation>
+        <translation>ფაილი</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">დაკეტვა</translation>
+        <translation>დაკეტვა</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">რედაქტირება</translation>
+        <translation>რედაქტირება</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">დაბრ&amp;უნება</translation>
+        <translation>დაბრ&amp;უნება</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished">Ctrl+Z</translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">ამო&amp;ჭრა</translation>
+        <translation>ამო&amp;ჭრა</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>ას&amp;ლი</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;ჩასმა</translation>
+        <translation>&amp;ჩასმა</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">წაშლა</translation>
+        <translation>წაშლა</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">ფენა</translation>
+        <translation>ფენა</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
@@ -3023,44 +3039,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების გადართვა</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">ცხრილი</translation>
+        <translation>ცხრილი</translation>
     </message>
     <message>
         <source>Move to Top</source>
-        <translation type="unfinished"></translation>
+        <translation>ზევით აწევა</translation>
     </message>
     <message>
         <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation>ინვერსია</translation>
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა საძებნი სტრიქონის დამუშავებისას</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation type="unfinished">ძებნის შედეგები</translation>
+        <translation>ძებნის შედეგები</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished"></translation>
+        <translation>თქვენ მიუთითეთ ცარიელი საძებნი სტრიქონი.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა ძებნისას</translation>
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">
-        </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -3095,11 +3110,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation> სანიშნე?</translation>
     </message>
     <message>
         <source>Error deleting bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა სანიშნეს წაშლისას</translation>
     </message>
     <message>
         <source>Failed to delete the </source>
@@ -3108,7 +3123,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source> bookmark from the database. The database said:
 </source>
-        <translation type="unfinished"></translation>
+        <translation> სანიშნე მონაცემთა ბაზიდან. მონაცემთა ბაზამ თქვა:
+</translation>
     </message>
 </context>
 <context>
@@ -3138,7 +3154,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposer</name>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished"></translation>
+        <translation>შიგთავსის გადატანა</translation>
     </message>
     <message>
         <source>Move item content</source>
@@ -3146,51 +3162,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation>ჯ&amp;გუფი</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტების დაჯგუფება</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>განჯგ&amp;უფვა</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტების განჯგუფვა</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished"></translation>
+        <translation>ამოწევა</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ელემენტების ამოწევა</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩაწევა</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ელემენების ჩაწევა</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>წინ გამოტანა</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ელემენტების წინ გამოტანა</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation>უკან გადატანა</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ელემენტების უკან გადატანა</translation>
     </message>
     <message>
         <source>QGIS - print composer</source>
@@ -3198,63 +3214,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">ფაილი</translation>
+        <translation>ფაილი</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">დაკეტვა</translation>
+        <translation>დაკეტვა</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">რედაქტირება</translation>
+        <translation>რედაქტირება</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation type="unfinished">დაბრ&amp;უნება</translation>
+        <translation>დაბრ&amp;უნება</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation type="unfinished">Ctrl+Z</translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">ამო&amp;ჭრა</translation>
+        <translation>ამო&amp;ჭრა</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>ას&amp;ლი</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished">&amp;ჩასმა</translation>
+        <translation>&amp;ჩასმა</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">წაშლა</translation>
+        <translation>წაშლა</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>ხედი</translation>
     </message>
     <message>
         <source>Layout</source>
@@ -3262,15 +3278,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map 1</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკა 1</translation>
     </message>
     <message>
         <source>Big image</source>
-        <translation type="unfinished"></translation>
+        <translation>დიდი გამოსახულება</translation>
     </message>
     <message>
         <source>To create image </source>
-        <translation type="unfinished"></translation>
+        <translation>გამოსახულების შესაქმნელად</translation>
     </message>
     <message>
         <source> requires circa </source>
@@ -3278,11 +3294,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> MB of memory</source>
-        <translation type="unfinished"></translation>
+        <translation> მბ მეხსიერება</translation>
     </message>
     <message>
         <source>format</source>
-        <translation type="unfinished"></translation>
+        <translation>ფორმატი</translation>
     </message>
     <message>
         <source>Choose a file name to save the map image as</source>
@@ -3294,7 +3310,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished">აღარ აჩვენო ეს შეტყობინება</translation>
+        <translation>აღარ აჩვენო ეს შეტყობინება</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose a file name to save the map as</source>
@@ -3302,11 +3322,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>SVG Format</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG ფორმატი</translation>
     </message>
     <message>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation>პროექტი შეიცავს WMS ფენებს</translation>
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
@@ -3321,7 +3341,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი
+</translation>
     </message>
     <message>
         <source>Composition</source>
@@ -3329,39 +3350,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტი</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">დახმარება</translation>
+        <translation>დახხმარება</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">დაკეტვა</translation>
+        <translation>დაკეტვა</translation>
     </message>
     <message>
         <source>&amp;Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>ბე&amp;ჭდვა...</translation>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>სრულად გადიდება</translation>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>დაპატარავება</translation>
     </message>
     <message>
         <source>Add Map</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის დამატება</translation>
     </message>
     <message>
         <source>Add new map</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკის დამატება</translation>
     </message>
     <message>
         <source>Add Label</source>
@@ -3381,39 +3402,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Item</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის გადატანა</translation>
     </message>
     <message>
         <source>Select/Move item</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის არჩევა/გადატანა</translation>
     </message>
     <message>
         <source>Export as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოსახულების სახით დაექსპორტება...</translation>
     </message>
     <message>
         <source>Export as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG ფორმატში დაექსპორტება...</translation>
     </message>
     <message>
         <source>Add Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>მასშტაბის დაფის დამატება</translation>
     </message>
     <message>
         <source>Add new scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>მასშტაბის ახალი დაფის დამატება</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">განახლება</translation>
+        <translation>განახლება</translation>
     </message>
     <message>
         <source>Refresh view</source>
-        <translation type="unfinished"></translation>
+        <translation>ხედის განახლება</translation>
     </message>
     <message>
         <source>Add Image</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოსახულების დამატება</translation>
     </message>
 </context>
 <context>
@@ -3440,7 +3461,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation>გაუმჭვირვალობა:</translation>
     </message>
     <message>
         <source>Outline width: </source>
@@ -3459,7 +3480,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">შრიფტი</translation>
+        <translation>შრიფტი</translation>
     </message>
     <message>
         <source>Margin (mm):</source>
@@ -3485,7 +3506,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -3493,7 +3514,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>შრიფტი:</translation>
     </message>
     <message>
         <source>Title...</source>
@@ -3501,11 +3522,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენა...</translation>
     </message>
     <message>
         <source>Item...</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტი...</translation>
     </message>
     <message>
         <source>Symbol width: </source>
@@ -3517,7 +3538,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer space: </source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის სივრცე:</translation>
     </message>
     <message>
         <source>Symbol space:</source>
@@ -3537,27 +3558,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>down</source>
-        <translation type="unfinished"></translation>
+        <translation>ქვევით</translation>
     </message>
     <message>
         <source>up</source>
-        <translation type="unfinished"></translation>
+        <translation>ზევით</translation>
     </message>
     <message>
         <source>remove</source>
-        <translation type="unfinished"></translation>
+        <translation>ამოღება</translation>
     </message>
     <message>
         <source>edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირება...</translation>
     </message>
     <message>
         <source>update</source>
-        <translation type="unfinished"></translation>
+        <translation>განახლება</translation>
     </message>
     <message>
         <source>update all</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველაფრის განახლება</translation>
     </message>
 </context>
 <context>
@@ -3568,7 +3589,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map will be printed here</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკა დაიბეჭდება აქ</translation>
     </message>
 </context>
 <context>
@@ -3699,7 +3720,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>რიცხვითი</translation>
     </message>
 </context>
 <context>
@@ -3726,7 +3747,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>რიცხვითი</translation>
     </message>
     <message>
         <source>Map </source>
@@ -3741,7 +3762,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Segment size (map units):</source>
-        <translation type="unfinished"></translation>
+        <translation>სეგმენტის ზომა (რუკის ერთეულები):</translation>
     </message>
     <message>
         <source>Map units per bar unit:</source>
@@ -3749,11 +3770,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Number of segments:</source>
-        <translation type="unfinished"></translation>
+        <translation>სეგმენტების რაოდენობა:</translation>
     </message>
     <message>
         <source>Segments left:</source>
-        <translation type="unfinished"></translation>
+        <translation>დარჩენილი სეგმენტები:</translation>
     </message>
     <message>
         <source>Style:</source>
@@ -3769,7 +3790,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line width:</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის სიგრძე:</translation>
     </message>
     <message>
         <source>Label space:</source>
@@ -3843,7 +3864,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="unfinished">ორიენტაცია</translation>
+        <translation>ორიენტაცია</translation>
     </message>
     <message>
         <source>Height</source>
@@ -3999,7 +4020,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsCoordinateTransform</name>
     <message>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation type="unfinished"></translation>
+        <translation>წყაროს სივრცული (კოორდინატთა) ათვლის სისტემა არასწორია. </translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
@@ -4084,7 +4105,10 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -4178,7 +4202,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Define</source>
-        <translation type="unfinished"></translation>
+        <translation>განსაზღვრა</translation>
     </message>
     <message>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
@@ -4186,47 +4210,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">პარამეტრები</translation>
+        <translation>პარამეტრები</translation>
     </message>
     <message>
         <source>|&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>|&lt;</translation>
     </message>
     <message>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <source>1 of 1</source>
-        <translation type="unfinished"></translation>
+        <translation>1-დან 1</translation>
     </message>
     <message>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <source>&gt;|</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;|</translation>
     </message>
     <message>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation>*</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>ტესტი</translation>
     </message>
     <message>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
@@ -4234,7 +4258,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Geographic / WGS84</source>
-        <translation type="unfinished"></translation>
+        <translation>გეოგრაფიული / WGS84</translation>
     </message>
     <message>
         <source>Destination CRS        </source>
@@ -4242,15 +4266,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished">ჩრდილოეთი</translation>
+        <translation>ჩრდილოეთი</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished">აღმოსავლეთი</translation>
+        <translation>აღმოსავლეთი</translation>
     </message>
     <message>
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოთვლა</translation>
     </message>
 </context>
 <context>
@@ -4265,19 +4289,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველა</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">სქემა</translation>
+        <translation>სქემა</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">ცხრილი</translation>
+        <translation>ცხრილი</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">ტიპი</translation>
+        <translation>ტიპი</translation>
     </message>
     <message>
         <source>Geometry column</source>
@@ -4285,27 +4309,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the </source>
-        <translation type="unfinished">ნამდვილად გსურთ წაშალოთ </translation>
+        <translation>ნამდვილად გსურთ </translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation> წაშალოთ კავშირი და ყველა შესაბამისი პარამეტრები?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">წაშლის დადასტურება</translation>
+        <translation>დაადასტურეთ წაშლა</translation>
     </message>
     <message>
         <source>Select Table</source>
-        <translation type="unfinished"></translation>
+        <translation>აირჩიეთ ცხრილი</translation>
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის დასამატებლად თქვენ უნდა აირჩიოთ ცხრილი.</translation>
     </message>
     <message>
         <source>Password for </source>
@@ -4313,11 +4337,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ შეიყვანოთ თქვენი პაროლი:</translation>
     </message>
     <message>
         <source>Connection failed</source>
-        <translation type="unfinished"></translation>
+        <translation>დაკავშირება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
@@ -4351,11 +4375,11 @@ geometry.</source>
     <name>QgsDbSourceSelectBase</name>
     <message>
         <source>Add PostGIS Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS-ის ცხრილ(ებ)ის დამატება</translation>
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL-ის კავშირები</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -4430,7 +4454,7 @@ geometry.</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">წერტილი</translation>
+        <translation>წერტილი</translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -4438,7 +4462,7 @@ geometry.</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზი</translation>
     </message>
     <message>
         <source>Multiline</source>
@@ -4491,7 +4515,7 @@ geometry.</source>
     <name>QgsDelimitedTextPluginGui</name>
     <message>
         <source>Parse</source>
-        <translation type="unfinished"></translation>
+        <translation>დამუშავება</translation>
     </message>
     <message>
         <source>Description</source>
@@ -4507,11 +4531,11 @@ geometry.</source>
     </message>
     <message>
         <source>No layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენას სახელი არ აქვს</translation>
     </message>
     <message>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის რუკაში დამატებამდე გთხოვთ შეიყვანოთ მისი სახელი</translation>
     </message>
     <message>
         <source>No delimiter</source>
@@ -4545,11 +4569,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name of the field containing x values</source>
-        <translation type="unfinished"></translation>
+        <translation>x-ის მნიშვნელობების შემცველი ველის სახელი</translation>
     </message>
     <message>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -4561,7 +4585,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name of the field containing y values</source>
-        <translation type="unfinished"></translation>
+        <translation>y-ის მნიშვნელობების შემცველი ველის სახელი</translation>
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -4589,11 +4613,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">ნუსხა...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის სახელი</translation>
     </message>
     <message>
         <source>Name to display in the map legend</source>
@@ -4609,7 +4633,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>გამყოფი</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
@@ -4633,7 +4657,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>რეგულარული გამოსახულება</translation>
     </message>
 </context>
 <context>
@@ -4741,23 +4765,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSDeviceDialogBase</name>
     <message>
         <source>GPS Device Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS მოწყობილობის რედაქტორი</translation>
     </message>
     <message>
         <source>New device</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი მოწყობილობა</translation>
     </message>
     <message>
         <source>Delete device</source>
-        <translation type="unfinished"></translation>
+        <translation>მოწყობილობის წაშლა</translation>
     </message>
     <message>
         <source>Update device</source>
-        <translation type="unfinished"></translation>
+        <translation>მოწყობილობის განახლება</translation>
     </message>
     <message>
         <source>Device name</source>
-        <translation type="unfinished"></translation>
+        <translation>მოწყობილობის სახელი</translation>
     </message>
     <message>
         <source>This is the name of the device as it will appear in the lists</source>
@@ -4765,15 +4789,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>ბრძანებები</translation>
     </message>
     <message>
         <source>Track download:</source>
-        <translation type="unfinished"></translation>
+        <translation>ბილიკის ჩამოტვირთვა:</translation>
     </message>
     <message>
         <source>Route upload:</source>
-        <translation type="unfinished"></translation>
+        <translation>მარშრუტის ატვირთვა:</translation>
     </message>
     <message>
         <source>Waypoint download:</source>
@@ -4781,11 +4805,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The command that is used to download routes from the device</source>
-        <translation type="unfinished"></translation>
+        <translation>ბრძანება რომელიც გამოიყენება მარშრუტების მოწყობილობიდან ჩამოსატვითად</translation>
     </message>
     <message>
         <source>Route download:</source>
-        <translation type="unfinished"></translation>
+        <translation>მარშრუტის ჩამოტვირთვა:</translation>
     </message>
     <message>
         <source>The command that is used to upload waypoints to the device</source>
@@ -4793,15 +4817,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Track upload:</source>
-        <translation type="unfinished"></translation>
+        <translation>ბილიკის ატვირთვა:</translation>
     </message>
     <message>
         <source>The command that is used to download tracks from the device</source>
-        <translation type="unfinished"></translation>
+        <translation>ბრძანება რომელიც გამოიყენება ბილიკების მოწყობილობიდან ჩამოსატვირთვად</translation>
     </message>
     <message>
         <source>The command that is used to upload routes to the device</source>
-        <translation type="unfinished"></translation>
+        <translation>ბრძანება რომელიც გამოიყენება მარშრუტების მოწყობილობაში ასატვირთად</translation>
     </message>
     <message>
         <source>The command that is used to download waypoints from the device</source>
@@ -4809,7 +4833,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The command that is used to upload tracks to the device</source>
-        <translation type="unfinished"></translation>
+        <translation>ბრძანება რომელიც გამოიყენება ბილიკების მოწყობილობაში ასატვირთად</translation>
     </message>
     <message>
         <source>Waypoint upload:</source>
@@ -4827,11 +4851,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSPlugin</name>
     <message>
         <source>&amp;Gps Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gps-ის ხელსაწყოები</translation>
     </message>
     <message>
         <source>&amp;Create new GPX layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი GPX  ფენის შე&amp;ქმნა</translation>
     </message>
     <message>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
@@ -4839,88 +4863,93 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Gps</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gps</translation>
     </message>
     <message>
         <source>Save new GPX file as...</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი GPX ფაილის შენახვა როგორც...</translation>
     </message>
     <message>
         <source>GPS eXchange file (*.gpx)</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS-ის eXchange ფაილი (*.gpx)</translation>
     </message>
     <message>
         <source>Could not create file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Unable to create a GPX file with the given name. </source>
-        <translation type="unfinished"></translation>
+        <translation>ვერ მოხერხდა მითითებული სახელის მქონე GPX ფაილის შექმნა. </translation>
     </message>
     <message>
         <source>Try again with another name or in another </source>
-        <translation type="unfinished"></translation>
+        <translation>კიდევ სცადეთ სხვა სახელით ან სხვა</translation>
     </message>
     <message>
         <source>directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>დირექტორიაში.</translation>
     </message>
     <message>
         <source>GPX Loader</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX-ის ჩამტვირთავი</translation>
     </message>
     <message>
         <source>Unable to read the selected file.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ფაილის წაკითხვა შეუძლებელია.
+</translation>
     </message>
     <message>
         <source>Please reselect a valid file.</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ თავიდან აირჩიეთ მართებული ფაილი.</translation>
     </message>
     <message>
         <source>Could not start process</source>
-        <translation type="unfinished"></translation>
+        <translation>პროცესის გაშვება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Could not start GPSBabel!</source>
-        <translation type="unfinished"></translation>
+        <translation>GPSBabel-ის გაშვება ვერ მოხერხდა!</translation>
     </message>
     <message>
         <source>Importing data...</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემების შემოტანა...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>შეწყვეტა</translation>
     </message>
     <message>
         <source>Could not import data from %1!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1-დან მონაცემების შემოტანა ვერ მოხერხდა!
+
+</translation>
     </message>
     <message>
         <source>Error importing data</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემების შემოტანისას</translation>
     </message>
     <message>
         <source>Could not convert data from %1!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემების %1-დან გარდაქმნა ვერ მოხერხდა!
+
+</translation>
     </message>
     <message>
         <source>Error converting data</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემების გარდაქმნისას</translation>
     </message>
     <message>
         <source>Not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა მხარდაჭერილი</translation>
     </message>
     <message>
         <source>This device does not support downloading </source>
-        <translation type="unfinished"></translation>
+        <translation>ამ მოწყობილობას არ აქვს ჩამოტვირთოს </translation>
     </message>
     <message>
         <source>of </source>
@@ -4928,35 +4957,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემების ჩამოტვირთვა...</translation>
     </message>
     <message>
         <source>Could not download data from GPS!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემების GPS-დან ჩამოტვირთვა ვერ მოხერხდა!
+
+</translation>
     </message>
     <message>
         <source>Error downloading data</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემების ჩამოტვირთვისას</translation>
     </message>
     <message>
         <source>This device does not support uploading of </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ამ მოწყობილობასს არ შეუძლია ატვირთოს </translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემების ატვირთვა...</translation>
     </message>
     <message>
         <source>Error while uploading data to GPS!
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემების GPS-ში ატვირთვისას!
+
+</translation>
     </message>
     <message>
         <source>Error uploading data</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემების ატვირთვისას</translation>
     </message>
 </context>
 <context>
@@ -4967,11 +5000,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation>მარშრუტები</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>ბილიკები</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
@@ -4995,7 +5028,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GPS eXchange file format</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange ფორმატი</translation>
     </message>
     <message>
         <source>Select a GPX file and then select the feature types that you want to load.</source>
@@ -5054,11 +5087,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPSPluginGuiBase</name>
     <message>
         <source>GPS Tools</source>
-        <translation type="unfinished">GPS ხელსაწყოები</translation>
+        <translation>GPS ხელსაწყოები</translation>
     </message>
     <message>
         <source>Load GPX file</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX ფაილის ჩატვირთვა</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -5069,11 +5102,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File:</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილი:</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">ნუსხა...</translation>
+        <translation>ნუსხა...</translation>
     </message>
     <message>
         <source>Feature types:</source>
@@ -5085,23 +5118,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation>მარშრუტები</translation>
     </message>
     <message>
         <source>Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>ბილიკები</translation>
     </message>
     <message>
         <source>Import other file</source>
-        <translation type="unfinished"></translation>
+        <translation>სხვა ფაილის შემოტანა</translation>
     </message>
     <message>
         <source>Layer name:</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის სახელი:</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">შენახვა როგორც...</translation>
+        <translation>შენახვა როგორც...</translation>
     </message>
     <message>
         <source>GPX output file:</source>
@@ -5117,27 +5150,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File to import:</source>
-        <translation type="unfinished"></translation>
+        <translation>შემოსატანი ფაილი:</translation>
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS-დან ჩამოტვირთვა</translation>
     </message>
     <message>
         <source>GPS device:</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS მოწყობილობა:</translation>
     </message>
     <message>
         <source>Edit devices...</source>
-        <translation type="unfinished"></translation>
+        <translation>მოწყობილობების რედაქტირება...</translation>
     </message>
     <message>
         <source>Port:</source>
-        <translation type="unfinished"></translation>
+        <translation>პორტი:</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">განახლება</translation>
+        <translation>განახლება</translation>
     </message>
     <message>
         <source>Output file:</source>
@@ -5145,23 +5178,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS-ში ატვირთვა</translation>
     </message>
     <message>
         <source>Edit devices</source>
-        <translation type="unfinished"></translation>
+        <translation>მოწყობილობების რედაქტირება</translation>
     </message>
     <message>
         <source>Data layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ფენა:</translation>
     </message>
     <message>
         <source>GPX Conversions</source>
-        <translation type="unfinished"></translation>
+        <translation>GPX გარდაქმნები</translation>
     </message>
     <message>
         <source>Conversion:</source>
-        <translation type="unfinished"></translation>
+        <translation>გარდაქმნა:</translation>
     </message>
     <message>
         <source>GPX input file:</source>
@@ -5176,7 +5209,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GPS eXchange file</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS eXchange ფაილი</translation>
     </message>
     <message>
         <source>Digitized in QGIS</source>
@@ -5224,7 +5257,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeomTypeDialogBase</name>
     <message>
         <source>New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ვექტორული ფენა</translation>
     </message>
     <message>
         <source>File format</source>
@@ -5236,11 +5269,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">წერტილი</translation>
+        <translation>წეტილი</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზი</translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -5448,7 +5481,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>გაფრთხილება</translation>
     </message>
     <message>
         <source>ERROR</source>
@@ -5467,7 +5500,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tab 1</source>
-        <translation type="unfinished"></translation>
+        <translation>დაფა 1</translation>
     </message>
     <message>
         <source>result</source>
@@ -5483,7 +5516,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add new category using settings in GRASS Edit toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი კატეგორიის დამატება GRASS-ის რედაქტირების ხელსაწყოების პარამეტრების გამოყენებით</translation>
     </message>
     <message>
         <source>New</source>
@@ -5491,7 +5524,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delete selected category</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული კატეგორიის წაშლა</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -5510,15 +5543,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>მონიშნული რუკის ასლი</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>მონიშნული რუკის სახელის შეცვლა</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation type="unfinished"></translation>
+        <translation>მონიშნული რუკის წაშლა</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
@@ -5538,7 +5571,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot copy map </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის კოპირება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: </source>
@@ -5546,7 +5579,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot rename map </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის სახელის შეცვლა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Delete map &lt;b&gt;</source>
@@ -5554,11 +5587,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot delete map </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის წაშლა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რეგიონის ჩაწერა ვერ მოხერხდა</translation>
     </message>
 </context>
 <context>
@@ -5577,15 +5610,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit tools</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების ხელსაწყოები</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished">ახალი წერტილი</translation>
+        <translation>ახალი წეტილი</translation>
     </message>
     <message>
         <source>New line</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ხაზი</translation>
     </message>
     <message>
         <source>New boundary</source>
@@ -5593,7 +5626,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი ცენტროიდი</translation>
     </message>
     <message>
         <source>Move vertex</source>
@@ -5609,27 +5642,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move element</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის გადატანა</translation>
     </message>
     <message>
         <source>Split line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის გაყოფა</translation>
     </message>
     <message>
         <source>Delete element</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის წაშლა</translation>
     </message>
     <message>
         <source>Edit attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>ატრიბუტების რედაქტირება</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">დაკეტვა</translation>
+        <translation>დაკეტვა</translation>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>ფონი</translation>
     </message>
     <message>
         <source>Highlight</source>
@@ -5637,15 +5670,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>დინამიური</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">წერტილი</translation>
+        <translation>წეტილი</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზი</translation>
     </message>
     <message>
         <source>Boundary (no area)</source>
@@ -5661,23 +5694,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Centroid (in area)</source>
-        <translation type="unfinished"></translation>
+        <translation>ცენტროიდი (არეში)</translation>
     </message>
     <message>
         <source>Centroid (outside area)</source>
-        <translation type="unfinished"></translation>
+        <translation>ცენტროიდი (არეს გარეთ)</translation>
     </message>
     <message>
         <source>Centroid (duplicate in area)</source>
-        <translation type="unfinished"></translation>
+        <translation>ცენტროიდი (არეში დუბლირება)</translation>
     </message>
     <message>
         <source>Node (1 line)</source>
-        <translation type="unfinished"></translation>
+        <translation>კვანძი (1 ხაზი)</translation>
     </message>
     <message>
         <source>Node (2 lines)</source>
-        <translation type="unfinished"></translation>
+        <translation>კვანძი (2 ხაზი)</translation>
     </message>
     <message>
         <source>Next not used</source>
@@ -5689,19 +5722,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No category</source>
-        <translation type="unfinished"></translation>
+        <translation>კატეგორიის გარეშე</translation>
     </message>
     <message>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>ინფორმაცია</translation>
     </message>
     <message>
         <source>The table was created</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიქმნა ცხრილი</translation>
     </message>
     <message>
         <source>Tool not yet implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>ხელსაწყო კერ არაა იმპლემენტირებული.</translation>
     </message>
     <message>
         <source>Cannot check orphan record: </source>
@@ -5721,15 +5754,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Left: </source>
-        <translation type="unfinished"></translation>
+        <translation>მარცხნივ: </translation>
     </message>
     <message>
         <source>Middle: </source>
-        <translation type="unfinished"></translation>
+        <translation>შუაში: </translation>
     </message>
     <message>
         <source>Right: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">მარჯვნივ: </translation>
     </message>
 </context>
 <context>
@@ -5796,7 +5829,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>სიგრძე</translation>
     </message>
     <message>
         <source>Add Column</source>
@@ -5842,99 +5875,99 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add map</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის დამატება</translation>
     </message>
     <message>
         <source>Add constant value</source>
-        <translation type="unfinished"></translation>
+        <translation>მუდმივი მნიშვნელობის დამატება</translation>
     </message>
     <message>
         <source>Add operator or function</source>
-        <translation type="unfinished"></translation>
+        <translation>ფუნქციის ან ოპერატორის დამატება</translation>
     </message>
     <message>
         <source>Add connection</source>
-        <translation type="unfinished"></translation>
+        <translation>კავშირის დამატება</translation>
     </message>
     <message>
         <source>Select item</source>
-        <translation type="unfinished"></translation>
+        <translation>ელემენტის არჩევა</translation>
     </message>
     <message>
         <source>Delete selected item</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული ელემენტის წაშლა</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>გახსნა</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>შენახვა</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>შენახვა როგორც</translation>
     </message>
     <message>
         <source>Addition</source>
-        <translation type="unfinished"></translation>
+        <translation>დამატება</translation>
     </message>
     <message>
         <source>Subtraction</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოკლება</translation>
     </message>
     <message>
         <source>Multiplication</source>
-        <translation type="unfinished"></translation>
+        <translation>გამრავლება</translation>
     </message>
     <message>
         <source>Division</source>
-        <translation type="unfinished"></translation>
+        <translation>გაყოფა</translation>
     </message>
     <message>
         <source>Modulus</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდული</translation>
     </message>
     <message>
         <source>Exponentiation</source>
-        <translation type="unfinished"></translation>
+        <translation>ეხპონენტაცია</translation>
     </message>
     <message>
         <source>Equal</source>
-        <translation type="unfinished"></translation>
+        <translation>ტოლობა</translation>
     </message>
     <message>
         <source>Not equal</source>
-        <translation type="unfinished"></translation>
+        <translation>უტოლობა</translation>
     </message>
     <message>
         <source>Greater than</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტია ვიიდრე</translation>
     </message>
     <message>
         <source>Greater than or equal</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტია ვიდრე ან ტოლია</translation>
     </message>
     <message>
         <source>Less than</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაკლებია ვიდრე</translation>
     </message>
     <message>
         <source>Less than or equal</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაკლებია ვოდრე ან ტოლია</translation>
     </message>
     <message>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>და</translation>
     </message>
     <message>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>ან</translation>
     </message>
     <message>
         <source>Absolute value of x</source>
-        <translation type="unfinished"></translation>
+        <translation>x-ის აბსოლუტური მნიშვნელობა</translation>
     </message>
     <message>
         <source>Inverse tangent of x (result is in degrees)</source>
@@ -6002,27 +6035,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Log of x base b</source>
-        <translation type="unfinished"></translation>
+        <translation>x-ის ლოგარითმი b ფუძით</translation>
     </message>
     <message>
         <source>Largest value</source>
-        <translation type="unfinished"></translation>
+        <translation>უდიდესი მნიშნელობა</translation>
     </message>
     <message>
         <source>Median value</source>
-        <translation type="unfinished"></translation>
+        <translation>საშუალო მნიშვნელობა</translation>
     </message>
     <message>
         <source>Smallest value</source>
-        <translation type="unfinished"></translation>
+        <translation>უმცირესი მნიშვნელობა</translation>
     </message>
     <message>
         <source>Mode value</source>
-        <translation type="unfinished"></translation>
+        <translation>რეჟიმის მნიშვნელობა</translation>
     </message>
     <message>
         <source>1 if x is zero, 0 otherwise</source>
-        <translation type="unfinished"></translation>
+        <translation>1 თუ x არის ნული, სხვა შემთხვევაში 0</translation>
     </message>
     <message>
         <source>Current north-south resolution</source>
@@ -6030,7 +6063,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>NULL value</source>
-        <translation type="unfinished"></translation>
+        <translation>NULL მნიშვნელობა</translation>
     </message>
     <message>
         <source>Random value between a and b</source>
@@ -6047,12 +6080,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Sine of x (x is in degrees)</source>
         <comment>sin(x)</comment>
-        <translation type="unfinished"></translation>
+        <translation>x-ის სინუსი (x გრადუსებში)</translation>
     </message>
     <message>
         <source>Square root of x</source>
         <comment>sqrt(x)</comment>
-        <translation type="unfinished"></translation>
+        <translation>კვადრატული ფესვი x-დან</translation>
     </message>
     <message>
         <source>Tangent of x (x is in degrees)</source>
@@ -6105,11 +6138,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter vector name</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ ვექტორის სახელი</translation>
     </message>
     <message>
         <source>The file already exists. Overwrite? </source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილი უკვე არსებობს. გადავაწერო? </translation>
     </message>
     <message>
         <source>Save mapcalc</source>
@@ -6117,7 +6150,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>File name empty</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის სახელი ცარიელია</translation>
     </message>
     <message>
         <source>Cannot open mapcalc file</source>
@@ -6129,7 +6162,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) ვერ მოიძებნა.</translation>
     </message>
     <message>
         <source>Cannot open mapcalc schema (</source>
@@ -6146,7 +6179,7 @@ at line </source>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished">სვეტი</translation>
+        <translation>სვეტი</translation>
     </message>
 </context>
 <context>
@@ -6164,7 +6197,7 @@ at line </source>
     <name>QgsGrassModule</name>
     <message>
         <source>Module</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდული</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -6172,28 +6205,28 @@ at line </source>
     </message>
     <message>
         <source>The module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის ფაილი (</translation>
     </message>
     <message>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) ვერ მოიძებნა.</translation>
     </message>
     <message>
         <source>Cannot open module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის ფაილის გახსნა ვერ მოხერხდა (</translation>
     </message>
     <message>
         <source>)</source>
-        <translation type="unfinished">)</translation>
+        <translation>)</translation>
     </message>
     <message>
         <source>Cannot read module file (</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის ფაილის წაკითხვა (</translation>
     </message>
     <message>
         <source>):
 </source>
-        <translation type="unfinished">):
+        <translation>):
 </translation>
     </message>
     <message>
@@ -6203,15 +6236,15 @@ at line </source>
     </message>
     <message>
         <source>Module </source>
-        <translation type="unfinished"></translation>
+        <translation>მოდული</translation>
     </message>
     <message>
         <source> not found</source>
-        <translation type="unfinished"></translation>
+        <translation>ვერ მოიძებნა</translation>
     </message>
     <message>
         <source>Cannot find man page </source>
-        <translation type="unfinished"></translation>
+        <translation>დახმარების man ფაილი ვერ მოიძებნა </translation>
     </message>
     <message>
         <source>Please ensure you have the GRASS documentation installed.</source>
@@ -6227,7 +6260,7 @@ at line </source>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished">სვეტი</translation>
+        <translation>სვეტი</translation>
     </message>
     <message>
         <source>Not available, incorrect description (</source>
@@ -6235,7 +6268,7 @@ at line </source>
     </message>
     <message>
         <source>Run</source>
-        <translation type="unfinished">გაშვება</translation>
+        <translation>გაშვება</translation>
     </message>
     <message>
         <source>Cannot get input region</source>
@@ -6247,23 +6280,23 @@ at line </source>
     </message>
     <message>
         <source>Cannot find module </source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის პოვნა ვერ მოხერხდა </translation>
     </message>
     <message>
         <source>Cannot start module: </source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის გაშვება ვერ მოხერხდა:</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>გაჩერება</translation>
     </message>
     <message>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;წარმატებით დასრულდა&lt;/B&gt;</translation>
     </message>
     <message>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;დასრულდა შეცდომით&lt;/B&gt;</translation>
     </message>
     <message>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
@@ -6274,7 +6307,7 @@ at line </source>
     <name>QgsGrassModuleBase</name>
     <message>
         <source>GRASS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-ის მოდული</translation>
     </message>
     <message>
         <source>Options</source>
@@ -6370,7 +6403,7 @@ at line </source>
     </message>
     <message>
         <source>GRASS element </source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-ის ელემენტი</translation>
     </message>
     <message>
         <source> not supported</source>
@@ -6407,15 +6440,15 @@ at line </source>
     </message>
     <message>
         <source>Cannot find module </source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის პოვნა ვერ მოხერხდა </translation>
     </message>
     <message>
         <source>Cannot start module </source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის გაშვება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Cannot read module description (</source>
-        <translation type="unfinished"></translation>
+        <translation>მოდულის აღწერის წაკითხვა ვერ მოხერხდა (</translation>
     </message>
     <message>
         <source>):
@@ -6442,7 +6475,7 @@ at line </source>
     </message>
     <message>
         <source> not found</source>
-        <translation type="unfinished"></translation>
+        <translation> ვერ მოიძებნა</translation>
     </message>
     <message>
         <source>Cannot get current region</source>
@@ -6461,31 +6494,31 @@ at line </source>
     <name>QgsGrassNewMapset</name>
     <message>
         <source>Database</source>
-        <translation type="unfinished">მონაცემთა ბაზა</translation>
+        <translation>მონაცემთა ბაზა</translation>
     </message>
     <message>
         <source>Location 1</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა 1</translation>
     </message>
     <message>
         <source>System mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>სისტემური რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>User&apos;s mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>მომხმარებლის რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>Location 2</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა 2</translation>
     </message>
     <message>
         <source>Enter path to GRASS database</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ გეზი GRASS-ის მონაცემთა ბაზამდე</translation>
     </message>
     <message>
         <source>The directory doesn&apos;t exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>დირექტორია არ არსებობს!</translation>
     </message>
     <message>
         <source>No writable locations, the database not writable!</source>
@@ -6493,11 +6526,11 @@ at line </source>
     </message>
     <message>
         <source>Enter location name!</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ მდებარეობის სახელი!</translation>
     </message>
     <message>
         <source>The location exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა არსებობს!</translation>
     </message>
     <message>
         <source>Selected projection is not supported by GRASS!</source>
@@ -6517,36 +6550,36 @@ at line </source>
     </message>
     <message>
         <source>North must be greater than south</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩრდილოეთი უნდა იყოს სამხრეთზე მეტი</translation>
     </message>
     <message>
         <source>East must be greater than west</source>
-        <translation type="unfinished"></translation>
+        <translation>აღმოსავლეთი უნდა იყოს დასავლეთზე მეტი</translation>
     </message>
     <message>
         <source>Regions file (</source>
-        <translation type="unfinished"></translation>
+        <translation>რეგიონების ფაილი (</translation>
     </message>
     <message>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) ვერ მოიძებნა.</translation>
     </message>
     <message>
         <source>Cannot open locations file (</source>
-        <translation type="unfinished"></translation>
+        <translation>ვერ მოხერხდა მდებარეობების ფაილის (</translation>
     </message>
     <message>
         <source>)</source>
-        <translation type="unfinished">)</translation>
+        <translation>) გახსნა</translation>
     </message>
     <message>
         <source>Cannot read locations file (</source>
-        <translation type="unfinished"></translation>
+        <translation>ვერ მოხერხდა მდებარეობების ფაილის (</translation>
     </message>
     <message>
         <source>):
 </source>
-        <translation type="unfinished">):
+        <translation>) წაკითხვა:
 </translation>
     </message>
     <message>
@@ -6556,7 +6589,7 @@ at line </source>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished">სვეტი</translation>
+        <translation>სვეტი</translation>
     </message>
     <message>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
@@ -6576,35 +6609,35 @@ at line </source>
     </message>
     <message>
         <source>The mapset already exists</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები უკვე არსებობს</translation>
     </message>
     <message>
         <source>Database: </source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ბაზა:</translation>
     </message>
     <message>
         <source>Location: </source>
-        <translation type="unfinished">მდებარეობა:</translation>
+        <translation>მდებარეობა:</translation>
     </message>
     <message>
         <source>Mapset: </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები:</translation>
     </message>
     <message>
         <source>Create location</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობის შექმნა</translation>
     </message>
     <message>
         <source>Cannot create new location: </source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი მდებარეობა ვერ შეიქმნა:</translation>
     </message>
     <message>
         <source>Create mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების შექმნა</translation>
     </message>
     <message>
         <source>Cannot create new mapset directory</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების დირექტორიის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Cannot open DEFAULT_WIND</source>
@@ -6616,11 +6649,11 @@ at line </source>
     </message>
     <message>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>New mapset successfully created, but cannot be opened: </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ახალი ნაკრები წარმატებით შეიქმნა, მაგრამ ვერ გაიხსნა: </translation>
     </message>
     <message>
         <source>New mapset successfully created and set as current working mapset.</source>
@@ -6631,19 +6664,19 @@ at line </source>
     <name>QgsGrassNewMapsetBase</name>
     <message>
         <source>New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>GRASS Database</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-ის მონაცემთა ბაზა</translation>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>ხე</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>კომენტარი</translation>
     </message>
     <message>
         <source>Example directory tree:</source>
@@ -6659,15 +6692,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ბაზის შეცდომა</translation>
     </message>
     <message>
         <source>Database:</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ბაზა:</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">ნუსხა...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
@@ -6675,23 +6708,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GRASS Location</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-ის მდებარეობა</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished">მდებარეობა</translation>
+        <translation>მდებარეობა</translation>
     </message>
     <message>
         <source>Select location</source>
-        <translation type="unfinished"></translation>
+        <translation>აირჩიეთ მდებარეობა</translation>
     </message>
     <message>
         <source>Create new location</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი მდებარეობის შექმნა</translation>
     </message>
     <message>
         <source>Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობის შეცდომა</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -6711,11 +6744,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა სისტემა</translation>
     </message>
     <message>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა განსაზღვრული</translation>
     </message>
     <message>
         <source>Default GRASS Region</source>
@@ -6739,35 +6772,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Region Error</source>
-        <translation type="unfinished"></translation>
+        <translation>რეგიონის შეცდომა</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">S</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <source>N</source>
-        <translation type="unfinished">N</translation>
+        <translation>N</translation>
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>New mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკათა ნაკრები:</translation>
     </message>
     <message>
         <source>Mapset Error</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების შეცდომა</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;center&quot;&gt;Existing masets&lt;/p&gt;</source>
@@ -6775,7 +6808,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>მფლობელი</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -6787,15 +6820,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკათა ნაკრების შექმნა</translation>
     </message>
     <message>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა:</translation>
     </message>
     <message>
         <source>Mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები:</translation>
     </message>
 </context>
 <context>
@@ -6806,23 +6839,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>0.1</source>
-        <translation type="unfinished">0.1</translation>
+        <translation>0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="unfinished">GRASS ფენა</translation>
+        <translation>GRASS-ის ფენა</translation>
     </message>
     <message>
         <source>Open mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების გახსნა</translation>
     </message>
     <message>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>Close mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების დაკეტვა</translation>
     </message>
     <message>
         <source>Add GRASS vector layer</source>
@@ -6874,11 +6907,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;GRASS</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -6906,11 +6939,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished">GISDBASE, LOCATION_NAME ან MAPSET არ არის გამართული, მიმდინარე რეგიონის ჩვენება შეუძლებელია.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot read current region: </source>
-        <translation type="unfinished">მიმდინარე რეგიონის წაკითხვა ვერ მოხერხდა:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot open the mapset. </source>
@@ -6918,7 +6951,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot close mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრების დაკეტვა ვერ მოხერხდა. </translation>
     </message>
     <message>
         <source>Cannot close current mapset. </source>
@@ -6926,14 +6959,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open GRASS mapset. </source>
-        <translation type="unfinished"></translation>
+        <translation>GRASS-ის რუკათა ნაკრების გახსნა ვერ მოხერხდა. </translation>
     </message>
 </context>
 <context>
     <name>QgsGrassRegion</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>ყურადღება</translation>
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
@@ -6976,11 +7009,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>რიგები</translation>
     </message>
     <message>
         <source>Cols</source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტები</translation>
     </message>
     <message>
         <source>E-W Res</source>
@@ -7039,7 +7072,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Wrong GISDBASE</source>
-        <translation type="unfinished"></translation>
+        <translation>მცდარი GISDBASE</translation>
     </message>
     <message>
         <source>Select a map.</source>
@@ -7047,11 +7080,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No map</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკა არაა</translation>
     </message>
     <message>
         <source>No layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენა არაა</translation>
     </message>
     <message>
         <source>No layers available in this map</source>
@@ -7066,7 +7099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Gisdbase</source>
-        <translation type="unfinished"></translation>
+        <translation>Gisdbase</translation>
     </message>
     <message>
         <source>Location</source>
@@ -7074,7 +7107,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკათა ნაკრები</translation>
     </message>
     <message>
         <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
@@ -7132,7 +7165,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot find MSYS (</source>
-        <translation type="unfinished"></translation>
+        <translation>MSYS-ის პოვნა ვერ მოიძებნა (</translation>
     </message>
     <message>
         <source>GRASS Shell is not compiled.</source>
@@ -7144,11 +7177,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>) ვერ მოიძებნა.</translation>
     </message>
     <message>
         <source>Cannot open config file (</source>
-        <translation type="unfinished"></translation>
+        <translation>კონფიგურაციის ფაილის გახსნა ვერ მოხერხდა (</translation>
     </message>
     <message>
         <source>)</source>
@@ -7156,7 +7189,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot read config file (</source>
-        <translation type="unfinished"></translation>
+        <translation>კონფიგურაციის ფაილის წაკითხვა ვერ მოხერხდა (</translation>
     </message>
     <message>
         <source>
@@ -7165,14 +7198,14 @@ at line </source>
     </message>
     <message>
         <source> column </source>
-        <translation type="unfinished">სვეტი</translation>
+        <translation> სვეტი </translation>
     </message>
 </context>
 <context>
     <name>QgsGrassToolsBase</name>
     <message>
         <source>Grass Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Grass-ის ხელსაწყოები</translation>
     </message>
     <message>
         <source>Modules Tree</source>
@@ -7210,11 +7243,11 @@ at line </source>
     </message>
     <message>
         <source>Please enter the file name before pressing OK!</source>
-        <translation type="unfinished"></translation>
+        <translation>OK-ზე დაჭერამდე გთხოვთ შეიყვანოთ ფაილის სახელი!</translation>
     </message>
     <message>
         <source>Please enter intervals before pressing OK!</source>
-        <translation type="unfinished"></translation>
+        <translation>OK-ის დაჭერამდე გთხოვთ შეიყვანოთ ინტერვალები!</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
@@ -7237,11 +7270,11 @@ at line </source>
     </message>
     <message>
         <source>Y Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y ინტერვალი:</translation>
     </message>
     <message>
         <source>X Interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>X ინტერვალი:</translation>
     </message>
     <message>
         <source>End point (upper right)</source>
@@ -7370,16 +7403,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>HTTP response completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP მოთხოვნა დასრულდა, მაგრამ შეცდომით: %1</translation>
     </message>
     <message>
         <source>HTTP transaction completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>HTTP ტრანზაქცია დასრულდა, მაგრამ შეცდომიმთ: %1</translation>
     </message>
     <message>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
         </translation>
     </message>
 </context>
@@ -7483,7 +7516,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Interpolation method</source>
-        <translation type="unfinished"></translation>
+        <translation>ინტერპოლაციის მეთოდი</translation>
     </message>
     <message>
         <source>...</source>
@@ -7529,13 +7562,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsLabelDialog</name>
-    <message>
-        <source>Auto</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsLabelDialogBase</name>
     <message>
         <source>Form1</source>
@@ -7551,15 +7577,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished">შრიფტი</translation>
+        <translation>შრიფტი</translation>
     </message>
     <message>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>ბუფერი</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა</translation>
     </message>
     <message>
         <source>Data defined style</source>
@@ -7579,27 +7605,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Font transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>შრიფტის გამშვირვალობა</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">ფერი</translation>
+        <translation>ფერი</translation>
     </message>
     <message>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation>კუთხე (გრად)</translation>
     </message>
     <message encoding="UTF-8">
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished">ადგილმდებარეობა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Below Right</source>
@@ -7607,7 +7633,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>მარჯვნივ</translation>
     </message>
     <message>
         <source>Below</source>
@@ -7619,11 +7645,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Above</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>მარცხნივ</translation>
     </message>
     <message>
         <source>Below Left</source>
@@ -7643,11 +7669,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>წერტილები</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის ერთეულები</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
@@ -7655,15 +7681,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>ფუბერის ზომა</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>გამჭვირვალობა</translation>
     </message>
     <message>
         <source>Buffer size units</source>
-        <translation type="unfinished"></translation>
+        <translation>ბუფერის ზომის ერთეულიები</translation>
     </message>
     <message>
         <source>Size is in points</source>
@@ -7671,7 +7697,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size is in map units</source>
-        <translation type="unfinished"></translation>
+        <translation>ზომა არის რუკის ერთეულებში</translation>
     </message>
     <message>
         <source>Multiline labels?</source>
@@ -7687,11 +7713,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Offset units</source>
-        <translation type="unfinished"></translation>
+        <translation>გადახრის ერთეულები</translation>
     </message>
     <message>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>შრი&amp;ფტების ოჯახი</translation>
     </message>
     <message>
         <source>&amp;Bold</source>
@@ -7699,7 +7725,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>დახრ&amp;ილი</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
@@ -7711,23 +7737,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation>ზომის ერთეულები</translation>
     </message>
     <message>
         <source>Transparency:</source>
-        <translation type="unfinished"></translation>
+        <translation>გამჭვირვალობა:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>ზომა:</translation>
     </message>
     <message>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>X კოორდინატი</translation>
     </message>
     <message>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Y კოორდინატი</translation>
     </message>
     <message>
         <source>Preview:</source>
@@ -7735,31 +7761,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Rocks!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS მაგარია!</translation>
     </message>
 </context>
 <context>
@@ -7798,7 +7800,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენა არ არის არჩეული</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
@@ -7852,7 +7854,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის შენახვა როგორც...</translation>
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile.</source>
@@ -7864,7 +7866,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Saving done</source>
-        <translation type="unfinished"></translation>
+        <translation>შენახვა დასრულდა</translation>
     </message>
     <message>
         <source>Export to Shapefile has been completed</source>
@@ -7872,7 +7874,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Driver not found</source>
-        <translation type="unfinished"></translation>
+        <translation>დრაივერი ვერ იქნა ნაპოვნი</translation>
     </message>
     <message>
         <source>ESRI Shapefile driver is not available</source>
@@ -7892,7 +7894,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -7908,11 +7910,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished">ამო&amp;ღება</translation>
+        <translation>ამო&amp;ღება</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>ა&amp;ტრიბუტების სიის გახსნა</translation>
     </message>
     <message>
         <source>Save as shapefile...</source>
@@ -7931,7 +7933,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsMapCanvas</name>
     <message>
         <source>Could not draw</source>
-        <translation type="unfinished"></translation>
+        <translation>დახაზვა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>because</source>
@@ -7946,15 +7948,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>style not found in database</source>
-        <translation type="unfinished"></translation>
+        <translation>სტილის მონაცემთა ბაზაში პოვნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>User database could not be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>მომხმარებლის მონაცემთა ბაზის გახსნა ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>The style table could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>სტილების ცხრილის შექმნა ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>The style %1 was saved to database</source>
@@ -7962,15 +7964,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The style %1 was updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>სტილი %1 განახლდა მონაცემთა ბაზაში.</translation>
     </message>
     <message>
         <source>The style %1 could not be updated in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>% სტილის მონაცემთა ბაზაში განახლება ვერ მოხერხდა.</translation>
     </message>
     <message>
         <source>The style %1 could not be inserted into database.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 სტილის მონაცემთა ბაზაში ჩასმა ვერ მოხერხდა.</translation>
     </message>
 </context>
 <context>
@@ -7987,7 +7989,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">- ნაპოვნია %1 თვისება
+        <translation>- ნაპოვნია %1 თვისება
         </translation>
     </message>
 </context>
@@ -8018,7 +8020,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished">აღარ აჩვენო ეს შეტყობინება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Could not snap segment.</source>
@@ -8073,7 +8075,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Web Interface Definition</source>
-        <translation type="unfinished"></translation>
+        <translation>ვებ ინტერფეისის განსაზღვრა</translation>
     </message>
     <message>
         <source>Template</source>
@@ -8085,23 +8087,23 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">ნუსხა...</translation>
+        <translation>ნუსხა...</translation>
     </message>
     <message>
         <source>Header</source>
-        <translation type="unfinished"></translation>
+        <translation>თავსართი</translation>
     </message>
     <message>
         <source>Footer</source>
-        <translation type="unfinished"></translation>
+        <translation>ბოლოსართი</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">რუკა</translation>
+        <translation>რუკა</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished">ერთეულები</translation>
+        <translation>ერთეულები</translation>
     </message>
     <message>
         <source>dd</source>
@@ -8113,11 +8115,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>meters</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტრები</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation type="unfinished"></translation>
+        <translation>მილები</translation>
     </message>
     <message>
         <source>inches</source>
@@ -8125,31 +8127,31 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>kilometers</source>
-        <translation type="unfinished"></translation>
+        <translation>კილომეტრები</translation>
     </message>
     <message>
         <source>Image type</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოსახულების ტიპი</translation>
     </message>
     <message>
         <source>gif</source>
-        <translation type="unfinished"></translation>
+        <translation>gif</translation>
     </message>
     <message>
         <source>gtiff</source>
-        <translation type="unfinished"></translation>
+        <translation>gtiff</translation>
     </message>
     <message>
         <source>jpeg</source>
-        <translation type="unfinished"></translation>
+        <translation>jpeg</translation>
     </message>
     <message>
         <source>png</source>
-        <translation type="unfinished"></translation>
+        <translation>png</translation>
     </message>
     <message>
         <source>swf</source>
-        <translation type="unfinished"></translation>
+        <translation>swf</translation>
     </message>
     <message>
         <source>userdefined</source>
@@ -8157,7 +8159,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>wbmp</source>
-        <translation type="unfinished"></translation>
+        <translation>wbmp</translation>
     </message>
     <message>
         <source>Width</source>
@@ -8169,7 +8171,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
@@ -8177,7 +8179,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის ფაილი</translation>
     </message>
     <message>
         <source>Name for the map file to be created from the QGIS project file</source>
@@ -8189,11 +8191,11 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-ის პროექტის ფაილი</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">შენახვა როგორც...</translation>
+        <translation>შენახვა როგორც...</translation>
     </message>
     <message>
         <source>If checked, only the layer information will be processed</source>
@@ -8205,23 +8207,23 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>და&amp;ხმარება</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;OK</translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>გაუ&amp;ქმება</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>MinScale</source>
@@ -8286,7 +8288,7 @@ Do you want to overwrite it?</source>
     <name>QgsMeasureTool</name>
     <message>
         <source>Incorrect measure results</source>
-        <translation type="unfinished"></translation>
+        <translation>გაზომვის არასწორი შედეგები</translation>
     </message>
     <message>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
@@ -8333,11 +8335,11 @@ Extended error information:
     <name>QgsNewConnectionBase</name>
     <message>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი PostGIS კავშირის შექმნა</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished"></translation>
+        <translation>ინფორმაცია კავშირის შესახებ</translation>
     </message>
     <message>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
@@ -8349,7 +8351,7 @@ Extended error information:
     </message>
     <message>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="unfinished"></translation>
+        <translation>მხოლოდ &apos;public&apos; სქემაში ძებნაა</translation>
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
@@ -8361,63 +8363,63 @@ Extended error information:
     </message>
     <message>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>მხოლოდ &apos;geometry_columns&apos; ცხრილში ძებნა</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished"></translation>
+        <translation>პარილის შენახვა</translation>
     </message>
     <message>
         <source>Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>კავშირის შემოწმება</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>ჰოსტი</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">მონაცემთა ბაზა</translation>
+        <translation>მონაცემთა ბაზა</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>პორტი</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished"></translation>
+        <translation>მომხმარებლის სახელი</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>პაროლი</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished">ახალი კავშირის სახელი</translation>
+        <translation>ახალი კავშირის სახელი</translation>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished">5432</translation>
+        <translation>5432</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>გაუქმება</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">დახმარება</translation>
+        <translation>დახმარება</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
 </context>
 <context>
@@ -8517,7 +8519,7 @@ Extended error information:
     </message>
     <message>
         <source>Placement on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>მდებარეობა ეკრანზე</translation>
     </message>
     <message>
         <source>Top Left</source>
@@ -8545,7 +8547,7 @@ Extended error information:
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">ნუსხა...</translation>
+        <translation>ნუსხა...</translation>
     </message>
 </context>
 <context>
@@ -8583,11 +8585,11 @@ Extended error information:
     </message>
     <message>
         <source>&amp;General</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ძირითადი</translation>
     </message>
     <message>
         <source>Project files</source>
-        <translation type="unfinished"></translation>
+        <translation>პროექტის ფაილები</translation>
     </message>
     <message>
         <source>Prompt to save project changes when required</source>
@@ -8607,15 +8609,15 @@ Extended error information:
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>ფონის ფერი</translation>
     </message>
     <message>
         <source>&amp;Application</source>
-        <translation type="unfinished"></translation>
+        <translation>პროგრამ&amp;ა</translation>
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="unfinished"></translation>
+        <translation>ხატულების თემა</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
@@ -8631,7 +8633,7 @@ Extended error information:
     </message>
     <message>
         <source>Hide splash screen at startup</source>
-        <translation type="unfinished"></translation>
+        <translation>გაშვებისას მისასალმებელი ეკრანის დამალვა</translation>
     </message>
     <message>
         <source>Open attribute table in a dock window</source>
@@ -8691,7 +8693,7 @@ Extended error information:
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Zoom and recenter</source>
@@ -8703,11 +8705,11 @@ Extended error information:
     </message>
     <message>
         <source>Nothing</source>
-        <translation type="unfinished"></translation>
+        <translation>არაფერი</translation>
     </message>
     <message>
         <source>Zoom factor</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Mouse wheel action</source>
@@ -8715,7 +8717,7 @@ Extended error information:
     </message>
     <message>
         <source>Measure tool</source>
-        <translation type="unfinished"></translation>
+        <translation>გაზომვის ხელსაწყო</translation>
     </message>
     <message>
         <source>Rubberband color</source>
@@ -8727,7 +8729,7 @@ Extended error information:
     </message>
     <message>
         <source>Search radius</source>
-        <translation type="unfinished"></translation>
+        <translation>ძებნის რადიუსი</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
@@ -8739,7 +8741,7 @@ Extended error information:
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Digitizing</source>
@@ -8751,15 +8753,15 @@ Extended error information:
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის სიგრძე</translation>
     </message>
     <message>
         <source>Line width in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის სიგრძე პიქსელებში</translation>
     </message>
     <message>
         <source>Line colour</source>
-        <translation type="unfinished"></translation>
+        <translation>ხაზის ფერი</translation>
     </message>
     <message>
         <source>Snapping</source>
@@ -8787,7 +8789,7 @@ Extended error information:
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <source>Select Global Default ...</source>
@@ -8799,7 +8801,7 @@ Extended error information:
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა ათვლის სისტემის კითხვა</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
@@ -8811,27 +8813,27 @@ Extended error information:
     </message>
     <message>
         <source>Locale</source>
-        <translation type="unfinished"></translation>
+        <translation>ენა</translation>
     </message>
     <message>
         <source>Override system locale</source>
-        <translation type="unfinished"></translation>
+        <translation>სისტემური ენის იგნორირება</translation>
     </message>
     <message>
         <source>Locale to use instead</source>
-        <translation type="unfinished"></translation>
+        <translation>გამოსაყენებელი ენა</translation>
     </message>
     <message>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;შენიშვნა:&lt;/b&gt; არასისტემური ენის ჩართვა / შეცვლა მოითხოვს პროგრამის გადატვირთვას</translation>
     </message>
     <message>
         <source>Additional Info</source>
-        <translation type="unfinished"></translation>
+        <translation>დამატებითი ინფორმაცია</translation>
     </message>
     <message>
         <source>Detected active locale on your system:</source>
-        <translation type="unfinished"></translation>
+        <translation>სისტემაში აღმოჩენილი აქტიური ენები:</translation>
     </message>
     <message>
         <source>Proxy</source>
@@ -8843,15 +8845,15 @@ Extended error information:
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>ჰოსტი</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>პორტი</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>მომხმარებელი</translation>
     </message>
     <message>
         <source>Leave this blank if no proxy username / password are required</source>
@@ -8859,7 +8861,7 @@ Extended error information:
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>პაროლი</translation>
     </message>
 </context>
 <context>
@@ -8890,7 +8892,7 @@ Extended error information:
     </message>
     <message>
         <source>Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი გადაცემის დამატება</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -8909,7 +8911,7 @@ Extended error information:
     </message>
     <message>
         <source>Create a buffer for a PostgreSQL layer. </source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL-ის ფენისთვის ბუფერის შექმნა.</translation>
     </message>
     <message>
         <source>A new layer is created in the database with the buffered features.</source>
@@ -8925,7 +8927,7 @@ Extended error information:
     </message>
     <message>
         <source>Unable to add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>გეომეტრიის სვეტის დამატება ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Unable to add geometry column to the output table </source>
@@ -8933,7 +8935,7 @@ Extended error information:
     </message>
     <message>
         <source>Unable to create table</source>
-        <translation type="unfinished"></translation>
+        <translation>ცხრილის შექმნა ვერ მოხერხდა</translation>
     </message>
     <message>
         <source>Failed to create the output table </source>
@@ -8941,24 +8943,25 @@ Extended error information:
     </message>
     <message>
         <source>Error connecting to the database</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდომა მონაცემთა ბაზასთან დასაკავშირებლად</translation>
     </message>
     <message>
         <source>No GEOS support</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS-ის მხარდაჭერა არ არის</translation>
     </message>
     <message>
         <source>Buffer function requires GEOS support in PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>ბუფერის ფუნქცია მოითხოვს PostGIS-ში GEOS-ის მხარდაჭერას </translation>
     </message>
     <message>
         <source>Not a PostgreSQL/PostGIS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა PostgreSQL/PostGIS ფენა</translation>
     </message>
     <message>
         <source> is not a PostgreSQL/PostGIS layer.
 </source>
-        <translation type="unfinished"></translation>
+        <translation> არ არის PostgreSQL/PostGIS ფენა.
+</translation>
     </message>
     <message>
         <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
@@ -8966,7 +8969,7 @@ Extended error information:
     </message>
     <message>
         <source>No Active Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>აქტიური ფენა არა არის</translation>
     </message>
     <message>
         <source>You must select a layer in the legend to buffer</source>
@@ -8977,7 +8980,7 @@ Extended error information:
     <name>QgsPgQueryBuilder</name>
     <message>
         <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; ცხრილი &lt;b&gt;%3&lt;/b&gt; სერვერის &lt;b&gt;%2&lt;/b&gt; მონაცემთა ბაზაში, მომხმარებელი - &lt;b&gt;%4&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Connection Failed</source>
@@ -8985,7 +8988,7 @@ Extended error information:
     </message>
     <message>
         <source>Connection to the database failed:</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ბაზასთან დაკავშირება ვერ მოხერხდა:</translation>
     </message>
     <message>
         <source>Database error</source>
@@ -8997,7 +9000,7 @@ Extended error information:
     </message>
     <message>
         <source>No Query</source>
-        <translation type="unfinished"></translation>
+        <translation>მოთხოვნა არ არის</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
@@ -9005,7 +9008,7 @@ Extended error information:
     </message>
     <message>
         <source>Query Result</source>
-        <translation type="unfinished"></translation>
+        <translation>შედეგის მოთხოვნა</translation>
     </message>
     <message>
         <source>The where clause returned </source>
@@ -9013,7 +9016,7 @@ Extended error information:
     </message>
     <message>
         <source> rows.</source>
-        <translation type="unfinished"></translation>
+        <translation> სტრიქონი.</translation>
     </message>
     <message>
         <source>Query Failed</source>
@@ -9025,11 +9028,11 @@ Extended error information:
     </message>
     <message>
         <source>Error in Query</source>
-        <translation type="unfinished"></translation>
+        <translation>შეცდოლმა მოთხოვნაში</translation>
     </message>
     <message>
         <source>No Records</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩანაწერები არაა</translation>
     </message>
     <message>
         <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
@@ -9044,11 +9047,11 @@ Extended error information:
     </message>
     <message>
         <source>Datasource</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა წყარო</translation>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished"></translation>
+        <translation>ველები</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9059,7 +9062,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>მნიშვნელობები</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9077,7 +9080,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>მაგალითი</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -9088,67 +9091,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველა</translation>
     </message>
     <message>
         <source>Operators</source>
-        <translation type="unfinished"></translation>
+        <translation>ოპერატორები</translation>
     </message>
     <message>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT</translation>
     </message>
     <message>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>OR</translation>
     </message>
     <message>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>AND</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>IN</source>
-        <translation type="unfinished"></translation>
+        <translation>IN</translation>
     </message>
     <message>
         <source>NOT IN</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT IN</translation>
     </message>
     <message>
         <source>!=</source>
-        <translation type="unfinished"></translation>
+        <translation>!=</translation>
     </message>
     <message>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <source>LIKE</source>
-        <translation type="unfinished"></translation>
+        <translation>LIKE</translation>
     </message>
     <message>
         <source>ILIKE</source>
-        <translation type="unfinished"></translation>
+        <translation>ILIKE</translation>
     </message>
     <message>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <source>SQL where clause</source>
@@ -9156,338 +9159,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>გაწმენდა</translation>
     </message>
     <message>
         <source>Test</source>
-        <translation type="unfinished"></translation>
+        <translation>შემოწმება</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="unfinished">Ok</translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstaller</name>
-    <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open the system plugin directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fetch Python Plugins...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is a new plugin available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is a plugin update available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to remove the directory:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check permissions or remove it manually</source>
-        <translation type="unfinished"></translation>
+        <translation>გაუქმება</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
-    <message>
-        <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>all repositories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>connected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is connected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>disabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is disabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>orphans</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>any status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>not installed</source>
-        <comment>plural</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>installed</source>
-        <comment>plural</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upgradeable and news</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is not installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>not installed</source>
-        <comment>singular</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>installed</source>
-        <comment>singular</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upgradeable</source>
-        <comment>singular</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>new!</source>
-        <comment>singular</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <comment>singular</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>installed version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>available version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>That&apos;s the newest available version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is no version available for download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>only locally available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Install plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Install/upgrade plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
-Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin seems to be broken.
-It has been installed but can&apos;t be loaded.
-Here is the error message:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstallerDialogBase</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
         <translation type="unfinished"></translation>
@@ -9502,7 +9190,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>ფილტრი:</translation>
     </message>
     <message>
         <source>Display only plugins containing this word in their metadata</source>
@@ -9514,7 +9202,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველა რეპოზიტორია</translation>
     </message>
     <message>
         <source>Display only plugins with matching status</source>
@@ -9522,27 +9210,27 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>მდგომარეობა</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished">ვერსია</translation>
+        <translation>ვერსია</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">აღწერა</translation>
+        <translation>აღწერა</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>ავტორი</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation type="unfinished">რეპოზიტორია</translation>
+        <translation>რეპოზიტორია</translation>
     </message>
     <message>
         <source>Install, reinstall or upgrade the selected plugin</source>
@@ -9562,7 +9250,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>რეპოზიტორიები</translation>
     </message>
     <message>
         <source>List of plugin repositories</source>
@@ -9570,7 +9258,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
@@ -9578,7 +9266,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Check for updates on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>გაშვებისას განახლებებზე შემოწმება</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
@@ -9594,23 +9282,23 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished"></translation>
+        <translation>დამატება...</translation>
     </message>
     <message>
         <source>Edit the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული რეპოზიტორიის რედაქტირება</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირება...</translation>
     </message>
     <message>
         <source>Remove the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული რეპოზიტორიის ამოღება</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">წაშლა</translation>
+        <translation>წაშლა</translation>
     </message>
     <message>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
@@ -9622,46 +9310,11 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">დაკეტვა</translation>
+        <translation>დაკეტვა</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerFetchingDialog</name>
-    <message>
-        <source>Success</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connecting...</source>
-        <translation type="unfinished">დაკავშირება...</translation>
-    </message>
-    <message>
-        <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished">შეცდომა</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstallerFetchingDialogBase</name>
     <message>
         <source>Fetching repositories</source>
         <translation>რეპოზიტორიების მიღება</translation>
@@ -9686,49 +9339,6 @@ Here is the error message:</source>
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
-        <source>Installing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connecting...</source>
-        <translation type="unfinished">დაკავშირება...</translation>
-    </message>
-    <message>
-        <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Downloading data...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished">შეცდომა</translation>
-    </message>
-    <message>
-        <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstallerInstallingDialogBase</name>
-    <message>
         <source>QGIS Python Plugin Installer</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9744,13 +9354,6 @@ Here is the error message:</source>
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
-        <source>no error message received</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstallerPluginErrorDialogBase</name>
-    <message>
         <source>Error loading plugin</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9764,7 +9367,7 @@ Here is the error message:</source>
     </message>
 </context>
 <context>
-    <name>QgsPluginInstallerRepositoryDetailsDialogBase</name>
+    <name>QgsPluginInstallerRepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
         <translation>რეპოზიტორიის დეტალები</translation>
@@ -9783,7 +9386,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>შეიყვანეთ რეპოზოტირიის მისამართი &quot;http://&quot; თავსართით</translation>
     </message>
     <message>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
@@ -9810,10 +9413,6 @@ Here is the error message:</source>
     </message>
     <message>
         <source>No QGIS plugins found in </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>[ incompatible ]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9844,7 +9443,7 @@ Here is the error message:</source>
     <name>QgsPointDialog</name>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">წრფივი</translation>
+        <translation>წრფივი</translation>
     </message>
     <message>
         <source>Choose a name for the world file</source>
@@ -9877,7 +9476,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Not implemented!</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა იმპლემენტირებული!</translation>
     </message>
     <message>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
@@ -9893,7 +9492,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">შეცდომა</translation>
+        <translation>შეცდომა</translation>
     </message>
     <message>
         <source>Could not write to </source>
@@ -9901,19 +9500,19 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>z</source>
-        <translation type="unfinished"></translation>
+        <translation>z</translation>
     </message>
     <message>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>დაპატარავება</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Z</translation>
     </message>
     <message>
         <source>Zoom To Layer</source>
@@ -9933,11 +9532,11 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Add Point</source>
-        <translation type="unfinished"></translation>
+        <translation>წერილის დამატება</translation>
     </message>
     <message>
         <source>.</source>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <source>Capture Points</source>
@@ -9945,11 +9544,11 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Delete Point</source>
-        <translation type="unfinished"></translation>
+        <translation>წერილის წაშლა</translation>
     </message>
     <message>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეულის წაშლა</translation>
     </message>
 </context>
 <context>
@@ -9988,11 +9587,11 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>გადიდება</translation>
     </message>
     <message>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>დაპატარავება</translation>
     </message>
     <message>
         <source>Zoom to the raster extents</source>
@@ -10004,7 +9603,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Create and load layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის შექმნა და ჩატვირთვა</translation>
     </message>
 </context>
 <context>
@@ -10051,7 +9650,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>and </source>
-        <translation type="unfinished"></translation>
+        <translation>და</translation>
     </message>
     <message>
         <source>The unique index based on columns </source>
@@ -10080,7 +9679,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>type is </source>
-        <translation type="unfinished"></translation>
+        <translation>რიპი არის</translation>
     </message>
     <message>
         <source> and has a suitable constraint)</source>
@@ -10092,7 +9691,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Note: </source>
-        <translation type="unfinished"></translation>
+        <translation>შენიშვნა:</translation>
     </message>
     <message>
         <source>initially appeared suitable but does not contain unique data, so is not suitable.
@@ -10110,7 +9709,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>The view </source>
-        <translation type="unfinished"></translation>
+        <translation>ხედი</translation>
     </message>
     <message>
         <source>has no column suitable for use as a unique key.
@@ -10151,7 +9750,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Column </source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტი </translation>
     </message>
     <message>
         <source> in </source>
@@ -10204,7 +9803,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი</translation>
     </message>
     <message>
         <source>Title and colors</source>
@@ -10212,7 +9811,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Project title</source>
-        <translation type="unfinished"></translation>
+        <translation>პროექტის სახელწოდება</translation>
     </message>
     <message>
         <source>Descriptive project name</source>
@@ -10228,15 +9827,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished"></translation>
+        <translation>ფონის შეფერილობა</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation>რუკის ერთეულები</translation>
     </message>
     <message>
         <source>Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტრი</translation>
     </message>
     <message>
         <source>Feet</source>
@@ -10260,7 +9859,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>ავტომატური</translation>
     </message>
     <message>
         <source>Sets the number of decimal places to use for the mouse position display</source>
@@ -10268,7 +9867,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished">ხელით</translation>
+        <translation>ხელით</translation>
     </message>
     <message>
         <source>The number of decimal places for the manual option</source>
@@ -10284,7 +9883,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Enable topological editing</source>
-        <translation type="unfinished"></translation>
+        <translation>ტოპოლოგიური რედაქტირების ჩართვა</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons</source>
@@ -10296,7 +9895,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა ათვლის სისტემა</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
@@ -10311,7 +9910,7 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation type="unfinished"></translation>
+        <translation>გეოგრაფიული კოორდინატთა სისტემა</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
@@ -10332,11 +9931,11 @@ Because of this the projection selector will not work...</source>
     <name>QgsProjectionSelectorBase</name>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა ათვლის სისტემის ამომრჩევი</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">კოორდინატთა ათვლის სისტემა</translation>
+        <translation>კოორდინატთა ათვლის სისტემა</translation>
     </message>
     <message>
         <source>EPSG</source>
@@ -10445,7 +10044,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>საშუალო</translation>
     </message>
     <message>
         <source>Band</source>
@@ -10461,11 +10060,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Driver:</source>
-        <translation type="unfinished"></translation>
+        <translation>დრაივერი:</translation>
     </message>
     <message>
         <source>Dataset Description</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ნაკრების აღწერა</translation>
     </message>
     <message>
         <source>Band %1</source>
@@ -10473,15 +10072,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Dimensions:</source>
-        <translation type="unfinished"></translation>
+        <translation>ზომები:</translation>
     </message>
     <message>
         <source>X: </source>
-        <translation type="unfinished"></translation>
+        <translation>X: </translation>
     </message>
     <message>
         <source> Y: </source>
-        <translation type="unfinished"></translation>
+        <translation> Y: </translation>
     </message>
     <message>
         <source> Bands: </source>
@@ -10497,7 +10096,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Data Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>მონაცემთა ტიპი:</translation>
     </message>
     <message>
         <source>GDT_Byte - Eight bit unsigned integer</source>
@@ -10561,7 +10160,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Pixel Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>პიქსელის ზომა:</translation>
     </message>
     <message>
         <source>Band No</source>
@@ -10569,23 +10168,23 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>No Stats</source>
-        <translation type="unfinished"></translation>
+        <translation>სტატისტიკა არ არის</translation>
     </message>
     <message>
         <source>No stats collected yet</source>
-        <translation type="unfinished"></translation>
+        <translation>სტატისტიკა ჯერ არ მოგროვებულა</translation>
     </message>
     <message>
         <source>Min Val</source>
-        <translation type="unfinished"></translation>
+        <translation>მინ მნიშვნ</translation>
     </message>
     <message>
         <source>Max Val</source>
-        <translation type="unfinished"></translation>
+        <translation>მაქს მინშვნ</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>დიაპაზონი</translation>
     </message>
     <message>
         <source>Mean</source>
@@ -10601,11 +10200,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Sum of all cells</source>
-        <translation type="unfinished"></translation>
+        <translation>ყველა ფიჭირს ჯამი</translation>
     </message>
     <message>
         <source>Cell Count</source>
-        <translation type="unfinished"></translation>
+        <translation>ფიჭების რაოდენობა</translation>
     </message>
 </context>
 <context>
@@ -10616,7 +10215,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Grayscale</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაცრისფერი</translation>
     </message>
     <message>
         <source>Pseudocolor</source>
@@ -10628,7 +10227,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>ფერთა რუკა</translation>
     </message>
     <message>
         <source>No Stretch</source>
@@ -10652,7 +10251,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Linear</source>
-        <translation type="unfinished">წრფივი</translation>
+        <translation>წრფივი</translation>
     </message>
     <message>
         <source>Exact</source>
@@ -10664,7 +10263,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">აღწერა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
@@ -10688,27 +10287,27 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>წითელი</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>მწვანე</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>ლურჯი</translation>
     </message>
     <message>
         <source>Percent Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>გამჭვირვალობის პროცენტულობა</translation>
     </message>
     <message>
         <source>Gray</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაცრისფერი</translation>
     </message>
     <message>
         <source>Indexed Value</source>
-        <translation type="unfinished"></translation>
+        <translation>ინდექსირებული მნიშვნელობა</translation>
     </message>
     <message>
         <source>User Defined</source>
@@ -10716,15 +10315,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები</translation>
     </message>
     <message>
         <source>Columns: </source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტები:</translation>
     </message>
     <message>
         <source>Rows: </source>
-        <translation type="unfinished"></translation>
+        <translation>რიგები:</translation>
     </message>
     <message>
         <source>No-Data Value: </source>
@@ -10736,7 +10335,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>ა/ა</translation>
     </message>
     <message>
         <source>Write access denied</source>
@@ -10762,11 +10361,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის შენახვა</translation>
     </message>
     <message>
         <source>Textfile (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>ტექსტური ფაილი (*.txt)</translation>
     </message>
     <message>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
@@ -10774,11 +10373,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის გახსნა</translation>
     </message>
     <message>
         <source>Import Error</source>
-        <translation type="unfinished"></translation>
+        <translation>შემოტანის შეცდომა</translation>
     </message>
     <message>
         <source>The following lines contained errors
@@ -10818,12 +10417,12 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>The color map for Band %n failed to load</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
         </translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები სტილი</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
@@ -10831,11 +10430,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>შენახული სტილი</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
@@ -10846,7 +10445,7 @@ Because of this the projection selector will not work...</source>
     <name>QgsRasterLayerPropertiesBase</name>
     <message>
         <source>Raster Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>რასტრული ფენის თვისებები</translation>
     </message>
     <message>
         <source>Symbology</source>
@@ -10866,7 +10465,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation>ფერთა რუკის ინვერსია</translation>
     </message>
     <message>
         <source>RGB mode band selection and scaling</source>
@@ -10890,7 +10489,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default R:1 G:2 B:3</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები R:1 G:2 B:3</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
@@ -10934,19 +10533,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Color map</source>
-        <translation type="unfinished"></translation>
+        <translation>ფერთა რუკა</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation>მინ</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>მაქს</translation>
     </message>
     <message>
         <source>Note:</source>
-        <translation type="unfinished"></translation>
+        <translation>შენიშვნა:</translation>
     </message>
     <message>
         <source>Load min / max values from band</source>
@@ -10962,15 +10561,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩატვირთვა</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>კონტრასტის გაუმჯობესება</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>მიმდინარე</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
@@ -10982,7 +10581,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -10990,15 +10589,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>გამჭვირვალობა</translation>
     </message>
     <message>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>გლობალური გამჭვირვალობა</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>არაა</translation>
     </message>
     <message>
         <source> 00%</source>
@@ -11006,7 +10605,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;სრული&lt;/p&gt;</translation>
     </message>
     <message>
         <source>No data value</source>
@@ -11030,7 +10629,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>მნიშვნელობების ხელით დამატება</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -11042,19 +10641,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default values</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები მნიშვნელობები</translation>
     </message>
     <message>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილიდან შემოტანა</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილად ექსპორტი</translation>
     </message>
     <message>
         <source>Colormap</source>
-        <translation type="unfinished"></translation>
+        <translation>ფერთა რუკა</translation>
     </message>
     <message>
         <source>Color interpolation</source>
@@ -11062,15 +10661,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩანაწერის დამატება</translation>
     </message>
     <message>
         <source>Delete entry</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩანაწერის წაშლა</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>დალაგება</translation>
     </message>
     <message>
         <source>Load color map from band</source>
@@ -11098,19 +10697,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩანაწერების რაოდენობა</translation>
     </message>
     <message>
         <source>Classification mode</source>
-        <translation type="unfinished"></translation>
+        <translation>კლასიფიკაციის რეჟიმი</translation>
     </message>
     <message>
         <source>Classify</source>
-        <translation type="unfinished">კლასიფიკაცია</translation>
+        <translation>კლასიფიკაცია</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი</translation>
     </message>
     <message>
         <source>Display name</source>
@@ -11118,15 +10717,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენის წყარო</translation>
     </message>
     <message>
         <source>Columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტები:</translation>
     </message>
     <message>
         <source>Rows:</source>
-        <translation type="unfinished"></translation>
+        <translation>რიგები:</translation>
     </message>
     <message>
         <source>No Data:</source>
@@ -11142,7 +10741,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>მაქსიმუმი</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
@@ -11150,15 +10749,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>მინიმუმი</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>კოორდინატთა ათვლის სისტემა</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">შეცვლა ...</translation>
+        <translation>შეცვლა ...</translation>
     </message>
     <message>
         <source>Thumbnail</source>
@@ -11166,7 +10765,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">ლეგენდა</translation>
+        <translation>ლეგენდა</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -11174,19 +10773,19 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტამონაცემები</translation>
     </message>
     <message>
         <source>Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>პირამიდები</translation>
     </message>
     <message>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>შენიშვნები</translation>
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation>პირამიდის გარჩევადობები</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -11218,11 +10817,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Build pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>პირამიდების აგება</translation>
     </message>
     <message>
         <source>Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>ჰისტოგრამა</translation>
     </message>
     <message>
         <source>Chart Type</source>
@@ -11242,7 +10841,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტების რაოდენობა</translation>
     </message>
     <message>
         <source>Out of range OK?</source>
@@ -11254,7 +10853,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="unfinished">განახლება</translation>
+        <translation>განახლება</translation>
     </message>
     <message>
         <source>Restore Default Style</source>
@@ -11262,15 +10861,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save As Default</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმებად შენახვა</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation>სტილის ჩატვირთვა ...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation>სტილის შენახვა ...</translation>
     </message>
 </context>
 <context>
@@ -11296,27 +10895,27 @@ p, li { white-space: pre-wrap; }
     <name>QgsScaleBarPlugin</name>
     <message>
         <source>Bottom Left</source>
-        <translation type="unfinished">ქვედა მარცხენა</translation>
+        <translation>ქვედა მარცხენა</translation>
     </message>
     <message>
         <source>Top Left</source>
-        <translation type="unfinished">ზედა მარცხენა</translation>
+        <translation>ზედა მარცხენა</translation>
     </message>
     <message>
         <source>Top Right</source>
-        <translation type="unfinished">ზედა მარჯვენა</translation>
+        <translation>ზედა მარჯვენა</translation>
     </message>
     <message>
         <source>Bottom Right</source>
-        <translation type="unfinished">ქვედა მარჯვენა</translation>
+        <translation>ქვედა მარჯვენა</translation>
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩაწევა</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation>ჩაწევა</translation>
     </message>
     <message>
         <source>Bar</source>
@@ -11336,11 +10935,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;დეკორაციები</translation>
+        <translation>&amp;დეკორაციები</translation>
     </message>
     <message>
         <source> metres/km</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source> feet/miles</source>
@@ -11348,35 +10947,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished">გრადუსი</translation>
+        <translation></translation>
     </message>
     <message>
         <source> km</source>
-        <translation type="unfinished">კმ</translation>
+        <translation> კმ</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished">მმ</translation>
+        <translation> მმ</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation type="unfinished">სმ</translation>
+        <translation> სმ</translation>
     </message>
     <message>
         <source> m</source>
-        <translation type="unfinished">მ</translation>
+        <translation> მ</translation>
     </message>
     <message>
         <source> miles</source>
-        <translation type="unfinished">მილი</translation>
+        <translation> მილი</translation>
     </message>
     <message>
         <source> mile</source>
-        <translation type="unfinished">მილი</translation>
+        <translation> მილი</translation>
     </message>
     <message>
         <source> inches</source>
-        <translation type="unfinished">დუიმი</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source> foot</source>
@@ -11388,11 +10987,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished">გრადუსი</translation>
+        <translation> გრადუსი</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation type="unfinished">უცნობი</translation>
+        <translation> უცნობი</translation>
     </message>
 </context>
 <context>
@@ -11478,7 +11077,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
         </translation>
     </message>
     <message>
@@ -11506,7 +11105,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsServerSourceSelect</name>
     <message>
         <source>Are you sure you want to remove the </source>
-        <translation type="unfinished">ნამდვილად გსურთ წაშალოთ </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
@@ -11534,7 +11133,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">კოორდინატთა ათვლის სისტემა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
@@ -11542,7 +11141,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
         </translation>
     </message>
     <message>
@@ -11582,31 +11181,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">და&amp;კავშირება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">რედაქტირება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">წაშლა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;ახალი</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">კოორდინატთა ათვლის სისტემა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished">შეცვლა ...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished">მზადაა</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Add</source>
@@ -11618,15 +11217,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">ფენები</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Title</source>
@@ -11642,11 +11241,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">დახმარება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>C&amp;lose</source>
@@ -11709,11 +11308,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">ჰორიზონტალური</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">ვერტიკალური</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cross</source>
@@ -11861,7 +11460,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsSpit</name>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის სახელი</translation>
     </message>
     <message>
         <source>Feature Class</source>
@@ -11877,7 +11476,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">სქემა</translation>
+        <translation>სქემა</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the [</source>
@@ -11889,7 +11488,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">წაშლის დადასტურება</translation>
+        <translation>წაშლის დადასტურება</translation>
     </message>
     <message>
         <source>Add Shapefiles</source>
@@ -12004,7 +11603,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished"></translation>
+        <translation>გთხოვთ შეიყვანოთ თქვენი პაროლი:</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again</source>
@@ -12012,7 +11611,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PostGIS not available</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS არაა ხელმისაწვდომი</translation>
     </message>
     <message>
         <source>&lt;p&gt;The chosen database does not have PostGIS installed, but this is required for storage of spatial data.&lt;/p&gt;</source>
@@ -12024,15 +11623,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Importing files</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილების შემოტანა</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>შეწყვეტა</translation>
     </message>
     <message>
         <source>Progress</source>
-        <translation type="unfinished"></translation>
+        <translation>მიმდინარეობა</translation>
     </message>
     <message>
         <source>Problem inserting features from file:</source>
@@ -12115,7 +11714,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">რედაქტირება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove the current PostGIS connection</source>
@@ -12131,7 +11730,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished">ახალი</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Connect to PostGIS</source>
@@ -12139,7 +11738,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished">დაკავშირება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import options and shapefile list</source>
@@ -12151,7 +11750,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">დამატება</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
@@ -12202,7 +11801,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Spit</source>
-        <translation type="unfinished"></translation>
+        <translation>გა&amp;ყოფა</translation>
     </message>
 </context>
 <context>
@@ -12352,15 +11951,15 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsVectorLayerProperties</name>
     <message>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>id</translation>
     </message>
     <message>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>type</source>
-        <translation type="unfinished"></translation>
+        <translation>ტიპი</translation>
     </message>
     <message>
         <source>length</source>
@@ -12372,7 +11971,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>comment</source>
-        <translation type="unfinished"></translation>
+        <translation>კომენტარი</translation>
     </message>
     <message>
         <source>edit widget</source>
@@ -12380,7 +11979,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>values</source>
-        <translation type="unfinished"></translation>
+        <translation>მნიშვნელობები</translation>
     </message>
     <message>
         <source>line edit</source>
@@ -12396,11 +11995,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>value map</source>
-        <translation type="unfinished"></translation>
+        <translation>მნიშვნელობათა რუკა</translation>
     </message>
     <message>
         <source>classification</source>
-        <translation type="unfinished"></translation>
+        <translation>კლასიფიკაცია</translation>
     </message>
     <message>
         <source>range (editable)</source>
@@ -12412,11 +12011,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>file name</source>
-        <translation type="unfinished"></translation>
+        <translation>ფაილის სახელი</translation>
     </message>
     <message>
         <source>Name conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>სახელის კონფლიქტი</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
@@ -12424,7 +12023,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Transparency: </source>
-        <translation type="unfinished"></translation>
+        <translation>გამჭვირვალობა:</translation>
     </message>
     <message>
         <source>Single Symbol</source>
@@ -12464,7 +12063,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>General:</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი:</translation>
     </message>
     <message>
         <source>Layer comment: </source>
@@ -12520,15 +12119,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>ველი</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">ტიპი</translation>
+        <translation>ტიპი</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>სიგრძე</translation>
     </message>
     <message>
         <source>Precision</source>
@@ -12536,11 +12135,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>კომენტარი</translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation type="unfinished"></translation>
+        <translation>ნაგულისხმები სტილი</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
@@ -12548,15 +12147,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Saved Style</source>
-        <translation type="unfinished"></translation>
+        <translation>შენახული სტილი</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished"></translation>
+        <translation>სტილის უცნობი ფორმატი:</translation>
     </message>
 </context>
 <context>
@@ -12583,7 +12182,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>ძირითადი</translation>
     </message>
     <message>
         <source>Options</source>
@@ -12591,7 +12190,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished"></translation>
+        <translation>სახელის ჩვენება</translation>
     </message>
     <message>
         <source>Display field for the Identify Results dialog box</source>
@@ -12603,7 +12202,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Display field</source>
-        <translation type="unfinished"></translation>
+        <translation>ველის ჩვენება</translation>
     </message>
     <message>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
@@ -12659,7 +12258,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>მეტამონაცემები</translation>
     </message>
     <message>
         <source>Labels</source>
@@ -12671,31 +12270,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>მოქმედებები</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>ატრიბუტები</translation>
     </message>
     <message>
         <source>New column</source>
-        <translation type="unfinished"></translation>
+        <translation>ახალი სვეტი</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished"></translation>
+        <translation>სვეტის წაშლა</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
+        <translation>რედაქტირების რეჟიმის გადართვა</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
@@ -12882,11 +12481,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">მნიშვნელობა</translation>
+        <translation>მნიშვნელობა</translation>
     </message>
     <message>
         <source>WMS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS-ის ვერსია</translation>
     </message>
     <message>
         <source>Title</source>
@@ -12898,7 +12497,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Keywords</source>
-        <translation type="unfinished"></translation>
+        <translation>საკვანძო სიტყვები</translation>
     </message>
     <message>
         <source>Online Resource</source>
@@ -12926,7 +12525,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer Count</source>
-        <translation type="unfinished"></translation>
+        <translation>ფენების რაოდენობა</translation>
     </message>
     <message>
         <source>Layer Properties: </source>
@@ -12934,31 +12533,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>არჩეული</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>დიახ</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished"></translation>
+        <translation>არა</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>ხილვადობა</translation>
     </message>
     <message>
         <source>Visible</source>
-        <translation type="unfinished"></translation>
+        <translation>ხილული</translation>
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>ფარული</translation>
     </message>
     <message>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>ა/ა</translation>
     </message>
     <message>
         <source>Can Identify</source>
@@ -12998,7 +12597,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">სახელი</translation>
+        <translation>სახელი</translation>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
@@ -13107,12 +12706,34 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <source>Dxf Importer</source>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Choose a DXF file to open</source>
+        <translation>აირჩიეთ გასახსნელი DXF ფაილი</translation>
+    </message>
+    <message>
+        <source>Choose a file name to save to</source>
+        <translation type="unfinished">აირჩიეთ შესანახი ფაილის სახელი</translation>
+    </message>
+    <message>
+        <source>Dxf Importer</source>
+        <translation>Dxf-ის შემომტანი</translation>
+    </message>
+    <message>
         <source>Input Dxf file</source>
-        <translation type="unfinished"></translation>
+        <translation>Dxf ფაილის შეტანა</translation>
     </message>
     <message>
         <source>...</source>
@@ -13135,7 +12756,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">მრავალკუთხედი</translation>
+        <translation>მრავალკუთხედი</translation>
     </message>
     <message>
         <source>Point</source>
