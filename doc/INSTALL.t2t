@@ -20,7 +20,7 @@ Building QGIS from source - step by step
 %apply vim formatting to the whol document as it screws up some formatting
 %rather apply it selectively to paragraphs where needed.
 
-% To generate teh text version of this document:
+% To generate the text version of this document:
 % txt2tags -t txt -o INSTALL INSTALL.t2t
 % To generate the moinmoin version of this document
 % txt2tags -t moin INSTALL.moin  INSTALL.t2t
@@ -94,7 +94,7 @@ For complete information, see the wiki at:
  * Proj >= ? (known to work with 4.4.x)
  * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
  * Sqlite3 >= ? (probably 3.0.0)
- * GDAL/OGR >= 1.4.x (1.2.x should work)
+ * GDAL/OGR >= 1.4.x
 
 '''Optional dependencies:'''
  * for GRASS plugin - GRASS >= 6.0.0

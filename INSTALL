@@ -171,7 +171,7 @@ For complete information, see the wiki at:
  * Proj >= ? (known to work with 4.4.x)
  * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
  * Sqlite3 >= ? (probably 3.0.0)
- * GDAL/OGR >= 1.4.x (1.2.x should work)
+ * GDAL/OGR >= 1.4.x
 
 '''Optional dependencies:'''
  * for GRASS plugin - GRASS >= 6.0.0
