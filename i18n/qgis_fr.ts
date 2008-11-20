@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="fr_FR">
+<defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
     <message>
@@ -1084,7 +1086,7 @@
     </message>
     <message>
         <source>Couldn&apos;t open the data source: </source>
-        <translation>Impossbile d&apos;ouvrir la source de données: </translation>
+        <translation>Echec de l&apos;ouverture de la source de données : </translation>
     </message>
     <message>
         <source>Parse error at line </source>
@@ -1858,17 +1860,17 @@ Le support Python va être désactivé.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation type="unfinished">Erreur de chargement de Plugin</translation>
+        <translation>Erreur de chargement de Plugin</translation>
     </message>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation type="unfinished">Il y a eu une eurreur lors du chargement du plugin. Les informations suivantes pourront aider les développeurs de QGIS à résoudre ce problème
+        <translation>Il y a eu une eurreur lors du chargement du plugin. Les informations suivantes pourront aider les développeurs de QGIS à résoudre ce problème
 %1</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
-        <translation type="unfinished">Erreur lors de la lecture des métadonnées du plugin </translation>
+        <translation>Erreur lors de la lecture des métadonnées du plugin </translation>
     </message>
 </context>
 <context>
@@ -3966,11 +3968,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Updating selection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour de la sélection...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Arrêter</translation>
     </message>
 </context>
 <context>
@@ -10411,27 +10413,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Général</translation>
+        <translation>Général</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">Utiliser le Rendu dépendant de la mise à l&apos;échelle</translation>
+        <translation>Utiliser le Rendu dépendant de la mise à l&apos;échelle</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation> Mise à l&apos;échelle minimum à laquelle cette couche sera affichée.</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à l&apos;échelle maximum à laquelle cette couche sera affiché.</translation>
     </message>
 </context>
 <context>
@@ -12528,102 +12530,102 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Ehec de l&apos;analyse de la sortie depuis le répertoire</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;ouverture du répertoire de plugin système</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;ouverture du répertoire local de plugin</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Récupération des plugins python...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Installer plus de plugins depuis un repertoire distant</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Recherche de nouveaux plugins...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished"></translation>
+        <translation>Il y a un nouveau plugin disponible</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Il y a une mise à jour de plugin disponible</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Installateur de plugin python pour QGIS</translation>
+        <translation>Installateur de plugin python pour QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de lecture du répertoire :</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rien à supprimer ! Lerépertoire de plugin n&apos;existe pas :</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de la suppresion du répertoire :</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez les permissions ou effacez les manuellement</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Installateur de plugin python pour QGIS</translation>
+        <translation>Installateur de plugin python pour QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de lecture du répertoire :</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">Tout les dépôts</translation>
+        <translation>Tout les dépôts</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished"></translation>
+        <translation>connecté</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est connecté</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Indisponible</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est activé mais n&apos;est pas disponible</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>désactivé</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce dépôt est désactivé</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Ce répertoire est bloqué du fait d&apos;une incompatibilité...</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished"></translation>
+        <translation>orphelins</translation>
     </message>
     <message>
         <source>any status</source>
@@ -12632,211 +12634,217 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>non installé</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>installé</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished"></translation>
+        <translation>mise à jour et nouvelles</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension n&apos;est pas installée</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est installée</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est installée, mais une mise à jour est disponible</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est installée, mais impossible de le trouver dans les dépôts activés</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension n&apos;est pas installée et est vue pour la première fois</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est installée et est plus récente que celle disponible dans le dépôt</translation>
     </message>
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>non installée</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>installée</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>mise à jour</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>nouveau !</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>invalide</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished"></translation>
+        <translation>version installée</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished"></translation>
+        <translation>version disponible</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished"></translation>
+        <translation>Il s&apos;agit de la version la plus récente</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y a pas de version disponible pour le téléchargement</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished"></translation>
+        <translation>disponible uniquement localement</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Installer l&apos;extension</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Ré-installer l&apos;extension</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jour de l&apos;extension</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Installer/Mettre à jour le plugin</translation>
+        <translation>Installer/Mettre à jour le plugin</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétrograder la version</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous sûr de vouloir remettre la dernière version disponible ? La version installée est plus récente !</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de l&apos;installation</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
+        <translation>Disparition de l&apos;extension</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;extension semble havoir été installé mais je ne sais pas où. Il est probable que l&apos;extension devait contenir un répertoire mal nommé.
+Veulliez chercher dans la liste des extensions installées. Vous ne pourrez bénéficier des notifications de mise à jours. Raportez ce problème à l&apos;auteur de l&apos;extension.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension installée avec succès</translation>
     </message>
     <message>
         <source>Python plugin installed.
 You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension python installée.
+Vous devez l&apos;activer dans le Gestionnaire d&apos;Extension.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension python ré-installée.
+Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de la désinstallation</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Etes-vous sûr de vouloir désinstaller l&apos;extension suivante ?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement : cet extension n&apos;est pas  disponible dans aucun des dépôts accessibles !</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension désinstallée avec succès</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous allez ajouter des dépôts d&apos;extension qui ne sont ni contrôlés ni supportés par l&apos;équipe de QGIS. Les auteurs font de leur mieux pour fournir des extensions stables et utiles, mais nous ne pouvons donner aucunes garanties. A vos risques et périls !</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ajouter un autre dépôt avec la même adresse ! </translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>Êtes-vous sûr de vouloir désinstaller le dépot ?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension n&apos;est pas compatible avec votre version de Quantum GIS et ne fonctionnera certainement pas.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le module python requis n&apos;est pas installé.
+Pour plus d&apos;information, visitez son site.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension semble corrompue.
+Elle a pu être installée mais ne peut être chargée.
+Voici le message d&apos;erreur :</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez remarquer que c&apos;es une extension système non-installable</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est corrompue</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension requiert une version plus récente de Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension requiert un module manquant</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension ré-installée avec succès</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension requiert une version plus récente de Quantum GIS. La version minimale requise est : </translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension dépend de composants manquants à votre système. Vous devez installer les modules python suivant pour l&apos;utiliser :</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette extension est corrompue. Python dit :</translation>
     </message>
 </context>
 <context>
@@ -12986,42 +12994,42 @@ Here is the error message:</source>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Succès</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution du nom d&apos;hôte...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"> Connection...</translation>
+        <translation> Connection...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hôte connecté. Envoi de requête...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Chargement des données...</translation>
+        <translation>Chargement des données...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>En attente</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermeture de la connection...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerFetchingDialogBase</name>
     <message>
         <source>Fetching repositories</source>
-        <translation>Recheche de dépôts</translation>
+        <translation>Recherche de dépôts</translation>
     </message>
     <message>
         <source>Overall progress:</source>
@@ -13044,43 +13052,43 @@ Here is the error message:</source>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Installation...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Résolution du nom d&apos;hôte...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished"> Connection...</translation>
+        <translation> Connexion...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hôte connecté. Envoi de requête...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Chargement des données...</translation>
+        <translation>Chargement des données...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>En attente</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Fermeture de la connexion...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de la décompression de l&apos;extension. Soit elle est corrompue, soit elle est manquante sur le dépôt. Vous pouvez vérifier si vous avez les droits d&apos;accès en écriture pour le répertoire des dépôts :</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Annulé par l&apos;utilisateur</translation>
     </message>
 </context>
 <context>
@@ -13095,14 +13103,14 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation> Connection...</translation>
+        <translation> Connexion...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de message d&apos;erreur reçu</translation>
     </message>
 </context>
 <context>
@@ -13195,7 +13203,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>[ incompatible ]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -14744,7 +14752,7 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Echelle minimum à laquelle cette couche sera affichée.</translation>
+        <translation> Mise à l&apos;échelle minimum à laquelle cette couche sera affichée.</translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
