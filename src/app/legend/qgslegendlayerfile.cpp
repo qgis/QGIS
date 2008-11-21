@@ -165,7 +165,7 @@ void QgsLegendLayerFile::setIconAppearance( bool isInOverview,
 
 QString QgsLegendLayerFile::nameFromLayer( QgsMapLayer* layer )
 {
-  QString sourcename = layer->source(); //todo: move this duplicated code into a new function
+  QString sourcename = layer->publicSource(); //todo: move this duplicated code into a new function
   if ( sourcename.startsWith( "host", Qt::CaseInsensitive ) )
   {
     //this layer is a database layer
@@ -175,7 +175,7 @@ QString QgsLegendLayerFile::nameFromLayer( QgsMapLayer* layer )
   else
   {
     //modify source name such that only the file is visible
-    sourcename = layer->source().section( '/', -1, -1 );
+    sourcename = layer->publicSource().section( '/', -1, -1 );
   }
   return sourcename;
 }
