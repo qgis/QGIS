@@ -156,12 +156,18 @@ void QgsLegend::removeLayer( QString layer_key )
 
   QTreeWidgetItem* theItem = firstItem();
   QgsDebugMsg( "called." );
+  
+  QgsLegendLayer* lastLL = NULL;
 
   while ( theItem )
   {
     QgsLegendItem *li = dynamic_cast<QgsLegendItem*>( theItem );
     if ( li )
     {
+      // save legend layer (parent of a legend layer file we're going to delete)
+      QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( li );
+      if ( ll ) lastLL = ll;
+
       QgsLegendLayerFile* llf = dynamic_cast<QgsLegendLayerFile*>( li );
       if ( llf )
       {
@@ -171,6 +177,15 @@ void QgsLegend::removeLayer( QString layer_key )
           mStateOfCheckBoxes.erase( llf );
           removeItem( llf );
           delete llf;
+          
+          // delete also parent legend layer if now it's empty
+          if (lastLL->mapLayers().size() == 0)
+          {
+            mStateOfCheckBoxes.erase( lastLL );
+            removeItem( lastLL );
+            delete lastLL;
+          }
+          
           break;
         }
       }
@@ -609,28 +624,28 @@ void QgsLegend::legendLayerRemove()
   if ( ll )
   {
     std::list<QgsMapLayer*> maplayers = ll->mapLayers();
-    mStateOfCheckBoxes.erase( ll );
-
-    //also remove the entries for the QgsLegendLayerFiles from the map
-    std::list<QgsLegendLayerFile*> llfiles = ll->legendLayerFiles();
-    for ( std::list<QgsLegendLayerFile*>::iterator it = llfiles.begin(); it != llfiles.end(); ++it )
-    {
-      mStateOfCheckBoxes.erase( *it );
-    }
+    int layerCount = maplayers.size();
 
     for ( std::list<QgsMapLayer*>::iterator it = maplayers.begin(); it != maplayers.end(); ++it )
     {
       //remove the layer
       if ( *it )
       {
-        //the map layer registry emits a signal an this will remove the legend layer
+        //the map layer registry emits a signal and this will remove the legend layer file
         //from the legend and from memory by calling QgsLegend::removeLayer(QString layer key)
         QgsMapLayerRegistry::instance()->removeMapLayer(( *it )->getLayerID() );
       }
     }
 
-    removeItem( ll );
-    delete ll;
+    if (layerCount == 0)
+    {
+      // delete the item only when it didn't have any child legend layer files
+      // (otherwise it is deleted in QgsLegend::removeLayer when deleting last legend layer file)
+      mStateOfCheckBoxes.erase( ll );
+      removeItem( ll );
+      delete ll;
+    }
+    
     adjustIconSize();
     return;
   }
