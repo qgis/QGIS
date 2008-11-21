@@ -141,7 +141,7 @@ class QgsVectorDataProvider : QgsDataProvider
        *
        * Default implementation simply iterates the features 
        */
-      virtual void uniqueValues(int index, QList<QVariant> &uniqueValues);
+      virtual void uniqueValues(int index, QList<QVariant> &uniqueValues /Out/);
 
       /**
        * Adds a list of features
