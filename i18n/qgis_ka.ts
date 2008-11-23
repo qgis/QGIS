@@ -133,7 +133,7 @@
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">არჩევა</translation>
     </message>
     <message>
         <source>OGR Converter</source>
@@ -189,7 +189,7 @@
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">აირჩიეთ შესანახი ფაილის სახელი</translation>
     </message>
 </context>
 <context>
@@ -334,7 +334,7 @@
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">არჩევა</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -1126,11 +1126,11 @@
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">გარდაქმნის ვექტორულ ფენებს OGR ბიბლიოთეკის მიერ მხარდაჭერილ ფორმატებში</translation>
     </message>
     <message>
         <source>[menuitemname]</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">[menuitemname]</translation>
     </message>
     <message>
         <source>[plugindescription]</source>
@@ -1303,6 +1303,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Error while unloading plugin </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error Loading Plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
+%1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error when reading metadata of plugin </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2270,11 +2283,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Python error</source>
-        <translation>Python-ის შეცდომა</translation>
-    </message>
-    <message>
-        <source>Error when reading metadata of plugin </source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Python-ის შეცდომა</translation>
     </message>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
@@ -2386,7 +2395,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ფენა არ არის რედაქტირებადი</translation>
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
@@ -2437,15 +2446,6 @@ Errors:  %2
     </message>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error Loading Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
-%1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2604,28 +2604,12 @@ Errors:  %2
 <context>
     <name>QgsAbout</name>
     <message>
-        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Name</source>
-        <translation>სახელი</translation>
+        <translation type="obsolete">სახელი</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation>ვებგვერდი</translation>
-    </message>
-    <message>
-        <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Available Qt Database Plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Available Qt Image Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ვებგვერდი</translation>
     </message>
     <message>
         <source>About Quantum GIS</source>
@@ -2875,6 +2859,14 @@ p, li { white-space: pre-wrap; }
         <source>Run action</source>
         <translation>მოქმედების შესრულება</translation>
     </message>
+    <message>
+        <source>Updating selection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">შეწყვეტა</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableBase</name>
@@ -3072,10 +3064,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Error during search</source>
         <translation>შეცდომა ძებნისას</translation>
-    </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No matching features found.</source>
@@ -3311,10 +3299,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Don&apos;t show this message again</source>
         <translation>აღარ აჩვენო ეს შეტყობინება</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose a file name to save the map as</source>
@@ -4613,7 +4597,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ნუსხა...</translation>
     </message>
     <message>
         <source>Layer name</source>
@@ -5797,7 +5781,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ხაზის სიგრძე</translation>
     </message>
     <message>
         <source>Marker size</source>
@@ -6700,7 +6684,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ნუსხა...</translation>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
@@ -6939,11 +6923,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GISDBASE, LOCATION_NAME ან MAPSET არ არის გამართული, მიმდინარე რეგიონის ჩვენება შეუძლებელია.</translation>
     </message>
     <message>
         <source>Cannot read current region: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">მიმდინარე რეგიონის წაკითხვა ვერ მოხერხდა:</translation>
     </message>
     <message>
         <source>Cannot open the mapset. </source>
@@ -7412,7 +7396,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
         </translation>
     </message>
 </context>
@@ -7562,6 +7546,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsLabelDialog</name>
+    <message>
+        <source>Auto</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsLabelDialogBase</name>
     <message>
         <source>Form1</source>
@@ -7625,7 +7616,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ადგილმდებარეობა</translation>
     </message>
     <message>
         <source>Below Right</source>
@@ -7763,6 +7754,30 @@ p, li { white-space: pre-wrap; }
         <source>QGIS Rocks!</source>
         <translation>QGIS მაგარია!</translation>
     </message>
+    <message>
+        <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use scale dependent rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">მაქსიმუმი</translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">მინიმუმი</translation>
+    </message>
+    <message>
+        <source>Minimum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale at which this layer will be displayed. </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegend</name>
@@ -7827,7 +7842,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ა&amp;ტრიბუტების სიის გახსნა</translation>
     </message>
     <message>
         <source>Save as shapefile...</source>
@@ -7989,7 +8004,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation>- ნაპოვნია %1 თვისება
+        <translation type="obsolete">- ნაპოვნია %1 თვისება
         </translation>
     </message>
 </context>
@@ -8020,7 +8035,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">აღარ აჩვენო ეს შეტყობინება</translation>
     </message>
     <message>
         <source>Could not snap segment.</source>
@@ -9175,7 +9190,386 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPluginInstaller</name>
+    <message>
+        <source>Couldn&apos;t parse output from the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the system plugin directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the local plugin directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetch Python Plugins...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install more plugins from remote repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Looking for new plugins...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a new plugin available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a plugin update available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Python Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to remove the directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check permissions or remove it manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPluginInstallerDialog</name>
+    <message>
+        <source>QGIS Python Plugin Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="obsolete">ფილტრი:</translation>
+    </message>
+    <message>
+        <source>all repositories</source>
+        <translation>ყველა რეპოზიტორია</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation type="obsolete">მდგომარეობა</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="obsolete">სახელი</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation type="obsolete">ვერსია</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="obsolete">აღწერა</translation>
+    </message>
+    <message>
+        <source>Author</source>
+        <translation type="obsolete">ავტორი</translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="obsolete">რეპოზიტორია</translation>
+    </message>
+    <message>
+        <source>Install/upgrade plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repositories</source>
+        <translation type="obsolete">რეპოზიტორიები</translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="obsolete">URL</translation>
+    </message>
+    <message>
+        <source>Check for updates on startup</source>
+        <translation type="obsolete">გაშვებისას განახლებებზე შემოწმება</translation>
+    </message>
+    <message>
+        <source>Add...</source>
+        <translation type="obsolete">დამატება...</translation>
+    </message>
+    <message>
+        <source>Edit the selected repository</source>
+        <translation type="obsolete">არჩეული რეპოზიტორიის რედაქტირება</translation>
+    </message>
+    <message>
+        <source>Edit...</source>
+        <translation type="obsolete">რედაქტირება...</translation>
+    </message>
+    <message>
+        <source>Remove the selected repository</source>
+        <translation type="obsolete">არჩეული რეპოზიტორიის ამოღება</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="obsolete">წაშლა</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="obsolete">დაკეტვა</translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is enabled, but unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>orphans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>any status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <comment>plural</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <comment>plural</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upgradeable and news</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed, but there is an updated version available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is not installed and is seen for the first time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed and is newer than its version available in a repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin seems to be broken.
+It has been installed but can&apos;t be loaded.
+Here is the error message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <comment>singular</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <comment>singular</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <comment>singular</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <comment>singular</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <comment>singular</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note that it&apos;s an uninstallable core plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>available version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>That&apos;s the newest available version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no version available for download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is broken</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a newer version of Quantum GIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a missing module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only locally available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reinstall plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upgrade plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Downgrade plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin installation failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin has disappeared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
+Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin installed successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+You have to enable it in the Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin reinstalled successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You have to restart Quantum GIS to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstall failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to uninstall the following plugin?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstalled successfully</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to add another repository with the same URL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the following repository?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerDialogBase</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
         <translation type="unfinished"></translation>
@@ -9190,7 +9584,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Filter:</source>
-        <translation>ფილტრი:</translation>
+        <translation type="unfinished">ფილტრი:</translation>
     </message>
     <message>
         <source>Display only plugins containing this word in their metadata</source>
@@ -9202,7 +9596,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>all repositories</source>
-        <translation>ყველა რეპოზიტორია</translation>
+        <translation type="unfinished">ყველა რეპოზიტორია</translation>
     </message>
     <message>
         <source>Display only plugins with matching status</source>
@@ -9210,27 +9604,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Status</source>
-        <translation>მდგომარეობა</translation>
+        <translation type="unfinished">მდგომარეობა</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>სახელი</translation>
+        <translation type="unfinished">სახელი</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation>ვერსია</translation>
+        <translation type="unfinished">ვერსია</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation>აღწერა</translation>
+        <translation type="unfinished">აღწერა</translation>
     </message>
     <message>
         <source>Author</source>
-        <translation>ავტორი</translation>
+        <translation type="unfinished">ავტორი</translation>
     </message>
     <message>
         <source>Repository</source>
-        <translation>რეპოზიტორია</translation>
+        <translation type="unfinished">რეპოზიტორია</translation>
     </message>
     <message>
         <source>Install, reinstall or upgrade the selected plugin</source>
@@ -9250,7 +9644,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Repositories</source>
-        <translation>რეპოზიტორიები</translation>
+        <translation type="unfinished">რეპოზიტორიები</translation>
     </message>
     <message>
         <source>List of plugin repositories</source>
@@ -9258,7 +9652,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>URL</source>
-        <translation>URL</translation>
+        <translation type="unfinished">URL</translation>
     </message>
     <message>
         <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
@@ -9266,7 +9660,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Check for updates on startup</source>
-        <translation>გაშვებისას განახლებებზე შემოწმება</translation>
+        <translation type="unfinished">გაშვებისას განახლებებზე შემოწმება</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
@@ -9282,23 +9676,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add...</source>
-        <translation>დამატება...</translation>
+        <translation type="unfinished">დამატება...</translation>
     </message>
     <message>
         <source>Edit the selected repository</source>
-        <translation>არჩეული რეპოზიტორიის რედაქტირება</translation>
+        <translation type="unfinished">არჩეული რეპოზიტორიის რედაქტირება</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation>რედაქტირება...</translation>
+        <translation type="unfinished">რედაქტირება...</translation>
     </message>
     <message>
         <source>Remove the selected repository</source>
-        <translation>არჩეული რეპოზიტორიის ამოღება</translation>
+        <translation type="unfinished">არჩეული რეპოზიტორიის ამოღება</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>წაშლა</translation>
+        <translation type="unfinished">წაშლა</translation>
     </message>
     <message>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
@@ -9310,14 +9704,61 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Close</source>
-        <translation>დაკეტვა</translation>
+        <translation type="unfinished">დაკეტვა</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Fetching repositories</source>
-        <translation>რეპოზიტორიების მიღება</translation>
+        <translation type="obsolete">რეპოზიტორიების მიღება</translation>
+    </message>
+    <message>
+        <source>Repository</source>
+        <translation type="obsolete">რეპოზიტორია</translation>
+    </message>
+    <message>
+        <source>State</source>
+        <translation type="obsolete">მდგომარეობა</translation>
+    </message>
+    <message>
+        <source>Success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolving host name...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connecting...</source>
+        <translation type="unfinished">დაკავშირება...</translation>
+    </message>
+    <message>
+        <source>Host connected. Sending request...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Downloading data...</source>
+        <translation type="unfinished">მონაცემების ჩამოტვირთვა...</translation>
+    </message>
+    <message>
+        <source>Idle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Closing connection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">შეცდომა</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerFetchingDialogBase</name>
+    <message>
+        <source>Fetching repositories</source>
+        <translation type="unfinished">რეპოზიტორიების მიღება</translation>
     </message>
     <message>
         <source>Overall progress:</source>
@@ -9329,15 +9770,58 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Repository</source>
-        <translation>რეპოზიტორია</translation>
+        <translation type="unfinished">რეპოზიტორია</translation>
     </message>
     <message>
         <source>State</source>
-        <translation>მდგომარეობა</translation>
+        <translation type="unfinished">მდგომარეობა</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerInstallingDialog</name>
+    <message>
+        <source>Connecting...</source>
+        <translation>დაკავშირება...</translation>
+    </message>
+    <message>
+        <source>Installing...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolving host name...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Host connected. Sending request...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Downloading data...</source>
+        <translation type="unfinished">მონაცემების ჩამოტვირთვა...</translation>
+    </message>
+    <message>
+        <source>Idle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Closing connection...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">შეცდომა</translation>
+    </message>
+    <message>
+        <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Aborted by user</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerInstallingDialogBase</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
         <translation type="unfinished"></translation>
@@ -9348,11 +9832,18 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connecting...</source>
-        <translation>დაკავშირება...</translation>
+        <translation type="unfinished">დაკავშირება...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerPluginErrorDialog</name>
+    <message>
+        <source>no error message received</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerPluginErrorDialogBase</name>
     <message>
         <source>Error loading plugin</source>
         <translation type="unfinished"></translation>
@@ -9370,23 +9861,50 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerRepositoryDetailsDialog</name>
     <message>
         <source>Repository details</source>
-        <translation>რეპოზიტორიის დეტალები</translation>
+        <translation type="obsolete">რეპოზიტორიის დეტალები</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation>სახელი:</translation>
+        <translation type="obsolete">სახელი:</translation>
     </message>
     <message>
         <source>Enter a name for the repository</source>
-        <translation>შეიყვანეთ რეპოზიტირიის სახელი</translation>
+        <translation type="obsolete">შეიყვანეთ რეპოზიტირიის სახელი</translation>
     </message>
     <message>
         <source>URL:</source>
-        <translation>URL:</translation>
+        <translation type="obsolete">URL:</translation>
     </message>
     <message>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
-        <translation>შეიყვანეთ რეპოზოტირიის მისამართი &quot;http://&quot; თავსართით</translation>
+        <translation type="obsolete">შეიყვანეთ რეპოზოტირიის მისამართი &quot;http://&quot; თავსართით</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="obsolete">ჩართულია</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPluginInstallerRepositoryDetailsDialogBase</name>
+    <message>
+        <source>Repository details</source>
+        <translation type="unfinished">რეპოზიტორიის დეტალები</translation>
+    </message>
+    <message>
+        <source>Name:</source>
+        <translation type="unfinished">სახელი:</translation>
+    </message>
+    <message>
+        <source>Enter a name for the repository</source>
+        <translation type="unfinished">შეიყვანეთ რეპოზიტირიის სახელი</translation>
+    </message>
+    <message>
+        <source>URL:</source>
+        <translation type="unfinished">URL:</translation>
+    </message>
+    <message>
+        <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
+        <translation type="unfinished">შეიყვანეთ რეპოზოტირიის მისამართი &quot;http://&quot; თავსართით</translation>
     </message>
     <message>
         <source>Enable or disable the repository (disabled repositories will be omitted)</source>
@@ -9394,7 +9912,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enabled</source>
-        <translation>ჩართულია</translation>
+        <translation type="unfinished">ჩართულია</translation>
     </message>
 </context>
 <context>
@@ -9413,6 +9931,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No QGIS plugins found in </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[ incompatible ]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10048,7 +10570,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">დიაპაზონი</translation>
     </message>
     <message>
         <source>out of extent</source>
@@ -10263,7 +10785,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">აღწერა</translation>
     </message>
     <message>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
@@ -10417,7 +10939,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>The color map for Band %n failed to load</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
         </translation>
     </message>
     <message>
@@ -10438,7 +10960,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Unknown style format: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">სტილის უცნობი ფორმატი:</translation>
     </message>
 </context>
 <context>
@@ -10713,7 +11235,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Display name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">სახელის ჩვენება</translation>
     </message>
     <message>
         <source>Layer source</source>
@@ -10809,7 +11331,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">საშუალო</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
@@ -10975,7 +11497,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> inches</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">დუიმი</translation>
     </message>
     <message>
         <source> foot</source>
@@ -11046,11 +11568,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tick Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ჩაწევა</translation>
     </message>
     <message>
         <source>Tick Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ჩაწევა</translation>
     </message>
     <message>
         <source>Box</source>
@@ -11077,7 +11599,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Found %d matching features.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
         </translation>
     </message>
     <message>
@@ -11090,11 +11612,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">შეცდომა საძებნი სტრიქონის დამუშავებისას</translation>
     </message>
     <message>
         <source>No Records</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ჩანაწერები არაა</translation>
     </message>
     <message>
         <source>The query you specified results in zero records being returned.</source>
@@ -11109,7 +11631,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> წაშალოთ კავშირი და ყველა შესაბამისი პარამეტრები?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -11133,7 +11655,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">კოორდინატთა ათვლის სისტემა</translation>
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
@@ -11141,7 +11663,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
         </translation>
     </message>
     <message>
@@ -11181,31 +11703,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">და&amp;კავშირება</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">რედაქტირება</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">წაშლა</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;ახალი</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">კოორდინატთა ათვლის სისტემა</translation>
     </message>
     <message>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">შეცვლა ...</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">მზადაა</translation>
     </message>
     <message>
         <source>&amp;Add</source>
@@ -11217,15 +11739,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ფენები</translation>
     </message>
     <message>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ID</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">სახელი</translation>
     </message>
     <message>
         <source>Title</source>
@@ -11245,7 +11767,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">F1</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
@@ -11308,11 +11830,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ჰორიზონტალური</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ვერტიკალური</translation>
     </message>
     <message>
         <source>Cross</source>
@@ -11468,7 +11990,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">თვისებები</translation>
     </message>
     <message>
         <source>DB Relation Name</source>
@@ -11706,7 +12228,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostgreSQL-ის კავშირები</translation>
     </message>
     <message>
         <source>Edit the current PostGIS connection</source>
@@ -11714,7 +12236,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">რედაქტირება</translation>
     </message>
     <message>
         <source>Remove the current PostGIS connection</source>
@@ -11722,7 +12244,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ამოღება</translation>
     </message>
     <message>
         <source>Create a new PostGIS connection</source>
@@ -11730,7 +12252,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ახალი</translation>
     </message>
     <message>
         <source>Connect to PostGIS</source>
@@ -11738,7 +12260,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">დაკავშირება</translation>
     </message>
     <message>
         <source>Import options and shapefile list</source>
@@ -11750,7 +12272,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">დამატება</translation>
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
@@ -12170,15 +12692,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Save As Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ნაგულისხმებად შენახვა</translation>
     </message>
     <message>
         <source>Load Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">სტილის ჩატვირთვა ...</translation>
     </message>
     <message>
         <source>Save Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">სტილის შენახვა ...</translation>
     </message>
     <message>
         <source>General</source>
@@ -12222,11 +12744,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">მაქსიმუმი</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">მინიმუმი</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
@@ -12254,7 +12776,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">გამჭვირვალობა</translation>
     </message>
     <message>
         <source>Metadata</source>
@@ -12298,7 +12820,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">დაწკაპეთ ცხრილის რედაქტირების ჩართვისთვის</translation>
     </message>
 </context>
 <context>
@@ -12327,7 +12849,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> წაშალოთ კავშირი და ყველა შესაბამისი პარამეტრები?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -12706,26 +13228,12 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <source>Fields description:
-* Input DXF file: path to the DXF file to be converted
-* Output Shp file: desired name of the shape file to be created
-* Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
-
----
-Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milan Unit (Information Technology), Construction Technologies Institute.
-For support send a mail to scala@itc.cnr.it
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a DXF file to open</source>
-        <translation>აირჩიეთ გასახსნელი DXF ფაილი</translation>
+        <translation type="obsolete">აირჩიეთ გასახსნელი DXF ფაილი</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">აირჩიეთ შესანახი ფაილის სახელი</translation>
+        <translation type="obsolete">აირჩიეთ შესანახი ფაილის სახელი</translation>
     </message>
     <message>
         <source>Dxf Importer</source>
