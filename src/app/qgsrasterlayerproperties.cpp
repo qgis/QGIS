@@ -1587,11 +1587,15 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
     }
+    else if ( res == "ERROR_JPEG_COMPRESSION" )
+    {
+      QMessageBox::warning( this, tr( "Building pyramids failed." ),
+                            tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression." ) );
+    }
     else if ( res == "ERROR_VIRTUAL" )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
                             tr( "Building pyramid overviews is not supported on this type of raster." ) );
-      //TODO: should really read -- Building pyramid overviews is not supported for 'warped virtual dataset'. -- But in feature freeze, and translation requests have already gone out PJE20080912
     }
 
   }

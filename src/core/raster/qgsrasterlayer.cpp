@@ -982,6 +982,11 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
 
   if ( theTryInternalFlag )
   {
+    QString myCompressionType = QString( GDALGetMetadataItem(  mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+    if( "JPEG" == myCompressionType )
+    {
+      return "ERROR_JPEG_COMPRESSION";
+    }
     //close the gdal dataset and reopen it in read / write mode
     GDALClose( mGdalDataset );
     mGdalBaseDataset = GDALOpen( QFile::encodeName( mDataSource ).constData(), GA_Update );
