@@ -2952,7 +2952,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -2960,15 +2960,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="obsolete">Verfügbare QGIS-Datenlieferantenplugins</translation>
+        <translation>Verfügbare QGIS-Datenlieferantenplugins</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="obsolete">Verfügbare Qt-Datenbankplugins</translation>
+        <translation>Verfügbare Qt-Datenbankplugins</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="obsolete">Verfügbare Qt-Bildformatplugins</translation>
+        <translation>Verfügbare Qt-Bildformatplugins</translation>
     </message>
 </context>
 <context>
