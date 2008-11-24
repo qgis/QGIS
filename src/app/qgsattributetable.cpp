@@ -24,12 +24,15 @@
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
 
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QSettings>
 
 
 QgsAttributeTableItemDelegate::QgsAttributeTableItemDelegate( QgsAttributeTable *table, QObject *parent )
@@ -477,17 +480,28 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
   }
 
   QgsFeatureList features;
-  if ( layer->selectedFeatureCount() == 0 )
+
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+
+  if ( behaviour == 1 )
   {
-    layer->select( layer->pendingAllAttributesList(), QgsRectangle(), false );
+    features = layer->selectedFeatures();
+  }
+  else
+  {
+    QgsRectangle rect;
+    if( behaviour == 2 ) 
+    {
+      // current canvas only
+      rect = QgisApp::instance()->mapCanvas()->extent();
+    }
+
+    layer->select( layer->pendingAllAttributesList(), rect, false );
 
     QgsFeature f;
     while ( layer->nextFeature( f ) )
       features << f;
-  }
-  else
-  {
-    features = layer->selectedFeatures();
   }
 
   setRowCount( features.size() );
