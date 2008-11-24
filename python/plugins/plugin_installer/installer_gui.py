@@ -33,7 +33,6 @@ def removeDir(path):
     if not QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Nothing to remove! Plugin directory doesn't exist:")+"\n"+path
     elif QFile(path).remove(): # if it is only link, just remove it without resolving.
-      #print " Link removing successfull: %s" % path
       pass
     else:
       fltr = QDir.Dirs | QDir.Files | QDir.Hidden
@@ -41,19 +40,17 @@ def removeDir(path):
       while iterator.hasNext():
         item = iterator.next()
         if QFile(item).remove():
-          #print " File removing successfull: %s" % item
           pass
       fltr = QDir.Dirs | QDir.Hidden
       iterator = QDirIterator(path, fltr, QDirIterator.Subdirectories)
       while iterator.hasNext():
         item = iterator.next()
         if QDir().rmpath(item):
-          #print " Directory removing successfull: %s" % item
           pass
     if QFile(path).exists():
       result = QCoreApplication.translate("QgsPluginInstaller","Failed to remove the directory:")+"\n"+path+"\n"+QCoreApplication.translate("QgsPluginInstaller","Check permissions or remove it manually")
     # restore plugin directory if removed by QDir().rmpath()
-    pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins")
+    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
     if not QDir(pluginDir).exists():
       QDir().mkpath(pluginDir)
     return result
@@ -152,7 +149,6 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
     url = QUrl(plugin["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:/@"))
     fileName = plugin["filename"]
-    #print "Retrieving from %s" % path
     tmpDir = QDir.tempPath()
     tmpPath = QDir.cleanPath(tmpDir+"/"+fileName)
     self.file = QFile(tmpPath)
@@ -189,36 +185,29 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
       self.mResult = self.http.errorString()
       self.reject()
       return
-
     self.file.close()
-    pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins")
-    tmpPath = unicode(self.file.fileName())
-
+    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins"
+    tmpPath = self.file.fileName()
     # make sure that the parent directory exists
     if not QDir(pluginDir).exists():
       QDir().mkpath(pluginDir)
-
     # if the target directory already exists as a link, remove the link without resolving:
     QFile(pluginDir+QString(QDir.separator())+self.plugin["localdir"]).remove()
-
-    #print "Extracting to plugin directory (%s)" % pluginDir
     try:
       un = unzip()
-      un.extract(tmpPath, pluginDir) # test extract. If fails, then exception will be raised and no removing occurs
-      #print "Removing old plugin files if exist"
+      un.extract(unicode(tmpPath), unicode(pluginDir)) # test extract. If fails, then exception will be raised and no removing occurs
+      # removing old plugin files if exist
       removeDir(QDir.cleanPath(pluginDir+"/"+self.plugin["localdir"])) # remove old plugin if exists
-      un.extract(tmpPath, pluginDir) # final extract.
+      un.extract(unicode(tmpPath), unicode(pluginDir)) # final extract.
     except:
       self.mResult = self.tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:") + "\n" + pluginDir
       self.reject()
       return
-
     try:
-      #print "Cleaning: removing the zip file (%s)" % tmpPath
+      # cleaning: removing the temporary zip file
       QFile(tmpPath).remove()
     except:
       pass
-
     self.close()
 
 
@@ -373,9 +362,10 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       return True
     else:
       for i in ["name","version_inst","version_avail","desc_repo","desc_local","author","status","repository"]:
-        item = str(plugin[i]).upper()
+        item = QString(plugin[i]) #.toUpper()
         if item != None:
-          if item.find(self.lineFilter.text().toUpper()) > -1:
+          if item.contains(self.lineFilter.text(), Qt.CaseInsensitive):
+          #if item.find(self.lineFilter.text().toUpper()) > -1:
             return True
     return False
 
@@ -592,7 +582,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           plugins.setPluginData(key, "desc_local", "")
           plugins.setPluginData(key, "error", "")
           plugins.setPluginData(key, "error_details", "")
-          pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
+          pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["localdir"]
           removeDir(pluginDir)
           if QDir(pluginDir).exists():
             infoString = (self.tr("Plugin uninstall failed"), result)
@@ -629,12 +619,17 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       warning += "\n\n"+self.tr("Warning: this plugin isn't available in any accessible repository!")
     if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
       return
-    pluginDir = unicode(QFileInfo(QgsApplication.qgisUserDbFilePath()).path()+"/python/plugins/"+ str(plugin["localdir"]))
-    #print "Uninstalling plugin", plugin["name"], pluginDir
+    pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["localdir"]
     result = removeDir(pluginDir)
     if result:
       QMessageBox.warning(self, self.tr("Plugin uninstall failed"), result)
     else:
+      # safe remove
+      try:
+        exec ("plugins[%s].unload()" % plugin["localdir"])
+        exec ("del plugins[%s]" % plugin["localdir"])
+      except:
+        pass
       try:
         exec ("del sys.modules[%s]" % plugin["localdir"])
       except:
@@ -673,7 +668,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   def addKnownRepositories(self):
     """ update list of known repositories - in the future it will be replaced with an online fetching """
-    #print "add known repositories"
     message = self.tr("You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!")
     if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
       repositories.addKnownRepos()
@@ -688,7 +682,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   def addRepository(self):
     """ add repository button has been clicked """
-    #print "add"
     dlg = QgsPluginInstallerRepositoryDialog(self)
     dlg.checkBoxEnabled.setCheckState(Qt.Checked)
     if not dlg.exec_():
@@ -703,8 +696,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     reposURL = dlg.editURL.text()
     if repositories.all().has_key(reposName):
       reposName = reposName + "(2)"
-    #print "name: "+reposName
-    #print "url: "+reposURL
     # add to settings
     settings.setValue(reposName+"/url", QVariant(reposURL))
     settings.setValue(reposName+"/enabled", QVariant(bool(dlg.checkBoxEnabled.checkState())))
@@ -719,7 +710,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   def editRepository(self):
     """ edit repository button has been clicked """
-    #print "edit"
     checkState={False:Qt.Unchecked,True:Qt.Checked}
     current = self.treeRepositories.currentItem()
     if current == None:
@@ -766,7 +756,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
   def deleteRepository(self):
     """ delete repository button has been clicked """
-    #print "delete"
     current = self.treeRepositories.currentItem()
     if current == None:
       return

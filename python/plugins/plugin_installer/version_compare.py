@@ -1,7 +1,7 @@
 """
 This is a Python module to compare version numbers. It's case insensitive
 and recognizes all major notations, prefixes (ver. and version), delimiters
-(. - and _) and suffixes (alpha, beta, rc, preview and final).
+(. - and _) and suffixes (alpha, beta, rc, preview and trunk).
 
 Usage: compareVersions(version1, version2)
 
@@ -25,11 +25,11 @@ or as number to provide the best result (you know, 11>9 but also '03'>'007').
 The comparing stops when one of elements is greater. If comparing achieves
 the end of the shorter list and the matter is still unresolved, the longer
 list is usually recognized as higher, except following suffixes:
-ALPHA, BETA, RC and PREVIEW which make the version number lower.
+ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 
 /***************************************************************************
  *                                                                         *
- *   Copyright (C) 2008-11-11 Borys Jurgiel                                *
+ *   Copyright (C) 2008-11-24 Borys Jurgiel                                *
  *                                                                         *
  ***************************************************************************
  *                                                                         *
@@ -44,13 +44,14 @@ ALPHA, BETA, RC and PREVIEW which make the version number lower.
 # ------------------------------------------------------------------------ #
 def normalizeVersion(s):
   """ remove possible prefix from given string and convert to uppercase """
+  prefixes = ['VERSION','VER.','VER','V.','V','REVISION','REV.','REV','R.','R']
   if not s:
     return unicode()
   s = unicode(s).upper()
-  s = s.replace('VERSION','')
-  s = s.replace('VER.','')
-  s = s.replace('VER','')
-  s = s.lstrip()
+  for i in prefixes:
+    if s[:len(i)] == i:
+      s = s.replace(i,'')
+  s = s.strip()
   return s
 
 
@@ -94,15 +95,11 @@ def compareElements(s1,s2):
     else:
       return 2
   # if the strings aren't numeric or start from 0, compare them as a strings:
-  # but first, set ALPHA < BETA < PREVIEW < RC < FINAL < [NOTHING] < [ANYTHING_ELSE]
-  if s1 == 'FINAL':
+  # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE]
+  if not s1 in ['ALPHA','BETA','PREVIEW','RC','TRUNK']:
     s1 = 'Z' + s1
-  elif not s1 in ['ALPHA','BETA','PREVIEW','RC']:
-    s1 = 'ZZ' + s1
-  if s2 == 'FINAL':
+  if not s2 in ['ALPHA','BETA','PREVIEW','RC','TRUNK']:
     s2 = 'Z' + s2
-  elif not s2 in ['ALPHA','BETA','PREVIEW','RC']:
-    s2 = 'ZZ' + s2
   # the final test:
   if s1 > s2:
     return 1

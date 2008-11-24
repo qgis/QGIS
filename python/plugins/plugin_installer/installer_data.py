@@ -24,7 +24,7 @@ from version_compare import compareVersions, normalizeVersion
 
 """
 Data structure:
-mRepositories = dict of dicts: {repoName : {"url" string,
+mRepositories = dict of dicts: {repoName : {"url" QString,
                                             "enabled" bool,
                                             "valid" bool,
                                             "QPHttp" QPHttp,
@@ -32,20 +32,20 @@ mRepositories = dict of dicts: {repoName : {"url" string,
                                             "xmlData" QDomDocument,
                                             "state" int,   (0 - disabled, 1-loading, 2-loaded ok, 3-error (to be retried), 4-rejected)
                                             "error" QString}}
-mPlugins = dict of dicts {id : {"name" string,
-                                "version_avail" string,
-                                "version_inst" string,
-                                "desc_repo" string,
-                                "desc_local" string,
-                                "author" string,
-                                "status" string,      ("not installed", "installed", "upgradeable", "orphan", "new", "newer")
-                                "error" string,       ("", "broken", "incompatible", "dependent")
-                                "error_details" string,
-                                "homepage" string,
-                                "url" string,
-                                "filename" string,
-                                "repository" string,
-                                "localdir" string,
+mPlugins = dict of dicts {id : {"name" QString,
+                                "version_avail" QString,
+                                "version_inst" QString,
+                                "desc_repo" QString,
+                                "desc_local" QString,
+                                "author" QString,
+                                "status" QString,      ("not installed", "installed", "upgradeable", "orphan", "new", "newer")
+                                "error" QString,       ("", "broken", "incompatible", "dependent")
+                                "error_details" QString,
+                                "homepage" QString,
+                                "url" QString,
+                                "filename" QString,
+                                "repository" QString,
+                                "localdir" QString,
                                 "read-only" boolean}}
 """
 
@@ -68,9 +68,9 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 # knownRepos: (name, url for QGIS 0.x, url for QGIS 1.x, possible depreciated url, another possible depreciated url)
 knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","",""),
-              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml","http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml",""),
+              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
               ("Borys Jurgiel's Repository","http://bwj.aster.net.pl/qgis-oldapi/plugins.xml","http://bwj.aster.net.pl/qgis/plugins.xml","",""),
-              ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","","")]
+              ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","")]
 
 
 
@@ -84,7 +84,13 @@ class QPHttp(QHttp):
     settings.beginGroup("proxy")
     if settings.value("/proxyEnabled").toBool():
       self.proxy=QNetworkProxy()
-      self.proxy.setType(QNetworkProxy.HttpProxy)
+      proxyType = settings.value( "/proxyType", QVariant(0)).toString()
+      if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
+      elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
+      elif proxyType in ["3","HttpProxy"]: self.proxy.setType(QNetworkProxy.HttpProxy)
+      elif proxyType in ["4","HttpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.HttpCachingProxy)
+      elif proxyType in ["5","FtpCachingProxy"] and QT_VERSION >= 0X040400: self.proxy.setType(QNetworkProxy.FtpCachingProxy)
+      else: self.proxy.setType(QNetworkProxy.DefaultProxy)
       self.proxy.setHostName(settings.value("/proxyHost").toString())
       self.proxy.setPort(settings.value("/proxyPort").toUInt()[0])
       self.proxy.setUser(settings.value("/proxyUser").toString())
@@ -138,7 +144,7 @@ class Repositories(QObject):
     """ add known 3rd party repositories to QSettings """
     presentURLs = []
     for i in self.all().values():
-      presentURLs += [str(i["url"])]
+      presentURLs += [QString(i["url"])]
     for i in knownRepos:
       if i[QGIS_MAJOR_VER+1] and presentURLs.count(i[QGIS_MAJOR_VER+1]) == 0:
         settings = QSettings()
@@ -284,7 +290,6 @@ class Repositories(QObject):
     if state:                             # fetching failed
       self.mRepositories[reposName]["state"] =  3
       self.mRepositories[reposName]["error"] = self.mRepositories[reposName]["QPHttp"].errorString()
-      #print "Repository fetching failed! " , reposName , str(self.mRepositories[reposName]["error"])
     else:
       repoData = self.mRepositories[reposName]["xmlData"]
       reposXML = QDomDocument()
@@ -293,7 +298,8 @@ class Repositories(QObject):
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
           name = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed()).fileName()
-          name = str(name[0:len(name)-4])
+          name.chop(4)
+          name = str(name)
           plugin = {}
           plugin[name] = {
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
@@ -312,7 +318,9 @@ class Repositories(QObject):
             "localdir"      : name,
             "read-only"     : False}
           #if compatible, add the plugin to list
-          if compareVersions(QGIS_VER, pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().trimmed()) < 2:
+          qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().trimmed()
+          if not qgisMinimumVersion: qgisMinimumVersion = "0"
+          if compareVersions(QGIS_VER, qgisMinimumVersion) < 2:
             plugins.addPlugin(plugin)
         plugins.workarounds()
         self.mRepositories[reposName]["state"] = 2
@@ -393,7 +401,7 @@ class Plugins(QObject):
       path = QgsApplication.pkgDataPath()
     else:
       path = QgsApplication.qgisSettingsDirPath()
-    path = QDir.cleanPath(unicode(path) + "/python/plugins/" + key)
+    path = QDir.cleanPath(path) + "/python/plugins/" + key
     if not QDir(path).exists():
       return
     nam   = ""
@@ -510,7 +518,7 @@ class Plugins(QObject):
       pluginDir = QDir(pluginDir)
       pluginDir.setFilter(QDir.AllDirs)
       for key in pluginDir.entryList():
-        key = str(key)
+        key = unicode(key)
         if not key in [".",".."]:
           self.updatePlugin(key, True)
     except:
@@ -524,7 +532,7 @@ class Plugins(QObject):
     except:
       return QCoreApplication.translate("QgsPluginInstaller","Couldn't open the local plugin directory")
     for key in pluginDir.entryList():
-      key = str(key)
+      key = unicode(key)
       if not key in [".",".."]:
         self.updatePlugin(key, False)
 
