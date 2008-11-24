@@ -7941,6 +7941,14 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation>El elemento contiene múltiples capas. Visualizar múltiples capas en la tabla no está implementado.</translation>
     </message>
+    <message>
+        <source>More layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
@@ -8019,6 +8027,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Los puntos de datos se transformarán a partir del sistema de referencia de coordenadas de la capa.</translation>
+    </message>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished">No es una capa vectorial</translation>
+    </message>
+    <message>
+        <source>To open an attribute table, you must select a vector layer in the legend</source>
+        <translation type="unfinished">Para abrir una tabla de atributos, debe seleccionar una capa vectorial en la leyenda</translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished">excepción bad_alloc</translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished">El relleno de la tabla de atributos se ha detenido porque no quedaba más memoria virtual</translation>
+    </message>
+    <message>
+        <source>Attribute table - </source>
+        <translation type="unfinished">Tabla de atributos - </translation>
+    </message>
+    <message>
+        <source>Start editing failed</source>
+        <translation type="unfinished">Ha fallado el comienzo de la edición</translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
+        <translation type="unfinished">El proveedor no se puede abrir para editar</translation>
+    </message>
+    <message>
+        <source>Stop editing</source>
+        <translation type="unfinished">Detener edición</translation>
+    </message>
+    <message>
+        <source>Do you want to save the changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problems during roll back</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8673,6 +8725,18 @@ Información extensa sobre el error:
         <source>Cross</source>
         <translation>Cruz</translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -8959,6 +9023,10 @@ Información extensa sobre el error:
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>Usar el SRC global predeterminado mostrado debajo</translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10978,6 +11046,10 @@ Debido a esto no funcionará el selector de proyecciones...</translation>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

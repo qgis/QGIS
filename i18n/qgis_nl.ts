@@ -9624,7 +9624,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayer</name>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Meer lagen</translation>
+        <translation type="unfinished">Meer lagen</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -9652,7 +9652,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Dit item bevat meerdere lagen. Vertonen van meerdere lagen in tabel wordt niet ondersteunnd.</translation>
+        <translation type="unfinished">Dit item bevat meerdere lagen. Vertonen van meerdere lagen in tabel wordt niet ondersteunnd.</translation>
     </message>
     <message>
         <source>&amp;Zoom to best scale (100%)</source>
@@ -9675,19 +9675,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Attributentabel - </translation>
+        <translation type="unfinished">Attributentabel - </translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">bad_alloc fout</translation>
+        <translation type="unfinished">bad_alloc fout</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">&apos;Commit&apos; van de aanpassingen niet mogelijk</translation>
+        <translation type="unfinished">&apos;Commit&apos; van de aanpassingen niet mogelijk</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Wilt u de huidige aanpassingen opslaan?</translation>
+        <translation type="unfinished">Wilt u de huidige aanpassingen opslaan?</translation>
     </message>
     <message>
         <source>Driver not found</source>
@@ -9711,7 +9711,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Het vullen van de attributentabel is gestopt omdat er onvoldoende virtueel geheugen beschikbaar is</translation>
+        <translation type="unfinished">Het vullen van de attributentabel is gestopt omdat er onvoldoende virtueel geheugen beschikbaar is</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -9723,7 +9723,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Geen vectorlaag</translation>
+        <translation type="unfinished">Geen vectorlaag</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -9731,7 +9731,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problemen bij de &apos;roll-back&apos;</translation>
+        <translation type="unfinished">Problemen bij de &apos;roll-back&apos;</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -9739,7 +9739,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">(Data)provider kan niet voor aanpassingen worden geopend</translation>
+        <translation type="unfinished">(Data)provider kan niet voor aanpassingen worden geopend</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -9767,11 +9767,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Start aanpassen mislukt</translation>
+        <translation type="unfinished">Start aanpassen mislukt</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Stop aanpassen</translation>
+        <translation type="unfinished">Stop aanpassen</translation>
     </message>
     <message>
         <source>The shapefile could not be created (</source>
@@ -9779,7 +9779,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Om een attributentabel te openen dient u eerst een vectorlaag te selecteren in de legenda</translation>
+        <translation type="unfinished">Om een attributentabel te openen dient u eerst een vectorlaag te selecteren in de legenda</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -10640,6 +10640,18 @@ Uitgebreide foutinformatie:
         <source>Cross</source>
         <translation>Kruis</translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -11014,6 +11026,10 @@ Uitgebreide foutinformatie:
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>De standaard CRS zoals hieronder getoond zal worden gebruikt (&amp;y)</translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13189,6 +13205,10 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <source>Saved Style</source>
         <translation>Opgeslagen Stijl</translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

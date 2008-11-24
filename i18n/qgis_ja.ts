@@ -12194,12 +12194,20 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>More layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">属性テーブル - </translation>
+        <translation type="unfinished">属性テーブル - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -12207,11 +12215,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">編集を終了</translation>
+        <translation type="unfinished">編集を終了</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">変更を保存しますか?</translation>
+        <translation type="unfinished">変更を保存しますか?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -12291,6 +12299,38 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To open an attribute table, you must select a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start editing failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problems during roll back</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13218,6 +13258,18 @@ Extended error information:
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -13698,6 +13750,10 @@ identifying features without zooming in very close.<byte value="xd"/>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16082,6 +16138,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

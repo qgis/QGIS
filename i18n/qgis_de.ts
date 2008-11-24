@@ -8802,11 +8802,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Weitere Layer</translation>
+        <translation type="unfinished">Weitere Layer</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
+        <translation type="unfinished">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8821,7 +8821,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Attributtabelle - </translation>
+        <translation type="unfinished">Attributtabelle - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8829,19 +8829,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Beginnen der Editierung fehlgeschlagen.</translation>
+        <translation type="unfinished">Beginnen der Editierung fehlgeschlagen.</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
+        <translation type="unfinished">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Digitalisieren stoppen</translation>
+        <translation type="unfinished">Digitalisieren stoppen</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Sollen die Änderungen gespeichert werden?</translation>
+        <translation type="unfinished">Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8849,19 +8849,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Änderungen konnten nicht gespeichern werden.</translation>
+        <translation type="unfinished">Änderungen konnten nicht gespeichern werden.</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problem beim Rückgängigmachen (rollback).</translation>
+        <translation type="unfinished">Problem beim Rückgängigmachen (rollback).</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Kein Vektorlayer</translation>
+        <translation type="unfinished">Kein Vektorlayer</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
+        <translation type="unfinished">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -8921,11 +8921,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">Speicher-Fehler</translation>
+        <translation type="unfinished">Speicher-Fehler</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
+        <translation type="unfinished">Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -9617,15 +9617,15 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Alle Objekte anzeigen</translation>
+        <translation type="unfinished">Alle Objekte anzeigen</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Nur selektierte Objekte anzeigen</translation>
+        <translation type="unfinished">Nur selektierte Objekte anzeigen</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Objekte im aktuellen Kartenausschnitt anzeigen</translation>
+        <translation type="unfinished">Objekte im aktuellen Kartenausschnitt anzeigen</translation>
     </message>
 </context>
 <context>
@@ -9916,7 +9916,7 @@ Ausführliche Fehlerinformation:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Verhalten der Attributtabelle</translation>
+        <translation type="unfinished">Verhalten der Attributtabelle</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11986,6 +11986,10 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

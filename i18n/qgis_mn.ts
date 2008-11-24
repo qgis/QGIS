@@ -10112,12 +10112,20 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>More layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete"> Тайлбарын хүснэгт - </translation>
+        <translation type="unfinished"> Тайлбарын хүснэгт - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10157,27 +10165,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Засвар эхэлсэнгүй</translation>
+        <translation type="unfinished">Засвар эхэлсэнгүй</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Нийлүүлэгч засвар хийхээр нээгдэхгүй</translation>
+        <translation type="unfinished">Нийлүүлэгч засвар хийхээр нээгдэхгүй</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Засвар зогсоох</translation>
+        <translation type="unfinished">Засвар зогсоох</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Өөрчлөлтийг хадгалах уу?</translation>
+        <translation type="unfinished">Өөрчлөлтийг хадгалах уу?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Өөрчлөлт хийгдээгүй</translation>
+        <translation type="unfinished">Өөрчлөлт хийгдээгүй</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">roll back-ийн явцад асуудал гарав</translation>
+        <translation type="unfinished">roll back-ийн явцад асуудал гарав</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -10217,6 +10225,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To open an attribute table, you must select a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11118,6 +11142,18 @@ Extended error information:
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -11595,6 +11631,10 @@ identifying features without zooming in very close.
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13987,6 +14027,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

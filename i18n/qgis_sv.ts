@@ -13425,11 +13425,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Fler lager</translation>
+        <translation type="unfinished">Fler lager</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Detta objekt innehåller flera lagerfiler. Stödjer ej att visa flera lager i tabell.</translation>
+        <translation type="unfinished">Detta objekt innehåller flera lagerfiler. Stödjer ej att visa flera lager i tabell.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -13444,7 +13444,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Attributtabell - </translation>
+        <translation type="unfinished">Attributtabell - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -13452,19 +13452,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Misslyckades att påbörja redigering</translation>
+        <translation type="unfinished">Misslyckades att påbörja redigering</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Källan kan inte öppnas för redigering</translation>
+        <translation type="unfinished">Källan kan inte öppnas för redigering</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Sluta redigera</translation>
+        <translation type="unfinished">Sluta redigera</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Vill du spara ändringarna?</translation>
+        <translation type="unfinished">Vill du spara ändringarna?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -13480,19 +13480,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Kunde inte föra in förändringar</translation>
+        <translation type="unfinished">Kunde inte föra in förändringar</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problem vid återgång</translation>
+        <translation type="unfinished">Problem vid återgång</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Inte ett vektorlager</translation>
+        <translation type="unfinished">Inte ett vektorlager</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Du måste markera ett vektorlager i teckenförklaringen för att öppna en attributtabell</translation>
+        <translation type="unfinished">Du måste markera ett vektorlager i teckenförklaringen för att öppna en attributtabell</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -13552,11 +13552,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">bad_alloc fel</translation>
+        <translation type="unfinished">bad_alloc fel</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Slut på virtuellt minne, så ifyllning av attributtabellen har stoppats</translation>
+        <translation type="unfinished">Slut på virtuellt minne, så ifyllning av attributtabellen har stoppats</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -14604,6 +14604,18 @@ Detaljerad felinformation:</translation>
         <source>Cross</source>
         <translation>Kors</translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -15246,6 +15258,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Password</source>
         <translation>Lösenord</translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17846,6 +17862,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unknown style format: </source>
         <translation>Okänt stilformat: </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -11169,11 +11169,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">ລະດັບຊັ້ນຕ່າງໆ</translation>
+        <translation type="unfinished">ລະດັບຊັ້ນຕ່າງໆ</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">ລາຍການນີ້ມີແຟ້ມລະດັບຊັ້ນຫຼາຍ.ໃຫ້ເຫັນລະດັບຊັ້ນຫຼາຍໆອັນໃນຮູບຂອງຕາຕະລາງບໍ່ສາມາດເຮັດໄດ້.</translation>
+        <translation type="unfinished">ລາຍການນີ້ມີແຟ້ມລະດັບຊັ້ນຫຼາຍ.ໃຫ້ເຫັນລະດັບຊັ້ນຫຼາຍໆອັນໃນຮູບຂອງຕາຕະລາງບໍ່ສາມາດເຮັດໄດ້.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -11188,7 +11188,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">ຕາຕະລາງຄຸນລັກສະນະ- </translation>
+        <translation type="unfinished">ຕາຕະລາງຄຸນລັກສະນະ- </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -11196,19 +11196,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">ບໍ່ສາມາດແກ້ໄຂໄດ້</translation>
+        <translation type="unfinished">ບໍ່ສາມາດແກ້ໄຂໄດ້</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">ບໍ່ສາມາດເປີດຕົວສະຫນອງເພື່ອແກ້ໄຂໄດ້</translation>
+        <translation type="unfinished">ບໍ່ສາມາດເປີດຕົວສະຫນອງເພື່ອແກ້ໄຂໄດ້</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">ຢຸດແກ້ໄຂ</translation>
+        <translation type="unfinished">ຢຸດແກ້ໄຂ</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">ຕ້ອງການຈັດເກັບຊິ່ງທີ່ໄດ້ປ່ຽນແປງບໍ?</translation>
+        <translation type="unfinished">ຕ້ອງການຈັດເກັບຊິ່ງທີ່ໄດ້ປ່ຽນແປງບໍ?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -11216,19 +11216,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">ບໍ່ສາມາດຈົດຈຳສີ່ງທີ່ໄດ້ແກ້ໄຂໄປ</translation>
+        <translation type="unfinished">ບໍ່ສາມາດຈົດຈຳສີ່ງທີ່ໄດ້ແກ້ໄຂໄປ</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">ມີປັນຫາລະຫວ່າງດຶງຂໍ້ມູນກັບມາເບິ່ງ</translation>
+        <translation type="unfinished">ມີປັນຫາລະຫວ່າງດຶງຂໍ້ມູນກັບມາເບິ່ງ</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">ບໍ່ມີລະດັບຊັ້ນຂອງຈຳນວນຕົວເລກບອກຄະຫນາດແລະທິດທາງ</translation>
+        <translation type="unfinished">ບໍ່ມີລະດັບຊັ້ນຂອງຈຳນວນຕົວເລກບອກຄະຫນາດແລະທິດທາງ</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">ເພື່ອເປີດຕາຕະລາງ,ເຈົ້າຕ້ອງເລື້ອກເອົາລະດັບຊັ້ນທີ່ບອກຂະຫນາດແລະທິດທາງຢູ່ໃນຄຳອະທິບາຍແຜນທີ່</translation>
+        <translation type="unfinished">ເພື່ອເປີດຕາຕະລາງ,ເຈົ້າຕ້ອງເລື້ອກເອົາລະດັບຊັ້ນທີ່ບອກຂະຫນາດແລະທິດທາງຢູ່ໃນຄຳອະທິບາຍແຜນທີ່</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -11296,6 +11296,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12248,6 +12256,18 @@ Extended error information:
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -12701,6 +12721,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15026,6 +15050,10 @@ p, li { white-space: pre-wrap; }
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
