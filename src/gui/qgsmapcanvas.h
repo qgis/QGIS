@@ -210,8 +210,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! set wheel action and zoom factor (should be greater than 1)
     void setWheelAction( WheelAction action, double factor = 2 );
 
-    //! Zooms in/out preserving
-    void zoom( bool zoomIn );
+    //! Zoom in with fixed factor
+    void zoomIn( );
+
+    //! Zoom out with fixed factor
+    void zoomOut( );
+    
+    //! Zoom with the factor supplied. Factor > 1 zooms in
+    void zoomByFactor( double scaleFactor );
 
     //! Zooms in/out with a given center
     void zoomWithCenter( int x, int y, bool zoomIn );
@@ -232,9 +238,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
-
-    //! zooms with the factor supplied. Factor > 1 zooms in
-    void zoom( double scaleFactor );
 
   public slots:
 

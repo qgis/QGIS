@@ -3980,7 +3980,7 @@ void QgisApp::userScale()
     if ( leftSide > 0.0 && leftOk && rightOk )
     {
       double wantedScale = rightSide / leftSide;
-      mMapCanvas->zoom( wantedScale / currentScale );
+      mMapCanvas->zoomByFactor( wantedScale / currentScale );
     }
   }
 }
