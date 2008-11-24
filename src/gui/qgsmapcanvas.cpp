@@ -658,12 +658,12 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 
       case Qt::Key_PageUp:
         QgsDebugMsg( "Zoom in" );
-        zoom( true );
+        zoomIn();
         break;
 
       case Qt::Key_PageDown:
         QgsDebugMsg( "Zoom out" );
-        zoom( false );
+        zoomOut();
         break;
 
       default:
@@ -860,7 +860,10 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   {
     case WheelZoom:
       // zoom without changing extent
-      zoom( e->delta() > 0 );
+      if (e->delta() > 0)
+        zoomIn();
+      else
+        zoomOut();
       break;
 
     case WheelZoomAndRecenter:
@@ -898,14 +901,14 @@ void QgsMapCanvas::setWheelAction( WheelAction action, double factor )
   mWheelZoomFactor = factor;
 }
 
-void QgsMapCanvas::zoom( bool zoomIn )
+void QgsMapCanvas::zoomIn()
 {
-  double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
+  zoomByFactor( 1 / mWheelZoomFactor );
+}
 
-  QgsRectangle r = mMapRenderer->extent();
-  r.scale( scaleFactor );
-  setExtent( r );
-  refresh();
+void QgsMapCanvas::zoomOut()
+{
+  zoomByFactor( mWheelZoomFactor );
 }
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
@@ -1265,7 +1268,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
 
 }
 
-void QgsMapCanvas::zoom( double scaleFactor )
+void QgsMapCanvas::zoomByFactor( double scaleFactor )
 {
   if ( mDrawing )
   {

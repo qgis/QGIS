@@ -155,8 +155,14 @@ class QgsMapCanvas : QGraphicsView
     //! set wheel action and zoom factor (should be greater than 1)
     void setWheelAction(WheelAction action, double factor = 2);
 
-    //! Zooms in/out preserving
-    void zoom(bool zoomIn);
+    //! Zoom in with fixed factor
+    void zoomIn( );
+
+    //! Zoom out with fixed factor
+    void zoomOut( );
+    
+    //! Zoom with the factor supplied. Factor > 1 zooms in
+    void zoomByFactor( double scaleFactor );
 
     //! Zooms in/out with a given center
     void zoomWithCenter(int x, int y, bool zoomIn);
