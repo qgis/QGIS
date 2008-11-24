@@ -8631,7 +8631,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Więcej warstw</translation>
+        <translation type="unfinished">Więcej warstw</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8641,12 +8641,16 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Tabela atrybutów - </translation>
+        <translation type="unfinished">Tabela atrybutów - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8654,11 +8658,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Zakończ edycję</translation>
+        <translation type="unfinished">Zakończ edycję</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Czy chcesz zapisać zmiany?</translation>
+        <translation type="unfinished">Czy chcesz zapisać zmiany?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8730,6 +8734,38 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not a vector layer</source>
+        <translation type="unfinished">Nie warstwa wektorowa</translation>
+    </message>
+    <message>
+        <source>To open an attribute table, you must select a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start editing failed</source>
+        <translation type="unfinished">Rozpocznij edycję pola</translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Problems during roll back</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9386,15 +9422,15 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Pokaż wszystkie obiekty</translation>
+        <translation type="unfinished">Pokaż wszystkie obiekty</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Pokaż wybrane obiekty</translation>
+        <translation type="unfinished">Pokaż wybrane obiekty</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Pokaż obiekty w bieżącym oknie</translation>
+        <translation type="unfinished">Pokaż obiekty w bieżącym oknie</translation>
     </message>
 </context>
 <context>
@@ -9673,7 +9709,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Zachowanie tabeli atrybutów</translation>
+        <translation type="unfinished">Zachowanie tabeli atrybutów</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11705,6 +11741,10 @@ Because of this the projection selector will not work...</source>
         <source>The color map for Band %n failed to load</source>
         <translation type="obsolete">
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -5664,7 +5664,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bảng thuộc tính -</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -13093,11 +13093,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Lớp bổ sung</translation>
+        <translation type="unfinished">Lớp bổ sung</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Mục này chứa các tập tin lớp bổ sung. Hiển thị các lớp bổ sung không được hỗ trợ.</translation>
+        <translation type="unfinished">Mục này chứa các tập tin lớp bổ sung. Hiển thị các lớp bổ sung không được hỗ trợ.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -13112,7 +13112,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Bảng thuộc tính - </translation>
+        <translation type="unfinished">Bảng thuộc tính - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -13120,19 +13120,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Khởi động chỉnh sửa thất bại</translation>
+        <translation type="unfinished">Khởi động chỉnh sửa thất bại</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Trình cung cấp không thể mở được để chỉnh sửa</translation>
+        <translation type="unfinished">Trình cung cấp không thể mở được để chỉnh sửa</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Ngừng chỉnh sửa</translation>
+        <translation type="unfinished">Ngừng chỉnh sửa</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Bạn có muốn lưu những thay đổi không?</translation>
+        <translation type="unfinished">Bạn có muốn lưu những thay đổi không?</translation>
     </message>
     <message>
         <source>&amp;No</source>
@@ -13144,19 +13144,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Không thể thực hiện các thay đổi</translation>
+        <translation type="unfinished">Không thể thực hiện các thay đổi</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Trục trặc khi quay ngược lại</translation>
+        <translation type="unfinished">Trục trặc khi quay ngược lại</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Không phải là một lớp vector</translation>
+        <translation type="unfinished">Không phải là một lớp vector</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Để mở một bảng thuộc tính, bạn phải chọn một lớp vector trong phần &apos;Chú giải&apos;</translation>
+        <translation type="unfinished">Để mở một bảng thuộc tính, bạn phải chọn một lớp vector trong phần &apos;Chú giải&apos;</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -13216,11 +13216,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">lỗi bad_alloc</translation>
+        <translation type="unfinished">lỗi bad_alloc</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Việc nhập vào bảng thuộc tính đã bị ngưng do không còn bộ nhớ ảo</translation>
+        <translation type="unfinished">Việc nhập vào bảng thuộc tính đã bị ngưng do không còn bộ nhớ ảo</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -14245,6 +14245,18 @@ Thông tin bổ sung về lỗi:</translation>
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -14830,6 +14842,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17262,6 +17278,10 @@ p, li { white-space: pre-wrap; }(new line)
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

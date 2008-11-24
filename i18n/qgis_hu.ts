@@ -9603,11 +9603,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">További rétegek</translation>
+        <translation type="unfinished">További rétegek</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Ez az elem több réteg fájlt tartalmaz. Több réteg táblában megjelenítése nem lehetséges.</translation>
+        <translation type="unfinished">Ez az elem több réteg fájlt tartalmaz. Több réteg táblában megjelenítése nem lehetséges.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9622,23 +9622,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Nem vektor réteg</translation>
+        <translation type="unfinished">Nem vektor réteg</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Az attribútum tábla megnyitásához egy réteget kell szelektálnod a jelmagyarázatban</translation>
+        <translation type="unfinished">Az attribútum tábla megnyitásához egy réteget kell szelektálnod a jelmagyarázatban</translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">bad_alloc exception</translation>
+        <translation type="unfinished">bad_alloc exception</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
+        <translation type="unfinished">Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Attribútum tábla -</translation>
+        <translation type="unfinished">Attribútum tábla -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9682,23 +9682,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Sikertelen szerkesztés kezdés</translation>
+        <translation type="unfinished">Sikertelen szerkesztés kezdés</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Szerkesztés vége</translation>
+        <translation type="unfinished">Szerkesztés vége</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Akarod menteni a változásokat?</translation>
+        <translation type="unfinished">Akarod menteni a változásokat?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Nem tudom menteni a változásokat</translation>
+        <translation type="unfinished">Nem tudom menteni a változásokat</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Probléma a visszavonás közben</translation>
+        <translation type="unfinished">Probléma a visszavonás közben</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -9734,6 +9734,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider cannot be opened for editing</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10608,6 +10612,18 @@ Bővebb hibaüzenet:
         <source>Cross</source>
         <translation>Kereszt</translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -11037,6 +11053,10 @@ Bővebb hibaüzenet:
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13296,6 +13316,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

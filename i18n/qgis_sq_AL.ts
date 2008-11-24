@@ -9596,11 +9596,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Me teper shtresa</translation>
+        <translation type="unfinished">Me teper shtresa</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Ky element permban me teper skedare shtrese. Shfaqja e me teper shtresave ne tabele nuk mbeshtetet.</translation>
+        <translation type="unfinished">Ky element permban me teper skedare shtrese. Shfaqja e me teper shtresave ne tabele nuk mbeshtetet.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9615,23 +9615,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Nuk eshte nje shtrese vektor</translation>
+        <translation type="unfinished">Nuk eshte nje shtrese vektor</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Per te hapur nje tabele atributesh, ju duhet te zgjidhni nje shtrese vektor ne shpjegues</translation>
+        <translation type="unfinished">Per te hapur nje tabele atributesh, ju duhet te zgjidhni nje shtrese vektor ne shpjegues</translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">kundershtim bad_alloc</translation>
+        <translation type="unfinished">kundershtim bad_alloc</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Mbushja e tabeles se atributeve u ndalua pasi nuk kishte me memorie virtuale</translation>
+        <translation type="unfinished">Mbushja e tabeles se atributeve u ndalua pasi nuk kishte me memorie virtuale</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Tabela atributeve -</translation>
+        <translation type="unfinished">Tabela atributeve -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9671,27 +9671,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Fillimi i perpunimit deshtoi</translation>
+        <translation type="unfinished">Fillimi i perpunimit deshtoi</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Marresi nuk mund te hapet per perpunim</translation>
+        <translation type="unfinished">Marresi nuk mund te hapet per perpunim</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Ndalo perpunimin</translation>
+        <translation type="unfinished">Ndalo perpunimin</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">A doni te ruani ndryshimet?</translation>
+        <translation type="unfinished">A doni te ruani ndryshimet?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Nuk mund te kryhen ndryshimet</translation>
+        <translation type="unfinished">Nuk mund te kryhen ndryshimet</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Probleme gjate kthimit ne origjinal</translation>
+        <translation type="unfinished">Probleme gjate kthimit ne origjinal</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -10607,6 +10607,18 @@ Informacion i zgjeruar gabimi:</translation>
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -11053,6 +11065,10 @@ Informacion i zgjeruar gabimi:</translation>
     <message>
         <source>Password</source>
         <translation type="unfinished">Fjalekalimi</translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13306,6 +13322,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

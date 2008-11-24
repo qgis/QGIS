@@ -9325,11 +9325,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Viac vrstiev</translation>
+        <translation type="unfinished">Viac vrstiev</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Táto položka obsahuje viac súborov s vrstvami. Zobrazenie viacerých vrstiev v tabuľke nie je podporované.</translation>
+        <translation type="unfinished">Táto položka obsahuje viac súborov s vrstvami. Zobrazenie viacerých vrstiev v tabuľke nie je podporované.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9344,15 +9344,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Nie je vektorová vrstva</translation>
+        <translation type="unfinished">Nie je vektorová vrstva</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
+        <translation type="unfinished">Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Tabuľka atribútov -</translation>
+        <translation type="unfinished">Tabuľka atribútov -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9392,27 +9392,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Pokus o úpravy zlyhal</translation>
+        <translation type="unfinished">Pokus o úpravy zlyhal</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Správca sa nedá otvoriť pre zápis</translation>
+        <translation type="unfinished">Správca sa nedá otvoriť pre zápis</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Ukončiť úpravy</translation>
+        <translation type="unfinished">Ukončiť úpravy</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Prajete si uložiť zmeny?</translation>
+        <translation type="unfinished">Prajete si uložiť zmeny?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Nemožno odoslať zmeny </translation>
+        <translation type="unfinished">Nemožno odoslať zmeny </translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
+        <translation type="unfinished">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -9444,11 +9444,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">výnimka bad_alloc</translation>
+        <translation type="unfinished">výnimka bad_alloc</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Naplnenie tabuľky atribútov bolo zastavené, pretože už nebol dostatok virtuálnej pamäte</translation>
+        <translation type="unfinished">Naplnenie tabuľky atribútov bolo zastavené, pretože už nebol dostatok virtuálnej pamäte</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -10301,6 +10301,18 @@ Rozšírené informácie o chybe:
         <source>Cross</source>
         <translation type="unfinished">Kríž</translation>
     </message>
+    <message>
+        <source>Show all features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -10637,6 +10649,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation type="unfinished">Použiť nižšie nastavený &amp;všeobecný súradnicový systém (CRS)</translation>
+    </message>
+    <message>
+        <source>Attribute table behaviour</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12795,6 +12811,10 @@ Kvôli tomu nebude fungovať výber mapového zobrazenia...</translation>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

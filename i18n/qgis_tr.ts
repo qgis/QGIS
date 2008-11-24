@@ -10519,11 +10519,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Daha çok katman</translation>
+        <translation type="unfinished">Daha çok katman</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
+        <translation type="unfinished">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -10538,7 +10538,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Öznitelik Tablosu - </translation>
+        <translation type="unfinished">Öznitelik Tablosu - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10546,19 +10546,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Düzeltmeyi başlatmada hata</translation>
+        <translation type="unfinished">Düzeltmeyi başlatmada hata</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
+        <translation type="unfinished">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Düzeltmeyi durdur</translation>
+        <translation type="unfinished">Düzeltmeyi durdur</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Değişikliklerin kaydedilmesini istermisiniz?</translation>
+        <translation type="unfinished">Değişikliklerin kaydedilmesini istermisiniz?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -10574,19 +10574,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Değişiklikler henüz kabul edilmedi</translation>
+        <translation type="unfinished">Değişiklikler henüz kabul edilmedi</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Geri almada hata</translation>
+        <translation type="unfinished">Geri almada hata</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Vektör katman değil</translation>
+        <translation type="unfinished">Vektör katman değil</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
+        <translation type="unfinished">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -10654,6 +10654,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11580,15 +11588,15 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Tüm objeleri göster</translation>
+        <translation type="unfinished">Tüm objeleri göster</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Seçilen objeleri göster</translation>
+        <translation type="unfinished">Seçilen objeleri göster</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Geçerli kanavadaki objeleri göster</translation>
+        <translation type="unfinished">Geçerli kanavadaki objeleri göster</translation>
     </message>
 </context>
 <context>
@@ -12055,7 +12063,7 @@ Geniş hata bilgisi:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Öznitelik tablo davranışı</translation>
+        <translation type="unfinished">Öznitelik tablo davranışı</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -14435,6 +14443,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

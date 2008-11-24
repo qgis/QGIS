@@ -9399,11 +9399,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Vairāk slāņu</translation>
+        <translation type="unfinished">Vairāk slāņu</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
+        <translation type="unfinished">Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9418,7 +9418,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Atribūtu tabula - </translation>
+        <translation type="unfinished">Atribūtu tabula - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9426,19 +9426,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Rediģēšanas sākšana neizdevās</translation>
+        <translation type="unfinished">Rediģēšanas sākšana neizdevās</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Sniedzējs nevar tikt atvērts rediģēšanai</translation>
+        <translation type="unfinished">Sniedzējs nevar tikt atvērts rediģēšanai</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Pārtraukt rediģēšanu</translation>
+        <translation type="unfinished">Pārtraukt rediģēšanu</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Vai Jūs velaties saglabāt izmaiņas?</translation>
+        <translation type="unfinished">Vai Jūs velaties saglabāt izmaiņas?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9446,19 +9446,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Nevar apstiprināt izmaiņas</translation>
+        <translation type="unfinished">Nevar apstiprināt izmaiņas</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problēmas pie darbību atcelšanas</translation>
+        <translation type="unfinished">Problēmas pie darbību atcelšanas</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Nav vektordatu slānis</translation>
+        <translation type="unfinished">Nav vektordatu slānis</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
+        <translation type="unfinished">Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -9518,11 +9518,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">Bad_alloc kļūda</translation>
+        <translation type="unfinished">Bad_alloc kļūda</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
+        <translation type="unfinished">Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -10381,15 +10381,15 @@ Paplašināta kļūdas informācija:
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Rādīt visus objektus</translation>
+        <translation type="unfinished">Rādīt visus objektus</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Rādīt izvēlētos objektus</translation>
+        <translation type="unfinished">Rādīt izvēlētos objektus</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Rādīt pašreizs redzamos objektus</translation>
+        <translation type="unfinished">Rādīt pašreizs redzamos objektus</translation>
     </message>
 </context>
 <context>
@@ -10804,7 +10804,7 @@ Paplašināta kļūdas informācija:
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Atribūtu tabulas uzvedība</translation>
+        <translation type="unfinished">Atribūtu tabulas uzvedība</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -13050,6 +13050,10 @@ Because of this the projection selector will not work...</source>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

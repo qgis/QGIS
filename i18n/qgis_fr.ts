@@ -10580,11 +10580,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Plus de couches</translation>
+        <translation type="unfinished">Plus de couches</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Cet élément contient d&apos;autres fichiers. Afficher d&apos;autres couches n&apos;est pas pris en charge.</translation>
+        <translation type="unfinished">Cet élément contient d&apos;autres fichiers. Afficher d&apos;autres couches n&apos;est pas pris en charge.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -10599,7 +10599,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Table d&apos;attributs - </translation>
+        <translation type="unfinished">Table d&apos;attributs - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10607,19 +10607,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Commencer l&apos;édition échouée</translation>
+        <translation type="unfinished">Commencer l&apos;édition échouée</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Le fournisseur de données ne peut être ouvert pour l&apos;édition</translation>
+        <translation type="unfinished">Le fournisseur de données ne peut être ouvert pour l&apos;édition</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Arrêter l&apos;édition</translation>
+        <translation type="unfinished">Arrêter l&apos;édition</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Voulez-vous sauvegarder les modifications ?</translation>
+        <translation type="unfinished">Voulez-vous sauvegarder les modifications ?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -10635,19 +10635,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">N&apos;a pas pu valider les changements</translation>
+        <translation type="unfinished">N&apos;a pas pu valider les changements</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problèmes pendant le retour en arrière</translation>
+        <translation type="unfinished">Problèmes pendant le retour en arrière</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Pas de couche vectorielle</translation>
+        <translation type="unfinished">Pas de couche vectorielle</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Pour ouvrir une table attributaire, vous devez sélectionner une couche vectorielle dans la légende</translation>
+        <translation type="unfinished">Pour ouvrir une table attributaire, vous devez sélectionner une couche vectorielle dans la légende</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -10707,7 +10707,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Le remplissage de la table attributaire a été interrompu parce que la mémoire virtuelle a été épuisée</translation>
+        <translation type="unfinished">Le remplissage de la table attributaire a été interrompu parce que la mémoire virtuelle a été épuisée</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -10720,6 +10720,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Les points seront transformés dans le système de coordonnée de la couche.</translation>
+    </message>
+    <message>
+        <source>bad_alloc exception</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11643,15 +11647,15 @@ Information supplémentaire sur l&apos;erreur :</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Montrer toutes les entités</translation>
+        <translation type="unfinished">Montrer toutes les entités</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Montrer les entités sélectionnées</translation>
+        <translation type="unfinished">Montrer les entités sélectionnées</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Montrer les entités dans le caneva actuel</translation>
+        <translation type="unfinished">Montrer les entités dans le caneva actuel</translation>
     </message>
 </context>
 <context>
@@ -12152,7 +12156,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Comportement de la table d&apos;attribut</translation>
+        <translation type="unfinished">Comportement de la table d&apos;attribut</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -14581,6 +14585,10 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
         <translation type="obsolete">
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

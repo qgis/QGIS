@@ -8440,11 +8440,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="obsolete">Mais camadas</translation>
+        <translation type="unfinished">Mais camadas</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Este item contém mais arquivos de camadas. Exibir mais camadas na tabela não é suportado.</translation>
+        <translation type="unfinished">Este item contém mais arquivos de camadas. Exibir mais camadas na tabela não é suportado.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8459,7 +8459,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="obsolete">Tabela de atributos - </translation>
+        <translation type="unfinished">Tabela de atributos - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8467,19 +8467,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="obsolete">Falha ao iniciar a edição</translation>
+        <translation type="unfinished">Falha ao iniciar a edição</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Provedor não pode ser aberto para edição</translation>
+        <translation type="unfinished">Provedor não pode ser aberto para edição</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="obsolete">Parar edição</translation>
+        <translation type="unfinished">Parar edição</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Você quer salvar as alterações?</translation>
+        <translation type="unfinished">Você quer salvar as alterações?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8487,19 +8487,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="obsolete">Impossível marcar mudanças</translation>
+        <translation type="unfinished">Impossível marcar mudanças</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="obsolete">Problemas durante retorno</translation>
+        <translation type="unfinished">Problemas durante retorno</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="obsolete">Não é uma camada vetorial</translation>
+        <translation type="unfinished">Não é uma camada vetorial</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Para abrir uma tabela de atributos, você precisa selecionar uma camada vetorial na legenda</translation>
+        <translation type="unfinished">Para abrir uma tabela de atributos, você precisa selecionar uma camada vetorial na legenda</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -8559,11 +8559,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="obsolete">bad_alloc exception</translation>
+        <translation type="unfinished">bad_alloc exception</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">O preenchimento dos atributos de tabela parou por insuficiência de memória virtual (seu HD deve estar cheio)</translation>
+        <translation type="unfinished">O preenchimento dos atributos de tabela parou por insuficiência de memória virtual (seu HD deve estar cheio)</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -9247,15 +9247,15 @@ Informações adicionais do erro:</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="obsolete">Mostrar todas feições</translation>
+        <translation type="unfinished">Mostrar todas feições</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="obsolete">Mostrar feições selecionadas</translation>
+        <translation type="unfinished">Mostrar feições selecionadas</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="obsolete">Mostrar feições presentes na tela atual</translation>
+        <translation type="unfinished">Mostrar feições presentes na tela atual</translation>
     </message>
 </context>
 <context>
@@ -9526,7 +9526,7 @@ Informações adicionais do erro:</translation>
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="obsolete">Comportamento da tebela de atributos</translation>
+        <translation type="unfinished">Comportamento da tebela de atributos</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11582,6 +11582,10 @@ Devido ao seletor de projeção não estar em funcionamento...</translation>
         
         
         </translation>
+    </message>
+    <message>
+        <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
