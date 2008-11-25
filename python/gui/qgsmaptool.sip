@@ -70,6 +70,9 @@ class QgsMapTool : QObject
     //! called when map tool is being deactivated
     virtual void deactivate();
     
+    //! returns pointer to the tool's map canvas
+    QgsMapCanvas* canvas();
+
   protected:
 
     //! constructor takes map canvas as a parameter
@@ -84,6 +87,9 @@ class QgsMapTool : QObject
     //! trnasformation from map coordinates to layer's coordinates
     QgsPoint toLayerCoordinates(QgsMapLayer* layer, const QgsPoint& point);
     
+    //!transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
+    QgsPoint toMapCoordinates( QgsMapLayer* layer, const QgsPoint& point );
+
     //! trnasformation of the rect from map coordinates to layer's coordinates
     QgsRectangle toLayerCoordinates(QgsMapLayer* layer, const QgsRectangle& rect);
 
