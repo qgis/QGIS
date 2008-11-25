@@ -383,8 +383,7 @@ void QgsLegendLayerFile::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingA
 
     // editing
     int cap = vlayer->dataProvider()->capabilities();
-    if (( cap & QgsVectorDataProvider::AddFeatures )
-        || ( cap & QgsVectorDataProvider::DeleteFeatures ) )
+    if ( cap & QgsVectorDataProvider::EditingCapabilities )
     {
       if ( toggleEditingAction )
       {

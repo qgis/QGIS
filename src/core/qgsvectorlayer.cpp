@@ -1977,7 +1977,8 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
-  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+  // allow editing if provider supports any of the capabilities
+  if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
   {
     return false;
   }
