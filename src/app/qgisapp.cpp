@@ -3865,7 +3865,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   if ( !vlayer->isEditable() )
   {
     vlayer->startEditing();
-    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
     }
@@ -4840,15 +4840,22 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     if ( dprovider )
     {
       //start editing/stop editing
-      if ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
+      if ( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
         mActionToggleEditing->setEnabled( true );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionPasteFeatures->setEnabled( vlayer->isEditable() && !clipboard()->empty() );
       }
       else
       {
         mActionToggleEditing->setEnabled( false );
+      }
+      
+      if ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
+      {
+        mActionPasteFeatures->setEnabled( vlayer->isEditable() && !clipboard()->empty() );
+      }
+      else
+      {
         mActionPasteFeatures->setEnabled( false );
       }
 
@@ -4863,19 +4870,26 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteSelected->setEnabled( false );
         mActionCutFeatures->setEnabled( false );
       }
-
+      
+      // moving enabled if geometry changes are supported
+      if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
+      {
+        mActionMoveFeature->setEnabled( true );
+      }
+      else
+      {
+        mActionMoveFeature->setEnabled( false );
+      }
 
       if ( vlayer->geometryType() == QGis::Point )
       {
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
           mActionCapturePoint->setEnabled( true );
-          mActionMoveFeature->setEnabled( true );
         }
         else
         {
           mActionCapturePoint->setEnabled( false );
-          mActionMoveFeature->setEnabled( false );
         }
         mActionCaptureLine->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
@@ -4892,7 +4906,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           {
             mActionMoveVertex->setEnabled( true );
           }
-          mActionMoveFeature->setEnabled( true );
         }
         return;
       }
@@ -4902,13 +4915,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         {
           mActionCaptureLine->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
-          mActionMoveFeature->setEnabled( true );
         }
         else
         {
           mActionCaptureLine->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
-          mActionMoveFeature->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
@@ -4923,7 +4934,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionAddRing->setEnabled( true );
           mActionAddIsland->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
-          mActionMoveFeature->setEnabled( true );
         }
         else
         {
@@ -4931,7 +4941,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionAddRing->setEnabled( false );
           mActionAddIsland->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
-          mActionMoveFeature->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCaptureLine->setEnabled( false );
@@ -4943,7 +4952,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddVertex->setEnabled( true );
         mActionMoveVertex->setEnabled( true );
         mActionDeleteVertex->setEnabled( true );
-        mActionMoveFeature->setEnabled( true );
         if ( vlayer->geometryType() == QGis::Polygon )
         {
           mActionAddRing->setEnabled( true );
@@ -4957,7 +4965,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddVertex->setEnabled( false );
         mActionMoveVertex->setEnabled( false );
         mActionDeleteVertex->setEnabled( false );
-        mActionMoveFeature->setEnabled( false );
       }
       return;
     }

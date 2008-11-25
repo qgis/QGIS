@@ -64,6 +64,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       RandomSelectGeometryAtId =     1 << 10,
       SequentialSelectGeometryAtId = 1 << 11
     };
+    
+    /** bitmask of all provider's editing capabilities */
+    const static int EditingCapabilities = AddFeatures | DeleteFeatures |
+        ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes;
 
     /**
      * Constructor of the vector provider
