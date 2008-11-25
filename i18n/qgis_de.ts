@@ -10532,7 +10532,7 @@ Sie müssen Quantum GIS neustarten.</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Diese  Plugin ist inkompatibel mit Ihrer Quantum GIS version und wird wahrscheinlich nicht funktionieren.</translation>
+        <translation type="unfinished">Diese  Plugin ist inkompatibel mit Ihrer Quantum GIS-Version und wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
