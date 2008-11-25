@@ -53,6 +53,27 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
     return;
   }
 
+  //inform user at the begin of the digitising action that the island tool only works if exactly one feature is selected
+  int nSelectedFeatures = vlayer->selectedFeatureCount();
+  QString selectionErrorMsg;
+  if(nSelectedFeatures < 1)
+  {
+      selectionErrorMsg = "No feature selected. Please select a feature with the selection tool or in the attribute table";
+  }
+  else if(nSelectedFeatures > 1)
+  {
+      selectionErrorMsg = "Several features are selected. Please select only one feature to which an island should be added.";
+  }
+
+  if(!selectionErrorMsg.isEmpty())
+  {
+      QMessageBox::critical( 0, QObject::tr( "Error, could not add island" ), selectionErrorMsg );
+      mCaptureList.clear();
+      delete mRubberBand;
+      mRubberBand = 0;
+      return;
+  }
+
   //add point to list and to rubber band
   int error = addVertex( e->pos() );
   if ( error == 1 )
