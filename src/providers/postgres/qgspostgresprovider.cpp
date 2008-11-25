@@ -2524,27 +2524,27 @@ bool QgsPostgresProvider::getGeometryDetails()
         fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       }
     }
-    if ( fType == "POINT" )
+    if ( fType == "POINT" || fType == "POINTM" )
     {
       geomType = QGis::WKBPoint;
     }
-    else if ( fType == "MULTIPOINT" )
+    else if ( fType == "MULTIPOINT" || fType == "MULTIPOINTM" )
     {
       geomType = QGis::WKBMultiPoint;
     }
-    else if ( fType == "LINESTRING" )
+    else if ( fType == "LINESTRING" || fType == "LINESTRINGM" )
     {
       geomType = QGis::WKBLineString;
     }
-    else if ( fType == "MULTILINESTRING" )
+    else if ( fType == "MULTILINESTRING" || fType == "MULTILINESTRINGM" )
     {
       geomType = QGis::WKBMultiLineString;
     }
-    else if ( fType == "POLYGON" )
+    else if ( fType == "POLYGON" || fType == "POLYGONM" )
     {
       geomType = QGis::WKBPolygon;
     }
-    else if ( fType == "MULTIPOLYGON" )
+    else if ( fType == "MULTIPOLYGON" || fType == "MULTIPOLYGONM" )
     {
       geomType = QGis::WKBMultiPolygon;
     }
@@ -2565,7 +2565,18 @@ bool QgsPostgresProvider::getGeometryDetails()
                  tr( ". The database communication log was:\n" ) );
     showMessageBox( tr( "Unable to get feature type and srid" ), log );
   }
-
+  
+  // store whether the geometry includes measure value
+  if ( fType == "POINTM" || fType == "MULTIPOINTM" ||
+       fType == "LINESTRINGM" || fType == "MULTILINESTRINGM" ||
+       fType == "POLYGONM"  || fType == "MULTIPOLYGONM" )
+  {
+    // explicitly disable adding new features and editing of geometries
+    // as this would lead to corruption of measures
+    enabledCapabilities &= ~(QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures);
+  }
+    
+    
   if ( valid )
   {
     QgsDebugMsg( "SRID is " + srid );
