@@ -10276,7 +10276,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Plugins werden geladen...</translation>
+        <translation type="unfinished">Python-Plugins herunterladen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
