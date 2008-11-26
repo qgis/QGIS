@@ -18,6 +18,7 @@
 /* $Id$ */
 #include <cmath>
 
+#include "qgis.h"
 #include "qgssymbol.h"
 #include "qgslogger.h"
 #include "qgssymbologyutils.h"
@@ -47,7 +48,9 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
-{}
+{
+  mPen.setWidth( DEFAULT_LINE_WIDTH );
+}
 
 
 QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QString label, QColor c ) :
@@ -65,7 +68,9 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
-{}
+{
+  mPen.setWidth( DEFAULT_LINE_WIDTH );
+}
 
 QgsSymbol::QgsSymbol()
     : mPointSymbolName( "hard:circle" ),
@@ -76,7 +81,9 @@ QgsSymbol::QgsSymbol()
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
-{}
+{
+  mPen.setWidth( DEFAULT_LINE_WIDTH );
+}
 
 
 QgsSymbol::QgsSymbol( QColor c )
@@ -90,7 +97,9 @@ QgsSymbol::QgsSymbol( QColor c )
     mCacheUpToDate2( false ),
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
-{}
+{
+  mPen.setWidth( DEFAULT_LINE_WIDTH );
+}
 
 QgsSymbol::QgsSymbol( const QgsSymbol& s )
 {

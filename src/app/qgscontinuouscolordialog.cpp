@@ -19,6 +19,7 @@
 
 #include "qgscontinuouscolordialog.h"
 #include "qgscontinuouscolorrenderer.h"
+#include "qgis.h"
 #include "qgsfield.h"
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
@@ -122,7 +123,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   else
   {
     cb_polygonOutline->setCheckState( Qt::Checked );
-    outlinewidthspinbox->setValue( 0.4 );
+    outlinewidthspinbox->setValue( DEFAULT_LINE_WIDTH );
     if ( mVectorLayer->geometryType() != QGis::Polygon )
       cb_polygonOutline->setVisible( false );
 
