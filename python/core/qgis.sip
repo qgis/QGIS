@@ -49,7 +49,13 @@ public:
     WKBMultiPoint,
     WKBMultiLineString,
     WKBMultiPolygon,
-    WKBUnknown
+    WKBUnknown,
+    WKBPoint25D = 0x80000001,
+    WKBLineString25D,
+    WKBPolygon25D,
+    WKBMultiPoint25D,
+    WKBMultiLineString25D,
+    WKBMultiPolygon25D
   };
   enum GeometryType
   {
@@ -104,6 +110,8 @@ public:
   const int PROJ_PREFIX_LEN;
   /** The length of teh string "+ellps=" */
   const int ELLPS_PREFIX_LEN;
+  /** The length of the string "+lat_1=" */
+  const int LAT_PREFIX_LEN;
   /** Magick number that determins whether a projection srsid is a system (srs.db)
    *  or user (~/.qgis.qgis.db) defined projection. */
   const int USER_CRS_START_ID;
@@ -116,3 +124,5 @@ public:
   const float MINIMUM_POINT_SIZE;
   /** Magic number that determines the minimum allowable point size for point symbols */
   const float DEFAULT_POINT_SIZE;
+  const double DEFAULT_LINE_WIDTH;
+
