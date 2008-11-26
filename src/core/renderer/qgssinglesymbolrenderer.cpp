@@ -53,7 +53,7 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QGis::GeometryType type )
     sy->setFillStyle( Qt::SolidPattern );
     sy->setColor( QColor( 0, 0, 0 ) );
   }
-  sy->setLineWidth( 0.2 );
+  sy->setLineWidth( DEFAULT_LINE_WIDTH ); //declared in qgis.h
   mSymbol = sy;
   updateSymbolAttributes();
 }

@@ -151,6 +151,7 @@ const int USER_CRS_START_ID = 100000;
 const double MINIMUM_POINT_SIZE = 0.1;
 /** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE = 2.0;
+const double DEFAULT_LINE_WIDTH = 0.2;
 
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
