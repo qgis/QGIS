@@ -417,6 +417,9 @@ class CORE_EXPORT QgsGeometry
      @return the noded multiline geometry or 0 in case of error. The calling function takes ownership of the node geometry*/
     GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, GEOSGeometry *poly ) const;
 
+    /**Returns number of single geometry in a geos geometry. Is save for geos 2 and 3*/
+    int getNumberOfGeometries(GEOSGeometry* g) const;
+
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult );
 
     /** return point from wkb */
