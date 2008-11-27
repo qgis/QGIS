@@ -418,7 +418,7 @@ class CORE_EXPORT QgsGeometry
     GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, GEOSGeometry *poly ) const;
 
     /**Returns number of single geometry in a geos geometry. Is save for geos 2 and 3*/
-    int getNumberOfGeometries(GEOSGeometry* g) const;
+    int numberOfGeometries(GEOSGeometry* g) const;
 
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult );
 
