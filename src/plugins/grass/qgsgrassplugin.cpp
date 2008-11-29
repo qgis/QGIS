@@ -52,6 +52,7 @@
 extern "C" {
 #include <grass/gis.h>
 #include <grass/Vect.h>
+#include <grass/version.h>
 }
 
 #include "qgsgrassplugin.h"
@@ -496,7 +497,7 @@ void QgsGrassPlugin::newVector()
     return;
   }
 
-#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \ 
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
     ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
   Vect_build ( &Map );
 #else
