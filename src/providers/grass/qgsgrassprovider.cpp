@@ -46,6 +46,7 @@ extern "C" {
 #include <grass/gis.h>
 #include <grass/dbmi.h>
 #include <grass/Vect.h>
+#include <grass/version.h>
 }
 
 #ifdef _MSC_VER
@@ -1037,7 +1038,12 @@ int QgsGrassProvider::openMap(QString gisdbase, QString location, QString mapset
   if ( level == 1 )
   {
     QgsGrass::resetError();
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \ 
+    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 ) 
+    Vect_build ( map.map );
+#else
     Vect_build ( map.map, stderr );
+#endif
 
     if ( QgsGrass::getError() == QgsGrass::FATAL ) {
       std::cerr << "Cannot build topology: " 
@@ -1492,8 +1498,14 @@ bool QgsGrassProvider::closeEdit ( bool newMap )
   // TODO: Is it necessary for build/close ?
   G__setenv( (char *)"MAPSET", (char *) map->mapset.ascii() );
 
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \ 
+    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6 )
+  Vect_build_partial ( map->map, GV_BUILD_NONE);
+  Vect_build ( map->map );
+#else
   Vect_build_partial ( map->map, GV_BUILD_NONE, NULL);
   Vect_build ( map->map, stderr );
+#endif
 
   // If a new map was created close the map and return
   if ( newMap )
