@@ -1438,6 +1438,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionHideAllLayers->setIcon( getThemeIcon( "/mActionHideAllLayers.png" ) );
   mActionShowAllLayers->setIcon( getThemeIcon( "/mActionShowAllLayers.png" ) );
   mActionRemoveAllFromOverview->setIcon( getThemeIcon( "/mActionRemoveAllFromOverview.png" ) );
+  mActionToggleFullScreen->setIcon( getThemeIcon( "/mActionToggleFullScreen.png" ) );
   mActionProjectProperties->setIcon( getThemeIcon( "/mActionProjectProperties.png" ) );
   mActionManagePlugins->setIcon( getThemeIcon( "/mActionShowPluginManager.png" ) );
   mActionCheckQgisVersion->setIcon( getThemeIcon( "/mActionCheckQgisVersion.png" ) );
@@ -1446,9 +1447,21 @@ void QgisApp::setTheme( QString theThemeName )
   mActionQgisHomePage->setIcon( getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( getThemeIcon( "/mActionHelpAbout.png" ) );
   mActionDraw->setIcon( getThemeIcon( "/mActionDraw.png" ) );
+  mActionToggleEditing->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
+  mActionCutFeatures->setIcon( getThemeIcon( "/mActionEditCut.png" ) );
+  mActionCopyFeatures->setIcon( getThemeIcon( "/mActionEditCopy.png" ) );
+  mActionPasteFeatures->setIcon( getThemeIcon( "/mActionEditPaste.png" ) );
   mActionCapturePoint->setIcon( getThemeIcon( "/mActionCapturePoint.png" ) );
   mActionCaptureLine->setIcon( getThemeIcon( "/mActionCaptureLine.png" ) );
   mActionCapturePolygon->setIcon( getThemeIcon( "/mActionCapturePolygon.png" ) );
+  mActionMoveFeature->setIcon( getThemeIcon( "/mActionMoveFeature.png" ) );
+  mActionSplitFeatures->setIcon( getThemeIcon( "/mActionSplitFeatures.png" ) );
+  mActionDeleteSelected->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
+  mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
+  mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+  mActionAddRing->setIcon( getThemeIcon( "/mActionAddRing.png" ) );
+  mActionAddIsland->setIcon( getThemeIcon( "/mActionAddIsland.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
@@ -1461,6 +1474,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOpenTable->setIcon( getThemeIcon( "/mActionOpenTable.png" ) );
   mActionMeasure->setIcon( getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( getThemeIcon( "/mActionMeasureArea.png" ) );
+  mActionMapTips->setIcon( getThemeIcon( "/mActionMapTips.png" ) );
   mActionShowBookmarks->setIcon( getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
