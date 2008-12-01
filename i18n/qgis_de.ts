@@ -204,7 +204,7 @@
     </message>
     <message>
         <source>Area scale field</source>
-        <translation type="obsolete">Flächenmaßstabs Feld</translation>
+        <translation type="obsolete">Flächenmaßstabsfeld</translation>
     </message>
     <message>
         <source>Rotation field</source>
@@ -12975,7 +12975,7 @@ is appended to a truncated SQL statement</comment>
     </message>
     <message>
         <source>Area scale field</source>
-        <translation>Flächenmaßstabs Feld</translation>
+        <translation>Flächenmaßstabsfeld</translation>
     </message>
     <message>
         <source>Rotation field</source>
