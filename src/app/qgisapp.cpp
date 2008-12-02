@@ -1741,8 +1741,6 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
 
 void QgisApp::saveWindowState()
 {
-  QgsPluginRegistry::instance()->unloadAll();
-
   // store window and toolbar positions
   QSettings settings;
   // store the toolbar/dock widget settings using Qt4 settings API
@@ -1750,6 +1748,8 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue( "/UI/geometry", saveGeometry() );
+
+  QgsPluginRegistry::instance()->unloadAll();
 }
 
 void QgisApp::restoreWindowState()
