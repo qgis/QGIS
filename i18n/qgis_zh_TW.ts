@@ -971,11 +971,11 @@
     </message>
     <message>
         <source>Orientation</source>
-        <translation type="obsolete">方位</translation>
+        <translation type="obsolete">方向</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="obsolete">水準</translation>
+        <translation type="obsolete">水平</translation>
     </message>
     <message>
         <source>Vertical</source>
@@ -1273,7 +1273,7 @@
     </message>
     <message>
         <source>No proj4 projection string. Unable to set map units.</source>
-        <translation type="obsolete">沒有proj4的投影字串。不能設定地圖單位.</translation>
+        <translation type="obsolete">沒有proj4的投影定義字串。不能設定地圖單位.</translation>
     </message>
     <message>
         <source>Unsupported map units of </source>
@@ -5427,17 +5427,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="139"/>
         <source>Join our user mailing list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">加入使用者郵件清單</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="114"/>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">以下是使用金錢來贊助QGIS專案開發的名單</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>Website</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">網站</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="170"/>
@@ -6293,12 +6293,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="501"/>
         <source>Big image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">大型影像</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="502"/>
         <source>To create image </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立影像</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="505"/>
@@ -6313,7 +6313,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="119"/>
         <source>QGIS - print composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS - 列印管理</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="216"/>
@@ -6323,92 +6323,92 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="532"/>
         <source>format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">格式</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="625"/>
         <source>SVG warning</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG警告</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1122"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">不要在顯示此訊息</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="652"/>
         <source>SVG Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG格式</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="82"/>
         <source>Move Content</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移動項目</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="83"/>
         <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移動項目內容</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="90"/>
         <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">群組(&amp;G)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="91"/>
         <source>Group items</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">群組項目</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="93"/>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取消群組(&amp;U)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="94"/>
         <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取消項目群組(&amp;U)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="96"/>
         <source>Raise</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上移一層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="97"/>
         <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取選項目上移一層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="99"/>
         <source>Lower</source>
-        <translation type="unfinished">向下</translation>
+        <translation type="unfinished">下移一層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="100"/>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取選項目下移一層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="102"/>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移至最上層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="103"/>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取項目移至最上層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="105"/>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移至最下層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="106"/>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取項目移至最下層</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="129"/>
@@ -6418,7 +6418,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="133"/>
         <source>File</source>
-        <translation type="unfinished">文件</translation>
+        <translation type="unfinished">檔案</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="134"/>
@@ -6438,7 +6438,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="141"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">復原(&amp;U)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="141"/>
@@ -6448,7 +6448,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="144"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">剪下(&amp;u)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="144"/>
@@ -6468,7 +6468,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="148"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">貼上(&amp;P)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="148"/>
@@ -6483,12 +6483,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="153"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">檢視</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="160"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">排版</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="555"/>
@@ -6726,37 +6726,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="19"/>
         <source>Composer item properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">項目屬性設計</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="25"/>
         <source>Color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顏色:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="32"/>
         <source>Frame...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">框線顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="39"/>
         <source>Background...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">背景</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="46"/>
         <source>Opacity:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">透明度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="63"/>
         <source>Outline width: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">框線寬度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Frame</source>
-        <translation type="unfinished">框架</translation>
+        <translation type="unfinished">顯示框線</translation>
     </message>
 </context>
 <context>
@@ -6997,7 +6997,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Frame</source>
-        <translation type="obsolete">框架</translation>
+        <translation type="obsolete">框線</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -7118,7 +7118,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Frame</source>
-        <translation type="obsolete">框架</translation>
+        <translation type="obsolete">框線</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -7155,7 +7155,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="57"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">瀏覽...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="74"/>
@@ -7165,12 +7165,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="93"/>
         <source>Height:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">高度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="112"/>
         <source>Rotation:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉:</translation>
     </message>
 </context>
 <context>
@@ -7651,7 +7651,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="118"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">紙張方向</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="134"/>
@@ -7676,7 +7676,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="217"/>
         <source>Print quality (dpi)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">列印品質(dpi)</translation>
     </message>
 </context>
 <context>
@@ -7787,7 +7787,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="obsolete">外框寬度:</translation>
+        <translation type="obsolete">框線寬度:</translation>
     </message>
     <message>
         <source>...</source>
@@ -7817,7 +7817,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="80"/>
         <source>Outline Width:</source>
-        <translation>外框寬度:</translation>
+        <translation>框線寬度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="93"/>
@@ -9937,7 +9937,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="569"/>
         <source>Data layer:</source>
-        <translation>數據圖層:</translation>
+        <translation>資料圖層:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -10065,17 +10065,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsgeomtypedialog.cpp" line="30"/>
         <source>Real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">實數</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgeomtypedialog.cpp" line="31"/>
         <source>Integer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">整數</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgeomtypedialog.cpp" line="32"/>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">字串</translation>
     </message>
 </context>
 <context>
@@ -10164,12 +10164,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="111"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">刪除選取的屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgeomtypedialogbase.ui" line="124"/>
         <source>Add attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增屬性</translation>
     </message>
 </context>
 <context>
@@ -10580,7 +10580,7 @@ Factor</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="63"/>
         <source>Rename selected map</source>
-        <translation>重命名選中的地圖</translation>
+        <translation>重新命名選中的地圖</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="71"/>
@@ -13879,7 +13879,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="114"/>
         <source>group</source>
-        <translation>組</translation>
+        <translation>群組</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -13910,7 +13910,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="442"/>
         <source>Re&amp;name</source>
-        <translation>重命名 (&amp;n)</translation>
+        <translation>重新命名(&amp;n)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="447"/>
@@ -13920,7 +13920,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="448"/>
         <source>&amp;Expand all</source>
-        <translation>全部展開 (&amp;E)</translation>
+        <translation>全部展開(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="449"/>
@@ -14188,7 +14188,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline Style</source>
-        <translation type="obsolete">外框樣式</translation>
+        <translation type="obsolete">框線樣式</translation>
     </message>
     <message>
         <source>Width:</source>
@@ -15071,7 +15071,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="25"/>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">連線設定</translation>
     </message>
 </context>
 <context>
@@ -15850,7 +15850,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="854"/>
         <source>Prompt for CRS</source>
-        <translation type="unfinished">提示沒有設定CRS</translation>
+        <translation type="unfinished">沒有設定CRS時，出現CRS選取對話方塊</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="861"/>
@@ -19434,7 +19434,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="635"/>
         <source>provider said</source>
-        <translation type="unfinished">WMS伺服器回應</translation>
+        <translation type="unfinished">伺服器回應</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="686"/>
@@ -19642,7 +19642,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline Style:</source>
-        <translation type="obsolete">外框樣式:</translation>
+        <translation type="obsolete">框線樣式:</translation>
     </message>
     <message>
         <source>Fill Color:</source>
@@ -19650,11 +19650,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline color:</source>
-        <translation type="obsolete">外框顏色:</translation>
+        <translation type="obsolete">框線顏色:</translation>
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="obsolete">外框寬度:</translation>
+        <translation type="obsolete">框線寬度:</translation>
     </message>
     <message>
         <source>Fill Patterns:</source>
@@ -19816,7 +19816,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline Width:</source>
-        <translation type="obsolete">外框寬度:</translation>
+        <translation type="obsolete">框線寬度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="338"/>
@@ -19829,11 +19829,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline color:</source>
-        <translation type="obsolete">外框顏色:</translation>
+        <translation type="obsolete">框線顏色:</translation>
     </message>
     <message>
         <source>Outline Style:</source>
-        <translation type="obsolete">外框樣式:</translation>
+        <translation type="obsolete">框線樣式:</translation>
     </message>
     <message>
         <source>Label:</source>
@@ -19862,17 +19862,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="182"/>
         <source>Outline style</source>
-        <translation type="unfinished">外框樣式</translation>
+        <translation type="unfinished">框線樣式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="214"/>
         <source>Outline color</source>
-        <translation type="unfinished">外框顏色</translation>
+        <translation type="unfinished">框線顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="249"/>
         <source>Outline width</source>
-        <translation type="unfinished">外框寬度</translation>
+        <translation type="unfinished">框線寬度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="275"/>
@@ -21848,7 +21848,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="77"/>
         <source>Prompt for file name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">檔案名稱提示</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="38"/>
