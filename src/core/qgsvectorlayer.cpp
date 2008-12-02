@@ -820,6 +820,16 @@ void QgsVectorLayer::select( int number, bool emitSignal )
   }
 }
 
+void QgsVectorLayer::deselect( int number, bool emitSignal )
+{
+  mSelectedFeatureIds.remove( number );
+  
+  if ( emitSignal )
+  {
+    emit selectionChanged();
+  }
+}
+
 void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
 {
   // normalize the rectangle

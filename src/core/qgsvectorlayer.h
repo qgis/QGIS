@@ -424,6 +424,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
+    
+    /** Deselect feature by its ID, optionally emit signal selectionChanged() */
+    void deselect( int featureId, bool emitSignal = TRUE );
 
     /** Clear selection */
     void removeSelection( bool emitSignal = TRUE );
