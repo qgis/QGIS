@@ -4514,7 +4514,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1121"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation>Niektóre serwery WMS (np. UMN Mapserver) mają ograniczenia parametrów WIDTH i HEIGHT. Drukowanie warstw z takich serwerów może przekroczyć te limity. W takim przypadku warstwa WMS nie zostanie wydrukowana</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="632"/>
@@ -7202,7 +7202,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="46"/>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Domyślnie ta warstwa będzie miała teraz odwzorowanie tożsame z projektem, ale możesz to zmienić wybierając inne odwzorowanie poniżej.</translation>
     </message>
 </context>
 <context>
@@ -8247,7 +8247,7 @@ Column title</comment>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="187"/>
         <source>Mode value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość modalna</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="188"/>
@@ -13615,12 +13615,12 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="19"/>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór Systemu Odniesienia opartego na Współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="53"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>System Odniesienia oparty na Współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="58"/>
@@ -13907,37 +13907,37 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2587"/>
         <source>Layer Spatial Reference System: </source>
-        <translation type="unfinished"></translation>
+        <translation>Przestrzenny układ odniesienia warstwy:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1787"/>
         <source>out of extent</source>
-        <translation type="unfinished"></translation>
+        <translation>poza obszarem</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1825"/>
         <source>null (no data)</source>
-        <translation type="unfinished"></translation>
+        <translation>null (brak danych)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2444"/>
         <source>Dataset Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2507"/>
         <source>No Data Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość oznaczająca brak danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="380"/>
         <source>and all other files</source>
-        <translation type="unfinished"></translation>
+        <translation>i wszystkie inne pliki</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2516"/>
         <source>NoDataValue not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie podano wartości braku danych</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2465"/>
@@ -13979,7 +13979,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
         <source>No-Data Value: </source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość oznaczająca brak danych:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
@@ -14003,32 +14003,32 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1592"/>
         <source>Building pyramids failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Budowa piramidy nie powiodłą się.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="unfinished"></translation>
+        <translation>Budow podglądu piramidy nie jes wspierana dla tego typu rastra.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2908"/>
         <source>No Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Bez rozciągania</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2913"/>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozciągnij do MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2918"/>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozciągnij i przytnij do MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2923"/>
         <source>Clip To MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytnij do MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2787"/>
@@ -14053,17 +14053,17 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="307"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwy rastrowe o wysokiej rozdzielczości mogą spowolnić pracę QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="308"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworząc kopie danych w niższych rozdzielczościach (piramidy) wydajność pracy z QGIS może ulec znaczącej poprawie, gdyż wybierana jest wtedy rozdzielczość dostosowana do powiększenia.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="309"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation type="unfinished"></translation>
+        <translation>Musisz mieć prawo zapisu w kartotece gdzie znajdują się oryginalne dane do budowy piramid.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1822"/>
@@ -14083,7 +14083,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1839"/>
         <source>Percent Transparent</source>
-        <translation type="unfinished"></translation>
+        <translation>Procent przeźroczystości</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1835"/>
@@ -14098,22 +14098,22 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2906"/>
         <source>User Defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Użytkownika</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="804"/>
         <source>No-Data Value: Not Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość oznaczająca brak danych: brak</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2676"/>
         <source>Save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2756"/>
         <source>Textfile (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik tekstowy (*.txt)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1819"/>
@@ -14128,26 +14128,30 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2824"/>
         <source>Import Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd importu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2824"/>
         <source>The following lines contained errors
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Następujące wiersze zawierają błędy
+
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2829"/>
         <source>Read access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak praw odczytu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2829"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Brak praw odczytu. Dostosuj uprawnienia do pliku i spróbuj ponownie.
+
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2369"/>
@@ -14197,12 +14201,12 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="310"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Zważ, że budując piramidy zmieniasz oryginalne dane i dokonane zmiany nie mogą być cofnięte!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
-        <translation type="unfinished"></translation>
+        <translation>Zważ, że budując wewnętrzne piramidy możesz uszkodzić obraz - zawsze na początku utwórz kopię danych!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2901"/>
@@ -14217,7 +14221,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2671"/>
         <source>Custom color map entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa kolorów użytkownika</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2688"/>
@@ -14227,7 +14231,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2746"/>
         <source>Load Color Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj mapę kolorów</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3195"/>
@@ -14465,12 +14469,12 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="818"/>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustatwienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="821"/>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuje wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustatwienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="835"/>
@@ -14495,12 +14499,12 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="940"/>
         <source>No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wartość oznaczająca brak danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="949"/>
         <source>Reset no data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść wartość oznaczającą brak danych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="959"/>
@@ -14630,7 +14634,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="118"/>
         <source>RGB mode band selection and scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Tryb RGB wyboru kanału i skalowania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="124"/>
@@ -14685,7 +14689,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="538"/>
         <source>Gray band</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanał </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="667"/>
@@ -14755,7 +14759,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1467"/>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>System Odniesienia oparty na Współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1476"/>
