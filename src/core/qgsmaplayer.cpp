@@ -452,6 +452,9 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
 
   QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( theURI ).arg( db ) );
 
+  if( !QFile( db ).exists() )
+    return false;
+
   myResult = sqlite3_open( db.toUtf8().data(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
