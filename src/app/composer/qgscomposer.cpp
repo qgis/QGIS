@@ -78,35 +78,16 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   // mActionAddImage
   // mActionSelectMoveItem
 
-  QAction* moveItemContentAction = new QAction( QIcon( QPixmap( myIconPath + "mActionMoveItemContent.png" ) ),
-      tr( "Move Content" ), 0 );
-  moveItemContentAction->setToolTip( tr( "Move item content" ) );
-  moveItemContentAction->setCheckable( true );
-  connect( moveItemContentAction, SIGNAL( triggered() ), this, SLOT( moveItemContent() ) );
-  toolBar->addAction( moveItemContentAction );
-  //toolBar->addAction(QIcon(QPixmap(myIconPath+"mActionMoveItemContent.png")), tr("Move Item content"), this, SLOT(moveItemContent()));
-
-  QAction* groupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionGroupItems.png" ) ),
-                              tr( "&Group" ), this, SLOT( groupItems() ) );
-  groupItemsAction->setToolTip( tr( "Group items" ) );
-  QAction* ungroupItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionUngroupItems.png" ) ),
-                                tr( "&Ungroup" ), this, SLOT( ungroupItems() ) );
-  ungroupItemsAction->setToolTip( tr( "Ungroup items" ) );
-  QAction* raiseItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionRaiseItems.png" ) ),
-                              tr( "Raise" ), this, SLOT( raiseSelectedItems() ) );
-  raiseItemsAction->setToolTip( tr( "Raise selected items" ) );
-  QAction* lowerItemsAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionLowerItems.png" ) ),
-                              tr( "Lower" ), this, SLOT( lowerSelectedItems() ) );
-  lowerItemsAction->setToolTip( tr( "Lower selected items" ) );
-  QAction* moveItemsToTopAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToTop.png" ) ),
-                                  tr( "Bring to Front" ), this, SLOT( moveSelectedItemsToTop() ) );
-  moveItemsToTopAction->setToolTip( tr( "Move selected items to top" ) );
-  QAction* moveItemsToBottomAction = toolBar->addAction( QIcon( QPixmap( myIconPath + "mActionMoveItemsToBottom.png" ) ),
-                                     tr( "Send to Back" ), this, SLOT( moveSelectedItemsToBottom() ) );
-  moveItemsToBottomAction->setToolTip( tr( "Move selected items to bottom" ) );
+  mActionMoveItemContent->setToolTip( tr( "Move item content" ) );
+  mActionGroupItems->setToolTip( tr( "Group items" ) );
+  mActionUngroupItems->setToolTip( tr( "Ungroup items" ) );
+  mActionRaiseItems->setToolTip( tr( "Raise selected items" ) );
+  mActionLowerItems->setToolTip( tr( "Lower selected items" ) );
+  mActionMoveItemsToTop->setToolTip( tr( "Move selected items to top" ) );
+  mActionMoveItemsToBottom->setToolTip( tr( "Move selected items to bottom" ) );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
-  toggleActionGroup->addAction( moveItemContentAction );
+  toggleActionGroup->addAction( mActionMoveItemContent);
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -124,6 +105,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   mActionSelectMoveItem->setCheckable( true );
   mActionAddNewScalebar->setCheckable( true );
   mActionAddImage->setCheckable( true );
+  mActionMoveItemContent->setCheckable( true );
 
 #ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
@@ -257,6 +239,13 @@ void QgsComposer::setupTheme()
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );
   mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionSelectPan.png" ) );
+  mActionMoveItemContent->setIcon( QgisApp::getThemeIcon("/mActionMoveItemContent.png"));
+  mActionGroupItems->setIcon( QgisApp::getThemeIcon("/mActionGroupItems.png"));
+  mActionUngroupItems->setIcon( QgisApp::getThemeIcon("/mActionUngroupItems.png"));
+  mActionRaiseItems->setIcon( QgisApp::getThemeIcon("/mActionRaiseItems.png"));
+  mActionLowerItems->setIcon( QgisApp::getThemeIcon("/mActionLowerItems.png"));
+  mActionMoveItemsToTop->setIcon( QgisApp::getThemeIcon("/mActionMoveItemsToTop.png"));
+  mActionMoveItemsToBottom->setIcon( QgisApp::getThemeIcon("/mActionMoveItemsToBottom.png"));
 }
 
 void QgsComposer::connectSlots()
@@ -740,7 +729,7 @@ void QgsComposer::on_mActionAddImage_activated( void )
   }
 }
 
-void QgsComposer::moveItemContent()
+void QgsComposer::on_mActionMoveItemContent_activated(void)
 {
   if ( mView )
   {
@@ -748,7 +737,7 @@ void QgsComposer::moveItemContent()
   }
 }
 
-void QgsComposer::groupItems( void )
+void QgsComposer::on_mActionGroupItems_activated( void )
 {
   if ( mView )
   {
@@ -756,7 +745,7 @@ void QgsComposer::groupItems( void )
   }
 }
 
-void QgsComposer::ungroupItems( void )
+void QgsComposer::on_mActionUngroupItems_activated( void )
 {
   if ( mView )
   {
@@ -764,7 +753,7 @@ void QgsComposer::ungroupItems( void )
   }
 }
 
-void QgsComposer::raiseSelectedItems()
+void QgsComposer::on_mActionRaiseItems_activated( void )
 {
   if ( mComposition )
   {
@@ -772,7 +761,7 @@ void QgsComposer::raiseSelectedItems()
   }
 }
 
-void QgsComposer::lowerSelectedItems()
+void QgsComposer::on_mActionLowerItems_activated(void)
 {
   if ( mComposition )
   {
@@ -780,7 +769,7 @@ void QgsComposer::lowerSelectedItems()
   }
 }
 
-void QgsComposer::moveSelectedItemsToTop()
+void QgsComposer::on_mActionMoveItemsToTop_activated(void)
 {
   if ( mComposition )
   {
@@ -788,7 +777,7 @@ void QgsComposer::moveSelectedItemsToTop()
   }
 }
 
-void QgsComposer::moveSelectedItemsToBottom()
+void QgsComposer::on_mActionMoveItemsToBottom(void)
 {
   if ( mComposition )
   {
