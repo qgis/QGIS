@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>710</width>
     <height>609</height>
    </rect>
   </property>
@@ -244,6 +244,13 @@
    <addaction name="mActionAddNewLegend" />
    <addaction name="mActionAddNewScalebar" />
    <addaction name="mActionSelectMoveItem" />
+   <addaction name="mActionMoveItemContent" />
+   <addaction name="mActionGroupItems" />
+   <addaction name="mActionUngroupItems" />
+   <addaction name="mActionRaiseItems" />
+   <addaction name="mActionLowerItems" />
+   <addaction name="mActionMoveItemsToTop" />
+   <addaction name="mActionMoveItemsToBottom" />
   </widget>
   <action name="mActionPrint" >
    <property name="icon" >
@@ -365,6 +372,41 @@
    </property>
    <property name="text" >
     <string>Add Image</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemContent" >
+   <property name="text" >
+    <string>moveItemContent</string>
+   </property>
+  </action>
+  <action name="mActionGroupItems" >
+   <property name="text" >
+    <string>Group Items</string>
+   </property>
+  </action>
+  <action name="mActionUngroupItems" >
+   <property name="text" >
+    <string>Ungroup</string>
+   </property>
+  </action>
+  <action name="mActionRaiseItems" >
+   <property name="text" >
+    <string>Raise</string>
+   </property>
+  </action>
+  <action name="mActionLowerItems" >
+   <property name="text" >
+    <string>Lower</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToTop" >
+   <property name="text" >
+    <string>Bring to front</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToBottom" >
+   <property name="text" >
+    <string>Send to back</string>
    </property>
   </action>
  </widget>

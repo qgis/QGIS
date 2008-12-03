@@ -304,6 +304,7 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
+    mComposer(0),
     mPythonConsole( NULL ),
     mPythonUtils( NULL )
 {
@@ -1480,6 +1481,11 @@ void QgisApp::setTheme( QString theThemeName )
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
+
+  if(mComposer)
+  {
+    mComposer->setupTheme();
+  }
 }
 
 void QgisApp::setupConnections()

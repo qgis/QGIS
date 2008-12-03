@@ -245,6 +245,7 @@ void QgsOptions::themeChanged( const QString &newThemeName )
   QString newt = newThemeName;
   QgisApp::instance()->setTheme( newt );
 }
+
 QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)

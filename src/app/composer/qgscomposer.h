@@ -50,6 +50,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsComposer( QgisApp *qgis );
     ~QgsComposer();
 
+    //! Set the pixmap / icons on the toolbar buttons
+    void setupTheme();
+
     //! Open and show, set defaults if first time
     void open();
 
@@ -130,25 +133,25 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionAddImage_activated( void );
 
     //! Set tool to move item content
-    void moveItemContent();
+    void on_mActionMoveItemContent_activated(void);
 
     //! Group selected items
-    void groupItems( void );
+    void on_mActionGroupItems_activated( void );
 
     //! Ungroup selected item group
-    void ungroupItems( void );
+    void on_mActionUngroupItems_activated( void );
 
     //! Move selected items one position up
-    void raiseSelectedItems();
+    void on_mActionRaiseItems_activated(void);
 
     //!Move selected items one position down
-    void lowerSelectedItems();
+    void on_mActionLowerItems_activated(void);
 
     //!Move selected items to top
-    void moveSelectedItemsToTop();
+    void on_mActionMoveItemsToTop_activated(void);
 
     //!Move selected items to bottom
-    void moveSelectedItemsToBottom();
+    void on_mActionMoveItemsToBottom(void);
 
     //! Save window state
     void saveWindowState();
@@ -196,8 +199,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void activate();
 
   private:
-    //! Set the pixmap / icons on the toolbar buttons
-    void setupTheme();
+
     /**Establishes the signal slot connection for the class*/
     void connectSlots();
 
