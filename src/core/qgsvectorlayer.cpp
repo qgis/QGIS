@@ -1164,8 +1164,7 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   if ( mEditable )
   {
     mFetchAddedFeaturesIt = mAddedFeatures.begin();
-    if ( mFetchGeometry )
-      mFetchChangedGeomIt = mChangedGeometries.begin();
+    mFetchChangedGeomIt = mChangedGeometries.begin();
   }
 
   //look in the normal features of the provider
