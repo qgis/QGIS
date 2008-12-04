@@ -70,22 +70,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
 
   QString myIconPath = QgsApplication::activeThemePath();
 
-  // Actions defined in qgscomposerbase.ui:
-  // mActionAddNewMap
-  // mActionAddNewLegend
-  // mActionAddNewLabel
-  // mActionAddNewScalebar
-  // mActionAddImage
-  // mActionSelectMoveItem
-
-  mActionMoveItemContent->setToolTip( tr( "Move item content" ) );
-  mActionGroupItems->setToolTip( tr( "Group items" ) );
-  mActionUngroupItems->setToolTip( tr( "Ungroup items" ) );
-  mActionRaiseItems->setToolTip( tr( "Raise selected items" ) );
-  mActionLowerItems->setToolTip( tr( "Lower selected items" ) );
-  mActionMoveItemsToTop->setToolTip( tr( "Move selected items to top" ) );
-  mActionMoveItemsToBottom->setToolTip( tr( "Move selected items to bottom" ) );
-
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent);
   toggleActionGroup->addAction( mActionAddNewMap );
@@ -95,7 +79,6 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   toggleActionGroup->addAction( mActionAddImage );
   toggleActionGroup->addAction( mActionSelectMoveItem );
   toggleActionGroup->setExclusive( true );
-
 
   setWindowTitle( tr( "QGIS - print composer" ) );
 
@@ -146,14 +129,14 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
   layoutMenu->addAction( mActionSelectMoveItem );
-  layoutMenu->addAction( moveItemContentAction );
+  layoutMenu->addAction( mActionMoveItemContent );
   layoutMenu->addSeparator();
-  layoutMenu->addAction( groupItemsAction );
-  layoutMenu->addAction( ungroupItemsAction );
-  layoutMenu->addAction( raiseItemsAction );
-  layoutMenu->addAction( lowerItemsAction );
-  layoutMenu->addAction( moveItemsToTopAction );
-  layoutMenu->addAction( moveItemsToBottomAction );
+  layoutMenu->addAction( mActionGroupItems );
+  layoutMenu->addAction( mActionUngroupItems );
+  layoutMenu->addAction( mActionRaiseItems );
+  layoutMenu->addAction( mActionLowerItems );
+  layoutMenu->addAction( mActionMoveItemsToTop );
+  layoutMenu->addAction( mActionMoveItemsToBottom );
 
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
   menuBar()->addMenu( QgisApp::instance()->windowMenu() );
