@@ -376,37 +376,58 @@
   </action>
   <action name="mActionMoveItemContent" >
    <property name="text" >
-    <string>moveItemContent</string>
+    <string>Move Content</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move item content</string>
    </property>
   </action>
   <action name="mActionGroupItems" >
    <property name="text" >
-    <string>Group Items</string>
+    <string>Group</string>
+   </property>
+   <property name="toolTip" >
+    <string>Group items</string>
    </property>
   </action>
   <action name="mActionUngroupItems" >
    <property name="text" >
     <string>Ungroup</string>
    </property>
+   <property name="toolTip" >
+    <string>Ungroup items</string>
+   </property>
   </action>
   <action name="mActionRaiseItems" >
    <property name="text" >
     <string>Raise</string>
+   </property>
+   <property name="toolTip" >
+    <string>Raise selected items</string>
    </property>
   </action>
   <action name="mActionLowerItems" >
    <property name="text" >
     <string>Lower</string>
    </property>
+   <property name="toolTip" >
+    <string>Lower selected items</string>
+   </property>
   </action>
   <action name="mActionMoveItemsToTop" >
    <property name="text" >
-    <string>Bring to front</string>
+    <string>Bring to Front</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move selected items to top</string>
    </property>
   </action>
   <action name="mActionMoveItemsToBottom" >
    <property name="text" >
-    <string>Send to back</string>
+    <string>Send to Back</string>
+   </property>
+   <property name="toolTip" >
+    <string>Move selected items to bottom</string>
    </property>
   </action>
  </widget>
