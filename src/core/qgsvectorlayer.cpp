@@ -1714,7 +1714,15 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
       }
     }
 
-    select( QgsAttributeList(), bBox, true, true );
+    //we need the feature attributes because the attributes values
+    //are copied to the new features
+    QgsAttributeList attributes;
+    if(mDataProvider)
+    {
+      attributes = mDataProvider->attributeIndexes();
+    }
+    attributes += mAddedAttributeIds.toList();
+    select( attributes, bBox, true, true );
 
     QgsFeature f;
     while ( nextFeature( f ) )
