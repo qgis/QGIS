@@ -599,7 +599,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
           QDomNodeList symbolNodeList = currentChildElement.elementsByTagName( "symbol" );
           if ( symbolNodeList.size() > 0 )
           {
-            QgsSymbol* symbol = new QgsSymbol( vectorLayer->type() );
+            QgsSymbol* symbol = new QgsSymbol( vectorLayer->geometryType() );
             QDomNode symbolNode = symbolNodeList.at( 0 );
             symbol->readXML( symbolNode );
             childItem->setData( QVariant::fromValue(( void* )symbol ) );
