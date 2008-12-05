@@ -380,7 +380,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
             "new" : self.tr("This plugin is not installed and is seen for the first time"),
             "newer" : self.tr("This plugin is installed and is newer than its version available in a repository"),
             "incompatible" : self.tr("This plugin is incompatible with your Quantum GIS version and probably won't work."),
-            "dependent" : self.tr("The required Python module is not installed.\nFor more information, please visit its homepage."),
+            "dependent" : self.tr("The required Python module is not installed.\nFor more information, please visit its homepage and Quantum GIS wiki."),
             "broken" : self.tr("This plugin seems to be broken.\nIt has been installed but can't be loaded.\nHere is the error message:")}
     statuses ={"not installed" : self.tr("not installed", "singular"),
             "installed" : self.tr("installed", "singular"),
@@ -559,10 +559,10 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
           infoString = (self.tr("Plugin installed successfully"),
-          self.tr("Python plugin installed.\nYou have to enable it in the Plugin Manager."))
+          self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
           infoString = (self.tr("Plugin reinstalled successfully"),
-          self.tr("Python plugin reinstalled.\nYou have to restart Quantum GIS to reload it."))
+          self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
@@ -643,7 +643,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         plugins.setPluginData(key, "error", "")
         plugins.setPluginData(key, "error_details", "")
       self.populatePluginTree()
-      QMessageBox.information(self, self.tr("QGIS Python Plugin Installer"), self.tr("Plugin uninstalled successfully"))
+      QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely."))
 
 
   # ----------------------------------------- #
