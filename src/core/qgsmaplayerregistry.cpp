@@ -111,6 +111,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
   QMap<QString, QgsMapLayer *>::iterator it;
   for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
   {
+    emit layerWillBeRemoved( it.key() );
     delete it.value(); // delete the map layer
   }
   mMapLayers.clear();
