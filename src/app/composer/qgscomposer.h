@@ -151,7 +151,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionMoveItemsToTop_activated(void);
 
     //!Move selected items to bottom
-    void on_mActionMoveItemsToBottom(void);
+    void on_mActionMoveItemsToBottom_activated(void);
 
     //! Save window state
     void saveWindowState();

@@ -760,7 +760,7 @@ void QgsComposer::on_mActionMoveItemsToTop_activated(void)
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToBottom(void)
+void QgsComposer::on_mActionMoveItemsToBottom_activated(void)
 {
   if ( mComposition )
   {
