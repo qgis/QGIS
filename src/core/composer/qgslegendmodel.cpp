@@ -479,7 +479,7 @@ QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s )
   return currentSymbolItem;
 }
 
-bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc )
+bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const
 {
   if ( composerLegendElem.isNull() )
   {
@@ -518,7 +518,7 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
       {
         QDomElement vectorClassElem = doc.createElement( "VectorClassificationItem" );
         vectorClassElem.setAttribute( "text", currentClassificationItem->text() );
-        symbol->writeXML( vectorClassElem, doc );
+        symbol->writeXML( vectorClassElem, doc, 0 );
         newLayerItem.appendChild( vectorClassElem );
         continue;
       }
@@ -601,7 +601,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
           {
             QgsSymbol* symbol = new QgsSymbol( vectorLayer->geometryType() );
             QDomNode symbolNode = symbolNodeList.at( 0 );
-            symbol->readXML( symbolNode );
+            symbol->readXML( symbolNode, vectorLayer );
             childItem->setData( QVariant::fromValue(( void* )symbol ) );
 
             //add icon

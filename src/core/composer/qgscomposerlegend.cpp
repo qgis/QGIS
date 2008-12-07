@@ -95,11 +95,11 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   //draw only visible layer items
   QgsMapRenderer* theMapRenderer = mComposition->mapRenderer();
   QStringList visibleLayerIds;
-  if(theMapRenderer)
-    {
-      visibleLayerIds = theMapRenderer->layerSet();
-    }
-  
+  if ( theMapRenderer )
+  {
+    visibleLayerIds = theMapRenderer->layerSet();
+  }
+
 
   for ( int i = 0; i < numLayerItems; ++i )
   {
@@ -107,26 +107,26 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     if ( currentLayerItem )
     {
       QString currentLayerId = currentLayerItem->data().toString();
-      if(visibleLayerIds.contains(currentLayerId))
-	{
-	  //Let the user omit the layer title item by having an empty layer title string
-	  if(!currentLayerItem->text().isEmpty())
-	    {
-	      currentYCoordinate += mLayerSpace;
-	      currentYCoordinate += fontAscentMillimeters( mLayerFont );
+      if ( visibleLayerIds.contains( currentLayerId ) )
+      {
+        //Let the user omit the layer title item by having an empty layer title string
+        if ( !currentLayerItem->text().isEmpty() )
+        {
+          currentYCoordinate += mLayerSpace;
+          currentYCoordinate += fontAscentMillimeters( mLayerFont );
 
-	      //draw layer Item
-	      if ( painter )
-		{
-		  drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
-		}
-	    }
+          //draw layer Item
+          if ( painter )
+          {
+            drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
+          }
+        }
 
-	  maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
+        maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
 
-	  //and child items
-	  drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
-	}
+        //and child items
+        drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord );
+      }
     }
   }
 
@@ -148,15 +148,15 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   size.setWidth( maxXCoord );
 
   //adjust box if width or height is to small
-  if(painter && currentYCoordinate > rect().width())
-    {
-      setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), currentYCoordinate));
-    }
-  if(painter && maxXCoord > rect().height())
-    {
-      setSceneRect( QRectF( transform().dx(), transform().dy(), maxXCoord, rect().height()));
-    }
-  
+  if ( painter && currentYCoordinate > rect().width() )
+  {
+    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), currentYCoordinate ) );
+  }
+  if ( painter && maxXCoord > rect().height() )
+  {
+    setSceneRect( QRectF( transform().dx(), transform().dy(), maxXCoord, rect().height() ) );
+  }
+
   return size;
 }
 
@@ -402,7 +402,7 @@ void QgsComposerLegend::updateLegend()
   update();
 }
 
-bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc )
+bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {

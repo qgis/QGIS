@@ -24,6 +24,7 @@
 #include "qgssymbologyutils.h"
 #include "qgsmarkercatalogue.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
 #include <QDomNode>
@@ -130,7 +131,6 @@ QgsSymbol::QgsSymbol( const QgsSymbol& s )
 
 QgsSymbol::~QgsSymbol()
 {
-
 }
 
 
@@ -422,82 +422,81 @@ void QgsSymbol::cache2( double widthScale, QColor selectionColor )
   mCacheUpToDate2 = true;
 }
 
-bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document ) const
+void QgsSymbol::appendField( QDomElement &symbol, QDomDocument &document, const QgsVectorLayer &vl, QString name, int idx ) const
+{
+  appendText( symbol, document, name, vl.pendingFields().contains( idx ) ? vl.pendingFields()[idx].name() : "" );
+}
+
+void QgsSymbol::appendText( QDomElement &symbol, QDomDocument &document, QString name, QString value ) const
+{
+  QDomElement node = document.createElement( name );
+  QDomText txt = document.createTextNode( value );
+  symbol.appendChild( node );
+  node.appendChild( txt );
+}
+
+bool QgsSymbol::writeXML( QDomNode & item, QDomDocument & document, const QgsVectorLayer *vl ) const
 {
   bool returnval = false;
   returnval = true; // no error checking yet
   QDomElement symbol = document.createElement( "symbol" );
   item.appendChild( symbol );
 
-  QDomElement lowervalue = document.createElement( "lowervalue" );
-  QDomText lowervaluetxt = document.createTextNode( mLowerValue );
-  symbol.appendChild( lowervalue );
-  lowervalue.appendChild( lowervaluetxt );
+  appendText( symbol, document, "lowervalue", mLowerValue );
+  appendText( symbol, document, "uppervalue", mUpperValue );
+  appendText( symbol, document, "label", mLabel );
+  appendText( symbol, document, "pointsymbol", pointSymbolName() );
+  appendText( symbol, document, "pointsize", QString::number( pointSize() ) );
 
-  QDomElement uppervalue = document.createElement( "uppervalue" );
-  QDomText uppervaluetxt = document.createTextNode( mUpperValue );
-  symbol.appendChild( uppervalue );
-  uppervalue.appendChild( uppervaluetxt );
-
-  QDomElement label = document.createElement( "label" );
-  QDomText labeltxt = document.createTextNode( mLabel );
-  symbol.appendChild( label );
-  label.appendChild( labeltxt );
-
-  QDomElement pointsymbol = document.createElement( "pointsymbol" );
-  QDomText pointsymboltxt = document.createTextNode( pointSymbolName() );
-  symbol.appendChild( pointsymbol );
-  pointsymbol.appendChild( pointsymboltxt );
-
-  QDomElement pointsize = document.createElement( "pointsize" );
-  QDomText pointsizetxt = document.createTextNode( QString::number( pointSize() ) );
-  symbol.appendChild( pointsize );
-  pointsize.appendChild( pointsizetxt );
-
-  QDomElement rotationclassificationfield = document.createElement( "rotationclassificationfield" );
-  QDomText rotationclassificationfieldtxt = document.createTextNode( QString::number( mRotationClassificationField ) );
-  rotationclassificationfield.appendChild( rotationclassificationfieldtxt );
-  symbol.appendChild( rotationclassificationfield );
-
-  QDomElement scaleclassificationfield = document.createElement( "scaleclassificationfield" );
-  QDomText scaleclassificationfieldtxt = document.createTextNode( QString::number( mScaleClassificationField ) );
-  scaleclassificationfield.appendChild( scaleclassificationfieldtxt );
-  symbol.appendChild( scaleclassificationfield );
-
+  if ( vl )
+  {
+    appendField( symbol, document, *vl, "rotationclassificationfieldname", mRotationClassificationField );
+    appendField( symbol, document, *vl, "scaleclassificationfieldname", mScaleClassificationField );
+  }
 
   QDomElement outlinecolor = document.createElement( "outlinecolor" );
   outlinecolor.setAttribute( "red", QString::number( mPen.color().red() ) );
   outlinecolor.setAttribute( "green", QString::number( mPen.color().green() ) );
   outlinecolor.setAttribute( "blue", QString::number( mPen.color().blue() ) );
   symbol.appendChild( outlinecolor );
-  QDomElement outlinestyle = document.createElement( "outlinestyle" );
-  QDomText outlinestyletxt = document.createTextNode( QgsSymbologyUtils::penStyle2QString( mPen.style() ) );
-  outlinestyle.appendChild( outlinestyletxt );
-  symbol.appendChild( outlinestyle );
-  QDomElement outlinewidth = document.createElement( "outlinewidth" );
-  QDomText outlinewidthtxt = document.createTextNode( QString::number( mPen.widthF() ) );
-  outlinewidth.appendChild( outlinewidthtxt );
-  symbol.appendChild( outlinewidth );
+
+  appendText( symbol, document, "outlinestyle", QgsSymbologyUtils::penStyle2QString( mPen.style() ) );
+  appendText( symbol, document, "outlinewidth", QString::number( mPen.widthF() ) );
+
   QDomElement fillcolor = document.createElement( "fillcolor" );
   fillcolor.setAttribute( "red", QString::number( mBrush.color().red() ) );
   fillcolor.setAttribute( "green", QString::number( mBrush.color().green() ) );
   fillcolor.setAttribute( "blue", QString::number( mBrush.color().blue() ) );
   symbol.appendChild( fillcolor );
-  QDomElement fillpattern = document.createElement( "fillpattern" );
-  QDomText fillpatterntxt = document.createTextNode( QgsSymbologyUtils::brushStyle2QString( mBrush.style() ) );
-  fillpattern.appendChild( fillpatterntxt );
-  symbol.appendChild( fillpattern );
-  fillpattern.appendChild( fillpatterntxt );
 
-  QDomElement texturepath = document.createElement( "texturepath" );
-  QDomText texturepathtxt = document.createTextNode( mTextureFilePath );
-  symbol.appendChild( texturepath );
-  texturepath.appendChild( texturepathtxt );
+  appendText( symbol, document, "fillpattern", QgsSymbologyUtils::brushStyle2QString( mBrush.style() ) );
+  appendText( symbol, document, "texturepath", mTextureFilePath );
 
   return returnval;
 }
 
-bool QgsSymbol::readXML( QDomNode & synode )
+int QgsSymbol::readFieldName( QDomNode &synode, QString name, const QgsVectorLayer &vl )
+{
+  QDomNode node = synode.namedItem( name + "name" );
+
+  if ( !node.isNull() )
+  {
+    const QgsFieldMap &fields = vl.pendingFields();
+    QString name = node.toElement().text();
+
+    int i;
+    for ( i = 0; i < fields.size() && fields[i].name() != name; i++ )
+      ;
+
+    return i < fields.size() ? i : -1;
+  }
+
+  node = synode.namedItem( name );
+
+  return node.isNull() ? -1 : node.toElement().text().toInt();
+}
+
+bool QgsSymbol::readXML( QDomNode &synode, const QgsVectorLayer *vl )
 {
   // Legacy project file formats didn't have support for pointsymbol nor
   // pointsize Dom elements.  Therefore we should check whether these
@@ -540,23 +539,16 @@ bool QgsSymbol::readXML( QDomNode & synode )
     setPointSize( psizeelement.text().toFloat() );
   }
 
-  mRotationClassificationField = -1;
-  mScaleClassificationField = -1;
-
-  QDomNode classnode = synode.namedItem( "rotationclassificationfield" );
-  if ( !classnode.isNull() )
+  if ( vl )
   {
-    mRotationClassificationField = classnode.toElement().text().toInt();
-    QgsDebugMsg( "Found rotationfield: " + QString::number( rotationClassificationField() ) );
+    mRotationClassificationField = readFieldName( synode, "rotationclassificationfield", *vl );
+    mScaleClassificationField = readFieldName( synode, "scaleclassificationfield", *vl );
   }
-
-  classnode = synode.namedItem( "scaleclassificationfield" );
-  if ( !classnode.isNull() )
+  else
   {
-    mScaleClassificationField = classnode.toElement().text().toInt();
-    QgsDebugMsg( "Found scalefield: " + QString::number( scaleClassificationField() ) );
+    mRotationClassificationField = -1;
+    mScaleClassificationField = -1;
   }
-
 
   QDomNode outlcnode = synode.namedItem( "outlinecolor" );
   QDomElement oulcelement = outlcnode.toElement();
@@ -611,4 +603,3 @@ void QgsSymbol::setScaleClassificationField( int field )
 {
   mScaleClassificationField = field;
 }
-

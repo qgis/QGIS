@@ -142,7 +142,7 @@ public:
 
        @returns true if successful
     */
-    bool writeXML(QDomNode & layer_node, QDomDocument & document);
+    bool writeXML(QDomNode & layer_node, QDomDocument & document) const;
 
     /** Read the symbology for the current layer from the Dom node supplied. 
      * @param QDomNode node that will contain the symbology definition for this layer.

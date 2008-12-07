@@ -27,6 +27,7 @@
 
 class QDomNode;
 class QDomDocument;
+class QDomElement;
 class QString;
 class QPainter;
 class QPaintDevice;
@@ -84,7 +85,8 @@ class CORE_EXPORT QgsLabel
       LabelFieldCount
     };
 
-    struct labelpoint {
+    struct labelpoint
+    {
       QgsPoint p;
       double angle;
     };
@@ -103,10 +105,10 @@ class CORE_EXPORT QgsLabel
     void readXML( const QDomNode& node );
 
     /** Writes the contents of the renderer to a configuration file */
-    void writeXML( QDomNode & label_node, QDomDocument & document );
+    void writeXML( QDomNode & label_node, QDomDocument & document ) const;
 
     //! add vector of required fields to existing list of fields
-    void addRequiredFields( QgsAttributeList& fields );
+    void addRequiredFields( QgsAttributeList& fields ) const;
 
     //! Set available fields
     void setFields( const QgsFieldMap & fields );
@@ -120,8 +122,11 @@ class CORE_EXPORT QgsLabel
     //! Set label field
     void setLabelField( int attr, int fieldIndex );
 
+    //! Set label field by name
+    bool setLabelFieldName( int attr, QString name );
+
     //! label field
-    QString labelField( int attr );
+    QString labelField( int attr ) const;
 
     /** Get field value if : 1) field name is not empty
      *                       2) field exists
@@ -132,15 +137,15 @@ class CORE_EXPORT QgsLabel
 
     /** Accessor and mutator for the minimum scale member */
     void setMinScale( float theMinScale );
-    float minScale();
+    float minScale() const;
 
     /** Accessor and mutator for the maximum scale member */
     void setMaxScale( float theMaxScale );
-    float maxScale();
+    float maxScale() const;
 
     /** Accessor and mutator for the scale based visilibility flag */
     void setScaleBasedVisibility( bool theVisibilityFlag );
-    bool scaleBasedVisibility();
+    bool scaleBasedVisibility() const;
 
   private:
     /** Does the actual rendering of a label at the given point
@@ -154,6 +159,8 @@ class CORE_EXPORT QgsLabel
                       double xoffset, double yoffset,
                       double ang,
                       int width, int height, int alignment, double sizeScale = 1.0, double rasterScaleFactor = 1.0 );
+
+    bool readLabelField( QDomElement &el, int attr, QString prefix );
 
     /** Get label point for simple feature in map units */
     void labelPoint( std::vector<labelpoint>&, QgsFeature &feature );

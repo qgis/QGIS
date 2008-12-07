@@ -92,7 +92,7 @@ bool QgsComposerItem::readSettings( void )  { return true; }
 
 bool QgsComposerItem::removeSettings( void )  { return true; }
 
-bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc )
+bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) const
 {
   if ( itemElem.isNull() )
   {

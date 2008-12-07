@@ -89,10 +89,10 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
      * @param node is Dom node corresponding to 'Composer' tag
      * @param temp write template file
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) = 0;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
 
     /**Writes parameter that are not subclass specific in document. Usually called from writeXML methods of subclasses*/
-    bool _writeXML( QDomElement& itemElem, QDomDocument& doc );
+    bool _writeXML( QDomElement& itemElem, QDomDocument& doc ) const;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag

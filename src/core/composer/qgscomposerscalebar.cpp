@@ -264,7 +264,7 @@ void QgsComposerScaleBar::setFont( const QFont& font )
   update();
 }
 
-bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc )
+bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {

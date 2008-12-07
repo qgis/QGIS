@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText );
     void updateRasterClassificationItem( QStandardItem* classificationItem );
 
-    bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc );
+    bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
 
   public slots:

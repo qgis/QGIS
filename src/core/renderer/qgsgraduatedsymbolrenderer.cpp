@@ -246,14 +246,14 @@ int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   {
     return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
   }
-  this->setClassificationField( classificationId );
+  setClassificationField( classificationId );
 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
     QgsSymbol* sy = new QgsSymbol( mGeometryType );
-    sy->readXML( symbolnode );
-    this->addSymbol( sy );
+    sy->readXML( symbolnode, &vl );
+    addSymbol( sy );
 
     symbolnode = symbolnode.nextSibling();
   }
@@ -343,19 +343,17 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   }
 
   QString classificationFieldName;
-  QgsFieldMap::const_iterator field_it = theProvider->fields().find( mClassificationField );
-  if ( field_it != theProvider->fields().constEnd() )
+  if ( vl.pendingFields().contains( mClassificationField ) )
   {
-    classificationFieldName = field_it.value().name();
+    classificationFieldName = vl.pendingFields()[ mClassificationField ].name();
   }
-
 
   QDomText classificationfieldtxt = document.createTextNode( classificationFieldName );
   classificationfield.appendChild( classificationfieldtxt );
   graduatedsymbol.appendChild( classificationfield );
   for ( QList<QgsSymbol*>::const_iterator it = mSymbols.begin(); it != mSymbols.end(); ++it )
   {
-    if ( !( *it )->writeXML( graduatedsymbol, document ) )
+    if ( !( *it )->writeXML( graduatedsymbol, document, &vl ) )
     {
       returnval = false;
     }
