@@ -379,14 +379,14 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
     crsKey = "CRS";
   }
 
-  int dcpTypeSize = mCapabilities.capability.request.getMap.dcpType.size();
-  if(dcpTypeSize < 1)
+  std::vector<QgsWmsDcpTypeProperty> dcpType = mCapabilities.capability.request.getMap.dcpType;
+  if(dcpType.size() < 1)
   {
     mError = tr("Could not determine URL for GetMap from the WMS capabilities response");
     return 0;
   }
 
-  QString url = prepareUri( mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref );
+  QString url = prepareUri( dcpType.front().http.get.onlineResource.xlinkHref );
 
   url += "SERVICE=WMS";
   url += "&";
@@ -412,8 +412,6 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
     url += "&";
     url += "TRANSPARENT=TRUE";
   }
-
-  qWarning( url.toUtf8() );
 
   // cache some details for if the user wants to do an identifyAsHtml() later
   mGetFeatureInfoUrlBase = baseUrl;
