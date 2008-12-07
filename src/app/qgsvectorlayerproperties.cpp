@@ -101,23 +101,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
-  tblAttributes->setColumnCount( 8 );
-  tblAttributes->setRowCount( fields.size() );
-  tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "id" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "name" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "type" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "length" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 4, new QTableWidgetItem( tr( "precision" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr( "comment" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr( "edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "values" ) ) );
-
-  tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
-
-  loadRows();
 
   reset();
+
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
   {
     int capabilities = layer->dataProvider()->capabilities();
@@ -140,6 +126,22 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 void QgsVectorLayerProperties::loadRows()
 {
   const QgsFieldMap &fields = layer->pendingFields();
+
+  tblAttributes->clear();
+
+  tblAttributes->setColumnCount( 8 );
+  tblAttributes->setRowCount( fields.size() );
+  tblAttributes->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "id" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "name" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "type" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "length" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 4, new QTableWidgetItem( tr( "precision" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 5, new QTableWidgetItem( tr( "comment" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 6, new QTableWidgetItem( tr( "edit widget" ) ) );
+  tblAttributes->setHorizontalHeaderItem( 7, new QTableWidgetItem( tr( "values" ) ) );
+
+  tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
+  tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
 
   int row = 0;
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
@@ -450,6 +452,7 @@ void QgsVectorLayerProperties::reset( void )
   //update the transparency percentage label
   sliderTransparency_valueChanged( 255 - layer->getTransparency() );
 
+  loadRows();
 } // reset()
 
 

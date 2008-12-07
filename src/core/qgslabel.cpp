@@ -712,7 +712,9 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "fiel
   }
   else if ( el.hasAttribute( prefix ) )
   {
-    mLabelFieldIdx[attr] = el.attribute( prefix ).toInt();
+    QString value = el.attribute( prefix );
+    mLabelFieldIdx[attr] = value.isEmpty() ? -1 : value.toInt();
+    return true;
   }
 
   mLabelFieldIdx[attr] = -1;
@@ -768,7 +770,7 @@ void QgsLabel::readXML( const QDomNode& node )
   else
   {
     el = scratchNode.toElement();
-    if ( !el.hasAttribute( "unitfieldname" ) )
+    if ( !el.hasAttribute( "unitfield" ) && !el.hasAttribute( "unitfieldname" ) )
     {
       type = QgsLabelAttributes::unitsCode( el.attribute( "units", "" ) );
       mLabelAttributes->setSize( el.attribute( "value", "0.0" ).toDouble(), type );
