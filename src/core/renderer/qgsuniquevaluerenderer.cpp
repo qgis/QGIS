@@ -210,13 +210,13 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
   {
     return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
   }
-  this->setClassificationField( classificationId );
+  setClassificationField( classificationId );
 
   QDomNode symbolnode = rnode.namedItem( "symbol" );
   while ( !symbolnode.isNull() )
   {
     QgsSymbol* msy = new QgsSymbol( mGeometryType );
-    msy->readXML( symbolnode );
+    msy->readXML( symbolnode, &vl );
     insertValue( msy->lowerValue(), msy );
     symbolnode = symbolnode.nextSibling();
   }
@@ -296,7 +296,7 @@ bool QgsUniqueValueRenderer::writeXML( QDomNode & layer_node, QDomDocument & doc
   uniquevalue.appendChild( classificationfield );
   for ( QMap<QString, QgsSymbol*>::const_iterator it = mSymbols.begin();it != mSymbols.end();++it )
   {
-    if ( !( it.value()->writeXML( uniquevalue, document ) ) )
+    if ( !( it.value()->writeXML( uniquevalue, document, &vl ) ) )
     {
       returnval = false;
     }

@@ -26,6 +26,9 @@
 
 class QDomNode;
 class QDomDocument;
+class QDomElement;
+
+class QgsVectorLayer;
 
 /**Encapsulates settings for drawing (QPen, QBrush, Point symbol) and classification
   (lower value, upper value)*/
@@ -113,10 +116,10 @@ class CORE_EXPORT QgsSymbol
 
     /**Writes the contents of the symbol to a configuration file
       @ return true in case of success*/
-    virtual bool writeXML( QDomNode & item, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & item, QDomDocument & document, const QgsVectorLayer *vl ) const;
     /**Reads the contents of the symbol from a configuration file
       @ return true in case of success*/
-    virtual bool readXML( QDomNode & symbol );
+    virtual bool readXML( QDomNode & symbol, const QgsVectorLayer *vl );
     /**Returns if this symbol is point/ line or polygon*/
     QGis::GeometryType type() const {return mType;}
 
@@ -125,11 +128,13 @@ class CORE_EXPORT QgsSymbol
     /**Sets the number of the rotation classicifation field
     \param field the number of the field to classify for rotation*/
     void setRotationClassificationField( int field );
+
     /**Returns the number of the scale classification field*/
     int scaleClassificationField() const;
     /**Sets the number of the scale classicifation field
     \param field the number of the field to classify for scale*/
     void setScaleClassificationField( int field );
+
   protected:
 
     /**Lower value for classification*/
@@ -192,6 +197,12 @@ class CORE_EXPORT QgsSymbol
     /**Index of the classification fields (it must be a numerical field index)*/
     int mRotationClassificationField;
     int mScaleClassificationField;
+
+  private:
+    int readFieldName( QDomNode &synode, QString name, const QgsVectorLayer &vl );
+    void appendField( QDomElement &symbol, QDomDocument &document, const QgsVectorLayer &vl, QString name, int idx ) const;
+    void appendText( QDomElement &symbol, QDomDocument &document, QString name, QString value ) const;
+
 };
 
 inline void QgsSymbol::setBrush( QBrush b )

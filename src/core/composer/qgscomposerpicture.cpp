@@ -137,10 +137,10 @@ void QgsComposerPicture::setPictureFile( const QString& path )
     }
   }
 
-  if(mMode != Unknown) //make sure we start with a new QImage
-    {
-      setSceneRect(QRectF(transform().dx(), transform().dy(), rect().width(), rect().height()));
-    }
+  if ( mMode != Unknown ) //make sure we start with a new QImage
+  {
+    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), rect().height() ) );
+  }
   emit settingsChanged();
 }
 
@@ -202,7 +202,7 @@ QString QgsComposerPicture::pictureFile() const
   return mSourceFile.fileName();
 }
 
-bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc )
+bool QgsComposerPicture::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {

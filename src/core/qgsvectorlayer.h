@@ -119,6 +119,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Get the label object associated with this layer */
     QgsLabel *label();
 
+    const QgsLabel *label() const;
+
     QgsAttributeAction* actions() { return mActions; }
 
     /** The number of features that are selected in this layer */
@@ -321,7 +323,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void enableLabels( bool on );
 
     /** Label is on */
-    bool hasLabelsEnabled( void );
+    bool hasLabelsEnabled( void ) const;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -358,7 +360,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void drawLabels( QgsRenderContext& rendererContext );
 
     /** returns field list in the to-be-committed state */
-    const QgsFieldMap &pendingFields();
+    const QgsFieldMap &pendingFields() const;
 
     /** returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
@@ -424,7 +426,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
-    
+
     /** Deselect feature by its ID, optionally emit signal selectionChanged() */
     void deselect( int featureId, bool emitSignal = TRUE );
 

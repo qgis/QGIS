@@ -982,8 +982,8 @@ QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyrami
 
   if ( theTryInternalFlag )
   {
-    QString myCompressionType = QString( GDALGetMetadataItem(  mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
-    if( "JPEG" == myCompressionType )
+    QString myCompressionType = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
+    if ( "JPEG" == myCompressionType )
     {
       return "ERROR_JPEG_COMPRESSION";
     }
@@ -2145,7 +2145,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
       myQPainter.setPen( Qt::black );
     }
     myQPainter.setFont( myQFont );
-    myQPainter.drawText( 25, myHeight - 10, this->name() );
+    myQPainter.drawText( 25, myHeight - 10, name() );
     //
     // finish up
     //
@@ -2172,7 +2172,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   const int myerLabelSpacing = 5;
   int myImageHeight = (( myFontHeight + ( myerLabelSpacing * 2 ) ) * theLabelCount );
   //these next two vars are not used anywhere so commented out for now
-  //int myLongestLabelWidth =  myQFontMetrics.width(this->name());
+  //int myLongestLabelWidth =  myQFontMetrics.width(name());
   //const int myHorizontalLabelSpacing = 5;
   const int myColourBarWidth = 10;
   //
@@ -2377,7 +2377,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
     myQPainter2.setPen( Qt::black );
   }
   myQPainter2.setFont( myQFont );
-  myQPainter2.drawText( 25, myImageHeight - 10, this->name() );
+  myQPainter2.drawText( 25, myImageHeight - 10, name() );
   //
   // finish up
   //
@@ -4947,7 +4947,7 @@ void *QgsRasterLayer::readData( GDALRasterBandH gdalBand, QgsRasterViewPort *vie
   /* Abort if out of memory */
   if ( data == NULL )
   {
-    QgsDebugMsg( "Layer " + this->name() + " couldn't allocate enough memory. Ignoring" );
+    QgsDebugMsg( "Layer " + name() + " couldn't allocate enough memory. Ignoring" );
   }
   else
   {

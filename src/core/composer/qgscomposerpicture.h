@@ -51,7 +51,7 @@ class CORE_EXPORT QgsComposerPicture: public QObject, public QgsComposerItem
        * @param node is Dom node corresponding to 'Composer' tag
        * @param temp write template file
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc );
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
       * @param itemElem is Dom node corresponding to item tag

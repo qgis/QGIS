@@ -203,7 +203,7 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   {
     return 2; //@todo: handle gracefully in gui situation where user needs to nominate field
   }
-  this->setClassificationField( classificationId );
+  setClassificationField( classificationId );
 
   //polygon outline
   QDomNode polyoutlinenode = rnode.namedItem( "polygonoutline" );
@@ -223,16 +223,16 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
   if ( ! lsymbolnode.isNull() )
   {
     QgsSymbol* lsy = new QgsSymbol( mGeometryType );
-    lsy->readXML( lsymbolnode );
-    this->setMinimumSymbol( lsy );
+    lsy->readXML( lsymbolnode, &vl );
+    setMinimumSymbol( lsy );
   }
   QDomNode uppernode = rnode.namedItem( "highestsymbol" );
   QDomNode usymbolnode = uppernode.namedItem( "symbol" );
   if ( ! usymbolnode.isNull() )
   {
     QgsSymbol* usy = new QgsSymbol( mGeometryType );
-    usy->readXML( usymbolnode );
-    this->setMaximumSymbol( usy );
+    usy->readXML( usymbolnode, &vl );
+    setMaximumSymbol( usy );
   }
   vl.setRenderer( this );
   return 0;
@@ -265,7 +265,7 @@ bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument &
     classificationFieldName = field_it.value().name();
   }
   bool returnval = true;
-#ifndef WIN32
+
   QDomElement continuoussymbol = document.createElement( "continuoussymbol" );
   layer_node.appendChild( continuoussymbol );
   QDomElement classificationfield = document.createElement( "classificationfield" );
@@ -284,15 +284,15 @@ bool QgsContinuousColorRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   continuoussymbol.appendChild( lowestsymbol );
   if ( mMinimumSymbol )
   {
-    mMinimumSymbol->writeXML( lowestsymbol, document );
+    mMinimumSymbol->writeXML( lowestsymbol, document, &vl );
   }
   QDomElement highestsymbol = document.createElement( "highestsymbol" );
   continuoussymbol.appendChild( highestsymbol );
   if ( mMaximumSymbol )
   {
-    mMaximumSymbol->writeXML( highestsymbol, document );
+    mMaximumSymbol->writeXML( highestsymbol, document, &vl );
   }
-#endif
+
   return returnval;
 }
 

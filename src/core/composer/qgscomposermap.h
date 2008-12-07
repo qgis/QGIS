@@ -125,7 +125,7 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param temp write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc );
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to 'ComposerMap' tag

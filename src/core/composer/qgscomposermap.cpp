@@ -466,7 +466,7 @@ void QgsComposerMap::connectUpdateSlot()
   }
 }
 
-bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc )
+bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {
@@ -497,8 +497,11 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc )
   extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
+#if 0
+  // why is saving the map changing anything about the cache?
   mCacheUpdated = false;
   mNumCachedLayers = 0;
+#endif
 
   elem.appendChild( composerMapElem );
   return _writeXML( composerMapElem, doc );

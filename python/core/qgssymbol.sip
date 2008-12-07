@@ -70,10 +70,10 @@ class QgsSymbol
 
     /**Writes the contents of the symbol to a configuration file
      @ return true in case of success*/
-    virtual bool writeXML( QDomNode & item, QDomDocument & document ) const;
+    virtual bool writeXML( QDomNode & item, QDomDocument & document, const QgsVectorLayer *vl ) const;
     /**Reads the contents of the symbol from a configuration file
      @ return true in case of success*/
-    virtual bool readXML( QDomNode & symbol );
+    virtual bool readXML( QDomNode & symbol, const QgsVectorLayer *vl );
     /**Returns if this symbol is point/ line or polygon*/
     QGis::GeometryType type() const;
 

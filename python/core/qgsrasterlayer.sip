@@ -489,7 +489,7 @@ public:
     bool readXml( QDomNode & layer_node );
 
     /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
+    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage );
 
     /** \brief Write layer specific state to project file Dom node */
     bool writeXml( QDomNode & layer_node, QDomDocument & doc );

@@ -2616,14 +2616,14 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   //Fill GEOS Polygons of the feature into list
   QVector<const GEOSGeometry*> polygonList;
 
-  if ( this->wkbType() == QGis::WKBPolygon )
+  if ( wkbType() == QGis::WKBPolygon )
   {
     if ( type != GEOS_POLYGON )
       return 1;
 
     polygonList << mGeos;
   }
-  else if ( this->wkbType() == QGis::WKBMultiPolygon )
+  else if ( wkbType() == QGis::WKBMultiPolygon )
   {
     if ( type != GEOS_MULTIPOLYGON )
       return 1;
@@ -2754,12 +2754,12 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 
   GEOSGeometry *newPolygon = createGeosPolygon( rings );
 
-  if ( this->wkbType() == QGis::WKBPolygon )
+  if ( wkbType() == QGis::WKBPolygon )
   {
     GEOSGeom_destroy( mGeos );
     mGeos = newPolygon;
   }
-  else if ( this->wkbType() == QGis::WKBMultiPolygon )
+  else if ( wkbType() == QGis::WKBMultiPolygon )
   {
     QVector<GEOSGeometry*> newPolygons;
 
@@ -5003,21 +5003,21 @@ GEOSGeometry *QgsGeometry::nodeGeometries( const GEOSGeometry *splitLine, GEOSGe
   return unionGeometry;
 }
 
-int QgsGeometry::numberOfGeometries(GEOSGeometry* g) const
+int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
 {
-  if(!g)
+  if ( !g )
   {
     return 0;
   }
-  int geometryType = GEOSGeomTypeId(g);
-  if(geometryType == GEOS_POINT || geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING
-     || geometryType == GEOS_POLYGON)
+  int geometryType = GEOSGeomTypeId( g );
+  if ( geometryType == GEOS_POINT || geometryType == GEOS_LINESTRING || geometryType == GEOS_LINEARRING
+       || geometryType == GEOS_POLYGON )
   {
     return 1;
   }
 
   //calling GEOSGetNumGeometries is save for multi types and collections also in geos2
-  return GEOSGetNumGeometries(g);
+  return GEOSGetNumGeometries( g );
 }
 
 int QgsGeometry::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult )

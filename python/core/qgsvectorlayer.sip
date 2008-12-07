@@ -127,7 +127,7 @@ public:
    * @param errorMessage reference to string that will be updated with any error messages
    *  @return true in case of success.
    */
-  bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage) const;
+  bool writeSymbology(QDomNode&, QDomDocument& doc, QString& errorMessage);
 
   /**
    * Number of features in the layer. This is necessary if features are

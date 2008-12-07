@@ -80,7 +80,7 @@ QFont QgsComposerLabel::font() const
   return mFont;
 }
 
-bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc )
+bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   if ( elem.isNull() )
   {

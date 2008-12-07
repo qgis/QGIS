@@ -135,8 +135,10 @@ bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) con
   return true;
 }
 
-bool QgsAttributeAction::readXML( QDomNode& layer_node )
+bool QgsAttributeAction::readXML( const QDomNode& layer_node )
 {
+  mActions.clear();
+
   QDomNode aaNode = layer_node.namedItem( "attributeactions" );
 
   if ( !aaNode.isNull() )

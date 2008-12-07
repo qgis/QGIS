@@ -121,7 +121,7 @@ class  CORE_EXPORT QgsAttributeAction
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
 
     //! Reads the actions in in XML format
-    bool readXML( QDomNode& layer_node );
+    bool readXML( const QDomNode& layer_node );
 
   private:
 

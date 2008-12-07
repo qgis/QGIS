@@ -287,9 +287,9 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   QgsDebugMsg( "Starting draw of labels" );
 
   if ( mRenderer && mLabelOn &&
-       (!label()->scaleBasedVisibility() ||
-        (label()->minScale()<=rendererContext.rendererScale() &&
-                              rendererContext.rendererScale()<=label()->maxScale())) )
+       ( !label()->scaleBasedVisibility() ||
+         ( label()->minScale() <= rendererContext.rendererScale() &&
+           rendererContext.rendererScale() <= label()->maxScale() ) ) )
   {
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
@@ -823,7 +823,7 @@ void QgsVectorLayer::select( int number, bool emitSignal )
 void QgsVectorLayer::deselect( int number, bool emitSignal )
 {
   mSelectedFeatureIds.remove( number );
-  
+
   if ( emitSignal )
   {
     emit selectionChanged();
@@ -1969,12 +1969,17 @@ QgsLabel * QgsVectorLayer::label()
   return mLabel;
 }
 
+const QgsLabel *QgsVectorLayer::label() const
+{
+  return mLabel;
+}
+
 void QgsVectorLayer::enableLabels( bool on )
 {
   mLabelOn = on;
 }
 
-bool QgsVectorLayer::hasLabelsEnabled( void )
+bool QgsVectorLayer::hasLabelsEnabled( void ) const
 {
   return mLabelOn;
 }
@@ -2017,9 +2022,6 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
 {
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 
-  // process the attribute actions
-  mActions->readXML( layer_node );
-
   //process provider key
   QDomNode pkeyNode = layer_node.namedItem( "provider" );
 
@@ -2060,86 +2062,12 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     mDataProvider->setEncoding( encodingNode.toElement().text() );
   }
 
-  // get and set the display field if it exists.
-  QDomNode displayFieldNode = layer_node.namedItem( "displayfield" );
-  if ( !displayFieldNode.isNull() )
-  {
-    QDomElement e = displayFieldNode.toElement();
-    setDisplayField( e.text() );
-  }
-
-  // use scale dependent visibility flag
-  QDomElement e = layer_node.toElement();
-  label()->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0") == "1" );
-  label()->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
-  label()->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
-
-  QDomNode editTypesNode = layer_node.namedItem( "edittypes" );
-  if ( !editTypesNode.isNull() )
-  {
-    QDomNodeList editTypeNodes = editTypesNode.childNodes();
-
-    for ( int i = 0; i < editTypeNodes.size(); i++ )
-    {
-      QDomNode editTypeNode = editTypeNodes.at( i );
-      QDomElement editTypeElement = editTypeNode.toElement();
-
-      QString name = editTypeElement.attribute( "name" );
-
-      EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
-      mEditTypes.insert( name, editType );
-
-      if ( editType == ValueMap && editTypeNode.hasChildNodes() )
-      {
-        mValueMaps.insert( name, QMap<QString, QVariant>() );
-
-        QDomNodeList valueMapNodes = editTypeNode.childNodes();
-        for ( int j = 0; j < valueMapNodes.size(); j++ )
-        {
-          QDomElement value = valueMapNodes.at( j ).toElement();
-          mValueMaps[ name ].insert( value.attribute( "key" ), value.attribute( "value" ) );
-        }
-      }
-      else if ( editType == EditRange || editType == SliderRange )
-      {
-        QVariant min = editTypeElement.attribute( "min" );
-        QVariant max = editTypeElement.attribute( "max" );
-        QVariant step = editTypeElement.attribute( "step" );
-
-        mRanges[ name ] = RangeData( min, max, step );
-      }
-    }
-  }
-
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
   {
     return false;
   }
 
-  // Test if labeling is on or off
-  QDomNode labelnode = layer_node.namedItem( "label" );
-  QDomElement element = labelnode.toElement();
-  int hasLabelsEnabled = element.text().toInt();
-  if ( hasLabelsEnabled < 1 )
-  {
-    enableLabels( false );
-  }
-  else
-  {
-    enableLabels( true );
-  }
-
-  QgsDebugMsg( "Testing if qgsvectorlayer can call label readXML routine" );
-
-
-  QDomNode labelattributesnode = layer_node.namedItem( "labelattributes" );
-
-  if ( !labelattributesnode.isNull() )
-  {
-    QgsDebugMsg( "qgsvectorlayer calling label readXML routine" );
-    mLabel->readXML( labelattributesnode );
-  }
 
   return mValid;               // should be true if read successfully
 
@@ -2250,103 +2178,11 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   // set the geometry type
   mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[type()] );
 
-  // use scale dependent visibility flag
-  mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
-  mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
-  mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
-
   // add provider node
-
   QDomElement provider  = document.createElement( "provider" );
   QDomText providerText = document.createTextNode( providerType() );
   provider.appendChild( providerText );
   layer_node.appendChild( provider );
-
-  //provider encoding
-  QDomElement encoding = document.createElement( "encoding" );
-  QDomText encodingText = document.createTextNode( mDataProvider->encoding() );
-  encoding.appendChild( encodingText );
-  layer_node.appendChild( encoding );
-
-  //classification field(s)
-  QgsAttributeList attributes = mRenderer->classificationAttributes();
-  const QgsFieldMap providerFields = mDataProvider->fields();
-  for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-  {
-    QDomElement classificationElement = document.createElement( "classificationattribute" );
-    QDomText classificationText = document.createTextNode( providerFields[*it].name() );
-    classificationElement.appendChild( classificationText );
-    layer_node.appendChild( classificationElement );
-  }
-
-  if ( mEditTypes.size() > 0 )
-  {
-    QDomElement editTypesElement = document.createElement( "edittypes" );
-
-    for ( QMap<QString, EditType>::const_iterator it = mEditTypes.begin(); it != mEditTypes.end(); ++it )
-    {
-      QDomElement editTypeElement = document.createElement( "edittype" );
-      editTypeElement.setAttribute( "name", it.key() );
-      editTypeElement.setAttribute( "type", it.value() );
-
-      if ( it.value() == ValueMap )
-      {
-        if ( mValueMaps.contains( it.key() ) )
-        {
-          const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
-
-          for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); vmit++ )
-          {
-            QDomElement value = document.createElement( "valuepair" );
-            value.setAttribute( "key", vmit.key() );
-            value.setAttribute( "value", vmit.value().toString() );
-            editTypeElement.appendChild( value );
-          }
-        }
-      }
-      else if ( it.value() == EditRange || it.value() == SliderRange )
-      {
-        if ( mRanges.contains( it.key() ) )
-        {
-          editTypeElement.setAttribute( "min", mRanges[ it.key()].mMin.toString() );
-          editTypeElement.setAttribute( "max", mRanges[ it.key()].mMax.toString() );
-          editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
-        }
-      }
-
-      editTypesElement.appendChild( editTypeElement );
-    }
-
-    layer_node.appendChild( editTypesElement );
-  }
-
-  // add the display field
-
-  QDomElement dField  = document.createElement( "displayfield" );
-  QDomText dFieldText = document.createTextNode( displayField() );
-  dField.appendChild( dFieldText );
-  layer_node.appendChild( dField );
-
-  // add label node
-
-  QDomElement label  = document.createElement( "label" );
-  QDomText labelText = document.createTextNode( "" );
-
-  if ( hasLabelsEnabled() )
-  {
-    labelText.setData( "1" );
-  }
-  else
-  {
-    labelText.setData( "0" );
-  }
-  label.appendChild( labelText );
-
-  layer_node.appendChild( label );
-
-  // add attribute actions
-
-  mActions->writeXML( layer_node, document );
 
   // renderer specific settings
 
@@ -2356,33 +2192,67 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     return false;
   }
 
-  // Now we get to do all that all over again for QgsLabel
-
-  // XXX Since this is largely a cut-n-paste from the previous, this
-  // XXX therefore becomes a candidate to be generalized into a separate
-  // XXX function.  I think.
-
-  QgsLabel * myLabel = this->label();
-
-  if ( myLabel )
-  {
-    QString fieldname = myLabel->labelField( QgsLabel::Text );
-    if ( fieldname != "" )
-    {
-      dField  = document.createElement( "labelfield" );
-      dFieldText = document.createTextNode( fieldname );
-      dField.appendChild( dFieldText );
-      layer_node.appendChild( dField );
-    }
-
-    myLabel->writeXML( layer_node, document );
-  }
 
   return true;
 } // bool QgsVectorLayer::writeXml
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  // process the attribute actions
+  mActions->readXML( node );
+
+  // get and set the display field if it exists.
+  QDomNode displayFieldNode = node.namedItem( "displayfield" );
+  if ( !displayFieldNode.isNull() )
+  {
+    QDomElement e = displayFieldNode.toElement();
+    setDisplayField( e.text() );
+  }
+
+  // use scale dependent visibility flag
+  QDomElement e = node.toElement();
+  label()->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
+  label()->setMinScale( e.attribute( "minLabelScale", "1" ).toFloat() );
+  label()->setMaxScale( e.attribute( "maxLabelScale", "100000000" ).toFloat() );
+
+  mEditTypes.clear();
+  QDomNode editTypesNode = node.namedItem( "edittypes" );
+  if ( !editTypesNode.isNull() )
+  {
+    QDomNodeList editTypeNodes = editTypesNode.childNodes();
+
+    for ( int i = 0; i < editTypeNodes.size(); i++ )
+    {
+      QDomNode editTypeNode = editTypeNodes.at( i );
+      QDomElement editTypeElement = editTypeNode.toElement();
+
+      QString name = editTypeElement.attribute( "name" );
+
+      EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
+      mEditTypes.insert( name, editType );
+
+      if ( editType == ValueMap && editTypeNode.hasChildNodes() )
+      {
+        mValueMaps.insert( name, QMap<QString, QVariant>() );
+
+        QDomNodeList valueMapNodes = editTypeNode.childNodes();
+        for ( int j = 0; j < valueMapNodes.size(); j++ )
+        {
+          QDomElement value = valueMapNodes.at( j ).toElement();
+          mValueMaps[ name ].insert( value.attribute( "key" ), value.attribute( "value" ) );
+        }
+      }
+      else if ( editType == EditRange || editType == SliderRange )
+      {
+        QVariant min = editTypeElement.attribute( "min" );
+        QVariant max = editTypeElement.attribute( "max" );
+        QVariant step = editTypeElement.attribute( "step" );
+
+        mRanges[ name ] = RangeData( min, max, step );
+      }
+    }
+  }
+
   // create and bind a renderer to this layer
 
   QDomNode singlenode = node.namedItem( "singlesymbol" );
@@ -2429,11 +2299,116 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
 
   mRenderer = renderer;
+
+  // Test if labeling is on or off
+  QDomNode labelnode = node.namedItem( "label" );
+  QDomElement element = labelnode.toElement();
+  int hasLabelsEnabled = element.text().toInt();
+  if ( hasLabelsEnabled < 1 )
+  {
+    enableLabels( false );
+  }
+  else
+  {
+    enableLabels( true );
+  }
+
+  QDomNode labelattributesnode = node.namedItem( "labelattributes" );
+
+  if ( !labelattributesnode.isNull() )
+  {
+    QgsDebugMsg( "qgsvectorlayer calling label readXML routine" );
+    mLabel->readXML( labelattributesnode );
+  }
+
   return true;
 }
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
+  // use scale dependent visibility flag
+  QDomElement mapLayerNode = node.toElement();
+  mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", label()->scaleBasedVisibility() ? 1 : 0 );
+  mapLayerNode.setAttribute( "minLabelScale", label()->minScale() );
+  mapLayerNode.setAttribute( "maxLabelScale", label()->maxScale() );
+
+  //classification field(s)
+  QgsAttributeList attributes = mRenderer->classificationAttributes();
+  const QgsFieldMap providerFields = mDataProvider->fields();
+  for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  {
+    QDomElement classificationElement = doc.createElement( "classificationattribute" );
+    QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
+    classificationElement.appendChild( classificationText );
+    node.appendChild( classificationElement );
+  }
+
+  if ( mEditTypes.size() > 0 )
+  {
+    QDomElement editTypesElement = doc.createElement( "edittypes" );
+
+    for ( QMap<QString, EditType>::const_iterator it = mEditTypes.begin(); it != mEditTypes.end(); ++it )
+    {
+      QDomElement editTypeElement = doc.createElement( "edittype" );
+      editTypeElement.setAttribute( "name", it.key() );
+      editTypeElement.setAttribute( "type", it.value() );
+
+      if ( it.value() == ValueMap )
+      {
+        if ( mValueMaps.contains( it.key() ) )
+        {
+          const QMap<QString, QVariant> &map = mValueMaps[ it.key()];
+
+          for ( QMap<QString, QVariant>::const_iterator vmit = map.begin(); vmit != map.end(); vmit++ )
+          {
+            QDomElement value = doc.createElement( "valuepair" );
+            value.setAttribute( "key", vmit.key() );
+            value.setAttribute( "value", vmit.value().toString() );
+            editTypeElement.appendChild( value );
+          }
+        }
+      }
+      else if ( it.value() == EditRange || it.value() == SliderRange )
+      {
+        if ( mRanges.contains( it.key() ) )
+        {
+          editTypeElement.setAttribute( "min", mRanges[ it.key()].mMin.toString() );
+          editTypeElement.setAttribute( "max", mRanges[ it.key()].mMax.toString() );
+          editTypeElement.setAttribute( "step", mRanges[ it.key()].mStep.toString() );
+        }
+      }
+
+      editTypesElement.appendChild( editTypeElement );
+    }
+
+    node.appendChild( editTypesElement );
+  }
+
+  // add the display field
+  QDomElement dField  = doc.createElement( "displayfield" );
+  QDomText dFieldText = doc.createTextNode( displayField() );
+  dField.appendChild( dFieldText );
+  node.appendChild( dField );
+
+  // add label node
+  QDomElement label  = doc.createElement( "label" );
+  QDomText labelText = doc.createTextNode( "" );
+
+  if ( hasLabelsEnabled() )
+  {
+    labelText.setData( "1" );
+  }
+  else
+  {
+    labelText.setData( "0" );
+  }
+  label.appendChild( labelText );
+
+  node.appendChild( label );
+
+  // add attribute actions
+  mActions->writeXML( node, doc );
+
   const QgsRenderer * myRenderer = renderer();
   if ( myRenderer )
   {
@@ -2444,9 +2419,32 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   }
   else
   {
-    QgsDebugMsg( QString( "%1:%2 no renderer" ).arg( __FILE__ ).arg( __LINE__ ) );
+    QgsDebugMsg( "no renderer" );
     return false;
   }
+
+  // Now we get to do all that all over again for QgsLabel
+
+  // XXX Since this is largely a cut-n-paste from the previous, this
+  // XXX therefore becomes a candidate to be generalized into a separate
+  // XXX function.  I think.
+
+  const QgsLabel *myLabel = this->label();
+
+  if ( myLabel )
+  {
+    QString fieldname = myLabel->labelField( QgsLabel::Text );
+    if ( fieldname != "" )
+    {
+      dField  = doc.createElement( "labelfield" );
+      dFieldText = doc.createTextNode( fieldname );
+      dField.appendChild( dFieldText );
+      node.appendChild( dField );
+    }
+
+    myLabel->writeXML( node, doc );
+  }
+
   return true;
 }
 
@@ -2551,7 +2549,7 @@ bool QgsVectorLayer::deleteFeature( int fid )
   return true;
 }
 
-const QgsFieldMap &QgsVectorLayer::pendingFields()
+const QgsFieldMap &QgsVectorLayer::pendingFields() const
 {
   return isEditable() ? mUpdatedFields : mDataProvider->fields();
 }

@@ -169,12 +169,12 @@ int QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl 
   }
   else
   {
-    sy->readXML( synode );
+    sy->readXML( synode, &vl );
   }
   updateSymbolAttributes();
 
   //create a renderer and add it to the vector layer
-  this->addSymbol( sy );
+  addSymbol( sy );
   vl.setRenderer( this );
   return 0;
 }
@@ -187,7 +187,7 @@ bool QgsSingleSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument & do
 
   if ( mSymbol )
   {
-    returnval = mSymbol->writeXML( singlesymbol, document );
+    returnval = mSymbol->writeXML( singlesymbol, document, &vl );
   }
   return returnval;
 }
