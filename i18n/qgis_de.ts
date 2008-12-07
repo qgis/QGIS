@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="de">
+<defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
     <message>
@@ -4343,15 +4345,15 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Map units per bar unit:</source>
-        <translation type="unfinished">Karteneinheiten nach Maßstab:</translation>
+        <translation type="unfinished">Karteneinheiten pro Massstabseinheit:</translation>
     </message>
     <message>
         <source>Number of segments:</source>
-        <translation type="unfinished">Segmentanzahl</translation>
+        <translation type="unfinished">Anzahl Segmente:</translation>
     </message>
     <message>
         <source>Segments left:</source>
-        <translation type="unfinished">Verbleibende Segmente:</translation>
+        <translation type="unfinished">Segmente links:</translation>
     </message>
     <message>
         <source>Style:</source>
@@ -4371,11 +4373,11 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Label space:</source>
-        <translation type="unfinished">Bemaßungsraum</translation>
+        <translation type="unfinished">Beschriftungsabstand</translation>
     </message>
     <message>
         <source>Box space:</source>
-        <translation type="unfinished">Rahmenraum</translation>
+        <translation type="unfinished">Rahmabstand</translation>
     </message>
     <message>
         <source>Unit label:</source>
