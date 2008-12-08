@@ -1525,6 +1525,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
     case QGis::WKBMultiPoint:
     {
       //todo
+      break;
     }
     case QGis::WKBLineString25D:
       hasZValue = true;
@@ -3321,6 +3322,7 @@ QgsRectangle QgsGeometry::boundingBox()
     {
       ptr = mGeometry + 1 + sizeof( int );
       nPoints = ( int * ) ptr;
+      ptr += sizeof( int );
       for ( idx = 0; idx < *nPoints; idx++ )
       {
         ptr += ( 1 + sizeof( int ) );
