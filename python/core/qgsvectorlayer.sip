@@ -70,6 +70,9 @@ public:
   /** Select not selected features and deselect selected ones */
   void invertSelection();
 
+  /** Invert selection of features found within the search rectangle (in layer's coordinates) */
+  void invertSelectionInRectangle( QgsRectangle & rect);
+
   /** Get a copy of the user-selected features */  
   QList<QgsFeature> selectedFeatures();
   

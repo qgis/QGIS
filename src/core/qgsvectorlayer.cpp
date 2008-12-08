@@ -875,6 +875,29 @@ void QgsVectorLayer::invertSelection()
   emit selectionChanged();
 }
 
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
+{
+  // normalize the rectangle
+  rect.normalize();
+
+  select( QgsAttributeList(), rect, false, true );
+
+  QgsFeature fet;
+  while ( nextFeature( fet ) )
+  {
+    if ( mSelectedFeatureIds.contains( fet.id() ) )
+    {
+      deselect( fet.id(), false ); // don't emit signal
+    }
+    else
+    {
+      select( fet.id(), false ); // don't emit signal
+    }
+  }
+
+  emit selectionChanged();
+}
+
 void QgsVectorLayer::removeSelection( bool emitSignal )
 {
   mSelectedFeatureIds.clear();
