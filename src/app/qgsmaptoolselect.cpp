@@ -114,9 +114,9 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
 
   QgsRectangle search( ll.x(), ll.y(), ur.x(), ur.y() );
 
-  // if Ctrl key is pressed, selected features will be added to selection
+  // if Ctrl key is pressed, selected features will be flipped in selection
   // instead of removing old selection
-  bool lock = ( e->modifiers() & Qt::ControlModifier );
+  bool flip = ( e->modifiers() & Qt::ControlModifier );
 
   // toLayerCoordinates will throw an exception for an 'invalid' rectangle.
   // For example, if you project a world map onto a globe using EPSG 2163
@@ -136,6 +136,13 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  vlayer->select( search, lock );
+  if ( flip )
+  {
+    vlayer->invertSelectionInRectangle( search );
+  }
+  else
+  {
+    vlayer->select( search, false );
+  }
   QApplication::restoreOverrideCursor();
 }
