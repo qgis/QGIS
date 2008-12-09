@@ -6484,60 +6484,8 @@ Krátký přehled syntaxe:
         <translation>SVG formát</translation>
     </message>
     <message>
-        <source>Move Content</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Lower</source>
-        <translation type="unfinished">Spodní</translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Spodní</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -6797,6 +6745,62 @@ Krátký přehled syntaxe:
     <message>
         <source>Refresh</source>
         <translation type="unfinished">Obnovit</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Skupina</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Spodní</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13766,11 +13770,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Více vrstev</translation>
+        <translation type="obsolete">Více vrstev</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Položka obsahuje více souborů vrstev. Není podporováno zobrazení více vrstev v tabulce.</translation>
+        <translation type="obsolete">Položka obsahuje více souborů vrstev. Není podporováno zobrazení více vrstev v tabulce.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -13785,7 +13789,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Atributová tabulka - </translation>
+        <translation type="obsolete">Atributová tabulka - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -13793,19 +13797,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Editace selhala</translation>
+        <translation type="obsolete">Editace selhala</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Poskytovatel nemůže být otevřen pro editaci</translation>
+        <translation type="obsolete">Poskytovatel nemůže být otevřen pro editaci</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Ukončit editaci</translation>
+        <translation type="obsolete">Ukončit editaci</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Přejete si uložit změny?</translation>
+        <translation type="obsolete">Přejete si uložit změny?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -13821,19 +13825,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Nemohu zapsat změny</translation>
+        <translation type="obsolete">Nemohu zapsat změny</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problémy během návratu zpět</translation>
+        <translation type="obsolete">Problémy během návratu zpět</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Není vektorová vrstva</translation>
+        <translation type="obsolete">Není vektorová vrstva</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Pro otevření atributové tabulky musíte vybrat vektorovou vrstvu v legendě</translation>
+        <translation type="obsolete">Pro otevření atributové tabulky musíte vybrat vektorovou vrstvu v legendě</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -13893,11 +13897,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">bad_alloc vyjímka</translation>
+        <translation type="obsolete">bad_alloc vyjímka</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Naplňování atributové tabulky bylo pozastaveno, jelikož není dostatek virtuální paměti</translation>
+        <translation type="obsolete">Naplňování atributové tabulky bylo pozastaveno, jelikož není dostatek virtuální paměti</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -16186,16 +16190,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16225,11 +16219,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -16268,6 +16257,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21482,6 +21490,10 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     </message>
     <message>
         <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

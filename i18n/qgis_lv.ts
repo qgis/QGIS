@@ -3884,59 +3884,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation>Pārvietot saturu</translation>
+        <translation type="obsolete">Pārvietot saturu</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation>Pārvietot ieraksta saturu</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Pārvietot ieraksta saturu</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>Grupēt ierakstus</translation>
+        <translation type="obsolete">Grupēt ierakstus</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>&amp;Atgrupēt</translation>
+        <translation type="obsolete">&amp;Atgrupēt</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>Atgrupēt ierakstus</translation>
+        <translation type="obsolete">Atgrupēt ierakstus</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Pacelt</translation>
+        <translation type="obsolete">Pacelt</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>Pacelt izvēlētos ierakstus</translation>
-    </message>
-    <message>
-        <source>Lower</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Pacelt izvēlētos ierakstus</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -4144,6 +4116,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation>Atsvaidzināt</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Pārvietot saturu</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Pārvietot ieraksta saturu</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Grupa</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Grupēt ierakstus</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Atgrupēt ierakstus</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Pacelt</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Pacelt izvēlētos ierakstus</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9399,11 +9427,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Vairāk slāņu</translation>
+        <translation type="obsolete">Vairāk slāņu</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
+        <translation type="obsolete">Šim vienumam ir vairāki slāņi. Vairāku slāņu attēlošanā tabulā nav atbalstīta.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9418,7 +9446,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Atribūtu tabula - </translation>
+        <translation type="obsolete">Atribūtu tabula - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9426,19 +9454,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Rediģēšanas sākšana neizdevās</translation>
+        <translation type="obsolete">Rediģēšanas sākšana neizdevās</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Sniedzējs nevar tikt atvērts rediģēšanai</translation>
+        <translation type="obsolete">Sniedzējs nevar tikt atvērts rediģēšanai</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Pārtraukt rediģēšanu</translation>
+        <translation type="obsolete">Pārtraukt rediģēšanu</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Vai Jūs velaties saglabāt izmaiņas?</translation>
+        <translation type="obsolete">Vai Jūs velaties saglabāt izmaiņas?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9446,19 +9474,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Nevar apstiprināt izmaiņas</translation>
+        <translation type="obsolete">Nevar apstiprināt izmaiņas</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problēmas pie darbību atcelšanas</translation>
+        <translation type="obsolete">Problēmas pie darbību atcelšanas</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Nav vektordatu slānis</translation>
+        <translation type="obsolete">Nav vektordatu slānis</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
+        <translation type="obsolete">Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -9518,11 +9546,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">Bad_alloc kļūda</translation>
+        <translation type="obsolete">Bad_alloc kļūda</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
+        <translation type="obsolete">Atribūtu tabulas aizpildīšana tika pārtraukta, jo nepietiek virtuālās atmiņas </translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -11398,16 +11426,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11437,11 +11455,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11480,6 +11493,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15642,6 +15674,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Dom Exception</source>
         <translation>DOM izņēmums</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

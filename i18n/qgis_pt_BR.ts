@@ -3693,59 +3693,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation>Mover conteúdo</translation>
+        <translation type="obsolete">Mover conteúdo</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation>Mover item do conteúdo</translation>
+        <translation type="obsolete">Mover item do conteúdo</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>A&amp;grupar</translation>
+        <translation type="obsolete">A&amp;grupar</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>Agrupar items</translation>
+        <translation type="obsolete">Agrupar items</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>&amp;Desagrupar</translation>
+        <translation type="obsolete">&amp;Desagrupar</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>Desagrupar items</translation>
+        <translation type="obsolete">Desagrupar items</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Elevar</translation>
+        <translation type="obsolete">Elevar</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>Elevar items selecionados</translation>
+        <translation type="obsolete">Elevar items selecionados</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Abaixar</translation>
+        <translation type="obsolete">Abaixar</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation>Abaixar items selecionados</translation>
+        <translation type="obsolete">Abaixar items selecionados</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>Trazer para frente</translation>
+        <translation type="obsolete">Trazer para frente</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation>Mover items selecionados para o topo</translation>
+        <translation type="obsolete">Mover items selecionados para o topo</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>Enviar para trás</translation>
+        <translation type="obsolete">Enviar para trás</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation>Mover items selecionados para o fundo</translation>
+        <translation type="obsolete">Mover items selecionados para o fundo</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -3937,6 +3937,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation type="unfinished">Atualizar</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Mover conteúdo</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Mover item do conteúdo</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Agrupar items</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Desagrupar items</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Elevar</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Elevar items selecionados</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Abaixar</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Abaixar items selecionados</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">Trazer para frente</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Mover items selecionados para o topo</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">Enviar para trás</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Mover items selecionados para o fundo</translation>
     </message>
 </context>
 <context>
@@ -8440,11 +8496,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Mais camadas</translation>
+        <translation type="obsolete">Mais camadas</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Este item contém mais arquivos de camadas. Exibir mais camadas na tabela não é suportado.</translation>
+        <translation type="obsolete">Este item contém mais arquivos de camadas. Exibir mais camadas na tabela não é suportado.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8459,7 +8515,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Tabela de atributos - </translation>
+        <translation type="obsolete">Tabela de atributos - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8467,19 +8523,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Falha ao iniciar a edição</translation>
+        <translation type="obsolete">Falha ao iniciar a edição</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Provedor não pode ser aberto para edição</translation>
+        <translation type="obsolete">Provedor não pode ser aberto para edição</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Parar edição</translation>
+        <translation type="obsolete">Parar edição</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Você quer salvar as alterações?</translation>
+        <translation type="obsolete">Você quer salvar as alterações?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8487,19 +8543,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Impossível marcar mudanças</translation>
+        <translation type="obsolete">Impossível marcar mudanças</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problemas durante retorno</translation>
+        <translation type="obsolete">Problemas durante retorno</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Não é uma camada vetorial</translation>
+        <translation type="obsolete">Não é uma camada vetorial</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Para abrir uma tabela de atributos, você precisa selecionar uma camada vetorial na legenda</translation>
+        <translation type="obsolete">Para abrir uma tabela de atributos, você precisa selecionar uma camada vetorial na legenda</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -8559,11 +8615,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">bad_alloc exception</translation>
+        <translation type="obsolete">bad_alloc exception</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">O preenchimento dos atributos de tabela parou por insuficiência de memória virtual (seu HD deve estar cheio)</translation>
+        <translation type="obsolete">O preenchimento dos atributos de tabela parou por insuficiência de memória virtual (seu HD deve estar cheio)</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -10101,16 +10157,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10140,11 +10186,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -10183,6 +10224,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13763,6 +13823,10 @@ Existem classes que poderiam ser excluídas antes da classificação?</translati
     <message>
         <source>Dom Exception</source>
         <translation>Exceção Dom</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

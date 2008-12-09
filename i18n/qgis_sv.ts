@@ -6141,59 +6141,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation>Flytta innehåll</translation>
+        <translation type="obsolete">Flytta innehåll</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation>Flytta innehåll</translation>
+        <translation type="obsolete">Flytta innehåll</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>&amp;Gruppera</translation>
+        <translation type="obsolete">&amp;Gruppera</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>Gruppera element</translation>
+        <translation type="obsolete">Gruppera element</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>Ta bort grupp</translation>
+        <translation type="obsolete">Ta bort grupp</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>Ta bort elementens grupp</translation>
+        <translation type="obsolete">Ta bort elementens grupp</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Höj</translation>
+        <translation type="obsolete">Höj</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>Höj valda element</translation>
+        <translation type="obsolete">Höj valda element</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Sänk</translation>
+        <translation type="obsolete">Sänk</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation>Sänk valda element</translation>
+        <translation type="obsolete">Sänk valda element</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>Flytta överst</translation>
+        <translation type="obsolete">Flytta överst</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation>Flytta valda element överst</translation>
+        <translation type="obsolete">Flytta valda element överst</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>Flytta underst</translation>
+        <translation type="obsolete">Flytta underst</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation>Flytta valda element underst</translation>
+        <translation type="obsolete">Flytta valda element underst</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -6405,6 +6405,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation>Uppdatera</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Flytta innehåll</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Flytta innehåll</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Grupp</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Gruppera element</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Ta bort elementens grupp</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Höj</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Höj valda element</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Sänk valda element</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">Flytta överst</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Flytta valda element överst</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">Flytta underst</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Flytta valda element underst</translation>
     </message>
 </context>
 <context>
@@ -13425,11 +13481,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Fler lager</translation>
+        <translation type="obsolete">Fler lager</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Detta objekt innehåller flera lagerfiler. Stödjer ej att visa flera lager i tabell.</translation>
+        <translation type="obsolete">Detta objekt innehåller flera lagerfiler. Stödjer ej att visa flera lager i tabell.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -13444,7 +13500,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Attributtabell - </translation>
+        <translation type="obsolete">Attributtabell - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -13452,19 +13508,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Misslyckades att påbörja redigering</translation>
+        <translation type="obsolete">Misslyckades att påbörja redigering</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Källan kan inte öppnas för redigering</translation>
+        <translation type="obsolete">Källan kan inte öppnas för redigering</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Sluta redigera</translation>
+        <translation type="obsolete">Sluta redigera</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Vill du spara ändringarna?</translation>
+        <translation type="obsolete">Vill du spara ändringarna?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -13480,19 +13536,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Kunde inte föra in förändringar</translation>
+        <translation type="obsolete">Kunde inte föra in förändringar</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problem vid återgång</translation>
+        <translation type="obsolete">Problem vid återgång</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Inte ett vektorlager</translation>
+        <translation type="obsolete">Inte ett vektorlager</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Du måste markera ett vektorlager i teckenförklaringen för att öppna en attributtabell</translation>
+        <translation type="obsolete">Du måste markera ett vektorlager i teckenförklaringen för att öppna en attributtabell</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -13552,11 +13608,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">bad_alloc fel</translation>
+        <translation type="obsolete">bad_alloc fel</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Slut på virtuellt minne, så ifyllning av attributtabellen har stoppats</translation>
+        <translation type="obsolete">Slut på virtuellt minne, så ifyllning av attributtabellen har stoppats</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -15912,16 +15968,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15951,11 +15997,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -15994,6 +16035,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21552,6 +21612,10 @@ Skall existerande klasser tas bort före klassificering?</translation>
     <message>
         <source>Dom Exception</source>
         <translation>DOM fel</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -4042,62 +4042,6 @@ p, li { white-space: pre-wrap; }
         <translation>รูปแบบ SVG</translation>
     </message>
     <message>
-        <source>Move Content</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Ungroup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lower</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>QGIS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4298,6 +4242,62 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">กลุ่ม</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10091,11 +10091,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">หลายชั้นข้อมูล</translation>
+        <translation type="obsolete">หลายชั้นข้อมูล</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">หัวข้อนี้มีหลายชั้นข้อมูล ไม่สามารถแสดงตารางได้</translation>
+        <translation type="obsolete">หัวข้อนี้มีหลายชั้นข้อมูล ไม่สามารถแสดงตารางได้</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -10110,7 +10110,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">ตาราง -</translation>
+        <translation type="obsolete">ตาราง -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10118,19 +10118,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">เริ่มแก้ไขล้มเหลว</translation>
+        <translation type="obsolete">เริ่มแก้ไขล้มเหลว</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">ไม่สามารถแก้ไขข้อมูลชนิดนี้ได้</translation>
+        <translation type="obsolete">ไม่สามารถแก้ไขข้อมูลชนิดนี้ได้</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">หยุดการแก้ไข</translation>
+        <translation type="obsolete">หยุดการแก้ไข</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">คุณต้องการบันทึกการเปลี่ยนแปลงหรือไม่?</translation>
+        <translation type="obsolete">คุณต้องการบันทึกการเปลี่ยนแปลงหรือไม่?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -10146,19 +10146,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">ไม่สามารถเปลี่ยนแปลงได้</translation>
+        <translation type="obsolete">ไม่สามารถเปลี่ยนแปลงได้</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">เกิดปัญหาระหว่างการคืนสภาพ</translation>
+        <translation type="obsolete">เกิดปัญหาระหว่างการคืนสภาพ</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">ไม่ใช่ชั้นข้อมูลเชิงเส้น</translation>
+        <translation type="obsolete">ไม่ใช่ชั้นข้อมูลเชิงเส้น</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">เพื่อที่จะเปิดตาราง,คุณต้องเลือกชั้นข้อมูลเชิงเส้นในกรอบสัญลักษณ์ก่อน</translation>
+        <translation type="obsolete">เพื่อที่จะเปิดตาราง,คุณต้องเลือกชั้นข้อมูลเชิงเส้นในกรอบสัญลักษณ์ก่อน</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -10226,14 +10226,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12260,16 +12252,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12299,11 +12281,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12342,6 +12319,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16914,6 +16910,10 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -4144,59 +4144,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation>Inhoud Verschuiven</translation>
+        <translation type="obsolete">Inhoud Verschuiven</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation>Onderdeel inhoud verschuiven</translation>
+        <translation type="obsolete">Onderdeel inhoud verschuiven</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>&amp;Groepeer</translation>
+        <translation type="obsolete">&amp;Groepeer</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>Groepeer onderdelen</translation>
+        <translation type="obsolete">Groepeer onderdelen</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>Groepeneren Ongedaan maken &amp;U</translation>
+        <translation type="obsolete">Groepeneren Ongedaan maken &amp;U</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>Onderdelengroepering ongedaan maken</translation>
+        <translation type="obsolete">Onderdelengroepering ongedaan maken</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Omhoog</translation>
+        <translation type="obsolete">Omhoog</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>Geselecteerde omhooghalen</translation>
+        <translation type="obsolete">Geselecteerde omhooghalen</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Omlaag</translation>
+        <translation type="obsolete">Omlaag</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation>Geselecteerde omlaaghalen</translation>
+        <translation type="obsolete">Geselecteerde omlaaghalen</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>Naar Voorgrond</translation>
+        <translation type="obsolete">Naar Voorgrond</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation>Geselecteerde onderdelen naar boven</translation>
+        <translation type="obsolete">Geselecteerde onderdelen naar boven</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>Breng naar Achtergrond</translation>
+        <translation type="obsolete">Breng naar Achtergrond</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation>Geselecteerde onderdelen naar beneden</translation>
+        <translation type="obsolete">Geselecteerde onderdelen naar beneden</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -4404,6 +4404,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation>Bijwerken</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Inhoud Verschuiven</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Onderdeel inhoud verschuiven</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Groepeer</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Groepeer onderdelen</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Onderdelengroepering ongedaan maken</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Omhoog</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Geselecteerde omhooghalen</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Omlaag</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Geselecteerde omlaaghalen</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">Naar Voorgrond</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Geselecteerde onderdelen naar boven</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">Breng naar Achtergrond</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Geselecteerde onderdelen naar beneden</translation>
     </message>
 </context>
 <context>
@@ -9624,7 +9680,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayer</name>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Meer lagen</translation>
+        <translation type="obsolete">Meer lagen</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -9652,7 +9708,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Dit item bevat meerdere lagen. Vertonen van meerdere lagen in tabel wordt niet ondersteunnd.</translation>
+        <translation type="obsolete">Dit item bevat meerdere lagen. Vertonen van meerdere lagen in tabel wordt niet ondersteunnd.</translation>
     </message>
     <message>
         <source>&amp;Zoom to best scale (100%)</source>
@@ -9675,19 +9731,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Attributentabel - </translation>
+        <translation type="obsolete">Attributentabel - </translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">bad_alloc fout</translation>
+        <translation type="obsolete">bad_alloc fout</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">&apos;Commit&apos; van de aanpassingen niet mogelijk</translation>
+        <translation type="obsolete">&apos;Commit&apos; van de aanpassingen niet mogelijk</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Wilt u de huidige aanpassingen opslaan?</translation>
+        <translation type="obsolete">Wilt u de huidige aanpassingen opslaan?</translation>
     </message>
     <message>
         <source>Driver not found</source>
@@ -9711,7 +9767,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Het vullen van de attributentabel is gestopt omdat er onvoldoende virtueel geheugen beschikbaar is</translation>
+        <translation type="obsolete">Het vullen van de attributentabel is gestopt omdat er onvoldoende virtueel geheugen beschikbaar is</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -9723,7 +9779,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Geen vectorlaag</translation>
+        <translation type="obsolete">Geen vectorlaag</translation>
     </message>
     <message>
         <source>&amp;Open attribute table</source>
@@ -9731,7 +9787,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problemen bij de &apos;roll-back&apos;</translation>
+        <translation type="obsolete">Problemen bij de &apos;roll-back&apos;</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -9739,7 +9795,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">(Data)provider kan niet voor aanpassingen worden geopend</translation>
+        <translation type="obsolete">(Data)provider kan niet voor aanpassingen worden geopend</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
@@ -9767,11 +9823,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Start aanpassen mislukt</translation>
+        <translation type="obsolete">Start aanpassen mislukt</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Stop aanpassen</translation>
+        <translation type="obsolete">Stop aanpassen</translation>
     </message>
     <message>
         <source>The shapefile could not be created (</source>
@@ -9779,7 +9835,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Om een attributentabel te openen dient u eerst een vectorlaag te selecteren in de legenda</translation>
+        <translation type="obsolete">Om een attributentabel te openen dient u eerst een vectorlaag te selecteren in de legenda</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -11603,16 +11659,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11642,11 +11688,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11685,6 +11726,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15638,6 +15698,10 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Dom Exception</source>
         <translation>DOM-fout</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

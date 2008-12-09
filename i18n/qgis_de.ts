@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="de">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
@@ -2954,7 +2953,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation>&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;QGIS wurde durch Geldspenden für Entwicklungs- und andere Projektkosten unterstützt durch&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Name</source>
@@ -2962,15 +2961,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Verfügbare QGIS-Datenlieferantenplugins</translation>
+        <translation type="obsolete">Verfügbare QGIS-Datenlieferantenplugins</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation>Verfügbare Qt-Datenbankplugins</translation>
+        <translation type="obsolete">Verfügbare Qt-Datenbankplugins</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation>Verfügbare Qt-Bildformatplugins</translation>
+        <translation type="obsolete">Verfügbare Qt-Bildformatplugins</translation>
     </message>
 </context>
 <context>
@@ -3606,59 +3605,59 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Inhalt verschieben</translation>
+        <translation type="obsolete">Inhalt verschieben</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Den Elementinhalt verschieben</translation>
+        <translation type="obsolete">Den Elementinhalt verschieben</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation type="unfinished">&amp;Gruppe</translation>
+        <translation type="obsolete">&amp;Gruppe</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Gruppenelemente</translation>
+        <translation type="obsolete">Gruppenelemente</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished">&amp;Gruppe auflösen</translation>
+        <translation type="obsolete">&amp;Gruppe auflösen</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Die Gruppe auflösen</translation>
+        <translation type="obsolete">Die Gruppe auflösen</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Hervorholen</translation>
+        <translation type="obsolete">Hervorholen</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Ausgewählte Elemente in den Vordergrund bringen</translation>
+        <translation type="obsolete">Ausgewählte Elemente in den Vordergrund bringen</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Versenken</translation>
+        <translation type="obsolete">Versenken</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Gewählte Elemente in den Hintergrund bringen</translation>
+        <translation type="obsolete">Gewählte Elemente in den Hintergrund bringen</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">In den Vordergrund holen</translation>
+        <translation type="obsolete">In den Vordergrund holen</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Gewählte Objekte in den Vordergrund verschieben</translation>
+        <translation type="obsolete">Gewählte Objekte in den Vordergrund verschieben</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">In den Hintergrund schicken</translation>
+        <translation type="obsolete">In den Hintergrund schicken</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Die ausgewählten Elemente in den Hintergrund stellen</translation>
+        <translation type="obsolete">Die ausgewählten Elemente in den Hintergrund stellen</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -3866,6 +3865,62 @@ File dialog window title</comment>
     <message>
         <source>Refresh</source>
         <translation type="unfinished">Auffrischen</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Inhalt verschieben</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Den Elementinhalt verschieben</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Gruppenelemente</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Die Gruppe auflösen</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Hervorholen</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Ausgewählte Elemente in den Vordergrund bringen</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Versenken</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Gewählte Elemente in den Hintergrund bringen</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">In den Vordergrund holen</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Gewählte Objekte in den Vordergrund verschieben</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">In den Hintergrund schicken</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Die ausgewählten Elemente in den Hintergrund stellen</translation>
     </message>
 </context>
 <context>
@@ -8804,11 +8859,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Weitere Layer</translation>
+        <translation type="obsolete">Weitere Layer</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
+        <translation type="obsolete">Dieser Eintrag enthält weitere Layerdateien. Die Anzeige von mehreren Layer in einer Tabelle wird nicht unterstützt.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -8823,7 +8878,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Attributtabelle - </translation>
+        <translation type="obsolete">Attributtabelle - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -8831,19 +8886,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Beginnen der Editierung fehlgeschlagen.</translation>
+        <translation type="obsolete">Beginnen der Editierung fehlgeschlagen.</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
+        <translation type="obsolete">Der Provider kann nicht zum Editieren geöffnet werden.</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Digitalisieren stoppen</translation>
+        <translation type="obsolete">Digitalisieren stoppen</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Sollen die Änderungen gespeichert werden?</translation>
+        <translation type="obsolete">Sollen die Änderungen gespeichert werden?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -8851,19 +8906,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Änderungen konnten nicht gespeichern werden.</translation>
+        <translation type="obsolete">Änderungen konnten nicht gespeichern werden.</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problem beim Rückgängigmachen (rollback).</translation>
+        <translation type="obsolete">Problem beim Rückgängigmachen (rollback).</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Kein Vektorlayer</translation>
+        <translation type="obsolete">Kein Vektorlayer</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
+        <translation type="obsolete">Um eine Attributetabelle zu Öffnen müssen Sie in der Legende einen Layer auswählen.</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -8923,11 +8978,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">Speicher-Fehler</translation>
+        <translation type="obsolete">Speicher-Fehler</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
+        <translation type="obsolete">Das Auffüllen der Attributtabelle wurde beendet, da kein virtueller Speicher mehr zur Verfügung steht</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -10495,13 +10550,13 @@ Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserd
     <message>
         <source>Python plugin installed.
 You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished">Python-Plugin installiert.
+        <translation type="obsolete">Python-Plugin installiert.
 Sie müssen es noch im Plugin-Manager aktivieren.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished">Python-Plugin erneut installiert.
+        <translation type="obsolete">Python-Plugin erneut installiert.
 Sie müssen Quantum GIS neustarten.</translation>
     </message>
     <message>
@@ -10539,7 +10594,7 @@ Sie müssen Quantum GIS neustarten.</translation>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage.</source>
-        <translation type="unfinished">Das benötigte Pythonmodul ist nicht installiert.
+        <translation type="obsolete">Das benötigte Pythonmodul ist nicht installiert.
 Für nähere Informationen besuchen Sie bitte seine Homepage.</translation>
     </message>
     <message>
@@ -10581,6 +10636,25 @@ Hier die Fehlermeldung:</translation>
     <message>
         <source>The plugin is broken. Python said:</source>
         <translation type="unfinished">Das Plugin ist defekt.  Python meldete:</translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14253,6 +14327,10 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <source>Dom Exception</source>
         <translation type="unfinished">Dom-Ausnahme</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
