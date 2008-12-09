@@ -2570,7 +2570,7 @@ Toggle fullscreen mode</comment>
     </message>
     <message>
         <source>Improvements to unique value renderer vector dialog</source>
-        <translation type="unfinished">Verbesserungen am Dialog für Bezeichnungen nach eindeutigen Werten.</translation>
+        <translation type="unfinished">Verbesserungen am Dialog zur Darstellung nach eindeutigen Werten.</translation>
     </message>
     <message>
         <source>Symbol previews when defining vector classes</source>
@@ -5950,7 +5950,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Download from GPS</source>
-        <translation>Von GPS herunterladen</translation>
+        <translation>Vom GPS herunterladen</translation>
     </message>
     <message>
         <source>Edit devices</source>
@@ -5970,7 +5970,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Upload to GPS</source>
-        <translation>nach GPS hochladen</translation>
+        <translation>Zum GPS hochladen</translation>
     </message>
     <message>
         <source>Data layer:</source>
@@ -6659,7 +6659,7 @@ Column title</comment>
     </message>
     <message>
         <source>Symbology</source>
-        <translation>Bezeichnungen</translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <source>Column 1</source>
@@ -12094,7 +12094,7 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <source>Symbology</source>
-        <translation>Bezeichnungen</translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</source>
@@ -13879,7 +13879,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>Symbology</source>
-        <translation>Bezeichnungen</translation>
+        <translation>Darstellung</translation>
     </message>
     <message>
         <source>General</source>
