@@ -1087,7 +1087,7 @@ void QgsVectorLayer::updateExtents()
   if ( !mDataProvider )
     QgsLogger::warning( " QgsVectorLayer::updateExtents() invoked with null mDataProvider" );
 
-  if ( mDeletedFeatureIds.isEmpty() )
+  if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
   {
     // get the extent of the layer from the provider
     // but only when there are some features already
