@@ -3142,59 +3142,55 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposer</name>
     <message>
         <source>Move Content</source>
-        <translation>შიგთავსის გადატანა</translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">შიგთავსის გადატანა</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>ჯ&amp;გუფი</translation>
+        <translation type="obsolete">ჯ&amp;გუფი</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>ელემენტების დაჯგუფება</translation>
+        <translation type="obsolete">ელემენტების დაჯგუფება</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>განჯგ&amp;უფვა</translation>
+        <translation type="obsolete">განჯგ&amp;უფვა</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>ელემენტების განჯგუფვა</translation>
+        <translation type="obsolete">ელემენტების განჯგუფვა</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>ამოწევა</translation>
+        <translation type="obsolete">ამოწევა</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>არჩეული ელემენტების ამოწევა</translation>
+        <translation type="obsolete">არჩეული ელემენტების ამოწევა</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>ჩაწევა</translation>
+        <translation type="obsolete">ჩაწევა</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation>არჩეული ელემენების ჩაწევა</translation>
+        <translation type="obsolete">არჩეული ელემენების ჩაწევა</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>წინ გამოტანა</translation>
+        <translation type="obsolete">წინ გამოტანა</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation>არჩეული ელემენტების წინ გამოტანა</translation>
+        <translation type="obsolete">არჩეული ელემენტების წინ გამოტანა</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>უკან გადატანა</translation>
+        <translation type="obsolete">უკან გადატანა</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation>არჩეული ელემენტების უკან გადატანა</translation>
+        <translation type="obsolete">არჩეული ელემენტების უკან გადატანა</translation>
     </message>
     <message>
         <source>QGIS - print composer</source>
@@ -3419,6 +3415,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add Image</source>
         <translation>გამოსახულების დამატება</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">შიგთავსის გადატანა</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">ჯგუფი</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">ელემენტების დაჯგუფება</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">ელემენტების განჯგუფვა</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">ამოწევა</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">არჩეული ელემენტების ამოწევა</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">ჩაწევა</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">არჩეული ელემენების ჩაწევა</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">წინ გამოტანა</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">არჩეული ელემენტების წინ გამოტანა</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">უკან გადატანა</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">არჩეული ელემენტების უკან გადატანა</translation>
     </message>
 </context>
 <context>
@@ -7864,14 +7916,6 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>More layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
@@ -7953,47 +7997,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">არაა ვექტორული ფენა</translation>
-    </message>
-    <message>
-        <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">არაა ვექტორული ფენა</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">ატრიბუტების ცხრილი -</translation>
-    </message>
-    <message>
-        <source>Start editing failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ატრიბუტების ცხრილი -</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">რედაქტირების შეწყვეტა</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Problems during roll back</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">რედაქტირების შეწყვეტა</translation>
     </message>
 </context>
 <context>
@@ -9473,11 +9485,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
@@ -9582,17 +9589,7 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -9633,6 +9630,25 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13195,6 +13211,10 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

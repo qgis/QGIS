@@ -3740,59 +3740,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Presunúť obsah</translation>
+        <translation type="obsolete">Presunúť obsah</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Presunúť obsah položiek</translation>
+        <translation type="obsolete">Presunúť obsah položiek</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation type="unfinished">&amp;Zoskupiť</translation>
+        <translation type="obsolete">&amp;Zoskupiť</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Zoskupiť položky</translation>
+        <translation type="obsolete">Zoskupiť položky</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation type="unfinished">Zr&amp;ušiť zoskupenie</translation>
+        <translation type="obsolete">Zr&amp;ušiť zoskupenie</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Zrušiť zoskupenie položiek</translation>
+        <translation type="obsolete">Zrušiť zoskupenie položiek</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Zdivhnúť</translation>
+        <translation type="obsolete">Zdivhnúť</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Posunúť položky vyššie</translation>
+        <translation type="obsolete">Posunúť položky vyššie</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Nižšie</translation>
+        <translation type="obsolete">Nižšie</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Posunúť položky nižšie</translation>
+        <translation type="obsolete">Posunúť položky nižšie</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">Preniesť dopredu</translation>
+        <translation type="obsolete">Preniesť dopredu</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Preniesť vybrané položky navrch</translation>
+        <translation type="obsolete">Preniesť vybrané položky navrch</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">Presniesť dozadu</translation>
+        <translation type="obsolete">Presniesť dozadu</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Preniesť vybrané položky naspodok</translation>
+        <translation type="obsolete">Preniesť vybrané položky naspodok</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -4000,6 +4000,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation type="unfinished">Obnoviť</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">Presunúť obsah</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Presunúť obsah položiek</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Skupina</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Zoskupiť položky</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Zrušiť zoskupenie položiek</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Zdivhnúť</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Posunúť položky vyššie</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Nižšie</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Posunúť položky nižšie</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">Preniesť dopredu</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Preniesť vybrané položky navrch</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">Presniesť dozadu</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Preniesť vybrané položky naspodok</translation>
     </message>
 </context>
 <context>
@@ -9325,11 +9381,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Viac vrstiev</translation>
+        <translation type="obsolete">Viac vrstiev</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Táto položka obsahuje viac súborov s vrstvami. Zobrazenie viacerých vrstiev v tabuľke nie je podporované.</translation>
+        <translation type="obsolete">Táto položka obsahuje viac súborov s vrstvami. Zobrazenie viacerých vrstiev v tabuľke nie je podporované.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -9344,15 +9400,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Nie je vektorová vrstva</translation>
+        <translation type="obsolete">Nie je vektorová vrstva</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
+        <translation type="obsolete">Pred otvorením tabuľky atribútov je nutné vybrať vrstvu v okne Legenda</translation>
     </message>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Tabuľka atribútov -</translation>
+        <translation type="obsolete">Tabuľka atribútov -</translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -9392,27 +9448,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Pokus o úpravy zlyhal</translation>
+        <translation type="obsolete">Pokus o úpravy zlyhal</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Správca sa nedá otvoriť pre zápis</translation>
+        <translation type="obsolete">Správca sa nedá otvoriť pre zápis</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Ukončiť úpravy</translation>
+        <translation type="obsolete">Ukončiť úpravy</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Prajete si uložiť zmeny?</translation>
+        <translation type="obsolete">Prajete si uložiť zmeny?</translation>
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Nemožno odoslať zmeny </translation>
+        <translation type="obsolete">Nemožno odoslať zmeny </translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
+        <translation type="obsolete">Problémy v priebehu návratu do východzieho stavu (roll back)</translation>
     </message>
     <message>
         <source>&amp;Zoom to layer extent</source>
@@ -9444,11 +9500,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">výnimka bad_alloc</translation>
+        <translation type="obsolete">výnimka bad_alloc</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Naplnenie tabuľky atribútov bolo zastavené, pretože už nebol dostatok virtuálnej pamäte</translation>
+        <translation type="obsolete">Naplnenie tabuľky atribútov bolo zastavené, pretože už nebol dostatok virtuálnej pamäte</translation>
     </message>
     <message>
         <source>Layer attribute table contains unsupported datatype(s)</source>
@@ -11227,16 +11283,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11266,11 +11312,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11309,6 +11350,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15191,6 +15251,10 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
     <message>
         <source>Dom Exception</source>
         <translation type="unfinished">Výnimka DOM</translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

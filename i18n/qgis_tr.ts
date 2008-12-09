@@ -4634,59 +4634,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation>İçeriği Taşı</translation>
+        <translation type="obsolete">İçeriği Taşı</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation>Öğe içeriğini taşı</translation>
+        <translation type="obsolete">Öğe içeriğini taşı</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>&amp;Grup</translation>
+        <translation type="obsolete">&amp;Grup</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation>Öğeleri grupla</translation>
+        <translation type="obsolete">Öğeleri grupla</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>&amp;Grubu çöz</translation>
+        <translation type="obsolete">&amp;Grubu çöz</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation>Öğe grubunu çöz</translation>
+        <translation type="obsolete">Öğe grubunu çöz</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation>Üste çıkar</translation>
+        <translation type="obsolete">Üste çıkar</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation>Seçilen öğeleri üste çıkar</translation>
+        <translation type="obsolete">Seçilen öğeleri üste çıkar</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation>Alta gönder</translation>
+        <translation type="obsolete">Alta gönder</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation>Seçilen öğeleri alta gönder</translation>
+        <translation type="obsolete">Seçilen öğeleri alta gönder</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation>Öne getir</translation>
+        <translation type="obsolete">Öne getir</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation>Seçilen öğeleri üste çıkar</translation>
+        <translation type="obsolete">Seçilen öğeleri üste çıkar</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation>Arkaya Gönder</translation>
+        <translation type="obsolete">Arkaya Gönder</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation>Seçilen öğeleri alta gönder</translation>
+        <translation type="obsolete">Seçilen öğeleri alta gönder</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -4894,6 +4894,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Refresh</source>
         <translation>Tazele</translation>
+    </message>
+    <message>
+        <source>Move Content</source>
+        <translation type="unfinished">İçeriği Taşı</translation>
+    </message>
+    <message>
+        <source>Move item content</source>
+        <translation type="unfinished">Öğe içeriğini taşı</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">Grup</translation>
+    </message>
+    <message>
+        <source>Group items</source>
+        <translation type="unfinished">Öğeleri grupla</translation>
+    </message>
+    <message>
+        <source>Ungroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ungroup items</source>
+        <translation type="unfinished">Öğe grubunu çöz</translation>
+    </message>
+    <message>
+        <source>Raise</source>
+        <translation type="unfinished">Üste çıkar</translation>
+    </message>
+    <message>
+        <source>Raise selected items</source>
+        <translation type="unfinished">Seçilen öğeleri üste çıkar</translation>
+    </message>
+    <message>
+        <source>Lower</source>
+        <translation type="unfinished">Alta gönder</translation>
+    </message>
+    <message>
+        <source>Lower selected items</source>
+        <translation type="unfinished">Seçilen öğeleri alta gönder</translation>
+    </message>
+    <message>
+        <source>Bring to Front</source>
+        <translation type="unfinished">Öne getir</translation>
+    </message>
+    <message>
+        <source>Move selected items to top</source>
+        <translation type="unfinished">Seçilen öğeleri üste çıkar</translation>
+    </message>
+    <message>
+        <source>Send to Back</source>
+        <translation type="unfinished">Arkaya Gönder</translation>
+    </message>
+    <message>
+        <source>Move selected items to bottom</source>
+        <translation type="unfinished">Seçilen öğeleri alta gönder</translation>
     </message>
 </context>
 <context>
@@ -10519,11 +10575,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>More layers</source>
-        <translation type="unfinished">Daha çok katman</translation>
+        <translation type="obsolete">Daha çok katman</translation>
     </message>
     <message>
         <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="unfinished">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
+        <translation type="obsolete">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
     </message>
     <message>
         <source>Multiple layers</source>
@@ -10538,7 +10594,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLegendLayerFile</name>
     <message>
         <source>Attribute table - </source>
-        <translation type="unfinished">Öznitelik Tablosu - </translation>
+        <translation type="obsolete">Öznitelik Tablosu - </translation>
     </message>
     <message>
         <source>Save layer as...</source>
@@ -10546,19 +10602,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start editing failed</source>
-        <translation type="unfinished">Düzeltmeyi başlatmada hata</translation>
+        <translation type="obsolete">Düzeltmeyi başlatmada hata</translation>
     </message>
     <message>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
+        <translation type="obsolete">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
     </message>
     <message>
         <source>Stop editing</source>
-        <translation type="unfinished">Düzeltmeyi durdur</translation>
+        <translation type="obsolete">Düzeltmeyi durdur</translation>
     </message>
     <message>
         <source>Do you want to save the changes?</source>
-        <translation type="unfinished">Değişikliklerin kaydedilmesini istermisiniz?</translation>
+        <translation type="obsolete">Değişikliklerin kaydedilmesini istermisiniz?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -10574,19 +10630,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not commit changes</source>
-        <translation type="unfinished">Değişiklikler henüz kabul edilmedi</translation>
+        <translation type="obsolete">Değişiklikler henüz kabul edilmedi</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
-        <translation type="unfinished">Geri almada hata</translation>
+        <translation type="obsolete">Geri almada hata</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Vektör katman değil</translation>
+        <translation type="obsolete">Vektör katman değil</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
+        <translation type="obsolete">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
     </message>
     <message>
         <source>Saving done</source>
@@ -10654,14 +10710,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12666,16 +12714,6 @@ Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll fi
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin installed.
-You have to enable it in the Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You have to restart Quantum GIS to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin uninstall failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12705,11 +12743,6 @@ You have to restart Quantum GIS to reload it.</source>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -12748,6 +12781,25 @@ Here is the error message:</source>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17218,6 +17270,10 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
