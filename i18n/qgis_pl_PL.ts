@@ -3477,11 +3477,6 @@ Błędy:  %2
         <source>Maptips require an active layer</source>
         <translation>Podpowiedzi mapy wymagają aktywnej warstwy</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2944"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -14215,6 +14210,16 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="437"/>
+        <source>Note: Minimum Maximum values are estimates or user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="441"/>
+        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
