@@ -2920,6 +2920,9 @@ bool QgisApp::addProject( QString projectFile )
       mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
       QgsDebugMsg( "Canvas background color restored..." );
 
+      mMapCanvas->updateScale();
+      QgsDebugMsg( "Scale restored..." );
+
       emit projectRead(); // let plug-ins know that we've read in a new
       // project so that they can check any project
       // specific plug-in state
