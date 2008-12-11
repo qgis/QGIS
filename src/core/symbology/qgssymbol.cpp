@@ -484,11 +484,11 @@ int QgsSymbol::readFieldName( QDomNode &synode, QString name, const QgsVectorLay
     const QgsFieldMap &fields = vl.pendingFields();
     QString name = node.toElement().text();
 
-    int i;
-    for ( i = 0; i < fields.size() && fields[i].name() != name; i++ )
-      ;
+    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+      if( it->name() == name )
+        return it.key();
 
-    return i < fields.size() ? i : -1;
+    return -1;
   }
 
   node = synode.namedItem( name );
