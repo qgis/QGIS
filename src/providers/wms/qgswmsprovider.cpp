@@ -379,14 +379,16 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
     crsKey = "CRS";
   }
 
+  QString url;
   std::vector<QgsWmsDcpTypeProperty> dcpType = mCapabilities.capability.request.getMap.dcpType;
   if(dcpType.size() < 1)
   {
-    mError = tr("Could not determine URL for GetMap from the WMS capabilities response");
-    return 0;
+    url = baseUrl;
   }
-
-  QString url = prepareUri( dcpType.front().http.get.onlineResource.xlinkHref );
+  else
+  {
+    url = prepareUri( dcpType.front().http.get.onlineResource.xlinkHref );
+  }
 
   url += "SERVICE=WMS";
   url += "&";
