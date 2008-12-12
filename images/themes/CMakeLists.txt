@@ -1,2 +1,2 @@
 
-SUBDIRS (default nkids classic)
+SUBDIRS (default nkids classic gis)
