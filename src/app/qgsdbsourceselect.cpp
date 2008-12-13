@@ -38,6 +38,8 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <iostream>
 
+#include <pg_config.h>
+
 QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
 {
@@ -386,8 +388,13 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
 
   pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
+#if defined(PG_VERSION_NUM) && PG_VERSION_NUM >= 80300
   // if the connection needs a password ask for one
   if ( PQstatus( pd ) == CONNECTION_BAD && PQconnectionNeedsPassword( pd ) )
+#else
+  // if the connection failed and we didn't have a password, ask for one and retry
+  if ( PQstatus( pd ) == CONNECTION_BAD && password.isEmpty() )
+#endif
   {
     // get password from user
     bool makeConnection = false;
