@@ -374,8 +374,6 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //
   QVBoxLayout * mypOuterLayout = new QVBoxLayout( mParent );
   mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-  //transfers layout ownership so no need to call delete
-  this->setLayout( mypOuterLayout );
   QScrollArea * mypScrollArea = new QScrollArea();
   //transfers scroll area ownership so no need to call delete
   mypOuterLayout->addWidget( mypScrollArea );
