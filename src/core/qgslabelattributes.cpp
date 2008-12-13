@@ -70,7 +70,7 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
 
     setOffset( 0, 0, PointUnits );
     setAngle( 0 );
-    setAutoAngle(false);
+    setAutoAngle( false );
 
     setAlignment( Qt::AlignCenter );
     setColor( QColor( 0, 0, 0 ) );
@@ -157,7 +157,7 @@ bool QgsLabelAttributes::angleIsAuto() const
   return mAngleIsAuto;
 }
 
-void QgsLabelAttributes::setAutoAngle ( bool state )
+void QgsLabelAttributes::setAutoAngle( bool state )
 {
   mAngleIsAuto = state;
 }

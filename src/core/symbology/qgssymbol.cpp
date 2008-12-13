@@ -485,7 +485,7 @@ int QgsSymbol::readFieldName( QDomNode &synode, QString name, const QgsVectorLay
     QString name = node.toElement().text();
 
     for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
-      if( it->name() == name )
+      if ( it->name() == name )
         return it.key();
 
     return -1;

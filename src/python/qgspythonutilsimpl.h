@@ -113,7 +113,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     void installErrorHook();
 
     void uninstallErrorHook();
-    
+
     QString getTraceback();
 
     //! reference to module __main__

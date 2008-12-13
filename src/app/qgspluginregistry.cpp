@@ -152,44 +152,44 @@ void QgsPluginRegistry::unloadAll()
 }
 
 
-bool QgsPluginRegistry::checkQgisVersion(QString minVersion)
+bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
 {
-  QStringList minVersionParts = minVersion.split('.');
+  QStringList minVersionParts = minVersion.split( '.' );
   // qgis version must be in form x.y.z or just x.y
-  if (minVersionParts.count() != 2 && minVersionParts.count() != 3)
+  if ( minVersionParts.count() != 2 && minVersionParts.count() != 3 )
     return false;
-  
-  int minVerMajor, minVerMinor, minVerBugfix=0;
+
+  int minVerMajor, minVerMinor, minVerBugfix = 0;
   bool ok;
-  minVerMajor = minVersionParts.at(0).toInt(&ok);
-  if (!ok) return false;
-  minVerMinor = minVersionParts.at(1).toInt(&ok);
-  if (!ok) return false;
-  if (minVersionParts.count() == 3)
+  minVerMajor = minVersionParts.at( 0 ).toInt( &ok );
+  if ( !ok ) return false;
+  minVerMinor = minVersionParts.at( 1 ).toInt( &ok );
+  if ( !ok ) return false;
+  if ( minVersionParts.count() == 3 )
   {
-    minVerBugfix = minVersionParts.at(2).toInt(&ok);
-    if (!ok) return false;
+    minVerBugfix = minVersionParts.at( 2 ).toInt( &ok );
+    if ( !ok ) return false;
   }
-  
+
   // our qgis version - cut release name after version number
-  QString qgisVersion = QString(QGis::QGIS_VERSION).section( '-', 0, 0 );
+  QString qgisVersion = QString( QGis::QGIS_VERSION ).section( '-', 0, 0 );
   QStringList qgisVersionParts = qgisVersion.split( "." );
 
   int qgisMajor = qgisVersionParts.at( 0 ).toInt();
   int qgisMinor = qgisVersionParts.at( 1 ).toInt();
-  int qgisBugfix= qgisVersionParts.at( 2 ).toInt();
+  int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
   // first check major version
-  if (minVerMajor > qgisMajor) return false;
-  if (minVerMajor < qgisMajor) return true;
-  
+  if ( minVerMajor > qgisMajor ) return false;
+  if ( minVerMajor < qgisMajor ) return true;
+
   // if same, check minor version
-  if (minVerMinor > qgisMinor) return false;
-  if (minVerMinor < qgisMinor) return true;
-  
+  if ( minVerMinor > qgisMinor ) return false;
+  if ( minVerMinor < qgisMinor ) return true;
+
   // if still same, check bugfix version
-  if (minVerBugfix > qgisBugfix) return false;
-  
+  if ( minVerBugfix > qgisBugfix ) return false;
+
   // looks like min version is the same as our version - that's fine
   return true;
 }
@@ -202,7 +202,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     QgsDebugMsg( "Python is not enabled in QGIS." );
     return;
   }
-  
+
   QSettings settings;
 
   // is loaded already?
@@ -214,12 +214,12 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
       settings.setValue( "/PythonPlugins/" + packageName, false );
       return;
     }
-    
+
     mPythonUtils->loadPlugin( packageName );
     mPythonUtils->startPlugin( packageName );
 
     // TODO: test success
-    
+
     QString pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
 
     // add to plugin registry
@@ -228,7 +228,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
     std::cout << "Loaded : " << pluginName.toLocal8Bit().constData() << " (package: "
-        << packageName.toLocal8Bit().constData() << ")" << std::endl; // OK
+              << packageName.toLocal8Bit().constData() << ")" << std::endl; // OK
 
   }
 }
@@ -247,7 +247,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
     // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
     return;
   }
-    
+
   QLibrary myLib( theFullPathName );
 
   QString myError; //we will only show detailed diagnostics if something went wrong
@@ -259,7 +259,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
     QgsDebugMsg( "Failed to load " + theFullPathName );
     return;
   }
-    
+
   myError += "Attempting to resolve the classFactory function " +  QString( __LINE__ ) + " in " + QString( __FUNCTION__ ) + "\n";
 
   type_t *pType = ( type_t * ) cast_to_fptr( myLib.resolve( "type" ) );
@@ -288,8 +288,8 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           // something went wrong
           QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
                                 QObject::tr( "There was an error loading a plugin."
-              "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." ).arg
-                  ( myError ) );
+                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." ).arg
+                                ( myError ) );
           //disable it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, false );
         }
@@ -326,7 +326,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
   for ( uint i = 0; i < myPluginDir.count(); i++ )
   {
     QString myFullPath = thePluginDirString + "/" + myPluginDir[i];
-    if (checkCppPlugin( myFullPath ) )
+    if ( checkCppPlugin( myFullPath ) )
     {
       // check if the plugin was active on last session
 
@@ -337,18 +337,18 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
       }
     }
   }
-  
+
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // check for python plugins system-wide
     QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsg("Loading python plugins");
+    QgsDebugMsg( "Loading python plugins" );
 
     for ( int i = 0; i < pluginList.size(); i++ )
     {
       QString packageName = pluginList[i];
-      
-      if (checkPythonPlugin( packageName ) )
+
+      if ( checkPythonPlugin( packageName ) )
       {
         // check if the plugin was active on last session
 
@@ -360,9 +360,9 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     }
   }
 
-  QgsDebugMsg("Plugin loading completed");
+  QgsDebugMsg( "Plugin loading completed" );
 }
-  
+
 
 bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
 {
@@ -378,14 +378,14 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
   name_t * myName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
   description_t *  myDescription = ( description_t * )  cast_to_fptr( myLib.resolve( "description" ) );
   version_t *  myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
-  
+
   if ( myName && myDescription  && myVersion )
     return true;
-      
-  QgsDebugMsg("Failed to get name, description, or type for " + myLib.fileName());
+
+  QgsDebugMsg( "Failed to get name, description, or type for " + myLib.fileName() );
   return false;
 }
-    
+
 
 bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
 {
@@ -394,7 +394,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
     return false;
 
   QString pluginName, description, version;
-  
+
   // get information from the plugin
   // if there are some problems, don't continue with metadata retreival
   pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
@@ -411,14 +411,14 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
                           QObject::tr( "Error when reading metadata of plugin " ) + packageName );
     return false;
   }
-  
+
   return true;
 }
 
 bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
-  if (minVersion == "__error__" || !checkQgisVersion(minVersion))
+  if ( minVersion == "__error__" || !checkQgisVersion( minVersion ) )
   {
     //QMessageBox::information(mQgisInterface->mainWindow(),
     //   QObject::tr("Incompatible plugin"),

@@ -203,8 +203,8 @@ void QgsLabelDialog::init( )
     spinYOffset->setValue( 0 );
   }
   spinAngle->setRange( -1, 360 );
-  spinAngle->setSpecialValueText( tr("Auto") );
-  if( myLabelAttributes->angleIsAuto() )
+  spinAngle->setSpecialValueText( tr( "Auto" ) );
+  if ( myLabelAttributes->angleIsAuto() )
   {
     spinAngle->setValue( -1 );
   }
@@ -256,7 +256,7 @@ void QgsLabelDialog::init( )
   spinBufferSize->setValue( static_cast<int>( myLabelAttributes->bufferSize() ) );
   //TODO - transparency attributes for buffers
 
-  listWidget->setItemSelected( listWidget->item(0), true);
+  listWidget->setItemSelected( listWidget->item( 0 ), true );
 }
 
 
@@ -352,7 +352,7 @@ void QgsLabelDialog::apply()
   myLabelAttributes->setOffset( spinXOffset->value(), spinYOffset->value(), myTypeInt );
   myLabelAttributes->setAutoAngle( spinAngle->value() == -1 );
   myLabelAttributes->setAngle( spinAngle->value() );
-  
+
   //the values here may seem a bit counterintuitive - basically everything
   //is the reverse of the way you think it should be...
   //TODO investigate in QgsLabel why this needs to be the case

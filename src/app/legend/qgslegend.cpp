@@ -156,7 +156,7 @@ void QgsLegend::removeLayer( QString layer_key )
 
   QTreeWidgetItem* theItem = firstItem();
   QgsDebugMsg( "called." );
-  
+
   QgsLegendLayer* lastLL = NULL;
 
   while ( theItem )
@@ -177,15 +177,15 @@ void QgsLegend::removeLayer( QString layer_key )
           mStateOfCheckBoxes.erase( llf );
           removeItem( llf );
           delete llf;
-          
+
           // delete also parent legend layer if now it's empty
-          if (lastLL->mapLayers().size() == 0)
+          if ( lastLL->mapLayers().size() == 0 )
           {
             mStateOfCheckBoxes.erase( lastLL );
             removeItem( lastLL );
             delete lastLL;
           }
-          
+
           break;
         }
       }
@@ -637,7 +637,7 @@ void QgsLegend::legendLayerRemove()
       }
     }
 
-    if (layerCount == 0)
+    if ( layerCount == 0 )
     {
       // delete the item only when it didn't have any child legend layer files
       // (otherwise it is deleted in QgsLegend::removeLayer when deleting last legend layer file)
@@ -645,7 +645,7 @@ void QgsLegend::legendLayerRemove()
       removeItem( ll );
       delete ll;
     }
-    
+
     adjustIconSize();
     return;
   }

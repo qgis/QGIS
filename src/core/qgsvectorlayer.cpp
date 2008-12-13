@@ -1164,7 +1164,7 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
   // remove all attributes that will disappear
   const QgsAttributeMap &map = f.attributeMap();
   for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
-    if( !mUpdatedFields.contains( it.key() ) )
+    if ( !mUpdatedFields.contains( it.key() ) )
       f.deleteAttribute( it.key() );
 
   // null/add all attributes that were added, but don't exist in the feature yet
@@ -2641,7 +2641,7 @@ bool QgsVectorLayer::commitChanges()
   {
     QgsNewAttributesMap addedAttributes;
     for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
-      addedAttributes[ mUpdatedFields[ *it ].name() ] = mUpdatedFields[ *it ].typeName();
+      addedAttributes[ mUpdatedFields[ *it ].name()] = mUpdatedFields[ *it ].typeName();
 
     if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
     {
@@ -2666,7 +2666,7 @@ bool QgsVectorLayer::commitChanges()
     QMap<int, QString> src;
     for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
     {
-      src[ it.key() ] = it.value().name();
+      src[ it.key()] = it.value().name();
     }
 
     int maxAttrIdx = -1;
@@ -2676,7 +2676,7 @@ bool QgsVectorLayer::commitChanges()
     QMap<QString, int> dst;
     for ( QgsFieldMap::const_iterator it = pFields.begin(); it != pFields.end(); it++ )
     {
-      dst[ it.value().name() ] = it.key();
+      dst[ it.value().name()] = it.key();
       if ( it.key() > maxAttrIdx )
         maxAttrIdx = it.key();
     }

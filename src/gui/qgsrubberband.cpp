@@ -178,14 +178,14 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       mIsPolygon = true;
       double d = mMapCanvas->extent().width() * 0.005;
       QgsPoint pt;
-      if(layer)
-	{
-	  pt = mr->layerToMapCoordinates( layer, geom->asPoint() );
-	}
+      if ( layer )
+      {
+        pt = mr->layerToMapCoordinates( layer, geom->asPoint() );
+      }
       else
-	{
-	  pt = geom->asPoint();
-	}
+      {
+        pt = geom->asPoint();
+      }
       addPoint( QgsPoint( pt.x() - d, pt.y() - d ) );
       addPoint( QgsPoint( pt.x() + d, pt.y() - d ) );
       addPoint( QgsPoint( pt.x() + d, pt.y() + d ) );
@@ -202,20 +202,20 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       for ( int i = 0; i < mpt.size(); ++i )
       {
         QgsPoint pt = mpt[i];
-	if(layer)
-	  {
-	    addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ) );
-	    addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ) );
-	    addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ) );
-	    addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ) );
-	  }
-	else
-	  {
-	    addPoint(QgsPoint( pt.x() - d, pt.y() - d ) );
-	    addPoint(QgsPoint( pt.x() + d, pt.y() - d ) );
-	    addPoint(QgsPoint( pt.x() + d, pt.y() + d ) );
-	    addPoint(QgsPoint( pt.x() - d, pt.y() + d ) );
-	  }
+        if ( layer )
+        {
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ) );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ) );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ) );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ) );
+        }
+        else
+        {
+          addPoint( QgsPoint( pt.x() - d, pt.y() - d ) );
+          addPoint( QgsPoint( pt.x() + d, pt.y() - d ) );
+          addPoint( QgsPoint( pt.x() + d, pt.y() + d ) );
+          addPoint( QgsPoint( pt.x() - d, pt.y() + d ) );
+        }
       }
     }
     break;
@@ -227,14 +227,14 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       QgsPolyline line = geom->asPolyline();
       for ( int i = 0; i < line.count(); i++ )
       {
-	if(layer)
-	  {
-	    addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
-	  }
-	else
-	  {
-	    addPoint(line[i]);
-	  }
+        if ( layer )
+        {
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
+        }
+        else
+        {
+          addPoint( line[i] );
+        }
       }
     }
     break;
@@ -253,14 +253,14 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         QgsPolyline line = mline[i];
         for ( int j = 0; j < line.size(); ++j )
         {
-	  if(layer)
-	    {
-	      addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
-	    }
-	  else
-	    {
-	      addPoint(line[j]);
-	    }
+          if ( layer )
+          {
+            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
+          }
+          else
+          {
+            addPoint( line[j] );
+          }
         }
       }
     }
@@ -274,14 +274,14 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       QgsPolyline line = poly[0];
       for ( int i = 0; i < line.count(); i++ )
       {
-	if(layer)
-	  {
-	    addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
-	  }
-	else
-	  {
-	    addPoint(line[i]);
-	  }
+        if ( layer )
+        {
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
+        }
+        else
+        {
+          addPoint( line[i] );
+        }
       }
     }
     break;
@@ -301,14 +301,14 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         QgsPolyline line = poly[0];
         for ( int j = 0; j < line.count(); ++j )
         {
-	  if(layer)
-	    {
-	      addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
-	    }
-	  else
-	    {
-	      addPoint(line[j]);
-	    }
+          if ( layer )
+          {
+            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
+          }
+          else
+          {
+            addPoint( line[j] );
+          }
         }
       }
     }

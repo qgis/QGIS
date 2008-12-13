@@ -87,7 +87,7 @@ class CORE_EXPORT QgsSnapper
       /**What snapping type to use (snap to segment or to vertex)*/
       QgsSnapper::SnappingType mSnapTo;
     };
-    
+
     QgsSnapper( QgsMapRenderer* mapRender );
     ~QgsSnapper();
     /**Does the snapping operation

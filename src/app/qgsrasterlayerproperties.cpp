@@ -434,11 +434,11 @@ void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 
   if ( myEstimatedValues )
   {
-    lblMinMaxEstimateWarning->setText( tr("Note: Minimum Maximum values are estimates or user defined") );
+    lblMinMaxEstimateWarning->setText( tr( "Note: Minimum Maximum values are estimates or user defined" ) );
   }
   else
   {
-    lblMinMaxEstimateWarning->setText( tr("Note: Minimum Maximum values are actual values computed from the band(s)") );
+    lblMinMaxEstimateWarning->setText( tr( "Note: Minimum Maximum values are actual values computed from the band(s)" ) );
   }
 }
 

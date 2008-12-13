@@ -283,35 +283,35 @@ void QgsComposerScaleBarWidget::on_mStyleComboBox_currentIndexChanged( const QSt
   }
 
   QString untranslatedStyleName;
-  if(text == tr("Single Box"))
+  if ( text == tr( "Single Box" ) )
   {
     untranslatedStyleName = "Single Box";
-   }
-  else if(text == tr("Double Box"))
-  {
-     untranslatedStyleName =  "Double Box";
   }
-  else if(text == tr( "Line Ticks Middle" ))
+  else if ( text == tr( "Double Box" ) )
   {
-      untranslatedStyleName = "Line Ticks Middle";
+    untranslatedStyleName =  "Double Box";
   }
-  else if(text == tr("Line Ticks Middle"))
+  else if ( text == tr( "Line Ticks Middle" ) )
   {
-      untranslatedStyleName = "Line Ticks Middle";
+    untranslatedStyleName = "Line Ticks Middle";
   }
-  else if(text == tr( "Line Ticks Down" ))
+  else if ( text == tr( "Line Ticks Middle" ) )
   {
-      untranslatedStyleName = "Line Ticks Down";
+    untranslatedStyleName = "Line Ticks Middle";
   }
-  else if(text == tr( "Line Ticks Up"))
+  else if ( text == tr( "Line Ticks Down" ) )
   {
-     untranslatedStyleName =  "Line Ticks Up";
+    untranslatedStyleName = "Line Ticks Down";
   }
-  else if(text == tr( "Numeric"))
+  else if ( text == tr( "Line Ticks Up" ) )
   {
-     untranslatedStyleName =  "Numeric";
+    untranslatedStyleName =  "Line Ticks Up";
   }
-  mComposerScaleBar->setStyle(untranslatedStyleName);
+  else if ( text == tr( "Numeric" ) )
+  {
+    untranslatedStyleName =  "Numeric";
+  }
+  mComposerScaleBar->setStyle( untranslatedStyleName );
   mComposerScaleBar->update();
 }
 
