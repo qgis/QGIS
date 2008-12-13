@@ -257,36 +257,6 @@
         </item>
         <item>
          <widget class="QComboBox" name="cmbMapUnits" >
-          <item>
-           <property name="text" >
-            <string>dd</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>feet</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>meters</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>miles</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>inches</string>
-           </property>
-          </item>
-          <item>
-           <property name="text" >
-            <string>kilometers</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item>

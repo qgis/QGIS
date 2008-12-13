@@ -323,11 +323,11 @@ class Qgis2Map:
         # it's a postgis layer
         (pgConnString, sqlData, sqlFilter) = self.parsePostgisConnection(dataString)
         layer_def += "    CONNECTIONTYPE postgis\n"
-        layer_def += "    CONNECTION '" + pgConnString + "'\n"
-        layer_def += "    DATA '" + sqlData + "'\n"
+        layer_def += "    CONNECTION \"" + pgConnString + "\"\n"
+        layer_def += "    DATA \"" + sqlData + "\"\n"
         # don't write the filter keyword if there isn't one
         if sqlFilter:
-          layer_def += "    FILTER '" + sqlFilter + "'\n"
+          layer_def += "    FILTER \"" + sqlFilter + "\"\n"
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
