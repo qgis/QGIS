@@ -83,7 +83,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QObject, public QgsComposerItem
     void applyDefaultSettings();
 
     /**Sets style by name
-     possibilities are: */
+     @param styleName (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*/
     void setStyle( const QString& styleName );
 
     /**Returns style name*/
