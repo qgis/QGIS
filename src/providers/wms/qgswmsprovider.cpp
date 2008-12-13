@@ -381,7 +381,7 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
 
   QString url;
   std::vector<QgsWmsDcpTypeProperty> dcpType = mCapabilities.capability.request.getMap.dcpType;
-  if(dcpType.size() < 1)
+  if ( dcpType.size() < 1 )
   {
     url = baseUrl;
   }

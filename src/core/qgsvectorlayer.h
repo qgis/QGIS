@@ -133,7 +133,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void invertSelection();
 
     /** Invert selection of features found within the search rectangle (in layer's coordinates) */
-    void invertSelectionInRectangle( QgsRectangle & rect);
+    void invertSelectionInRectangle( QgsRectangle & rect );
 
     /** Get a copy of the user-selected features */
     QgsFeatureList selectedFeatures();

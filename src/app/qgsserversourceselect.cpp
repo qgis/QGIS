@@ -484,7 +484,7 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
       {
         QStringList parts = i->split( ":" );
 
-        if ( parts.at(0).compare("EPSG", Qt::CaseInsensitive) == 0 )
+        if ( parts.at( 0 ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
         {
           long epsg = atol( parts.at( 1 ).toUtf8() );
           if ( epsg == m_Epsg )

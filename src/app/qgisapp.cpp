@@ -304,7 +304,7 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
-    mComposer(0),
+    mComposer( 0 ),
     mPythonConsole( NULL ),
     mPythonUtils( NULL )
 {
@@ -1482,7 +1482,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
 
-  if(mComposer)
+  if ( mComposer )
   {
     mComposer->setupTheme();
   }
@@ -4872,7 +4872,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionToggleEditing->setEnabled( false );
       }
-      
+
       if ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
       {
         mActionPasteFeatures->setEnabled( vlayer->isEditable() && !clipboard()->empty() );
@@ -4893,7 +4893,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteSelected->setEnabled( false );
         mActionCutFeatures->setEnabled( false );
       }
-      
+
       // moving enabled if geometry changes are supported
       if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
       {

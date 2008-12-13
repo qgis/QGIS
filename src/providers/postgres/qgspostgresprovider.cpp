@@ -423,9 +423,9 @@ bool QgsPostgresProvider::declareCursor(
       {
         query += QString( ",boolout(%1)" ).arg( quotedIdentifier( fieldname ) );
       }
-      else if ( type == "geometry")
+      else if ( type == "geometry" )
       {
-        query += QString(",asewkt(%1)").arg(quotedIdentifier(fieldname));
+        query += QString( ",asewkt(%1)" ).arg( quotedIdentifier( fieldname ) );
       }
       else
       {
@@ -1806,9 +1806,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
             values += "," + defVal;
           }
         }
-        else if( fit->typeName()=="geometry" )
+        else if ( fit->typeName() == "geometry" )
         {
-          values += QString(",geomfromewkt(%1)").arg( quotedValue( it->toString() ) );
+          values += QString( ",geomfromewkt(%1)" ).arg( quotedValue( it->toString() ) );
         }
         else
         {
@@ -1818,7 +1818,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       else
       {
         // value is not unique => add parameter
-        if( fit->typeName()=="geometry" )
+        if ( fit->typeName() == "geometry" )
         {
           values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + 3 );
         }
@@ -2054,7 +2054,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
           else
             first = false;
 
-          sql += QString( fld.typeName()!="geometry" ? "%1=%2" : "%1=geomfromewkt(%2)" )
+          sql += QString( fld.typeName() != "geometry" ? "%1=%2" : "%1=geomfromewkt(%2)" )
                  .arg( quotedIdentifier( fld.name() ) )
                  .arg( quotedValue( siter->toString() ) );
         }
@@ -2565,7 +2565,7 @@ bool QgsPostgresProvider::getGeometryDetails()
                  tr( ". The database communication log was:\n" ) );
     showMessageBox( tr( "Unable to get feature type and srid" ), log );
   }
-  
+
   // store whether the geometry includes measure value
   if ( fType == "POINTM" || fType == "MULTIPOINTM" ||
        fType == "LINESTRINGM" || fType == "MULTILINESTRINGM" ||
@@ -2573,10 +2573,10 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
-    enabledCapabilities &= ~(QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures);
+    enabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
-    
-    
+
+
   if ( valid )
   {
     QgsDebugMsg( "SRID is " + srid );
@@ -2670,10 +2670,10 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
                     .arg( PQresultErrorMessage( res ) );
       QgsDebugMsgLevel( err, 3 );
 #endif
-      if( openCursors )
+      if ( openCursors )
       {
         PQexecNR( "ROLLBACK" );
-        QgsDebugMsg( QString("Re-starting read-only transaction after errornous statement - state of %1 cursors lost" ).arg( openCursors ) );
+        QgsDebugMsg( QString( "Re-starting read-only transaction after errornous statement - state of %1 cursors lost" ).arg( openCursors ) );
         PQexecNR( "BEGIN READ ONLY" );
       }
     }

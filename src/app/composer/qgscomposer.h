@@ -133,7 +133,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionAddImage_activated( void );
 
     //! Set tool to move item content
-    void on_mActionMoveItemContent_activated(void);
+    void on_mActionMoveItemContent_activated( void );
 
     //! Group selected items
     void on_mActionGroupItems_activated( void );
@@ -142,16 +142,16 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionUngroupItems_activated( void );
 
     //! Move selected items one position up
-    void on_mActionRaiseItems_activated(void);
+    void on_mActionRaiseItems_activated( void );
 
     //!Move selected items one position down
-    void on_mActionLowerItems_activated(void);
+    void on_mActionLowerItems_activated( void );
 
     //!Move selected items to top
-    void on_mActionMoveItemsToTop_activated(void);
+    void on_mActionMoveItemsToTop_activated( void );
 
     //!Move selected items to bottom
-    void on_mActionMoveItemsToBottom_activated(void);
+    void on_mActionMoveItemsToBottom_activated( void );
 
     //! Save window state
     void saveWindowState();

@@ -197,32 +197,32 @@ void QgsComposerScaleBar::setStyle( const QString& styleName )
   mStyle = 0;
 
   //switch depending on style name
-  if ( styleName == "Single Box")
+  if ( styleName == "Single Box" )
   {
     mStyle = new QgsSingleBoxScaleBarStyle( this );
   }
-  else if ( styleName == "Double Box")
+  else if ( styleName == "Double Box" )
   {
     mStyle = new QgsDoubleBoxScaleBarStyle( this );
   }
   else if ( styleName == "Line Ticks Middle"  || styleName == "Line Ticks Down" || styleName == "Line Ticks Up" )
   {
     QgsTicksScaleBarStyle* tickStyle = new QgsTicksScaleBarStyle( this );
-    if ( styleName == "Line Ticks Middle")
+    if ( styleName == "Line Ticks Middle" )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksMiddle );
     }
-    else if ( styleName == "Line Ticks Down")
+    else if ( styleName == "Line Ticks Down" )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksDown );
     }
-    else if ( styleName == "Line Ticks Up")
+    else if ( styleName == "Line Ticks Up" )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarStyle::TicksUp );
     }
     mStyle = tickStyle;
   }
-  else if ( styleName == "Numeric")
+  else if ( styleName == "Numeric" )
   {
     mStyle = new QgsNumericScaleBarStyle( this );
   }

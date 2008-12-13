@@ -860,7 +860,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
   {
     case WheelZoom:
       // zoom without changing extent
-      if (e->delta() > 0)
+      if ( e->delta() > 0 )
         zoomIn();
       else
         zoomOut();

@@ -42,7 +42,7 @@ class QgsPluginRegistry
   public:
     //! Returns the instance pointer, creating the object on the first call
     static QgsPluginRegistry* instance();
-    
+
     //! set pointer to qgis interface passed to plugins (used by QgisApp)
     void setQgisInterface( QgisInterface* iface );
 
@@ -77,13 +77,13 @@ class QgsPluginRegistry
     void loadCppPlugin( QString mFullPath );
     //! Python plugin loader
     void loadPythonPlugin( QString packageName );
-  
+
     //! Load any plugins used in the last qgis session
     void restoreSessionPlugins( QString thePluginDirString );
 
     //! Check whether plugin is compatible with current version of QGIS
     bool isPythonPluginCompatible( QString packageName );
-  
+
   protected:
     //! protected constructor
     QgsPluginRegistry();
@@ -92,10 +92,10 @@ class QgsPluginRegistry
     bool checkCppPlugin( QString pluginFullPath );
     //! Try to load and get metadata from Python plugin, return true on success
     bool checkPythonPlugin( QString packageName );
-  
+
     //! Check current QGIS version against plugin's minimal requested QGIS version
-    bool checkQgisVersion(QString minVersion);
-  
+    bool checkQgisVersion( QString minVersion );
+
   private:
     static QgsPluginRegistry* _instance;
     QMap<QString, QgsPluginMetadata> mPlugins;

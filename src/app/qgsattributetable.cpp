@@ -491,7 +491,7 @@ void QgsAttributeTable::fillTable( QgsVectorLayer *layer )
   else
   {
     QgsRectangle rect;
-    if( behaviour == 2 ) 
+    if ( behaviour == 2 )
     {
       // current canvas only
       rect = QgisApp::instance()->mapCanvas()->extent();

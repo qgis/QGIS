@@ -141,7 +141,7 @@ class  CORE_EXPORT QgsLabelAttributes
     double angle( void ) const;
 
     bool   angleIsAuto( void ) const;
-    void   setAutoAngle(bool state);
+    void   setAutoAngle( bool state );
 
     /* Alignment */
     void setAlignment( int alignment );

@@ -71,7 +71,7 @@ QgsComposer::QgsComposer( QgisApp *qgis ): QMainWindow()
   QString myIconPath = QgsApplication::activeThemePath();
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
-  toggleActionGroup->addAction( mActionMoveItemContent);
+  toggleActionGroup->addAction( mActionMoveItemContent );
   toggleActionGroup->addAction( mActionAddNewMap );
   toggleActionGroup->addAction( mActionAddNewLabel );
   toggleActionGroup->addAction( mActionAddNewLegend );
@@ -222,13 +222,13 @@ void QgsComposer::setupTheme()
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );
   mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionSelectPan.png" ) );
-  mActionMoveItemContent->setIcon( QgisApp::getThemeIcon("/mActionMoveItemContent.png"));
-  mActionGroupItems->setIcon( QgisApp::getThemeIcon("/mActionGroupItems.png"));
-  mActionUngroupItems->setIcon( QgisApp::getThemeIcon("/mActionUngroupItems.png"));
-  mActionRaiseItems->setIcon( QgisApp::getThemeIcon("/mActionRaiseItems.png"));
-  mActionLowerItems->setIcon( QgisApp::getThemeIcon("/mActionLowerItems.png"));
-  mActionMoveItemsToTop->setIcon( QgisApp::getThemeIcon("/mActionMoveItemsToTop.png"));
-  mActionMoveItemsToBottom->setIcon( QgisApp::getThemeIcon("/mActionMoveItemsToBottom.png"));
+  mActionMoveItemContent->setIcon( QgisApp::getThemeIcon( "/mActionMoveItemContent.png" ) );
+  mActionGroupItems->setIcon( QgisApp::getThemeIcon( "/mActionGroupItems.png" ) );
+  mActionUngroupItems->setIcon( QgisApp::getThemeIcon( "/mActionUngroupItems.png" ) );
+  mActionRaiseItems->setIcon( QgisApp::getThemeIcon( "/mActionRaiseItems.png" ) );
+  mActionLowerItems->setIcon( QgisApp::getThemeIcon( "/mActionLowerItems.png" ) );
+  mActionMoveItemsToTop->setIcon( QgisApp::getThemeIcon( "/mActionMoveItemsToTop.png" ) );
+  mActionMoveItemsToBottom->setIcon( QgisApp::getThemeIcon( "/mActionMoveItemsToBottom.png" ) );
 }
 
 void QgsComposer::connectSlots()
@@ -712,7 +712,7 @@ void QgsComposer::on_mActionAddImage_activated( void )
   }
 }
 
-void QgsComposer::on_mActionMoveItemContent_activated(void)
+void QgsComposer::on_mActionMoveItemContent_activated( void )
 {
   if ( mView )
   {
@@ -744,7 +744,7 @@ void QgsComposer::on_mActionRaiseItems_activated( void )
   }
 }
 
-void QgsComposer::on_mActionLowerItems_activated(void)
+void QgsComposer::on_mActionLowerItems_activated( void )
 {
   if ( mComposition )
   {
@@ -752,7 +752,7 @@ void QgsComposer::on_mActionLowerItems_activated(void)
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToTop_activated(void)
+void QgsComposer::on_mActionMoveItemsToTop_activated( void )
 {
   if ( mComposition )
   {
@@ -760,7 +760,7 @@ void QgsComposer::on_mActionMoveItemsToTop_activated(void)
   }
 }
 
-void QgsComposer::on_mActionMoveItemsToBottom_activated(void)
+void QgsComposer::on_mActionMoveItemsToBottom_activated( void )
 {
   if ( mComposition )
   {

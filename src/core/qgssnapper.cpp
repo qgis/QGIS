@@ -52,12 +52,12 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
   QgsSnappingResult newResult;
 
   QList<QgsSnapper::SnapLayer>::iterator snapLayerIt;
-  for (snapLayerIt = mSnapLayers.begin(); snapLayerIt != mSnapLayers.end(); ++snapLayerIt )
+  for ( snapLayerIt = mSnapLayers.begin(); snapLayerIt != mSnapLayers.end(); ++snapLayerIt )
   {
     //transform point from map coordinates to layer coordinates
     layerCoordPoint = mMapRenderer->mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
     if ( snapLayerIt->mLayer->snapWithContext( layerCoordPoint, snapLayerIt->mTolerance,
-                                               currentResultList, snapLayerIt->mSnapTo ) != 0 )
+         currentResultList, snapLayerIt->mSnapTo ) != 0 )
     {
       //error
     }

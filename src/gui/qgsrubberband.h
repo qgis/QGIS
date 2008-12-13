@@ -56,7 +56,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     /**Sets this rubber band to the geometry of an existing feature.
      This is usefull for feature highlighting.
     @param geom the geometry object
-    @param layer the layer containing the feature, used for coord transformation to map 
+    @param layer the layer containing the feature, used for coord transformation to map
     crs. In case of 0 pointer, the coordinates are not going to be transformed.
     @param render the maprender object (used for coord transformation)*/
     void setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer );

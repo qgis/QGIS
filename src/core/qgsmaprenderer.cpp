@@ -289,7 +289,7 @@ void QgsMapRenderer::render( QPainter* painter )
     QgsDebugMsg( "  Scale dep. visibility enabled? " + QString( "%1" ).arg( ml->hasScaleBasedVisibility() ) );
     QgsDebugMsg( "  Input extent: " + ml->extent().toString() );
 
-    if ( !ml->hasScaleBasedVisibility() || (ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
+    if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
     {
       connect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
 
@@ -389,7 +389,7 @@ void QgsMapRenderer::render( QPainter* painter )
       {
         // only make labels if the layer is visible
         // after scale dep viewing settings are checked
-        if ( !ml->hasScaleBasedVisibility() || (ml->minimumScale() < mScale && mScale < ml->maximumScale() ))
+        if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) )
         {
           bool split = false;
 

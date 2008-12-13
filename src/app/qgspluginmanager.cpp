@@ -147,11 +147,11 @@ void QgsPluginManager::getPythonPluginDescriptions()
     QString version     = mPythonUtils->getPluginMetadata( packageName, "version" );
 
     if ( pluginName == "???" || description == "???" || version == "???" ) continue;
-    
+
     bool isCompatible = QgsPluginRegistry::instance()->isPythonPluginCompatible( packageName );
     QString compatibleString; // empty by default
-    if (!isCompatible)
-      compatibleString = "  " + tr("[ incompatible ]");
+    if ( !isCompatible )
+      compatibleString = "  " + tr( "[ incompatible ]" );
 
     // filtering will be done on the display role so give it name and desription
     // user wont see this text since we are using a custome delegate

@@ -206,7 +206,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
           snapLayer.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
         }
 
-        snapLayers.append(snapLayer);
+        snapLayers.append( snapLayer );
       }
     }
     else //nothing in project. Use default snapping tolerance to vertex of current layer
@@ -243,8 +243,8 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
       //default snapping tolerance
       snapLayer.mTolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-    
-      snapLayers.append(snapLayer);
+
+      snapLayers.append( snapLayer );
     }
 
     mSnapper->setSnapLayers( snapLayers );
