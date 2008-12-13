@@ -357,22 +357,12 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   // populate the table list
   QSettings settings;
 
-  bool makeConnection = true;
   QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
 
   QString database = settings.value( key + "/database" ).toString();
   QString username = settings.value( key + "/username" ).toString();
   QString password = settings.value( key + "/password" ).toString();
 
-  if ( password.isEmpty() )
-  {
-    // get password from user
-    makeConnection = false;
-    password = QInputDialog::getText( this, tr( "Password for " ) + username,
-                                      tr( "Please enter your password:" ),
-                                      QLineEdit::Password, QString::null, &makeConnection );
-    // allow null password entry in case its valid for the database
-  }
 
   QgsDataSourceURI uri;
   uri.setConnection( settings.value( key + "/host" ).toString(),
@@ -388,54 +378,79 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
-  if ( makeConnection )
+  m_connectionInfo = uri.connectionInfo();
+  //qDebug(m_connectionInfo);
+  // Tidy up an existing connection if one exists.
+  if ( pd != 0 )
+    PQfinish( pd );
+
+  pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+
+  // if the connection needs a password ask for one
+  if ( PQstatus( pd ) == CONNECTION_BAD && PQconnectionNeedsPassword( pd ) )
   {
-    m_connectionInfo = uri.connectionInfo();
-    //qDebug(m_connectionInfo);
-    // Tidy up an existing connection if one exists.
-    if ( pd != 0 )
-      PQfinish( pd );
-
-    pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
-    if ( PQstatus( pd ) == CONNECTION_OK )
+    // get password from user
+    bool makeConnection = false;
+    password = QInputDialog::getText( this, tr( "Password for " ) + username,
+                                      tr( "Please enter your password:" ),
+                                      QLineEdit::Password, QString::null, &makeConnection );
+    // allow null password entry in case its valid for the database
+    if ( makeConnection )
     {
-      //qDebug("Connection succeeded");
-      // tell the DB that we want text encoded in UTF8
-      PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
+      uri.setConnection( settings.value( key + "/host" ).toString(),
+                         settings.value( key + "/port" ).toString(),
+                         database,
+                         settings.value( key + "/username" ).toString(),
+                         password );
 
-      // get the list of suitable tables and columns and populate the UI
-      geomCol details;
+      m_connectionInfo = uri.connectionInfo();
+      PQfinish( pd );
+      pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+    }
+  }
 
-      if ( getTableInfo( pd, searchGeometryColumnsOnly, searchPublicOnly ) )
+  if ( PQstatus( pd ) == CONNECTION_OK )
+  {
+    //qDebug("Connection succeeded");
+    // tell the DB that we want text encoded in UTF8
+    PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
+
+    // get the list of suitable tables and columns and populate the UI
+    geomCol details;
+
+    if ( getTableInfo( pd, searchGeometryColumnsOnly, searchPublicOnly ) )
+    {
+      // Start the thread that gets the geometry type for relations that
+      // may take a long time to return
+      if ( mColumnTypeThread != NULL )
       {
-        // Start the thread that gets the geometry type for relations that
-        // may take a long time to return
-        if ( mColumnTypeThread != NULL )
-        {
-          connect( mColumnTypeThread, SIGNAL( setLayerType( QString, QString, QString, QString ) ),
-                   this, SLOT( setLayerType( QString, QString, QString, QString ) ) );
+        connect( mColumnTypeThread, SIGNAL( setLayerType( QString, QString, QString, QString ) ),
+                 this, SLOT( setLayerType( QString, QString, QString, QString ) ) );
 
-          // Do it in a thread.
-          mColumnTypeThread->start();
-        }
+        // Do it in a thread.
+        mColumnTypeThread->start();
       }
-      else
-      {
-        qDebug( "Unable to get list of spatially enabled tables from the database" );
-        qDebug( PQerrorMessage( pd ) );
-      }
-      // BEGIN CHANGES ECOS
-      if ( cmbConnections->count() > 0 )
-        btnAdd->setEnabled( true );
-      // END CHANGES ECOS
     }
     else
     {
-      QMessageBox::warning( this, tr( "Connection failed" ),
-                            tr
-                            ( "Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6" ).
-                            arg( settings.value( key + "/database" ).toString() ).arg( settings.value( key + "/host" ).toString() ).arg( "\n\n" ).arg( "\n\n" ).arg( "\n" ).arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
+      qDebug( "Unable to get list of spatially enabled tables from the database" );
+      qDebug( PQerrorMessage( pd ) );
     }
+    // BEGIN CHANGES ECOS
+    if ( cmbConnections->count() > 0 )
+      btnAdd->setEnabled( true );
+    // END CHANGES ECOS
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Connection failed" ),
+                          tr( "Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6" )
+                          .arg( settings.value( key + "/database" ).toString() )
+                          .arg( settings.value( key + "/host" ).toString() )
+                          .arg( "\n\n" )
+                          .arg( "\n\n" )
+                          .arg( "\n" )
+                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
   }
 
   mTablesTreeView->sortByColumn( 1, Qt::AscendingOrder );
@@ -523,7 +538,7 @@ void QgsDbSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
 
 bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly )
 {
-  bool ok = false;
+  int n = 0;
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // The following query returns only tables that exist and the user has SELECT privilege on.
@@ -542,19 +557,12 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
     {
       QMessageBox::warning( this,
                             tr( "Accessible tables could not be determined" ),
-                            QString( tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
-                                         "The error message from the database was:\n%1\n" ) )
+                            tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
+                                "The error message from the database was:\n%1\n" )
                             .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
+      n = -1;
     }
-    else if ( PQntuples( result ) == 0 )
-    {
-      QMessageBox::warning( this, tr( "No accessible tables found" ),
-                            tr
-                            ( "Database connection was successful, but no accessible tables were found.\n\n"
-                              "Please verify that you have SELECT privilege on a table carrying PostGIS\n"
-                              "geometry." ) );
-    }
-    else
+    else if ( PQntuples( result ) > 0 )
     {
       for ( int idx = 0; idx < PQntuples( result ); idx++ )
       {
@@ -572,170 +580,97 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
         }
 
         mTableModel.addTableEntry( type, schemaName, tableName, column, "" );
+        n++;
       }
     }
-    ok = true;
   }
+
   PQclear( result );
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
   QApplication::restoreOverrideCursor();
-  if ( searchGeometryColumnsOnly )
+
+  if ( !searchGeometryColumnsOnly )
   {
-    return ok;
-  }
+    // Now have a look for geometry columns that aren't in the
+    // geometry_columns table. This code is specific to postgresql,
+    // but an equivalent query should be possible in other
+    // databases.
+    sql = "select pg_class.relname,pg_namespace.nspname,pg_attribute.attname,pg_class.relkind "
+          "from pg_attribute, pg_class, pg_namespace "
+          "where pg_namespace.oid = pg_class.relnamespace "
+          "and pg_attribute.attrelid = pg_class.oid "
+          "and ("
+          "pg_attribute.atttypid = regtype('geometry')"
+          " or "
+          "pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
+          ") "
+          "and has_schema_privilege(pg_namespace.nspname,'usage') "
+          "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
+    // user has select privilege
+    if ( searchPublicOnly )
+      sql += "and pg_namespace.nspname = 'public' ";
 
-  // Now have a look for geometry columns that aren't in the
-  // geometry_columns table. This code is specific to postgresql,
-  // but an equivalent query should be possible in other
-  // databases.
-  sql = "select pg_class.relname,pg_namespace.nspname,pg_attribute.attname,pg_class.relkind "
-        "from pg_attribute, pg_class, pg_namespace "
-        "where pg_namespace.oid = pg_class.relnamespace "
-        "and pg_attribute.attrelid = pg_class.oid "
-        "and ("
-        "pg_attribute.atttypid = regtype('geometry')"
-        " or "
-        "pg_attribute.atttypid IN (select oid FROM pg_type WHERE typbasetype=regtype('geometry'))"
-        ") "
-        "and has_schema_privilege(pg_namespace.nspname,'usage') "
-        "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') ";
-  // user has select privilege
-  if ( searchPublicOnly )
-    sql += "and pg_namespace.nspname = 'public' ";
-
-  sql += "and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name) "
-         "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
-
-  result = PQexec( pg, sql.toUtf8() );
-
-  for ( int i = 0; i < PQntuples( result ); i++ )
-  {
-    // Have the column name, schema name and the table name. The concept of a
-    // catalog doesn't exist in postgresql so we ignore that, but we
-    // do need to get the geometry type.
-
-    // Make the assumption that the geometry type for the first
-    // row is the same as for all other rows.
-
-    QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
-    QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
-    QString column = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // attname
-    QString relkind = QString::fromUtf8( PQgetvalue( result, i, 3 ) ); // relation kind
-
-    addSearchGeometryColumn( schema, table, column );
-    //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
-    mTableModel.addTableEntry( "Waiting", schema, table, column, "" );
-  }
-  ok = true;
-
-  PQclear( result );
-  return ok;
-}
-
-#if 0 // this function is never called - smizuno
-bool QgsDbSourceSelect::getGeometryColumnInfo( PGconn *pg,
-    geomCol& details, bool searchGeometryColumnsOnly,
-    bool searchPublicOnly )
-{
-  bool ok = false;
-
-  QApplication::setOverrideCursor( Qt::waitCursor );
-
-  QString sql = "select * from geometry_columns";
-  // where f_table_schema ='" + settings.value(key + "/database").toString() + "'";
-  sql += " order by f_table_schema,f_table_name";
-  //qDebug("Fetching tables using: " + sql);
-  PGresult *result = PQexec( pg, sql.toUtf8() );
-  if ( result )
-  {
-    QString msg;
-    QTextStream( &msg ) << "Fetched " << PQntuples( result ) << " tables from database";
-    //qDebug(msg);
-    for ( int idx = 0; idx < PQntuples( result ); idx++ )
+    if ( n > 0 )
     {
-      // Be a bit paranoid and check that the table actually
-      // exists. This is not done as a subquery in the query above
-      // because I can't get it to work correctly when there are tables
-      // with capital letters in the name.
-
-      // Take care to deal with tables with the same name but in different schema.
-      QString tableName = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, "f_table_name" ) ) );
-      QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, "f_table_schema" ) ) );
-      sql = "select oid from pg_class where relname = '" + tableName + "'";
-      if ( schemaName.length() > 0 )
-        sql += " and relnamespace = (select oid from pg_namespace where nspname = '" +
-               schemaName + "')";
-
-      PGresult* exists = PQexec( pg, sql.toUtf8() );
-      if ( PQntuples( exists ) == 1 )
-      {
-        QString column = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, "f_geometry_column" ) ) );
-        QString type = QString::fromUtf8( PQgetvalue( result, idx, PQfnumber( result, "type" ) ) );
-
-        QString as = "";
-        if ( type == "GEOMETRY" && !searchGeometryColumnsOnly )
-        {
-          addSearchGeometryColumn( schemaName, tableName,  column );
-          as = type = "WAITING";
-        }
-
-        details.push_back( geomPair( fullDescription( schemaName, tableName, column, as ), type ) );
-      }
-      PQclear( exists );
+      sql += "and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name) ";
     }
-    ok = true;
+    else
+    {
+      n = 0;
+    }
+
+    sql += "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
+
+    result = PQexec( pg, sql.toUtf8() );
+
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+      QMessageBox::warning( this,
+                            tr( "Accessible tables could not be determined" ),
+                            tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
+                                "The error message from the database was:\n%1\n" )
+                            .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
+      if ( n == 0 )
+        n = -1;
+    }
+    else if ( PQntuples( result ) > 0 )
+    {
+      for ( int i = 0; i < PQntuples( result ); i++ )
+      {
+        // Have the column name, schema name and the table name. The concept of a
+        // catalog doesn't exist in postgresql so we ignore that, but we
+        // do need to get the geometry type.
+
+        // Make the assumption that the geometry type for the first
+        // row is the same as for all other rows.
+
+        QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
+        QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
+        QString column = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // attname
+        QString relkind = QString::fromUtf8( PQgetvalue( result, i, 3 ) ); // relation kind
+
+        addSearchGeometryColumn( schema, table, column );
+        //details.push_back(geomPair(fullDescription(schema, table, column, "WAITING"), "WAITING"));
+        mTableModel.addTableEntry( "Waiting", schema, table, column, "" );
+        n++;
+      }
+    }
+
+    PQclear( result );
   }
-  PQclear( result );
 
-  QApplication::restoreOverrideCursor();
-
-  if ( searchGeometryColumnsOnly )
-    return ok;
-
-  // Now have a look for geometry columns that aren't in the
-  // geometry_columns table. This code is specific to postgresql,
-  // but an equivalent query should be possible in other
-  // databases.
-  sql = "select pg_class.relname, pg_namespace.nspname, pg_attribute.attname, "
-        "pg_class.relkind from "
-        "pg_attribute, pg_class, pg_type, pg_namespace where pg_type.typname = 'geometry' and "
-        "pg_attribute.atttypid = pg_type.oid and pg_attribute.attrelid = pg_class.oid ";
-
-  if ( searchPublicOnly )
-    sql += "and pg_namespace.nspname = 'public' ";
-
-  sql += "and cast(pg_class.relname as character varying) not in "
-         "(select f_table_name from geometry_columns) "
-         "and pg_namespace.oid = pg_class.relnamespace "
-         "and pg_class.relkind in ('v', 'r')"; // only from views and relations (tables)
-
-  result = PQexec( pg, sql.toUtf8() );
-
-  for ( int i = 0; i < PQntuples( result ); i++ )
+  if ( n == 0 )
   {
-    // Have the column name, schema name and the table name. The concept of a
-    // catalog doesn't exist in postgresql so we ignore that, but we
-    // do need to get the geometry type.
-
-    // Make the assumption that the geometry type for the first
-    // row is the same as for all other rows.
-
-    QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
-    QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
-    QString column = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // attname
-    QString relkind = QString::fromUtf8( PQgetvalue( result, i, 3 ) ); // relation kind
-
-    addSearchGeometryColumn( schema, table, column );
-    details.push_back( geomPair( fullDescription( schema, table, column, "WAITING" ), "WAITING" ) );
+    QMessageBox::warning( this,
+                          tr( "No accessible tables found" ),
+                          tr( "Database connection was successful, but no accessible tables were found.\n\n"
+                              "Please verify that you have SELECT privilege on a table carrying PostGIS\n"
+                              "geometry." ) );
   }
-  ok = true;
 
-  PQclear( result );
-
-  return ok;
+  return n > 0;
 }
-#endif
 
 void QgsDbSourceSelect::showHelp()
 {
