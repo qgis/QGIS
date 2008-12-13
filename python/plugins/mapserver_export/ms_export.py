@@ -25,6 +25,7 @@ import sys
 import os
 from string import *
 from xml.dom import minidom, Node
+from qgis.core import *
 
 # symbol map
 qgisSymbols = {'hard:circle'   : 'CIRCLE',
@@ -234,39 +235,6 @@ class Qgis2Map:
       self.outFile.write("    FOOTER '" + self.footer + "'\n")
     self.outFile.write("  END\n\n")
 
-  def parsePostgisConnection( self, dataString ):
-    pg = {}
-    pg['host'] = 'localhost'
-    pg['dbname'] = 'gisdata'
-    pg['user'] = ''
-    pg['password'] = ''
-    pg['table'] = ''
-    pg['geom'] = 'the_geom'
-    
-    
-    whereCondition = dataString.split("sql")[1][1:]
-    cmp = dataString.split("sql")[0].split(" ")
-    
-    for c in cmp:
-      if c[:1] == "(":
-        pg['geom'] = c[1:][:-1]
-      else:
-        kvp = c.split("=")
-        if (len(kvp) >= 2):
-          pg[kvp[0]] =  kvp[1]
-    
-    connString = 'host=' + pg['host'] + " user=" + pg['user']
-    
-    if (len(pg['password'].replace("\'", "")) > 0):
-      connString += " password=" + pg['password'].replace("'", "")
-    
-    connString += " dbname=" + pg['dbname']
-     
-    dataString = pg['geom'] + " FROM " + pg['table'].replace("\"", "")
-    filterString = whereCondition.replace("\"", "")
-    return (connString, dataString, filterString)
-
-       
   # Write the map layers - we have to defer writing to disk so we
   # can invert the order of the layes, since they are opposite in QGIS 
   # compared to mapserver
@@ -321,13 +289,14 @@ class Qgis2Map:
 
       if providerString == 'postgres':
         # it's a postgis layer
-        (pgConnString, sqlData, sqlFilter) = self.parsePostgisConnection(dataString)
+        uri = QgsDataSourceURI(dataString)
+
         layer_def += "    CONNECTIONTYPE postgis\n"
-        layer_def += "    CONNECTION \"" + pgConnString + "\"\n"
-        layer_def += "    DATA \"" + sqlData + "\"\n"
+        layer_def += "    CONNECTION \"" + uri.connectionInfo() + "\"\n"
+        layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"
         # don't write the filter keyword if there isn't one
-        if sqlFilter:
-          layer_def += "    FILTER \"" + sqlFilter + "\"\n"
+        if uri.sql() != "":
+          layer_def += "    FILTER ( " + uri.sql() + " )\n"
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
         # it's a WMS layer 
