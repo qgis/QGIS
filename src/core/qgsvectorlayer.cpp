@@ -1161,8 +1161,16 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
       f.changeAttribute( it.key(), it.value() );
   }
 
-  for ( QgsAttributeList::const_iterator it = mFetchNullAttributes.begin(); it != mFetchNullAttributes.end(); it++ )
-    f.changeAttribute( *it, QVariant( QString::null ) );
+  // remove all attributes that will disappear
+  const QgsAttributeMap &map = f.attributeMap();
+  for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); it++ )
+    if( !mUpdatedFields.contains( it.key() ) )
+      f.deleteAttribute( it.key() );
+
+  // null/add all attributes that were added, but don't exist in the feature yet
+  for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
+    if ( !map.contains( it.key() ) )
+      f.changeAttribute( it.key(), QVariant( QString::null ) );
 }
 
 void QgsVectorLayer::updateFeatureGeometry( QgsFeature &f )
@@ -1193,21 +1201,16 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
   //look in the normal features of the provider
   if ( mFetchAttributes.size() > 0 )
   {
-    mFetchNullAttributes.clear();
-
     if ( mEditable )
     {
       // fetch only available field from provider
       QgsAttributeList provAttributes;
       for ( QgsAttributeList::iterator it = mFetchAttributes.begin(); it != mFetchAttributes.end(); it++ )
       {
-        if ( !mUpdatedFields.contains( *it ) )
+        if ( !mUpdatedFields.contains( *it ) || mAddedAttributeIds.contains( *it ) )
           continue;
 
-        if ( !mDeletedAttributeIds.contains( *it ) && !mAddedAttributeIds.contains( *it ) )
-          provAttributes << *it;
-        else
-          mFetchNullAttributes << *it;
+        provAttributes << *it;
       }
 
       mDataProvider->select( provAttributes, rect, fetchGeometries, useIntersect );
@@ -2437,12 +2440,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   {
     if ( !myRenderer->writeXML( node, doc, *this ) )
     {
+      errorMessage = "renderer failed to save";
       return false;
     }
   }
   else
   {
     QgsDebugMsg( "no renderer" );
+    errorMessage = "no renderer";
     return false;
   }
 
@@ -2546,6 +2551,7 @@ bool QgsVectorLayer::deleteAttribute( int index )
     return false;
 
   mDeletedAttributeIds.insert( index );
+  mUpdatedFields.remove( index );
 
   setModified( true, false );
 
@@ -2610,31 +2616,9 @@ bool QgsVectorLayer::commitChanges()
   int cap = mDataProvider->capabilities();
 
   //
-  // add attributes
-  //
-  bool attributesChanged = false;
-  if ( mAddedAttributeIds.size() > 0 )
-  {
-    QgsNewAttributesMap addedAttributes;
-    for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
-      addedAttributes[ mUpdatedFields[ *it ].name()] = mUpdatedFields[ *it ].typeName();
-
-    if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
-    {
-      mCommitErrors << tr( "SUCCESS: %1 attributes added." ).arg( mAddedAttributeIds.size() );
-      mAddedAttributeIds.clear();
-      attributesChanged = true;
-    }
-    else
-    {
-      mCommitErrors << tr( "ERROR: %1 new attributes not added" ).arg( mAddedAttributeIds.size() );
-      success = false;
-    }
-  }
-
-  //
   // delete attributes
   //
+  bool attributesChanged = false;
   if ( mDeletedAttributeIds.size() > 0 )
   {
     if (( cap & QgsVectorDataProvider::DeleteAttributes ) && mDataProvider->deleteAttributes( mDeletedAttributeIds ) )
@@ -2651,6 +2635,28 @@ bool QgsVectorLayer::commitChanges()
   }
 
   //
+  // add attributes
+  //
+  if ( mAddedAttributeIds.size() > 0 )
+  {
+    QgsNewAttributesMap addedAttributes;
+    for ( QgsAttributeIds::const_iterator it = mAddedAttributeIds.begin(); it != mAddedAttributeIds.end(); it++ )
+      addedAttributes[ mUpdatedFields[ *it ].name() ] = mUpdatedFields[ *it ].typeName();
+
+    if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
+    {
+      mCommitErrors << tr( "SUCCESS: %1 attributes added." ).arg( mAddedAttributeIds.size() );
+      mAddedAttributeIds.clear();
+      attributesChanged = true;
+    }
+    else
+    {
+      mCommitErrors << tr( "ERROR: %1 new attributes not added" ).arg( mAddedAttributeIds.size() );
+      success = false;
+    }
+  }
+
+  //
   // remap changed and attributes of added features
   //
   bool attributeChangesOk = true;
@@ -2660,7 +2666,7 @@ bool QgsVectorLayer::commitChanges()
     QMap<int, QString> src;
     for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
     {
-      src[ it.key()] = it.value().name();
+      src[ it.key() ] = it.value().name();
     }
 
     int maxAttrIdx = -1;
@@ -2670,7 +2676,7 @@ bool QgsVectorLayer::commitChanges()
     QMap<QString, int> dst;
     for ( QgsFieldMap::const_iterator it = pFields.begin(); it != pFields.end(); it++ )
     {
-      dst[ it.value().name()] = it.key();
+      dst[ it.value().name() ] = it.key();
       if ( it.key() > maxAttrIdx )
         maxAttrIdx = it.key();
     }

@@ -633,7 +633,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mFetching;
     QgsRectangle mFetchRect;
     QgsAttributeList mFetchAttributes;
-    QgsAttributeList mFetchNullAttributes;
     bool mFetchGeometry;
 
     QSet<int> mFetchConsidered;
