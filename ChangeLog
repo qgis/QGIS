@@ -1,5 +1,24 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 1.0.0 'Kore'
+** This release includes over 265 bug fixes and enhancements over the 
+** QGIS 0.11.0 release. In addition we have made the following changes:
+** HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome
+** Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.
+** Advanced topological editing of vector data.
+** Single click selection of vector features.
+** Many improvements to raster rendering and support for building pyramids external to the raster file.
+** Overhaul of the map composer for much improved printing support.
+** A new 'coordinate capture' plugin was added that lets you click on the map and then cut & paste the coordinates to and from the clipboard
+** A new plugin for converting between OGR supported formats was added.
+** A new plugin for converting from DXF files to shapefiles was added.
+** A new plugin was added for interpolating point features into ASCII grid layers.
+** The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.
+** Plugin toolbar positions are now correctly saved when the application is closed.
+** In the WMS client, WMS standards support has been improved.
+** Tidy ups for GRASS integration and support for GRASS 6.4
+** Complete API revision - we now have a stable API following well defined naming conventions.
+** Ported all GDAL/OGR and GEOS usage to use C APIs only.
 Version 0.11.0 'Metis'
 ** This release includes over 60 bug fixes and enhancements over the 
 ** QGIS 0.10.0 release. In addition we have made the following changes:
