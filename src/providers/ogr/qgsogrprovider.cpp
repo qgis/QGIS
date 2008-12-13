@@ -723,15 +723,11 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 bool QgsOgrProvider::createSpatialIndex()
 {
-  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the file name from the uri
-  QString layerName = fileName.section( '.', 0, 0 );
-  QString sql = "CREATE SPATIAL INDEX ON " + layerName;
-  OGR_DS_ExecuteSQL( ogrDataSource, sql.toAscii(), OGR_L_GetSpatialFilter( ogrLayer ), "" );
+  QFileInfo fi( dataSourceUri() );     // to get the base name
+  QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( fi.completeBaseName() ) );  // quote the layer name so spaces are handled
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), OGR_L_GetSpatialFilter( ogrLayer ), "" );
   //find out, if the .qix file is there
-  QString indexname = dataSourceUri();
-  indexname.truncate( dataSourceUri().length() - fileName.length() );
-  indexname = indexname + layerName + ".qix";
-  QFile indexfile( indexname );
+  QFile indexfile( fi.path().append( "/").append( fi.completeBaseName() ).append( ".qix" ) );
   if ( indexfile.exists() )
   {
     return true;
@@ -753,11 +749,10 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     }
   }
 
-  OGR_L_SyncToDisk( ogrLayer );
-  QString fileName = dataSourceUri().section( '/', -1, -1 );//find out the file name from the uri
-  QString layerName = fileName.section( '.', 0, 0 );
-  QString sql = "REPACK " + layerName;
-  OGR_DS_ExecuteSQL( ogrDataSource, sql.toLocal8Bit().data(), NULL, NULL );
+  OGR_L_SyncToDisk( ogrLayer );  
+  QFileInfo fi( dataSourceUri() );     // to get the base name
+  QString sql = QString( "REPACK %1" ).arg( fi.completeBaseName() );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
   featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
   return returnvalue;
 }
@@ -1177,7 +1172,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   }
 
   OGRLayerH layer;
-  layer = OGR_DS_CreateLayer( dataSource, QFile::encodeName( QFileInfo( uri ).baseName() ).constData(), reference, OGRvectortype, NULL );
+  layer = OGR_DS_CreateLayer( dataSource, QFile::encodeName( QFileInfo( uri ).completeBaseName() ).constData(), reference, OGRvectortype, NULL );
   if ( layer == NULL )
   {
     return false;
@@ -1268,7 +1263,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues )
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.baseName() ) );
+                .arg( quotedIdentifier( fi.completeBaseName() ) );
 
   uniqueValues.clear();
 
@@ -1298,7 +1293,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
 
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.baseName() ) );
+                .arg( quotedIdentifier( fi.completeBaseName() ) );
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
 
@@ -1329,7 +1324,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
-                .arg( quotedIdentifier( fi.baseName() ) );
+                .arg( quotedIdentifier( fi.completeBaseName() ) );
 
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, "SQL" );
   if ( l == 0 )
