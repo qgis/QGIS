@@ -81,7 +81,7 @@ class MapServerExport:
       exporter = Qgis2Map(str(self.dlg.ui.txtQgisFilePath.text()), str(self.dlg.ui.txtMapFilePath.text()))
       print "Setting options"
       exporter.setOptions( 
-          self.dlg.ui.cmbMapUnits.currentText(),
+          self.dlg.ui.cmbMapUnits.itemData( self.dlg.ui.cmbMapUnits.currentIndex() ).toString(),
           self.dlg.ui.cmbMapImageType.currentText(),
           self.dlg.ui.txtMapName.text(),
           self.dlg.ui.txtMapWidth.text(),

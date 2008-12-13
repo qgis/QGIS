@@ -27,3 +27,7 @@ class MapServerExportDialog(QtGui.QDialog):
     self.ui = Ui_QgsMapserverExportBase() 
     self.ui.setupUi(self) 
 
+    for unit in ["dd", "feet", "meters", "miles", "inches", "kilometers"]:
+        self.ui.cmbMapUnits.addItem( QtGui.QApplication.translate("QgsMapserverExportBase", unit, None, QtGui.QApplication.UnicodeUTF8), QtCore.QVariant(unit) )
+
+
