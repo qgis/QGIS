@@ -10,7 +10,7 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 0.10.0 <i>Io</i></span><br>
+    <span class="subheader">Version 1.0.0 <i>Io</i></span><br>
     <span class="warning">Please read this entire document for important information about this release.</span>
   </td>
 </tr>
@@ -21,36 +21,57 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
-<h2>Whats new in Version 0.11.0?</h2>
+<h2>Whats new in Version 1.0.0?</h2>
 <p>
 </p>
-This release includes over 60 bug fixes and enchancements 
-over the QGIS 0.10.0 release. In addition we have added 
+This release includes over 265 bug fixes and enchancements 
+over the QGIS 0.11.0 release. In addition we have added 
 the following new features:
 <ul>
   <li>
-  Revision of all dialogs for user interface consistancy
+    HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome
   </li>
   <li>
-  Improvements to unique value renderer vector dialog
+    Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.
   </li>
   <li>
-  Symbol previews when defining vector classes
+    Advanced topological editing of vector data.
   </li>
   <li>
-  Separation of python support into its own library
+    Single click selection of vector features.
   </li>
   <li>
-  List view and filter for GRASS toolbox to find tools more quickly
+    Many improvements to raster rendering and support for building pyramids external to the raster file.
   </li>
   <li>
-  List view and filter for Plugin Manager to find plugins more easily
+    Overhaul of the map composer for much improved printing support.
   </li>
   <li>
-  Updated Spatial Reference System definitions
+    A new 'coordinate capture' plugin was added that lets you click on the map and then cut & paste the coordinates to and from the clipboard
   </li>
   <li>
-  QML Style support for rasters and database layers
+    A new plugin for converting between OGR supported formats was added.
+  </li>
+  <li>
+    A new plugin for converting from DXF files to shapefiles was added.
+  </li>
+  <li>
+    A new plugin was added for interpolating point features into ASCII grid layers.
+  </li>
+  <li>
+    The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.
+  </li>
+  <li>
+    Plugin toolbar positions are now correctly saved when the application is closed.
+  </li>
+  <li>
+    In the WMS client, WMS standards support has been improved.
+  </li>
+  <li>
+    Complete API revision - we now have a stable API following well defined naming conventions.
+  </li>
+  <li>
+    Ported all GDAL/OGR and GEOS usage to use C APIs only.
   </li>
 </ul>
 
@@ -93,8 +114,8 @@ the following new features:
       <dd>
       If think you have found a bug, please consider reporting it to the development team. The steps to report a bug are:
       <ol class="normal">
-        <li>Go to the Bug Tracker at <a href="https://svn.qgis.org/trac">https://svn.qgis.org/trac</a>
-        <li>Read <a href="https://svn.qgis.org/trac/wiki/UsingTracWithQuantumGis">Using Trac With QGIS</a> to learn about the submission process
+        <li>Go to the Bug Tracker at <a href="https://trac.osgeo.org/qgis">https://svn.qgis.org/trac</a>
+        <li>Read <a href="https://trac.osgeo.org/qgis/wiki/UsingTracWithQuantumGis">Using Trac With QGIS</a> to learn about the submission process
         <li>Review the list of current issues to make sure your bug has not already been submitted. If it has, review the submission and see if there is anything you can add to the bug report to aid the developers
         <li>If your bug has not been reported, create a new ticket, making sure to either login to trac or provide your email address. Tickets lacking contact information are subject to deletion.
       </ol>
