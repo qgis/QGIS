@@ -643,7 +643,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         plugins.setPluginData(key, "error", "")
         plugins.setPluginData(key, "error_details", "")
       self.populatePluginTree()
-      QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely."))
+      QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely."))
 
 
   # ----------------------------------------- #

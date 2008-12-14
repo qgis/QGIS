@@ -196,7 +196,7 @@ QgsPluginInstallerDialog::foo()
   tr( "Plugin uninstall failed" )
   tr( "QGIS Python Plugin Installer" )
   tr( "Plugin uninstalled successfully" )
-  tr( "Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely." )
+  tr( "Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely." )
 // def ChangeCheckingPolicy
 
 // def addKnownRepositories
