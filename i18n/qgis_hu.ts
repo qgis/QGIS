@@ -4634,9 +4634,6 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
 </context>
 <context>
-    <name>QgsComposerScaleBar</name>
-</context>
-<context>
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <source>Single Box</source>
@@ -11724,7 +11721,7 @@ You need to restart Quantum GIS in order to reload it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

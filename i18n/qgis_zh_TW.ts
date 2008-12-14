@@ -6371,9 +6371,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsComposerScaleBar</name>
-</context>
-<context>
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <source>Single Box</source>
@@ -14582,10 +14579,6 @@ You need to restart Quantum GIS in order to reload it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14595,6 +14588,10 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

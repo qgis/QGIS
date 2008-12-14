@@ -12985,8 +12985,12 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Extension python ré-installée.
+        <translation type="obsolete">Extension python ré-installée.
 Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
