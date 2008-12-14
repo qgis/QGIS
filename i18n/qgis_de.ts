@@ -3940,7 +3940,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gruppieren</translation>
     </message>
     <message>
         <source>Group items</source>
@@ -3948,7 +3948,7 @@ File dialog window title</comment>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Auflösen</translation>
     </message>
     <message>
         <source>Ungroup items</source>
@@ -10679,11 +10679,11 @@ Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Diese Plugin benötigt eine neuere Quantum GIS-Version</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dieses Plugin benötigt ein fehlendes Modul.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
@@ -10704,21 +10704,24 @@ Hier die Fehlermeldung:</translation>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Das benötigte Python-Modul ist nicht installiert.
+Für weitere Informationen besuchen Sie bitte dessen Homepage und das Quantum GIS-Wiki</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Python-Plugin installiert.
+Sie müssen es noch im Plugin-Manager aktivieren.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Python plugin neuinstalliert.
+Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     </message>
     <message>
-        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished">Python-Plugin deinstalliert.  Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
     </message>
 </context>
 <context>
@@ -11349,16 +11352,16 @@ Alternativ kann die oid-Spalte von PostgresSQL benutzt werden.</translation>
     </message>
     <message>
         <source> and does not have a suitable constraint)</source>
-        <translation> und kat keinen passenden Constraint).</translation>
+        <translation> und hat keinen passenden Constraint).</translation>
     </message>
     <message>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation>Das ausgewählte View hat die folgenden Spalten; keine dieser Spalten erfüllt die obigen Konditionen:</translation>
+        <translation>Der ausgewählte View hat folgende Spalten von denen keine die obigen Bedingungen erfüllt:</translation>
     </message>
     <message>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 </source>
-        <translation>QGIS benötigt bei Views eine Spalte, die als eindeutige Schlüsselspalte verwendet werden kann. So eine Spalte (meist vom Typ int4) sollte im Datensatz vorhanden sein und als primärer Schlüssel definiert sein. Ferner sollte ein eindeutiger Constraint definiert sein. Ideal ist die von PostgreSQL unterstützte Spalte oid. Um die Geschwindigkeit zu erhöhen, sollte die Spalte auch indiziert sein.</translation>
+        <translation>QGIS benötigt bei Views eine Spalte, die als eindeutige Schlüsselspalte verwendet werden kann. Eine solche Spalte (meist vom Typ int4) muß im Datensatz vorhanden sein und als primärer Schlüssel definiert sein. Ferner sollte ein eindeutiger Constraint definiert sein. Ideal ist die von PostgreSQL unterstützte Spalte oid. Um die Geschwindigkeit zu erhöhen, sollte die Spalte auch indiziert sein.</translation>
     </message>
     <message>
         <source>The view </source>
