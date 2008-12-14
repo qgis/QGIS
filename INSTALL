@@ -137,7 +137,7 @@ Please visit http://qgis.org for information on joining our mailing lists
 and getting involved in the project further.
 
 /!\ *Note to document writers:* Please use this document as the central
-place for describing build procefures. Please do not remove this notice. 
+place for describing build procedures. Please do not remove this notice. 
 
 /!\ *Note:* This is a 'cut and paste' tutorial - in most cases you can
 simply copy the commands listed in codeblocks that look like this:
@@ -150,8 +150,8 @@ simply copy the commands listed in codeblocks that look like this:
   2. General Build Notes
   ======================
 
-At version 0.8.1 QGIS no longer uses the autotools for building. QGIS, like a
-number of major projects (eg. KDE 4.0), now uses cmake (http://www.cmake.org)
+Since version 0.8.1 QGIS no longer uses the autotools for building. QGIS, like a
+number of major projects (eg. KDE 4.0), now uses CMake (http://www.cmake.org)
 for building from source. The configure script in this directory simply checks
 for the existence of cmake and provides some clues to build QGIS.
 
@@ -784,7 +784,7 @@ I suggest you press 'p' to accept the key permanently.
 	========================
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process . By convention I build my software into a dir called 'apps' in
+build process. By convention I build my software into a dir called 'apps' in
 my home directory. If you have the correct permissions you may want to build
 straight into your /Applications folder. The instructions below assume you are
 building into a pre-existing ${HOME}/apps directory ...
@@ -1108,7 +1108,7 @@ The QGIS packages will be created with:
 you can install them using apt-get and re-run the command.
 
 /!\ *Note:* If you have libqgis1-dev installed, you need to remove it first
-using dpkg -r libqgis1-dev.  Otherwise dpkg-buildpackage will complain about at
+using dpkg -r libqgis1-dev.  Otherwise dpkg-buildpackage will complain about a
 build conflict.
 
 The the packages are created in the parent directory (ie. one level up).
