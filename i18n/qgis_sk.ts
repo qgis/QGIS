@@ -2637,39 +2637,39 @@ Táto binrána verzia bola skompilovaná s knižnicou Qt %1 a momentálne beží
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished">Tento kandidát na vydanie obsahuje 60 opráv chýb a rozšírení cez vydanie QGIS 0.10.0. Naviac boli pridané nasledovné funkcie: </translation>
+        <translation type="obsolete">Tento kandidát na vydanie obsahuje 60 opráv chýb a rozšírení cez vydanie QGIS 0.10.0. Naviac boli pridané nasledovné funkcie: </translation>
     </message>
     <message>
         <source>Revision of all dialogs for user interface consistancy</source>
-        <translation type="unfinished">Revízia všetkých dialógových okien užívateľského rozhrania a ich zjednotenie</translation>
+        <translation type="obsolete">Revízia všetkých dialógových okien užívateľského rozhrania a ich zjednotenie</translation>
     </message>
     <message>
         <source>Improvements to unique value renderer vector dialog</source>
-        <translation type="unfinished">Vylepšenia dialógového okna vykresľovača vektorovej symboliky</translation>
+        <translation type="obsolete">Vylepšenia dialógového okna vykresľovača vektorovej symboliky</translation>
     </message>
     <message>
         <source>Symbol previews when defining vector classes</source>
-        <translation type="unfinished">Náhľady na symboly pri definícii tried vo vektorových vrstvách</translation>
+        <translation type="obsolete">Náhľady na symboly pri definícii tried vo vektorových vrstvách</translation>
     </message>
     <message>
         <source>Separation of python support into its own library</source>
-        <translation type="unfinished">Oddelenie podpory Pythonu do samostatnej knižnice</translation>
+        <translation type="obsolete">Oddelenie podpory Pythonu do samostatnej knižnice</translation>
     </message>
     <message>
         <source>List view and filter for GRASS toolbox to find tools more quickly</source>
-        <translation type="unfinished">Typ pohľadu &quot;zoznam&quot; a filtrovanie v Nástrojoch GRASSu, aby bolo možné rýchlešie nájsť požadovaný nástroj</translation>
+        <translation type="obsolete">Typ pohľadu &quot;zoznam&quot; a filtrovanie v Nástrojoch GRASSu, aby bolo možné rýchlešie nájsť požadovaný nástroj</translation>
     </message>
     <message>
         <source>List view and filter for Plugin Manager to find plugins more easily</source>
-        <translation type="unfinished">Typ pohľadu &quot;zoznam&quot; a filtrovanie v Správcovi zásuvných modulov, aby bolo možné rýchlešie nájsť požadovaný zásuvný modul</translation>
+        <translation type="obsolete">Typ pohľadu &quot;zoznam&quot; a filtrovanie v Správcovi zásuvných modulov, aby bolo možné rýchlešie nájsť požadovaný zásuvný modul</translation>
     </message>
     <message>
         <source>Updated Spatial Reference System definitions</source>
-        <translation type="unfinished">Aktualizované definície o priestorových referenčných systémov</translation>
+        <translation type="obsolete">Aktualizované definície o priestorových referenčných systémov</translation>
     </message>
     <message>
         <source>QML Style support for rasters and database layers</source>
-        <translation type="unfinished">Podpora QML štýlov pre rastrové a databázové vrstvy</translation>
+        <translation type="obsolete">Podpora QML štýlov pre rastrové a databázové vrstvy</translation>
     </message>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
@@ -2953,6 +2953,70 @@ Chyby:  %2
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished">Tento kandidát na vydanie obsahuje 265 opráv chýb a rozšírení cez vydanie QGIS 0.11.0. Naviac boli pridané nasledovné funkcie: </translation>
+    </message>
+    <message>
+        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced topological editing of vector data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single click selection of vector features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhaul of the map composer for much improved printing support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting between OGR supported formats was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the WMS client, WMS standards support has been improved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4469,27 +4533,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation type="unfinished">Jednoduchý rám</translation>
+        <translation type="obsolete">Jednoduchý rám</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation type="unfinished">Dvojitý rám</translation>
-    </message>
-    <message>
-        <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Dvojitý rám</translation>
     </message>
 </context>
 <context>
@@ -12876,6 +12924,14 @@ Kvôli tomu nebude fungovať výber mapového zobrazenia...</translation>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Note: Minimum Maximum values are estimates or user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -15251,10 +15307,6 @@ Majú byť pred klasifikáciou zmazané dosiaľ existujúce triedy?</translation
     <message>
         <source>Dom Exception</source>
         <translation type="unfinished">Výnimka DOM</translation>
-    </message>
-    <message>
-        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

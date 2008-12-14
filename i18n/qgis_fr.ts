@@ -3486,39 +3486,39 @@ Veuillez contacter les développeurs.
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
-        <translation>Cette version d&apos;évaluation plus de 60 correctifs de bogues et améliorations par rapport à la version 0.10.0 de QGIS. De plus les fonctionnalités suivantes ont été ajoutées :</translation>
+        <translation type="obsolete">Cette version d&apos;évaluation plus de 60 correctifs de bogues et améliorations par rapport à la version 0.10.0 de QGIS. De plus les fonctionnalités suivantes ont été ajoutées :</translation>
     </message>
     <message>
         <source>Revision of all dialogs for user interface consistancy</source>
-        <translation>Révision de tout les dialogues de l&apos;interface pour une meilleure homogénéité</translation>
+        <translation type="obsolete">Révision de tout les dialogues de l&apos;interface pour une meilleure homogénéité</translation>
     </message>
     <message>
         <source>Improvements to unique value renderer vector dialog</source>
-        <translation>Amélioration du dialogue de rendu vectoriel de valeur unique</translation>
+        <translation type="obsolete">Amélioration du dialogue de rendu vectoriel de valeur unique</translation>
     </message>
     <message>
         <source>Symbol previews when defining vector classes</source>
-        <translation>Aperçu du symbole lors de la définition des classes vectorielles</translation>
+        <translation type="obsolete">Aperçu du symbole lors de la définition des classes vectorielles</translation>
     </message>
     <message>
         <source>Separation of python support into its own library</source>
-        <translation>Le support de python se fait via une bibliothèque séparée</translation>
+        <translation type="obsolete">Le support de python se fait via une bibliothèque séparée</translation>
     </message>
     <message>
         <source>List view and filter for GRASS toolbox to find tools more quickly</source>
-        <translation>Lister et filtrer la vue de la boîte à outils de GRASS afin de trouver les outils plus rapidement</translation>
+        <translation type="obsolete">Lister et filtrer la vue de la boîte à outils de GRASS afin de trouver les outils plus rapidement</translation>
     </message>
     <message>
         <source>List view and filter for Plugin Manager to find plugins more easily</source>
-        <translation>Lister et filtrer la vue du gestionnaire de plugin afin de les trouver plus rapidement</translation>
+        <translation type="obsolete">Lister et filtrer la vue du gestionnaire de plugin afin de les trouver plus rapidement</translation>
     </message>
     <message>
         <source>Updated Spatial Reference System definitions</source>
-        <translation>Mise à jour des systèmes de référence spatiale</translation>
+        <translation type="obsolete">Mise à jour des systèmes de référence spatiale</translation>
     </message>
     <message>
         <source>QML Style support for rasters and database layers</source>
-        <translation>Support des style QML pour les rasters les couches de bases de données</translation>
+        <translation type="obsolete">Support des style QML pour les rasters les couches de bases de données</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
@@ -3578,6 +3578,70 @@ Erreurs : %2
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished">Cette version d&apos;évaluation plus de 265 correctifs de bogues et améliorations par rapport à la version 0.11.0 de QGIS. De plus les fonctionnalités suivantes ont été ajoutées :</translation>
+    </message>
+    <message>
+        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced topological editing of vector data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single click selection of vector features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhaul of the map composer for much improved printing support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting between OGR supported formats was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the WMS client, WMS standards support has been improved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4745,59 +4809,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Déplacer le contenu</translation>
+        <translation>Déplacer le contenu</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Déplacer le contenu de l&apos;objet</translation>
+        <translation>Déplacer le contenu de l&apos;objet</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Groupe</translation>
+        <translation>Grouper</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Grouper les objets</translation>
+        <translation>Grouper les objets</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Dégrouper</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Dégrouper les objets</translation>
+        <translation>Dégrouper les objets</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Relever</translation>
+        <translation>Relever</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Relever les objets sélectionnés</translation>
+        <translation>Relever les objets sélectionnés</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Descendre les objets sélectionnés</translation>
+        <translation>Descendre les objets sélectionnés</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">Amener vers l&apos;avant</translation>
+        <translation>Amener vers l&apos;avant</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Déplacez les objets séléctionnés au-dessus</translation>
+        <translation>Déplacez les objets séléctionnés au-dessus</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">Envoyer vers l&apos;arrière</translation>
+        <translation>Envoyer vers l&apos;arrière</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Déplacez les objets sélectionnés en-dessous</translation>
+        <translation>Déplacez les objets sélectionnés en-dessous</translation>
     </message>
 </context>
 <context>
@@ -5227,27 +5291,27 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation>Boîte unique</translation>
+        <translation type="obsolete">Boîte unique</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation>Boître double</translation>
+        <translation type="obsolete">Boître double</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation>Repères au milieu de la ligne</translation>
+        <translation type="obsolete">Repères au milieu de la ligne</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation>Repères en-dessous de la ligne</translation>
+        <translation type="obsolete">Repères en-dessous de la ligne</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation>Repères au-dessus de la ligne</translation>
+        <translation type="obsolete">Repères au-dessus de la ligne</translation>
     </message>
     <message>
         <source>Numeric</source>
-        <translation>Numérique</translation>
+        <translation type="obsolete">Numérique</translation>
     </message>
 </context>
 <context>
@@ -11699,15 +11763,15 @@ Information supplémentaire sur l&apos;erreur :</translation>
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="unfinished">Montrer toutes les entités</translation>
+        <translation>Montrer toutes les entités</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="unfinished">Montrer les entités sélectionnées</translation>
+        <translation>Montrer les entités sélectionnées</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="unfinished">Montrer les entités dans le caneva actuel</translation>
+        <translation>Montrer les entités dans le caneva actuel</translation>
     </message>
 </context>
 <context>
@@ -12208,7 +12272,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished">Comportement de la table d&apos;attribut</translation>
+        <translation>Comportement de la table d&apos;attribut</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -12644,7 +12708,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Erreur de lecture du dépôt :</translation>
+        <translation>Erreur de lecture du dépôt :</translation>
     </message>
     <message>
         <source>all repositories</source>
@@ -12904,21 +12968,25 @@ Voici le message d&apos;erreur :</translation>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le module python requis n&apos;est pas installé.
+Pour plus d&apos;information, visitez son site ou le wiki de QGIS.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension python installée.
+Vous devez l&apos;activer dans le Gestionnaire d&apos;Extension.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension python ré-installée.
+Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extension python ré-installée.
+Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
     </message>
 </context>
 <context>
@@ -14659,6 +14727,14 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     </message>
     <message>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation>Des vues d&apos;ensemble des pyramides ne sont pas gérées sur les couches compressées au format JPEG.</translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are estimates or user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17491,7 +17567,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     </message>
     <message>
         <source>Could not determine URL for GetMap from the WMS capabilities response</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Impossible de déterminer l&apos;adresse de GetMap à partir des capacités de réponse de WMS</translation>
     </message>
 </context>
 <context>
