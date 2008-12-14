@@ -1801,33 +1801,56 @@ void QgisApp::about()
     QString whatsNew = "<html><body>" + tr( "Version" ) + " ";
     whatsNew += QGis::QGIS_VERSION;
     whatsNew += "<h3>" + tr( "New features" ) + "</h3>" +
-                tr( "This release candidate includes over 60 bug fixes and enchancements "
-                    "over the QGIS 0.10.0 release. In addition we have added "
+                tr( "This release candidate includes over 265 bug fixes and enchancements "
+                    "over the QGIS 0.11.0 release. In addition we have added "
                     "the following new features:" );
     whatsNew += "<ul><li>"
-                + tr( "Revision of all dialogs for user interface consistancy" )
+                + tr( "HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome" )
                 + "</li>"
                 + "<li>"
-                + tr( "Improvements to unique value renderer vector dialog" )
+                + tr( "Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original." )
                 + "</li>"
                 + "<li>"
-                + tr( "Symbol previews when defining vector classes" )
+                + tr( "Advanced topological editing of vector data." )
                 + "</li>"
                 + "<li>"
-                + tr( "Separation of python support into its own library" )
+                + tr( "Single click selection of vector features." )
                 + "</li>"
                 + "<li>"
-                + tr( "List view and filter for GRASS toolbox to find tools more quickly" )
+                + tr( "Many improvements to raster rendering and support for building pyramids external to the raster file." )
                 + "</li>"
                 + "<li>"
-                + tr( "List view and filter for Plugin Manager to find plugins more easily" )
+                + tr( "Overhaul of the map composer for much improved printing support." )
                 + "</li>"
                 + "<li>"
-                + tr( "Updated Spatial Reference System definitions" )
+                + tr( "A new 'coordinate capture' plugin was added that lets you click on the map and then cut & paste the coordinates to and from the clipboard." )
                 + "</li>"
                 + "<li>"
-                + tr( "QML Style support for rasters and database layers" )
+                + tr( "A new plugin for converting between OGR supported formats was added." )
                 + "</li>"
+                + "<li>"
+                + tr( "A new plugin for converting from DXF files to shapefiles was added." )
+                + "</li>"
+                + "<li>"
+                + tr( "A new plugin was added for interpolating point features into ASCII grid layers." )
+                + "</li>"
+                + "<li>"
+                + tr( "The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed." )
+                + "</li>"
+                + "<li>"
+                + tr( "Plugin toolbar positions are now correctly saved when the application is closed." )
+                + "</li>"
+                + "<li>"
+                + tr( "In the WMS client, WMS standards support has been improved." )
+                + "</li>"
+                + "<li>"
+                + tr( "Complete API revision - we now have a stable API following well defined naming conventions." )
+                + "</li>"
+                + "<li>"
+                + tr( "Ported all GDAL/OGR and GEOS usage to use C APIs only." )
+                + "</li>"
+                + "<li>"
+                    
 //+ "<li>"
 //+ tr("X")
 //+ "</li>"
