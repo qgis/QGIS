@@ -2501,39 +2501,39 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
-        <translation>Este candidato de lanzamiento incluye más de 60 correcciones de errores y mejoras en relación a la versión 0.10.0. Además hemos añadido las siguientes funciones nuevas:</translation>
+        <translation type="obsolete">Este candidato de lanzamiento incluye más de 60 correcciones de errores y mejoras en relación a la versión 0.10.0. Además hemos añadido las siguientes funciones nuevas:</translation>
     </message>
     <message>
         <source>Revision of all dialogs for user interface consistancy</source>
-        <translation>Revisión de todos los diálogos para consistencia de la interfaz de usuario</translation>
+        <translation type="obsolete">Revisión de todos los diálogos para consistencia de la interfaz de usuario</translation>
     </message>
     <message>
         <source>Improvements to unique value renderer vector dialog</source>
-        <translation type="unfinished">Mejoras en el diálogo </translation>
+        <translation type="obsolete">Mejoras en el diálogo </translation>
     </message>
     <message>
         <source>Symbol previews when defining vector classes</source>
-        <translation>Previsualización de símbolos cuando se definen clases vectoriales</translation>
+        <translation type="obsolete">Previsualización de símbolos cuando se definen clases vectoriales</translation>
     </message>
     <message>
         <source>Separation of python support into its own library</source>
-        <translation>Separación de la implementación de python en su propia biblioteca</translation>
+        <translation type="obsolete">Separación de la implementación de python en su propia biblioteca</translation>
     </message>
     <message>
         <source>List view and filter for GRASS toolbox to find tools more quickly</source>
-        <translation>Vista de lista y filtrado para la caja de herramientas de GRASS para encontrar las herramientas más rápidamente</translation>
+        <translation type="obsolete">Vista de lista y filtrado para la caja de herramientas de GRASS para encontrar las herramientas más rápidamente</translation>
     </message>
     <message>
         <source>List view and filter for Plugin Manager to find plugins more easily</source>
-        <translation>Vista de lista y filtrado para el administrador de complementos para encontrar los complementos más fácilmente</translation>
+        <translation type="obsolete">Vista de lista y filtrado para el administrador de complementos para encontrar los complementos más fácilmente</translation>
     </message>
     <message>
         <source>Updated Spatial Reference System definitions</source>
-        <translation>Actualización de las definiciones del Sistema de Referencia Espacial</translation>
+        <translation type="obsolete">Actualización de las definiciones del Sistema de Referencia Espacial</translation>
     </message>
     <message>
         <source>QML Style support for rasters and database layers</source>
-        <translation>Implementación de estilo QML para capas ráster y de base de datos</translation>
+        <translation type="obsolete">Implementación de estilo QML para capas ráster y de base de datos</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
@@ -2585,21 +2585,84 @@ Errores: %2</translation>
         <translation>Los avisos del mapa requieren una capa activa</translation>
     </message>
     <message>
-        <source>Ctrl+M</source>
-        <comment>
-
-
-Minimize Window</comment>
-        <translation type="obsolete">Ctrl+R</translation>
-    </message>
-    <message>
         <source></source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Ctrl+M</source>
+        <comment>
+
+Minimize Window</comment>
+        <translation type="obsolete">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished">Este candidato de lanzamiento incluye más de 265 correcciones de errores y mejoras en relación a la versión 0.11.0. Además hemos añadido las siguientes funciones nuevas:</translation>
+    </message>
+    <message>
+        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced topological editing of vector data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single click selection of vector features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhaul of the map composer for much improved printing support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting between OGR supported formats was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the WMS client, WMS standards support has been improved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3180,62 +3243,6 @@ p, li { white-space: pre-wrap; }
         <translation>Formato SVG</translation>
     </message>
     <message>
-        <source>Move Content</source>
-        <translation type="obsolete">Mover contenido</translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="obsolete">Mover contenido del elemento</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">A&amp;grupar</translation>
-    </message>
-    <message>
-        <source>Group items</source>
-        <translation type="obsolete">Agrupar elementos</translation>
-    </message>
-    <message>
-        <source>&amp;Ungroup</source>
-        <translation type="obsolete">&amp;Desagrupar</translation>
-    </message>
-    <message>
-        <source>Ungroup items</source>
-        <translation type="obsolete">Desagrupar elementos</translation>
-    </message>
-    <message>
-        <source>Raise</source>
-        <translation type="obsolete">Subir</translation>
-    </message>
-    <message>
-        <source>Raise selected items</source>
-        <translation type="obsolete">Subir los elementos seleccionados</translation>
-    </message>
-    <message>
-        <source>Lower</source>
-        <translation type="obsolete">Bajar</translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="obsolete">Bajar los elementos seleccionados</translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="obsolete">Traer al frente</translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="obsolete">Mover los elementos seleccionados arriba</translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="obsolete">Enviar al fondo</translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="obsolete">Mover los elementos seleccionados al fondo</translation>
-    </message>
-    <message>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
@@ -3420,59 +3427,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Mover contenido</translation>
+        <translation>Mover contenido</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Mover contenido del elemento</translation>
+        <translation>Mover contenido del elemento</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Grupo</translation>
+        <translation>Agrupar</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Agrupar elementos</translation>
+        <translation>Agrupar elementos</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Desagrupar</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Desagrupar elementos</translation>
+        <translation>Desagrupar elementos</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Subir</translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Subir los elementos seleccionados</translation>
+        <translation>Subir los elementos seleccionados</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Bajar</translation>
+        <translation>Bajar</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Bajar los elementos seleccionados</translation>
+        <translation>Bajar los elementos seleccionados</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">Traer al frente</translation>
+        <translation>Traer al frente</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Mover los elementos seleccionados arriba</translation>
+        <translation>Mover los elementos seleccionados arriba</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">Enviar al fondo</translation>
+        <translation>Enviar al fondo</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Mover los elementos seleccionados al fondo</translation>
+        <translation>Mover los elementos seleccionados abajo</translation>
     </message>
 </context>
 <context>
@@ -3738,27 +3745,27 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation>Recuadro simple</translation>
+        <translation type="obsolete">Recuadro simple</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation>Recuadro doble</translation>
+        <translation type="obsolete">Recuadro doble</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation>Línea con marcas en el centro</translation>
+        <translation type="obsolete">Línea con marcas en el centro</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation>Línea con marcas en el abajo</translation>
+        <translation type="obsolete">Línea con marcas en el abajo</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation>Línea con marcas en el arriba</translation>
+        <translation type="obsolete">Línea con marcas en el arriba</translation>
     </message>
     <message>
         <source>Numeric</source>
-        <translation>Numérico</translation>
+        <translation type="obsolete">Numérico</translation>
     </message>
 </context>
 <context>
@@ -7845,10 +7852,6 @@ p, li { white-space: pre-wrap; }
         <translation>¿Etiquetas multilínea?</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>General</source>
         <translation>General</translation>
     </message>
@@ -7871,6 +7874,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Escala máxima a la que se mostrará esta capa. </translation>
+    </message>
+    <message>
+        <source>&#xb0;</source>
+        <translation type="obsolete">°</translation>
     </message>
     <message encoding="UTF-8">
         <source>°</source>
@@ -7962,10 +7969,6 @@ p, li { white-space: pre-wrap; }
         <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
         <translation>El elemento contiene múltiples capas. Visualizar múltiples capas en la tabla no está implementado.</translation>
     </message>
-    <message>
-        <source>More layers</source>
-        <translation type="obsolete">Más capas</translation>
-    </message>
 </context>
 <context>
     <name>QgsLegendLayerFile</name>
@@ -8044,46 +8047,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
         <translation>Los puntos de datos se transformarán a partir del sistema de referencia de coordenadas de la capa.</translation>
-    </message>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">No es una capa vectorial</translation>
-    </message>
-    <message>
-        <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Para abrir una tabla de atributos, debe seleccionar una capa vectorial en la leyenda</translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="obsolete">excepción bad_alloc</translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">El relleno de la tabla de atributos se ha detenido porque no quedaba más memoria virtual</translation>
-    </message>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">Tabla de atributos - </translation>
-    </message>
-    <message>
-        <source>Start editing failed</source>
-        <translation type="obsolete">Ha fallado el comienzo de la edición</translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">El proveedor no se puede abrir para editar</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">Detener edición</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">¿Quiere guardar los cambios?</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">No se pudieron transmitir los cambios</translation>
     </message>
 </context>
 <context>
@@ -9565,113 +9528,119 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere desactualizar el complemento a la última versión disponible? ¡La versión instalada es más nueva!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la instalación del complemento</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento ha desaparecido</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento parece haber sido instalado, pero no se sabe donde. Probablemente el paquete del complemento contenía un nombre de directorio incorrecto.
+Por favor, busque en la lista de complemento instalados. Es casi seguro que lo encontrará ahí, pero no se puede determinar cuál de ellos es. Esto también significa que no se podrá determinar si el complemento está instalado ni informarle de actualizaciones disponibles. Sin embargo, el complemento puede funcionar. Por favor, informe al autor del complemento del problema.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento se instaló correctamente</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la desinstalación del complemento</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere desinstalar el siguiente complemento?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia: este complemento no está disponible en ningún repositorio accesible.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento se desinstaló correctamente</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="unfinished"></translation>
+        <translation>Va a añadir algunos repositorios de complementos no autorizados ni avalados por el equipo de Quantum GIS, pero proporcionados por gente asociada con nosotros. Los autores de los complemento generalmente hacen esfuerzos para que sus trabajos sean útiles y seguros, pero no podemos asumir ninguna responsabilidad por ellos. ¡ESTÁ AVISADO!</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No se puede añadir otro repositorio con la misma URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere eliminar el siguiente repositorio?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este complemento es incompatible con su versión de Quantum GIS y probablemente no funcionará.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Este complemento parece estar roto.
+Se ha instalado pero no se puede cargar.
+Aqui está el mensaje de error:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Tenga en cuenta que este es un complemento de núcleo no desinstalable</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
+        <translation>Este complemento está roto</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Este complemento necesita una versión más reciente de Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
+        <translation>Este complemento necesita un módulo que falta</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Complemento reinstalado con correctamente</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento está diseñado para una versión más reciente de Quantum GIS. La versión mínima requerida es:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento depende de algunos componentes que faltan en su sistema. Necesita instalar el siguiente módulo de Python para activarlo:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento está roto. Python dijo:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished"></translation>
+        <translation>El módulo requerido de Python no está instalado.
+Para más información, por favor visite su página web y el wiki de Quantun GIS.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Complemento de Python instalado.
+Ahora necesita activarlo en el Administrador de complementos.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Complemento de Python reinstalado.
+Tiene que reiniciar Quantum GIS para recargarlo.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Complemento de Python desinstalado. Tenga en cuenta que puede necesitar reiniciar Quantum GIS para eliminarlo completamente.</translation>
     </message>
 </context>
 <context>
@@ -9817,11 +9786,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Éxito</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolviendo nombre del servidor...</translation>
     </message>
     <message>
         <source>Connecting...</source>
@@ -9829,7 +9798,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor conectado. Enviando petición...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
@@ -9837,11 +9806,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>Desocupado</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrando conexión...</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9875,11 +9844,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalando...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolviendo nombre del servidor...</translation>
     </message>
     <message>
         <source>Connecting...</source>
@@ -9887,7 +9856,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor conectado. Enviando petición...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
@@ -9895,11 +9864,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>Desocupado</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrando conexión...</translation>
     </message>
     <message>
         <source>Error</source>
@@ -9907,11 +9876,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>La descompresión del paquete del complemento falló. Probablemente está roto o falta en el repositorio. Puede que también quiera asegurarse de que tiene permiso de escritura en el directorio de complementos:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelado por el usuario</translation>
     </message>
 </context>
 <context>
@@ -9933,7 +9902,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished"></translation>
+        <translation>no se recivió ningún mensaje de error</translation>
     </message>
 </context>
 <context>
@@ -10002,7 +9971,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>[ incompatible ]</source>
-        <translation type="unfinished"></translation>
+        <translation>[ incompatible ]</translation>
     </message>
 </context>
 <context>
@@ -11043,6 +11012,14 @@ Debido a esto no funcionará el selector de proyecciones...</translation>
     </message>
     <message>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
+        <translation>La construcción de vistas de pirámides internas no está admitida en capas ráster con compresión JPEG.</translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are estimates or user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13199,11 +13176,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Dom Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Excepción dom</translation>
     </message>
     <message>
         <source>Could not determine URL for GetMap from the WMS capabilities response</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">No se pudo determinar la URL para GetMap de la respuesta de capacidades del WMS</translation>
     </message>
 </context>
 <context>

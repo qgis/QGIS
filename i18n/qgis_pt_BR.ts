@@ -2856,39 +2856,39 @@ Minimize Window</comment>
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
-        <translation>Este lançamento inclui mais de 60 correções e melhoramentos em relação à versão 0.10. Além disso, nós adicionamos as seguintes funcionalidades:</translation>
+        <translation type="obsolete">Este lançamento inclui mais de 60 correções e melhoramentos em relação à versão 0.10. Além disso, nós adicionamos as seguintes funcionalidades:</translation>
     </message>
     <message>
         <source>Revision of all dialogs for user interface consistancy</source>
-        <translation>Revisão de todos os diálogos para a consistência da interface do usuário</translation>
+        <translation type="obsolete">Revisão de todos os diálogos para a consistência da interface do usuário</translation>
     </message>
     <message>
         <source>Improvements to unique value renderer vector dialog</source>
-        <translation>Melhoramentos para renderizar valores únicos de vetores</translation>
+        <translation type="obsolete">Melhoramentos para renderizar valores únicos de vetores</translation>
     </message>
     <message>
         <source>Symbol previews when defining vector classes</source>
-        <translation>Pre-visualização quando definindo classes de vetores</translation>
+        <translation type="obsolete">Pre-visualização quando definindo classes de vetores</translation>
     </message>
     <message>
         <source>Separation of python support into its own library</source>
-        <translation>Separação do suporte à Python em sua própria biblioteca</translation>
+        <translation type="obsolete">Separação do suporte à Python em sua própria biblioteca</translation>
     </message>
     <message>
         <source>List view and filter for GRASS toolbox to find tools more quickly</source>
-        <translation>Busca na lista de ferramentas do GRASS (para achá-las mais rápido)</translation>
+        <translation type="obsolete">Busca na lista de ferramentas do GRASS (para achá-las mais rápido)</translation>
     </message>
     <message>
         <source>List view and filter for Plugin Manager to find plugins more easily</source>
-        <translation>Busca na lista do Gerenciador de Plugins (para achá-los mais rápido)</translation>
+        <translation type="obsolete">Busca na lista do Gerenciador de Plugins (para achá-los mais rápido)</translation>
     </message>
     <message>
         <source>Updated Spatial Reference System definitions</source>
-        <translation>Atualização das definições do Sistema de Referência Espacial</translation>
+        <translation type="obsolete">Atualização das definições do Sistema de Referência Espacial</translation>
     </message>
     <message>
         <source>QML Style support for rasters and database layers</source>
-        <translation>Suporte ao estilo QML para camadas raster e de banco de dados</translation>
+        <translation type="obsolete">Suporte ao estilo QML para camadas raster e de banco de dados</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
@@ -3036,6 +3036,70 @@ Erros:  %2</translation>
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished">Este lançamento inclui mais de 265 correções e melhoramentos em relação à versão 0.10. Além disso, nós adicionamos as seguintes funcionalidades: {0.11.0?}</translation>
+    </message>
+    <message>
+        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced topological editing of vector data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single click selection of vector features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overhaul of the map composer for much improved printing support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting between OGR supported formats was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In the WMS client, WMS standards support has been improved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4258,27 +4322,27 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerScaleBar</name>
     <message>
         <source>Single Box</source>
-        <translation>Caixa simples</translation>
+        <translation type="obsolete">Caixa simples</translation>
     </message>
     <message>
         <source>Double Box</source>
-        <translation>Caixa dupla</translation>
+        <translation type="obsolete">Caixa dupla</translation>
     </message>
     <message>
         <source>Line Ticks Middle</source>
-        <translation>Linhas tracejadas do meio</translation>
+        <translation type="obsolete">Linhas tracejadas do meio</translation>
     </message>
     <message>
         <source>Line Ticks Down</source>
-        <translation>Linhas tracejadas embaixo</translation>
+        <translation type="obsolete">Linhas tracejadas embaixo</translation>
     </message>
     <message>
         <source>Line Ticks Up</source>
-        <translation>Linhas tracejadas em cima</translation>
+        <translation type="obsolete">Linhas tracejadas em cima</translation>
     </message>
     <message>
         <source>Numeric</source>
-        <translation>Numérico</translation>
+        <translation type="obsolete">Numérico</translation>
     </message>
 </context>
 <context>
@@ -11647,6 +11711,14 @@ Devido ao seletor de projeção não estar em funcionamento...</translation>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Note: Minimum Maximum values are estimates or user defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayerPropertiesBase</name>
@@ -13823,10 +13895,6 @@ Existem classes que poderiam ser excluídas antes da classificação?</translati
     <message>
         <source>Dom Exception</source>
         <translation>Exceção Dom</translation>
-    </message>
-    <message>
-        <source>Could not determine URL for GetMap from the WMS capabilities response</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
