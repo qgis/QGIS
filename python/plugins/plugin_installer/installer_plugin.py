@@ -26,6 +26,7 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def __init__(self, iface):
     self.iface = iface
+    setIface(self.iface) #pass self.iface to installer_data module (needed for plugin loading & testing)
     if QGIS_MAJOR_VER: # new plugin API
       self.mainWindow = self.iface.mainWindow
     else: # old plugin API
