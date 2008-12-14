@@ -2620,67 +2620,67 @@ Errors:  %2
     </message>
     <message>
         <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished">Эта версия включает более 265 исправлений ошибок и обновлений с момента выхода QGIS 0.11.0. Кроме того, мы добавили следующие возможности: </translation>
+        <translation>Эта версия включает более 265 исправлений ошибок и обновлений с момента выхода QGIS 0.11.0. Кроме того, мы добавили следующие возможности: </translation>
     </message>
     <message>
         <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
-        <translation type="unfinished"></translation>
+        <translation>Улучшения совместимости с HIG для Windows / Mac OS X / KDE / Gnome</translation>
     </message>
     <message>
         <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение векторных слоёв и их частей в отличной от оригинала системе координат.</translation>
     </message>
     <message>
         <source>Advanced topological editing of vector data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Средства топологического редактирования векторных данных.</translation>
     </message>
     <message>
         <source>Single click selection of vector features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделение векторных объектов одним щелчком.</translation>
     </message>
     <message>
         <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Существенно улучшены средства отображения растров и построения внешних пирамид.</translation>
     </message>
     <message>
         <source>Overhaul of the map composer for much improved printing support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Переработанный конструктор карт с улучшенной поддержкой печати.</translation>
     </message>
     <message>
         <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый модуль «Захват координат», который позволяет копировать координаты щелчка на карте в буфер обмена.</translation>
     </message>
     <message>
         <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый модуль для преобразования данных в форматах OGR.</translation>
     </message>
     <message>
         <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый модуль для преобразования DXF-файлов в Shape-файлы.</translation>
     </message>
     <message>
         <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый модуль для интерполяции точечных данных в файлы в формате ASCII-сетки.</translation>
     </message>
     <message>
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая версия менеджера модулей с возможностью проверки совместимости модуля с текущей версией QGIS.</translation>
     </message>
     <message>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Позиции панели инструментов модулей теперь сохраняются при закрытии приложения.</translation>
     </message>
     <message>
         <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Улучшена поддержка WMS-стандарта в клиенте WMS.</translation>
     </message>
     <message>
         <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Существенно переработан API приложения — теперь QGIS имеет стабильный API, который следует строгим принципам.</translation>
     </message>
     <message>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Все функции, использующие GDAL/OGR и GEOS перенесены на API для языка C.</translation>
     </message>
 </context>
 <context>
@@ -9805,7 +9805,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Модуль удалён. Для завершения удаления может потребоваться перезапуск Quantum GIS.</translation>
+        <translation type="obsolete">Модуль удалён. Для завершения удаления может потребоваться перезапуск Quantum GIS.</translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11194,11 +11198,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Note: Minimum Maximum values are estimates or user defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание: значения мин./макс. приблизительные или определены пользователем</translation>
     </message>
     <message>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание: значения мин./макс. являтся фактическими значениями, взятыми из канала(ов)</translation>
     </message>
 </context>
 <context>

@@ -9640,7 +9640,11 @@ Tiene que reiniciar Quantum GIS para recargarlo.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Complemento de Python desinstalado. Tenga en cuenta que puede necesitar reiniciar Quantum GIS para eliminarlo completamente.</translation>
+        <translation type="obsolete">Complemento de Python desinstalado. Tenga en cuenta que puede necesitar reiniciar Quantum GIS para eliminarlo completamente.</translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

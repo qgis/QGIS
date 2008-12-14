@@ -10295,7 +10295,11 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Wtyczka odinstalowana pomyślnie. W niektórych przypadkach pełne usunięcie nastąpi po ponownym uruchomieniu programu.</translation>
+        <translation type="obsolete">Wtyczka odinstalowana pomyślnie. W niektórych przypadkach pełne usunięcie nastąpi po ponownym uruchomieniu programu.</translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
