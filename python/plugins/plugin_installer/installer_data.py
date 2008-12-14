@@ -61,6 +61,13 @@ except:
   QGIS_MAJOR_VER = 1
 
 
+
+def setIface(qgisIface):
+  global iface
+  iface = qgisIface
+
+
+
 reposGroup = "/Qgis/plugin-repos"
 settingsGroup = "/Qgis/plugin-installer"
 seenPluginGroup = "/Qgis/plugin-seen"
@@ -317,10 +324,13 @@ class Repositories(QObject):
             "repository"    : reposName,
             "localdir"      : name,
             "read-only"     : False}
-          #if compatible, add the plugin to list
           qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().trimmed()
           if not qgisMinimumVersion: qgisMinimumVersion = "0"
-          if compareVersions(QGIS_VER, qgisMinimumVersion) < 2:
+          # please use the tag below only if really needed! (for example if plugin development is abandoned)
+          qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().trimmed()
+          if not qgisMaximumVersion: qgisMaximumVersion = "2"
+          #if compatible, add the plugin to the list
+          if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
             plugins.addPlugin(plugin)
         plugins.workarounds()
         self.mRepositories[reposName]["state"] = 2
@@ -440,10 +450,10 @@ class Plugins(QObject):
           errorDetails = qgisMinimumVersion
       except:
         pass
-      #try:
-      #  exec ("%s.classFactory(QgisInterface)" % key)
-      #except Exception, error:
-      #  error = error.message
+      try:
+        exec ("%s.classFactory(iface)" % key)
+      except Exception, error:
+        error = error.message
     except Exception, error:
       error = error.message
 
@@ -571,8 +581,6 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def workarounds(self):
     """ workarounds for particular plugins with wrong metadata """
-    if self.mPlugins.has_key("postgps") and self.mPlugins["postgps"]["version_avail"] == "0.2":
-      self.mPlugins["postgps"]["version_avail"] = "0.01"
     if self.mPlugins.has_key("select") and self.mPlugins["select"]["version_avail"] == "0.1":
       self.mPlugins["select"]["version_avail"] = "0.2"
 

@@ -412,7 +412,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           ver = availableVersion
         else:
           ver = installedVersion
-        if p["status"] in ["upgradeable","newer"]:
+        if p["status"] in ["upgradeable","newer"] or installedVersion == "?" or availableVersion == "?":
           verTip = self.tr("installed version") + ": " + installedVersion + "\n" + self.tr("available version") + ": " + availableVersion
         elif p["status"] in ["not installed", "new"]:
           verTip = self.tr("available version") + ": " + availableVersion
@@ -568,7 +568,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
           message += " <b>" + plugin["error_details"] + "</b>"
         elif plugin["error"] == "dependent":
-          message = self.tr("The plugin depends on some components missing on this system. You need to install the following Python module in order to enable it:")
+          message = self.tr("The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:")
           message += "<b> " + plugin["error_details"] + "</b>"
         else:
           message = self.tr("The plugin is broken. Python said:")
