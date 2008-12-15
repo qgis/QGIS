@@ -1835,7 +1835,7 @@ void QgisApp::about()
                 + tr( "A new plugin was added for interpolating point features into ASCII grid layers." )
                 + "</li>"
                 + "<li>"
-                + tr( "The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed." )
+                + tr( "The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed." )
                 + "</li>"
                 + "<li>"
                 + tr( "Plugin toolbar positions are now correctly saved when the application is closed." )
