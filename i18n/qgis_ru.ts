@@ -1,4 +1,5 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="ru">
 <defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
@@ -9809,7 +9810,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль удалён. Для завершения удаления может потребоваться перезапуск Quantum GIS.</translation>
     </message>
 </context>
 <context>
