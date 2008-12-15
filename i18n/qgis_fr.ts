@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="fr">
+<!DOCTYPE TS><TS>
 <defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
@@ -3615,7 +3614,7 @@ Erreurs : %2
     </message>
     <message>
         <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation>Une nouvelle extension de convertion entre les formats supportés par OGT a été ajoutée.</translation>
+        <translation>Une nouvelle extension de conversion entre les formats supportés par OGT a été ajoutée.</translation>
     </message>
     <message>
         <source>A new plugin for converting from DXF files to shapefiles was added.</source>
@@ -3627,7 +3626,7 @@ Erreurs : %2
     </message>
     <message>
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation>Le gestionnaire d&apos;extension a été refondu totalement, la nouvelle version a beaucoup d&apos;améliorations, ce qui inclu la vérification que la version courante de QGIS supportera bien l&apos;extension en train d&apos;être installée.</translation>
+        <translation type="obsolete">Le gestionnaire d&apos;extension a été refondu totalement, la nouvelle version a beaucoup d&apos;améliorations, ce qui inclut la vérification que la version courante de QGIS supportera bien l&apos;extension en train d&apos;être installée.</translation>
     </message>
     <message>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
@@ -3635,15 +3634,19 @@ Erreurs : %2
     </message>
     <message>
         <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation>Le support des standarts WMS a été amélioré.</translation>
+        <translation>Le support des standards WMS a été amélioré.</translation>
     </message>
     <message>
         <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation>Révision compléte de l&apos;API - nous avons maintenant une API stable qui suit une convention de nommage bien définie.</translation>
+        <translation>Révision complète de l&apos;API - nous avons maintenant une API stable qui suit une convention de nommage bien définie.</translation>
     </message>
     <message>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
         <translation>Port de GDAL/OGR et de GEOS pour n&apos;utiliser que l&apos;API en C.</translation>
+    </message>
+    <message>
+        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

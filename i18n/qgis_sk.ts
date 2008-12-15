@@ -3000,10 +3000,6 @@ Chyby:  %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3017,6 +3013,10 @@ Chyby:  %2
     </message>
     <message>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
