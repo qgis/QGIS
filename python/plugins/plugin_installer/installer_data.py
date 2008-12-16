@@ -304,8 +304,8 @@ class Repositories(QObject):
       pluginNodes = reposXML.elementsByTagName("pyqgis_plugin")
       if pluginNodes.size():
         for i in range(pluginNodes.size()):
-          name = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed()).fileName()
-          name.chop(4)
+          fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed()).fileName()
+          name = fileName.section(".", 0, 0)
           name = str(name)
           plugin = {}
           plugin[name] = {
@@ -316,7 +316,7 @@ class Repositories(QObject):
             "author"        : pluginNodes.item(i).firstChildElement("author_name").text().trimmed(),
             "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().trimmed(),
             "url"           : pluginNodes.item(i).firstChildElement("download_url").text().trimmed(),
-            "filename"      : pluginNodes.item(i).firstChildElement("file_name").text().trimmed(),
+            "filename"      : fileName,
             "status"        : "not installed",
             "error"         : "",
             "error_details" : "",
