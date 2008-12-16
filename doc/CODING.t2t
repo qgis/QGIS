@@ -26,6 +26,8 @@ Developers guide for QGIS
 % txt2tags -t moin CODING.moin  CODING.t2t
 % To generate the html version of this document
 % txt2tags -t html CODING.html  CODING.t2t
+% To generate LaTeX version of this document do:
+% txt2tags -t tex -o CODING.tex  CODING.t2t
 %
 % End of comments
 % -------------------
