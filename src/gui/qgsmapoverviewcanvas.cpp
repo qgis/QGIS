@@ -27,6 +27,7 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include "qgslogger.h"
+#include <limits.h>
 
 //! widget that serves as rectangle showing current extent in overview
 class QgsPanningWidget : public QWidget
@@ -145,6 +146,18 @@ void QgsMapOverviewCanvas::drawExtentRect()
 #endif
 
   QRect r( x1, y1, x2 - x1 + 1, y2 - y1 + 1 );
+
+  // allow for 5 pixel minimum widget size
+  if ( r.width() < 5 && x1 > INT_MIN + 2 )	// make sure no underflow occurs (2 is largest adjustment)
+  {
+    r.setX( r.x() - ( ( 5 - r.width() ) / 2 ) );	// adjust x  by 1/2 the difference of calculated and min. width
+    r.setWidth(5);
+  }
+  if ( r.height() < 5 && y1 > INT_MIN + 2 ) 
+  {
+    r.setY( r.y() - ( ( 5 - r.height() ) / 2 ) );	// adjust y
+    r.setHeight(5); 
+  }
 
   QgsDebugMsg( QString( "panning: extent to widget: [%1,%2] [%3x%4]" ).arg( x1 ).arg( y1 ).arg( r.width() ).arg( r.height() ) );
 

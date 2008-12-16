@@ -1585,7 +1585,7 @@ void QgisApp::createOverview()
 
   QBitmap overviewPanBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
   QBitmap overviewPanBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
-  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 5, 5 );
+  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 );	//set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
   overviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
