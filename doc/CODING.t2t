@@ -23,9 +23,9 @@ Developers guide for QGIS
 % To generate the text version of this document:
 % txt2tags -t txt -o CODING CODING.t2t
 % To generate the moinmoin version of this document
-% txt2tags -t moin CODING.moin  CODING.t2t
+% txt2tags -t moin -o CODING.moin  CODING.t2t
 % To generate the html version of this document
-% txt2tags -t html CODING.html  CODING.t2t
+% txt2tags -t html -o CODING.html  CODING.t2t
 % To generate LaTeX version of this document do:
 % txt2tags -t tex -o CODING.tex  CODING.t2t
 %
