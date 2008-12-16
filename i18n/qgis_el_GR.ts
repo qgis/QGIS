@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="tr">
+<defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
     <message>
@@ -128,23 +130,23 @@
     <name>Dialog</name>
     <message>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύνδεση</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση</translation>
     </message>
     <message>
         <source>OGR Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπέας OGR</translation>
     </message>
     <message>
         <source>Could not establish connection to: &apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Δε ήταν δυνατή η σύνδεση με: &apos;</translation>
     </message>
     <message>
         <source>Open OGR file</source>
-        <translation type="unfinished"></translation>
+        <translation>Άνοιγμα OGR φακέλου </translation>
     </message>
     <message>
         <source>OGR File Data Source (*.*)</source>
