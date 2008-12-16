@@ -205,7 +205,7 @@
     </message>
     <message>
         <source>Documentation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Τεκμηρίωση:</translation>
     </message>
     <message>
         <source>You really need to read the QGIS API Documentation now at:</source>
