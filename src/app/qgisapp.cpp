@@ -1850,7 +1850,8 @@ void QgisApp::about()
                 + tr( "Ported all GDAL/OGR and GEOS usage to use C APIs only." )
                 + "</li>"
                 + "<li>"
-                    
+                + tr( "Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place." )
+                + "</li>"
 //+ "<li>"
 //+ tr("X")
 //+ "</li>"
