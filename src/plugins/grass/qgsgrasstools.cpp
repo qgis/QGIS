@@ -438,7 +438,7 @@ void QgsGrassTools::closeTools()
 {
   QgsDebugMsg( "entered." );
 
-  for ( int i = mTabWidget->count() - 1; i > 1; i-- )
+  for ( int i = mTabWidget->count() - 1; i > 2; i-- )
   {
     delete mTabWidget->widget( i );
     mTabWidget->removeTab( i );
