@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="nl">
+<defaultcodec></defaultcodec>
 <context>
     <name>@default</name>
     <message>
@@ -835,7 +837,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not identify objects on</source>
-        <translation>Geen indentificeerbaare kaartobjecten op</translation>
+        <translation>Geen indentificeerbare kaartobjecten op</translation>
     </message>
     <message>
         <source>Could not remove polygon intersection</source>
@@ -1625,17 +1627,17 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation type="unfinished">Fout bij het Laden van Plugin</translation>
+        <translation>Fout bij het Laden van Plugin</translation>
     </message>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation type="unfinished">Er is een fout opgetreden bij het laden van een plugin. De volgende informatie kan de QGIS-ontwikkelaars helpen dit op te lossen:
+        <translation>Er is een fout opgetreden bij het laden van een plugin. De volgende informatie kan de QGIS-ontwikkelaars helpen dit op te lossen:
 %1.</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
-        <translation type="unfinished">Fout bij het lezen van de metadata van plugin</translation>
+        <translation>Fout bij het lezen van de metadata van plugin</translation>
     </message>
 </context>
 <context>
@@ -2737,7 +2739,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Unsupported Data Source</source>
-        <translation>Niet onderstuende Databron</translation>
+        <translation>Niet ondersteund Dataformaat</translation>
     </message>
     <message>
         <source>V</source>
@@ -3252,71 +3254,71 @@ Fouten:  %2
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished">This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</translation>
+        <translation>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</translation>
     </message>
     <message>
         <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
-        <translation type="unfinished"></translation>
+        <translation>HIG Compliance (Human Interface Guidelines) verbeteringen voor Windows / Mac OS X / KDE / Gnome</translation>
     </message>
     <message>
         <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation type="unfinished"></translation>
+        <translation>Op disk slaan van een vectorlaag of subset van die laag met een afwijkend Ruimtelijk Referentie Systeem dan het origineel.</translation>
     </message>
     <message>
         <source>Advanced topological editing of vector data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geavanceerde topologisch aanpassingen van vectordata.</translation>
     </message>
     <message>
         <source>Single click selection of vector features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenkliks-selectie van vectorkaartobjecten.</translation>
     </message>
     <message>
         <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeteringen aan het afbeelden van rasters en ondersteuning van het bouwen van piramides buiten buiten het rasterbestand.</translation>
     </message>
     <message>
         <source>Overhaul of the map composer for much improved printing support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Totale herbouw van het &apos;map-composer&apos; deel voor verbeterde printfunctionaliteit.</translation>
     </message>
     <message>
         <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een nieuwe &apos;coördinaatprik&apos;-plugin is toegevoegd waarmee in de kaart kan worden geklikt en de coördinaten dan van en naar het klembord kunnen worden verplaatst.</translation>
     </message>
     <message>
         <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een nieuwe plugin voor het omzetten van OGR-ondersteunde formaten is toegevoegd.</translation>
     </message>
     <message>
         <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een nieuwe plugin voor het omzetten van DXF-bestanden naar shape-bestanden.</translation>
     </message>
     <message>
         <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Een nieuwe plugin voor het toevoegen van interpolatie-puntobjecten in ASCII-gridlagen.</translation>
     </message>
     <message>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pluginwerkbalk posities worden juist opgeslagen wanneer het programma wordt afgesloten.</translation>
     </message>
     <message>
         <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbeterde ondersteuning van WMS-standaarden in de &apos;WMS-client&apos;.</translation>
     </message>
     <message>
         <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Algehele API-revisie - er is nu een stabiele API gebruikmakend van duidelijke naamconventies.</translation>
     </message>
     <message>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL/OGR en GEOS gebruikt geporteerd om alleen C API&apos;s te gebruiken.</translation>
     </message>
     <message>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Totale herbouw van de pythonplugin-installer. De nieuwe versie heeft veel verbeteringen, bijvoorbeeld het controleren of de draaiende QGIS-versie wel compatibel is met de geïnstalleerde plugins.</translation>
     </message>
 </context>
 <context>
@@ -3711,11 +3713,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Updating selection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie wordt bijgewerkt...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Afbreken</translation>
+        <translation>Afbreken</translation>
     </message>
 </context>
 <context>
@@ -3738,7 +3740,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation>Attribuuttabel</translation>
+        <translation>Attributentabel</translation>
     </message>
     <message>
         <source>&amp;Close</source>
@@ -3846,7 +3848,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation>Attribuuttabel-aanpassen aan/uit zetten</translation>
+        <translation>Attributentabel-aanpassen aan/uit zetten</translation>
     </message>
 </context>
 <context>
@@ -4471,59 +4473,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Inhoud Verschuiven</translation>
+        <translation>Inhoud Verschuiven</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Onderdeel inhoud verschuiven</translation>
+        <translation>Onderdeel inhoud verschuiven</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Groepeer</translation>
+        <translation>Groepeer</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Groepeer onderdelen</translation>
+        <translation>Groepeer onderdelen</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Groeperen ongedaan maken</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Onderdelengroepering ongedaan maken</translation>
+        <translation>Onderdelengroepering ongedaan maken</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Omhoog</translation>
+        <translation>Omhoog</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Geselecteerde omhooghalen</translation>
+        <translation>Geselecteerde omhooghalen</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Omlaag</translation>
+        <translation>Omlaag</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Geselecteerde omlaaghalen</translation>
+        <translation>Geselecteerde omlaaghalen</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">Naar Voorgrond</translation>
+        <translation>Naar Voorgrond</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Geselecteerde onderdelen naar boven</translation>
+        <translation>Geselecteerde onderdelen naar boven</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">Breng naar Achtergrond</translation>
+        <translation>Breng naar Achtergrond</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Geselecteerde onderdelen naar beneden</translation>
+        <translation>Geselecteerde onderdelen naar beneden</translation>
     </message>
 </context>
 <context>
@@ -9283,7 +9285,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Identify Results - </source>
-        <translation>Identificeerresultaat</translation>
+        <translation>Identificatie-resultaten -</translation>
     </message>
     <message>
         <source>Run action</source>
@@ -9310,7 +9312,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Identify Results</source>
-        <translation>Identificeerresultaten</translation>
+        <translation>Identificatieresultaten</translation>
     </message>
 </context>
 <context>
@@ -9441,7 +9443,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLabelDialog</name>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
 </context>
 <context>
@@ -9648,27 +9650,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Algemeen</translation>
+        <translation>Algemeen</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">Gebruik schaalafhankelijke tonen</translation>
+        <translation>Schaalafhankelijk tekenen gebruiken</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished">Minimale schaal bij welke deze laag nog getoond zal worden. </translation>
+        <translation>Minimale schaal bij welke deze laag nog getoond zal worden. </translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished">Maximale schaal bij welke deze laag nog getoond zal worden. </translation>
+        <translation>Maximale schaal bij welke deze laag nog getoond zal worden. </translation>
     </message>
 </context>
 <context>
@@ -9964,11 +9966,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsMapCanvas</name>
     <message>
         <source>because</source>
-        <translation>omdat</translation>
+        <translation>niet mogelijk omdat</translation>
     </message>
     <message>
         <source>Could not draw</source>
-        <translation>Tekenen niet mogelijk</translation>
+        <translation>Tekenen van laag </translation>
     </message>
 </context>
 <context>
@@ -10040,7 +10042,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>WMS identify result for %1
 %2</source>
-        <translation>WMS identificeer-resultaat voor %1
+        <translation>WMS-identificatieresultaat voor %1
 %2</translation>
     </message>
 </context>
@@ -10762,15 +10764,15 @@ Uitgebreide foutinformatie:
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon alle kaartobjecten</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon geselecteerde kaartobjecten</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon kaartobjecten in huidige kaartscherm</translation>
     </message>
 </context>
 <context>
@@ -11125,7 +11127,7 @@ Uitgebreide foutinformatie:
     </message>
     <message>
         <source>Open attribute table in a dock window</source>
-        <translation>Open de attribuuttabel in een &apos;dock&apos;-venster</translation>
+        <translation>Open de attributentabel in een &apos;dock&apos;-venster</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11137,7 +11139,7 @@ Uitgebreide foutinformatie:
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation>Vraam om CRS</translation>
+        <translation>Vraag om CRS</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
@@ -11149,7 +11151,7 @@ Uitgebreide foutinformatie:
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Gedrag Attributentabel</translation>
     </message>
 </context>
 <context>
@@ -11497,319 +11499,324 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Antwoord van de repository kan niet worden begrepen (geparseerd)</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation type="unfinished"></translation>
+        <translation>De systeem pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
+        <translation>De lokale pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Python Plugins Ophalen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Installeer meer plugins van decentrale repositories</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoeken naar nieuwe plugins...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een nieuwe plugin beschikbaar</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een update voor een plugin beschikbaar</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Plugin Installeren</translation>
+        <translation>QGIS Python Plugins Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het lezen van repository: </translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished"></translation>
+        <translation>Niets te verwijderen! Pluginmap bestaat niet:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het verwijderen van de map: </translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Controleer bestandsrechten of verwijder handmatig</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Plugin Installeren</translation>
+        <translation>QGIS Python Plugin Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het lezen van repository: </translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">alle repositories</translation>
+        <translation>alle repositories</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">verbonden</translation>
+        <translation>verbonden</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze repository is verbonden</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>niet beschikbaar</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze repository is aangevinkt, maar niet beschikbaar</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze repository is uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze repository is geblokkeerd vanwege incompabiliteteit met uw huidige Quantum GIS versie</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished"></translation>
+        <translation>wezen</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished"></translation>
+        <translation>elke status</translation>
     </message>
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>Niet geïnstalleerd</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation type="unfinished"></translation>
+        <translation>geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished"></translation>
+        <translation>op te waarderen en nieuwe</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is niet geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is geïnstalleerd, maar er is een nieuwere versie beschikbaar</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is geïnstalleerd, maar niet beschikbaar in een ingeschakelde repository</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is niet geïnstalleerd en voor het eerst gezien</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is geïnstalleerd en is nieuwe dan de in de repository beschikbare</translation>
     </message>
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>niet geïnstalleerd</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>op te waarderen</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>Nieuw!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation type="unfinished"></translation>
+        <translation>ongeldig</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished"></translation>
+        <translation>geïnstalleerde versie</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished"></translation>
+        <translation>beschikbare versie</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished"></translation>
+        <translation>Dat is de nieuwst beschikbare versie</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is geen versie beschikbaar om op te halen</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished"></translation>
+        <translation>alleen lokaal beschikbaar</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Installeer plugin</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Herinstalleer plugin</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin opwaarderen</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Installeer/upgrade plugin</translation>
+        <translation>Installeer/opwaarderen plugin</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Downgrade plugin</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u de plugin wilt terugzetten naar de laatst beschikbare versie? De geïnstalleerde is nieuwer!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Installatie van plugin mislukt</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin is verdwenen</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation>De plugin lijkt geïnstalleerd, maar het is niet duidelijk waar. Waarschijnlijk bevatte het pluginpakket een verkeerde mapnaam.Zoek in de lijst van geïnstalleerde plugins. Het is waarschijnlijk dat de plugin er tussen staat, alleen kan het programma niet onderscheiden welk het precies is. Dit betekent ook dat u niet geïnformeerd kan worden over updates. De plugin werkt misschien wel. Neem contact op met de bouwer van de plugin en meld deze fout.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin succesvol geïnstalleerd</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Installatie plugin mislukt</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u deze plugin wilt deïnstalleren?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschuwing: deze plugin is niet beschikbaar in een benaderbare repository!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin succesvol gedeïnstalleerd</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="unfinished"></translation>
+        <translation>U gaat een aantal plugin-repositories toevoegen die niet zijn geautoriseerd of worden ondersteund door het Quantum Gis team, maar beschikbaar worden gesteld door mensen rondom ons. Auteurs van plugins doen over het algemeen hun best dat hun werken bruikbaar zijn en veilig, maar wij kunnen daarvoor geen verantwoording dragen. WEES GEWAARSCHUWD!</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen van nog een repository met dezelfde URL is niet mogelijk!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>Weet u zeker dat u deze repository wilt verwijderen?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin is incompatibel met uw huidige Quantum Gis versie en zal waarschijnlijk niet werken.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin lijkt niet te werken.
+Het is geïnstalleerd maar kan niet worden geladen.
+Dit is de foutmelding:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Merk op dat dit een niet te installeren systeemplugin is</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin werkt niet</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin vereist een nieuwere versie van Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze plugin vereist een niet aanwezige (python) module</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Herinstallatie van plugin geslaagd</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
+        <translation>De plugin is gemaak voor een nieuwere versie van Quantum GIS. De minimaal vereiste versie is:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation>De plugin is afhankelijk van componenten die missen op uw systeem. De volgende Pythonmodule is nodig om de plugin te gebruiken:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
+        <translation>De plugin werkt niet. Python meldt:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished"></translation>
+        <translation>De vereiste Python-module is niet geïnstalleerd.
+Voor meer informatie, bezoek de homepage van de plugin en de Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python plugin geïnstalleerd.
+Nu moet u het inschakelen in de Plugin Manager.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python plugin geïnstalleerd.
+U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python plugin gedeïnstalleerd. U dient Quantum GIS te herstarten om de plugin volledig te verwijderen.</translation>
     </message>
 </context>
 <context>
@@ -11959,35 +11966,35 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished"></translation>
+        <translation>Succes</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Verbinden...</translation>
+        <translation>Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbonden aan host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Data wordt gedownload...</translation>
+        <translation>Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout</translation>
     </message>
 </context>
 <context>
@@ -12017,43 +12024,43 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bezig met ïnstalleren...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
+        <translation>Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Verbinden...</translation>
+        <translation>Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbonden aan host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Data wordt gedownload...</translation>
+        <translation>Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished"></translation>
+        <translation>In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Problemen bij het uitpakken van het zipbestand van de plugin. Waarschijnlijk is het niet compleet of niet beschikbaar in de repository. Controleer eventueel ook of u de juiste schrijfrechten heeft in de plugin map: </translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbroken door gebruiker</translation>
     </message>
 </context>
 <context>
@@ -12075,7 +12082,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished"></translation>
+        <translation>geen foutmelding (terug)ontvangen</translation>
     </message>
 </context>
 <context>
@@ -12160,7 +12167,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>[ incompatible ]</source>
-        <translation type="unfinished"></translation>
+        <translation>[incompatibel]</translation>
     </message>
 </context>
 <context>
@@ -12815,7 +12822,7 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
-        <translation>Om de Quantum GIS omgeving te benaderen vanuit deze pythonconsole, gebruikt het object vanuit de globale scope welke een instantie is van de QgisInterface-klasse.&lt;br&gt;Usage e.g.: iface.zoomFull()</translation>
+        <translation>Om de Quantum GIS omgeving te benaderen vanuit deze pythonconsole, gebruik het &apos;iface&apos;-object in de globale scope. Dit is een instantie van de QgisInterface-klasse.&lt;br&gt;Voorbeeld van gebruik: iface.zoomFull()</translation>
     </message>
 </context>
 <context>
@@ -13332,15 +13339,15 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     </message>
     <message>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het aanmaken van interne piramide-overzichten wordt niet ondersteund bij rasters met JPEG-compressie.</translation>
     </message>
     <message>
         <source>Note: Minimum Maximum values are estimates or user defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Opmerking: Minimum Maximum waarden zijn schattingen of door gebruiker opgegeven</translation>
     </message>
     <message>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Opmerking: Minimum Maximum waarden zijn actuele waarden berekend uit de band(en)</translation>
     </message>
 </context>
 <context>
@@ -13808,7 +13815,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -15367,7 +15374,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
-        <translation>Gebruik deze instelling om aan te geven welk veld bovenaan moet staan bij het Identificeer gereedschap.</translation>
+        <translation>Gebruik deze instelling om aan te geven welk veld bovenaan moet staan bij het Identificatiegereedschap.</translation>
     </message>
     <message>
         <source>Legend type</source>
@@ -15565,7 +15572,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Can Identify</source>
-        <translation>Identificeergereedschap te gebruiken</translation>
+        <translation>Identificatiegereedschap te gebruiken</translation>
     </message>
     <message>
         <source>Can Zoom In</source>
@@ -15629,7 +15636,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Identify Formats</source>
-        <translation>Identificeergereedschap-Formaten</translation>
+        <translation>Identificatiegereedschap-Formaten</translation>
     </message>
     <message>
         <source>Image Formats</source>
@@ -15725,7 +15732,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Tried URL: </source>
-        <translation>Geprobeerde URL:</translation>
+        <translation>Gebruikte URL: </translation>
     </message>
     <message>
         <source>(Unknown error code from a post-1.3 WMS server)</source>
