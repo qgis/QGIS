@@ -82,7 +82,14 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // Create a header so we can set the user agent (Per WMS RFC).
   QHttpRequestHeader header( "GET", qurl.host() );
   // Set host in the header
-  header.setValue( "Host", qurl.host() );
+  if( qurl.port( HTTP_PORT_DEFAULT ) == HTTP_PORT_DEFAULT )
+  {
+    header.setValue( "Host", qurl.host() );
+  }
+  else
+  {
+    header.setValue( "Host", QString( "%1:%2" ).arg( qurl.host() ).arg( qurl.port() ) );
+  }
   // Set the user agent to Quantum GIS plus the version name
   header.setValue( "User-agent", QString( "Quantum GIS - " ) + VERSION );
   // Set the host in the QHttp object
