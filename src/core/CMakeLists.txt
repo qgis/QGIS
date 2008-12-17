@@ -19,7 +19,6 @@ SET(QGIS_CORE_SRCS
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
-  qgsline.cpp
   qgslogger.cpp
   qgsmaplayer.cpp
   qgsmaplayerregistry.cpp
@@ -248,7 +247,6 @@ qgsgeometry.h
 qgshttptransaction.h
 qgslabel.h
 qgslabelattributes.h
-qgsline.h
 qgslogger.h
 qgsmaplayer.h
 qgsmaplayerregistry.h
