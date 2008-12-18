@@ -1154,6 +1154,10 @@ void QgsVectorLayer::setSubsetString( QString subset )
 
 void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
 {
+  // do not update when we aren't in editing mode
+  if ( ! mEditable )
+    return;
+
   if ( mChangedAttributeValues.contains( f.id() ) )
   {
     const QgsAttributeMap &map = mChangedAttributeValues[f.id()];
