@@ -74,7 +74,7 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 
 # knownRepos: (name, url for QGIS 0.x, url for QGIS 1.x, possible depreciated url, another possible depreciated url)
-knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","",""),
+knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://pyqgis.org/repo/official","",""),
               ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
               ("Borys Jurgiel's Repository","http://bwj.aster.net.pl/qgis-oldapi/plugins.xml","http://bwj.aster.net.pl/qgis/plugins.xml","",""),
               ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","")]
@@ -331,7 +331,8 @@ class Repositories(QObject):
           if not qgisMaximumVersion: qgisMaximumVersion = "2"
           #if compatible, add the plugin to the list
           if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
-            plugins.addPlugin(plugin)
+            if QGIS_VER[0]=="0" or qgisMinimumVersion[0]=="1" or name=="plugin_installer":
+              plugins.addPlugin(plugin)
         plugins.workarounds()
         self.mRepositories[reposName]["state"] = 2
       else:
