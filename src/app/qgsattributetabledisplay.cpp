@@ -400,7 +400,7 @@ void QgsAttributeTableDisplay::doSearch( QString searchString )
 
   QString str;
   if ( mSearchIds.size() )
-    str.sprintf( tr( "Found %d matching features.", "", mSearchIds.size() ).toUtf8(), mSearchIds.size() );
+    str = tr( "Found %1 matching features.", "", mSearchIds.size() ).arg( mSearchIds.size() );
   else
     str = tr( "No matching features found." );
   QMessageBox::information( this, tr( "Search results" ), str );

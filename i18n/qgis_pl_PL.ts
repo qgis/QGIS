@@ -1,4 +1,5 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS><TS version="1.1" language="pl_PL">
 <defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
@@ -2860,6 +2861,10 @@ Błędy:  %2
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation>Instalator wtyczek został całkowicie zmodernizowany. Nowa wersja zawiera wiele ulepszeń, w tym automatyczne aktualizacje i testowanie kompatybilności instalowanych wtyczek.</translation>
+    </message>
+    <message>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2876,11 +2881,11 @@ Błędy:  %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source></source>
-        <translation type="unfinished"></translation>
+        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <translation>Instalator wtyczek został całkowicie zmodernizowany. Nowa wersja zawiera wiele ulepszeń, w tym automatyczne aktualizacje i testowanie kompatybilności instalowanych wtyczek.</translation>
     </message>
     <message>
-        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
+        <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2962,27 +2967,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Osoba</translation>
+        <translation>Osoba</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation type="obsolete">Strona WWW</translation>
+        <translation>Strona WWW</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Sponsorzy QGIS&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Sponsorzy QGIS&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="obsolete">Dostępne wtyczki źródeł danych QGIS</translation>
+        <translation>Dostępne wtyczki źródeł danych QGIS</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="obsolete">Dostępne wtyczki baz danych Qt</translation>
+        <translation>Dostępne wtyczki baz danych Qt</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="obsolete">Dostępne wtyczki obrazów Qt</translation>
+        <translation>Dostępne wtyczki obrazów Qt</translation>
     </message>
 </context>
 <context>
@@ -3448,9 +3453,12 @@ p, li { white-space: pre-wrap; }
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation>Wypełnianie tabeli atrybutów zostało wstrzymane ponieważ zaczyna brakować pamięci wirtualnej</translation>
     </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">Znaleziono %d pasujących obiektów.
+    <message numerus="yes">
+        <source>Found %1 matching features.</source>
+        <translation>
+            <numerusform>Znaleziono %1 pasujący obiekt.</numerusform>
+            <numerusform>Znaleziono %1 pasujące obiekty.</numerusform>
+            <numerusform>Znaleziono %1 pasujących obiektów.</numerusform>
         </translation>
     </message>
 </context>
@@ -3745,7 +3753,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="obsolete">&lt;p&gt;Funkcja eksportu SVG napotkała problemy z powodu błędów i braku  </translation>
+        <translation>&lt;p&gt;Funkcja eksportu SVG napotkała problemy z powodu błędów i braków w </translation>
     </message>
 </context>
 <context>
@@ -3876,59 +3884,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Przesuń zawartość</translation>
+        <translation>Przesuń zawartość</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Przesuń zawartość obiektu</translation>
+        <translation>Przesuń zawartość obiektu</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Grupa</translation>
+        <translation>Grupuj</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Grupuj obiekty</translation>
+        <translation>Grupuj obiekty</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdziel</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Rozdziel obiekty</translation>
+        <translation>Rozdziel obiekty</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Podnieś</translation>
+        <translation>Podnieś</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Wybrany wyżej</translation>
+        <translation>Wybrane wyżej</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished">Obniż</translation>
+        <translation>Obniż</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished">Wybrany niżej</translation>
+        <translation>Wybrane niżej</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished">Przenieś na wierzch</translation>
+        <translation>Przesuń na wierzch</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished">Wybrane obiekty na wierzch</translation>
+        <translation>Wybrane obiekty na wierzch</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished">Przenieś na tył</translation>
+        <translation>Przesuń na spód</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished">Wybrane obiekty na tył</translation>
+        <translation>Wybrane obiekty na spód</translation>
     </message>
 </context>
 <context>
@@ -8135,10 +8143,13 @@ p, li { white-space: pre-wrap; }
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Network timed out after %1 seconds of inactivity.
-This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="obsolete">
+        This may be a problem in your network connection or at the WMS server.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -8498,27 +8509,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Ogólne</translation>
+        <translation>Ogólne</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">Użyj rysowania zależnego od skali</translation>
+        <translation>Użyj rysowania zależnego od skali</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">Maksimum</translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished">Minimalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Minimalna skala, dla której wartstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished">Maksymalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, dla której wartstwa będzie wyświetlana.</translation>
     </message>
 </context>
 <context>
@@ -8763,10 +8774,13 @@ p, li { white-space: pre-wrap; }
 %2</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">- %1 znalezionych obiektów
+        <translation>
+            <numerusform>- %1 znaleziony obiekt</numerusform>
+            <numerusform>- %1 znalezione obiekty</numerusform>
+            <numerusform>- %1 znalezionych obiektów</numerusform>
         </translation>
     </message>
 </context>
@@ -9355,15 +9369,15 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Show all features</source>
-        <translation type="unfinished">Pokaż wszystkie obiekty</translation>
+        <translation>Pokaż wszystkie obiekty</translation>
     </message>
     <message>
         <source>Show selected features</source>
-        <translation type="unfinished">Pokaż wybrane obiekty</translation>
+        <translation>Pokaż wybrane obiekty</translation>
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation type="unfinished">Pokaż obiekty w bieżącym oknie</translation>
+        <translation>Pokaż obiekty w bieżącym oknie</translation>
     </message>
 </context>
 <context>
@@ -9642,7 +9656,7 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished">Zachowanie tabeli atrybutów</translation>
+        <translation>Zachowanie tabeli atrybutów</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -10294,12 +10308,8 @@ You need to restart Quantum GIS in order to reload it.</source>
 Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     </message>
     <message>
-        <source>Python plugin uninstalled. Note that tou may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Wtyczka odinstalowana pomyślnie. W niektórych przypadkach pełne usunięcie nastąpi po ponownym uruchomieniu programu.</translation>
-    </message>
-    <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka odinstalowana pomyślnie. W niektórych przypadkach pełne usunięcie nastąpi po ponownym uruchomieniu programu.</translation>
     </message>
 </context>
 <context>
@@ -11682,9 +11692,12 @@ Because of this the projection selector will not work...</source>
         <source>Saved Style</source>
         <translation>Zapisany styl</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>The color map for Band %n failed to load</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -12366,9 +12379,12 @@ p, li { white-space: pre-wrap; }
         <source>Search query builder</source>
         <translation>Kreator zapytań wyboru</translation>
     </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">Znaleziono %d pasujących obiektów.
+    <message numerus="yes">
+        <source>Found %1 matching features.</source>
+        <translation>
+            <numerusform>Znaleziono %1 pasujący obiekt.</numerusform>
+            <numerusform>Znaleziono %1 pasujące obiekty.</numerusform>
+            <numerusform>Znaleziono %1 pasujących obiektów.</numerusform>
         </translation>
     </message>
 </context>
@@ -12426,9 +12442,12 @@ p, li { white-space: pre-wrap; }
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">System Odniesienia oparty na Współrzędnych (%1 dostępnych)
+        <translation>
+            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępny)</numerusform>
+            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępne)</numerusform>
+            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępnych)</numerusform>
         </translation>
     </message>
 </context>
@@ -14014,15 +14033,29 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export text labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj etykiety tekstowe</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="obsolete">Podaj nazwę pliku do którego należy zapisać</translation>
+        <translation>Podaj nazwę pliku do którego należy zapisać</translation>
     </message>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="obsolete">Wybierz plik DXF do otwarcia</translation>
+        <translation>Wybierz plik DXF do otwarcia</translation>
+    </message>
+    <message>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
