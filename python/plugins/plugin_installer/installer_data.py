@@ -73,11 +73,13 @@ settingsGroup = "/Qgis/plugin-installer"
 seenPluginGroup = "/Qgis/plugin-seen"
 
 
-# knownRepos: (name, url for QGIS 0.x, url for QGIS 1.x, possible depreciated url, another possible depreciated url)
-knownRepos = [("Official QGIS Repository","http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","http://pyqgis.org/repo/official","",""),
-              ("Carson Farmer's Repository","http://www.ftools.ca/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.geog.uvic.ca/spar/carson/cfarmerQgisRepo.xml","http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
-              ("Borys Jurgiel's Repository","http://bwj.aster.net.pl/qgis-oldapi/plugins.xml","http://bwj.aster.net.pl/qgis/plugins.xml","",""),
-              ("Faunalia Repository","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/plugins.xml","http://faunalia.it/qgis/1.x/plugins.xml","")]
+# Repositories: (name, url, possible depreciated url)
+oldRepo      = ("QGIS 0.x Plugin Repository",  "http://spatialserver.net/cgi-bin/pyqgis_plugin.rb","")
+officialRepo = ("QGIS Official Repository",    "http://pyqgis.org/repo/official","")
+contribRepo  = ("QGIS Contributed Repository", "http://pyqgis.org/repo/contributed","")
+authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgisRepo.xml", "http://www.ftools.ca/cfarmerQgisRepo_0.xx.xml"),
+                ("Borys Jurgiel's Repository", "http://bwj.aster.net.pl/qgis/plugins.xml", "http://bwj.aster.net.pl/qgis-oldapi/plugins.xml"),
+                ("Faunalia Repository",        "http://faunalia.it/qgis/plugins.xml",      "http://faunalia.it/qgis/1.x/plugins.xml")]
 
 
 
@@ -152,15 +154,27 @@ class Repositories(QObject):
     presentURLs = []
     for i in self.all().values():
       presentURLs += [QString(i["url"])]
-    for i in knownRepos:
-      if i[QGIS_MAJOR_VER+1] and presentURLs.count(i[QGIS_MAJOR_VER+1]) == 0:
-        settings = QSettings()
-        settings.beginGroup(reposGroup)
+    settings = QSettings()
+    settings.beginGroup(reposGroup)
+    # add the central repositories
+    if QGIS_MAJOR_VER: # QGIS 1.x
+      if presentURLs.count(officialRepo[1]) == 0:
+        settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
+        settings.setValue(officialRepo[0]+"/enabled", QVariant(True))
+      if presentURLs.count(contribRepo[1]) == 0:
+        settings.setValue(contribRepo[0]+"/url", QVariant(contribRepo[1]))
+        settings.setValue(contribRepo[0]+"/enabled", QVariant(True))
+    else: # QGIS 0.x
+      if presentURLs.count(oldRepo[1]) == 0:
+        settings.setValue(oldRepo[0]+"/url", QVariant(oldRepo[1]))
+        settings.setValue(oldRepo[0]+"/enabled", QVariant(True))
+    # add author repositories
+    for i in authorRepos:
+      if i[1] and presentURLs.count(i[1]) == 0:
         repoName = QString(i[0])
         if self.all().has_key(repoName):
-          repoName = repoName + "(2)"
-        # add to settings
-        settings.setValue(repoName+"/url", QVariant(i[QGIS_MAJOR_VER+1]))
+          repoName = repoName + " (original)"
+        settings.setValue(repoName+"/url", QVariant(i[1]))
         settings.setValue(repoName+"/enabled", QVariant(True))
 
 
@@ -225,24 +239,32 @@ class Repositories(QObject):
     self.mRepositories = {}
     settings = QSettings()
     settings.beginGroup(reposGroup)
-    # first, update the QSettings repositories if needed
-    if len(settings.childGroups()) == 0: # add the default repository when there isn't any
-      settings.setValue(knownRepos[0][0]+"/url", QVariant(knownRepos[0][QGIS_MAJOR_VER+1]))
-    else: # else update invalid urls
-      for key in settings.childGroups():
-        url = settings.value(key+"/url", QVariant()).toString()
-        allOk = True
-        for repo in knownRepos:
-          if repo[3] == url or repo[4] == url or (repo[QGIS_MAJOR_VER+1] != url and repo[int(not QGIS_MAJOR_VER)+1] == url):
-            if repo[QGIS_MAJOR_VER+1]: #update the URL
-              settings.setValue(key+"/url", QVariant(repo[QGIS_MAJOR_VER+1]))
-              settings.setValue(key+"/valid", QVariant(True))
-              allOk = False
-            else: # mark as invalid
-              settings.setValue(key+"/valid", QVariant(False))
-              allOk = False
-        if allOk: # marking as valid if no problem.
-          settings.setValue(key+"/valid", QVariant(True))
+    # first, update repositories in QSettings if needed
+    if QGIS_MAJOR_VER:
+      mainRepo = officialRepo
+      invalidRepo = oldRepo
+    else:
+      mainRepo = oldRepo
+      invalidRepo = officialRepo
+    mainRepoPresent = False
+    for key in settings.childGroups():
+      url = settings.value(key+"/url", QVariant()).toString()
+      if url == contribRepo[1]:
+        if QGIS_MAJOR_VER:
+          settings.setValue(key+"/valid", QVariant(True)) # unlock the contrib repo in qgis 1.x
+        else:
+          settings.setValue(key+"/valid", QVariant(False)) # lock the contrib repo in qgis 0.x
+      else:
+        settings.setValue(key+"/valid", QVariant(True)) # unlock any other repo
+      if url == mainRepo[1]:
+        mainRepoPresent = True
+      if url == invalidRepo[1]:
+        settings.remove(key)
+      for authorRepo in authorRepos:
+        if url == authorRepo[2]:
+          settings.setValue(key+"/url", QVariant(authorRepo[1])) # correct a depreciated url
+    if not mainRepoPresent:
+      settings.setValue(mainRepo[0]+"/url", QVariant(mainRepo[1]))
 
     for key in settings.childGroups():
       self.mRepositories[key] = {}
