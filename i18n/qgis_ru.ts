@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
+<defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
     <message>
@@ -3262,6 +3263,11 @@ Errors:  %2
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
         <translation>Полностью пересмотренная подсистема установки Python-модулей. Новая версия существенно отличается от предыдущей, например, перед установкой модуля выполняется проверка на его совместимость с текущей версией QGIS.</translation>
     </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2970"/>
+        <source></source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -3886,10 +3892,10 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="403"/>
         <source>Found %1 matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Найден %1 подходящий объект.</numerusform>
+            <numerusform>Найдено %1 подходящих объекта.</numerusform>
+            <numerusform>Найдено %1 подходящих объектов.</numerusform>
         </translation>
     </message>
 </context>
@@ -14399,10 +14405,10 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
         <source>Found %1 matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Найден %1 подходящий объект.</numerusform>
+            <numerusform>Найдено %1 подходящих объекта.</numerusform>
+            <numerusform>Найдено %1 подходящих объектов.</numerusform>
         </translation>
     </message>
 </context>

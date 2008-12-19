@@ -1160,7 +1160,7 @@ to
     <message>
         <location filename="../src/gui/dialogs/qerrormessage.cpp" line="137"/>
         <source>Fatal Error:</source>
-        <translation>致命錯誤：</translation>
+        <translation>嚴重錯誤：</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qerrormessage.cpp" line="287"/>
@@ -1244,7 +1244,7 @@ Please verify the correct file name was given.</source>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.ui" line="64"/>
         <source>Parent Directory</source>
-        <translation>父目錄</translation>
+        <translation>上一層目錄</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.ui" line="78"/>
@@ -1280,7 +1280,7 @@ Please verify the correct directory name was given.</source>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
         <translation>“%1“是防寫的。
-你還是想刪除它麼？</translation>
+你還是想刪除它嗎？</translation>
     </message>
     <message>
         <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2168"/>
