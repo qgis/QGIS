@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="ru">
-<defaultcodec></defaultcodec>
 <context>
     <name>CoordinateCapture</name>
     <message>
@@ -3263,11 +3262,6 @@ Errors:  %2
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
         <translation>Полностью пересмотренная подсистема установки Python-модулей. Новая версия существенно отличается от предыдущей, например, перед установкой модуля выполняется проверка на его совместимость с текущей версией QGIS.</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2970"/>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -3758,7 +3752,7 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="403"/>
         <source>Found %d matching features.</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Найден %d подходящий объект.</numerusform>
             <numerusform>Найдено %d подходящих объекта.</numerusform>
             <numerusform>Найдено %d подходящих объектов.</numerusform>
@@ -3888,6 +3882,15 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="174"/>
         <source>Invert</source>
         <translation>Обратить</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="403"/>
+        <source>Found %1 matching features.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -14357,7 +14360,7 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
         <source>Found %d matching features.</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Найден %d подходящий объект.</numerusform>
             <numerusform>Найдено %d подходящих объекта.</numerusform>
             <numerusform>Найдено %d подходящих объектов.</numerusform>
@@ -14392,6 +14395,15 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="41"/>
         <source>Search query builder</source>
         <translation>Конструктор поисковых запросов</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
+        <source>Found %1 matching features.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -15358,92 +15370,92 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2606"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2610"/>
         <source>ERROR: no provider</source>
         <translation>ОШИБКА: отсутствует источник</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2612"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2616"/>
         <source>ERROR: layer not editable</source>
         <translation>ОШИБКА: нередактируемый слой</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2648"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2652"/>
         <source>SUCCESS: %1 attributes added.</source>
         <translation>УСПЕХ: добавлено %1 атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2654"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2658"/>
         <source>ERROR: %1 new attributes not added</source>
         <translation>ОШИБКА: не добавлено %1 новых атрибутов</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2626"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2630"/>
         <source>SUCCESS: %1 attributes deleted.</source>
         <translation>УСПЕХ: удалено %1 атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2632"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2636"/>
         <source>ERROR: %1 attributes not deleted.</source>
         <translation>ОШИБКА: %1 атрибутов не было удалено.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2695"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2699"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>УСПЕХ: добавлен атрибут %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2702"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2706"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>ОШИБКА: атрибут %1 не был добавлен</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2761"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2765"/>
         <source>SUCCESS: %1 attribute values changed.</source>
         <translation>УСПЕХ: изменено %1 значений атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2766"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2770"/>
         <source>ERROR: %1 attribute value changes not applied.</source>
         <translation>ОШИБКА: не применено %1 изменений значений атрибутов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2798"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2802"/>
         <source>SUCCESS: %1 features added.</source>
         <translation>УСПЕХ: добавлено %1 объектов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2803"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2807"/>
         <source>ERROR: %1 features not added.</source>
         <translation>ОШИБКА: не добавлено %1 объектов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2816"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2820"/>
         <source>SUCCESS: %1 geometries were changed.</source>
         <translation>УСПЕХ: изменено %1 геометрий.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2821"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2825"/>
         <source>ERROR: %1 geometries not changed.</source>
         <translation>ОШИБКА: не изменено %1 геометрий.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2833"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2837"/>
         <source>SUCCESS: %1 features deleted.</source>
         <translation>УСПЕХ: удалено %1 объектов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2843"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2847"/>
         <source>ERROR: %1 features not deleted.</source>
         <translation>ОШИБКА: не удалено %1 объектов.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2320"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2324"/>
         <source>No renderer object</source>
         <translation>Отсутствует объект отрисовки</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2324"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2328"/>
         <source>Classification field not found</source>
         <translation>Поле классификации не найдено</translation>
     </message>
