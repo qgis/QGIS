@@ -412,7 +412,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           ver = availableVersion
         else:
           ver = installedVersion
-        if p["status"] in ["upgradeable","newer"] or installedVersion == "?" or availableVersion == "?":
+        if p["status"] in ["upgradeable","newer"] or p["error"]:
           verTip = self.tr("installed version") + ": " + installedVersion + "\n" + self.tr("available version") + ": " + availableVersion
         elif p["status"] in ["not installed", "new"]:
           verTip = self.tr("available version") + ": " + availableVersion
