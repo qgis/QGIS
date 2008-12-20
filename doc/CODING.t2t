@@ -17,15 +17,17 @@ Developers guide for QGIS
 %txt2tags home page for more details.  Please insert manual line breaks in this
 %document as it makes diffing for changes much easier. To do this in vim 
 %automatically, select a section then issue (gq) command. Please dont
-%apply vim formatting to the whol document as it screws up some formatting
+%apply vim formatting to the whole document as it screws up some formatting
 %rather apply it selectively to paragraphs where needed.
 
 % To generate the text version of this document:
 % txt2tags -t txt -o CODING CODING.t2t
-% To generate the moinmoin version of this document
-% txt2tags -t moin CODING.moin  CODING.t2t
-% To generate the html version of this document
-% txt2tags -t html CODING.html  CODING.t2t
+% To generate the moinmoin version of this document:
+% txt2tags -t moin -o CODING.moin CODING.t2t
+% To generate the html version of this document:
+% txt2tags -t html -o CODING.html CODING.t2t
+% To generate the LaTeX version of this document:
+% txt2tags -t tex -o CODING.tex CODING.t2t
 %
 % End of comments
 % -------------------
