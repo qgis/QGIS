@@ -1,3 +1,9 @@
+qgis (1.0preview18) experimental; urgency=low
+
+  * add suggestion for gpsbabel
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 20 Dec 2008 19:08:34 +0100
+
 qgis (1.0preview17) experimental; urgency=low
 
   * include quickprint and coordinate capture plugin
