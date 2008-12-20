@@ -3263,11 +3263,6 @@ Errors:  %2
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
         <translation>Полностью пересмотренная подсистема установки Python-модулей. Новая версия существенно отличается от предыдущей, например, перед установкой модуля выполняется проверка на его совместимость с текущей версией QGIS.</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2970"/>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -3650,7 +3645,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="33"/>
         <source>Remove selection</source>
-        <translation>Удалить выделение</translation>
+        <translation>Снять выделение</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetablebase.ui" line="84"/>
