@@ -22,12 +22,12 @@ Building QGIS from source - step by step
 
 % To generate the text version of this document:
 % txt2tags -t txt -o INSTALL INSTALL.t2t
-% To generate the moinmoin version of this document
-% txt2tags -t moin -o INSTALL.moin  INSTALL.t2t
-% To generate the html version of this document
-% txt2tags -t html -o INSTALL.html  INSTALL.t2t
-% To generate LaTeX version of this document do:
-% txt2tags -t tex -o INSTALL.tex  INSTALL.t2t
+% To generate the moinmoin version of this document:
+% txt2tags -t moin -o INSTALL.moin INSTALL.t2t
+% To generate the html version of this document:
+% txt2tags -t html -o INSTALL.html INSTALL.t2t
+% To generate LaTeX version of this document:
+% txt2tags -t tex -o INSTALL.tex INSTALL.t2t
 
 % End of comments
 % -------------------

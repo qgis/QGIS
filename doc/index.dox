@@ -29,10 +29,10 @@ releases will be our 'unstable' development builds and 1.0.x releases our
 'stable' (bugfixes and very minor tweaks only).
 
 \section index_maillist Mailing Lists
-For support we encourage you to join our <a
-href="http://qgis.org/content/view/115/96/">mailing lists</a> for
-developers.
-
+<ul>
+<li>For support we encourage you to join our <a
+href="http://qgis.osgeo.org/community/mailing-lists.html">mailing lists</a> for
+developers.</li> </ul>
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a
