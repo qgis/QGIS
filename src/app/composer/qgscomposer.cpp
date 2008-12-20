@@ -600,18 +600,18 @@ void QgsComposer::on_mActionExportAsSVG_activated( void )
     m->setCheckBoxVisible( true );
     m->setCheckBoxQSettingsLabel( myQSettingsLabel );
     m->setMessageAsHtml( tr( "<p>The SVG export function in Qgis has several "
-                             "problems due to bugs and deficiencies in the "
+                             "problems due to bugs and deficiencies in the " )
 #if QT_VERSION < 0x040300
-                             "Qt4 svg code. Of note, text does not "
+                       + tr( "Qt4 svg code. Of note, text does not "
                              "appear in the SVG file and there are problems "
                              "with the map bounding box clipping other items "
-                             "such as the legend or scale bar.</p>"
+                             "such as the legend or scale bar.</p>" )
 #else
-                             "Qt4 svg code. In particular, there are problems "
+                       + tr( "Qt4 svg code. In particular, there are problems "
                              "with layers not being clipped to the map "
-                             "bounding box.</p>"
+                             "bounding box.</p>" )
 #endif
-                             "If you require a vector-based output file from "
+                       + tr( "If you require a vector-based output file from "
                              "Qgis it is suggested that you try printing "
                              "to PostScript if the SVG output is not "
                              "satisfactory."

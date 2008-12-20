@@ -335,6 +335,8 @@ void QgsGPSPluginGui::populatePortComboBoxes()
       break;
   }
 
+  cmbDLPort->addItem( "usb:" );
+  cmbULPort->addItem( "usb:" );
 #endif
 
 #ifdef __FreeBSD__ // freebsd

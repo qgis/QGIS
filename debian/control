@@ -18,6 +18,7 @@ Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: qgis-plugin-grass, python-qgis
+Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages, analyzes, and displays
