@@ -37,6 +37,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QAction>
+#include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
@@ -798,8 +799,8 @@ void QgsGrassPlugin::unload()
 // the GRASS plugin resource bundle [TS]
 QIcon QgsGrassPlugin::getThemeIcon( const QString theName )
 {
-  QString myPath = ":/" + QgsApplication::themeName() + "/grass/" + theName;
-  QString myDefaultPath = ":/default/grass/" + theName;
+  QString myPath = QgsApplication::activeThemePath() + QDir::separator() + "grass" + QDir::separator() + theName;
+  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + "grass" + QDir::separator() + theName;
   if ( QFile::exists( myPath ) )
   {
     return QIcon( myPath );
