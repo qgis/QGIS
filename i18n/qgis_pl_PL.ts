@@ -17,11 +17,11 @@
     </message>
     <message>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Kliknij aby wybrać SOW do wyświetlania współrzędnych</translation>
+        <translation>Kliknij aby wybrać układ współrzędnych do wyświetlania współrzędnych</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
-        <translation>Współrzędne w wybranym SOW</translation>
+        <translation>Współrzędne w wybranym układzie</translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
@@ -389,7 +389,7 @@
     </message>
     <message>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation>Warstwy wektorowe nie mogą zostać wczytane. Spawdź swoją instalację QGIS</translation>
+        <translation>Warstwy wektorowe nie mogą zostać wczytane. Sprawdź swoją instalację QGIS</translation>
     </message>
     <message>
         <source>No Data Providers</source>
@@ -397,7 +397,7 @@
     </message>
     <message>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Nie są dostępne żadne wtyczki źródeł danych. Nie można wczytać wartstw wektorowych</translation>
+        <translation>Nie są dostępne żadne wtyczki źródeł danych. Nie można wczytać warstw wektorowych</translation>
     </message>
     <message>
         <source> at line </source>
@@ -599,7 +599,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Choose GRASS installation path (GISBASE)</source>
-        <translation>Wskaż ściężkę do instalacji GRASS (GISBASE)</translation>
+        <translation>Wskaż ścieżkę do instalacji GRASS (GISBASE)</translation>
     </message>
     <message>
         <source>GRASS data won&apos;t be available if GISBASE is not specified.</source>
@@ -691,7 +691,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Shapefile to PostgreSQL/PostGIS Import Tool</source>
-        <translation>Narzędzie importu formatu shape do PostgreSQL/PostGIS (SPIT)</translation>
+        <translation>Narzędzie importu formatu Shapefile do PostgreSQL/PostGIS (SPIT)</translation>
     </message>
     <message>
         <source>WFS plugin</source>
@@ -771,7 +771,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Nie można przetransformować punktu do układdu współrzędnych warstwy</translation>
+        <translation>Nie można przetransformować punktu do układu współrzędnych warstwy</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
@@ -1173,7 +1173,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation>Szybki wydruk to wtyczka umożliwiająca łątwe wydrukowanie mapy w formacie pdf.</translation>
+        <translation>Szybki wydruk to wtyczka umożliwiająca łatwe wydrukowanie mapy w formacie pdf.</translation>
     </message>
     <message>
         <source>Could not remove polygon intersection</source>
@@ -1245,7 +1245,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>Przechwyć współrzędne myszy w innym SOW</translation>
+        <translation>Przechwyć współrzędne myszy w innym układzie</translation>
     </message>
     <message>
         <source>Dxf2Shp Converter</source>
@@ -1253,7 +1253,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Converts from dxf to shp file format</source>
-        <translation>Konwertuje plik DXF do formatu shape</translation>
+        <translation>Konwertuje plik DXF do formatu Shapefile</translation>
     </message>
     <message>
         <source>Interpolating...</source>
@@ -1285,7 +1285,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation>Wyjątek SOW</translation>
+        <translation>Wyjątek układu współrzędnych</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
@@ -2134,7 +2134,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation>Aktywna warstwa nie jest edytowalna. Wybierz &apos;Rozpocznij edycję&apos; z belki narzędzi digitizacji.</translation>
+        <translation>Aktywna warstwa nie jest edytowalna. Wybierz &apos;Rozpocznij edycję&apos; z belki narzędzi digitalizacji.</translation>
     </message>
     <message>
         <source>Invalid scale</source>
@@ -2404,19 +2404,19 @@ Prosimy o kontakt z autorami.
     </message>
     <message>
         <source>Save as Shapefile...</source>
-        <translation>Zapisz jako shape...</translation>
+        <translation>Zapisz jako Shapefile...</translation>
     </message>
     <message>
         <source>Save the current layer as a shapefile</source>
-        <translation>Zapisz aktualną warstwę jako plik shape</translation>
+        <translation>Zapisz aktualną warstwę jako Shapefile</translation>
     </message>
     <message>
         <source>Save Selection as Shapefile...</source>
-        <translation>Zapisz wybrane jako shape...</translation>
+        <translation>Zapisz wybrane jako Shapefile...</translation>
     </message>
     <message>
         <source>Save the selection as a shapefile</source>
-        <translation>Zapisz wybrane jako shape</translation>
+        <translation>Zapisz wybrane obiekty jako Shapefile</translation>
     </message>
     <message>
         <source>Properties...</source>
@@ -2444,11 +2444,11 @@ Prosimy o kontakt z autorami.
     </message>
     <message>
         <source>Custom CRS...</source>
-        <translation>SOW użytkownika...</translation>
+        <translation>Układ współrzędnych użytkownika...</translation>
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation>Zarządzaj system odniesienia opartym na współrzędnych</translation>
+        <translation>Zarządzaj układami współrzędnych użytkownika</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -2501,11 +2501,11 @@ Prosimy o kontakt z autorami.
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation>Ta ikona wskazuje czy aktywna jest transformacja w locie systemu odniesienia współrzędnych. Kliknij ikonę aby wyświetlić okno dialogowe właściwości projektu.</translation>
+        <translation>Ta ikona wskazuje czy aktywna jest transformacja w locie układu współrzędnych. Kliknij ikonę aby wyświetlić okno dialogowe właściwości projektu.</translation>
     </message>
     <message>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation>Stan SOW - Kliknij aby otworzyć okno dialogowe systemu odniesienia opartego na współrzędnych</translation>
+        <translation>Stan CRS - Kliknij aby otworzyć okno dialogowe układu współrzędnych</translation>
     </message>
     <message>
         <source>Choose a file name to save the QGIS project file as</source>
@@ -2567,7 +2567,7 @@ Błędy:  %2
     </message>
     <message>
         <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation>Zapisanie warstwy wektorowej lub części tej warstwy na dysku z innym niż oryginalny Systemem Odniesienia opartym na Współrzędnych.</translation>
+        <translation>Zapisanie warstwy wektorowej lub części tej warstwy na dysku w układzie współrzędnych innym niż oryginalny.</translation>
     </message>
     <message>
         <source>Advanced topological editing of vector data.</source>
@@ -2587,7 +2587,7 @@ Błędy:  %2
     </message>
     <message>
         <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation>Nowa wtyczka &apos;przechwytywanie współrzędnych&apos; pozwalająca kliknąć na mapie, a następnie wyciąć &amp; wkleić współrzędne do i ze schowka.</translation>
+        <translation>Nowa wtyczka &apos;przechwytywanie współrzędnych&apos; pozwalająca pobierać współrzędne myszą i przenosić do schowka.</translation>
     </message>
     <message>
         <source>A new plugin for converting between OGR supported formats was added.</source>
@@ -2595,11 +2595,11 @@ Błędy:  %2
     </message>
     <message>
         <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation>Nowa wtyczka do importu plików DXF do shape.</translation>
+        <translation>Nowa wtyczka do importu plików DXF do Shapefile.</translation>
     </message>
     <message>
         <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation>Nowa wtyczka do interpolacji obiektów punktowych.</translation>
+        <translation>Nowa wtyczka do interpolacji z obiektów punktowych.</translation>
     </message>
     <message>
         <source>The python plugin manager was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
@@ -2615,11 +2615,11 @@ Błędy:  %2
     </message>
     <message>
         <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation>Gruntowna korekta API - mamy teraz stabilne API zgodne z jednoznacznie zdefiniowaną konwencją nazw.</translation>
+        <translation>Gruntowna przebudowa API - mamy teraz stabilne API zgodne z jednoznaczną konwencją nazw.</translation>
     </message>
     <message>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation>Przeniesiono wszystkie usługi GDAL/OGR oraz GEOS do wykorzystania wyłącznie z API C.</translation>
+        <translation>Przeniesiono wykorzystanie bibliotek GDAL/OGR i GEOS wyłącznie przez API C.</translation>
     </message>
     <message>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
@@ -2833,7 +2833,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation>Tutaj wpisz akcję. Może to być dowolny program, skrypt lub komenda dostępna w Twoim systemie. Kiedy akcja zostanie wywołana, parametry rozpoczynające się od znaku % i będące nazwami pól zostaną zamienione na wartość tych pól. Znaki specjalne %% zostaną zastąpione wartościami wybranych pól. Podwójny cydzysłów grupuje tekst w jeden argument dla programu, skryptu lub komendy. Podwójny cydzysłów będzie ignorowany jeśli poprzedzi się go ukośnikiem</translation>
+        <translation>Tutaj wpisz akcję. Może to być dowolny program, skrypt lub komenda dostępna w Twoim systemie. Kiedy akcja zostanie wywołana, parametry rozpoczynające się od znaku % i będące nazwami pól zostaną zamienione na wartość tych pól. Znaki specjalne %% zostaną zastąpione wartościami wybranych pól. Podwójny cudzysłów grupuje tekst w jeden argument dla programu, skryptu lub komendy. Podwójny cudzysłów będzie ignorowany jeśli poprzedzi się go ukośnikiem</translation>
     </message>
     <message>
         <source>Attribute Actions</source>
@@ -3971,11 +3971,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Letter (8.5x11 inches)</source>
-        <translation>Letter (8.5x11 inches)</translation>
+        <translation>Letter (8.5x11 cali)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
-        <translation>Legal (8.5x14 inches)</translation>
+        <translation>Legal (8.5x14 cali)</translation>
     </message>
 </context>
 <context>
@@ -4056,15 +4056,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>Źródłowy system odniesienia oparty na współrzędnych (SOW) jest nieprawidłowy.</translation>
+        <translation>Źródłowy układ współrzędnych jest nieprawidłowy.</translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
-        <translation>Współrzędne nie mogą być przeliczone. SOW to:</translation>
+        <translation>Współrzędne nie mogą być przeliczone. Układ współrzędnych to:</translation>
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Docelowy system odniesienia oparty na współrzędnych (SOW) jest nieprawidłowy.</translation>
+        <translation>Docelowy układ współrzędnych jest nieprawidłowy.</translation>
     </message>
 </context>
 <context>
@@ -4294,19 +4294,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Custom Coordinate Reference System Definition</source>
-        <translation>Definicja użytkownika Systemu Odniesienia opartego na Współrzędnych (SOW)</translation>
+        <translation>Definicja Układu Współrzędnych użytkownika</translation>
     </message>
     <message>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation>Możesz zdefiniować tutaj swój własny System Odniesienia oparty na Współrzędnych (SOW). Definicja SOW musi być zgodna z formatem proj4.</translation>
+        <translation>Możesz zdefiniować tutaj swój własny Układ Współrzędnych. Definicja musi być zgodna z formatem proj4.</translation>
     </message>
     <message>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Użyj okna poniżej aby przetestować stworzoną definicję SOW. Wprowadź współrzędne dla punktów znanych w obydwu układach (np. po odczytaniu z mapy). Następnie wybierz przycisk obliczeń, aby sprawdzić czy obliczenia są wykonywane poprawnie.</translation>
+        <translation>Użyj okna poniżej aby przetestować stworzoną definicję. Wprowadź współrzędne dla punktów znanych w obydwu układach (np. po odczytaniu z mapy). Następnie wybierz przycisk obliczeń, aby sprawdzić czy obliczenia są wykonywane poprawnie.</translation>
     </message>
     <message>
         <source>Destination CRS        </source>
-        <translation>Docelowy SOW</translation>
+        <translation>Docelowy układ współrzędnych</translation>
     </message>
 </context>
 <context>
@@ -4526,7 +4526,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <name>QgsDelimitedTextPlugin</name>
     <message>
         <source>&amp;Add Delimited Text Layer</source>
-        <translation>&amp;Dodaj warstwę tekstową rozdzialaną separatorami</translation>
+        <translation>&amp;Dodaj warstwę tekstową rozdzielaną separatorami</translation>
     </message>
     <message>
         <source>Add a delimited text file as a map layer. </source>
@@ -4581,11 +4581,11 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
     <message>
         <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
-        <translation>Wybierz plik tekstowy rozdzialany separatorami zawierający wiersz nagłówka oraz jeden lub więcej wierszy współrzędnych x i y, który chcesz użyć jako warstwę z punktami. Wtyczka zamieni go na warstwę za Ciebie!</translation>
+        <translation>Wybierz plik tekstowy rozdzielany separatorami zawierający wiersz nagłówka oraz jeden lub więcej wierszy współrzędnych x i y, który chcesz użyć jako warstwę z punktami. Wtyczka zamieni go na warstwę za Ciebie!</translation>
     </message>
     <message>
         <source>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</source>
-        <translation>Nazwa warstwy oznacza nazwę warstwy która zostanie utworzona. W polu separator określ jaki znak(i) spełnia rolę searatora w podanym pliku tekstowym (np. spaca, przecinek, tabulator lub wyrażenie regularne w notacji Perl). Po wybraniu separatora, naciśnij przycisk Parsuj i wybierz kolumny zawierające wartości x i y dla wybranej warstwy.</translation>
+        <translation>Nazwa warstwy oznacza nazwę warstwy która zostanie utworzona. W polu separator określ jaki znak(i) spełnia rolę separatora w podanym pliku tekstowym (np. spacja, przecinek, tabulator lub wyrażenie regularne w notacji Perla). Po wybraniu separatora, naciśnij przycisk Parsuj i wybierz kolumny zawierające wartości x i y dla wybranej warstwy.</translation>
     </message>
 </context>
 <context>
@@ -5097,7 +5097,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
-        <translation>To narzędzie pomoż Ci wgrać dane z warstwy GPX do urządzenai GPS.</translation>
+        <translation>To narzędzie pomoże Ci wgrać dane z warstwy GPX do urządzeniami GPS.</translation>
     </message>
     <message>
         <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
@@ -5109,7 +5109,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
-        <translation>Nie wszystkie formaty plików mogą przechowywać punkty orintacyjne, trasy i ślady. Określone typy obiektów mogą być więc niedostępne dla niektórych formatów.</translation>
+        <translation>Nie wszystkie formaty plików mogą przechowywać punkty orientacyjne, trasy i ślady. Określone typy obiektów mogą być więc niedostępne dla niektórych formatów.</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
@@ -5268,7 +5268,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This layer appears to have no projection specification.</source>
-        <translation>Warstwa wydaje się nie posiadać określnego odwzorowania.</translation>
+        <translation>Warstwa wydaje się nie posiadać deklaracji odwzorowania.</translation>
     </message>
     <message>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
@@ -6318,7 +6318,7 @@ w wierszu </translation>
     </message>
     <message>
         <source>Cannot get input region</source>
-        <translation>Nie można ustalić regionu źródowego</translation>
+        <translation>Nie można ustalić regionu źródłowego</translation>
     </message>
     <message>
         <source>Use Input Region</source>
@@ -6346,7 +6346,7 @@ w wierszu </translation>
     </message>
     <message>
         <source>Not available, description not found (</source>
-        <translation>Niedostepne, nie znaleziono opisu (</translation>
+        <translation>Niedostępne, nie znaleziono opisu (</translation>
     </message>
     <message>
         <source>Please ensure you have the GRASS documentation installed.</source>
@@ -7297,7 +7297,7 @@ w wierszu </translation>
     </message>
     <message>
         <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation>Tworzy siatkę kartograficzną i zapisuje wynik jako plik shape</translation>
+        <translation>Tworzy siatkę kartograficzną i zapisuje wynik jako Shapefile</translation>
     </message>
     <message>
         <source>&amp;Graticules</source>
@@ -7308,7 +7308,7 @@ w wierszu </translation>
     <name>QgsGridMakerPluginGui</name>
     <message>
         <source>ESRI Shapefile (*.shp)</source>
-        <translation>Pliki ESRI shape (*.shp)</translation>
+        <translation>Pliki ESRI Shapefile (*.shp)</translation>
     </message>
     <message>
         <source>QGIS - Grid Maker</source>
@@ -7355,7 +7355,7 @@ w wierszu </translation>
     </message>
     <message>
         <source>Output (shape) file</source>
-        <translation>Wyjściowy plik shape</translation>
+        <translation>Wyjściowy plik Shapefile</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -7394,7 +7394,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Ta wtyczka pomoże Ci stworzyć plik shape zawierający siatkę kartograficzną, którą można nałożyć jako warstwę w podglądzie mapy.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Ta wtyczka pomoże Ci stworzyć plik Shapefile zawierający siatkę kartograficzną, którą można nałożyć jako warstwę w podglądzie mapy.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;;&quot;&gt;Wszystkie wartości podawaj w stopniach dziesiętnych&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -7871,11 +7871,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Minimalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksymalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
 </context>
 <context>
@@ -7945,11 +7945,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation>Zapisz jako shape...</translation>
+        <translation>Zapisz jako Shapefile...</translation>
     </message>
     <message>
         <source>Save selection as shapefile...</source>
-        <translation>Zapisz wybrane jako shape...</translation>
+        <translation>Zapisz wybrane jako Shapefile...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -7980,7 +7980,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export to Shapefile has been completed</source>
-        <translation>Zakończono pomyślnie eksport do pliku shape</translation>
+        <translation>Zakończono pomyślnie eksport do pliku Shapefile</translation>
     </message>
     <message>
         <source>Driver not found</source>
@@ -7988,15 +7988,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>ESRI Shapefile driver is not available</source>
-        <translation>Sterownik plików ESRI shape nie jest dostępny</translation>
+        <translation>Sterownik plików ESRI Shapefile nie jest dostępny</translation>
     </message>
     <message>
         <source>Error creating shapefile</source>
-        <translation>Błąd tworzenia pliku shape</translation>
+        <translation>Błąd tworzenia pliku Shapefile</translation>
     </message>
     <message>
         <source>The shapefile could not be created (</source>
-        <translation>Plik shape nie może być utworzony (</translation>
+        <translation>Plik Shapefile nie może być utworzony (</translation>
     </message>
     <message>
         <source>Layer creation failed</source>
@@ -8020,11 +8020,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save as shapefile...</source>
-        <translation>Zapisz jako shape...</translation>
+        <translation>Zapisz jako Shapefile...</translation>
     </message>
     <message>
         <source>Save selection as shapefile...</source>
-        <translation>Zapisz wybrane jako shape...</translation>
+        <translation>Zapisz wybrane jako Shapefile...</translation>
     </message>
     <message>
         <source>&amp;Properties</source>
@@ -8036,11 +8036,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile.</source>
-        <translation>Wybierz system odniesienia współrzędnych do zapisu w pliku shape.</translation>
+        <translation>Wybierz układ współrzędnych do zapisu w pliku Shapefile.</translation>
     </message>
     <message>
         <source>The data points will be transformed from the layer coordinate reference system.</source>
-        <translation>Dane punktowe zostaną przetransformowane z systemu odniesienia współrzędnych warstwy.</translation>
+        <translation>Dane zostaną przetransformowane z układu współrzędnych warstwy.</translation>
     </message>
 </context>
 <context>
@@ -8127,7 +8127,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation>Jeśli wybrano obieky, narzędzie podziału będzie zastosowane tylko do nich. Jeśli chcesz podzielić wszystkie obiekty pod linia podziału wyczyść wybór</translation>
+        <translation>Jeśli wybrano obiekty, narzędzie podziału będzie zastosowane tylko do nich. Jeśli chcesz podzielić wszystkie obiekty pod linia podziału wyczyść wybór</translation>
     </message>
 </context>
 <context>
@@ -8981,23 +8981,23 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>CRS</source>
-        <translation>SOW</translation>
+        <translation>Układ Współrzędnych</translation>
     </message>
     <message>
         <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>Wgrywana warstwa nie zawiera informacji o systemie odniesienia opartym na współrzędnych (SOW)</translation>
+        <translation>Gdy wgrywana warstwa nie zawiera informacji o układzie współrzędnych</translation>
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation>Pytaj o SOW</translation>
+        <translation>Pytaj o układ współrzędnych</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation>Zostanie zastosowany domyślny SOW projektu</translation>
+        <translation>Zostanie zastosowany domyślny układ współrzędnych projektu</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>Zostanie zastosowany &amp;globalny domyślny SOW wyświetlony poniżej </translation>
+        <translation>Zostanie zastosowany &amp;globalny domyślny układ współrzędnych wyświetlony poniżej </translation>
     </message>
 </context>
 <context>
@@ -10076,7 +10076,7 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     </message>
     <message>
         <source>Not implemented!</source>
-        <translation>Nie obslugiwane!</translation>
+        <translation>Nie obsługiwane!</translation>
     </message>
     <message>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
@@ -10447,7 +10447,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons</source>
-        <translation>Unikaj przecinania sie nowych poligonów</translation>
+        <translation>Unikaj przecinania się nowych poligonów</translation>
     </message>
     <message>
         <source>Title and colors</source>
@@ -10471,26 +10471,26 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation>System Odniesienia oparty na Współrzędnych (SOW)</translation>
+        <translation>Układ Współrzędnych (CRS)</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation>Transformuj SOW w locie</translation>
+        <translation>Transformuj Układ Współrzędnych w locie</translation>
     </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
         <source>User Defined Coordinate Systems</source>
-        <translation>Układ współrzędnych użytkownika</translation>
+        <translation>Układy współrzędnych użytkownika</translation>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation>Geograficzny układ współrzędnych</translation>
+        <translation>Układy współrzędnych geodezyjnych</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
-        <translation>Ukłąd współrzędnych odwzorowania</translation>
+        <translation>Układy współrzędnych prostokątnych</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
@@ -10502,7 +10502,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
 Because of this the projection selector will not work...</source>
         <translation>Błąd odczytu pliku bazy danych z: 
  %1
-Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
+Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     </message>
 </context>
 <context>
@@ -10525,11 +10525,11 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation>Wybór Systemu Odniesienia opartego na Współrzędnych</translation>
+        <translation>Wybór Układu Współrzędnych</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>System Odniesienia oparty na Współrzędnych</translation>
+        <translation>Układ Współrzędnych</translation>
     </message>
     <message>
         <source>EPSG</source>
@@ -10638,31 +10638,31 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>GDT_Byte - Eight bit unsigned integer</source>
-        <translation>GDT_Byte - ośmiobitowy integer bez znaku</translation>
+        <translation>GDT_Byte - Ośmiobitowy całkowity bez znaku</translation>
     </message>
     <message>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation>GDT_UInt16 - szesnasto bitowy integer bez znaku</translation>
+        <translation>GDT_UInt16 - Szesnastobitowy całkowity bez znaku</translation>
     </message>
     <message>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation>GDT_Int16 - Szesnasto bitowy integer ze znakiem</translation>
+        <translation>GDT_Int16 - Szesnastobitowy całkowity ze znakiem</translation>
     </message>
     <message>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation>GDT_UInt32 - Trzydziestodwu bitowy integer bez znaku</translation>
+        <translation>GDT_UInt32 - Trzydziestodwubitowy całkowity bez znaku</translation>
     </message>
     <message>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation>GDT_UInt32 - Trzydziestodwu bitowy integer ze znakiem</translation>
+        <translation>GDT_UInt32 - Trzydziestodwubitowy całkowity ze znakiem</translation>
     </message>
     <message>
         <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation>GDT_Float32 - Trzydziestodwu bitowy floating point </translation>
+        <translation>GDT_Float32 - Trzydziestodwubitowy zmiennoprzecinkowy </translation>
     </message>
     <message>
         <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation>GDT_Float64 - Sześdziesięcio cztero bitowy floating point </translation>
+        <translation>GDT_Float64 - Sześdziesięcioczterobitowy zmiennoprzecinkowy </translation>
     </message>
     <message>
         <source>GDT_CInt16 - Complex Int16 </source>
@@ -10829,11 +10829,11 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Building pyramids failed.</source>
-        <translation>Budowa piramidy nie powiodłą się.</translation>
+        <translation>Budowa piramidy nie powiodła się.</translation>
     </message>
     <message>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation>Budow podglądu piramidy nie jes wspierana dla tego typu rastra.</translation>
+        <translation>Budowa piramid nie jest wspierana dla tego typu rastra.</translation>
     </message>
     <message>
         <source>No Stretch</source>
@@ -10921,7 +10921,7 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
-        <translation>Generowany przez QGIS plik eksportu przeźroczytości pikseli</translation>
+        <translation>Generowany przez QGIS plik eksportu przeźroczystości pikseli</translation>
     </message>
     <message>
         <source>Open file</source>
@@ -10961,7 +10961,7 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Default Style</source>
-        <translation>DOmyślny styl</translation>
+        <translation>Domyślny styl</translation>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
@@ -11080,11 +11080,11 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksymalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Minimalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Metadata</source>
@@ -11204,11 +11204,11 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Zapisz wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustatwienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
+        <translation>Zapisz wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustawienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
     </message>
     <message>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Zapisuje wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustatwienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
+        <translation>Zapisuje wybrany algorytm wzmacniania kontrastu jako domyślny. Te ustawienia zostaną zachowane pomiędzy sesjami QGIS.</translation>
     </message>
     <message>
         <source>Default</source>
@@ -11436,7 +11436,7 @@ Z tego powodu wybrów odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Coordinate reference system</source>
-        <translation>System Odniesienia oparty na Współrzędnych</translation>
+        <translation>Układ współrzędnych</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -11723,7 +11723,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not open the WMS Provider</source>
-        <translation>Nie moge otworzyć źródła danych WMS</translation>
+        <translation>Nie mogę otworzyć źródła danych WMS</translation>
     </message>
     <message>
         <source>Select Layer</source>
@@ -11743,15 +11743,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>WMS proxies</source>
-        <translation>MWS proxy</translation>
+        <translation>WMS proxy</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>System Odniesienia oparty na Współrzędnych</translation>
+        <translation>Układ Współrzędnych</translation>
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation>Nie ma dostępnego systemu odniesienia współrzędnych dla wybranego zestawu warstw.</translation>
+        <translation>Nie ma dostępnego układu współrzędnych dla wybranego zestawu warstw.</translation>
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
@@ -11760,9 +11760,9 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <source>Coordinate Reference System (%1 available)</source>
         <translation>
-            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępny)</numerusform>
-            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępne)</numerusform>
-            <numerusform>System Odniesienia oparty na Współrzędnych (%1 dostępnych)</numerusform>
+            <numerusform>Układ Współrzędnych (%1 dostępny)</numerusform>
+            <numerusform>Układ Współrzędnych (%1 dostępne)</numerusform>
+            <numerusform>Układ Współrzędnych (%1 dostępnych)</numerusform>
         </translation>
     </message>
 </context>
@@ -11846,7 +11846,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>System Odniesienia oparty na Współrzędnych</translation>
+        <translation>Układ Współrzędnych</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -12012,7 +12012,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Szerokośc obrysu</translation>
+        <translation>Szerokość obrysu</translation>
     </message>
     <message>
         <source>Fill color</source>
@@ -12079,7 +12079,7 @@ p, li { white-space: pre-wrap; }
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation>Następujące pliku shape nie mogły zostać wczytane:
+        <translation>Następujące pliki Shapefile nie mogły zostać wczytane:
 
 </translation>
     </message>
@@ -12089,7 +12089,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
-        <translation>PRZYCZYNA: Brak jednego lub dwóch plików shape (*.dbf, *.shx)</translation>
+        <translation>PRZYCZYNA: Brak jednego lub dwóch plików Shapefile (*.dbf, *.shx)</translation>
     </message>
     <message>
         <source>General Interface Help:</source>
@@ -12121,7 +12121,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Shapefile List:</source>
-        <translation>Lista plików shape:</translation>
+        <translation>Lista plików Shapefile:</translation>
     </message>
     <message>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
@@ -12137,7 +12137,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
-        <translation>[SRID] - identyfikator ID dla plików shape do importu</translation>
+        <translation>[SRID] - identyfikator ID dla plików Shapefile do importu</translation>
     </message>
     <message>
         <source>[Use Default (SRID)] - set SRID to -1</source>
@@ -12157,7 +12157,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>[Import] - import the current shapefiles in the list</source>
-        <translation>[Importuj] - importuj aktualnie wybrane na liście pliki shape </translation>
+        <translation>[Importuj] - importuj aktualnie wybrane na liście pliki Shapefile </translation>
     </message>
     <message>
         <source>[Quit] - quit the program
@@ -12170,7 +12170,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import Shapefiles</source>
-        <translation>Importuj pliki shape</translation>
+        <translation>Importuj pliki Shapefile</translation>
     </message>
     <message>
         <source>You need to specify a Connection first</source>
@@ -12182,7 +12182,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>You need to add shapefiles to the list first</source>
-        <translation>Najpierw musisz dodać pliki shape do listy</translation>
+        <translation>Najpierw musisz dodać pliki Shapefile do listy</translation>
     </message>
     <message>
         <source>Importing files</source>
@@ -12198,7 +12198,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Problem inserting features from file:</source>
-        <translation>Wystapił problem przy wstawianiu obiektów z pliku:</translation>
+        <translation>Wystąpił problem przy wstawianiu obiektów z pliku:</translation>
     </message>
     <message>
         <source>Invalid table name.</source>
@@ -12214,11 +12214,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import Shapefiles - Relation Exists</source>
-        <translation>Import plików shape - wykryto relacje</translation>
+        <translation>Import plików Shapefile - wykryto relacje</translation>
     </message>
     <message>
         <source>The Shapefile:</source>
-        <translation>Plik shape:</translation>
+        <translation>Plik Shapefile:</translation>
     </message>
     <message>
         <source>will use [</source>
@@ -12238,7 +12238,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>for this Shapefile in the main dialog file list.</source>
-        <translation>dla tego pliku shape na liście w głównym oknie dialogowym.</translation>
+        <translation>dla tego pliku Shapefile na liście w głównym oknie dialogowym.</translation>
     </message>
     <message>
         <source>Do you want to overwrite the [</source>
@@ -12270,11 +12270,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add Shapefiles</source>
-        <translation>Dodaj pliki shape</translation>
+        <translation>Dodaj pliki Shapefile</translation>
     </message>
     <message>
         <source>Shapefiles (*.shp);;All files (*.*)</source>
-        <translation>Pliki shape (*.shp);;Wszystkie pliki (*.*)</translation>
+        <translation>Pliki Shapefile (*.shp);;Wszystkie pliki (*.*)</translation>
     </message>
     <message>
         <source>PostGIS not available</source>
@@ -12294,7 +12294,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 of %2 shapefiles could not be imported.</source>
-        <translation>%1 z %2 plików shape nie może być zaimportowanych.</translation>
+        <translation>%1 z %2 plików Shapefile nie może być zaimportowanych.</translation>
     </message>
     <message>
         <source>Password for </source>
@@ -12309,7 +12309,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsSpitBase</name>
     <message>
         <source>SPIT - Shapefile to PostGIS Import Tool</source>
-        <translation>SPIT - Narzędzie importu z pliku shape do PostGIS</translation>
+        <translation>SPIT - Narzędzie importu z pliku Shapefile do PostGIS</translation>
     </message>
     <message>
         <source>Add</source>
@@ -12317,7 +12317,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add a shapefile to the list of files to be imported</source>
-        <translation>Dodaj plik shapefile do listy importowanych plików</translation>
+        <translation>Dodaj plik Shapefile do listy importowanych plików</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -12325,7 +12325,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove the selected shapefile from the import list</source>
-        <translation>Usuń plik shapefile z listy importowanych plików</translation>
+        <translation>Usuń plik Shapefile z listy importowanych plików</translation>
     </message>
     <message>
         <source>Remove All</source>
@@ -12333,7 +12333,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove all the shapefiles from the import list</source>
-        <translation>Usuń wszystkie pliki shapefile z listy</translation>
+        <translation>Usuń wszystkie pliki Shapefile z listy</translation>
     </message>
     <message>
         <source>Global Schema</source>
@@ -12377,7 +12377,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import options and shapefile list</source>
-        <translation>Opcje importu i lista shapefile</translation>
+        <translation>Opcje importu i lista plików Shapefile</translation>
     </message>
     <message>
         <source>Use Default SRID or specify here</source>
@@ -12400,11 +12400,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsSpitPlugin</name>
     <message>
         <source>&amp;Import Shapefiles to PostgreSQL</source>
-        <translation>&amp;Importuj format shape do PostgreSQL</translation>
+        <translation>&amp;Importuj format Shapefile do PostgreSQL</translation>
     </message>
     <message>
         <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
-        <translation>Importuj pliki shape do bazy PostgreSQL/PostGIS. Struktura oraz nazwy pól mogą być modyfikowane w trakcie importu</translation>
+        <translation>Importuj pliki Shapefile do bazy PostgreSQL/PostGIS. Struktura oraz nazwy pól mogą być modyfikowane w trakcie importu</translation>
     </message>
     <message>
         <source>&amp;Spit</source>
@@ -12626,7 +12626,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>In layer spatial reference system units : </source>
-        <translation>W jednostkach  układu odniesienia warstwy : </translation>
+        <translation>W jednostkach układu odniesienia warstwy : </translation>
     </message>
     <message>
         <source>xMin,yMin </source>
@@ -12789,11 +12789,11 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Minimalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksymalna skala, dla której wartstwa będzie wyświetlana.</translation>
+        <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
         <source>Display name</source>
@@ -12881,7 +12881,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Change CRS</source>
-        <translation>Zmień SOW</translation>
+        <translation>Zmień układ współrzędnych</translation>
     </message>
     <message>
         <source>Attributes</source>
@@ -12961,7 +12961,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>System Odniesienia oparty na Współrzędnych</translation>
+        <translation>Układ Współrzędnych</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -13028,7 +13028,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>Zapytanie zawiera SOW nie udostępniane przez serwer dla jednej lub większej liczby warstw.</translation>
+        <translation>Zapytanie zawiera układ współrzędnych nie udostępniane przez serwer dla jednej lub większej liczby warstw.</translation>
     </message>
     <message>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
@@ -13196,7 +13196,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Available in CRS</source>
-        <translation>Dostępny w SOW</translation>
+        <translation>Dostępny w układzie współrzędnych</translation>
     </message>
     <message>
         <source>Available in style</source>
@@ -13270,7 +13270,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation>Uwaga: Jeśli chcesz mieć  większą kontrolę nad kompozycją mapy wykorzystaj Asystenta wydruku QGIS.</translation>
+        <translation>Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj Asystenta wydruku QGIS.</translation>
     </message>
     <message>
         <source>Page Size</source>
@@ -13307,7 +13307,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation>Konwertuje plik DXF do formatu shape</translation>
+        <translation>Konwertuje plik DXF do formatu Shapefile</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
@@ -13380,8 +13380,8 @@ For support send a mail to scala@itc.cnr.it
 </source>
         <translation>Opis pól:
 * Źródłowy plik DXF: ścieżka do pliku DXF który będzie importowany
-* Docelowy plk Shp: nazwa tworzonego pliku shape
-* Typ pliku docelowego: określa typ pliku docelowego shape
+* Docelowy plk Shp: nazwa tworzonego pliku Shapefile
+* Typ pliku docelowego Shp: określa typ docelowego pliku Shapefile
 * Eksportuj etykiety tekstowe: jeśli zaznaczone, tworzona jest dodatkowa warstwa punktowa a powiązana tabela dbf zawierać będzie informacje oraz tekst z pola &quot;TEXT&quot; pliku DXF
 
 ---
@@ -13403,7 +13403,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation>Zamień tent tekst na krótki opis działania wtyczki</translation>
+        <translation>Zamień ten tekst na krótki opis działania wtyczki</translation>
     </message>
 </context>
 </TS>
