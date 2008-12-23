@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-adobe-mif
+Hidden=false
+Comment=Adobe FrameMaker MIF file
+Patterns=*.mif;
+X-KDE-PatternsAccuracy=51
+X-KDE-IsAlso=application/x-mif
