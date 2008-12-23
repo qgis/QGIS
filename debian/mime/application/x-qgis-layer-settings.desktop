@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-qgis-layer-settings
+Hidden=false
+Comment=Quantum GIS layer settings
+Comment[de]=Quantum GIS Layer Einstellungen
+Patterns=*.qml;

@@ -22,7 +22,7 @@ Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
  A Geographic Information System (GIS) manages, analyzes, and displays
- databases of geographic information. Quantum GIS (QGIS) supports shapefile
+ databases of geographic information. Quantum GIS (QGIS) supports shape file
  viewing and editing, spatial data storage with PostgreSQL/PostGIS, projection
  on-the-fly, map composition, and a number of other features via a plugin
  interface. QGIS also supports display of various georeferenced raster and

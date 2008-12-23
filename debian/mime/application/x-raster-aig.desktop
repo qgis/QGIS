@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-raster-aig
+Hidden=false
+Comment=AIG raster data
+Comment[de]=AIG-Rasterdaten
+Patterns=*.aig;
