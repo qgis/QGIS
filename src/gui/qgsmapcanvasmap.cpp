@@ -49,6 +49,7 @@ QRectF QgsMapCanvasMap::boundingRect() const
 void QgsMapCanvasMap::resize( QSize size )
 {
   mPixmap = QPixmap( size );
+  mImage = QImage( size, QImage::Format_RGB32 );	// temporary image - build it here so it is available when switching from QPixmap to QImage rendering
   mCanvas->mapRenderer()->setOutputSize( size, mPixmap.logicalDpiX() );
 }
 
@@ -68,8 +69,6 @@ void QgsMapCanvasMap::render()
   if ( mUseQImageToRender )
   {
     // use temporary image for rendering
-    mImage = QImage( boundingRect().size().toSize(), QImage::Format_RGB32 );
-
     mImage.fill( mBgColor.rgb() );
 
     QPainter paint;

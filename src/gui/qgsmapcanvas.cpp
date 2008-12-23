@@ -160,6 +160,7 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
   mMap->useImageToRender( theFlag );
+  refresh();	// redraw the map on change - prevents black map view
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
