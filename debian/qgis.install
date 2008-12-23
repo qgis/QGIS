@@ -34,3 +34,14 @@ usr/lib/qgis/libdxf2shpconverterplugin.so
 usr/lib/qgis/libinterpolationplugin.so 
 usr/lib/qgis/libogrconverterplugin.so
 usr/lib/qgis/libcoordinatecaptureplugin.so
+../qgis.desktop usr/share/applications
+../qgis.xml usr/share/mime/packages
+../mime/application/x-esri-shape.desktop usr/share/mimelnk/application
+../mime/application/x-mapinfo-mif.desktop usr/share/mimelnk/application
+../mime/application/x-esri-crs.desktop usr/share/mimelnk/application
+../mime/application/x-raster-ecw.desktop usr/share/mimelnk/application
+../mime/application/x-adobe-mif.desktop usr/share/mimelnk/application
+../mime/application/x-raster-aig.desktop usr/share/mimelnk/application
+../mime/application/x-qgis-project.desktop usr/share/mimelnk/application
+../mime/application/x-raster-mrsid.desktop usr/share/mimelnk/application
+../mime/application/x-qgis-layer-settings.desktop usr/share/mimelnk/application

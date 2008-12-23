@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-mapinfo-mif
+Hidden=false
+Comment=MapInfo file
+Comment[de]=MapInfo-Datei
+Patterns=*.mif;
+X-KDE-PatternsAccuracy=60
