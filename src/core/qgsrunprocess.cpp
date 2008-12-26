@@ -54,8 +54,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
     mOutput->setTitle( action );
-    mOutput->setMessage( "<b>" + tr( "Starting" ) + " " + action + "...</b>",
-                         QgsMessageOutput::MessageHtml );
+    mOutput->setMessage( tr( "<b>Starting %1...</b>" ).arg( action ), QgsMessageOutput::MessageHtml );
     mOutput->showMessage( false ); // non-blocking
 
     // get notification of delete if it's derived from QObject
@@ -70,7 +69,7 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     if ( ! mProcess->startDetached( action ) ) // let the program run by itself
     {
       QMessageBox::critical( 0, tr( "Action" ),
-                             tr( "Unable to run command" ) + "\n" + action,
+                             tr( "Unable to run command\n%1" ).arg( action ),
                              QMessageBox::Ok, Qt::NoButton );
     }
     // We're not capturing the output from the process, so we don't
@@ -147,7 +146,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
   if ( err == QProcess::FailedToStart )
   {
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-    output->setMessage( tr( "Unable to run command" ) + mCommand, QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Unable to run command %1" ).arg( mCommand ), QgsMessageOutput::MessageText );
     // Didn't work, so no need to hang around
     die();
   }

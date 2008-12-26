@@ -111,19 +111,19 @@ QString QgsGrassModelItem::info()
   switch ( mType )
   {
     case QgsGrassModel::Location:
-      return QObject::tr( "Location: ", "Metadata in GRASS Browser" ) + mLocation;
+      return QObject::tr( "Location: %1" ).arg( mLocation );
       break;
     case QgsGrassModel::Mapset:
-      return QObject::tr( "Location: ", "Metadata in GRASS Browser" ) + mLocation + QObject::tr( "<br>Mapset: ", "Metadata in GRASS Browser" ) + mMapset;
+      return QObject::tr( "Location: %1<br>Mapset: %2" ).arg( mLocation ).arg( mMapset );
       break;
     case QgsGrassModel::Vectors:
     case QgsGrassModel::Rasters:
-      return QObject::tr( "Location: " ) + mLocation + QObject::tr( "<br>Mapset: " ) + mMapset;
+      return QObject::tr( "Location: %1<br>Mapset: %2" ).arg( mLocation ).arg( mMapset );
       break;
     case QgsGrassModel::Raster:
     {
       QString str = tblStart;
-      str += htmlTableRow( QObject::tr( "<b>Raster</b>" ), "<b>" + mMap + "</b>" );
+      str += htmlTableRow( QObject::tr( "<b>Raster</b>" ), QString( "<b>%1</b>" ).arg( mMap ) );
 
       struct Cell_head head;
       int rasterType = -1;
@@ -189,8 +189,8 @@ QString QgsGrassModelItem::info()
         if ( QString( hist.datsrc_1 ).length() > 0
              || QString( hist.datsrc_2 ).length() > 0 )
         {
-          str += htmlTableRow( QObject::tr( "Data source" ), QString( hist.datsrc_1 ) + " "
-                               + QString( hist.datsrc_2 ) );
+          str += htmlTableRow( QObject::tr( "Data source" ),
+                               QString( "%1 %2" ).arg( hist.datsrc_1 ).arg( hist.datsrc_2 ) );
         }
         if ( QString( hist.keywrd ).length() > 0 )
         {
@@ -238,7 +238,7 @@ QString QgsGrassModelItem::info()
     case QgsGrassModel::Vector:
     {
       QString str = tblStart;
-      str += htmlTableRow( QObject::tr( "<b>Vector</b>" ), "<b>" + mMap + "</b>" );
+      str += htmlTableRow( QObject::tr( "<b>Vector</b>" ), QString( "<b>%1</b>" ).arg( mMap ) );
 
       QgsGrass::setLocation( mGisbase, mLocation );
 
@@ -325,8 +325,8 @@ QString QgsGrassModelItem::info()
     case QgsGrassModel::VectorLayer:
     {
       QString str = tblStart;
-      str += htmlTableRow( QObject::tr( "<b>Vector</b>" ), "<b>" + mMap + "</b>" );
-      str += htmlTableRow( QObject::tr( "<b>Layer</b>" ), "<b>" + mLayer + "</b>" );
+      str += htmlTableRow( QObject::tr( "<b>Vector</b>" ), QString( "<b>%1</b>" ).arg( mMap ) );
+      str += htmlTableRow( QObject::tr( "<b>Layer</b>" ), QString( "<b>%1</b>" ).arg( mLayer ) );
 
       QgsGrass::setLocation( mGisbase, mLocation );
 

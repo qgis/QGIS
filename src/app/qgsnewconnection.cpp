@@ -120,7 +120,7 @@ void QgsNewConnection::testConnection()
   }
   else
   {
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n" ) + QString( PQerrorMessage( pd ) ) );
+    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( PQerrorMessage( pd ) ) );
   }
   // free pg connection resources
   PQfinish( pd );

@@ -212,8 +212,7 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters );
   */
 static void setTitleBarText_( QWidget & qgisApp )
 {
-  QString caption = QgisApp::tr( "Quantum GIS - " );
-  caption += QString( "%1 " ).arg( QGis::QGIS_VERSION ) + " ";
+  QString caption = QgisApp::tr( "Quantum GIS - %1 " ).arg( QGis::QGIS_VERSION );
 
   if ( QgsProject::instance()->title().isEmpty() )
   {
@@ -367,8 +366,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
 #endif
 
   // set application's caption
-  QString caption = tr( "Quantum GIS - " );
-  caption += QString( "%1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
+  QString caption = tr( "Quantum GIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
   // set QGIS specific srs validation
@@ -1585,7 +1583,7 @@ void QgisApp::createOverview()
 
   QBitmap overviewPanBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
   QBitmap overviewPanBmpMask = QBitmap::fromData( QSize( 16, 16 ), pan_mask_bits );
-  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 );	//set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
+  mOverviewMapCursor = new QCursor( overviewPanBmp, overviewPanBmpMask, 0, 0 ); //set upper left corner as hot spot - this is better when extent marker is small; hand won't cover the marker
   overviewCanvas->setCursor( *mOverviewMapCursor );
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
@@ -2174,8 +2172,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
     }
     else
     {
-      QString msg = *it + " ";
-      msg += tr( "is not a valid or recognized data source" );
+      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( *it );
       QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
 
       // since the layer is bad, stomp on it
@@ -2516,8 +2513,10 @@ findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
   QString myFileFilters = originalDataSource.fileName() + ";;" + fileFilters;
 
   QStringList selectedFiles;
-  QString     enc;
-  QString     title( QObject::tr( "Where is '" ) + originalDataSource.fileName() + "'? (" + QObject::tr( "original location: " ) + originalDataSource.absoluteFilePath() + ")" );
+  QString enc;
+  QString title = QObject::tr( "Where is '%1' (original location: %2)?" )
+                  .arg( originalDataSource.fileName() )
+                  .arg( originalDataSource.absoluteFilePath() );
 
   openFilesRememberingFilter_( memoryQualifier,
                                myFileFilters,
@@ -2847,7 +2846,7 @@ void QgisApp::fileOpen()
 
     QFileDialog * openFileDialog = new QFileDialog( this,
         tr( "Choose a QGIS project file to open" ),
-        lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) );
+        lastUsedDir, tr( "QGis files (*.qgs)" ) );
     openFileDialog->setFileMode( QFileDialog::ExistingFile );
 
 
@@ -2898,7 +2897,7 @@ void QgisApp::fileOpen()
     {
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
-                             tr( "" ) + "\n" + QString::fromLocal8Bit( e.what() ) );
+                             QString::fromLocal8Bit( e.what() ) );
       QgsDebugMsg( QString( "%1 bad layers found" ).arg( e.layers().size() ) );
 
       // attempt to find the new locations for missing layers
@@ -2909,7 +2908,7 @@ void QgisApp::fileOpen()
     {
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
-                             tr( "" ) + "\n" + QString::fromLocal8Bit( e.what() ) );
+                             QString::fromLocal8Bit( e.what() ) );
       QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
     }
 
@@ -2968,8 +2967,7 @@ bool QgisApp::addProject( QString projectFile )
 
     if ( QMessageBox::Ok == QMessageBox::critical( this,
          tr( "QGIS Project Read Error" ),
-         tr( "" ) + "\n" + QString::fromLocal8Bit( e.what() ) + "\n" +
-         tr( "Try to find missing layers?" ),
+         tr( "%1\nTry to find missing layers?" ).arg( QString::fromLocal8Bit( e.what() ) ),
          QMessageBox::Ok | QMessageBox::Cancel ) )
     {
       QgsDebugMsg( "want to find missing layers is true" );
@@ -2985,7 +2983,8 @@ bool QgisApp::addProject( QString projectFile )
     QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
 
     QMessageBox::critical( this,
-                           tr( "Unable to open project" ), QString::fromLocal8Bit( e.what() ) );
+                           tr( "Unable to open project" ),
+                           QString::fromLocal8Bit( e.what() ) );
 
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
@@ -3025,7 +3024,7 @@ bool QgisApp::fileSave()
 
     std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
         tr( "Choose a QGIS project file" ),
-        lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) ) );
+        lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
 
     saveFileDialog->setFileMode( QFileDialog::AnyFile );
     saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
@@ -3058,7 +3057,7 @@ bool QgisApp::fileSave()
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_( *this ); // update title bar
-      statusBar()->showMessage( tr( "Saved project to:" ) + " " + QgsProject::instance()->fileName() );
+      statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
 
       if ( isNewProject )
       {
@@ -3071,14 +3070,14 @@ bool QgisApp::fileSave()
     {
       QMessageBox::critical( this,
                              tr( "Unable to save project" ),
-                             tr( "Unable to save project to " ) + QgsProject::instance()->fileName() );
+                             tr( "Unable to save project to %1" ).arg( QgsProject::instance()->fileName() ) );
       return false;
     }
   }
   catch ( std::exception & e )
   {
     QMessageBox::critical( this,
-                           tr( "Unable to save project " ) + QgsProject::instance()->fileName(),
+                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
                            QString::fromLocal8Bit( e.what() ) );
     return false;
   }
@@ -3100,7 +3099,7 @@ void QgisApp::fileSaveAs()
 
   std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
       tr( "Choose a file name to save the QGIS project file as" ),
-      lastUsedDir, QObject::tr( "QGis files (*.qgs)" ) ) );
+      lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
 
   saveFileDialog->setFileMode( QFileDialog::AnyFile );
 
@@ -3143,7 +3142,7 @@ void QgisApp::fileSaveAs()
     if ( QgsProject::instance()->write() )
     {
       setTitleBarText_( *this ); // update title bar
-      statusBar()->showMessage( tr( "Saved project to:" ) + " " + QgsProject::instance()->fileName() );
+      statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
       // add this to the list of recently used project files
       saveRecentProjectPath( fullPath.filePath(), settings );
     }
@@ -3151,13 +3150,13 @@ void QgisApp::fileSaveAs()
     {
       QMessageBox::critical( this,
                              tr( "Unable to save project" ),
-                             tr( "Unable to save project to " ) + QgsProject::instance()->fileName() );
+                             tr( "Unable to save project to %1" ).arg( QgsProject::instance()->fileName() ) );
     }
   }
   catch ( std::exception & e )
   {
     QMessageBox::critical( 0x0,
-                           tr( "Unable to save project " ) + QgsProject::instance()->fileName(),
+                           tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
                            QString::fromLocal8Bit( e.what() ),
                            QMessageBox::Ok,
                            Qt::NoButton );
@@ -3216,7 +3215,7 @@ void QgisApp::openProject( const QString & fileName )
       Q_UNUSED( io_exception );
       QMessageBox::critical( this,
                              tr( "QGIS: Unable to load project" ),
-                             tr( "Unable to load project " ) + fileName );
+                             tr( "Unable to load project %1" ).arg( fileName ) );
     }
   }
   return ;
@@ -3251,42 +3250,41 @@ bool QgisApp::openLayer( const QString & fileName )
 }
 
 
-/*
-   void QgisApp::filePrint()
-   {
+#if 0
+void QgisApp::filePrint()
+{
 //
 //  Warn the user first that priting is experimental still
 //
-QString myHeading = "QGIS Printing Support is Experimental";
-QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
-myMessage += "For other page sizes your mileage may vary.\n";
-QMessageBox::information( this, tr(myHeading),tr(myMessage) );
+  QString myHeading = "QGIS Printing Support is Experimental";
+  QString myMessage = "Please note that printing only works on A4 landscape at the moment.\n";
+  myMessage += "For other page sizes your mileage may vary.\n";
+  QMessageBox::information( this, tr( myHeading ), tr( myMessage ) );
 
-QPrinter myQPrinter;
-if(myQPrinter.setup(this))
-{
-  QgsDebugMsg("..............................");
-  QgsDebugMsg("...........Printing...........");
-  QgsDebugMsg("..............................");
-#endif
+  QPrinter myQPrinter;
+  if ( myQPrinter.setup( this ) )
+  {
+    QgsDebugMsg( ".............................." );
+    QgsDebugMsg( "...........Printing..........." );
+    QgsDebugMsg( ".............................." );
 // Ithought we could just do this:
 //mMapCanvas->render(&myQPrinter);
 //but it doesnt work so now we try this....
-QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
-QgsDebugMsg(QString("Print device width: %1").arg(myMetrics.width()));
-QgsDebugMsg(QString("Print device height: %1").arg(myMetrics.height()));
-QPainter myQPainter;
-myQPainter.begin( &myQPrinter );
-QPixmap myQPixmap(myMetrics.width(),myMetrics.height());
-myQPixmap.fill();
-mMapCanvas->freeze(false);
-mMapCanvas->setDirty(true);
-mMapCanvas->render(&myQPixmap);
-myQPainter.drawPixmap(0,0, myQPixmap);
-myQPainter.end();
+    QPaintDeviceMetrics myMetrics( &myQPrinter ); // need width/height of printer surface
+    QgsDebugMsg( QString( "Print device width: %1" ).arg( myMetrics.width() ) );
+    QgsDebugMsg( QString( "Print device height: %1" ).arg( myMetrics.height() ) );
+    QPainter myQPainter;
+    myQPainter.begin( &myQPrinter );
+    QPixmap myQPixmap( myMetrics.width(), myMetrics.height() );
+    myQPixmap.fill();
+    mMapCanvas->freeze( false );
+    mMapCanvas->setDirty( true );
+    mMapCanvas->render( &myQPixmap );
+    myQPainter.drawPixmap( 0, 0, myQPixmap );
+    myQPainter.end();
+  }
 }
-}
-*/
+#endif
 
 void QgisApp::filePrint()
 {
@@ -3382,7 +3380,7 @@ void QgisApp::saveMapAsImage()
 
     //save the mapview to the selected file
     mMapCanvas->saveAsImage( myOutputFileNameQString, NULL, myFilterMap[myFilterString] );
-    statusBar()->showMessage( tr( "Saved map image to" ) + " " + myOutputFileNameQString );
+    statusBar()->showMessage( tr( "Saved map image to %1" ).arg( myOutputFileNameQString ) );
   }
 
 } // saveMapAsImage
@@ -3932,7 +3930,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
       {
         QMessageBox::information( this,
                                   tr( "Error" ),
-                                  tr( "Could not commit changes to layer %1\n\nErrors:  %2\n" )
+                                  tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                   .arg( vlayer->name() )
                                   .arg( vlayer->commitErrors().join( "\n  " ) ) );
         // Leave the in-memory editing state alone,
@@ -4215,7 +4213,7 @@ void QgisApp::socketConnectionClosed()
       {
         // show more info
         QgsMessageViewer *mv = new QgsMessageViewer( this );
-        mv->setWindowTitle( tr( "QGIS - Changes in SVN Since Last Release" ) );
+        mv->setWindowTitle( tr( "QGIS - Changes in SVN since last release" ) );
         mv->setMessageAsHtml( parts[2] );
         mv->exec();
       }
@@ -4255,7 +4253,7 @@ void QgisApp::socketError( QAbstractSocket::SocketError e )
   }
 
   // show version message from server
-  QMessageBox::critical( this, tr( "QGIS Version Information" ), tr( "Unable to communicate with QGIS Version server" ) + "\n" + detail );
+  QMessageBox::critical( this, tr( "QGIS Version Information" ), tr( "Unable to communicate with QGIS Version server\n%1" ).arg( detail ) );
 }
 
 void QgisApp::socketReadyRead()
@@ -4693,7 +4691,7 @@ void QgisApp::showExtents()
   }
   // update the statusbar with the current extents.
   QgsRectangle myExtents = mMapCanvas->extent();
-  mCoordsLabel->setText( QString( tr( "Extents: " ) ) + myExtents.toString( true ) );
+  mCoordsLabel->setText( tr( "Extents: %1" ).arg( myExtents.toString( true ) ) );
   //ensure the label is big enough
   if ( mCoordsLabel->width() > mCoordsLabel->minimumWidth() )
   {
@@ -5182,8 +5180,7 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
     if ( guiWarning )
     {
       // don't show the gui warning (probably because we are loading from command line)
-      QString msg( rasterFile
-                   + tr( " is not a valid or recognized raster data source" ) );
+      QString msg( tr( "%1 is not a valid or recognized raster data source" ).arg( rasterFile ) );
       QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
     }
     return NULL;
@@ -5346,7 +5343,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
       if ( guiWarning )
       {
-        QString msg( *myIterator + tr( " is not a supported raster data source" ) );
+        QString msg = tr( "%1 is not a supported raster data source" ).arg( *myIterator );
 
         if ( errMsg.size() > 0 )
           msg += "\n" + errMsg;
@@ -5480,19 +5477,19 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
     QMessageBox::warning( NULL, tr( "Project file is older" ),
-                          ( tr( "<p>This project file was saved by an older version of QGIS." ) +
-                            tr( " When saving this project file, QGIS will update it to the latest version, "
-                                "possibly rendering it useless for older versions of QGIS." ) +
-                            tr( "<p>Even though QGIS developers try to maintain backwards "
-                                "compatibility, some of the information from the old project "
-                                "file might be lost." ) +
-                            tr( " To improve the quality of QGIS, we appreciate "
-                                "if you file a bug report at %3." ) +
-                            tr( " Be sure to include the old project file, and state the version of "
-                                "QGIS you used to discover the error." ) +
-                            tr( "<p>To remove this warning when opening an older project file, "
-                                "uncheck the box '%5' in the %4 menu." ) +
-                            tr( "<p>Version of the project file: %1<br>Current version of QGIS: %2" ) )
+                          tr( "<p>This project file was saved by an older version of QGIS."
+                              " When saving this project file, QGIS will update it to the latest version, "
+                              "possibly rendering it useless for older versions of QGIS."
+                              "<p>Even though QGIS developers try to maintain backwards "
+                              "compatibility, some of the information from the old project "
+                              "file might be lost."
+                              " To improve the quality of QGIS, we appreciate "
+                              "if you file a bug report at %3."
+                              " Be sure to include the old project file, and state the version of "
+                              "QGIS you used to discover the error."
+                              "<p>To remove this warning when opening an older project file, "
+                              "uncheck the box '%5' in the %4 menu."
+                              "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
                           .arg( oldVersion )
                           .arg( QGis::QGIS_VERSION )
                           .arg( "<a href=https://svn.qgis.org/trac/wiki>http://svn.qgis.org/trac/wiki</a> " )

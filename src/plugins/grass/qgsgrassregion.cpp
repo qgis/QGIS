@@ -160,8 +160,8 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "GISDBASE, LOCATION_NAME or MAPSET is not set, "
-                          "cannot display current region." ) );
+    QMessageBox::warning( 0, tr( "Warning" ),
+                          tr( "GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region." ) );
   }
 
   QgsGrass::setLocation( gisdbase, location );
@@ -169,7 +169,7 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
 
   if ( err )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: " ) + QString( err ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( err ) );
     return;
   }
 

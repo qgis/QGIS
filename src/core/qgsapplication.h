@@ -24,6 +24,7 @@
  */
 class CORE_EXPORT QgsApplication: public QApplication
 {
+    Q_OBJECT
   public:
     QgsApplication( int & argc, char ** argv, bool GUIenabled );
     virtual ~QgsApplication();

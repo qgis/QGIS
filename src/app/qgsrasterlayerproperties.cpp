@@ -556,29 +556,30 @@ void QgsRasterLayerProperties::sync()
     tabBar->removeTab( tabBar->indexOf( tabPageHistogram ) );
     tabBar->removeTab( tabBar->indexOf( tabPagePyramids ) );
   }
-  /*
-    if (mRasterLayer->rasterType() == QgsRasterLayer::Multiband)
-    {
-      //multiband images can also be rendered as single band (using only one of the bands)
-      txtSymologyNotes->
-        setText(tr
-            ("<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>"));
-    }
-    else if (mRasterLayer->rasterType() == QgsRasterLayer::Palette)
-    {
-      //paletted images (e.g. tif) can only be rendered as three band rgb images
-      txtSymologyNotes->
-        setText(tr
-            ("<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>"));
-    }
-    else                        //only grayscale settings allowed
-    {
-      //grayscale images can only be rendered as singleband
-      txtSymologyNotes->
-        setText(tr
-            ("<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>"));
-    }
-  */
+#if 0
+  if ( mRasterLayer->rasterType() == QgsRasterLayer::Multiband )
+  {
+    //multiband images can also be rendered as single band (using only one of the bands)
+    txtSymologyNotes->
+    setText( tr
+             ( "<h3>Multiband Image Notes</h3><p>This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:</p><ul><li>Visible Blue (0.45 to 0.52 microns) - not mapped</li><li>Visible Green (0.52 to 0.60 microns) - not mapped</li></li>Visible Red (0.63 to 0.69 microns) - mapped to red in image</li><li>Near Infrared (0.76 to 0.90 microns) - mapped to green in image</li><li>Mid Infrared (1.55 to 1.75 microns) - not mapped</li><li>Thermal Infrared (10.4 to 12.5 microns) - not mapped</li><li>Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image</li></ul>", "COMMENTED OUT" ) );
+  }
+  else if ( mRasterLayer->rasterType() == QgsRasterLayer::Palette )
+  {
+    //paletted images (e.g. tif) can only be rendered as three band rgb images
+    txtSymologyNotes->
+    setText( tr
+             ( "<h3>Paletted Image Notes</h3> <p>This image uses a fixed color palette. You can remap these colors in different combinations e.g.</p><ul><li>Red - blue in image</li><li>Green - blue in image</li><li>Blue - green in image</li></ul>", "COMMENTED OUT" ) );
+  }
+  else                        //only grayscale settings allowed
+  {
+    //grayscale images can only be rendered as singleband
+    txtSymologyNotes->
+    setText( tr
+             ( "<h3>Grayscale Image Notes</h3> <p>You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.</p>", "COMMENTED OUT" ) );
+  }
+#endif
+
   //
   // Populate the various controls on the form
   //
@@ -723,7 +724,7 @@ void QgsRasterLayerProperties::sync()
   mDefaultRedBand = myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt();
   mDefaultGreenBand = myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt();
   mDefaultBlueBand = myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt();
-  labelDefaultBandCombination->setText( QString( tr( "Default" ) + " R:%1 G:%2 B:%3" ) .arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
+  labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
 
   mDefaultContrastEnhancementAlgorithm = myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
   if ( mDefaultContrastEnhancementAlgorithm == "NoEnhancement" )
@@ -793,11 +794,11 @@ void QgsRasterLayerProperties::sync()
   //display the raster dimensions and no data value
   if ( mRasterLayerIsGdal )
   {
-    lblColumns->setText( tr( "Columns: " ) + QString::number( mRasterLayer->width() ) );
-    lblRows->setText( tr( "Rows: " ) + QString::number( mRasterLayer->height() ) );
+    lblColumns->setText( tr( "Columns: %1" ).arg( mRasterLayer->width() ) );
+    lblRows->setText( tr( "Rows: %1" ).arg( mRasterLayer->height() ) );
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      lblNoData->setText( tr( "No-Data Value: " ) + QString::number( mRasterLayer->noDataValue() ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->noDataValue() ) );
     }
     else
     {
@@ -972,8 +973,8 @@ void QgsRasterLayerProperties::apply()
       if ( cboxColorMap->currentText() == tr( "Grayscale" ) )
       {
         QgsDebugMsg( "Setting Raster Drawing Style to :: PalettedSingleBandGray" );
-        QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" ).arg( cboGray->currentText() ).arg( mRasterLayer->
-                     grayBandName() ) );
+        QgsDebugMsg( QString( "Combo value : %1 GrayBand Mapping : %2" )
+                     .arg( cboGray->currentText() ).arg( mRasterLayer->grayBandName() ) );
 
         mRasterLayer->setDrawingStyle( QgsRasterLayer::PalettedSingleBandGray );
       }
@@ -1574,7 +1575,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     if ( res == "ERROR_WRITE_ACCESS" )
     {
       QMessageBox::warning( this, tr( "Write access denied" ),
-                            tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+                            tr( "Write access denied. Adjust the file permissions and try again." ) );
     }
     else if ( res == "ERROR_WRITE_FORMAT" )
     {
@@ -2339,7 +2340,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 
     if ( myImportError )
     {
-      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n" ) + myBadLines );
+      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n%1" ).arg( myBadLines ) );
     }
   }
   else if ( !myFileName.isEmpty() )
@@ -2747,7 +2748,7 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromBand_clicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for Band %n failed to load", "", cboxColorMapBand->currentIndex() + 1 ) );
+    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 failed to load" ).arg( cboxColorMapBand->currentIndex() + 1 ) );
     QgsDebugMsg( "Color map failed to load" );
   }
 }
@@ -2902,7 +2903,7 @@ void QgsRasterLayerProperties::on_pbtnMakeBandCombinationDefault_clicked()
   mDefaultRedBand = cboRed->currentIndex() + 1;
   mDefaultGreenBand = cboGreen->currentIndex() + 1;
   mDefaultBlueBand = cboBlue->currentIndex() + 1;
-  labelDefaultBandCombination->setText( QString( tr( "Default" ) + " R:%1 G:%2 B:%3" ) .arg( mDefaultRedBand ) .arg( mDefaultGreenBand ) .arg( mDefaultBlueBand ) );
+  labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ).arg( mDefaultGreenBand ).arg( mDefaultBlueBand ) );
 }
 
 void QgsRasterLayerProperties::on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked()
@@ -3136,8 +3137,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
     }
     else
     {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: " ) +
-                            myFileDialog->selectedFilter() );
+      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
 
     }
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
@@ -3203,8 +3203,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
     }
     else
     {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: " ) +
-                            myFileDialog->selectedFilter() );
+      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
 
     }
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );

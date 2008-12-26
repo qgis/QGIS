@@ -22,6 +22,7 @@
 /**Map tool for translating feature position by mouse drag*/
 class QgsMapToolMoveFeature: public QgsMapToolEdit
 {
+    Q_OBJECT
   public:
     QgsMapToolMoveFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolMoveFeature();

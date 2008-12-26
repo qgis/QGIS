@@ -98,9 +98,16 @@ SET (QGIS_APP_MOC_HDRS
   qgsidentifyresults.h
   qgslabeldialog.h
   qgsludialog.h
+
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
+  qgsmaptooladdfeature.h
+  qgsmaptooladdisland.h
+  qgsmaptooladdring.h
+  qgsmaptoolmovefeature.h
+  qgsmaptoolselect.h
+
   qgsmeasuretool.h
   qgsmeasuredialog.h
   qgsnewhttpconnection.h

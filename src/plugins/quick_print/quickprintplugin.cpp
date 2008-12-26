@@ -36,8 +36,7 @@
 
 static const char * const sIdent = "$Id: plugin.cpp 7796 2007-12-16 22:11:38Z homann $";
 static const QString sName = QObject::tr( "Quick Print" );
-static const QString sDescription =
-  QObject::tr( "Quick Print is a plugin to quickly print a map with minimal effort." );
+static const QString sDescription = QObject::tr( "Quick Print is a plugin to quickly print a map with minimal effort." );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 

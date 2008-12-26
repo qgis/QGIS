@@ -301,7 +301,7 @@ void QgsVectorLayerProperties::sliderTransparency_valueChanged( int theValue )
 {
   //set the transparency percentage label to a suitable value
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
-  lblTransparencyPercent->setText( tr( "Transparency: " ) + QString::number( myInt ) + "%" );
+  lblTransparencyPercent->setText( tr( "Transparency: %1%" ).arg( myInt ) );
 }//sliderTransparency_valueChanged
 
 void QgsVectorLayerProperties::setLabelCheckBox()
@@ -647,8 +647,7 @@ void QgsVectorLayerProperties::on_pbnIndex_clicked()
     setCursor( Qt::ArrowCursor );
     if ( errval )
     {
-      QMessageBox::information( this, tr( "Spatial Index" ),
-                                tr( "Creation of spatial index successful" ) );
+      QMessageBox::information( this, tr( "Spatial Index" ), tr( "Creation of spatial index successful" ) );
     }
     else
     {
@@ -673,21 +672,18 @@ QString QgsVectorLayerProperties::metadata()
   if ( !( layer->dataComment().isEmpty() ) )
   {
     myMetadata += "<tr><td>";
-    myMetadata += tr( "Layer comment: " ) +
-                  layer->dataComment();
+    myMetadata += tr( "Layer comment: %1" ).arg( layer->dataComment() );
     myMetadata += "</td></tr>";
   }
 
   //storage type
   myMetadata += "<tr><td>";
-  myMetadata += tr( "Storage type of this layer : " ) +
-                layer->storageType();
+  myMetadata += tr( "Storage type of this layer: %1" ).arg( layer->storageType() );
   myMetadata += "</td></tr>";
 
   // data source
   myMetadata += "<tr><td>";
-  myMetadata += tr( "Source for this layer : " ) +
-                layer->publicSource();
+  myMetadata += tr( "Source for this layer: %1" ).arg( layer->publicSource() );
   myMetadata += "</td></tr>";
 
   //geom type
@@ -703,21 +699,18 @@ QString QgsVectorLayerProperties::metadata()
     QString typeString( QGis::qgisVectorGeometryType[layer->geometryType()] );
 
     myMetadata += "<tr><td>";
-    myMetadata += tr( "Geometry type of the features in this layer : " ) +
-                  typeString;
+    myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
     myMetadata += "</td></tr>";
   }
 
 
   //feature count
   myMetadata += "<tr><td>";
-  myMetadata += tr( "The number of features in this layer : " ) +
-                QString::number( layer->featureCount() );
+  myMetadata += tr( "The number of features in this layer: %1" ).arg( layer->featureCount() );
   myMetadata += "</td></tr>";
   //capabilities
   myMetadata += "<tr><td>";
-  myMetadata += tr( "Editing capabilities of this layer : " ) +
-                layer->capabilitiesString();
+  myMetadata += tr( "Editing capabilities of this layer: %1" ).arg( layer->capabilitiesString() );
   myMetadata += "</td></tr>";
 
   //-------------
@@ -728,36 +721,28 @@ QString QgsVectorLayerProperties::metadata()
   myMetadata += "</td></tr>";
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
   myMetadata += "<tr><td>";
-  myMetadata += tr( "In layer spatial reference system units : " ) +
-                tr( "xMin,yMin " ) +
-                QString::number( myExtent.xMinimum() ) +
-                "," +
-                QString::number( myExtent.yMinimum() ) +
-                tr( " : xMax,yMax " ) +
-                QString::number( myExtent.xMaximum() ) +
-                "," +
-                QString::number( myExtent.yMaximum() );
+  myMetadata += tr( "In layer spatial reference system units : " )
+                + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                .arg( myExtent.xMinimum() ).arg( myExtent.yMinimum() )
+                .arg( myExtent.xMaximum() ).arg( myExtent.yMaximum() );
   myMetadata += "</td></tr>";
 
   //extents in project cs
 
   try
   {
-    /*
+#if 0
     // TODO: currently disabled, will revisit later [MD]
-    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox(layer->extent());
+    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox( layer->extent() );
     myMetadata += "<tr><td>";
-    myMetadata += tr("In project spatial reference system units : ") +
-    tr("xMin,yMin ") +
-    QString::number(myProjectedExtent.xMinimum()) +
-    "," +
-    QString::number( myProjectedExtent.yMinimum()) +
-    tr(" : xMax,yMax ") +
-    QString::number(myProjectedExtent.xMaximum()) +
-    "," +
-    QString::number(myProjectedExtent.yMaximum());
+    myMetadata += tr( "In project spatial reference system units : " )
+                  + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                  .arg( myProjectedExtent.xMinimum() )
+                  .arg( myProjectedExtent.yMinimum() )
+                  .arg( myProjectedExtent.xMaximum() )
+                  .arg( myProjectedExtent.yMaximum() );
     myMetadata += "</td></tr>";
-    */
+#endif
 
     //
     // Display layer spatial ref system
@@ -772,16 +757,15 @@ QString QgsVectorLayerProperties::metadata()
     //
     // Display project (output) spatial ref system
     //
-    /*
+#if 0
     // TODO: disabled for now, will revisit later [MD]
     myMetadata += "<tr><td bgcolor=\"gray\">";
-    myMetadata += tr("Project (Output) Spatial Reference System:");
+    myMetadata += tr( "Project (Output) Spatial Reference System:" );
     myMetadata += "</td></tr>";
     myMetadata += "<tr><td>";
-    myMetadata += coordinateTransform->destCRS().toProj4().replace(QRegExp("\"")," \"");
+    myMetadata += coordinateTransform->destCRS().toProj4().replace( QRegExp( "\"" ), " \"" );
     myMetadata += "</td></tr>";
-    */
-
+#endif
   }
   catch ( QgsCsException &cse )
   {
@@ -789,8 +773,8 @@ QString QgsVectorLayerProperties::metadata()
     QgsDebugMsg( cse.what() );
 
     myMetadata += "<tr><td>";
-    myMetadata += tr( "In project spatial reference system units : " );
-    myMetadata += " (Invalid transformation of layer extents) ";
+    myMetadata += tr( "In project spatial reference system units : " )
+                  + tr( "(Invalid transformation of layer extents)" );
     myMetadata += "</td></tr>";
 
   }
@@ -895,10 +879,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   else
   {
     //something went wrong - let them know why
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
+    QMessageBox::information( this, tr( "Default Style" ), myMessage );
   }
 }
 
@@ -914,10 +895,7 @@ void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
   if ( !defaultSavedFlag )
   {
     //only raise the message if something went wrong
-    QMessageBox::information( this,
-                              tr( "Default Style" ),
-                              myMessage
-                            );
+    QMessageBox::information( this, tr( "Default Style" ), myMessage );
   }
 }
 
@@ -932,7 +910,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   (
     new QFileDialog(
       this,
-      QFileDialog::tr( "Load layer properties from style file (.qml)" ),
+      tr( "Load layer properties from style file (.qml)" ),
       myLastUsedDir,
       tr( "QGIS Layer Style File (*.qml)" )
     )
@@ -970,17 +948,13 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
       else
       {
         //let the user know what went wrong
-        QMessageBox::information( this,
-                                  tr( "Saved Style" ),
-                                  myMessage
-                                );
+        QMessageBox::information( this, tr( "Saved Style" ), myMessage );
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: " ) +
-                            myFileDialog->selectedFilter() );
-
+      QMessageBox::warning( this, tr( "QGIS" ),
+                            tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
     }
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
   }
@@ -997,7 +971,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   (
     new QFileDialog(
       this,
-      QFileDialog::tr( "Save layer properties as style file (.qml)" ),
+      tr( "Save layer properties as style file (.qml)" ),
       myLastUsedDir,
       tr( "QGIS Layer Style File (*.qml)" )
     )
@@ -1038,18 +1012,15 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
       else
       {
         //let the user know what went wrong
-        QMessageBox::information( this,
-                                  tr( "Saved Style" ),
-                                  myMessage
-                                );
+        QMessageBox::information( this, tr( "Saved Style" ), myMessage );
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: " ) +
-                            myFileDialog->selectedFilter() );
-
+      QMessageBox::warning( this, tr( "QGIS" ),
+                            tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
     }
+
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
   }
 }

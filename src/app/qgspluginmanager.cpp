@@ -206,7 +206,7 @@ void QgsPluginManager::getPluginDescriptions()
 
   if ( pluginDir.count() == 0 )
   {
-    QMessageBox::information( this, tr( "No Plugins" ), tr( "No QGIS plugins found in " ) + lblPluginDir->text() );
+    QMessageBox::information( this, tr( "No Plugins" ), tr( "No QGIS plugins found in %1" ).arg( lblPluginDir->text() ) );
     return;
   }
 

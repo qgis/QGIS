@@ -62,9 +62,9 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, QObject::tr( "Layer not editable" ),
-                              QObject::tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-                                           "of the layer, right click and check 'Allow Editing'." ) );
+    QMessageBox::information( 0, tr( "Layer not editable" ),
+                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                  "of the layer, right click and check 'Allow Editing'." ) );
     return;
   }
 

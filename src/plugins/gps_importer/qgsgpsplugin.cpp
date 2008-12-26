@@ -47,11 +47,9 @@
 #include "qgslogger.h"
 
 
-static const char * const ident_ =
-  "$Id$";
+static const char * const ident_ = "$Id$";
 static const QString name_ = QObject::tr( "GPS Tools" );
-static const QString description_ =
-  QObject::tr( "Tools for loading and importing GPS data" );
+static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 
@@ -211,8 +209,8 @@ void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadR
   if ( !fileInfo.isReadable() )
   {
     QMessageBox::warning( NULL, tr( "GPX Loader" ),
-                          tr( "Unable to read the selected file.\n" ) +
-                          tr( "Please reselect a valid file." ) );
+                          tr( "Unable to read the selected file.\n"
+                              "Please reselect a valid file." ) );
     return;
   }
 
@@ -409,8 +407,8 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
   if ( babelArgs.isEmpty() )
   {
     QMessageBox::warning( NULL, tr( "Not supported" ),
-                          QString( tr( "This device does not support downloading " ) +
-                                   tr( "of " ) ) + features + "." );
+                          tr( "This device does not support downloading of %1." )
+                          .arg( features ) );
     return;
   }
 
@@ -502,8 +500,8 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, QString device,
   if ( babelArgs.isEmpty() )
   {
     QMessageBox::warning( NULL, tr( "Not supported" ),
-                          QString( tr( "This device does not support uploading of " ) ) +
-                          features + "." );
+                          tr( "This device does not support uploading of %1." )
+                          .arg( features ) );
     return;
   }
 

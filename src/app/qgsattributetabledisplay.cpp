@@ -122,14 +122,14 @@ QgsAttributeTableDisplay::QgsAttributeTableDisplay( QgsVectorLayer* layer )
   bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
-    mDock = new QAttributeTableDock( tr( "Attribute table - " ) + layer->name(), QgisApp::instance() );
+    mDock = new QAttributeTableDock( tr( "Attribute table - %1" ).arg( layer->name() ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
     buttonBox->setVisible( false );
   }
 
-  setWindowTitle( tr( "Attribute table - " ) + layer->name() );
+  setWindowTitle( tr( "Attribute table - %1" ).arg( layer->name() ) );
 
 #ifdef Q_WS_MAC
   if ( !myDockFlag )
@@ -398,12 +398,7 @@ void QgsAttributeTableDisplay::doSearch( QString searchString )
   // update table
   searchShowResultsChanged( mSearchShowResults->currentIndex() );
 
-  QString str;
-  if ( mSearchIds.size() )
-    str = tr( "Found %1 matching features.", "", mSearchIds.size() ).arg( mSearchIds.size() );
-  else
-    str = tr( "No matching features found." );
-  QMessageBox::information( this, tr( "Search results" ), str );
+  QMessageBox::information( this, tr( "Search results" ), tr( "Found %n matching feature(s).", "search results", mSearchIds.size() ) );
 }
 
 void QgsAttributeTableDisplay::restorePosition()

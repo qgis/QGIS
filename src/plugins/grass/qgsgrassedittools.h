@@ -24,6 +24,7 @@ class QgsGrassEdit;
 
 class QgsGrassEditTool : public QgsMapTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditTool( QgsGrassEdit* edit );
 
@@ -45,6 +46,7 @@ class QgsGrassEditTool : public QgsMapTool
 
 class QgsGrassEditNewPoint : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditNewPoint( QgsGrassEdit* edit, bool newCentroid );
     virtual void mouseClick( QgsPoint & point, Qt::MouseButton button );
@@ -60,6 +62,7 @@ class QgsGrassEditNewPoint : public QgsGrassEditTool
 
 class QgsGrassEditNewLine : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditNewLine( QgsGrassEdit* edit, bool newBoundary );
 
@@ -80,6 +83,7 @@ class QgsGrassEditNewLine : public QgsGrassEditTool
 
 class QgsGrassEditMoveVertex : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditMoveVertex( QgsGrassEdit* edit );
 
@@ -93,6 +97,7 @@ class QgsGrassEditMoveVertex : public QgsGrassEditTool
 
 class QgsGrassEditAddVertex : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditAddVertex( QgsGrassEdit* edit );
 
@@ -106,6 +111,7 @@ class QgsGrassEditAddVertex : public QgsGrassEditTool
 
 class QgsGrassEditDeleteVertex : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditDeleteVertex( QgsGrassEdit* edit );
 
@@ -118,6 +124,7 @@ class QgsGrassEditDeleteVertex : public QgsGrassEditTool
 
 class QgsGrassEditMoveLine : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditMoveLine( QgsGrassEdit* edit );
 
@@ -131,6 +138,7 @@ class QgsGrassEditMoveLine : public QgsGrassEditTool
 
 class QgsGrassEditDeleteLine : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditDeleteLine( QgsGrassEdit* edit );
 
@@ -143,6 +151,7 @@ class QgsGrassEditDeleteLine : public QgsGrassEditTool
 
 class QgsGrassEditSplitLine : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditSplitLine( QgsGrassEdit* edit );
 
@@ -155,6 +164,7 @@ class QgsGrassEditSplitLine : public QgsGrassEditTool
 
 class QgsGrassEditAttributes : public QgsGrassEditTool
 {
+    Q_OBJECT
   public:
     QgsGrassEditAttributes( QgsGrassEdit* edit );
 

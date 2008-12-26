@@ -168,8 +168,8 @@ void QgsServerSourceSelect::on_btnDelete_clicked()
 {
   QSettings settings;
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
-  QString msg =
-    tr( "Are you sure you want to remove the " ) + cmbConnections->currentText() + tr( " connection and all associated settings?" );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
@@ -265,13 +265,14 @@ void QgsServerSourceSelect::populateImageEncodingGroup( QgsWmsProvider* wmsProvi
   //
   QList<QByteArray> qtImageFormats = QImageReader::supportedImageFormats();
 
+#ifdef QGISDEBUG
   QList<QByteArray>::const_iterator it = qtImageFormats.begin();
   while ( it != qtImageFormats.end() )
   {
     QgsDebugMsg( QString( "can support input of '%1'." ).arg(( *it ).data() ) );
     ++it;
   }
-
+#endif
 
   //
   // Add new group of buttons
@@ -471,10 +472,7 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
     {
       QSet<QString> crsFilter = mWmsProvider->supportedCrsForLayers( newSelectedLayers );
 
-      gbCRS->setTitle(
-        QString( tr( "Coordinate Reference System (%1 available)", "", crsFilter.count() ) )
-        .arg( crsFilter.count() )
-      );
+      gbCRS->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", crsFilter.count() ) );
 
       // check whether current CRS is supported
       // if not, use one of the available CRS
@@ -620,21 +618,20 @@ void QgsServerSourceSelect::showStatusMessage( QString const & theMessage )
 
 void QgsServerSourceSelect::showError( QgsWmsProvider * wms )
 {
-//   QMessageBox::warning(
-//     this,
-//     wms->lastErrorTitle(),
-//     tr("Could not understand the response.  The") + " " + wms->name() + " " +
-//       tr("provider said") + ":\n" +
-//       wms->lastError()
-//   );
+#if 0
+  QMessageBox::warning(
+    this,
+    wms->lastErrorTitle(),
+    tr( "Could not understand the response.  The %1 provider said:\n%2", "COMMENTED OUT" )
+    .arg( wms->name() ).arg( wms->lastError() )
+  );
+#endif
 
   QgsMessageViewer * mv = new QgsMessageViewer( this );
   mv->setWindowTitle( wms->lastErrorTitle() );
-  mv->setMessageAsPlainText(
-    tr( "Could not understand the response.  The" ) + " " + wms->name() + " " +
-    tr( "provider said" ) + ":\n" +
-    wms->lastError()
-  );
+  mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" )
+                             .arg( wms->name() ).arg( wms->lastError() )
+                           );
   mv->showMessage( true ); // Is deleted when closed
 }
 

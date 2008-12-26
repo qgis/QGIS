@@ -115,8 +115,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   //statusBar()->hide();
 
   // set the dialog title
-  QString title = tr( "GRASS Tools: " ) + QgsGrass::getDefaultLocation()
-                  + "/" + QgsGrass::getDefaultMapset();
+  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
   setWindowTitle( title );
 
 
@@ -182,7 +181,7 @@ void QgsGrassTools::runModule( QString name )
     if ( !file.exists() )
     {
       QMessageBox::warning( 0, tr( "Warning" ),
-                            tr( "Cannot find MSYS (" ) + msysPath + ")" );
+                            tr( "Cannot find MSYS (%1)" ).arg( msysPath ) );
     }
     else
     {
@@ -194,7 +193,7 @@ void QgsGrassTools::runModule( QString name )
       if ( proc->state() != QProcess::Running )
       {
         QMessageBox::warning( 0, "Warning",
-                              "Cannot start MSYS (" + msysPath + ")" );
+                              tr( "Cannot start MSYS (%1)" ).arg( msysPath ) );
       }
     }
     return;
@@ -252,12 +251,12 @@ bool QgsGrassTools::loadConfig( QString filePath )
 
   if ( !file.exists() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "The config file (" ) + filePath + tr( ") not found." ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
     return false;
   }
   if ( ! file.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open config file (" ) + filePath + tr( ")" ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
     return false;
   }
 
@@ -266,8 +265,8 @@ bool QgsGrassTools::loadConfig( QString filePath )
   int line, column;
   if ( !doc.setContent( &file,  &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read config file (" ) + filePath + "):\n" + err + tr( "\nat line " )
-                     + QString::number( line ) + tr( " column " ) + QString::number( column );
+    QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
+                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
     QMessageBox::warning( 0, tr( "Warning" ), errmsg );
     file.close();
@@ -380,8 +379,7 @@ void QgsGrassTools::mapsetChanged()
 {
   QgsDebugMsg( "entered." );
 
-  QString title = tr( "GRASS Tools: " ) + QgsGrass::getDefaultLocation()
-                  + "/" + QgsGrass::getDefaultMapset();
+  QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
   setWindowTitle( title );
 
   closeTools();

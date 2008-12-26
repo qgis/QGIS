@@ -228,8 +228,8 @@ void QgsDbSourceSelect::deleteConnection()
 {
   QSettings settings;
   QString key = "/Postgresql/connections/" + cmbConnections->currentText();
-  QString msg =
-    tr( "Are you sure you want to remove the " ) + cmbConnections->currentText() + tr( " connection and all associated settings?" );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
@@ -337,7 +337,7 @@ void QgsDbSourceSelect::addTables()
 
   if ( m_selectedTables.empty() )
   {
-    QMessageBox::information( this, tr( "Select Table" ), tr( "You must select a table in order to add a Layer." ) );
+    QMessageBox::information( this, tr( "Select Table" ), tr( "You must select a table in order to add a layer." ) );
   }
   else
   {
@@ -451,12 +451,11 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
   else
   {
     QMessageBox::warning( this, tr( "Connection failed" ),
-                          tr( "Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6" )
+                          tr( "Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.\n\n"
+                              "Check your username and password and try again.\n\n"
+                              "The database said:\n%3" )
                           .arg( settings.value( key + "/database" ).toString() )
                           .arg( settings.value( key + "/host" ).toString() )
-                          .arg( "\n\n" )
-                          .arg( "\n\n" )
-                          .arg( "\n" )
                           .arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
   }
 

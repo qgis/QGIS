@@ -211,7 +211,7 @@ QTreeWidgetItem *QgsIdentifyResults::addNode( QString label )
 
 void QgsIdentifyResults::setTitle( QString title )
 {
-  setWindowTitle( tr( "Identify Results - " ) + title );
+  setWindowTitle( tr( "Identify Results - %1" ).arg( title ) );
 }
 
 void QgsIdentifyResults::setColumnText( int column, const QString & label )

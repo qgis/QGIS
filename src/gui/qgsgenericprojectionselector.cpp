@@ -42,8 +42,8 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
     QString format( "<h2>%1</h2>%2 %3" );
     QString header = tr( "Define this layer's projection:" );
     QString sentence1 = tr( "This layer appears to have no projection specification." );
-    QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project"
-                            ", but you may override this by selecting a different projection below." );
+    QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
+                            "but you may override this by selecting a different projection below." );
     textEdit->setHtml( format.arg( header ).arg( sentence1 )
                        .arg( sentence2 ) );
   }

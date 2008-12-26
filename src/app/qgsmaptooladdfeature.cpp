@@ -45,8 +45,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, QObject::tr( "Not a vector layer" ),
-                              QObject::tr( "The current layer is not a vector layer" ) );
+    QMessageBox::information( 0, tr( "Not a vector layer" ),
+                              tr( "The current layer is not a vector layer" ) );
     return;
   }
 
@@ -56,7 +56,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D ||
        layerWKBType == QGis::WKBMultiLineString25D || layerWKBType == QGis::WKBPoint25D || layerWKBType == QGis::WKBMultiPoint25D )
   {
-    QMessageBox::critical( 0, QObject::tr( "2.5D shape type not supported" ), QObject::tr( "Adding features to 2.5D shapetypes is not supported yet" ) );
+    QMessageBox::critical( 0, tr( "2.5D shape type not supported" ), tr( "Adding features to 2.5D shapetypes is not supported yet" ) );
     delete mRubberBand;
     mRubberBand = NULL;
     mCapturing = FALSE;
@@ -69,16 +69,16 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
   {
-    QMessageBox::information( 0, QObject::tr( "Layer cannot be added to" ),
-                              QObject::tr( "The data provider for this layer does not support the addition of features." ) );
+    QMessageBox::information( 0, tr( "Layer cannot be added to" ),
+                              tr( "The data provider for this layer does not support the addition of features." ) );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, QObject::tr( "Layer not editable" ),
-                              QObject::tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-                                           "of the layer, right click and check 'Allow Editing'." ) );
+    QMessageBox::information( 0, tr( "Layer not editable" ),
+                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                  "of the layer, right click and check 'Allow Editing'." ) );
     return;
   }
 
@@ -88,8 +88,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //check we only use this tool for point/multipoint layers
     if ( vlayer->geometryType() != QGis::Point )
     {
-      QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
-                                QObject::tr( "Cannot apply the 'capture point' tool on this vector layer" ) );
+      QMessageBox::information( 0, tr( "Wrong editing tool" ),
+                                tr( "Cannot apply the 'capture point' tool on this vector layer" ) );
       return;
     }
 
@@ -109,8 +109,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
-                                  QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
+        QMessageBox::information( 0, tr( "Coordinate transform error" ),
+                                  tr( "Cannot transform the point to the layers coordinate system" ) );
         return;
       }
     }
@@ -196,16 +196,16 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //check we only use the line tool for line/multiline layers
     if ( mTool == CaptureLine && vlayer->geometryType() != QGis::Line )
     {
-      QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
-                                QObject::tr( "Cannot apply the 'capture line' tool on this vector layer" ) );
+      QMessageBox::information( 0, tr( "Wrong editing tool" ),
+                                tr( "Cannot apply the 'capture line' tool on this vector layer" ) );
       return;
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
     if ( mTool == CapturePolygon && vlayer->geometryType() != QGis::Polygon )
     {
-      QMessageBox::information( 0, QObject::tr( "Wrong editing tool" ),
-                                QObject::tr( "Cannot apply the 'capture polygon' tool on this vector layer" ) );
+      QMessageBox::information( 0, tr( "Wrong editing tool" ),
+                                tr( "Cannot apply the 'capture polygon' tool on this vector layer" ) );
       return;
     }
 
@@ -219,8 +219,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     else if ( error == 2 )
     {
       //problem with coordinate transformation
-      QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
-                                QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
+      QMessageBox::information( 0, tr( "Coordinate transform error" ),
+                                tr( "Cannot transform the point to the layers coordinate system" ) );
       return;
     }
 
@@ -321,7 +321,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
         else
         {
-          QMessageBox::critical( 0, QObject::tr( "Error" ), QObject::tr( "Cannot add feature. Unknown WKB type" ) );
+          QMessageBox::critical( 0, tr( "Error" ), tr( "Cannot add feature. Unknown WKB type" ) );
           delete mRubberBand;
           mRubberBand = NULL;
           mCaptureList.clear();
@@ -417,7 +417,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
         else
         {
-          QMessageBox::critical( 0, QObject::tr( "Error" ), QObject::tr( "Cannot add feature. Unknown WKB type" ) );
+          QMessageBox::critical( 0, tr( "Error" ), tr( "Cannot add feature. Unknown WKB type" ) );
           delete mRubberBand;
           mRubberBand = NULL;
           mCaptureList.clear();
@@ -432,7 +432,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           if ( vlayer->removePolygonIntersections( f->geometry() ) != 0 )
           {
-            QMessageBox::critical( 0, QObject::tr( "Error" ), QObject::tr( "Could not remove polygon intersection" ) );
+            QMessageBox::critical( 0, tr( "Error" ), tr( "Could not remove polygon intersection" ) );
           }
         }
       }

@@ -77,15 +77,11 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
   mLibraryDirectory.setNameFilters( QStringList( "*.so" ) );
 #endif
 
-#ifdef QGISDEBUG
-  QgsLogger::debug( "Checking " + mLibraryDirectory.path() + " for provider plugins\n", 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+  QgsDebugMsg( QString( "Checking %1 for provider plugins" ).arg( mLibraryDirectory.path() ) );
 
   if ( mLibraryDirectory.count() == 0 )
   {
-    QString msg = QObject::tr( "No Data Provider Plugins",
-                               "No QGIS data provider plugins found in:" );
-    msg += "\n" + mLibraryDirectory.path() + "\n\n";
+    QString msg = QObject::tr( "No QGIS data provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() );
     msg += QObject::tr( "No vector layers can be loaded. Check your QGIS installation" );
 
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();

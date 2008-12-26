@@ -277,8 +277,8 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
   mySelector->setSelectedCrsId( destCRS.srsid() );
-  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile." ) +
-                          tr( "The data points will be transformed from the layer coordinate reference system." ) );
+  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile. "
+                              "The data points will be transformed from the layer coordinate reference system." ) );
 
   if ( mySelector->exec() )
   {
@@ -325,7 +325,7 @@ void QgsLegendLayerFile::saveAsShapefileGeneral( bool saveOnlySelection )
 
     case QgsVectorFileWriter::ErrCreateDataSource:
       QMessageBox::warning( 0, tr( "Error creating shapefile" ),
-                            tr( "The shapefile could not be created (" ) + shapefileName + ")" );
+                            tr( "The shapefile could not be created (%1)" ).arg( shapefileName ) );
       break;
 
     case QgsVectorFileWriter::ErrCreateLayer:

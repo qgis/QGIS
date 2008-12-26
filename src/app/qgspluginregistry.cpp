@@ -288,8 +288,8 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           // something went wrong
           QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
                                 QObject::tr( "There was an error loading a plugin."
-                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." ).arg
-                                ( myError ) );
+                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
+                                .arg( myError ) );
           //disable it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, false );
         }
@@ -408,7 +408,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
   if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )
   {
     QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Python error" ),
-                          QObject::tr( "Error when reading metadata of plugin " ) + packageName );
+                          QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ) );
     return false;
   }
 

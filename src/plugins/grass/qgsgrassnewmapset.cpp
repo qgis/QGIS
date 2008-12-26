@@ -236,8 +236,7 @@ void QgsGrassNewMapset::databaseChanged()
   }
   else
   {
-    setError( mDatabaseErrorLabel, tr( "No writable "
-                                       "locations, the database not writable!" ) );
+    setError( mDatabaseErrorLabel, tr( "No writable locations, the database is not writable!" ) );
   }
 }
 
@@ -526,8 +525,7 @@ void QgsGrassNewMapset::setRegionPage()
       newSrs.createFromSrsId( mProjectionSelector->selectedCrsId() );
       if ( ! newSrs.isValid() )
       {
-        QMessageBox::warning( 0, tr( "Warning" ),
-                              tr( "Cannot create projection." ) );
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot create projection." ) );
       }
     }
   }
@@ -575,8 +573,7 @@ void QgsGrassNewMapset::setRegionPage()
     }
     else
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot reproject "
-                            "previously set region, default region set." ) );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot reproject previously set region, default region set." ) );
 
       setGrassRegionDefaults();
     }
@@ -752,13 +749,13 @@ void QgsGrassNewMapset::loadRegions()
   if ( !file.exists() )
   {
     QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Regions file (" ) + path + tr( ") not found." ) );
+                          tr( "Regions file (%1) not found." ).arg( path ) );
     return;
   }
   if ( ! file.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot open locations file (" ) + path + tr( ")" ) );
+                          tr( "Cannot open locations file (%1)" ).arg( path ) );
     return;
   }
 
@@ -768,9 +765,8 @@ void QgsGrassNewMapset::loadRegions()
 
   if ( !doc.setContent( &file,  &err, &line, &column ) )
   {
-    QString errmsg = tr( "Cannot read locations file (" ) + path + tr( "):\n" )
-                     + err + tr( "\nat line " ) + QString::number( line )
-                     + tr( " column " ) + QString::number( column );
+    QString errmsg = tr( "Cannot read locations file (%1):" ).arg( path )
+                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
     QMessageBox::warning( 0, tr( "Warning" ), errmsg );
     file.close();
@@ -1277,8 +1273,7 @@ void QgsGrassNewMapset::createMapset()
     if ( ret != 0 )
     {
       QMessageBox::warning( this, tr( "Create location" ),
-                            tr( "Cannot create new location: " )
-                            + QgsGrass::getErrorMessage() );
+                            tr( "Cannot create new location: %1" ).arg( QgsGrass::getErrorMessage() ) );
 
       return;
     }
@@ -1309,7 +1304,6 @@ void QgsGrassNewMapset::createMapset()
     {
       QMessageBox::warning( this, tr( "Create mapset" ),
                             tr( "Cannot create new mapset directory" ) );
-
       return;
     }
 
@@ -1348,14 +1342,12 @@ void QgsGrassNewMapset::createMapset()
   if ( err.length() > 0 )
   {
     QMessageBox::information( this, tr( "New mapset" ),
-                              tr( "New mapset successfully created, but cannot be "
-                                  "opened: " ) + err );
+                              tr( "New mapset successfully created, but cannot be opened: %1" ).arg( err ) );
   }
   else
   {
     QMessageBox::information( this, tr( "New mapset" ),
-                              tr( "New mapset successfully created and set "
-                                  "as current working mapset." ) );
+                              tr( "New mapset successfully created and set as current working mapset." ) );
 
     mPlugin->mapsetChanged();
   }

@@ -103,10 +103,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
   {
     showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to access the " ) + mSchemaTableName +
-                    tr( " relation.\nThe error message from the database was:\n" ) +
-                    QString::fromUtf8( PQresultErrorMessage( testAccess ) ) + ".\n" +
-                    "SQL: " + sql );
+                    tr( "Unable to access the %1 relation.\n" ).arg( mSchemaTableName )
+                    + tr( "The error message from the database was:\n%1.\nSQL: %2" )
+                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ).arg( sql ) ) );
     valid = false;
     disconnectDb();
     return;
@@ -123,10 +122,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
   {
     showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to determine table access privileges for the " ) + mSchemaTableName +
-                    tr( " relation.\nThe error message from the database was:\n" ) +
-                    QString::fromUtf8( PQresultErrorMessage( testAccess ) ) + ".\n" +
-                    "SQL: " + sql );
+                    tr( "Unable to determine table access privileges for the %1 relation.\n" ).arg( mSchemaTableName )
+                    + tr( "The error message from the database was:\n%1.\nSQL: %2" )
+                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) ).arg( sql ) );
     valid = false;
     disconnectDb();
     return;
@@ -960,10 +958,8 @@ QString QgsPostgresProvider::getPrimaryKey()
           QString columnType = QString::fromUtf8( PQgetvalue( types, 0, 1 ) );
 
           if ( columnType != "int4" )
-            log.append( tr( "The unique index on column" ) +
-                        " '" + columnName + "' " +
-                        tr( "is unsuitable because Qgis does not currently support"
-                            " non-int4 type columns as a key into the table.\n" ) );
+            log.append( tr( "The unique index on column '%1' is unsuitable because Qgis does not currently "
+                            "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
           else
             suitableKeyColumns.push_back( std::make_pair( columnName, columnType ) );
         }
@@ -990,9 +986,8 @@ QString QgsPostgresProvider::getPrimaryKey()
             colNames += ",";
         }
 
-        log.append( tr( "The unique index based on columns " ) + colNames +
-                    tr( " is unsuitable because Qgis does not currently support"
-                        " multiple columns as a key into the table.\n" ) );
+        log.append( tr( "The unique index based on columns %1 is unsuitable because Qgis does not currently "
+                        "support multiple columns as a key into the table.\n" ).arg( colNames ) );
       }
     }
 
@@ -1113,8 +1108,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols& cols )
     if ( PQntuples( result ) == 1 && colType == "int4" )
       suitable[viewCol] = iter->second;
 
-    QString details = "'" + viewCol + "'" + tr( " derives from " )
-                      + "'" + schemaName + "." + tableName + "." + tableCol + "' ";
+    QString details = tr( "'%1' derives from '%2.%3.%4' " ).arg( viewCol ).arg( schemaName ).arg( tableName ).arg( tableCol );
 
     if ( PQntuples( result ) == 1 && colType == "int4" )
     {
@@ -1122,8 +1116,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols& cols )
     }
     else
     {
-      details += tr( "and is not suitable " );
-      details += "(" + tr( "type is " ) + colType;
+      details += tr( "and is not suitable (type is %1)" ).arg( colType );
       if ( PQntuples( result ) == 1 )
         details += tr( " and has a suitable constraint)" );
       else
@@ -1211,9 +1204,9 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols& cols )
         }
         else
         {
-          log << QString( tr( "Note: " ) + "'" + i->first + "' "
-                          + tr( "initially appeared suitable but does not "
-                                "contain unique data, so is not suitable.\n" ) );
+          log << tr( "Note: '%1' initially appeared suitable"
+                     " but does not contain unique data, so is not suitable.\n" )
+          .arg( i->first );
         }
       }
     }
@@ -1222,18 +1215,14 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols& cols )
   if ( key.isEmpty() )
   {
     valid = false;
-    // Successive prepends means that the text appears in the dialog
-    // box in the reverse order to that seen here.
-    log.prepend( tr( "The view you selected has the following columns, none "
-                     "of which satisfy the above conditions:" ) );
-    log.prepend( tr( "Qgis requires that the view has a column that can be used "
+    log.prepend( tr( "The view '%1.%2' has no column suitable for use as a unique key.\n"
+                     "Qgis requires that the view has a column that can be used "
                      "as a unique key. Such a column should be derived from "
                      "a table column of type int4 and be a primary key, "
                      "have a unique constraint on it, or be a PostgreSQL "
-                     "oid column. To improve "
-                     "performance the column should also be indexed.\n" ) );
-    log.prepend( tr( "The view " ) + "'" + mSchemaName + '.' + mTableName + "' " +
-                 tr( "has no column suitable for use as a unique key.\n" ) );
+                     "oid column. To improve performance the column should also be indexed.\n"
+                     "The view you selected has the following columns, none "
+                     "of which satisfy the above conditions:" ).arg( mSchemaName ).arg( mTableName ) );
     showMessageBox( tr( "No suitable key column in view" ), log );
   }
 
@@ -2551,18 +2540,15 @@ bool QgsPostgresProvider::getGeometryDetails()
     else
     {
       showMessageBox( tr( "Unknown geometry type" ),
-                      tr( "Column " ) + geometryColumn + tr( " in " ) +
-                      mSchemaTableName + tr( " has a geometry type of " ) +
-                      fType + tr( ", which Qgis does not currently support." ) );
+                      tr( "Column %1 in %2 has a geometry type of %3, which Qgis does not currently support." )
+                      .arg( geometryColumn ).arg( mSchemaTableName ).arg( fType ) );
       valid = false;
     }
   }
   else // something went wrong...
   {
-    log.prepend( tr( "Qgis was unable to determine the type and srid of "
-                     "column " ) + geometryColumn + tr( " in " ) +
-                 mSchemaTableName +
-                 tr( ". The database communication log was:\n" ) );
+    log.prepend( tr( "Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:\n" )
+                 .arg( geometryColumn ).arg( mSchemaTableName ) );
     showMessageBox( tr( "Unable to get feature type and srid" ), log );
   }
 

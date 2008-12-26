@@ -135,11 +135,8 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     }
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      helpContents = tr( "This help file does not exist for your language" )
-                     + ":<p><b>"
-                     + fullHelpPath
-                     + "</b><p>"
-                     + tr( "If you would like to create it, contact the QGIS development team" );
+      helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
+                     .arg( fullHelpPath );
     }
     else
     {
@@ -184,14 +181,14 @@ void QgsHelpViewer::loadContextFromSqlite( const QString &contextId )
           // there should only be one row returned
           // Set the browser text to the record from the database
           txtBrowser->setText(( char* )sqlite3_column_text( ppStmt, 0 ) );
-          setWindowTitle( tr( "Quantum GIS Help - " ) + QString(( char* )sqlite3_column_text( ppStmt, 1 ) ) );
+          setWindowTitle( tr( "Quantum GIS Help - %1" ).arg(( char* )sqlite3_column_text( ppStmt, 1 ) ) );
         }
       }
       else
       {
         QMessageBox::critical( this, tr( "Error" ),
-                               tr( "Failed to get the help text from the database" ) + QString( ":\n   " )
-                               + sqlite3_errmsg( db ) );
+                               tr( "Failed to get the help text from the database:\n  %1" )
+                               .arg( sqlite3_errmsg( db ) ) );
       }
       // close the statement
       sqlite3_finalize( ppStmt );
@@ -217,7 +214,6 @@ int QgsHelpViewer::connectDb( const QString &helpDbPath )
     QMessageBox::critical( this, tr( "Error" ),
                            tr( "The QGIS help database is not installed" ) );
     result = SQLITE_ERROR;
-
   }
   return result;
 }

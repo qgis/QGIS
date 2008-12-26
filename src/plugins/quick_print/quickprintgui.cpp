@@ -151,8 +151,8 @@ void QuickPrintGui::on_buttonBox_accepted()
     }
     else
     {
-      QMessageBox::warning( this, tr( "quickprint" ), tr( "Unknown format: " ) +
-                            myFileDialog->selectedFilter() );
+      QMessageBox::warning( this, tr( "quickprint" ),
+                            tr( "Unknown format: %1" ).arg( myFileDialog->selectedFilter() ) );
     }
     mySettings.setValue( "quickprint/lastSaveAsPdfDir", myFileDialog->directory().absolutePath() );
   }

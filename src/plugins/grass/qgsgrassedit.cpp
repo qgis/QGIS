@@ -234,8 +234,8 @@ void QgsGrassEdit::init()
 {
   if ( !( mProvider->isGrassEditable() ) )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "You are not owner of the mapset, "
-                          "cannot open the vector for editing." ) );
+    QMessageBox::warning( 0, tr( "Warning" ),
+                          tr( "You are not owner of the mapset, cannot open the vector for editing." ) );
     return;
   }
 
@@ -1400,8 +1400,8 @@ void QgsGrassEdit::checkOrphan( int field, int cat )
 
   if ( !error->isEmpty() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot check orphan record: " )
-                          + *error );
+    QMessageBox::warning( 0, tr( "Warning" ),
+                          tr( "Cannot check orphan record: %1" ).arg( *error ) );
     return;
   }
   if ( !orphan ) return;
@@ -1451,7 +1451,7 @@ void QgsGrassEdit::addAttributes( int field, int cat )
     {
       QString str;
       str.setNum( field );
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot describe table for field " ) + str );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot describe table for field %1" ).arg( str ) );
     }
     else
     {
@@ -1878,13 +1878,13 @@ void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
   }
 }
 
-void QgsGrassEdit::setCanvasPropmt( QString left, QString mid, QString right )
+void QgsGrassEdit::setCanvasPrompt( QString left, QString mid, QString right )
 {
   QgsDebugMsg( "entered." );
   mCanvasPrompt = "";
-  if ( left.length() > 0 ) mCanvasPrompt.append( tr( "Left: " ) + left + "   " );
-  if ( mid.length() > 0 ) mCanvasPrompt.append( tr( "Middle: " ) + mid + "   " );
-  if ( right.length() > 0 ) mCanvasPrompt.append( tr( "Right: " ) + right );
+  if ( left.length() > 0 ) mCanvasPrompt.append( tr( "Left: %1   " ).arg( left ) );
+  if ( mid.length() > 0 ) mCanvasPrompt.append( tr( "Middle: %1" ).arg( mid ) );
+  if ( right.length() > 0 ) mCanvasPrompt.append( tr( "Right: %1" ).arg( right ) );
 }
 
 void QgsGrassEdit::attributesClosed()

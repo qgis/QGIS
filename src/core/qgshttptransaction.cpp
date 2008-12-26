@@ -82,7 +82,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // Create a header so we can set the user agent (Per WMS RFC).
   QHttpRequestHeader header( "GET", qurl.host() );
   // Set host in the header
-  if( qurl.port( HTTP_PORT_DEFAULT ) == HTTP_PORT_DEFAULT )
+  if ( qurl.port( HTTP_PORT_DEFAULT ) == HTTP_PORT_DEFAULT )
   {
     header.setValue( "Host", qurl.host() );
   }
@@ -252,7 +252,7 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
   }
   else
   {
-    mError = QString( tr( "WMS Server responded unexpectedly with HTTP Status Code %1 (%2)" ) )
+    mError = tr( "WMS Server responded unexpectedly with HTTP Status Code %1 (%2)" )
              .arg( resp.statusCode() )
              .arg( resp.reasonPhrase() );
   }
@@ -291,14 +291,11 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 
   if ( total )
   {
-    status = QString( QObject::tr( "Received %1 of %2 bytes" ) )
-             .arg( done )
-             .arg( total );
+    status = tr( "Received %1 of %2 bytes" ).arg( done ).arg( total );
   }
   else
   {
-    status = QString( QObject::tr( "Received %1 bytes (total unknown)" ) )
-             .arg( done );
+    status = tr( "Received %1 bytes (total unknown)" ).arg( done );
   }
 
   emit statusChanged( status );
@@ -331,8 +328,7 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
     QgsDebugMsg( "however there was an error." );
     QgsDebugMsg( "error: " + http->errorString() );
 
-    mError = QString( tr( "HTTP response completed, however there was an error: %1" ) )
-             .arg( http->errorString() );
+    mError = tr( "HTTP response completed, however there was an error: %1" ).arg( http->errorString() );
   }
   else
   {
@@ -381,8 +377,7 @@ void QgsHttpTransaction::transactionFinished( bool error )
     QgsDebugMsg( "however there was an error." );
     QgsDebugMsg( "error: " + http->errorString() );
 
-    mError = QString( tr( "HTTP transaction completed, however there was an error: %1" ) )
-             .arg( http->errorString() );
+    mError = tr( "HTTP transaction completed, however there was an error: %1" ).arg( http->errorString() );
   }
   else
   {
@@ -409,49 +404,45 @@ void QgsHttpTransaction::dataStateChanged( int state )
   {
     case QHttp::Unconnected:
       QgsDebugMsg( "There is no connection to the host." );
-      emit statusChanged( QString( QObject::tr( "Not connected" ) ) );
+      emit statusChanged( tr( "Not connected" ) );
       break;
 
     case QHttp::HostLookup:
       QgsDebugMsg( "A host name lookup is in progress." );
 
-      emit statusChanged( QString( QObject::tr( "Looking up '%1'" ) )
-                          .arg( httphost ) );
+      emit statusChanged( tr( "Looking up '%1'" ).arg( httphost ) );
       break;
 
     case QHttp::Connecting:
       QgsDebugMsg( "An attempt to connect to the host is in progress." );
 
-      emit statusChanged( QString( QObject::tr( "Connecting to '%1'" ) )
-                          .arg( httphost ) );
+      emit statusChanged( tr( "Connecting to '%1'" ).arg( httphost ) );
       break;
 
     case QHttp::Sending:
       QgsDebugMsg( "The client is sending its request to the server." );
 
-      emit statusChanged( QString( QObject::tr( "Sending request '%1'" ) )
-                          .arg( httpurl ) );
+      emit statusChanged( tr( "Sending request '%1'" ).arg( httpurl ) );
       break;
 
     case QHttp::Reading:
       QgsDebugMsg( "The client's request has been sent and the client is reading the server's response." );
 
-      emit statusChanged( QString( QObject::tr( "Receiving reply" ) ) );
+      emit statusChanged( tr( "Receiving reply" ) );
       break;
 
     case QHttp::Connected:
       QgsDebugMsg( "The connection to the host is open, but the client is neither sending a request, nor waiting for a response." );
 
-      emit statusChanged( QString( QObject::tr( "Response is complete" ) ) );
+      emit statusChanged( tr( "Response is complete" ) );
       break;
 
     case QHttp::Closing:
       QgsDebugMsg( "The connection is closing down, but is not yet closed. (The state will be Unconnected when the connection is closed.)" );
 
-      emit statusChanged( QString( QObject::tr( "Closing down connection" ) ) );
+      emit statusChanged( tr( "Closing down connection" ) );
       break;
   }
-
 }
 
 
@@ -459,9 +450,8 @@ void QgsHttpTransaction::networkTimedOut()
 {
   QgsDebugMsg( "entering." );
 
-  mError = QString( tr( "Network timed out after %1 seconds of inactivity.\n"
-                        "This may be a problem in your network connection or at the WMS server.", "", NETWORK_TIMEOUT_MSEC / 1000 )
-                  ).arg( NETWORK_TIMEOUT_MSEC / 1000 );
+  mError = tr( "Network timed out after %n second(s) of inactivity.\n"
+               "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", NETWORK_TIMEOUT_MSEC / 1000 );
 
   QgsDebugMsg( "Setting httpactive = FALSE" );
   httpactive = FALSE;

@@ -27,6 +27,7 @@ class QgsMapCanvas;
 
 class QgsMapToolSelect : public QgsMapTool
 {
+    Q_OBJECT
   public:
     QgsMapToolSelect( QgsMapCanvas* canvas );
 

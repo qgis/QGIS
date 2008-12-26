@@ -65,7 +65,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mExtent = mMapRenderer->extent();
   }
   setSceneRect( QRectF( x, y, width, height ) );
-  setToolTip( tr( "Map" ) + " " + QString::number( mId ) );
+  setToolTip( tr( "Map %1" ).arg( mId ) );
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
@@ -80,7 +80,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
   mId = mCurrentComposerId++;
-  setToolTip( tr( "Map" ) + " " + QString::number( mId ) );
+  setToolTip( tr( "Map %1" ).arg( mId ) );
   QGraphicsRectItem::show();
 }
 

@@ -153,7 +153,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // Locale settings
   //
   QString mySystemLocale = QLocale::system().name();
-  lblSystemLocale->setText( tr( "Detected active locale on your system: " ) + mySystemLocale );
+  lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QStringList myI18nList = i18nList();
   cboLocale->addItems( myI18nList );

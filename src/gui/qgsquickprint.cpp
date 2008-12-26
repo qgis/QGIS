@@ -654,13 +654,13 @@ void QgsQuickPrint::printMap()
 
 
   myPrintPainter.end();
-  /*
-     mProgressDialog.setValue ( 0 );
-     mProgressDialog.setLabelText ( tr ( "Please wait while your report is generated" ) );
-     mProgressDialog.show();
-     mProgressDialog.setWindowModality ( Qt::WindowModal );
-     mProgressDialog.setAutoClose ( true );
-     */
+#if 0
+  mProgressDialog.setValue( 0 );
+  mProgressDialog.setLabelText( tr( "Please wait while your report is generated", "COMMENTED OUT" ) );
+  mProgressDialog.show();
+  mProgressDialog.setWindowModality( Qt::WindowModal );
+  mProgressDialog.setAutoClose( true );
+#endif
   //
   // Restore the map render to its former glory
   //

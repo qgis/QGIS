@@ -253,8 +253,8 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
 {
   QSettings settings;
   QString key = "/Qgis/connections-wfs/" + cmbConnections->currentText();
-  QString msg =
-    tr( "Are you sure you want to remove the " ) + cmbConnections->currentText() + tr( " connection and all associated settings?" );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {

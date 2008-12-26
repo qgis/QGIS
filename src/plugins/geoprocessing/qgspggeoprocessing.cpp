@@ -74,8 +74,7 @@ void QgsPgGeoprocessing::initGui()
 {
   // Create the action for tool
   bufferAction = new QAction( QIcon( ":/geoprocessing.png" ), tr( "&Buffer features" ), this );
-  bufferAction->setWhatsThis( tr( "Create a buffer for a PostgreSQL layer. " ) +
-                              tr( "A new layer is created in the database with the buffered features." ) );
+  bufferAction->setWhatsThis( tr( "Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features." ) );
   // Connect the action to the buffer slot
   connect( bufferAction, SIGNAL( triggered() ), this, SLOT( buffer() ) );
 
@@ -343,16 +342,16 @@ void QgsPgGeoprocessing::buffer()
                 QgsDebugMsg( QString( "Error message is %1" ).arg( PQresStatus( PQresultStatus( geoCol ) ) ) );
 
                 QMessageBox::critical( 0, tr( "Unable to add geometry column" ),
-                                       QString( tr( "Unable to add geometry column to the output table " ) +
-                                                QString( "%1-%2" ).arg( bb->bufferLayerName() ).arg( PQerrorMessage( conn ) ) ) );
+                                       tr( "Unable to add geometry column to the output table %1-%2" )
+                                       .arg( bb->bufferLayerName() ).arg( PQerrorMessage( conn ) ) ) );
 
               }
             }
             else
             {
               QMessageBox::critical( 0, tr( "Unable to create table" ),
-                                     QString( tr( "Failed to create the output table " ) +
-                                              QString( "%1" ).arg( bb->bufferLayerName() ) ) );
+                                     tr( "Failed to create the output table %1" )
+                                     .arg( bb->bufferLayerName() ) );
             }
             QApplication::restoreOverrideCursor();
           }
@@ -374,9 +373,8 @@ void QgsPgGeoprocessing::buffer()
     else
     {
       QMessageBox::critical( 0, tr( "Not a PostgreSQL/PostGIS Layer" ),
-                             QString( "%1" ).arg( lyr->name() ) +
-                             tr( " is not a PostgreSQL/PostGIS layer.\n" ) +
-                             tr( "Geoprocessing functions are only available for PostgreSQL/PostGIS Layers" ) );
+                             tr( "%1 is not a PostgreSQL/PostGIS layer.\nGeoprocessing functions are only available for PostgreSQL/PostGIS Layers" )
+                             .arg( lyr->name() ) );
     }
   }
   else
