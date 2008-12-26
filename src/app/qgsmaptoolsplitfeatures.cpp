@@ -39,16 +39,16 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, QObject::tr( "Not a vector layer" ),
-                              QObject::tr( "The current layer is not a vector layer" ) );
+    QMessageBox::information( 0, tr( "Not a vector layer" ),
+                              tr( "The current layer is not a vector layer" ) );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, QObject::tr( "Layer not editable" ),
-                              QObject::tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-                                           "of the layer, right click and check 'Allow Editing'." ) );
+    QMessageBox::information( 0, tr( "Layer not editable" ),
+                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                  "of the layer, right click and check 'Allow Editing'." ) );
     return;
   }
 
@@ -62,8 +62,8 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
   else if ( error == 2 )
   {
     //problem with coordinate transformation
-    QMessageBox::information( 0, QObject::tr( "Coordinate transform error" ),
-                              QObject::tr( "Cannot transform the point to the layers coordinate system" ) );
+    QMessageBox::information( 0, tr( "Coordinate transform error" ),
+                              tr( "Cannot transform the point to the layers coordinate system" ) );
     return;
   }
 

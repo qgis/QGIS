@@ -310,10 +310,8 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
   if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
   {
     // flag error and send query and error message to stdout on debug
-    errorText += tr( "The database gave an error while executing this SQL:" ) + "\n";
-    errorText += query + '\n';
-    errorText += tr( "The error was:" ) + "\n";
-    errorText += PQresultErrorMessage( res ) + '\n';
+    errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
+                 .arg( query ).arg( PQresultErrorMessage( res ) );
     PQclear( res );
     return false;
   }
@@ -333,11 +331,8 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
 
   if ( PQresultStatus( res ) != PGRES_TUPLES_OK )
   {
-    errorText += tr( "The database gave an error while executing this SQL:" ) + "\n";
-
-    errorText += query + '\n';
-    errorText += tr( "The error was:" ) + "\n";
-    errorText += PQresultErrorMessage( res ) + '\n';
+    errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
+                 .arg( query ).arg( PQresultErrorMessage( res ) );
     PQclear( res );
     return false;
   }
@@ -375,10 +370,8 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
       res = PQexec( conn, query.toUtf8() );
       if ( PQresultStatus( res ) != PGRES_COMMAND_OK )
       {
-        errorText += tr( "The database gave an error while executing this SQL:" ) + "\n";
-        errorText += query + '\n';
-        errorText += tr( "The error was:" ) + "\n";
-        errorText += PQresultErrorMessage( res ) + '\n';
+        errorText += tr( "The database gave an error while executing this SQL:\n%1\nThe error was:\n%2\n" )
+                     .arg( query ).arg( PQresultErrorMessage( res ) );
         PQclear( res );
         return false;
       }
@@ -453,8 +446,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
                          "\n";
           else
             errorText += query + '\n';
-          errorText += tr( "The error was:" ) + "\n";
-          errorText += PQresultErrorMessage( res );
+          errorText += tr( "The error was:\n%1\n" ).arg( PQresultErrorMessage( res ) );
           errorText += '\n';
         }
         else

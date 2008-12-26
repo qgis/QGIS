@@ -156,7 +156,7 @@ void QgsBookmarks::on_btnDelete_clicked()
   {
     // make sure the user really wants to delete this bookmark
     if ( QMessageBox::Ok == QMessageBox::information( this, tr( "Really Delete?" ),
-         tr( "Are you sure you want to delete the " ) + item->text( 0 ) + tr( " bookmark?" ),
+         tr( "Are you sure you want to delete the %1 bookmark?" ).arg( item->text( 0 ) ),
          QMessageBox::Ok | QMessageBox::Cancel ) )
     {
       // remove it from the listview
@@ -173,10 +173,8 @@ void QgsBookmarks::on_btnDelete_clicked()
         {
           // XXX Provide popup message on failure?
           QMessageBox::warning( this, tr( "Error deleting bookmark" ),
-                                tr( "Failed to delete the " ) +
-                                item->text( 0 ) +
-                                tr( " bookmark from the database. The "
-                                    "database said:\n" ) + QString( errmsg ) );
+                                tr( "Failed to delete the %1 bookmark from the database. The database said:\n%2" )
+                                .arg( item->text( 0 ) ).arg( errmsg ) );
           sqlite3_free( errmsg );
         }
         // close the database

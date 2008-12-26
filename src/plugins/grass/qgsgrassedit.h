@@ -418,7 +418,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     QString mCanvasPrompt;
 
     // Set prompt for mouse buttons
-    void setCanvasPropmt( QString left, QString mid, QString rigth );
+    void setCanvasPrompt( QString left, QString mid, QString right );
 
     // New map, add new layers on exit
     bool mNewMap;

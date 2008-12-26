@@ -542,7 +542,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   theResultFlag = readSymbology( myRoot, errorMsg );
   if ( !theResultFlag )
   {
-    myErrorMessage = QObject::tr( "Loading style file " ) + theURI + QObject::tr( " failed because:" ) + "\n" + errorMsg;
+    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( errorMsg );
     return myErrorMessage;
   }
 
@@ -570,7 +570,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   QString errorMsg;
   if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
   {
-    return QObject::tr( "Could not save symbology because:" ) + "\n" + errorMsg;
+    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
   }
 
   // check if the uri is a file or ends with .qml,
@@ -582,7 +582,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
     QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
-      return QObject::tr( "The directory containing your dataset needs to be writeable!" );
+      return tr( "The directory containing your dataset needs to be writeable!" );
     }
 
     // now construct the file name for our .qml style file
@@ -596,12 +596,12 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
       myDocument.save( myFileStream, 2 );
       myFile.close();
       theResultFlag = true;
-      return QObject::tr( "Created default style file as " ) + myFileName;
+      return tr( "Created default style file as %1" ).arg( myFileName );
     }
     else
     {
       theResultFlag = false;
-      return QObject::tr( "ERROR: Failed to created default style file as %1 Check file permissions and retry." ).arg( myFileName );
+      return tr( "ERROR: Failed to created default style file as %1. Check file permissions and retry." ).arg( myFileName );
     }
   }
   else

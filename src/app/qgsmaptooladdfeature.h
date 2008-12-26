@@ -19,6 +19,7 @@
 /**This tool adds new point/line/polygon features to already existing vector layers*/
 class QgsMapToolAddFeature: public QgsMapToolCapture
 {
+    Q_OBJECT
   public:
     QgsMapToolAddFeature( QgsMapCanvas* canvas, enum CaptureTool tool );
     virtual ~QgsMapToolAddFeature();

@@ -494,15 +494,16 @@ bool QgsPythonUtilsImpl::startPlugin( QString packageName )
 {
   QString pluginPythonVar = "plugins['" + packageName + "']";
 
-  QString errMsg = QObject::tr( "Couldn't load plugin " ) + packageName;
+  QString errMsg = QObject::tr( "Couldn't load plugin %1" ).arg( packageName );
 
   // create an instance of the plugin
   if ( !runString( pluginPythonVar + " = " + packageName + ".classFactory(iface)",
-                   errMsg + QObject::tr( " due an error when calling its classFactory() method" ) ) )
+                   QObject::tr( "%1 due an error when calling its classFactory() method" ).arg( errMsg ) ) )
     return false;
 
   // initGui
-  if ( !runString( pluginPythonVar + ".initGui()", errMsg + QObject::tr( " due an error when calling its initGui() method" ) ) )
+  if ( !runString( pluginPythonVar + ".initGui()",
+                   QObject::tr( "%1 due an error when calling its initGui() method" ).arg( errMsg ) ) )
     return false;
 
   return true;
@@ -514,7 +515,7 @@ bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
   // unload and delete plugin!
   QString varName = "plugins['" + packageName + "']";
 
-  QString errMsg = QObject::tr( "Error while unloading plugin " ) + packageName;
+  QString errMsg = QObject::tr( "Error while unloading plugin %1" ).arg( packageName );
 
   if ( !runString( varName + ".unload()", errMsg ) )
     return false;

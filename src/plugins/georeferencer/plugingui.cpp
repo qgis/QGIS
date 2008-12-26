@@ -125,9 +125,9 @@ void QgsGeorefPluginGui::on_pbnSelectRaster_clicked()
     if ( QFile::exists( worldfile ) )
     {
       int r = QMessageBox::question( this, tr( "World file exists" ),
-                                     tr( "<p>The selected file already seems to have a " ) +
-                                     tr( "world file! Do you want to replace it with the " ) +
-                                     tr( "new world file?</p>" ),
+                                     tr( "<p>The selected file already seems to have a "
+                                         "world file! Do you want to replace it with the "
+                                         "new world file?</p>" ),
                                      QMessageBox::Yes | QMessageBox::Default,
                                      QMessageBox::No | QMessageBox::Escape );
       if ( r == QMessageBox::No )

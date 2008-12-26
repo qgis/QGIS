@@ -49,7 +49,7 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   if ( leOutputShapeFile->text().isEmpty() )
   {
     QMessageBox::warning( 0, tr( "QGIS - Grid Maker" ),
-                          QString( tr( "Please enter the file name before pressing OK!" ) ) );
+                          tr( "Please enter the file name before pressing OK!" ) );
     return;
   }
 
@@ -60,7 +60,7 @@ void QgsGridMakerPluginGui::on_buttonBox_accepted()
   if ( myXInterval == 0.0 || myYInterval == 0.0 )
   {
     QMessageBox::warning( 0, tr( "QGIS - Grid Maker" ),
-                          QString( tr( "Please enter intervals before pressing OK!" ) ) );
+                          tr( "Please enter intervals before pressing OK!" ) );
     return;
   }
 

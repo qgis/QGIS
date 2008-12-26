@@ -471,10 +471,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   if ( memuse > 200 )   // cca 4500 x 4500
   {
     int answer = QMessageBox::warning( 0, tr( "Big image" ),
-                                       tr( "To create image " ) + QString::number( width ) + " x "
-                                       + QString::number( height )
-                                       + tr( " requires circa " )
-                                       + QString::number( memuse ) + tr( " MB of memory" ),
+                                       tr( "To create image %1 x %2 required circa %3 MB of memory" )
+                                       .arg( width ).arg( height ).arg( memuse ),
                                        QMessageBox::Ok,  QMessageBox::Abort );
 
     raise();
@@ -501,7 +499,8 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
   {
     QString myFormat = QString( QImageWriter::supportedImageFormats().at( myCounterInt ) );
-    QString myFilter = myFormat + " " + tr( "format" ) + " (*." + myFormat.toLower() + " *." + myFormat.toUpper() + ")";
+    QString myFilter = tr( "%1 format (*.%2 *.%3)" )
+                       .arg( myFormat ).arg( myFormat.toLower() ).arg( myFormat.toUpper() );
 
     if ( myCounterInt > 0 ) myFilters += ";;";
     myFilters += myFilter;
@@ -602,26 +601,26 @@ void QgsComposer::on_mActionExportAsSVG_activated( void )
     m->setMessageAsHtml( tr( "<p>The SVG export function in Qgis has several "
                              "problems due to bugs and deficiencies in the " )
 #if QT_VERSION < 0x040300
-                       + tr( "Qt4 svg code. Of note, text does not "
-                             "appear in the SVG file and there are problems "
-                             "with the map bounding box clipping other items "
-                             "such as the legend or scale bar.</p>" )
+                         + tr( "Qt4 svg code. Of note, text does not "
+                               "appear in the SVG file and there are problems "
+                               "with the map bounding box clipping other items "
+                               "such as the legend or scale bar.</p>" )
 #else
-                       + tr( "Qt4 svg code. In particular, there are problems "
-                             "with layers not being clipped to the map "
-                             "bounding box.</p>" )
+                         + tr( "Qt4 svg code. In particular, there are problems "
+                               "with layers not being clipped to the map "
+                               "bounding box.</p>" )
 #endif
-                       + tr( "If you require a vector-based output file from "
-                             "Qgis it is suggested that you try printing "
-                             "to PostScript if the SVG output is not "
-                             "satisfactory."
-                             "</p>" ) );
+                         + tr( "<p>If you require a vector-based output file from "
+                               "Qgis it is suggested that you try printing "
+                               "to PostScript if the SVG output is not "
+                               "satisfactory."
+                               "</p>" ) );
     m->exec();
   }
   QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
   QFileInfo file( myLastUsedFile );
   QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
-      file.path(), tr( "SVG Format" ) + " (*.svg *SVG)" );
+      file.path(), tr( "SVG Format" ) + " (*.svg *.SVG)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );

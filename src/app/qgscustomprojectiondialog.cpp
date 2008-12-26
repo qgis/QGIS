@@ -717,13 +717,15 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   if ( myName.isEmpty() )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid. Please give the projection a name before pressing save." ) );
+                              tr( "This proj4 projection definition is not valid." )
+                              + tr( " Please give the projection a name before pressing save." ) );
     return;
   }
   if ( myParameters.isEmpty() )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid. Please add the parameters before pressing save." ) );
+                              tr( "This proj4 projection definition is not valid." )
+                              + tr( " Please add the parameters before pressing save." ) );
     return;
   }
 
@@ -738,10 +740,12 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   if ( myProjectionAcronym.isNull() )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid. Please add a proj= clause before pressing save." ) );
+                              tr( "This proj4 projection definition is not valid." )
+                              + tr( " Please add a proj= clause before pressing save." ) );
     return;
   }
 
+#if 0
   /** I am commenting this check out for now because of ticket #1146
    * In 1.0.0 we should consider doing more sophisticated checks or just
    * removing this commented block entirely. It is possible to set the
@@ -750,13 +754,13 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
    * can be specified and various other parameter permutations. See the proj
    * manual section entitled 'Specifying the Earths Figure' for more details.
    * Tim Sutton */
-  //if ( myEllipsoidAcronym.isNull() )
-  //{
-  //  QMessageBox::information( this, tr("QGIS Custom Projection"),
-  //          tr("This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.") );
-  //  return;
-  //}
-
+  if ( myEllipsoidAcronym.isNull() )
+  {
+    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
+                              tr( "This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.", "COMMENTED OUT" ) );
+    return;
+  }
+#endif
 
   //
   // We must check the prj def is valid!
@@ -769,7 +773,8 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   if ( myProj == NULL )
   {
     QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid. Please correct before pressing save." ) );
+                              tr( "This proj4 projection definition is not valid." )
+                              + tr( " Please correct before pressing save." ) );
     pj_free( myProj );
     return;
 

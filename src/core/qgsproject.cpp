@@ -752,7 +752,7 @@ bool QgsProject::read()
     imp_->file.close();     // even though we got an error, let's make
     // sure it's closed anyway
 
-    throw QgsIOException( QObject::tr( "Unable to open " ) + imp_->file.fileName() );
+    throw QgsIOException( tr( "Unable to open %1" ).arg( imp_->file.fileName() ) );
   }
 
   // location of problem associated with errorMsg
@@ -766,15 +766,14 @@ bool QgsProject::read()
     // errorMsg + " at line " + QString::number( line ) +
     // " column " + QString::number( column ) );
 
-    QString errorString = QObject::tr( "Project file read error: " ) +
-                          errorMsg + QObject::tr( " at line " ) + QString::number( line ) + QObject::tr( " column " ) +
-                          QString::number( column );
+    QString errorString = tr( "Project file read error: %1 at line %2 column %3" )
+                          .arg( errorMsg ).arg( line ).arg( column );
 
     qDebug( errorString.toUtf8().constData() );
 
     imp_->file.close();
 
-    throw QgsException( errorString + QObject::tr( " for file " ) + imp_->file.fileName() );
+    throw QgsException( tr( "%1 for file %2" ).arg( errorString ).arg( imp_->file.fileName() ) );
   }
 
   imp_->file.close();
@@ -928,7 +927,7 @@ bool QgsProject::write()
     imp_->file.close();         // even though we got an error, let's make
     // sure it's closed anyway
 
-    throw QgsIOException( QObject::tr( "Unable to save to file " ) + imp_->file.fileName() );
+    throw QgsIOException( tr( "Unable to save to file %1" ).arg( imp_->file.fileName() ) );
   }
   QFileInfo myFileInfo( imp_->file );
   if ( !myFileInfo.isWritable() )
@@ -936,8 +935,8 @@ bool QgsProject::write()
     // even though we got an error, let's make
     // sure it's closed anyway
     imp_->file.close();
-    throw QgsIOException( imp_->file.fileName() + QObject::tr( " is not writeable." )
-                          + QObject::tr( "Please adjust permissions (if possible) and try again." ) );
+    throw QgsIOException( tr( "%1 is not writeable. Please adjust permissions (if possible) and try again." )
+                          .arg( imp_->file.fileName() ) );
   }
 
   QDomImplementation DomImplementation;
@@ -1021,10 +1020,10 @@ bool QgsProject::write()
   //
   if ( projectFileStream.pos() == -1  || imp_->file.error() != QFile::NoError )
   {
-    throw QgsIOException( QObject::tr( "Unable to save to file. Your project "
-                                       "may be corrupted on disk. Try clearing some space on the volume and "
-                                       "check file permissions before pressing save again." ) +
-                          imp_->file.fileName() );
+    throw QgsIOException( tr( "Unable to save to file %1. Your project "
+                              "may be corrupted on disk. Try clearing some space on the volume and "
+                              "check file permissions before pressing save again." )
+                          .arg( imp_->file.fileName() ) );
   }
 
   dirty( false );               // reset to pristine state

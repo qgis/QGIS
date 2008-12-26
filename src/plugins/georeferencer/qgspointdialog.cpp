@@ -296,15 +296,14 @@ bool QgsPointDialog::generateWorldFile()
     else
     {
       QMessageBox::critical( this, tr( "Not implemented!" ),
-                             tr( "<p>The " ) +
-                             cmbTransformType->currentText() +
-                             tr( " transform is not yet supported.</p>" ) );
+                             tr( "<p>The %1 transform is not yet supported.</p>" )
+                             .arg( cmbTransformType->currentText() ) );
       return false;
     }
   }
   catch ( std::domain_error& e )
   {
-    QMessageBox::critical( this, tr( "Error" ), QString( e.what() ) );
+    QMessageBox::critical( this, tr( "Error" ), e.what() );
     return false;
   }
 
@@ -337,7 +336,7 @@ bool QgsPointDialog::generateWorldFile()
   if ( !file.open( QIODevice::WriteOnly ) )
   {
     QMessageBox::critical( this, tr( "Error" ),
-                           tr( "Could not write to " ) + worldFileName );
+                           tr( "Could not write to %1" ).arg( worldFileName ) );
     return false;
   }
   QTextStream stream( &file );

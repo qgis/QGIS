@@ -70,8 +70,9 @@ bool QgsMapserverExport::write()
   // Check for file and prompt for overwrite if it exists
   if ( QFile::exists( txtMapFilePath->text() ) )
   {
-    okToSave = QMessageBox::warning( this, tr( "Overwrite File?" ), txtMapFilePath->text() +
-                                     tr( " exists. \nDo you want to overwrite it?" ), QMessageBox::Ok | QMessageBox::Cancel );
+    okToSave = QMessageBox::warning( this, tr( "Overwrite File?" ),
+                                     tr( "%1 exists.\nDo you want to overwrite it?" ).arg( txtMapFilePath->text() ),
+                                     QMessageBox::Ok | QMessageBox::Cancel );
   }
   if ( okToSave == QMessageBox::Ok )
   {

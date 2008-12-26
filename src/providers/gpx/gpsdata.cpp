@@ -372,7 +372,7 @@ GPSData* GPSData::getData( const QString& fileName )
     QFile file( fileName );
     if ( !file.open( QIODevice::ReadOnly ) )
     {
-      QgsLogger::warning( QObject::tr( "Couldn't open the data source: " ) + fileName );
+      QgsLogger::warning( QObject::tr( "Couldn't open the data source: %1" ).arg( fileName ) );
       return 0;
     }
     GPSData* data = new GPSData;
@@ -395,10 +395,9 @@ GPSData* GPSData::getData( const QString& fileName )
         atEnd = 1;
       if ( !XML_Parse( p, buffer, readBytes, atEnd ) )
       {
-        QgsLogger::warning( QObject::tr( "Parse error at line " ) +
-                            QString( "%1" ).arg( XML_GetCurrentLineNumber( p ) ) +
-                            " : " +
-                            QString( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
+        QgsLogger::warning( QObject::tr( "Parse error at line %1 : %2" )
+                            .arg( XML_GetCurrentLineNumber( p ) )
+                            .arg( XML_ErrorString( XML_GetErrorCode( p ) ) ) );
         failed = true;
         break;
       }

@@ -284,8 +284,7 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
     switch (( int )value.number() )
     {
       case 1:
-        mError = QObject::tr( "Referenced column wasn't found: " );
-        mError += value.string();
+        mError = QObject::tr( "Referenced column wasn't found: %1" ).arg( value.string() );
         break;
       case 2:
         mError = QObject::tr( "Division by zero." );

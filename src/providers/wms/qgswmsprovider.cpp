@@ -451,50 +451,49 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
     return 0;
   }
 
-  /*
-    QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
+#if 0
+  QgsHttpTransaction http( url, httpproxyhost, httpproxyport );
 
-    // Do a passthrough for the status bar text
-    connect(
-            &http, SIGNAL( statusChanged        (QString)),
-             this,   SLOT(showStatusMessage(QString))
-           );
+  // Do a passthrough for the status bar text
+  connect(
+    &http, SIGNAL( statusChanged( QString ) ),
+    this,   SLOT( showStatusMessage( QString ) )
+  );
 
-    bool httpOk;
+  bool httpOk;
 
-    httpOk = http.getSynchronously(imagesource);
+  httpOk = http.getSynchronously( imagesource );
 
-    if (!httpOk)
-    {
-      // We had an HTTP exception
+  if ( !httpOk )
+  {
+    // We had an HTTP exception
 
-      mErrorCaption = tr("HTTP Exception");
-      mError = http.errorString();
+    mErrorCaption = tr( "HTTP Exception" );
+    mError = http.errorString();
 
-      mError += "\n" + tr("Tried URL: ") + url;
+    mError += "\n" + tr( "Tried URL: " ) + url;
 
-      return 0;
-    }
+    return 0;
+  }
 
-    if (http.responseContentType() == "application/vnd.ogc.se_xml")
-    {
-      // We had a Service Exception from the WMS
+  if ( http.responseContentType() == "application/vnd.ogc.se_xml" )
+  {
+    // We had a Service Exception from the WMS
 
-      QgsDebugMsg("got Service Exception as:\n"  + QString(imagesource) );
+    QgsDebugMsg( "got Service Exception as:\n"  + QString( imagesource ) );
 
-      mErrorCaption = tr("WMS Service Exception");
+    mErrorCaption = tr( "WMS Service Exception" );
 
-      // set mError with the following:
-      parseServiceExceptionReportDom(imagesource);
+    // set mError with the following:
+    parseServiceExceptionReportDom( imagesource );
 
-      mError += "\n" + tr("Tried URL: ") + url;
+    mError += "\n" + tr( "Tried URL: " ) + url;
 
-      QgsDebugMsg("composed error message '" + mError + "'.");
-  #endif
+    QgsDebugMsg( "composed error message '" + mError + "'." );
 
-      return 0;
-    }
-  */
+    return 0;
+  }
+#endif
 
   QgsDebugMsg( "Response received." );
 
@@ -571,32 +570,33 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
     {
       return FALSE;
     }
-    /*
-        QgsHttpTransaction http(url, httpproxyhost, httpproxyport);
 
-        // Do a passthrough for the status bar text
-        connect(
-                &http, SIGNAL( statusChanged        (QString)),
-                 this,   SLOT(showStatusMessage(QString))
-               );
+#if 0
+    QgsHttpTransaction http( url, httpproxyhost, httpproxyport );
 
-        bool httpOk;
-        httpOk = http.getSynchronously(httpcapabilitiesresponse);
+    // Do a passthrough for the status bar text
+    connect(
+      &http, SIGNAL( statusChanged( QString ) ),
+      this,   SLOT( showStatusMessage( QString ) )
+    );
 
-        if (!httpOk)
-        {
-          // We had an HTTP exception
+    bool httpOk;
+    httpOk = http.getSynchronously( httpcapabilitiesresponse );
 
-          mErrorCaption = tr("HTTP Exception");
-          mError = http.errorString();
+    if ( !httpOk )
+    {
+      // We had an HTTP exception
 
-          mError += "\n" + tr("Tried URL: ") + url;
+      mErrorCaption = tr( "HTTP Exception" );
+      mError = http.errorString();
 
-        QgsDebugMsg("!httpOK: "  + mError );
+      mError += "\n" + tr( "Tried URL: " ) + url;
 
-          return FALSE;
-        }
-    */
+      QgsDebugMsg( "!httpOK: "  + mError );
+
+      return FALSE;
+    }
+#endif
 
     QgsDebugMsg( "Converting to Dom." );
 
@@ -608,7 +608,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
       // We had an Dom exception -
       // mErrorCaption and mError are pre-filled by parseCapabilitiesDom
 
-      mError += "\n" + tr( "Tried URL: " ) + url;
+      mError += tr( "\nTried URL: %1" ).arg( url );
 
       QgsDebugMsg( "!domOK: " + mError );
 
@@ -627,8 +627,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 QByteArray QgsWmsProvider::retrieveUrl( QString url )
 {
   QgsDebugMsg( "WMS request Url: " + url );
-  QgsHttpTransaction http(
-    url );
+  QgsHttpTransaction http( url );
 
   // Do a passthrough for the status bar text
   connect(
@@ -648,7 +647,7 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
     mErrorCaption = tr( "HTTP Exception" );
     mError = http.errorString();
 
-    mError += "\n" + tr( "Tried URL: " ) + url;
+    mError += tr( "\nTried URL: %1" ).arg( url );
 
     return QByteArray( "" );
   }
@@ -664,7 +663,7 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
     // set mError with the following:
     parseServiceExceptionReportDom( httpResponse );
 
-    mError += "\n" + tr( "Tried URL: " ) + url;
+    mError += tr( "\nTried URL: %1" ).arg( url );
 
     QgsDebugMsg( "composed error message '" + mError + "'." );
 
@@ -769,12 +768,9 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabil
   if ( !contentSuccess )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = QString( tr( "Could not get WMS capabilities: %1 at line %2 column %3" )
-                      .arg( errorMsg )
-                      .arg( errorLine )
-                      .arg( errorColumn ) );
-
-    mError += "\n" + tr( "This is probably due to an incorrect WMS Server URL." );
+    mError = tr( "Could not get WMS capabilities: %1 at line %2 column %3\n" )
+               .arg( errorMsg ).arg( errorLine ).arg( errorColumn )
+           + tr( "This is probably due to an incorrect WMS Server URL." );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -795,13 +791,10 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabil
      )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = QString( tr( "Could not get WMS capabilities in the "
-                          "expected format (DTD): no %1 or %2 found" )
-                      .arg( "WMS_Capabilities" )
-                      .arg( "WMT_MS_Capabilities" )
-                    );
-
-    mError += "\n" + tr( "This is probably due to an incorrect WMS Server URL." );
+    mError = tr( "Could not get WMS capabilities in the "
+                 "expected format (DTD): no %1 or %2 found\n" )
+               .arg( "WMS_Capabilities" ).arg( "WMT_MS_Capabilities" )
+           + tr( "This is probably due to an incorrect WMS Server URL." );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -851,7 +844,7 @@ void QgsWmsProvider::parseService( QDomElement const & e, QgsWmsServiceProperty&
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg("  "  + e1.tagName() ); // the node really is an element.
+      // QgsDebugMsg( "  "  + e1.tagName() ); // the node really is an element.
 
       if ( e1.tagName() == "Title" )
       {
@@ -1327,11 +1320,11 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg("    "  + e1.tagName() ); // the node really is an element.
+      // QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       if ( e1.tagName() == "Layer" )
       {
-//            QgsDebugMsg("      Nested layer.");
+        // QgsDebugMsg( "      Nested layer." );
 
         QgsWmsLayerProperty subLayerProperty;
 
@@ -1544,11 +1537,11 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
   if ( !contentSuccess )
   {
     mErrorCaption = tr( "Dom Exception" );
-    mError = QString( tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4" )
-                      .arg( baseUrl )
-                      .arg( errorMsg )
-                      .arg( errorLine )
-                      .arg( errorColumn ) );
+    mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4" )
+               .arg( baseUrl )
+               .arg( errorMsg )
+               .arg( errorLine )
+               .arg( errorColumn );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -2158,28 +2151,12 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
         QString requestUrl = mGetFeatureInfoUrlBase;
         QString layer = QUrl::toPercentEncoding( *it );
 
-        requestUrl += "&";
-        requestUrl += "QUERY_LAYERS=" + layer ;
-        requestUrl += "&";
         //! \todo Need to tie this into the options provided by GetCapabilities
-        requestUrl += "INFO_FORMAT=text/plain";
-
+        requestUrl += QString( "&QUERY_LAYERS=%1&INFO_FORMAT=text/plain&X=%2&Y=%3" )
+                      .arg( layer ).arg( point.x() ).arg( point.y() );
 
 // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
-
-//   requestUrl += "&";
-//   requestUrl += QString( "I=%1" )
-//                    .arg( point.x() );
-//   requestUrl += "&";
-//   requestUrl += QString( "J=%1" )
-//                    .arg( point.y() );
-
-        requestUrl += "&";
-        requestUrl += QString( "X=%1" )
-                      .arg( point.x() );
-        requestUrl += "&";
-        requestUrl += QString( "Y=%1" )
-                      .arg( point.y() );
+//   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
         text += "---------------\n" + retrieveUrl( requestUrl );
       }

@@ -190,7 +190,7 @@ void Dialog::populateLayers( QString const& url )
   {
     QMessageBox::warning( this,
                           tr( "OGR Converter" ),
-                          tr( "Could not establish connection to: '" ) + url + "'",
+                          tr( "Could not establish connection to: '%1'" ).arg( url ),
                           QMessageBox::Close );
   }
 }
@@ -295,12 +295,12 @@ void Dialog::on_buttonBox_accepted()
   if ( success )
   {
     QMessageBox::information( this, "OGR Layer Converter",
-                              tr( "Successfully translated layer '" ) + srcLayer + "'" );
+                              tr( "Successfully translated layer '%1'" ).arg( srcLayer ) );
   }
   else
   {
     QMessageBox::information( this, "OGR Layer Converter",
-                              tr( "Failed to translate layer '" ) + srcLayer + "'" );
+                              tr( "Failed to translate layer '%1'" ).arg( srcLayer ) );
   }
 
   // Close dialog box
@@ -414,15 +414,14 @@ void Dialog::on_buttonSelectDst_clicked()
 
     if ( testConnection( dst ) )
     {
-      msg = tr( "Successfully connected to: '" ) + dst + "'";
+      msg = tr( "Successfully connected to: '%1'" ).arg( dst );
     }
     else
     {
-      msg = tr( "Could not establish connection to: '" ) + dst + "'";
+      msg = tr( "Could not establish connection to: '%1'" ).arg( dst );
     }
 
-    QMessageBox::information( this, tr( "OGR Converter" ),
-                              msg, QMessageBox::Close );
+    QMessageBox::information( this, tr( "OGR Converter" ), msg, QMessageBox::Close );
   }
   else if ( isFormatType( type, Format::eDirectory ) )
   {

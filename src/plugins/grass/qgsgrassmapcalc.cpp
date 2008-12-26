@@ -513,8 +513,7 @@ QStringList QgsGrassMapcalc::checkRegion()
                                QgsGrass::getDefaultLocation(), mapset, map,
                                &window ) )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot check region "
-                            "of map " ) + obj->value() );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot check region of map %1" ).arg( obj->value() ) );
       continue;
     }
 
@@ -568,8 +567,7 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
                                QgsGrass::getDefaultLocation(), mapset, map,
                                &mapWindow ) )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get region "
-                            "of map " ) + obj->value() );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get region of map %1" ).arg( obj->value() ) );
       return false;
     }
 
@@ -765,8 +763,7 @@ void QgsGrassMapcalc::addMap()
   updateMaps();
   if ( mMaps.size() == 0 )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "No GRASS raster maps"
-                          " currently in QGIS" ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "No GRASS raster maps currently in QGIS" ) );
 
     setTool( AddConstant );
     return;
@@ -1041,8 +1038,7 @@ void QgsGrassMapcalc::saveAs()
 
     if ( !d.mkdir( "mapcalc" ) )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot create 'mapcalc' "
-                            "directory in current mapset." ) );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot create 'mapcalc' directory in current mapset." ) );
       return;
     }
   }
@@ -1067,7 +1063,7 @@ void QgsGrassMapcalc::saveAs()
     if ( QFile::exists( mc + "/" + name ) )
     {
       QMessageBox::StandardButton ret = QMessageBox::question( 0, tr( "Warning" ),
-                                        tr( "The file already exists. Overwrite? " ),
+                                        tr( "The file already exists. Overwrite?" ),
                                         QMessageBox::Ok | QMessageBox::Cancel );
 
       if ( ret == QMessageBox::Cancel ) continue;
@@ -1232,15 +1228,13 @@ void QgsGrassMapcalc::load()
 
   if ( !file.exists() ) // should not happen
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "The mapcalc schema (" )
-                          + path + tr( ") not found." ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "The mapcalc schema (%1) not found." ).arg( path ) );
     return;
   }
 
   if ( ! file.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open mapcalc schema (" )
-                          + path + ")" );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open mapcalc schema (%1)" ).arg( path ) );
 
     return;
   }
@@ -1252,10 +1246,8 @@ void QgsGrassMapcalc::load()
   file.close();
   if ( !parsed )
   {
-    QString errmsg = tr( "Cannot read mapcalc schema (" ) + path + "):\n" + err
-                     + tr( "\nat line " ) + QString::number( line )
-                     + tr( " column " ) + QString::number( column );
-
+    QString errmsg = tr( "Cannot read mapcalc schema (%1):" ).arg( path )
+                     + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QMessageBox::warning( 0, tr( "Warning" ), errmsg );
     return;
   }

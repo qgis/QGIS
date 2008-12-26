@@ -68,10 +68,10 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   if ( !mCanvas->currentLayer() ||
        dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() ) == NULL )
   {
-    QMessageBox::warning( mCanvas, QObject::tr( "No active layer" ),
-                          QObject::tr( "To select features, you must choose a "
-                                       "vector layer by clicking on its name in the legend"
-                                     ) );
+    QMessageBox::warning( mCanvas, tr( "No active layer" ),
+                          tr( "To select features, you must choose a "
+                              "vector layer by clicking on its name in the legend"
+                            ) );
     return;
   }
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( mCanvas->currentLayer() );
@@ -130,8 +130,8 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
     Q_UNUSED( cse );
     // catch exception for 'invalid' rectangle and leave existing selection unchanged
     QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-    QMessageBox::warning( mCanvas, QObject::tr( "CRS Exception" ),
-                          QObject::tr( "Selection extends beyond layer's coordinate system." ) );
+    QMessageBox::warning( mCanvas, tr( "CRS Exception" ),
+                          tr( "Selection extends beyond layer's coordinate system." ) );
     return;
   }
 

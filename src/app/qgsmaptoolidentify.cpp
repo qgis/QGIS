@@ -117,8 +117,8 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   else
   {
     QMessageBox::warning( mCanvas,
-                          QObject::tr( "No active layer" ),
-                          QObject::tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
+                          tr( "No active layer" ),
+                          tr( "To identify features, you must choose an active layer by clicking on its name in the legend" ) );
   }
 
 
@@ -151,7 +151,7 @@ void QgsMapToolIdentify::identifyRasterLayer( const QgsPoint& point )
   }
 
   mResults->setTitle( layer->name() );
-  mResults->setColumnText( 0, QObject::tr( "Band" ) );
+  mResults->setColumnText( 0, tr( "Band" ) );
 
   QMap<QString, QString>::iterator it;
   for ( it = attributes.begin(); it != attributes.end(); it++ )
@@ -221,7 +221,7 @@ void QgsMapToolIdentify::identifyRasterWmsLayer( const QgsPoint& point )
 
   QgsMessageViewer* viewer = new QgsMessageViewer();
   viewer->setWindowTitle( layer->name() );
-  viewer->setMessageAsPlainText( QString( tr( "WMS identify result for %1\n%2" ) ).arg( point.toString() ).arg( text ) );
+  viewer->setMessageAsPlainText( tr( "WMS identify result for %1:\n%2" ).arg( point.toString() ).arg( text ) );
 
   viewer->showMessage(); // deletes itself on close
 }
@@ -276,7 +276,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and proceed with no features found
-    QgsLogger::warning( "Caught CRS exception " + QString( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
   QApplication::restoreOverrideCursor();
@@ -344,7 +344,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     {
       double dist = calc.measure( f_it->geometry() );
       QString str = calc.textUnit( dist, 3, mCanvas->mapUnits(), false );
-      mResults->addDerivedAttribute( featureNode, QObject::tr( "Length" ), str );
+      mResults->addDerivedAttribute( featureNode, tr( "Length" ), str );
       if ( f_it->geometry()->wkbType() == QGis::WKBLineString )
       {
         // Add the start and end points in as derived attributes
@@ -362,7 +362,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     {
       double area = calc.measure( f_it->geometry() );
       QString str = calc.textUnit( area, 3, mCanvas->mapUnits(), true );
-      mResults->addDerivedAttribute( featureNode, QObject::tr( "Area" ), str );
+      mResults->addDerivedAttribute( featureNode, tr( "Area" ), str );
     }
     else if ( layer->geometryType() == QGis::Point )
     {
@@ -378,7 +378,7 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
     QgsAttributeAction::aIter iter = actions.begin();
     for ( register int i = 0; iter != actions.end(); ++iter, ++i )
     {
-      mResults->addAction( featureNode, i, QObject::tr( "action" ), iter->name() );
+      mResults->addAction( featureNode, i, tr( "action" ), iter->name() );
     }
   }
 
@@ -386,24 +386,18 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
   //also test the not commited features //todo: eliminate copy past code
 
-  mResults->setTitle( layer->name() + " - " + QString::number( featureCount ) + QObject::tr( " features found" ) );
   if ( featureCount == 1 )
   {
     mResults->showAllAttributes();
-    mResults->setTitle( layer->name() + " - " + QObject::tr( " 1 feature found" ) );
     highlightFeature( lastFeatureId );
   }
   else if ( featureCount == 0 )
   {
-    mResults->setTitle( layer->name() + " - " + QObject::tr( "No features found" ) );
-    mResults->setMessage( QObject::tr( "No features found" ), QObject::tr( "No features were found in the active layer at the point you clicked" ) );
+    mResults->setMessage( tr( "No features found" ), tr( "No features were found in the active layer at the point you clicked" ) );
   }
-  else
-  {
-    QString title = layer->name();
-    title += QString( tr( "- %1 features found", "Identify results window title", featureCount ) ).arg( featureCount );
-    mResults->setTitle( title );
-  }
+
+  mResults->setTitle( tr( "%1 - %n feature(s) found", "Identify results window title", featureCount ).arg( layer->name() ) );
+
   QApplication::restoreOverrideCursor();
 
   mResults->show();
@@ -411,19 +405,18 @@ void QgsMapToolIdentify::identifyVectorLayer( const QgsPoint& point )
 
 void QgsMapToolIdentify::showError()
 {
-  //   QMessageBox::warning(
-  //     this,
-  //     mapLayer->lastErrorTitle(),
-  //     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
-  //       mapLayer->lastError()
-  //   );
+#if 0
+  QMessageBox::warning(
+    this,
+    mapLayer->lastErrorTitle(),
+    tr( "Could not draw %1 because:\n%2", "COMMENTED OUT" ).arg( mapLayer->name() ).arg( mapLayer->lastError() )
+  );
+#endif
 
   QgsMessageViewer * mv = new QgsMessageViewer();
   mv->setWindowTitle( mLayer->lastErrorTitle() );
-  mv->setMessageAsPlainText(
-    QObject::tr( "Could not identify objects on" ) + " " + mLayer->name() + " " + QObject::tr( "because" ) + ":\n" +
-    mLayer->lastError()
-  );
+  mv->setMessageAsPlainText( tr( "Could not identify objects on %1 because:\n%2" )
+                             .arg( mLayer->name() ).arg( mLayer->lastError() ) );
   mv->exec(); // deletes itself on close
 }
 

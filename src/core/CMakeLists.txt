@@ -113,6 +113,7 @@ SET_SOURCE_FILES_PROPERTIES(
 ENDIF (MSVC AND PEDANTIC)
 
 SET(QGIS_CORE_MOC_HDRS
+qgsapplication.h
 qgscontexthelp.h
 qgscoordinatetransform.h
 qgsdataprovider.h

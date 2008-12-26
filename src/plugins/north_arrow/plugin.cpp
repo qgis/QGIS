@@ -242,7 +242,7 @@ void QgsNorthArrowPlugin::renderNorthArrow( QPainter * theQPainter )
       QFont myQFont( "time", 12, QFont::Bold );
       theQPainter->setFont( myQFont );
       theQPainter->setPen( Qt::black );
-      theQPainter->drawText( 10, 20, QString( tr( "North arrow pixmap not found" ) ) );
+      theQPainter->drawText( 10, 20, tr( "North arrow pixmap not found" ) );
     }
   }
 

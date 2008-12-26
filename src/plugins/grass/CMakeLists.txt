@@ -68,6 +68,7 @@ SET (GRASS_PLUGIN_MOC_HDRS
      qgsgrassattributes.h
      qgsgrassregion.h
      qgsgrassutils.h
+     qgsgrassedittools.h
 )
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)

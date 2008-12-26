@@ -35,8 +35,7 @@
 static const char *const sIdent =
   "$Id: plugin.cpp 6935 2007-05-07 14:29:51Z wonder $";
 static const QString sName = QObject::tr( "Dxf2Shp Converter" );
-static const QString sDescription = QObject::tr(
-                                      "Converts from dxf to shp file format" );
+static const QString sDescription = QObject::tr( "Converts from dxf to shp file format" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 

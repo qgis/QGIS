@@ -252,11 +252,11 @@ void QgsGrassBrowser::copyMap()
     {
       QString output( process.readAllStandardOutput() );
       QString error( process.readAllStandardError() );
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot copy map " )
-                            + map + "@" + mapset
-                            + tr( "<br>command: " ) + module + " " + args.join( " " )
-                            + "<br>" + formatMessage( output )
-                            + "<br>" + formatMessage( error ) );
+      QMessageBox::warning( 0, tr( "Warning" ),
+                            tr( "Cannot copy map %1@%2" ).arg( map ).arg( mapset )
+                            + tr( "<br>command: %1 %2<br>%3<br>%4" )
+                            .arg( module ).arg( args.join( " " ) )
+                            .arg( output ).arg( error ) );
     }
     else
     {
@@ -316,11 +316,11 @@ void QgsGrassBrowser::renameMap()
     {
       QString output( process.readAllStandardOutput() );
       QString error( process.readAllStandardError() );
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot rename map " )
-                            + map
-                            + tr( "<br>command: " ) + module + " " + args.join( " " )
-                            + "<br>" + formatMessage( output )
-                            + "<br>" + formatMessage( error ) );
+      QMessageBox::warning( 0, tr( "Warning" ),
+                            tr( "Cannot rename map %1" ).arg( map )
+                            + tr( "<br>command: %1 %2<br>%3<br>%4" )
+                            .arg( module ).arg( args.join( " " ) )
+                            .arg( output ).arg( error ) );
     }
     else
     {
@@ -353,7 +353,7 @@ void QgsGrassBrowser::deleteMap()
     }
 
     QMessageBox::StandardButton ret = QMessageBox::question( 0, tr( "Warning" ),
-                                      tr( "Delete map <b>" ) + map + "</b>",
+                                      tr( "Delete map <b>%1</b>" ).arg( map ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel ) continue;
@@ -369,11 +369,12 @@ void QgsGrassBrowser::deleteMap()
     {
       QString output( process.readAllStandardOutput() );
       QString error( process.readAllStandardError() );
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot delete map " )
-                            + map
-                            + tr( "<br>command: " ) + module + " " + args.join( " " )
-                            + "<br>" + formatMessage( output )
-                            + "<br>" + formatMessage( error ) );
+      QMessageBox::warning( 0, tr( "Warning" ),
+                            tr( "Cannot delete map %1" )
+                            .arg( map )
+                            + tr( "<br>command: %1 %2<br>%3<br>%4" )
+                            .arg( map ).arg( module ).arg( args.join( " " ) )
+                            .arg( output ).arg( error ) );
     }
     else
     {

@@ -160,7 +160,7 @@ void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 void QgsMapCanvas::useImageToRender( bool theFlag )
 {
   mMap->useImageToRender( theFlag );
-  refresh();	// redraw the map on change - prevents black map view
+  refresh(); // redraw the map on change - prevents black map view
 }
 
 QgsMapCanvasMap* QgsMapCanvas::map()
@@ -1211,19 +1211,18 @@ void QgsMapCanvas::moveCanvasContents( bool reset )
 
 void QgsMapCanvas::showError( QgsMapLayer * mapLayer )
 {
-//   QMessageBox::warning(
-//     this,
-//     mapLayer->lastErrorTitle(),
-//     tr("Could not draw") + " " + mapLayer->name() + " " + tr("because") + ":\n" +
-//       mapLayer->lastError()
-//   );
+#if 0
+  QMessageBox::warning(
+    this,
+    mapLayer->lastErrorTitle(),
+    tr( "Could not draw %1 because:\n%2", "COMMENTED OUT" ).arg( mapLayer->name() ).arg( mapLayer->lastError() )
+  );
+#endif
 
   QgsMessageViewer * mv = new QgsMessageViewer( this );
   mv->setWindowTitle( mapLayer->lastErrorTitle() );
-  mv->setMessageAsPlainText(
-    tr( "Could not draw" ) + " " + mapLayer->name() + " " + tr( "because" ) + ":\n" +
-    mapLayer->lastError()
-  );
+  mv->setMessageAsPlainText( tr( "Could not draw %1 because:\n%2" )
+                             .arg( mapLayer->name() ).arg( mapLayer->lastError() ) );
   mv->exec();
   //MH
   //QgsMessageViewer automatically sets delete on close flag

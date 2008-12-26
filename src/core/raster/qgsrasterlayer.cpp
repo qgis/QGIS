@@ -377,7 +377,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   }                           // each loaded GDAL driver
 
   // can't forget the default case
-  theFileFiltersString += catchallFilter.join( ", " ) + " " + tr( "and all other files" ) + " (*)";
+  theFileFiltersString += tr( "%1 and all other files (*)" ).arg( catchallFilter.join( ", " ) );
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
 
@@ -1789,7 +1789,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      theResults[tr( "Band" ) + QString::number( i )] = tr( "out of extent" );
+      theResults[ tr( "Band%1" ).arg( i )] = tr( "out of extent" );
     }
   }
   else
@@ -1833,7 +1833,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
       {
         v.setNum( value );
       }
-      theResults[tr( "Band" ) + QString::number( i )] = v;
+      theResults[tr( "Band%1" ).arg( i )] = v;
 
       free( data );
     }
@@ -2501,8 +2501,10 @@ QString QgsRasterLayer::metadata()
     myMetadata += tr( "Dimensions:" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
-    myMetadata += tr( "X: " ) + QString::number( GDALGetRasterXSize( mGdalDataset ) ) +
-                  tr( " Y: " ) + QString::number( GDALGetRasterYSize( mGdalDataset ) ) + tr( " Bands: " ) + QString::number( GDALGetRasterCount( mGdalDataset ) );
+    myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
+                  .arg( GDALGetRasterXSize( mGdalDataset ) )
+                  .arg( GDALGetRasterYSize( mGdalDataset ) )
+                  .arg( GDALGetRasterCount( mGdalDataset ) );
     myMetadata += "</p>\n";
 
     //just use the first band
@@ -2597,14 +2599,14 @@ QString QgsRasterLayer::metadata()
 
   // output coordinate system
   // TODO: this is not related to layer, to be removed? [MD]
-  /*
-      myMetadata += "<tr><td class=\"glossy\">";
-      myMetadata += tr("Project Spatial Reference System: ");
-      myMetadata += "</p>\n";
-      myMetadata += "<p>";
-      myMetadata +=  mCoordinateTransform->destCRS().toProj4();
-      myMetadata += "</p>\n";
-      */
+#if 0
+  myMetadata += "<tr><td class=\"glossy\">";
+  myMetadata += tr( "Project Spatial Reference System: " );
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
+  myMetadata +=  mCoordinateTransform->destCRS().toProj4();
+  myMetadata += "</p>\n";
+#endif
 
   if ( mProviderKey.isEmpty() )
   {

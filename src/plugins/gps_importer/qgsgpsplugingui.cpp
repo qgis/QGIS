@@ -99,8 +99,10 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
       const QString& typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
                           mImporters.find( mImpFormat )->second,
-                          typeString == tr( "Waypoints" ), typeString == tr( "Routes" ),
-                          typeString == tr( "Tracks" ), leIMPOutput->text(),
+                          typeString == tr( "Waypoints" ),
+                          typeString == tr( "Routes" ),
+                          typeString == tr( "Tracks" ),
+                          leIMPOutput->text(),
                           leIMPLayer->text() );
       break;
     }
@@ -462,8 +464,8 @@ void QgsGPSPluginGui::populateLoadDialog()
 
   QString format = QString( "<p>%1</p><p>%2</p>" );
 
-  QString sentence1 = tr( "GPX is the %1, which is used to store information about waypoints, routes, and tracks." ).
-                      arg( QString( "<a href=http://www.topografix.com/gpx.asp>%1</a>" ).arg( tr( "GPS eXchange file format" ) ) );
+  QString sentence1 = tr( "GPX is the %1, which is used to store information about waypoints, routes, and tracks." )
+                      .arg( QString( "<a href=http://www.topografix.com/gpx.asp>%1</a>" ).arg( tr( "GPS eXchange file format" ) ) );
   QString sentence2 = tr( "Select a GPX file and then select the feature types that you want to load." );
 
   QString text = format.arg( sentence1 ).arg( sentence2 );

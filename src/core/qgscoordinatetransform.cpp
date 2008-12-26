@@ -414,16 +414,17 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   // Refuse to transform the points if the srs's are invalid
   if ( !mSourceCRS.isValid() )
   {
-    QgsLogger::critical( tr( "The source spatial reference system (CRS) is not valid. " ) +
-                         tr( "The coordinates can not be reprojected. The CRS is: " ) +
-                         mSourceCRS.toProj4() );
+    QgsLogger::critical( tr( "The source spatial reference system (CRS) is not valid. " )
+                         + tr( "The coordinates can not be reprojected."
+                               " The CRS is: %1" )
+                         .arg( mSourceCRS.toProj4() ) );
     return;
   }
   if ( !mDestCRS.isValid() )
   {
-    QgsLogger::critical( tr( "The destination spatial reference system (CRS) is not valid. " ) +
-                         tr( "The coordinates can not be reprojected. The CRS is: " ) +
-                         mDestCRS.toProj4() );
+    QgsLogger::critical( tr( "The destination spatial reference system (CRS) is not valid. " )
+                         + tr( "The coordinates can not be reprojected."
+                               " The CRS is: %1" ).arg( mDestCRS.toProj4() ) );
     return;
   }
 

@@ -50,7 +50,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder( QgsDataSourceURI *uri,
   // check the connection status
   if ( PQstatus( mPgConnection ) == CONNECTION_OK )
   {
-    QString datasource = QString( tr( "Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>" ) )
+    QString datasource = tr( "Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>" )
                          .arg( mUri->table() )
                          .arg( PQdb( mPgConnection ) )
                          .arg( PQhost( mPgConnection ) )
@@ -65,7 +65,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder( QgsDataSourceURI *uri,
   else
   {
     QString err = QString::fromLocal8Bit( PQerrorMessage( mPgConnection ) );
-    QMessageBox::critical( this, tr( "Connection Failed" ), tr( "Connection to the database failed:" ) + "\n" + err );
+    QMessageBox::critical( this, tr( "Connection Failed" ), tr( "Connection to the database failed:\n%1" ).arg( err ) );
   }
 }
 // Constructor when using an existing connection (ie from the add postgis layer dialog). This
@@ -81,7 +81,7 @@ QgsPgQueryBuilder::QgsPgQueryBuilder( QString tableName, PGconn *con,
   setupGuiViews();
   mOwnConnection = false; // we don't own this connection since it was passed to us
   mUri = new QgsDataSourceURI( "table=" + tableName );
-  QString datasource = QString( tr( "Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>" ) )
+  QString datasource = tr( "Table <b>%1</b> in database <b>%2</b> on host <b>%3</b>, user <b>%4</b>" )
                        .arg( tableName )
                        .arg( PQdb( mPgConnection ) )
                        .arg( PQhost( mPgConnection ) )
@@ -117,7 +117,7 @@ void QgsPgQueryBuilder::populateFields()
       QString typOid = QString().setNum( fldtyp );
       QgsLogger::debug( "typOid is: " + typOid );
       //int fieldModifier = PQfmod(result, i);
-      QString sql = "select typelem from pg_type where typelem = " + typOid + " and typlen = -1";
+      QString sql = QString( "select typelem from pg_type where typelem=%1 and typlen=-1" ).arg( typOid );
       //  //--std::cout << sql << std::endl;
 
       PGresult *oidResult = PQexec( mPgConnection, sql.toUtf8() );
@@ -130,7 +130,7 @@ void QgsPgQueryBuilder::populateFields()
                                                    "typelem" ) ) );
       QgsLogger::debug( "poid is: " + poid );
       PQclear( oidResult );
-      sql = "select typname, typlen from pg_type where oid = " + poid;
+      sql = QString( "select typname, typlen from pg_type where oid=%1" ).arg( poid );
       // //--std::cout << sql << std::endl;
 
       oidResult = PQexec( mPgConnection, sql.toUtf8() );
@@ -204,7 +204,9 @@ void QgsPgQueryBuilder::fillValues( QString theSQL )
   }
   else
   {
-    QMessageBox::warning( this, tr( "Database error" ), tr( "<p>Failed to get sample of field values using SQL:</p><p>" ) + theSQL + "</p><p>Error message was: " + QString::fromUtf8( PQerrorMessage( mPgConnection ) ) + "</p>" );
+    QMessageBox::warning( this, tr( "Database error" ),
+                          tr( "<p>Failed to get sample of field values using SQL:</p><p>%1</p><p>Error message was: %2</p>" )
+                          .arg( theSQL ).arg( QString::fromUtf8( PQerrorMessage( mPgConnection ) ) ) );
   }
   // free the result set
   PQclear( result );
@@ -219,12 +221,8 @@ void QgsPgQueryBuilder::on_btnSampleValues_clicked()
 
   QgsField field = mFieldMap[mModelFields->data( lstFields->currentIndex() ).toString()];
 
-  QString sql = "SELECT DISTINCT \"" + myFieldName + "\" " +
-                "FROM (SELECT \"" + myFieldName + "\" " +
-                "FROM " + mUri->quotedTablename() + " " +
-                "LIMIT 5000) AS foo " +
-                "ORDER BY \"" + myFieldName + "\" " +
-                "LIMIT 25";
+  QString sql = QString( "SELECT DISTINCT \"%1\" FROM (SELECT \"%1\" FROM %2 LIMIT 5000) AS foo ORDER BY \"%1\" LIMIT 25" )
+                .arg( myFieldName ).arg( mUri->quotedTablename() );
 
   //delete connection mModelValues and lstValues
   QStandardItemModel *tmp = new QStandardItemModel();
@@ -245,8 +243,8 @@ void QgsPgQueryBuilder::on_btnGetAllValues_clicked()
   if ( myFieldName.isEmpty() )
     return;
 
-  QString sql = "select distinct \"" + myFieldName
-                + "\" from " + mUri->quotedTablename() + " order by \"" + myFieldName + "\"";
+  QString sql = QString( "select distinct \"%1\" from %2 order by \"%1\"" )
+                .arg( myFieldName ).arg( mUri->quotedTablename() );
 
   //delete connection mModelValues and lstValues
   QStandardItemModel *tmp = new QStandardItemModel();
@@ -273,21 +271,20 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
   else
   {
     QString numRows;
-    QString sql = "select count(*) from " + mUri->quotedTablename()
-                  + " where " + txtSQL->toPlainText();
+    QString sql = QString( "select count(*) from %1 where %2" )
+                  .arg( mUri->quotedTablename() ).arg( txtSQL->toPlainText() );
     PGresult *result = PQexec( mPgConnection, sql.toUtf8() );
     if ( PQresultStatus( result ) == PGRES_TUPLES_OK )
     {
       numRows = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       QMessageBox::information( this, tr( "Query Result" ),
-                                tr( "The where clause returned " )
-                                + numRows + tr( " rows." ) );
+                                tr( "The where clause returned %n row(s).", "returned test rows", numRows.toInt() ) );
     }
     else
     {
       QMessageBox::warning( this, tr( "Query Failed" ),
-                            tr( "An error occurred when executing the query:" )
-                            + "\n" + QString::fromUtf8( PQresultErrorMessage( result ) ) );
+                            tr( "An error occurred when executing the query:\n%1" )
+                            .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
     }
     // free the result set
     PQclear( result );
@@ -298,7 +295,7 @@ void QgsPgQueryBuilder::on_btnTest_clicked()
 // XXX This should really throw an exception
 long QgsPgQueryBuilder::countRecords( QString where )
 {
-  QString sql = "select count(*) from " + mUri->quotedTablename() + " where " + where;
+  QString sql = QString( "select count(*) from %1 where %2" ).arg( mUri->quotedTablename() ).arg( where );
 
   long numRows;
   PGresult *result = PQexec( mPgConnection, sql.toUtf8() );

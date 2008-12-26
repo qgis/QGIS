@@ -438,7 +438,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   QFileInfo fi( mapsetPath + "/WIND" );
   if ( !fi.exists() )
   {
-    return mapsetPath + QObject::tr( " is not a GRASS mapset." );
+    return QObject::tr( "%1 is not a GRASS mapset." ).arg( mapsetPath );
   }
 
   QString lock = mapsetPath + "/.gislock";
@@ -472,7 +472,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   if ( !process->waitForStarted() )
   {
     delete process;
-    return QObject::tr( "Cannot start " ) + gisBase + "/etc/lock";
+    return QObject::tr( "Cannot start %1/etc/lock" ).arg( gisBase );
   }
 
   process->waitForFinished( -1 );
@@ -497,13 +497,13 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
     if ( !dirInfo.isWritable() )
     {
       lockFile.remove();
-      return QObject::tr( "Temporary directory " ) + mTmp + QObject::tr( " exist but is not writable" );
+      return QObject::tr( "Temporary directory %1 exists but is not writable" ).arg( mTmp );
     }
   }
   else if ( !dir.mkdir( mTmp ) )
   {
     lockFile.remove();
-    return QObject::tr( "Cannot create temporary directory " ) + mTmp;
+    return QObject::tr( "Cannot create temporary directory %1" ).arg( mTmp );
   }
 
   // Create GISRC file
@@ -517,7 +517,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   if ( !out.open( QIODevice::WriteOnly ) )
   {
     lockFile.remove();
-    return QObject::tr( "Cannot create " ) + mGisrc;
+    return QObject::tr( "Cannot create %1" ).arg( mGisrc );
   }
   QTextStream stream( &out );
 
@@ -592,7 +592,7 @@ QString QgsGrass::closeMapset( )
     QFile file( mMapsetLock );
     if ( !file.remove() )
     {
-      return QObject::tr( "Cannot remove mapset lock: " ) + mMapsetLock;
+      return QObject::tr( "Cannot remove mapset lock: %1" ).arg( mMapsetLock );
     }
     mMapsetLock = "";
 

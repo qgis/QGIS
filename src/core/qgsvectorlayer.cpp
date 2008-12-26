@@ -591,7 +591,7 @@ unsigned char *QgsVectorLayer::drawPolygon(
     QgsDebugMsg( "Outer ring point is " + QString::number( outerRingPt.x() ) + ", " + QString::number( outerRingPt.y() ) );
 #endif
 
-    /*
+#if 0
     // A bit of code to aid in working out what values of
     // QgsClipper::minX, etc cause the X11 zoom bug.
     int largestX  = -std::numeric_limits<int>::max();
@@ -599,18 +599,18 @@ unsigned char *QgsVectorLayer::drawPolygon(
     int largestY  = -std::numeric_limits<int>::max();
     int smallestY = std::numeric_limits<int>::max();
 
-    for (int i = 0; i < pa.size(); ++i)
+    for ( int i = 0; i < pa.size(); ++i )
     {
-    largestX  = std::max(largestX,  pa.point(i).x());
-    smallestX = std::min(smallestX, pa.point(i).x());
-    largestY  = std::max(largestY,  pa.point(i).y());
-    smallestY = std::min(smallestY, pa.point(i).y());
+      largestX  = std::max( largestX,  pa.point( i ).x() );
+      smallestX = std::min( smallestX, pa.point( i ).x() );
+      largestY  = std::max( largestY,  pa.point( i ).y() );
+      smallestY = std::min( smallestY, pa.point( i ).y() );
     }
-    QgsDebugMsg(QString("Largest  X coordinate was %1").arg(largestX));
-    QgsDebugMsg(QString("Smallest X coordinate was %1").arg(smallestX));
-    QgsDebugMsg(QString("Largest  Y coordinate was %1").arg(largestY));
-    QgsDebugMsg(QString("Smallest Y coordinate was %1").arg(smallestY));
-    */
+    QgsDebugMsg( QString( "Largest  X coordinate was %1" ).arg( largestX ) );
+    QgsDebugMsg( QString( "Smallest X coordinate was %1" ).arg( smallestX ) );
+    QgsDebugMsg( QString( "Largest  Y coordinate was %1" ).arg( largestY ) );
+    QgsDebugMsg( QString( "Smallest Y coordinate was %1" ).arg( smallestY ) );
+#endif
 
     //preserve a copy of the brush and pen before we start fiddling with it
     QBrush brush = p->brush(); //to be kept as original
@@ -993,7 +993,7 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
   // rewritten to cope with a value of QGis::Unknown. To make this
   // need known, the following message is printed every time we get
   // here.
-  QgsDebugMsg( QString( "WARNING: This code (file %1, line %2) should never be reached. Problems may occur..." ).arg( __FILE__ ).arg( __LINE__ ) );
+  QgsDebugMsg( "WARNING: This code should never be reached. Problems may occur..." );
 
   return QGis::UnknownGeometry;
 }
@@ -2627,13 +2627,13 @@ bool QgsVectorLayer::commitChanges()
   {
     if (( cap & QgsVectorDataProvider::DeleteAttributes ) && mDataProvider->deleteAttributes( mDeletedAttributeIds ) )
     {
-      mCommitErrors << tr( "SUCCESS: %1 attributes deleted." ).arg( mDeletedAttributeIds.size() );
+      mCommitErrors << tr( "SUCCESS: %n attribute(s) deleted.", "deleted attributes count", mDeletedAttributeIds.size() );
       mDeletedAttributeIds.clear();
       attributesChanged = true;
     }
     else
     {
-      mCommitErrors << tr( "ERROR: %1 attributes not deleted." ).arg( mDeletedAttributeIds.size() );
+      mCommitErrors << tr( "ERROR: %n attribute(s) not deleted.", "not deleted attributes count", mDeletedAttributeIds.size() );
       success = false;
     }
   }
@@ -2649,13 +2649,13 @@ bool QgsVectorLayer::commitChanges()
 
     if (( cap & QgsVectorDataProvider::AddAttributes ) && mDataProvider->addAttributes( addedAttributes ) )
     {
-      mCommitErrors << tr( "SUCCESS: %1 attributes added." ).arg( mAddedAttributeIds.size() );
+      mCommitErrors << tr( "SUCCESS: %n attribute(s) added.", "added attributes count", mAddedAttributeIds.size() );
       mAddedAttributeIds.clear();
       attributesChanged = true;
     }
     else
     {
-      mCommitErrors << tr( "ERROR: %1 new attributes not added" ).arg( mAddedAttributeIds.size() );
+      mCommitErrors << tr( "ERROR: %n new attribute(s) not added", "not added attributes count", mAddedAttributeIds.size() );
       success = false;
     }
   }
@@ -2762,12 +2762,12 @@ bool QgsVectorLayer::commitChanges()
     {
       if (( cap & QgsVectorDataProvider::ChangeAttributeValues ) && mDataProvider->changeAttributeValues( mChangedAttributeValues ) )
       {
-        mCommitErrors << tr( "SUCCESS: %1 attribute values changed." ).arg( mChangedAttributeValues.size() );
+        mCommitErrors << tr( "SUCCESS: %n attribute value(s) changed.", "changed attribute values count", mChangedAttributeValues.size() );
         mChangedAttributeValues.clear();
       }
       else
       {
-        mCommitErrors << tr( "ERROR: %1 attribute value changes not applied." ).arg( mChangedAttributeValues.size() );
+        mCommitErrors << tr( "ERROR: %n attribute value change(s) not applied.", "not changed attribute values count", mChangedAttributeValues.size() );
         success = false;
       }
     }
@@ -2799,12 +2799,12 @@ bool QgsVectorLayer::commitChanges()
 
       if (( cap & QgsVectorDataProvider::AddFeatures ) && mDataProvider->addFeatures( mAddedFeatures ) )
       {
-        mCommitErrors << tr( "SUCCESS: %1 features added." ).arg( mAddedFeatures.size() );
+        mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
         mAddedFeatures.clear();
       }
       else
       {
-        mCommitErrors << tr( "ERROR: %1 features not added." ).arg( mAddedFeatures.size() );
+        mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
         success = false;
       }
     }
@@ -2817,12 +2817,12 @@ bool QgsVectorLayer::commitChanges()
   {
     if (( cap & QgsVectorDataProvider::ChangeGeometries ) && mDataProvider->changeGeometryValues( mChangedGeometries ) )
     {
-      mCommitErrors << tr( "SUCCESS: %1 geometries were changed." ).arg( mChangedGeometries.size() );
+      mCommitErrors << tr( "SUCCESS: %n geometries were changed.", "changed geometries count", mChangedGeometries.size() );
       mChangedGeometries.clear();
     }
     else
     {
-      mCommitErrors << tr( "ERROR: %1 geometries not changed." ).arg( mChangedGeometries.size() );
+      mCommitErrors << tr( "ERROR: %n geometries not changed.", "not changed geometries count", mChangedGeometries.size() );
       success = false;
     }
   }
@@ -2834,7 +2834,7 @@ bool QgsVectorLayer::commitChanges()
   {
     if (( cap & QgsVectorDataProvider::DeleteFeatures ) && mDataProvider->deleteFeatures( mDeletedFeatureIds ) )
     {
-      mCommitErrors << tr( "SUCCESS: %1 features deleted." ).arg( mDeletedFeatureIds.size() );
+      mCommitErrors << tr( "SUCCESS: %n feature(s) deleted.", "deleted features count", mDeletedFeatureIds.size() );
       for ( QgsFeatureIds::const_iterator it = mDeletedFeatureIds.begin(); it != mDeletedFeatureIds.end(); it++ )
       {
         mChangedAttributeValues.remove( *it );
@@ -2844,7 +2844,7 @@ bool QgsVectorLayer::commitChanges()
     }
     else
     {
-      mCommitErrors << tr( "ERROR: %1 features not deleted." ).arg( mDeletedFeatureIds.size() );
+      mCommitErrors << tr( "ERROR: %n feature(s) not deleted.", "not deleted features count", mDeletedFeatureIds.size() );
       success = false;
     }
   }
