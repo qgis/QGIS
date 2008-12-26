@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1">
 <context>
+    <name></name>
+    <message>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="443"/>
+        <source>&amp;Geoprocessing</source>
+        <translation type="unfinished">&amp;Xử lý địa lý</translation>
+    </message>
+</context>
+<context>
     <name>@default</name>
     <message>
         <location filename="" line="0"/>
@@ -441,98 +449,8 @@
 <context>
     <name>CoordinateCaptureGui</name>
     <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="55"/>
-        <source>Welcome to your automatically generated plugin!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="56"/>
-        <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="57"/>
-        <source>Documentation:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="58"/>
-        <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="59"/>
-        <source>In particular look at the following classes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="62"/>
-        <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="63"/>
-        <source>What are all the files in my generated plugin directory for?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="64"/>
-        <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="65"/>
-        <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="66"/>
-        <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="67"/>
-        <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="68"/>
-        <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="69"/>
-        <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="70"/>
-        <source>This file contains the documentation you are reading now!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="71"/>
-        <source>Getting developer help:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="72"/>
-        <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="73"/>
-        <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="74"/>
-        <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="75"/>
-        <source>Have fun and thank you for choosing QGIS.</source>
+        <location filename="../src/plugins/coordinate_capture/coordinatecapturegui.cpp" line="24"/>
+        <source>Coordinate Capture Plugin</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -657,17 +575,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="421"/>
-        <source>Could not establish connection to: &apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
         <source>Open OGR file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="435"/>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="434"/>
         <source>OGR File Data Source (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -702,23 +615,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="433"/>
+        <source>Choose a file name to save to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="421"/>
+        <source>Could not establish connection to: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="298"/>
-        <source>Successfully translated layer &apos;</source>
+        <source>Successfully translated layer &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
-        <source>Failed to translate layer &apos;</source>
+        <source>Failed to translate layer &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="417"/>
-        <source>Successfully connected to: &apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/ogr_converter/dialog.cpp" line="434"/>
-        <source>Choose a file name to save to</source>
+        <source>Successfully connected to: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1677,12 +1595,12 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
         <translation type="obsolete">hộp thoại lưu các tập tin vector mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="935"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3094"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1000"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3159"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1695,7 +1613,7 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="92"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="88"/>
         <source>No Data Providers</source>
         <translation>Không có trình cung cấp dữ liệu</translation>
     </message>
@@ -1703,16 +1621,16 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
         <location filename="../src/core/qgsproviderregistry.cpp" line="87"/>
         <source>No Data Provider Plugins</source>
         <comment>No QGIS data provider plugins found in:</comment>
-        <translation>Không có plugin cung cấp Dữ liệu
+        <translation type="obsolete">Không có plugin cung cấp Dữ liệu
 Không tìm thấy plugin cung cấp dữ liệu cho QGIS tại</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="89"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="85"/>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
         <translation>Không có lớp vector nào được nạp. Kiểm tra lại cài đặt QGIS của bạn</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproviderregistry.cpp" line="253"/>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="249"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
         <translation>Không có plugin cung cấp dữ liệu. Không nạp được các lớp vector</translation>
     </message>
@@ -1739,7 +1657,7 @@ Không tìm thấy plugin cung cấp dữ liệu cho QGIS tại</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3103"/>
         <source>QGis files (*.qgs)</source>
-        <translation>Tập tin QGIS (*.qgs)</translation>
+        <translation type="obsolete">Tập tin QGIS (*.qgs)</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -1769,17 +1687,17 @@ Không tìm thấy plugin cung cấp dữ liệu cho QGIS tại</translation>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="770"/>
         <source> at line </source>
-        <translation>tại dòng</translation>
+        <translation type="obsolete">tại dòng</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="771"/>
         <source> column </source>
-        <translation>cột</translation>
+        <translation type="obsolete">cột</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="777"/>
         <source> for file </source>
-        <translation>với tập tin</translation>
+        <translation type="obsolete">với tập tin</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -1845,7 +1763,7 @@ Hiện tại QGIS không hỗ trợ điều này.</translation>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="931"/>
         <source>Unable to save to file </source>
-        <translation>Không thể lưu vào tập tin</translation>
+        <translation type="obsolete">Không thể lưu vào tập tin</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="310"/>
@@ -1865,17 +1783,17 @@ Hiện tại QGIS không hỗ trợ điều này.</translation>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="287"/>
         <source>Referenced column wasn&apos;t found: </source>
-        <translation>Không tìm thấy cột tham chiếu:</translation>
+        <translation type="obsolete">Không tìm thấy cột tham chiếu:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssearchtreenode.cpp" line="291"/>
+        <location filename="../src/core/qgssearchtreenode.cpp" line="290"/>
         <source>Division by zero.</source>
         <translation>Phép chia cho số 0.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="71"/>
         <source>No active layer</source>
-        <translation>Không có lớp kích hoạt</translation>
+        <translation type="obsolete">Không có lớp kích hoạt</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -1885,52 +1803,52 @@ Hiện tại QGIS không hỗ trợ điều này.</translation>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="154"/>
         <source>Band</source>
-        <translation>Băng</translation>
+        <translation type="obsolete">Băng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="347"/>
         <source>Length</source>
-        <translation>Chiều dài</translation>
+        <translation type="obsolete">Chiều dài</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="365"/>
         <source>Area</source>
-        <translation>Diện tích</translation>
+        <translation type="obsolete">Diện tích</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="381"/>
         <source>action</source>
-        <translation>Hành động</translation>
+        <translation type="obsolete">Hành động</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="389"/>
         <source> features found</source>
-        <translation>Tìm thấy các thuộc tính</translation>
+        <translation type="obsolete">Tìm thấy các thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="393"/>
         <source> 1 feature found</source>
-        <translation>Tìm thấy 1 thuộc tính</translation>
+        <translation type="obsolete">Tìm thấy 1 thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="399"/>
         <source>No features found</source>
-        <translation>Không tìm thấy các thuộc tính</translation>
+        <translation type="obsolete">Không tìm thấy các thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="399"/>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation>Không tìm thấy các thuộc tính trong lớp được kích hoạt tại điểm bạn nhắp chuột</translation>
+        <translation type="obsolete">Không tìm thấy các thuộc tính trong lớp được kích hoạt tại điểm bạn nhắp chuột</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="424"/>
         <source>Could not identify objects on</source>
-        <translation>Không thể nhận diện các đối tượng về</translation>
+        <translation type="obsolete">Không thể nhận diện các đối tượng về</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="424"/>
         <source>because</source>
-        <translation>bởi vì</translation>
+        <translation type="obsolete">bởi vì</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -1945,132 +1863,132 @@ Hiện tại QGIS không hỗ trợ điều này.</translation>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="770"/>
         <source>Project file read error: </source>
-        <translation>Lỗi đọc tập tin phép chiếu:</translation>
+        <translation type="obsolete">Lỗi đọc tập tin phép chiếu:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="34"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
         <source>Fit to a linear transform requires at least 2 points.</source>
         <translation>Phép chuyển đổi tuyến tính cần ít nhất 2 điểm.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="76"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="74"/>
         <source>Fit to a Helmert transform requires at least 2 points.</source>
         <translation>Phép chuyển đổi Helmert cần ít nhất 2 điểm.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="132"/>
+        <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="129"/>
         <source>Fit to an affine transform requires at least 4 points.</source>
         <translation>Phép chuyển đổi affine cần ít nhất 4 điểm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="71"/>
         <source>New centroid</source>
-        <translation>Trọng tâm mới</translation>
+        <translation type="obsolete">Trọng tâm mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
         <source>New point</source>
-        <translation>Điểm mới</translation>
+        <translation type="obsolete">Điểm mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="135"/>
         <source>New vertex</source>
-        <translation>Đỉnh mới</translation>
+        <translation type="obsolete">Đỉnh mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
         <source>Undo last point</source>
-        <translation>Quay ngược lại điểm cuối</translation>
+        <translation type="obsolete">Quay ngược lại điểm cuối</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
         <source>Close line</source>
-        <translation>Khép kín đường</translation>
+        <translation type="obsolete">Khép kín đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="601"/>
         <source>Select vertex</source>
-        <translation>Chọn đỉnh</translation>
+        <translation type="obsolete">Chọn đỉnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="317"/>
         <source>Select new position</source>
-        <translation>Chọn vị trí mới</translation>
+        <translation type="obsolete">Chọn vị trí mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="471"/>
         <source>Select line segment</source>
-        <translation>Chọn đoạn của đường</translation>
+        <translation type="obsolete">Chọn đoạn của đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="456"/>
         <source>New vertex position</source>
-        <translation>Vị trí đỉnh mới</translation>
+        <translation type="obsolete">Vị trí đỉnh mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="456"/>
         <source>Release</source>
-        <translation>Thả</translation>
+        <translation type="obsolete">Thả</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
         <source>Delete vertex</source>
-        <translation>Xóa đỉnh</translation>
+        <translation type="obsolete">Xóa đỉnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
         <source>Release vertex</source>
-        <translation>Thả đỉnh</translation>
+        <translation type="obsolete">Thả đỉnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="870"/>
         <source>Select element</source>
-        <translation>Chọn yếu tố</translation>
+        <translation type="obsolete">Chọn yếu tố</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="662"/>
         <source>New location</source>
-        <translation>Vị trí mới</translation>
+        <translation type="obsolete">Vị trí mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="747"/>
         <source>Release selected</source>
-        <translation>&quot;Thả&quot; phần được chọn</translation>
+        <translation type="obsolete">&quot;Thả&quot; phần được chọn</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="747"/>
         <source>Delete selected / select next</source>
-        <translation>Xóa phần đã chọn/chọn mục tiếp theo</translation>
+        <translation type="obsolete">Xóa phần đã chọn/chọn mục tiếp theo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="816"/>
         <source>Select position on line</source>
-        <translation>Chọn vị trí trên đường</translation>
+        <translation type="obsolete">Chọn vị trí trên đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="837"/>
         <source>Split the line</source>
-        <translation>Ngắt đường</translation>
+        <translation type="obsolete">Ngắt đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="837"/>
         <source>Release the line</source>
-        <translation>Thả đường</translation>
+        <translation type="obsolete">Thả đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="853"/>
         <source>Select point on line</source>
-        <translation>Chọn điểm trên đường</translation>
+        <translation type="obsolete">Chọn điểm trên đường</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="375"/>
         <source>Couldn&apos;t open the data source: </source>
-        <translation>Không thể mở nguồn dữ liệu:</translation>
+        <translation type="obsolete">Không thể mở nguồn dữ liệu:</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="399"/>
         <source>Parse error at line </source>
-        <translation>Lỗi parse tại đường</translation>
+        <translation type="obsolete">Lỗi parse tại đường</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -2140,22 +2058,22 @@ Bạn có muốn chỉ định đường dẫn (GISBASE) đến nơi cài đặt
         <translation>Thêm thông tin phép chiếu vào các raster</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="52"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="51"/>
         <source>GPS Tools</source>
         <translation>Các công cụ GPS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="54"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="52"/>
         <source>Tools for loading and importing GPS data</source>
         <translation>Các công cụ để nạp và nhập dữ liệu GPS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="830"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="825"/>
         <source>GRASS</source>
         <translation>GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="836"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="831"/>
         <source>GRASS layer</source>
         <translation>Lớp GRASS</translation>
     </message>
@@ -2227,37 +2145,37 @@ Bạn có muốn chỉ định đường dẫn (GISBASE) đến nơi cài đặt
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="42"/>
         <source>Not a vector layer</source>
-        <translation>Không phải một lớp vector</translation>
+        <translation type="obsolete">Không phải một lớp vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="43"/>
         <source>The current layer is not a vector layer</source>
-        <translation>Lớp hiện tại không phải là một lớp vector</translation>
+        <translation type="obsolete">Lớp hiện tại không phải là một lớp vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="72"/>
         <source>Layer cannot be added to</source>
-        <translation>Không thể thêm lớp vào</translation>
+        <translation type="obsolete">Không thể thêm lớp vào</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation>Trình cung cấp dữ liệu cho lớp này không hỗ trợ việc thêm các thuộc tính.</translation>
+        <translation type="obsolete">Trình cung cấp dữ liệu cho lớp này không hỗ trợ việc thêm các thuộc tính.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="49"/>
         <source>Layer not editable</source>
-        <translation>Lớp không chỉnh sửa được</translation>
+        <translation type="obsolete">Lớp không chỉnh sửa được</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="51"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+        <translation type="obsolete">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="74"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation>Để chọn các thuộc tính, bạn phải chọn một lớp vector bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
+        <translation type="obsolete">Để chọn các thuộc tính, bạn phải chọn một lớp vector bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="199"/>
@@ -2288,112 +2206,112 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="497"/>
         <source>Couldn&apos;t load plugin </source>
-        <translation>Không thể nạp phần mở rộng</translation>
+        <translation type="obsolete">Không thể nạp phần mở rộng</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="501"/>
         <source> due an error when calling its classFactory() method</source>
-        <translation>do một lỗi khi gọi phương pháp classFactory() của nó</translation>
+        <translation type="obsolete">do một lỗi khi gọi phương pháp classFactory() của nó</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="505"/>
         <source> due an error when calling its initGui() method</source>
-        <translation>do một lỗi khi bọi phương pháp initGui() của nó</translation>
+        <translation type="obsolete">do một lỗi khi bọi phương pháp initGui() của nó</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="517"/>
         <source>Error while unloading plugin </source>
-        <translation>Lỗi khi đang gỡ phần mở rộng</translation>
+        <translation type="obsolete">Lỗi khi đang gỡ phần mở rộng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="59"/>
         <source>2.5D shape type not supported</source>
-        <translation>kiểu 2,5D shape không được hỗ trợ</translation>
+        <translation type="obsolete">kiểu 2,5D shape không được hỗ trợ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="59"/>
         <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation>Thêm các thuộc tính vào kiểu 2,5D shape chưa được hỗ trợ</translation>
+        <translation type="obsolete">Thêm các thuộc tính vào kiểu 2,5D shape chưa được hỗ trợ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="207"/>
         <source>Wrong editing tool</source>
-        <translation>Công cụ chỉnh sửa không đúng</translation>
+        <translation type="obsolete">Công cụ chỉnh sửa không đúng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="92"/>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation>Không thể áp dụng công cụ &apos;vẽ điểm&apos; trong lớp vector này</translation>
+        <translation type="obsolete">Không thể áp dụng công cụ &apos;vẽ điểm&apos; trong lớp vector này</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation>Lỗi chuyển đổi tọa độ</translation>
+        <translation type="obsolete">Lỗi chuyển đổi tọa độ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation>Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
+        <translation type="obsolete">Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="200"/>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation>Không thể áp dụng công cụ &apos;vẽ đường&apos; trên lớp vector này</translation>
+        <translation type="obsolete">Không thể áp dụng công cụ &apos;vẽ đường&apos; trên lớp vector này</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="208"/>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation>Không thể áp dụng công cụ &apos;vẽ vùng&apos; trên lớp vector này</translation>
+        <translation type="obsolete">Không thể áp dụng công cụ &apos;vẽ vùng&apos; trên lớp vector này</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="435"/>
         <source>Error</source>
-        <translation>Lỗi</translation>
+        <translation type="obsolete">Lỗi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="420"/>
         <source>Cannot add feature. Unknown WKB type</source>
-        <translation>Không thể thêm thuộc tính. Kiểu WKB không biết</translation>
+        <translation type="obsolete">Không thể thêm thuộc tính. Kiểu WKB không biết</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="134"/>
         <source>Error, could not add island</source>
-        <translation>Lỗi, không thể thêm một &apos;đảo&apos;</translation>
+        <translation type="obsolete">Lỗi, không thể thêm một &apos;đảo&apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="91"/>
         <source>A problem with geometry type occured</source>
-        <translation>Xảy ra một lỗi với kiểu hình học</translation>
+        <translation type="obsolete">Xảy ra một lỗi với kiểu hình học</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="95"/>
         <source>The inserted Ring is not closed</source>
-        <translation>Ringh được chèn vào không kín</translation>
+        <translation type="obsolete">Ringh được chèn vào không kín</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="99"/>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation>Ring được chèn vào không phải là một hình học hợp lệ</translation>
+        <translation type="obsolete">Ring được chèn vào không phải là một hình học hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="103"/>
         <source>The inserted Ring crosses existing rings</source>
-        <translation>Ring được chèn vào bắt chéo các ring hiện có</translation>
+        <translation type="obsolete">Ring được chèn vào bắt chéo các ring hiện có</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="107"/>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation>Ring được chèn vào không chứa trong một thuộc tính</translation>
+        <translation type="obsolete">Ring được chèn vào không chứa trong một thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="111"/>
         <source>An unknown error occured</source>
-        <translation>Xảy ra một lỗi không rõ</translation>
+        <translation type="obsolete">Xảy ra một lỗi không rõ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="113"/>
         <source>Error, could not add ring</source>
-        <translation>Lỗi, không thể thêm ring</translation>
+        <translation type="obsolete">Lỗi, không thể thêm ring</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -2493,52 +2411,52 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="294"/>
         <source>Received %1 of %2 bytes</source>
-        <translation>Đã nhận %1 của %2 byte</translation>
+        <translation type="obsolete">Đã nhận %1 của %2 byte</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="300"/>
         <source>Received %1 bytes (total unknown)</source>
-        <translation>Đã nhận %1 byte (không biết tổng)</translation>
+        <translation type="obsolete">Đã nhận %1 byte (không biết tổng)</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="412"/>
         <source>Not connected</source>
-        <translation>Không kết nối</translation>
+        <translation type="obsolete">Không kết nối</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="418"/>
         <source>Looking up &apos;%1&apos;</source>
-        <translation>Đang tìm &apos;%1&apos;</translation>
+        <translation type="obsolete">Đang tìm &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="425"/>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation>Đang kết nối đến &apos;%1&apos;</translation>
+        <translation type="obsolete">Đang kết nối đến &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="432"/>
         <source>Sending request &apos;%1&apos;</source>
-        <translation>Đang gửi yêu cầu &apos;%1&apos;</translation>
+        <translation type="obsolete">Đang gửi yêu cầu &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="439"/>
         <source>Receiving reply</source>
-        <translation>Đang nhận trả lời</translation>
+        <translation type="obsolete">Đang nhận trả lời</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="445"/>
         <source>Response is complete</source>
-        <translation>Đáp ứng hoàn tất</translation>
+        <translation type="obsolete">Đáp ứng hoàn tất</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="451"/>
         <source>Closing down connection</source>
-        <translation>Đang đóng kết nối</translation>
+        <translation type="obsolete">Đang đóng kết nối</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="755"/>
         <source>Unable to open </source>
-        <translation>Không thể mở</translation>
+        <translation type="obsolete">Không thể mở</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="253"/>
@@ -2554,23 +2472,23 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="117"/>
         <source>Location: </source>
         <comment>Metadata in GRASS Browser</comment>
-        <translation>Vị trí:</translation>
+        <translation type="obsolete">Vị trí:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="117"/>
         <source>&lt;br&gt;Mapset: </source>
         <comment>Metadata in GRASS Browser</comment>
-        <translation>&lt;br&gt;Bộ bản đồ:</translation>
+        <translation type="obsolete">&lt;br&gt;Bộ bản đồ:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="121"/>
         <source>Location: </source>
-        <translation>Vị trí:</translation>
+        <translation type="obsolete">Vị trí:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="121"/>
         <source>&lt;br&gt;Mapset: </source>
-        <translation>&lt;br&gt;Bộ bản đồ:</translation>
+        <translation type="obsolete">&lt;br&gt;Bộ bản đồ:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="126"/>
@@ -2765,12 +2683,12 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="441"/>
         <source> is not a GRASS mapset.</source>
-        <translation>không phải là một bộ bản đồ GRASS.</translation>
+        <translation type="obsolete">không phải là một bộ bản đồ GRASS.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="475"/>
         <source>Cannot start </source>
-        <translation>Không thể khởi động</translation>
+        <translation type="obsolete">Không thể khởi động</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
@@ -2780,27 +2698,27 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="500"/>
         <source>Temporary directory </source>
-        <translation>Thư mục tạm</translation>
+        <translation type="obsolete">Thư mục tạm</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="500"/>
         <source> exist but is not writable</source>
-        <translation>hiện diện nhưng không thể ghi được</translation>
+        <translation type="obsolete">hiện diện nhưng không thể ghi được</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="506"/>
         <source>Cannot create temporary directory </source>
-        <translation>Không thể tạo thư mục tạm</translation>
+        <translation type="obsolete">Không thể tạo thư mục tạm</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="520"/>
         <source>Cannot create </source>
-        <translation>Không thể tạo</translation>
+        <translation type="obsolete">Không thể tạo</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="595"/>
         <source>Cannot remove mapset lock: </source>
-        <translation>Không thể loại bỏ khóa bộ bản đồ:</translation>
+        <translation type="obsolete">Không thể loại bỏ khóa bộ bản đồ:</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1016"/>
@@ -2825,52 +2743,22 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2520"/>
         <source>Where is &apos;</source>
-        <translation>Ở đâu &apos;</translation>
+        <translation type="obsolete">Ở đâu &apos;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2520"/>
         <source>original location: </source>
-        <translation>vị trí gốc:</translation>
+        <translation type="obsolete">vị trí gốc:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation>Để nhận diện các đối tượng, bạn phải chọn một lớp bản đồ kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
+        <translation type="obsolete">Để nhận diện các đối tượng, bạn phải chọn một lớp bản đồ kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
         <source>PostgreSQL Geoprocessing</source>
         <translation>Xử lý địa lý PostgreSQL</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="435"/>
-        <source>Could not remove polygon intersection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="585"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="599"/>
-        <source>Created default style file as </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="604"/>
-        <source>ERROR: Failed to created default style file as %1 Check file permissions and retry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsproject.cpp" line="940"/>
-        <source> is not writeable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsproject.cpp" line="940"/>
-        <source>Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsgridfilewriter.cpp" line="65"/>
@@ -2888,7 +2776,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="40"/>
+        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="39"/>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2938,11 +2826,6 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="27"/>
-        <source>Legend</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="50"/>
         <source>Coordinate Capture</source>
         <translation type="unfinished"></translation>
@@ -2958,7 +2841,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="38"/>
         <source>Converts from dxf to shp file format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2988,42 +2871,12 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolselect.cpp" line="133"/>
-        <source>CRS Exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsmaptoolselect.cpp" line="134"/>
-        <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="545"/>
-        <source>Loading style file </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="545"/>
-        <source> failed because:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="573"/>
-        <source>Could not save symbology because:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsproject.cpp" line="1027"/>
-        <source>Unable to save to file. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="289"/>
         <source>Error Loading Plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="291"/>
+        <location filename="../src/app/qgspluginregistry.cpp" line="292"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
         <translation type="unfinished"></translation>
@@ -3031,7 +2884,99 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="411"/>
         <source>Error when reading metadata of plugin </source>
-        <translation type="unfinished">Lỗi khi đang đọc metadata của phần mở rộng </translation>
+        <translation type="obsolete">Lỗi khi đang đọc metadata của phần mở rộng </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2518"/>
+        <source>Where is &apos;%1&apos; (original location: %2)?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspluginregistry.cpp" line="411"/>
+        <source>Error when reading metadata of plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproviderregistry.cpp" line="84"/>
+        <source>No QGIS data provider plugins found in:
+%1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgssearchtreenode.cpp" line="287"/>
+        <source>Referenced column wasn&apos;t found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="114"/>
+        <source>Location: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="121"/>
+        <source>Location: %1&lt;br&gt;Mapset: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpx/gpsdata.cpp" line="375"/>
+        <source>Couldn&apos;t open the data source: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/gpx/gpsdata.cpp" line="399"/>
+        <source>Parse error at line %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="441"/>
+        <source>%1 is not a GRASS mapset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="475"/>
+        <source>Cannot start %1/etc/lock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="500"/>
+        <source>Temporary directory %1 exists but is not writable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="506"/>
+        <source>Cannot create temporary directory %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="520"/>
+        <source>Cannot create %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="595"/>
+        <source>Cannot remove mapset lock: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="497"/>
+        <source>Couldn&apos;t load plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="501"/>
+        <source>%1 due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="506"/>
+        <source>%1 due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="518"/>
+        <source>Error while unloading plugin %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3044,7 +2989,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="370"/>
         <source>Quantum GIS - </source>
-        <translation>Quantum GIS -</translation>
+        <translation type="obsolete">Quantum GIS -</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -3072,7 +3017,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Sourceforge Projekt Seite: http://sourceforge.net/projects/qgis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1801"/>
+        <location filename="../src/app/qgisapp.cpp" line="1799"/>
         <source>Version</source>
         <translation>Phiên bản</translation>
     </message>
@@ -3089,10 +3034,10 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2178"/>
         <source>is not a valid or recognized data source</source>
-        <translation type="unfinished">không phải là nguồn dữ liệu hợp lệ hoặc không nhận diện được</translation>
+        <translation type="obsolete">không phải là nguồn dữ liệu hợp lệ hoặc không nhận diện được</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5187"/>
+        <location filename="../src/app/qgisapp.cpp" line="5184"/>
         <source>Invalid Data Source</source>
         <translation type="unfinished">Nguồn Dữ liệu Không hợp lệ</translation>
     </message>
@@ -3132,7 +3077,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Karte gespeichert als:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3655"/>
+        <location filename="../src/app/qgisapp.cpp" line="3653"/>
         <source>No Layer Selected</source>
         <translation type="unfinished">Không có lớp nào được chọn</translation>
     </message>
@@ -3207,27 +3152,27 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">QGIS không thể nạp plugin từ : %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4194"/>
+        <location filename="../src/app/qgisapp.cpp" line="4192"/>
         <source>There is a new version of QGIS available</source>
         <translation type="unfinished">Đã có phiên bản mới của QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4200"/>
+        <location filename="../src/app/qgisapp.cpp" line="4198"/>
         <source>You are running a development version of QGIS</source>
         <translation type="unfinished">Bạn đang dùng phiên bản QGIS &quot;phát triển&quot;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4204"/>
+        <location filename="../src/app/qgisapp.cpp" line="4202"/>
         <source>You are running the current version of QGIS</source>
         <translation type="unfinished">Bạn đang dùng phiên bản QGIS hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4209"/>
+        <location filename="../src/app/qgisapp.cpp" line="4207"/>
         <source>Would you like more information?</source>
         <translation type="unfinished">Bạn có muốn biết thêm thông tin không?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4258"/>
+        <location filename="../src/app/qgisapp.cpp" line="4256"/>
         <source>QGIS Version Information</source>
         <translation type="unfinished">Thông tin về phiên bản QGIS</translation>
     </message>
@@ -3247,17 +3192,17 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">QGIS - Änderungen im CVS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4230"/>
+        <location filename="../src/app/qgisapp.cpp" line="4228"/>
         <source>Unable to get current version information from server</source>
         <translation type="unfinished">Không thể lấy thông tin về phiên bản hiện tại từ Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4244"/>
+        <location filename="../src/app/qgisapp.cpp" line="4242"/>
         <source>Connection refused - server may be down</source>
         <translation type="unfinished">Liên kết bị từ chối - server có thể bị hỏng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4247"/>
+        <location filename="../src/app/qgisapp.cpp" line="4245"/>
         <source>QGIS server was not found</source>
         <translation type="unfinished">Không tìm thấy server của QGIS</translation>
     </message>
@@ -3287,12 +3232,12 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Đang nạp các Plugins...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2271"/>
+        <location filename="../src/app/qgisapp.cpp" line="2268"/>
         <source>Invalid Layer</source>
         <translation type="unfinished">Lớp không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2271"/>
+        <location filename="../src/app/qgisapp.cpp" line="2268"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation type="unfinished">%1 là một lớp không hợp lệ và không thể nạp được.</translation>
     </message>
@@ -3314,7 +3259,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3385"/>
         <source>Saved map image to</source>
-        <translation type="unfinished">Lưu ảnh bản đồ vào</translation>
+        <translation type="obsolete">Lưu ảnh bản đồ vào</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -3329,7 +3274,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4696"/>
         <source>Extents: </source>
-        <translation type="unfinished">Phạm vi:</translation>
+        <translation type="obsolete">Phạm vi:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -3337,27 +3282,27 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Web Page: http://qgis.org</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3684"/>
+        <location filename="../src/app/qgisapp.cpp" line="3682"/>
         <source>Problem deleting features</source>
         <translation type="unfinished">Trục trặc khi đang xóa các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3685"/>
+        <location filename="../src/app/qgisapp.cpp" line="3683"/>
         <source>A problem occured during deletion of features</source>
         <translation type="unfinished">Có trục trặc xảy ra trong khi xóa các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3663"/>
+        <location filename="../src/app/qgisapp.cpp" line="3661"/>
         <source>No Vector Layer Selected</source>
         <translation type="unfinished">Không có lớp vector nào được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3664"/>
+        <location filename="../src/app/qgisapp.cpp" line="3662"/>
         <source>Deleting features only works on vector layers</source>
         <translation type="unfinished">Việc xóa các đối tượng chỉ áp dụng được đối với các lớp bản đồ vector</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3656"/>
+        <location filename="../src/app/qgisapp.cpp" line="3654"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation type="unfinished">Để xóa các đối tượng, bạn phải chọn một lớp vector trong phần chú giải</translation>
     </message>
@@ -3372,32 +3317,32 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1644"/>
+        <location filename="../src/app/qgisapp.cpp" line="1642"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Chú giải bản đồ hiển thị tất cả các lớp hiện có trên khung bản đồ. Nhắp chuột vào ô đánh dấu để bật/tắt một lớp. Nhắp chuột đúp vào một lớp trong phần chú giải để tùy chỉnh &quot;diện mạo&quot; của nó và thiết lập các tính chất khác.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1584"/>
+        <location filename="../src/app/qgisapp.cpp" line="1582"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Khung xem bản đồ tổng quát. Khung xem này có thể dùng để trình bày một bản đồ định vị giúp ta biết phạm vi hiện hành của khung bản đồ. Phạm vi hiện hành được thể hiện dưới dạng hình chữ nhật màu đỏ. Bất kỳ lớp nào trên bản đồ cũng có thể được thêm vào khung xem bản đồ tổng quát.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1536"/>
+        <location filename="../src/app/qgisapp.cpp" line="1534"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation type="unfinished">Khung bản đồ. Đây là vùng các lớp raster và vector được trình bày khi được thêm vào bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1155"/>
+        <location filename="../src/app/qgisapp.cpp" line="1153"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1300"/>
+        <location filename="../src/app/qgisapp.cpp" line="1298"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Thanh tiến trình cho biết trạng thái đang vẽ lại (render) các lớp và trạng thái của các lệnh mất nhiều thời gian khác</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1350"/>
+        <location filename="../src/app/qgisapp.cpp" line="1348"/>
         <source>Displays the current map scale</source>
         <translation>Hiển thị tỷ lệ bản đồ hiện hành</translation>
     </message>
@@ -3407,12 +3352,12 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Hiện tọa độ bản đồ tại vị trí hiện tại của con trỏ. Thông tin liên tục được cập nhật khi chuột di chuyển.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1363"/>
+        <location filename="../src/app/qgisapp.cpp" line="1361"/>
         <source>Render</source>
         <translation>Vẽ lại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1369"/>
+        <location filename="../src/app/qgisapp.cpp" line="1367"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Khi được đánh dấu, các lớp bản đồ được vẽ lại ứng với các lệnh di chuyển bản đồ cũng như các &apos;sự kiện&apos; khác. Khi không đánh dấu, việc vẽ lại không được thực hiện. Điều này cho phép bạn thêm một số lượng lớn các lớp và trình bày (symbolize) chúng trước khi vẽ lại.</translation>
     </message>
@@ -3532,27 +3477,27 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Datensätze mit UTF8, Kanjii und CJK Dateinamen können geladen werden</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/app/qgisapp.cpp" line="3102"/>
         <source>QGis files (*.qgs)</source>
-        <translation type="obsolete">QGIS Dateien (*.qgs)</translation>
+        <translation type="unfinished">QGIS Dateien (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3027"/>
+        <location filename="../src/app/qgisapp.cpp" line="3026"/>
         <source>Choose a QGIS project file</source>
         <translation type="unfinished">Hãy chọn một tập tin dự án QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3153"/>
+        <location filename="../src/app/qgisapp.cpp" line="3152"/>
         <source>Unable to save project</source>
         <translation type="unfinished">Không thể lưu dự án</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3154"/>
         <source>Unable to save project to </source>
-        <translation type="unfinished">Không thể lưu dự án vào</translation>
+        <translation type="obsolete">Không thể lưu dự án vào</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1370"/>
+        <location filename="../src/app/qgisapp.cpp" line="1368"/>
         <source>Toggle map rendering</source>
         <translation>Bật/tắt vẽ lại (render) bản đồ</translation>
     </message>
@@ -3642,32 +3587,32 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Các cải tiến đối với công cụ xuất ra Mapserver</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2122"/>
+        <location filename="../src/app/qgisapp.cpp" line="2120"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation type="unfinished">Mở một lớp vector được OGR hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2970"/>
+        <location filename="../src/app/qgisapp.cpp" line="2969"/>
         <source>QGIS Project Read Error</source>
         <translation type="unfinished">Lỗi đọc tập tin dự án QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2972"/>
         <source>Try to find missing layers?</source>
-        <translation type="unfinished">Cố gắng tìm các lớp bị mất?</translation>
+        <translation type="obsolete">Cố gắng tìm các lớp bị mất?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5093"/>
+        <location filename="../src/app/qgisapp.cpp" line="5091"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation type="unfinished">Mở một nguồn dữ liệu raster được GDAL hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2749"/>
+        <location filename="../src/app/qgisapp.cpp" line="2748"/>
         <source>Save As</source>
         <translation type="unfinished">Lưu thành</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2849"/>
+        <location filename="../src/app/qgisapp.cpp" line="2848"/>
         <source>Choose a QGIS project file to open</source>
         <translation type="unfinished">Chọn mở một tập tin dự án QGIS</translation>
     </message>
@@ -3684,7 +3629,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3146"/>
         <source>Saved project to:</source>
-        <translation type="unfinished">Lưu dự án vào:</translation>
+        <translation type="obsolete">Lưu dự án vào:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -3709,95 +3654,95 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Sau này bạn có thể thay đổi tùy chọn này bằng các chọn mục &quot;Ưa thích&quot; trong menu Thiết lập.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="325"/>
+        <location filename="../src/app/qgisapp.cpp" line="324"/>
         <source>Checking database</source>
         <translation>Đang kiểm tra CSDL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="331"/>
+        <location filename="../src/app/qgisapp.cpp" line="330"/>
         <source>Reading settings</source>
         <translation>Đang đọc các thiết lập</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="334"/>
+        <location filename="../src/app/qgisapp.cpp" line="333"/>
         <source>Setting up the GUI</source>
         <translation>Thiết lập Giao diện đồ họa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="394"/>
+        <location filename="../src/app/qgisapp.cpp" line="392"/>
         <source>Restoring loaded plugins</source>
         <translation>Phục hồi các phần mở rộng đã nạp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="399"/>
+        <location filename="../src/app/qgisapp.cpp" line="397"/>
         <source>Initializing file filters</source>
         <translation>Đang khởi tạo các bộ lọc tập tin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="424"/>
+        <location filename="../src/app/qgisapp.cpp" line="422"/>
         <source>Restoring window state</source>
         <translation>Phục hồi trạng thái cửa sổ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="428"/>
+        <location filename="../src/app/qgisapp.cpp" line="426"/>
         <source>QGIS Ready!</source>
         <translation>QGIS sẵn sàng!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="533"/>
+        <location filename="../src/app/qgisapp.cpp" line="531"/>
         <source>&amp;New Project</source>
         <translation>&amp;Dự án mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="534"/>
+        <location filename="../src/app/qgisapp.cpp" line="532"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="535"/>
+        <location filename="../src/app/qgisapp.cpp" line="533"/>
         <source>New Project</source>
         <translation>Dự án mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="538"/>
+        <location filename="../src/app/qgisapp.cpp" line="536"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Mở Dự án...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="539"/>
+        <location filename="../src/app/qgisapp.cpp" line="537"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="540"/>
+        <location filename="../src/app/qgisapp.cpp" line="538"/>
         <source>Open a Project</source>
         <translation>Mở một dự án</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="543"/>
+        <location filename="../src/app/qgisapp.cpp" line="541"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Lưu dự án</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="544"/>
+        <location filename="../src/app/qgisapp.cpp" line="542"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="545"/>
+        <location filename="../src/app/qgisapp.cpp" line="543"/>
         <source>Save Project</source>
         <translation>Lưu Dự án</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="548"/>
+        <location filename="../src/app/qgisapp.cpp" line="546"/>
         <source>Save Project &amp;As...</source>
         <translation>Lưu dự án &amp;thành...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="550"/>
+        <location filename="../src/app/qgisapp.cpp" line="548"/>
         <source>Save Project under a new name</source>
         <translation>Lưu dự án thành một tên mới</translation>
     </message>
@@ -3818,12 +3763,12 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">In</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="553"/>
+        <location filename="../src/app/qgisapp.cpp" line="551"/>
         <source>Save as Image...</source>
         <translation>Lưu thành Ảnh...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="555"/>
+        <location filename="../src/app/qgisapp.cpp" line="553"/>
         <source>Save map as image</source>
         <translation>Lưu bản đồ thành ảnh</translation>
     </message>
@@ -3838,18 +3783,18 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Xuất thành tập tin .map của MapServer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="563"/>
+        <location filename="../src/app/qgisapp.cpp" line="561"/>
         <source>Exit</source>
         <translation>Thoát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="564"/>
+        <location filename="../src/app/qgisapp.cpp" line="562"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="565"/>
+        <location filename="../src/app/qgisapp.cpp" line="563"/>
         <source>Exit QGIS</source>
         <translation>Thoát QGIS</translation>
     </message>
@@ -3859,13 +3804,13 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Thêm một lớp vector...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
+        <location filename="../src/app/qgisapp.cpp" line="757"/>
         <source>V</source>
         <comment>Add a Vector Layer</comment>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="760"/>
+        <location filename="../src/app/qgisapp.cpp" line="758"/>
         <source>Add a Vector Layer</source>
         <translation>Thêm lớp vector</translation>
     </message>
@@ -3875,13 +3820,13 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Thêm lớp raster...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="764"/>
+        <location filename="../src/app/qgisapp.cpp" line="762"/>
         <source>R</source>
         <comment>Add a Raster Layer</comment>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <location filename="../src/app/qgisapp.cpp" line="763"/>
         <source>Add a Raster Layer</source>
         <translation>Thêm một lớp raster</translation>
     </message>
@@ -3891,46 +3836,46 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Thêm một lớp PostGIS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="769"/>
+        <location filename="../src/app/qgisapp.cpp" line="767"/>
         <source>D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="770"/>
+        <location filename="../src/app/qgisapp.cpp" line="768"/>
         <source>Add a PostGIS Layer</source>
         <translation>Thêm lớp PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="753"/>
+        <location filename="../src/app/qgisapp.cpp" line="751"/>
         <source>New Vector Layer...</source>
         <translation>Lớp vector mới...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="754"/>
+        <location filename="../src/app/qgisapp.cpp" line="752"/>
         <source>N</source>
         <comment>Create a New Vector Layer</comment>
         <translation>N
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="755"/>
+        <location filename="../src/app/qgisapp.cpp" line="753"/>
         <source>Create a New Vector Layer</source>
         <translation>Tạo lớp vector mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="807"/>
+        <location filename="../src/app/qgisapp.cpp" line="805"/>
         <source>Remove Layer</source>
         <translation>Đóng lớp đang chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="808"/>
+        <location filename="../src/app/qgisapp.cpp" line="806"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="807"/>
         <source>Remove a Layer</source>
         <translation>Đóng một lớp</translation>
     </message>
@@ -3940,90 +3885,90 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Thêm tất cả vào vùng xem tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="825"/>
+        <location filename="../src/app/qgisapp.cpp" line="823"/>
         <source>+</source>
         <comment>Show all layers in the overview map</comment>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="826"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Show all layers in the overview map</source>
         <translation>Hiển thị tất cả các lớp trong bản đồ tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="829"/>
+        <location filename="../src/app/qgisapp.cpp" line="827"/>
         <source>Remove All From Overview</source>
         <translation>Loại bỏ tất cả khỏi vùng xem tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="830"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
         <source>-</source>
         <comment>Remove all layers from overview map</comment>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
+        <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Remove all layers from overview map</source>
         <translation>Loại bỏ tất cả các lớp khỏi bản đồ tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="834"/>
+        <location filename="../src/app/qgisapp.cpp" line="832"/>
         <source>Show All Layers</source>
         <translation>Hiển thị tất cả các lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="835"/>
+        <location filename="../src/app/qgisapp.cpp" line="833"/>
         <source>S</source>
         <comment>Show all layers</comment>
         <translation>S
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="836"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Show all layers</source>
         <translation>Hiện tất cả các lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
+        <location filename="../src/app/qgisapp.cpp" line="837"/>
         <source>Hide All Layers</source>
         <translation>Ẩn tất cả các lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="840"/>
+        <location filename="../src/app/qgisapp.cpp" line="838"/>
         <source>H</source>
         <comment>Hide all layers</comment>
         <translation>H
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
+        <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Hide all layers</source>
         <translation>Ẩn tất cả các lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="858"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Project Properties...</source>
         <translation>Đặc điểm của phép chiếu...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="859"/>
+        <location filename="../src/app/qgisapp.cpp" line="857"/>
         <source>P</source>
         <comment>Set project properties</comment>
         <translation>P
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="860"/>
+        <location filename="../src/app/qgisapp.cpp" line="858"/>
         <source>Set project properties</source>
         <translation>Thiết lập các đặc điểm của phép chiếu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="863"/>
+        <location filename="../src/app/qgisapp.cpp" line="861"/>
         <source>Options...</source>
         <translation>Tùy chọn...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="865"/>
+        <location filename="../src/app/qgisapp.cpp" line="863"/>
         <source>Change various QGIS options</source>
         <translation>Thay đổi các tùy chọn khác nhau của QGIS</translation>
     </message>
@@ -4038,24 +3983,24 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Quản lý các phép chiếu tự tạo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="897"/>
+        <location filename="../src/app/qgisapp.cpp" line="895"/>
         <source>Help Contents</source>
         <translation>Các nội dung trợ giúp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="897"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="901"/>
+        <location filename="../src/app/qgisapp.cpp" line="899"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="903"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Help Documentation</source>
         <translation>Tài liệu trợ giúp</translation>
     </message>
@@ -4065,81 +4010,81 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
         <translation type="obsolete">Trang chủ của QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="908"/>
+        <location filename="../src/app/qgisapp.cpp" line="906"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>QGIS Home Page</source>
         <translation>Trang chủ của QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="917"/>
+        <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>About</source>
         <translation>Nói về</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="918"/>
+        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>About QGIS</source>
         <translation>Nói về QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="913"/>
+        <location filename="../src/app/qgisapp.cpp" line="911"/>
         <source>Check Qgis Version</source>
         <translation>Kiểm tra phiên bản của QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="912"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Kiểm tra xem phiên bản QGIS của bạn có cập nhật không (cần kết nối internet)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="746"/>
+        <location filename="../src/app/qgisapp.cpp" line="744"/>
         <source>Refresh</source>
         <translation>Làm tươi lại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="747"/>
+        <location filename="../src/app/qgisapp.cpp" line="745"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="748"/>
+        <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Refresh Map</source>
         <translation>Làm tươi lại bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="677"/>
+        <location filename="../src/app/qgisapp.cpp" line="675"/>
         <source>Zoom In</source>
         <translation>Phóng to</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="674"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
+        <location filename="../src/app/qgisapp.cpp" line="680"/>
         <source>Zoom Out</source>
         <translation>Thu nhỏ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="706"/>
+        <location filename="../src/app/qgisapp.cpp" line="704"/>
         <source>Zoom Full</source>
         <translation>Phóng đến toàn vùng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="707"/>
+        <location filename="../src/app/qgisapp.cpp" line="705"/>
         <source>F</source>
         <comment>Zoom to Full Extents</comment>
         <translation>F
@@ -4147,7 +4092,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
 Phóng đến toàn bộ phạm vi vùng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="708"/>
+        <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>Zoom to Full Extents</source>
         <translation>Phóng đến toàn bộ phạm vi</translation>
     </message>
@@ -4168,22 +4113,22 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Phóng đến phần chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="671"/>
+        <location filename="../src/app/qgisapp.cpp" line="669"/>
         <source>Pan Map</source>
         <translation>Di chuyển bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="672"/>
+        <location filename="../src/app/qgisapp.cpp" line="670"/>
         <source>Pan the map</source>
         <translation>Di chuyển bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="721"/>
+        <location filename="../src/app/qgisapp.cpp" line="719"/>
         <source>Zoom Last</source>
         <translation>Phóng đến vùng xem trước đó</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="723"/>
+        <location filename="../src/app/qgisapp.cpp" line="721"/>
         <source>Zoom to Last Extent</source>
         <translation>Phóng đến phạm vi xem trước đó</translation>
     </message>
@@ -4193,29 +4138,29 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Phóng đến lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="713"/>
+        <location filename="../src/app/qgisapp.cpp" line="711"/>
         <source>Zoom to Layer</source>
         <translation>Phóng đến lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="690"/>
+        <location filename="../src/app/qgisapp.cpp" line="688"/>
         <source>Identify Features</source>
         <translation>Nhận diện đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="691"/>
+        <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>I</source>
         <comment>Click on features to identify them</comment>
         <translation>I
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="692"/>
+        <location filename="../src/app/qgisapp.cpp" line="690"/>
         <source>Click on features to identify them</source>
         <translation>Nhắp chuột vào các đối tượng để nhận diện chúng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="686"/>
+        <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Select Features</source>
         <translation>Chọn đối tượng</translation>
     </message>
@@ -4225,7 +4170,7 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Mở bảng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="696"/>
+        <location filename="../src/app/qgisapp.cpp" line="694"/>
         <source>Measure Line </source>
         <translation>Đo đường </translation>
     </message>
@@ -4236,12 +4181,12 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="698"/>
+        <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Measure a Line</source>
         <translation>Đo một đường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="701"/>
+        <location filename="../src/app/qgisapp.cpp" line="699"/>
         <source>Measure Area</source>
         <translation>Đo diện tích</translation>
     </message>
@@ -4252,17 +4197,17 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="703"/>
+        <location filename="../src/app/qgisapp.cpp" line="701"/>
         <source>Measure an Area</source>
         <translation>Đo một vùng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="743"/>
+        <location filename="../src/app/qgisapp.cpp" line="741"/>
         <source>Show Bookmarks</source>
         <translation>Hiển thị các đánh dấu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="742"/>
+        <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>B</source>
         <comment>Show Bookmarks</comment>
         <translation>B
@@ -4285,23 +4230,23 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="736"/>
+        <location filename="../src/app/qgisapp.cpp" line="734"/>
         <source>New Bookmark...</source>
         <translation>Đánh dấu mới...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="737"/>
+        <location filename="../src/app/qgisapp.cpp" line="735"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5450"/>
+        <location filename="../src/app/qgisapp.cpp" line="5447"/>
         <source>New Bookmark</source>
         <translation>Đánh dấu mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="780"/>
+        <location filename="../src/app/qgisapp.cpp" line="778"/>
         <source>Add WMS Layer...</source>
         <translation>Thêm lớp WMS...</translation>
     </message>
@@ -4323,14 +4268,14 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Trong vùng xem tổng quát</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
         <source>O</source>
         <comment>Add current layer to overview map</comment>
         <translation>O
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="820"/>
+        <location filename="../src/app/qgisapp.cpp" line="818"/>
         <source>Add current layer to overview map</source>
         <translation>Thêm lớp hiện tại vào bản đồ tổng quát</translation>
     </message>
@@ -4340,176 +4285,176 @@ Phóng đến toàn bộ phạm vi vùng</translation>
         <translation type="obsolete">Trình Quản lý Phần mở rộng...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="848"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Open the plugin manager</source>
         <translation>Mở trình Quản lý Phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="611"/>
+        <location filename="../src/app/qgisapp.cpp" line="609"/>
         <source>Capture Point</source>
         <translation>Vẽ điểm</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="612"/>
+        <location filename="../src/app/qgisapp.cpp" line="610"/>
         <source>.</source>
         <comment>Capture Points</comment>
         <translation>.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="613"/>
+        <location filename="../src/app/qgisapp.cpp" line="611"/>
         <source>Capture Points</source>
         <translation>Vẽ các điểm</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="617"/>
+        <location filename="../src/app/qgisapp.cpp" line="615"/>
         <source>Capture Line</source>
         <translation>Vẽ đường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="618"/>
+        <location filename="../src/app/qgisapp.cpp" line="616"/>
         <source>/</source>
         <comment>Capture Lines</comment>
         <translation>/
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Capture Lines</source>
         <translation>Vẽ các đường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="623"/>
+        <location filename="../src/app/qgisapp.cpp" line="621"/>
         <source>Capture Polygon</source>
         <translation>Vẽ vùng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="624"/>
+        <location filename="../src/app/qgisapp.cpp" line="622"/>
         <source>Ctrl+/</source>
         <comment>Capture Polygons</comment>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="625"/>
+        <location filename="../src/app/qgisapp.cpp" line="623"/>
         <source>Capture Polygons</source>
         <translation>Vẽ các vùng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <location filename="../src/app/qgisapp.cpp" line="638"/>
         <source>Delete Selected</source>
         <translation>Xóa phần được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="645"/>
+        <location filename="../src/app/qgisapp.cpp" line="643"/>
         <source>Add Vertex</source>
         <translation>Thêm đỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="655"/>
+        <location filename="../src/app/qgisapp.cpp" line="653"/>
         <source>Delete Vertex</source>
         <translation>Xóa đỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="648"/>
         <source>Move Vertex</source>
         <translation>Di chuyển đỉnh</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="593"/>
+        <location filename="../src/app/qgisapp.cpp" line="591"/>
         <source>Cut Features</source>
         <translation>Cắt các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="595"/>
+        <location filename="../src/app/qgisapp.cpp" line="593"/>
         <source>Cut selected features</source>
         <translation>Cắt đối tượng được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="599"/>
+        <location filename="../src/app/qgisapp.cpp" line="597"/>
         <source>Copy Features</source>
         <translation>Sao chép các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="601"/>
+        <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>Copy selected features</source>
         <translation>Sao chép các đối tượng được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="605"/>
+        <location filename="../src/app/qgisapp.cpp" line="603"/>
         <source>Paste Features</source>
         <translation>Dán các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="607"/>
+        <location filename="../src/app/qgisapp.cpp" line="605"/>
         <source>Paste selected features</source>
         <translation>Dán các đối tượng được chọn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1004"/>
         <source>&amp;File</source>
         <translation>&amp;Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1010"/>
+        <location filename="../src/app/qgisapp.cpp" line="1008"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&amp;Mở dự án gần đây</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1073"/>
+        <location filename="../src/app/qgisapp.cpp" line="1071"/>
         <source>&amp;View</source>
         <translation>&amp;Xem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1106"/>
+        <location filename="../src/app/qgisapp.cpp" line="1104"/>
         <source>&amp;Layer</source>
         <translation>&amp;Lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1138"/>
+        <location filename="../src/app/qgisapp.cpp" line="1136"/>
         <source>&amp;Settings</source>
         <translation>Th&amp;iết lập</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1177"/>
+        <location filename="../src/app/qgisapp.cpp" line="1175"/>
         <source>&amp;Help</source>
         <translation>Trợ &amp;giúp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1199"/>
+        <location filename="../src/app/qgisapp.cpp" line="1197"/>
         <source>File</source>
         <translation>Tập tin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1216"/>
+        <location filename="../src/app/qgisapp.cpp" line="1214"/>
         <source>Manage Layers</source>
         <translation>Quản lý Lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1282"/>
+        <location filename="../src/app/qgisapp.cpp" line="1280"/>
         <source>Help</source>
         <translation>Trợ giúp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1227"/>
+        <location filename="../src/app/qgisapp.cpp" line="1225"/>
         <source>Digitizing</source>
         <translation>Số hóa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1248"/>
+        <location filename="../src/app/qgisapp.cpp" line="1246"/>
         <source>Map Navigation</source>
         <translation>Định vị bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1262"/>
+        <location filename="../src/app/qgisapp.cpp" line="1260"/>
         <source>Attributes</source>
         <translation>Các Thuộc tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1276"/>
+        <location filename="../src/app/qgisapp.cpp" line="1274"/>
         <source>Plugins</source>
         <translation>Phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1398"/>
+        <location filename="../src/app/qgisapp.cpp" line="1396"/>
         <source>Ready</source>
         <translation>Sẵn sàng</translation>
     </message>
@@ -4526,12 +4471,12 @@ Compiled against Qt </source>
         <translation type="obsolete">, đang chạy theo Qt </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1803"/>
+        <location filename="../src/app/qgisapp.cpp" line="1801"/>
         <source>New features</source>
         <translation>Đối tượng mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5468"/>
+        <location filename="../src/app/qgisapp.cpp" line="5465"/>
         <source>Error</source>
         <translation type="unfinished">Lỗi</translation>
     </message>
@@ -4550,12 +4495,12 @@ Compiled against Qt </source>
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="383"/>
+        <location filename="../src/app/qgisapp.cpp" line="381"/>
         <source>Checking provider plugins</source>
         <translation>Kiểm tra trình cung cấp các phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="387"/>
+        <location filename="../src/app/qgisapp.cpp" line="385"/>
         <source>Starting Python</source>
         <translation>Đang khởi động Python</translation>
     </message>
@@ -4575,42 +4520,42 @@ Compiled against Qt </source>
         <translation type="obsolete">Lỗi khi đang đọc metadata của phần mở rộng </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3670"/>
+        <location filename="../src/app/qgisapp.cpp" line="3668"/>
         <source>Provider does not support deletion</source>
         <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3671"/>
+        <location filename="../src/app/qgisapp.cpp" line="3669"/>
         <source>Data provider does not support deleting features</source>
         <translation type="unfinished">Trình cung cấp dữ liệu không hỗ trợ việc xóa các đối tượng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3677"/>
+        <location filename="../src/app/qgisapp.cpp" line="3675"/>
         <source>Layer not editable</source>
         <translation type="unfinished">Lớp không chỉnh sửa được</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="791"/>
+        <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>Toggle editing</source>
         <translation>Bật/Tắt chỉnh sửa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="792"/>
+        <location filename="../src/app/qgisapp.cpp" line="790"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Bật/Tắt trạng thái chỉnh sửa của lớp hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="660"/>
+        <location filename="../src/app/qgisapp.cpp" line="658"/>
         <source>Add Ring</source>
         <translation>Thêm Ring</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="664"/>
+        <location filename="../src/app/qgisapp.cpp" line="662"/>
         <source>Add Island</source>
         <translation>Thêm Đảo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="665"/>
+        <location filename="../src/app/qgisapp.cpp" line="663"/>
         <source>Add Island to multipolygon</source>
         <translation>Thêm đảo và vùng đa (multipolygon)</translation>
     </message>
@@ -4620,17 +4565,17 @@ Compiled against Qt </source>
         <translation type="obsolete">Hiển thị Thanh công cụ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1336"/>
+        <location filename="../src/app/qgisapp.cpp" line="1334"/>
         <source>Scale </source>
         <translation>Tỷ lệ </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1351"/>
+        <location filename="../src/app/qgisapp.cpp" line="1349"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Tỷ lệ bản đồ hiện tại (định dạng là x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4683"/>
+        <location filename="../src/app/qgisapp.cpp" line="4681"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Tọa độ tại vị trí con trỏ chuột</translation>
     </message>
@@ -4670,98 +4615,98 @@ Compiled against Qt </source>
         <translation type="obsolete">Các cải tiến đối với trình tham chiếu địa lý</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1326"/>
+        <location filename="../src/app/qgisapp.cpp" line="1324"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
         <translation>Hiển thị tọa độ tại vị trí con trỏ. Việc hiển thị được cập nhật liên tục khi chuột di chuyển.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="854"/>
+        <location filename="../src/app/qgisapp.cpp" line="852"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="855"/>
+        <location filename="../src/app/qgisapp.cpp" line="853"/>
         <source>Toggle fullscreen mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="630"/>
+        <location filename="../src/app/qgisapp.cpp" line="628"/>
         <source>Move Feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="635"/>
+        <location filename="../src/app/qgisapp.cpp" line="633"/>
         <source>Split Features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="729"/>
         <source>Map Tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="732"/>
+        <location filename="../src/app/qgisapp.cpp" line="730"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1337"/>
+        <location filename="../src/app/qgisapp.cpp" line="1335"/>
         <source>Current map scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1383"/>
+        <location filename="../src/app/qgisapp.cpp" line="1381"/>
         <source>Resource Location Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1384"/>
+        <location filename="../src/app/qgisapp.cpp" line="1382"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1593"/>
+        <location filename="../src/app/qgisapp.cpp" line="1591"/>
         <source>Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1645"/>
+        <location filename="../src/app/qgisapp.cpp" line="1643"/>
         <source>Legend</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1781"/>
+        <location filename="../src/app/qgisapp.cpp" line="1779"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1785"/>
+        <location filename="../src/app/qgisapp.cpp" line="1783"/>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1788"/>
+        <location filename="../src/app/qgisapp.cpp" line="1786"/>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1792"/>
+        <location filename="../src/app/qgisapp.cpp" line="1790"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2988"/>
+        <location filename="../src/app/qgisapp.cpp" line="2986"/>
         <source>Unable to open project</source>
         <translation type="unfinished">Không thể mở dự án</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3160"/>
         <source>Unable to save project </source>
-        <translation type="unfinished">Không thể lưu dự án</translation>
+        <translation type="obsolete">Không thể lưu dự án</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -4769,62 +4714,62 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation type="obsolete">Chọn tên tập tin để lưu tập tin dự án QGIS thành</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3218"/>
+        <location filename="../src/app/qgisapp.cpp" line="3217"/>
         <source>QGIS: Unable to load project</source>
         <translation type="unfinished">QGIS: không thể nạp dự án</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3219"/>
         <source>Unable to load project </source>
-        <translation type="unfinished">Không thể nạp dự án</translation>
+        <translation type="obsolete">Không thể nạp dự án</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3678"/>
+        <location filename="../src/app/qgisapp.cpp" line="3676"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation type="unfinished">Lớp hiện tại không chỉnh sửa được. Chọn &apos;Bắt đầu chỉnh sửa&apos; trong thanh công cụ số hóa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4008"/>
+        <location filename="../src/app/qgisapp.cpp" line="4006"/>
         <source>Invalid scale</source>
         <translation type="unfinished">Tỷ lệ không hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4218"/>
         <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="unfinished">QGIS - Các thay đổi trong SVN kể từ lần phát hành trước</translation>
+        <translation type="obsolete">QGIS - Các thay đổi trong SVN kể từ lần phát hành trước</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4250"/>
+        <location filename="../src/app/qgisapp.cpp" line="4248"/>
         <source>Network error while communicating with server</source>
         <translation type="unfinished">Lỗi mạng khi giao tiếp với server</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4253"/>
+        <location filename="../src/app/qgisapp.cpp" line="4251"/>
         <source>Unknown network socket error</source>
         <translation type="unfinished">Lỗi socket mạng không rõ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4258"/>
         <source>Unable to communicate with QGIS Version server</source>
-        <translation type="unfinished">Không thể trao đổi thông tin với server Phiên bản QGIS</translation>
+        <translation type="obsolete">Không thể trao đổi thông tin với server Phiên bản QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5267"/>
+        <location filename="../src/app/qgisapp.cpp" line="5264"/>
         <source>Layer is not valid</source>
         <translation type="unfinished">Lớp không hợp lệ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5268"/>
+        <location filename="../src/app/qgisapp.cpp" line="5265"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation type="unfinished">Lớp không phải là một lớp hợp lệ và không thể thêm vào bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4476"/>
+        <location filename="../src/app/qgisapp.cpp" line="4474"/>
         <source>Save?</source>
         <translation type="unfinished">Lưu?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4477"/>
+        <location filename="../src/app/qgisapp.cpp" line="4475"/>
         <source>Do you want to save the current project?</source>
         <translation type="unfinished">Bạn có muốn lưu dự án hiện tại?</translation>
     </message>
@@ -4836,514 +4781,556 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5186"/>
         <source> is not a valid or recognized raster data source</source>
-        <translation type="unfinished">không phải là một nguồn dữ liệu raster được biết hoặc hợp lệ</translation>
+        <translation type="obsolete">không phải là một nguồn dữ liệu raster được biết hoặc hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5349"/>
         <source> is not a supported raster data source</source>
-        <translation type="unfinished">không phải là một nguồn dữ liệu raster được hỗ trợ</translation>
+        <translation type="obsolete">không phải là một nguồn dữ liệu raster được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5354"/>
+        <location filename="../src/app/qgisapp.cpp" line="5351"/>
         <source>Unsupported Data Source</source>
         <translation type="unfinished">Nguồn Dữ liệu không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5451"/>
+        <location filename="../src/app/qgisapp.cpp" line="5448"/>
         <source>Enter a name for the new bookmark:</source>
         <translation type="unfinished">Nhập tên cho đánh dấu mới:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5468"/>
+        <location filename="../src/app/qgisapp.cpp" line="5465"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation type="unfinished">Không thể tạo đánh dấu. CSDL người dùng của bạn có thể mất hoặc bị hỏng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5482"/>
+        <location filename="../src/app/qgisapp.cpp" line="5479"/>
         <source>Project file is older</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5484"/>
-        <source>&lt;p&gt;This project file was saved by an older version of QGIS.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5486"/>
-        <source> When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5489"/>
-        <source>&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5491"/>
-        <source> To improve the quality of QGIS, we appreciate if you file a bug report at %3.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5493"/>
-        <source> Be sure to include the old project file, and state the version of QGIS you used to discover the error.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5495"/>
-        <source>&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5495"/>
-        <source>&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5499"/>
+        <location filename="../src/app/qgisapp.cpp" line="5496"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5500"/>
+        <location filename="../src/app/qgisapp.cpp" line="5497"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1360"/>
+        <location filename="../src/app/qgisapp.cpp" line="1358"/>
         <source>Stop map rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="315"/>
+        <location filename="../src/app/qgisapp.cpp" line="314"/>
         <source>Multiple Instances of QgisApp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="316"/>
+        <location filename="../src/app/qgisapp.cpp" line="315"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="549"/>
+        <location filename="../src/app/qgisapp.cpp" line="547"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="558"/>
+        <location filename="../src/app/qgisapp.cpp" line="556"/>
         <source>&amp;Print Composer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="559"/>
+        <location filename="../src/app/qgisapp.cpp" line="557"/>
         <source>Ctrl+P</source>
         <comment>Print Composer</comment>
         <translation type="unfinished">Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="560"/>
+        <location filename="../src/app/qgisapp.cpp" line="558"/>
         <source>Print Composer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="572"/>
+        <location filename="../src/app/qgisapp.cpp" line="570"/>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="573"/>
+        <location filename="../src/app/qgisapp.cpp" line="571"/>
         <source>Ctrl+Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="574"/>
+        <location filename="../src/app/qgisapp.cpp" line="572"/>
         <source>Undo the last operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="577"/>
+        <location filename="../src/app/qgisapp.cpp" line="575"/>
         <source>Cu&amp;t</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="594"/>
+        <location filename="../src/app/qgisapp.cpp" line="592"/>
         <source>Ctrl+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="579"/>
+        <location filename="../src/app/qgisapp.cpp" line="577"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="582"/>
+        <location filename="../src/app/qgisapp.cpp" line="580"/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="600"/>
+        <location filename="../src/app/qgisapp.cpp" line="598"/>
         <source>Ctrl+C</source>
         <translation type="unfinished">Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="584"/>
+        <location filename="../src/app/qgisapp.cpp" line="582"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="587"/>
+        <location filename="../src/app/qgisapp.cpp" line="585"/>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="606"/>
+        <location filename="../src/app/qgisapp.cpp" line="604"/>
         <source>Ctrl+V</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="589"/>
+        <location filename="../src/app/qgisapp.cpp" line="587"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="697"/>
+        <location filename="../src/app/qgisapp.cpp" line="695"/>
         <source>M</source>
         <comment>Measure a Line</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="702"/>
+        <location filename="../src/app/qgisapp.cpp" line="700"/>
         <source>J</source>
         <comment>Measure an Area</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="718"/>
+        <location filename="../src/app/qgisapp.cpp" line="716"/>
         <source>Zoom to Selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="717"/>
+        <location filename="../src/app/qgisapp.cpp" line="715"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation type="unfinished">Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="726"/>
+        <location filename="../src/app/qgisapp.cpp" line="724"/>
         <source>Zoom Actual Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="727"/>
+        <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Zoom to Actual Size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="758"/>
+        <location filename="../src/app/qgisapp.cpp" line="756"/>
         <source>Add Vector Layer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="763"/>
+        <location filename="../src/app/qgisapp.cpp" line="761"/>
         <source>Add Raster Layer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="768"/>
+        <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Add PostGIS Layer...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="781"/>
+        <location filename="../src/app/qgisapp.cpp" line="779"/>
         <source>W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="782"/>
+        <location filename="../src/app/qgisapp.cpp" line="780"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="787"/>
+        <location filename="../src/app/qgisapp.cpp" line="785"/>
         <source>Open Attribute Table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="797"/>
+        <location filename="../src/app/qgisapp.cpp" line="795"/>
         <source>Save as Shapefile...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="798"/>
+        <location filename="../src/app/qgisapp.cpp" line="796"/>
         <source>Save the current layer as a shapefile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="802"/>
+        <location filename="../src/app/qgisapp.cpp" line="800"/>
         <source>Save Selection as Shapefile...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="803"/>
+        <location filename="../src/app/qgisapp.cpp" line="801"/>
         <source>Save the selection as a shapefile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="813"/>
+        <location filename="../src/app/qgisapp.cpp" line="811"/>
         <source>Properties...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="814"/>
+        <location filename="../src/app/qgisapp.cpp" line="812"/>
         <source>Set properties of the current layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="818"/>
+        <location filename="../src/app/qgisapp.cpp" line="816"/>
         <source>Add to Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="824"/>
+        <location filename="../src/app/qgisapp.cpp" line="822"/>
         <source>Add All to Overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="846"/>
+        <location filename="../src/app/qgisapp.cpp" line="844"/>
         <source>Manage Plugins...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="853"/>
+        <location filename="../src/app/qgisapp.cpp" line="851"/>
         <source>Toggle Full Screen Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="869"/>
+        <location filename="../src/app/qgisapp.cpp" line="867"/>
         <source>Custom CRS...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="871"/>
+        <location filename="../src/app/qgisapp.cpp" line="869"/>
         <source>Manage custom coordinate reference systems</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Minimize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="879"/>
+        <location filename="../src/app/qgisapp.cpp" line="877"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation type="unfinished">Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="880"/>
+        <location filename="../src/app/qgisapp.cpp" line="878"/>
         <source>Minimizes the active window to the dock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="883"/>
+        <location filename="../src/app/qgisapp.cpp" line="881"/>
         <source>Zoom</source>
         <translation type="unfinished">Phóng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="882"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="887"/>
+        <location filename="../src/app/qgisapp.cpp" line="885"/>
         <source>Bring All to Front</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="886"/>
         <source>Bring forward all open windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1034"/>
+        <location filename="../src/app/qgisapp.cpp" line="1032"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1068"/>
+        <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <source>Panels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1069"/>
+        <location filename="../src/app/qgisapp.cpp" line="1067"/>
         <source>Toolbars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1164"/>
+        <location filename="../src/app/qgisapp.cpp" line="1162"/>
         <source>&amp;Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1313"/>
+        <location filename="../src/app/qgisapp.cpp" line="1311"/>
         <source>Toggle extents and mouse position display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1392"/>
+        <location filename="../src/app/qgisapp.cpp" line="1390"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1394"/>
+        <location filename="../src/app/qgisapp.cpp" line="1392"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3102"/>
+        <location filename="../src/app/qgisapp.cpp" line="3101"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3343"/>
+        <location filename="../src/app/qgisapp.cpp" line="3341"/>
         <source>Choose a file name to save the map image as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3917"/>
+        <location filename="../src/app/qgisapp.cpp" line="3915"/>
         <source>Start editing failed</source>
         <translation type="unfinished">Khởi động chỉnh sửa thất bại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3917"/>
+        <location filename="../src/app/qgisapp.cpp" line="3915"/>
         <source>Provider cannot be opened for editing</source>
         <translation type="unfinished">Trình cung cấp không thể mở được để chỉnh sửa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3925"/>
+        <location filename="../src/app/qgisapp.cpp" line="3923"/>
         <source>Stop editing</source>
         <translation type="unfinished">Ngừng chỉnh sửa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3926"/>
+        <location filename="../src/app/qgisapp.cpp" line="3924"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3936"/>
-        <source>Could not commit changes to layer %1
-
-Errors:  %2
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3947"/>
+        <location filename="../src/app/qgisapp.cpp" line="3945"/>
         <source>Problems during roll back</source>
         <translation type="unfinished">Trục trặc khi quay ngược lại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4135"/>
+        <location filename="../src/app/qgisapp.cpp" line="4133"/>
         <source>Python Console</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4676"/>
+        <location filename="../src/app/qgisapp.cpp" line="4674"/>
         <source>Map coordinates for the current view extents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4768"/>
+        <location filename="../src/app/qgisapp.cpp" line="4766"/>
         <source>Maptips require an active layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1806"/>
+        <location filename="../src/app/qgisapp.cpp" line="1804"/>
         <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1809"/>
+        <location filename="../src/app/qgisapp.cpp" line="1807"/>
         <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1812"/>
+        <location filename="../src/app/qgisapp.cpp" line="1810"/>
         <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1815"/>
+        <location filename="../src/app/qgisapp.cpp" line="1813"/>
         <source>Advanced topological editing of vector data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1818"/>
+        <location filename="../src/app/qgisapp.cpp" line="1816"/>
         <source>Single click selection of vector features.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1821"/>
+        <location filename="../src/app/qgisapp.cpp" line="1819"/>
         <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1824"/>
+        <location filename="../src/app/qgisapp.cpp" line="1822"/>
         <source>Overhaul of the map composer for much improved printing support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1827"/>
+        <location filename="../src/app/qgisapp.cpp" line="1825"/>
         <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1830"/>
+        <location filename="../src/app/qgisapp.cpp" line="1828"/>
         <source>A new plugin for converting between OGR supported formats was added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1833"/>
+        <location filename="../src/app/qgisapp.cpp" line="1831"/>
         <source>A new plugin for converting from DXF files to shapefiles was added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1836"/>
+        <location filename="../src/app/qgisapp.cpp" line="1834"/>
         <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1842"/>
+        <location filename="../src/app/qgisapp.cpp" line="1840"/>
         <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1845"/>
+        <location filename="../src/app/qgisapp.cpp" line="1843"/>
         <source>In the WMS client, WMS standards support has been improved.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1848"/>
+        <location filename="../src/app/qgisapp.cpp" line="1846"/>
         <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1851"/>
+        <location filename="../src/app/qgisapp.cpp" line="1849"/>
         <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1839"/>
+        <location filename="../src/app/qgisapp.cpp" line="1837"/>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1854"/>
+        <location filename="../src/app/qgisapp.cpp" line="1852"/>
         <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="215"/>
+        <source>Quantum GIS - %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="369"/>
+        <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2175"/>
+        <source>%1 is not a valid or recognized data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2970"/>
+        <source>%1
+Try to find missing layers?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3145"/>
+        <source>Saved project to: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3153"/>
+        <source>Unable to save project to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3159"/>
+        <source>Unable to save project %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3218"/>
+        <source>Unable to load project %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3383"/>
+        <source>Saved map image to %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3934"/>
+        <source>Could not commit changes to layer %1
+
+Errors: %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="4216"/>
+        <source>QGIS - Changes in SVN since last release</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="4256"/>
+        <source>Unable to communicate with QGIS Version server
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="4694"/>
+        <source>Extents: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="5183"/>
+        <source>%1 is not a valid or recognized raster data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="5346"/>
+        <source>%1 is not a supported raster data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="5493"/>
+        <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6992,7 +6979,7 @@ p, li { white-space: pre-wrap; }
         <translation>Tìm lỗi phân tách chuỗi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledisplay.cpp" line="406"/>
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="401"/>
         <source>Search results</source>
         <translation>Kết quả tìm</translation>
     </message>
@@ -7019,7 +7006,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="405"/>
         <source>No matching features found.</source>
-        <translation>Không tìm thấy các đối tượng khớp.</translation>
+        <translation type="obsolete">Không tìm thấy các đối tượng khớp.</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -7054,7 +7041,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="132"/>
         <source>Attribute table - </source>
-        <translation type="unfinished">Bảng thuộc tính -</translation>
+        <translation type="obsolete">Bảng thuộc tính -</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="139"/>
@@ -7162,18 +7149,24 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledisplay.cpp" line="472"/>
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="467"/>
         <source>bad_alloc exception</source>
         <translation type="unfinished">lỗi bad_alloc</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledisplay.cpp" line="472"/>
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="467"/>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
         <translation type="unfinished">Việc nhập vào bảng thuộc tính đã bị ngưng do không còn bộ nhớ ảo</translation>
     </message>
+    <message>
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="132"/>
+        <source>Attribute table - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location filename="../src/app/qgsattributetabledisplay.cpp" line="403"/>
-        <source>Found %1 matching features.</source>
+        <location filename="../src/app/qgsattributetabledisplay.cpp" line="401"/>
+        <source>Found %n matching feature(s).</source>
+        <comment>search results</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
@@ -7199,12 +7192,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="159"/>
         <source>Are you sure you want to delete the </source>
-        <translation>Có chắc bạn muốn xóa đánh dấu </translation>
+        <translation type="obsolete">Có chắc bạn muốn xóa đánh dấu </translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="159"/>
         <source> bookmark?</source>
-        <translation> ?</translation>
+        <translation type="obsolete"> ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="175"/>
@@ -7214,13 +7207,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="177"/>
         <source>Failed to delete the </source>
-        <translation>Không thể xóa được</translation>
+        <translation type="obsolete">Không thể xóa được</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="179"/>
         <source> bookmark from the database. The database said:
 </source>
-        <translation> đánh dấu từ CSDL. CSDL đã nói rằng:
+        <translation type="obsolete"> đánh dấu từ CSDL. CSDL đã nói rằng:
 </translation>
     </message>
     <message>
@@ -7231,6 +7224,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
         <source>&amp;Zoom to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsbookmarks.cpp" line="159"/>
+        <source>Are you sure you want to delete the %1 bookmark?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsbookmarks.cpp" line="177"/>
+        <source>Failed to delete the %1 bookmark from the database. The database said:
+%2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7457,30 +7461,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="474"/>
         <source>To create image </source>
-        <translation>Để tạo ảnh</translation>
+        <translation type="obsolete">Để tạo ảnh</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="477"/>
         <source> requires circa </source>
-        <translation>cần có crica</translation>
+        <translation type="obsolete">cần có crica</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="477"/>
         <source> MB of memory</source>
-        <translation>MB bộ nhớ</translation>
+        <translation type="obsolete">MB bộ nhớ</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="504"/>
         <source>format</source>
-        <translation>định dạng</translation>
+        <translation type="obsolete">định dạng</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="597"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="596"/>
         <source>SVG warning</source>
         <translation>Cảnh báo SVG</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1094"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1093"/>
         <source>Don&apos;t show this message again</source>
         <translation>Không hiển thị thông báo này lại nữa</translation>
     </message>
@@ -7490,7 +7494,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;p&gt; Chức năng xuất SVG trong QGIS có một số vấn đề do lỗi và khiếm khuyết trong mã svg Qt4. Ghi chú: văn bản không xuất hiện trong tập tin SVG và có các trục trặc với việc ô ranh giới bản đồ cắt các nội dung khác như chú giải hoặc thước tỷ lệ.&lt;/p&gt;Nếu bản cần một tập tin xuất ra dựa trên vector từ QGIS, đề nghị là bạn hãy cố in ra PostScript nếu đầu ra SVG không hợp ý bạn.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="624"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="623"/>
         <source>SVG Format</source>
         <translation>Định dạng SVG</translation>
     </message>
@@ -7575,28 +7579,53 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="527"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="526"/>
         <source>Choose a file name to save the map image as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="623"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="622"/>
         <source>Choose a file name to save the map as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1092"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1091"/>
         <source>Project contains WMS layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1093"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1092"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="604"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="603"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="475"/>
+        <source>To create image %1 x %2 required circa %3 MB of memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="503"/>
+        <source>%1 format (*.%2 *.%3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="609"/>
+        <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="613"/>
+        <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="617"/>
+        <source>&lt;p&gt;If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7958,6 +7987,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsComposerLegend</name>
+    <message>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="27"/>
+        <source>Legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerLegendItemDialogBase</name>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="13"/>
@@ -8091,9 +8128,9 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Tỷ lệ (tính phạm vi)</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/core/composer/qgscomposermap.cpp" line="83"/>
         <source>Map %1</source>
-        <translation type="obsolete">Bản đồ %1</translation>
+        <translation type="unfinished">Bản đồ %1</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -8109,11 +8146,6 @@ p, li { white-space: pre-wrap; }
         <location filename="" line="0"/>
         <source>Rectangle</source>
         <translation type="obsolete">Hình chữ nhật</translation>
-    </message>
-    <message>
-        <location filename="../src/core/composer/qgscomposermap.cpp" line="83"/>
-        <source>Map</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="191"/>
@@ -8431,8 +8463,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="148"/>
-        <source>Map </source>
-        <translation type="unfinished"></translation>
+        <source>Map %1</source>
+        <translation type="unfinished">Bản đồ %1</translation>
     </message>
 </context>
 <context>
@@ -9070,17 +9102,17 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
 <context>
     <name>QgsCoordinateTransform</name>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
         <source>Failed</source>
         <translation>Thất bại</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="484"/>
         <source>transform of</source>
         <translation>chuyển đổi của</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="496"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="497"/>
         <source>with error: </source>
         <translation>với lỗi:</translation>
     </message>
@@ -9106,12 +9138,12 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
-        <source>The coordinates can not be reprojected. The CRS is: </source>
+        <source>The destination spatial reference system (CRS) is not valid. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
-        <source>The destination spatial reference system (CRS) is not valid. </source>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="427"/>
+        <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9305,39 +9337,39 @@ p, li { white-space: pre-wrap; }
         <translation>Xóa định nghĩa một phép chiếu không thể đảo ngược được. Bạn có muốn xóa nó không?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="847"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="852"/>
         <source>Abort</source>
         <translation>Bỏ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="849"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="854"/>
         <source>New</source>
         <translation>Mới</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="903"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="908"/>
         <source>QGIS Custom Projection</source>
         <translation>Phép chiếu tự tạo trong QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="772"/>
         <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
-        <translation>Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng chỉnh lại trước khi nhấn lưu.</translation>
+        <translation type="obsolete">Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng chỉnh lại trước khi nhấn lưu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="720"/>
         <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
-        <translation>Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng đặt tên cho phép chiếu trước khi nhấn lưu.</translation>
+        <translation type="obsolete">Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng đặt tên cho phép chiếu trước khi nhấn lưu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="726"/>
         <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
-        <translation>Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng thêm các tham số trước khi nhấn lưu.</translation>
+        <translation type="obsolete">Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng thêm các tham số trước khi nhấn lưu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="741"/>
         <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
-        <translation>Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng thêm mệnh đề proj= trước khi nhấn nút lưu. </translation>
+        <translation type="obsolete">Định nghĩa phép chiếu theo proj4 này không hợp lệ. Vui lòng thêm mệnh đề proj= trước khi nhấn nút lưu. </translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -9345,12 +9377,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Định nghĩa ellipsoid theo proj4 này không hợp lệ. Vui lòng thêm mệnh đề ellips= trước khi nhất nút lưu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="877"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="882"/>
         <source>This proj4 projection definition is not valid.</source>
         <translation>Định nghĩa phép chiếu theo proj4 này không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="892"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="897"/>
         <source>Northing and Easthing must be in decimal form.</source>
         <translation>Northing (vĩ độ) và Easting (kinh độ) phải ở dạng thập phân.</translation>
     </message>
@@ -9360,9 +9392,35 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Lỗi nội tại (phép chiếu gốc không hợp lệ)?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="904"/>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="909"/>
         <source>Internal Error (source projection invalid?)</source>
         <translation>Lỗi nội tại (phép chiếu nguồn không hợp lệ chăng?)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="721"/>
+        <source> Please give the projection a name before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="728"/>
+        <source> Please add the parameters before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="744"/>
+        <source> Please add a proj= clause before pressing save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="760"/>
+        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished">Định nghĩa ellipsoid theo proj4 này không hợp lệ. Vui lòng thêm mệnh đề ellips= trước khi nhất nút lưu.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgscustomprojectiondialog.cpp" line="777"/>
+        <source> Please correct before pressing save.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9582,12 +9640,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="232"/>
         <source>Are you sure you want to remove the </source>
-        <translation>Có chắc bạn muốn loại bỏ</translation>
+        <translation type="obsolete">Có chắc bạn muốn loại bỏ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="232"/>
         <source> connection and all associated settings?</source>
-        <translation>liên kết và tất cả các thiết lập liên quan?</translation>
+        <translation type="obsolete">liên kết và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="233"/>
@@ -9612,7 +9670,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="340"/>
         <source>You must select a table in order to add a Layer.</source>
-        <translation>Bạn phải chọn một bảng để thêm một Lớp.</translation>
+        <translation type="obsolete">Bạn phải chọn một bảng để thêm một Lớp.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="401"/>
@@ -9725,7 +9783,7 @@ has failed. The database said:
     <message>
         <location filename="../src/app/qgsdbsourceselect.cpp" line="455"/>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4The database said:%5%6</source>
-        <translation>Kết nối đến %1 trên %2 bị thất bại. Hoặc là CSDL bị rớt hoặc là các thiết lập của bạn không đúng.%3Kiểm tra tên và mật khẩu của bạn rồi thử lại%4CSDL nói rằng:%5%6</translation>
+        <translation type="obsolete">Kết nối đến %1 trên %2 bị thất bại. Hoặc là CSDL bị rớt hoặc là các thiết lập của bạn không đúng.%3Kiểm tra tên và mật khẩu của bạn rồi thử lại%4CSDL nói rằng:%5%6</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -9763,12 +9821,12 @@ has failed. The database said:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdbsourceselect.cpp" line="637"/>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="636"/>
         <source>Accessible tables could not be determined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdbsourceselect.cpp" line="640"/>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="639"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 
 The error message from the database was:
@@ -9777,16 +9835,36 @@ The error message from the database was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdbsourceselect.cpp" line="673"/>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="672"/>
         <source>No accessible tables found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdbsourceselect.cpp" line="676"/>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="675"/>
         <source>Database connection was successful, but no accessible tables were found.
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="232"/>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="340"/>
+        <source>You must select a table in order to add a layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsdbsourceselect.cpp" line="457"/>
+        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
+
+Check your username and password and try again.
+
+The database said:
+%3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9994,17 +10072,17 @@ geometry.</source>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="102"/>
         <source>Add a delimited text file as a map layer. </source>
-        <translation>Thêm một tập tin văn bản có phân tách cột vào thành một lớp bản đồ. </translation>
+        <translation type="obsolete">Thêm một tập tin văn bản có phân tách cột vào thành một lớp bản đồ. </translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
         <source>The file must have a header row containing the field names. </source>
-        <translation>Tập tin phải có dòng tiêu đề chứa tên các trường. </translation>
+        <translation type="obsolete">Tập tin phải có dòng tiêu đề chứa tên các trường. </translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
         <source>X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation>Cần phải có các trường X và Y và phải chứa các tọa độ ở đơn vị thập phân.</translation>
+        <translation type="obsolete">Cần phải có các trường X và Y và phải chứa các tọa độ ở đơn vị thập phân.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="140"/>
@@ -10015,6 +10093,11 @@ geometry.</source>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="54"/>
         <source>DelimitedTextLayer</source>
         <translation>Lớp Văn bản phân tách cột</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
+        <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11181,57 +11264,57 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGPSPlugin</name>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="88"/>
         <source>&amp;Gps Tools</source>
         <translation>Các công cụ &amp;GPS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="91"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="89"/>
         <source>&amp;Create new GPX layer</source>
         <translation>&amp;Tạo lớp GPX mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="94"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="92"/>
         <source>Creates a new GPX layer and displays it on the map canvas</source>
         <translation>Tạo một lớp GPX mới và trình bày nó trên khung bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="200"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="198"/>
         <source>&amp;Gps</source>
         <translation>G&amp;PS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="160"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="158"/>
         <source>Save new GPX file as...</source>
         <translation>Lưu tập tin GPX thành...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="162"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="160"/>
         <source>GPS eXchange file (*.gpx)</source>
         <translation>Tập tin eXchange GPS (*.gpx)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="169"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="167"/>
         <source>Could not create file</source>
         <translation>Không thể tạo tập tin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="171"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="169"/>
         <source>Unable to create a GPX file with the given name. </source>
         <translation>Không thể tạo một tập tin GPX với tên đã chọn. </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="172"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="170"/>
         <source>Try again with another name or in another </source>
         <translation>Hãy thử lại với một tên khác hoặc trong một </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="172"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="170"/>
         <source>directory.</source>
         <translation>thư mục khác.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="213"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="211"/>
         <source>GPX Loader</source>
         <translation>Trình nạp GPX</translation>
     </message>
@@ -11239,35 +11322,35 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="215"/>
         <source>Unable to read the selected file.
 </source>
-        <translation>Không thể đọc tập tin được chọn.</translation>
+        <translation type="obsolete">Không thể đọc tập tin được chọn.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="215"/>
         <source>Please reselect a valid file.</source>
-        <translation>Hãy chọn lại một tập tin đúng.</translation>
+        <translation type="obsolete">Hãy chọn lại một tập tin đúng.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="516"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="514"/>
         <source>Could not start process</source>
         <translation>Không thể khởi động tiến trình</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="517"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="515"/>
         <source>Could not start GPSBabel!</source>
         <translation>Không thể khởi động GPSBabel!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="342"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="340"/>
         <source>Importing data...</source>
         <translation>Đang nhập dữ liệu...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="522"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="520"/>
         <source>Cancel</source>
         <translation>Hủy</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="284"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="282"/>
         <source>Could not import data from %1!
 
 </source>
@@ -11275,32 +11358,32 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="286"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="284"/>
         <source>Error importing data</source>
         <translation>Lỗi nhập dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="504"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="502"/>
         <source>Not supported</source>
         <translation>Không được hỗ trợ</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="413"/>
         <source>This device does not support downloading </source>
-        <translation>Thiết bị này không hỗ trợ việc tải xuống</translation>
+        <translation type="obsolete">Thiết bị này không hỗ trợ việc tải xuống</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="413"/>
         <source>of </source>
-        <translation>của </translation>
+        <translation type="obsolete">của </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="430"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="428"/>
         <source>Downloading data...</source>
         <translation>Đang tải dữ liệu xuống...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="443"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="441"/>
         <source>Could not download data from GPS!
 
 </source>
@@ -11308,42 +11391,58 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="445"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="443"/>
         <source>Error downloading data</source>
         <translation>Lỗi khi đang tải dữ liệu xuống</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="505"/>
         <source>This device does not support uploading of </source>
-        <translation>Thiết bị này không hỗ trợ việc tải lên của </translation>
+        <translation type="obsolete">Thiết bị này không hỗ trợ việc tải lên của </translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="522"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="520"/>
         <source>Uploading data...</source>
         <translation>Đang tải dữ liệu lên...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="535"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="533"/>
         <source>Error while uploading data to GPS!
 
 </source>
         <translation>Lỗi khi đang tải dữ liệu lên GPS!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="537"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="535"/>
         <source>Error uploading data</source>
         <translation>Lỗi khi đang tải dữ liệu lên</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="356"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="354"/>
         <source>Could not convert data from %1!
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="358"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="356"/>
         <source>Error converting data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="213"/>
+        <source>Unable to read the selected file.
+Please reselect a valid file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="411"/>
+        <source>This device does not support downloading of %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="504"/>
+        <source>This device does not support uploading of %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11355,112 +11454,112 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Chọn một tên tập tin để lưu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="571"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="575"/>
         <source>GPS eXchange format (*.gpx)</source>
         <translation>định dạng GPS eXchange (*.gpx)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="557"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="561"/>
         <source>Select GPX file</source>
         <translation>Chọn tập tin GPX</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="261"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="263"/>
         <source>Select file and format to import</source>
         <translation>Chọn tập tin và định dạng để nhập</translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="532"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="536"/>
         <source>Waypoints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="532"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="536"/>
         <source>Routes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="285"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="287"/>
         <source>Tracks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="464"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="468"/>
         <source>GPX is the %1, which is used to store information about waypoints, routes, and tracks.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="464"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="468"/>
         <source>GPS eXchange file format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="465"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="469"/>
         <source>Select a GPX file and then select the feature types that you want to load.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="478"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="482"/>
         <source>This tool will help you download data from a GPS device.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="479"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="483"/>
         <source>Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="499"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="503"/>
         <source>If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="501"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="505"/>
         <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="538"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="542"/>
         <source>This requires that you have GPSBabel installed where QGIS can find it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="497"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="501"/>
         <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="498"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="502"/>
         <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="517"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="521"/>
         <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="520"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="524"/>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="537"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="541"/>
         <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="569"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="573"/>
         <source>Choose a file name to save under</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="519"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="523"/>
         <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="539"/>
+        <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="543"/>
         <source>Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12010,18 +12109,8 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/plugingui.cpp" line="129"/>
-        <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/plugingui.cpp" line="130"/>
-        <source>world file! Do you want to replace it with the </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/georeferencer/plugingui.cpp" line="130"/>
-        <source>new world file?&lt;/p&gt;</source>
+        <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12444,37 +12533,37 @@ Muster</translation>
         <translation>Làm tươi lại</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="412"/>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="413"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="256"/>
         <source>Cannot copy map </source>
-        <translation>Không thể chép bản đồ</translation>
+        <translation type="obsolete">Không thể chép bản đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="374"/>
         <source>&lt;br&gt;command: </source>
-        <translation>&lt;br&gt;lệnh:</translation>
+        <translation type="obsolete">&lt;br&gt;lệnh:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="320"/>
         <source>Cannot rename map </source>
-        <translation>Không thể đặt tên lại cho bản đồ</translation>
+        <translation type="obsolete">Không thể đặt tên lại cho bản đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="356"/>
         <source>Delete map &lt;b&gt;</source>
-        <translation>Xóa bản đồ &lt;b&gt;</translation>
+        <translation type="obsolete">Xóa bản đồ &lt;b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="373"/>
         <source>Cannot delete map </source>
-        <translation>Không thể xóa bản đồ</translation>
+        <translation type="obsolete">Không thể xóa bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="413"/>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="414"/>
         <source>Cannot write new region</source>
         <translation>Không thể ghi vùng mới</translation>
     </message>
@@ -12482,6 +12571,31 @@ Muster</translation>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="304"/>
         <source>New name</source>
         <translation>Tên mới</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="256"/>
+        <source>Cannot copy map %1@%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="376"/>
+        <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="320"/>
+        <source>Cannot rename map %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="356"/>
+        <source>Delete map &lt;b&gt;%1&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="374"/>
+        <source>Cannot delete map %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12589,12 +12703,12 @@ Muster</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1885"/>
         <source>Left: </source>
-        <translation>Trái:</translation>
+        <translation type="obsolete">Trái:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1886"/>
         <source>Middle: </source>
-        <translation>Giữa:</translation>
+        <translation type="obsolete">Giữa:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -12684,7 +12798,7 @@ Muster</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1404"/>
         <source>Cannot check orphan record: </source>
-        <translation>Không thể kiểm tra bản ghi &apos;mồ côi&apos;:</translation>
+        <translation type="obsolete">Không thể kiểm tra bản ghi &apos;mồ côi&apos;:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1411"/>
@@ -12699,7 +12813,7 @@ Muster</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1454"/>
         <source>Cannot describe table for field </source>
-        <translation>Không thể mô tả bảng cho trường </translation>
+        <translation type="obsolete">Không thể mô tả bảng cho trường </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
@@ -12823,7 +12937,58 @@ Muster</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1887"/>
         <source>Right: </source>
-        <translation>Phải: </translation>
+        <translation type="obsolete">Phải: </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1404"/>
+        <source>Cannot check orphan record: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1454"/>
+        <source>Cannot describe table for field %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1885"/>
+        <source>Left: %1   </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1886"/>
+        <source>Middle: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1887"/>
+        <source>Right: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditAddVertex</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="471"/>
+        <source>Select line segment</source>
+        <translation type="unfinished">Chọn đoạn của đường</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="456"/>
+        <source>New vertex position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="456"/>
+        <source>Release</source>
+        <translation type="unfinished">Thả</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditAttributes</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="870"/>
+        <source>Select element</source>
+        <translation type="unfinished">Chọn yếu tố</translation>
     </message>
 </context>
 <context>
@@ -13062,6 +13227,132 @@ Muster</translation>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="393"/>
         <source>Length</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditDeleteLine</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="758"/>
+        <source>Select element</source>
+        <translation type="unfinished">Chọn yếu tố</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="747"/>
+        <source>Delete selected / select next</source>
+        <translation type="unfinished">Xóa phần đã chọn/chọn mục tiếp theo</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="747"/>
+        <source>Release selected</source>
+        <translation type="unfinished">&quot;Thả&quot; phần được chọn</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditDeleteVertex</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="601"/>
+        <source>Select vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
+        <source>Delete vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
+        <source>Release vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditMoveLine</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="675"/>
+        <source>Select element</source>
+        <translation type="unfinished">Chọn yếu tố</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="662"/>
+        <source>New location</source>
+        <translation type="unfinished">Vị trí mới</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="662"/>
+        <source>Release selected</source>
+        <translation type="unfinished">&quot;Thả&quot; phần được chọn</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditMoveVertex</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="328"/>
+        <source>Select vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="317"/>
+        <source>Select new position</source>
+        <translation type="unfinished">Chọn vị trí mới</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditNewLine</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="135"/>
+        <source>New vertex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
+        <source>New point</source>
+        <translation type="unfinished">Điểm mới</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
+        <source>Undo last point</source>
+        <translation type="unfinished">Quay ngược lại điểm cuối</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="238"/>
+        <source>Close line</source>
+        <translation type="unfinished">Khép kín đường</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditNewPoint</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="71"/>
+        <source>New centroid</source>
+        <translation type="unfinished">Trọng tâm mới</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="73"/>
+        <source>New point</source>
+        <translation type="unfinished">Điểm mới</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassEditSplitLine</name>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="816"/>
+        <source>Select position on line</source>
+        <translation type="unfinished">Chọn vị trí trên đường</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="837"/>
+        <source>Split the line</source>
+        <translation type="unfinished">Ngắt đường</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="837"/>
+        <source>Release the line</source>
+        <translation type="unfinished">Thả đường</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="853"/>
+        <source>Select point on line</source>
+        <translation type="unfinished">Chọn điểm trên đường</translation>
     </message>
 </context>
 <context>
@@ -13388,106 +13679,143 @@ Muster</translation>
         <translation>Tọa độ y hiện tại của cửa sổ đang di chuyển</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1259"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1251"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="538"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="537"/>
         <source>Cannot get current region</source>
         <translation>Không thể lấy vùng hiện tại</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="517"/>
         <source>Cannot check region of map </source>
-        <translation>Không thể kiểm tra vùng của bản đồ </translation>
+        <translation type="obsolete">Không thể kiểm tra vùng của bản đồ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="572"/>
         <source>Cannot get region of map </source>
-        <translation>Không thể lấy vùng của bản đồ </translation>
+        <translation type="obsolete">Không thể lấy vùng của bản đồ </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="769"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="766"/>
         <source>No GRASS raster maps currently in QGIS</source>
         <translation>Không có bản đồ raster GRASS hiện tại trong QGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1045"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1041"/>
         <source>Cannot create &apos;mapcalc&apos; directory in current mapset.</source>
         <translation>Không thể tạo thư mục &apos;mapcalc&apos; trong bộ bản đồ hiện tại.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1055"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1051"/>
         <source>New mapcalc</source>
         <translation>Mapcalc mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1056"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1052"/>
         <source>Enter new mapcalc name:</source>
         <translation>Nhập tên mapcalc mới:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1062"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1058"/>
         <source>Enter vector name</source>
         <translation>Nhập tên vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1070"/>
         <source>The file already exists. Overwrite? </source>
-        <translation>Tập tin đã có. Ghi đè? </translation>
+        <translation type="obsolete">Tập tin đã có. Ghi đè? </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1106"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1102"/>
         <source>Save mapcalc</source>
         <translation>Lưu mapcalc</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1088"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1084"/>
         <source>File name empty</source>
         <translation>Tên tập tin rỗng</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1107"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1103"/>
         <source>Cannot open mapcalc file</source>
         <translation>Không thể mở tập tin mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1236"/>
         <source>The mapcalc schema (</source>
-        <translation>Schema của mapcalc (</translation>
+        <translation type="obsolete">Schema của mapcalc (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1236"/>
         <source>) not found.</source>
-        <translation>) không tìm thấy.</translation>
+        <translation type="obsolete">) không tìm thấy.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1243"/>
         <source>Cannot open mapcalc schema (</source>
-        <translation>Không thể mở schema mapcalc (</translation>
+        <translation type="obsolete">Không thể mở schema mapcalc (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1255"/>
         <source>Cannot read mapcalc schema (</source>
-        <translation>Không thể đọc schema của mapcalc (</translation>
+        <translation type="obsolete">Không thể đọc schema của mapcalc (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1256"/>
         <source>
 at line </source>
-        <translation>
+        <translation type="obsolete">
 tại dòng </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1257"/>
         <source> column </source>
-        <translation> cột </translation>
+        <translation type="obsolete"> cột </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1330"/>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1322"/>
         <source>Output</source>
         <translation>Đầu ra</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="516"/>
+        <source>Cannot check region of map %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="570"/>
+        <source>Cannot get region of map %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1066"/>
+        <source>The file already exists. Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1231"/>
+        <source>The mapcalc schema (%1) not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1237"/>
+        <source>Cannot open mapcalc schema (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1249"/>
+        <source>Cannot read mapcalc schema (%1):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1250"/>
+        <source>
+%1
+at line %2 column %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13506,137 +13834,209 @@ tại dòng </translation>
 <context>
     <name>QgsGrassModule</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1382"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1377"/>
         <source>Run</source>
         <translation>Chạy</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1354"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1349"/>
         <source>Stop</source>
         <translation>Ngừng</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="163"/>
         <source>Module</source>
-        <translation>Mô-đun</translation>
+        <translation type="obsolete">Mô-đun</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1348"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1344"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="177"/>
         <source>The module file (</source>
-        <translation>Tập tin mô-đun (</translation>
+        <translation type="obsolete">Tập tin mô-đun (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="177"/>
         <source>) not found.</source>
-        <translation>) không tìm thấy.</translation>
+        <translation type="obsolete">) không tìm thấy.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="182"/>
         <source>Cannot open module file (</source>
-        <translation>Không thể mở tập tin module (</translation>
+        <translation type="obsolete">Không thể mở tập tin module (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="984"/>
         <source>)</source>
-        <translation>)</translation>
+        <translation type="obsolete">)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="979"/>
         <source>Cannot read module file (</source>
-        <translation>Không thể đọc tập tin mô-đun (</translation>
+        <translation type="obsolete">Không thể đọc tập tin mô-đun (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="979"/>
         <source>):
 </source>
-        <translation>):
+        <translation type="obsolete">):
 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="980"/>
         <source>
 at line </source>
-        <translation>
+        <translation type="obsolete">
 tại dòng </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="219"/>
         <source>Module </source>
-        <translation>Mô-đun</translation>
+        <translation type="obsolete">Mô-đun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="219"/>
         <source> not found</source>
-        <translation> không tìm thấy</translation>
+        <translation type="obsolete"> không tìm thấy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="263"/>
         <source>Cannot find man page </source>
-        <translation>Không thể tìm thấy trang man</translation>
+        <translation type="obsolete">Không thể tìm thấy trang man</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="972"/>
         <source>Not available, cannot open description (</source>
-        <translation>Không có, không thể mở mô tả (</translation>
+        <translation type="obsolete">Không có, không thể mở mô tả (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="980"/>
         <source> column </source>
-        <translation> cột </translation>
+        <translation type="obsolete"> cột </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="984"/>
         <source>Not available, incorrect description (</source>
-        <translation>Không có, mô tả không đúng (</translation>
+        <translation type="obsolete">Không có, mô tả không đúng (</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1174"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1172"/>
         <source>Cannot get input region</source>
         <translation>Không thể lấy vùng đầu vào</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1162"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1161"/>
         <source>Use Input Region</source>
         <translation>Dùng Vùng của đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1277"/>
         <source>Cannot find module </source>
-        <translation>Không tìm thấy mô-đun</translation>
+        <translation type="obsolete">Không tìm thấy mô-đun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1349"/>
         <source>Cannot start module: </source>
-        <translation>Không thể khởi động mô-đun: </translation>
+        <translation type="obsolete">Không thể khởi động mô-đun: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1367"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1362"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
         <translation>&lt;B&gt;Kết thúc thành công&lt;/B&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1375"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1370"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
         <translation>&lt;B&gt;Kết thúc có lỗi&lt;/B&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1380"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1375"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
         <translation>&lt;B&gt;Mô-đun sập hoặc bị tắt&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="968"/>
         <source>Not available, description not found (</source>
-        <translation>Không có, không tìm thấy mô tả (</translation>
+        <translation type="obsolete">Không có, không tìm thấy mô tả (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="264"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="163"/>
+        <source>Module: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="177"/>
+        <source>The module file (%1) not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="182"/>
+        <source>Cannot open module file (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="978"/>
+        <source>Cannot read module file (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="979"/>
+        <source>
+%1
+at line %2 column %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="219"/>
+        <source>Module %1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="263"/>
+        <source>Cannot find man page %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="967"/>
+        <source>Not available, description not found (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="971"/>
+        <source>Not available, cannot open description (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="983"/>
+        <source>Not available, incorrect description (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1156"/>
+        <source>Input %1 outside current region!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1184"/>
+        <source>Output %1 exists! Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1273"/>
+        <source>Cannot find module %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1344"/>
+        <source>Cannot start module: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13686,7 +14086,7 @@ tại dòng </translation>
 <context>
     <name>QgsGrassModuleField</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2812"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2807"/>
         <source>Attribute field</source>
         <translation>Trường thuộc tính</translation>
     </message>
@@ -13694,90 +14094,140 @@ tại dòng </translation>
 <context>
     <name>QgsGrassModuleFile</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3020"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3015"/>
         <source>File</source>
         <translation>Tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3136"/>
         <source>:&amp;nbsp;missing value</source>
-        <translation>:&amp;nbsp;giá trị bị thiếu</translation>
+        <translation type="obsolete">:&amp;nbsp;giá trị bị thiếu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3143"/>
         <source>:&amp;nbsp;directory does not exist</source>
-        <translation>:&amp;nbsp;thư mục không tồn tại</translation>
+        <translation type="obsolete">:&amp;nbsp;thư mục không tồn tại</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3131"/>
+        <source>%1:&amp;nbsp;missing value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3138"/>
+        <source>%1:&amp;nbsp;directory does not exist</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModuleGdalInput</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2762"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2757"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2617"/>
         <source>Cannot find layeroption </source>
-        <translation>Không tìm thấy tùy chọn lớp </translation>
+        <translation type="obsolete">Không tìm thấy tùy chọn lớp </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2766"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2761"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
         <translation>Trình điều khiển PostGIS không hỗ trợ schema!&lt;br&gt;Chỉ có tên bảng được sử dụng.&lt;br&gt;Nó có thể khiến cho đầu vào bị sai nếu nhiều bảng trùng tên&lt;br&gt; có trong CSDL.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2790"/>
         <source>:&amp;nbsp;no input</source>
-        <translation>:&amp;nbsp;không có đầu vào</translation>
+        <translation type="obsolete">:&amp;nbsp;không có đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2632"/>
         <source>Cannot find whereoption </source>
-        <translation>Không thể tìm thấy tùy chọn where </translation>
+        <translation type="obsolete">Không thể tìm thấy tùy chọn where </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2612"/>
+        <source>Cannot find layeroption %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2627"/>
+        <source>Cannot find whereoption %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2785"/>
+        <source>%1:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModuleInput</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2144"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2139"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2045"/>
         <source>Cannot find typeoption </source>
-        <translation>Không tìm thấy tùy chọn type </translation>
+        <translation type="obsolete">Không tìm thấy tùy chọn type </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2054"/>
         <source>Cannot find values for typeoption </source>
-        <translation>Không tìm thấy các giá trị cho tùy chọn type </translation>
+        <translation type="obsolete">Không tìm thấy các giá trị cho tùy chọn type </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2127"/>
         <source>Cannot find layeroption </source>
-        <translation>Không tìm thấy tùy chọn layer </translation>
+        <translation type="obsolete">Không tìm thấy tùy chọn layer </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2144"/>
         <source>GRASS element </source>
-        <translation>yếu tố của GRASS </translation>
+        <translation type="obsolete">yếu tố của GRASS </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2144"/>
         <source> not supported</source>
-        <translation> không được hỗ trợ</translation>
+        <translation type="obsolete"> không được hỗ trợ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2168"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2163"/>
         <source>Use region of this map</source>
         <translation>Sử dụng vùng của bản đồ này</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2514"/>
         <source>:&amp;nbsp;no input</source>
-        <translation>:&amp;nbsp;không có đầu vào</translation>
+        <translation type="obsolete">:&amp;nbsp;không có đầu vào</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2040"/>
+        <source>Cannot find typeoption %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2049"/>
+        <source>Cannot find values for typeoption %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2122"/>
+        <source>Cannot find layeroption %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2139"/>
+        <source>GRASS element %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2509"/>
+        <source>%1:&amp;nbsp;no input</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13785,13 +14235,18 @@ tại dòng </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1953"/>
         <source>:&amp;nbsp;missing value</source>
-        <translation>:&amp;nbsp;giá trị bị thiếu</translation>
+        <translation type="obsolete">:&amp;nbsp;giá trị bị thiếu</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1948"/>
+        <source>%1:&amp;nbsp;missing value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsGrassModuleSelection</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2904"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2899"/>
         <source>Attribute field</source>
         <translation>Trường thuộc tính</translation>
     </message>
@@ -13806,51 +14261,51 @@ tại dòng </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="329"/>
         <source>Cannot find module </source>
-        <translation>Không tìm thấy mô-đun </translation>
+        <translation type="obsolete">Không tìm thấy mô-đun </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="346"/>
         <source>Cannot start module </source>
-        <translation>Không thể khởi động mô-đun</translation>
+        <translation type="obsolete">Không thể khởi động mô-đun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="360"/>
         <source>Cannot read module description (</source>
-        <translation>Không thể đọc mô tả mô-đun (</translation>
+        <translation type="obsolete">Không thể đọc mô tả mô-đun (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="360"/>
         <source>):
 </source>
-        <translation>):
+        <translation type="obsolete">):
 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="361"/>
         <source>
 at line </source>
-        <translation>
+        <translation type="obsolete">
 tại dòng </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="361"/>
         <source> column </source>
-        <translation>cột</translation>
+        <translation type="obsolete">cột</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="401"/>
         <source>Cannot find key </source>
-        <translation>Không tìm thấy khóa </translation>
+        <translation type="obsolete">Không tìm thấy khóa </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="541"/>
         <source>Item with id </source>
-        <translation>Mục với id </translation>
+        <translation type="obsolete">Mục với id </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="541"/>
         <source> not found</source>
-        <translation> không tìm thấy</translation>
+        <translation type="obsolete"> không tìm thấy</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="834"/>
@@ -13860,12 +14315,59 @@ tại dòng </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="811"/>
         <source>Cannot check region of map </source>
-        <translation>Không thể kiểm tra vùng của bản đồ </translation>
+        <translation type="obsolete">Không thể kiểm tra vùng của bản đồ </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="875"/>
         <source>Cannot set region of map </source>
-        <translation>Không thể thiết lập vùng của bản đồ </translation>
+        <translation type="obsolete">Không thể thiết lập vùng của bản đồ </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="328"/>
+        <source>Cannot find module %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="346"/>
+        <source>Cannot start module %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="348"/>
+        <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="361"/>
+        <source>Cannot read module description (%1):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="362"/>
+        <source>
+%1
+at line %2 column %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="402"/>
+        <source>Cannot find key %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="542"/>
+        <source>Item with id %1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="811"/>
+        <source>Cannot check region of map %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="874"/>
+        <source>Cannot set region of map %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13953,91 +14455,91 @@ tại dòng </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="240"/>
         <source>No writable locations, the database not writable!</source>
-        <translation>Không có Location nào có thể ghi được, CSDL này không ghi được!</translation>
+        <translation type="obsolete">Không có Location nào có thể ghi được, CSDL này không ghi được!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="356"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="355"/>
         <source>Enter location name!</source>
         <translation>Nhập tên Location!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="363"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="362"/>
         <source>The location exists!</source>
         <translation>Location đã có!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="494"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="493"/>
         <source>Selected projection is not supported by GRASS!</source>
         <translation>Phép chiếu đã chọn không được GRASS hỗ trợ!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1086"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1082"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="530"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="528"/>
         <source>Cannot create projection.</source>
         <translation>Không thể tạo phép chiếu.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="579"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="576"/>
         <source>Cannot reproject previously set region, default region set.</source>
         <translation>Không thể quy chiếu lại vùng đã thiết lập trước đó, thiết lập thành vùng mặc định.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="706"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="703"/>
         <source>North must be greater than south</source>
         <translation>Giá trí Bắc phải lớn hơn giá trị Nam</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="711"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="708"/>
         <source>East must be greater than west</source>
         <translation>Giá trị Đông phải lớn hơn giá trị Tây</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="755"/>
         <source>Regions file (</source>
-        <translation>Tập tin vùng (</translation>
+        <translation type="obsolete">Tập tin vùng (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="755"/>
         <source>) not found.</source>
-        <translation>) không thấy.</translation>
+        <translation type="obsolete">) không thấy.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="761"/>
         <source>Cannot open locations file (</source>
-        <translation>Không thể mở tập tin location (</translation>
+        <translation type="obsolete">Không thể mở tập tin location (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="761"/>
         <source>)</source>
-        <translation>)</translation>
+        <translation type="obsolete">)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="771"/>
         <source>Cannot read locations file (</source>
-        <translation>Không thể đọc tập tin location (</translation>
+        <translation type="obsolete">Không thể đọc tập tin location (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="772"/>
         <source>):
 </source>
-        <translation>):
+        <translation type="obsolete">):
 </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="772"/>
         <source>
 at line </source>
-        <translation>
+        <translation type="obsolete">
 tại dòng </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="773"/>
         <source> column </source>
-        <translation>cột</translation>
+        <translation type="obsolete">cột</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -14045,88 +14547,125 @@ tại dòng </translation>
         <translation type="obsolete">Không thể tạo QgsSpatialRefSys (hệ tham chiếu không gian QGIS)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="904"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="900"/>
         <source>Cannot reproject selected region.</source>
         <translation>Không thể quy chiếu lại vùng được chọn.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="989"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="985"/>
         <source>Cannot reproject region</source>
         <translation>Không thể quy chiếu lại vùng</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1203"/>
         <source>Enter mapset name.</source>
         <translation>Nhập tên bộ bản đồ.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1217"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1213"/>
         <source>The mapset already exists</source>
         <translation>Bộ bản đồ này đã có</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1235"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1231"/>
         <source>Database: </source>
         <translation>CSDL: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1246"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1242"/>
         <source>Location: </source>
         <translation>Location: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1248"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1244"/>
         <source>Mapset: </source>
         <translation>Bộ bản đồ: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1279"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1275"/>
         <source>Create location</source>
         <translation>Tạo location</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1281"/>
         <source>Cannot create new location: </source>
-        <translation>Không thể tạo location mới: </translation>
+        <translation type="obsolete">Không thể tạo location mới: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1328"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1322"/>
         <source>Create mapset</source>
         <translation>Tạo bộ bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1321"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1315"/>
         <source>Cannot open DEFAULT_WIND</source>
         <translation>Không thể mở DEFAULT_WIND</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1328"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1322"/>
         <source>Cannot open WIND</source>
         <translation>Không thể mở WIND</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1356"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1349"/>
         <source>New mapset</source>
         <translation>Bộ bản đồ mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1352"/>
         <source>New mapset successfully created, but cannot be opened: </source>
-        <translation>Bộ bản đồ mới được tạo thành công, nhưng không thể mở được: </translation>
+        <translation type="obsolete">Bộ bản đồ mới được tạo thành công, nhưng không thể mở được: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1358"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1350"/>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>Bộ bản đồ mới được tạo thành công và được thiết lập thành bộ bản đồ làm việc hiện tại.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1311"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1306"/>
         <source>Cannot create new mapset directory</source>
         <translation>Không thể tạo thư mục cho bộ bản đồ mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1087"/>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1083"/>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="239"/>
+        <source>No writable locations, the database is not writable!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="752"/>
+        <source>Regions file (%1) not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="758"/>
+        <source>Cannot open locations file (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="768"/>
+        <source>Cannot read locations file (%1):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="769"/>
+        <source>
+%1
+at line %2 column %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1276"/>
+        <source>Cannot create new location: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1345"/>
+        <source>New mapset successfully created, but cannot be opened: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14372,22 +14911,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassPlugin</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="179"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="174"/>
         <source>GRASS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="126"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="127"/>
         <source>Open mapset</source>
         <translation>Mở bộ bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="127"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="128"/>
         <source>New mapset</source>
         <translation>Bộ bản đồ mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="128"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="129"/>
         <source>Close mapset</source>
         <translation>Đóng bộ bản đồ</translation>
     </message>
@@ -14397,144 +14936,185 @@ p, li { white-space: pre-wrap; }
         <translation>Thêm lớp vector GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="133"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="132"/>
         <source>Add GRASS raster layer</source>
         <translation>Thêm lớp raster GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="149"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
         <source>Open GRASS tools</source>
         <translation>Mở các công cụ GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="138"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="135"/>
         <source>Display Current Grass Region</source>
         <translation>Hiển thị Vùng GRASS hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="142"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="138"/>
         <source>Edit Current Grass Region</source>
         <translation>Chỉnh sửa vùng GRASS hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="144"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="139"/>
         <source>Edit Grass Vector layer</source>
         <translation>Chỉnh sửa lớp vector GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="142"/>
         <source>Adds a GRASS vector layer to the map canvas</source>
         <translation>Thêm một lớp vector GRASS vào khung bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="148"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="143"/>
         <source>Adds a GRASS raster layer to the map canvas</source>
         <translation>Thêm một lớp raster GRASS vào khung bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="150"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="145"/>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
         <translation>Hiển thị vùng GRASS hiện tại dưới dạng hình chữ nhật trên khung bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="151"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="146"/>
         <source>Edit the current GRASS region</source>
         <translation>Chỉnh sửa vùng GRASS hiện tại</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="152"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="147"/>
         <source>Edit the currently selected GRASS vector layer.</source>
         <translation>Chỉnh sửa lớp vector GRASS đang được chọn.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="770"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="765"/>
         <source>&amp;GRASS</source>
         <translation>&amp;GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="63"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="64"/>
         <source>GrassVector</source>
         <translation>GrassVector</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="64"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="65"/>
         <source>0.1</source>
         <translation>0.1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="65"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="66"/>
         <source>GRASS layer</source>
         <translation>Lớp  GRASS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="145"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="140"/>
         <source>Create new Grass Vector</source>
         <translation>Tạo lớp vector GRASS mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="742"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="737"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="454"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="449"/>
         <source>GRASS Edit is already running.</source>
         <translation>Lệnh chỉnh sửa GRASS hiện đang chạy.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="463"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="458"/>
         <source>New vector name</source>
         <translation>Tên vector mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="479"/>
         <source>Cannot create new vector: </source>
-        <translation>Không thể tạo vector mới: </translation>
+        <translation type="obsolete">Không thể tạo vector mới: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="504"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="499"/>
         <source>New vector created but cannot be opened by data provider.</source>
         <translation>Vector mới được tạo ra nhưng trình cung cấp dữ liệu không mở được.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="518"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="513"/>
         <source>Cannot start editing.</source>
         <translation>Không thể bắt đầu chỉnh sửa.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="550"/>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="546"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
         <translation>GISDBASE, LOCATION_NAME hoặc MAPSET không được thiết lập, không thể hiển thị vùng hiện tai.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="561"/>
         <source>Cannot read current region: </source>
-        <translation>Không thể đọc vùng hiện tại: </translation>
+        <translation type="obsolete">Không thể đọc vùng hiện tại: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="662"/>
         <source>Cannot open the mapset. </source>
-        <translation>Không thể mở bộ bản đồ này. </translation>
+        <translation type="obsolete">Không thể mở bộ bản đồ này. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="678"/>
         <source>Cannot close mapset. </source>
-        <translation>Không thể đóng bộ bản đồ. </translation>
+        <translation type="obsolete">Không thể đóng bộ bản đồ. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="733"/>
         <source>Cannot close current mapset. </source>
-        <translation>Không thể đóng bộ bản đồ hiện tại. </translation>
+        <translation type="obsolete">Không thể đóng bộ bản đồ hiện tại. </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="742"/>
         <source>Cannot open GRASS mapset. </source>
-        <translation>Không thể mở bộ bản đồ GRASS. </translation>
+        <translation type="obsolete">Không thể mở bộ bản đồ GRASS. </translation>
     </message>
     <message>
         <location filename="" line="0"/>
         <source>Could not add raster layer: </source>
         <translation type="obsolete">Không thể thêm lớp raster: </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="335"/>
+        <source>Cannot open GRASS vector:
+ %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="474"/>
+        <source>Cannot create new vector: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="519"/>
+        <source>Cannot open vector for update.</source>
+        <translation type="unfinished">Không thể mở vector để cập nhật.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="557"/>
+        <source>Cannot read current region: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="658"/>
+        <source>Cannot open the mapset. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="674"/>
+        <source>Cannot close mapset. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="728"/>
+        <source>Cannot close current mapset. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="737"/>
+        <source>Cannot open GRASS mapset. %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14552,12 +15132,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="172"/>
         <source>Cannot read current region: </source>
-        <translation>Không thể đọc vùng hiện tại: </translation>
+        <translation type="obsolete">Không thể đọc vùng hiện tại: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="433"/>
         <source>Cannot write region</source>
         <translation>Không thể ghi vùng</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="172"/>
+        <source>Cannot read current region: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14775,7 +15360,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Mô-đun</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="125"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="124"/>
         <source>Browser</source>
         <translation>Trình duyệt</translation>
     </message>
@@ -14787,59 +15372,96 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="383"/>
         <source>GRASS Tools: </source>
-        <translation>Các công cụ của GRASS: </translation>
+        <translation type="obsolete">Các công cụ của GRASS: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="272"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="271"/>
         <source>Warning</source>
         <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="185"/>
         <source>Cannot find MSYS (</source>
-        <translation>Không thể tìm thấy MSYS (</translation>
+        <translation type="obsolete">Không thể tìm thấy MSYS (</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="207"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="206"/>
         <source>GRASS Shell is not compiled.</source>
         <translation>Shell GRASS không được biên dịch.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="255"/>
         <source>The config file (</source>
-        <translation>Tập tin cấu hình (</translation>
+        <translation type="obsolete">Tập tin cấu hình (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="255"/>
         <source>) not found.</source>
-        <translation>) không tìm thấy.</translation>
+        <translation type="obsolete">) không tìm thấy.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="260"/>
         <source>Cannot open config file (</source>
-        <translation>Không thể mở tập tin config (</translation>
+        <translation type="obsolete">Không thể mở tập tin config (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="260"/>
         <source>)</source>
-        <translation>)</translation>
+        <translation type="obsolete">)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="269"/>
         <source>Cannot read config file (</source>
-        <translation>Không thể đọc tập tin config (</translation>
+        <translation type="obsolete">Không thể đọc tập tin config (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="270"/>
         <source>
 at line </source>
-        <translation>
+        <translation type="obsolete">
 tại dòng </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="270"/>
         <source> column </source>
-        <translation>cột</translation>
+        <translation type="obsolete">cột</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="382"/>
+        <source>GRASS Tools: %1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="184"/>
+        <source>Cannot find MSYS (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="196"/>
+        <source>Cannot start MSYS (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="254"/>
+        <source>The config file (%1) not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="259"/>
+        <source>Cannot open config file (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="268"/>
+        <source>Cannot read config file (%1):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="269"/>
+        <source>
+%1
+at line %2 column %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15137,37 +15759,53 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="187"/>
         <source>Quantum GIS Help - </source>
-        <translation>Trợ giúp Quantum GIS -</translation>
+        <translation type="obsolete">Trợ giúp Quantum GIS -</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="193"/>
         <source>Failed to get the help text from the database</source>
-        <translation>Thất bại - không lấy được thông tin trợ giúp từ CSDL</translation>
+        <translation type="obsolete">Thất bại - không lấy được thông tin trợ giúp từ CSDL</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="217"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="214"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="218"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="215"/>
         <source>The QGIS help database is not installed</source>
         <translation>Phần trợ giúp về CSDL của QGIS không được cài đặt</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
         <source>This help file does not exist for your language</source>
-        <translation>Tập tin trợ giúp này không có cho ngôn ngữ của bạn</translation>
+        <translation type="obsolete">Tập tin trợ giúp này không có cho ngôn ngữ của bạn</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="142"/>
         <source>If you would like to create it, contact the QGIS development team</source>
-        <translation>Nếu bạn muốn tạo nó, hãy liên hệ với nhóm phát triển QGIS</translation>
+        <translation type="obsolete">Nếu bạn muốn tạo nó, hãy liên hệ với nhóm phát triển QGIS</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="158"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="155"/>
         <source>Quantum GIS Help</source>
         <translation>Trợ giúp Quantum GIS</translation>
+    </message>
+    <message>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
+        <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="184"/>
+        <source>Quantum GIS Help - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="191"/>
+        <source>Failed to get the help text from the database:
+  %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15221,17 +15859,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsHttpTransaction</name>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="255"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="256"/>
         <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
         <translation>Server WMS phản ứng không như mong đợi với Mã Trạng thái HTTP %1 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="334"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="331"/>
         <source>HTTP response completed, however there was an error: %1</source>
         <translation>Đáp ứng HTTP hoàn tất, tuy nhiên có một lỗi: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgshttptransaction.cpp" line="384"/>
+        <location filename="../src/core/qgshttptransaction.cpp" line="380"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation>Chuyển giao HTTP hoàn tất, tuy nhiên có một lỗi: %1</translation>
     </message>
@@ -15239,13 +15877,67 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgshttptransaction.cpp" line="463"/>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         
         
         
         </numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="294"/>
+        <source>Received %1 of %2 bytes</source>
+        <translation type="unfinished">Đã nhận %1 của %2 byte</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="298"/>
+        <source>Received %1 bytes (total unknown)</source>
+        <translation type="unfinished">Đã nhận %1 byte (không biết tổng)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="407"/>
+        <source>Not connected</source>
+        <translation type="unfinished">Không kết nối</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="413"/>
+        <source>Looking up &apos;%1&apos;</source>
+        <translation type="unfinished">Đang tìm &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="419"/>
+        <source>Connecting to &apos;%1&apos;</source>
+        <translation type="unfinished">Đang kết nối đến &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="425"/>
+        <source>Sending request &apos;%1&apos;</source>
+        <translation type="unfinished">Đang gửi yêu cầu &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="431"/>
+        <source>Receiving reply</source>
+        <translation type="unfinished">Đang nhận trả lời</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="437"/>
+        <source>Response is complete</source>
+        <translation type="unfinished">Đáp ứng hoàn tất</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgshttptransaction.cpp" line="443"/>
+        <source>Closing down connection</source>
+        <translation type="unfinished">Đang đóng kết nối</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgshttptransaction.cpp" line="454"/>
+        <source>Network timed out after %n second(s) of inactivity.
+This may be a problem in your network connection or at the WMS server.</source>
+        <comment>inactivity timeout</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -15301,7 +15993,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="214"/>
         <source>Identify Results - </source>
-        <translation>Nhận diện kết quả - </translation>
+        <translation type="obsolete">Nhận diện kết quả - </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsidentifyresults.cpp" line="214"/>
+        <source>Identify Results - %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16257,7 +16954,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="328"/>
         <source>The shapefile could not be created (</source>
-        <translation>Tập tin shape không thể được tạo ra (</translation>
+        <translation type="obsolete">Tập tin shape không thể được tạo ra (</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="332"/>
@@ -16316,12 +17013,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="281"/>
-        <source>Select the coordinate reference system for the saved shapefile.</source>
+        <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="281"/>
-        <source>The data points will be transformed from the layer coordinate reference system.</source>
+        <location filename="../src/app/legend/qgslegendlayerfile.cpp" line="328"/>
+        <source>The shapefile could not be created (%1)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16462,12 +17159,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1223"/>
         <source>Could not draw</source>
-        <translation>Không thể vẽ</translation>
+        <translation type="obsolete">Không thể vẽ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1223"/>
         <source>because</source>
-        <translation>bởi vì</translation>
+        <translation type="obsolete">bởi vì</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1218"/>
+        <source>Could not draw %1 because:
+%2</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1225"/>
+        <source>Could not draw %1 because:
+%2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16527,13 +17237,234 @@ p, li { white-space: pre-wrap; }
         <source>style not found in database</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/core/qgsmaplayer.cpp" line="545"/>
+        <source>Loading style file %1 failed because:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsmaplayer.cpp" line="573"/>
+        <source>Could not save symbology because:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsmaplayer.cpp" line="585"/>
+        <source>The directory containing your dataset needs to be writeable!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsmaplayer.cpp" line="599"/>
+        <source>Created default style file as %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsmaplayer.cpp" line="604"/>
+        <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolAddFeature</name>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="48"/>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="49"/>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished">Lớp hiện tại không phải là một lớp vector</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="59"/>
+        <source>2.5D shape type not supported</source>
+        <translation type="unfinished">kiểu 2,5D shape không được hỗ trợ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="59"/>
+        <source>Adding features to 2.5D shapetypes is not supported yet</source>
+        <translation type="unfinished">Thêm các thuộc tính vào kiểu 2,5D shape chưa được hỗ trợ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="72"/>
+        <source>Layer cannot be added to</source>
+        <translation type="unfinished">Không thể thêm lớp vào</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="73"/>
+        <source>The data provider for this layer does not support the addition of features.</source>
+        <translation type="unfinished">Trình cung cấp dữ liệu cho lớp này không hỗ trợ việc thêm các thuộc tính.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="79"/>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="81"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="207"/>
+        <source>Wrong editing tool</source>
+        <translation type="unfinished">Công cụ chỉnh sửa không đúng</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="92"/>
+        <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
+        <translation type="unfinished">Không thể áp dụng công cụ &apos;vẽ điểm&apos; trong lớp vector này</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="222"/>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">Lỗi chuyển đổi tọa độ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="223"/>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="200"/>
+        <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
+        <translation type="unfinished">Không thể áp dụng công cụ &apos;vẽ đường&apos; trên lớp vector này</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="208"/>
+        <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
+        <translation type="unfinished">Không thể áp dụng công cụ &apos;vẽ vùng&apos; trên lớp vector này</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="435"/>
+        <source>Error</source>
+        <translation type="unfinished">Lỗi</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="420"/>
+        <source>Cannot add feature. Unknown WKB type</source>
+        <translation type="unfinished">Không thể thêm thuộc tính. Kiểu WKB không biết</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="435"/>
+        <source>Could not remove polygon intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolAddIsland</name>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="43"/>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="44"/>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished">Lớp hiện tại không phải là một lớp vector</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="50"/>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="52"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="134"/>
+        <source>Error, could not add island</source>
+        <translation type="unfinished">Lỗi, không thể thêm một &apos;đảo&apos;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="87"/>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">Lỗi chuyển đổi tọa độ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="88"/>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolAddRing</name>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="43"/>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="44"/>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished">Lớp hiện tại không phải là một lớp vector</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="50"/>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="52"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="66"/>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">Lỗi chuyển đổi tọa độ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="67"/>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="91"/>
+        <source>A problem with geometry type occured</source>
+        <translation type="unfinished">Xảy ra một lỗi với kiểu hình học</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="95"/>
+        <source>The inserted Ring is not closed</source>
+        <translation type="unfinished">Ringh được chèn vào không kín</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="99"/>
+        <source>The inserted Ring is not a valid geometry</source>
+        <translation type="unfinished">Ring được chèn vào không phải là một hình học hợp lệ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="103"/>
+        <source>The inserted Ring crosses existing rings</source>
+        <translation type="unfinished">Ring được chèn vào bắt chéo các ring hiện có</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="107"/>
+        <source>The inserted Ring is not contained in a feature</source>
+        <translation type="unfinished">Ring được chèn vào không chứa trong một thuộc tính</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="111"/>
+        <source>An unknown error occured</source>
+        <translation type="unfinished">Xảy ra một lỗi không rõ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="113"/>
+        <source>Error, could not add ring</source>
+        <translation type="unfinished">Lỗi, không thể thêm ring</translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="396"/>
         <source>No features found</source>
-        <translation type="obsolete">Không tìm thấy các thuộc tính</translation>
+        <translation type="unfinished">Không tìm thấy các thuộc tính</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -16544,7 +17475,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="404"/>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         
@@ -16562,8 +17493,106 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="224"/>
         <source>WMS identify result for %1
 %2</source>
-        <translation>Kết quả nhận diện WMS đối với %1
+        <translation type="obsolete">Kết quả nhận diện WMS đối với %1
 %2</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="120"/>
+        <source>No active layer</source>
+        <translation type="unfinished">Không có lớp kích hoạt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
+        <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
+        <translation type="unfinished">Để nhận diện các đối tượng, bạn phải chọn một lớp bản đồ kích hoạt bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="154"/>
+        <source>Band</source>
+        <translation type="unfinished">Băng</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="224"/>
+        <source>WMS identify result for %1:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="347"/>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="365"/>
+        <source>Area</source>
+        <translation type="unfinished">Diện tích</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="381"/>
+        <source>action</source>
+        <translation type="unfinished">Hành động</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="396"/>
+        <source>No features were found in the active layer at the point you clicked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="399"/>
+        <source>%1 - %n feature(s) found</source>
+        <comment>Identify results window title</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="412"/>
+        <source>Could not draw %1 because:
+%2</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="419"/>
+        <source>Could not identify objects on %1 because:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolMoveFeature</name>
+    <message>
+        <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="65"/>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="67"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolSelect</name>
+    <message>
+        <location filename="../src/app/qgsmaptoolselect.cpp" line="71"/>
+        <source>No active layer</source>
+        <translation type="unfinished">Không có lớp kích hoạt</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolselect.cpp" line="74"/>
+        <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
+        <translation type="unfinished">Để chọn các thuộc tính, bạn phải chọn một lớp vector bằng cách nhắp chuột vào tên nó trong phần chú giải</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolselect.cpp" line="133"/>
+        <source>CRS Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolselect.cpp" line="134"/>
+        <source>Selection extends beyond layer&apos;s coordinate system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16587,6 +17616,36 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="85"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="42"/>
+        <source>Not a vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="43"/>
+        <source>The current layer is not a vector layer</source>
+        <translation type="unfinished">Lớp hiện tại không phải là một lớp vector</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="49"/>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="51"/>
+        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
+        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
+        <source>Coordinate transform error</source>
+        <translation type="unfinished">Lỗi chuyển đổi tọa độ</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
+        <source>Cannot transform the point to the layers coordinate system</source>
+        <translation type="unfinished">Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
     </message>
 </context>
 <context>
@@ -16647,7 +17706,7 @@ Bạn có muốn ghi đè nó?</translation>
         <location filename="../src/app/qgsmapserverexport.cpp" line="74"/>
         <source> exists. 
 Do you want to overwrite it?</source>
-        <translation> tồn tại. 
+        <translation type="obsolete"> tồn tại. 
 Bạn có muốn ghi đè nó?</translation>
     </message>
     <message>
@@ -16661,6 +17720,12 @@ Bạn có muốn ghi đè nó?</translation>
         <source> exists. 
 Do you want to overwrite it?</source>
         <comment>a fileName is prepended to this text, and appears in a dialog box</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmapserverexport.cpp" line="74"/>
+        <source>%1 exists.
+Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17127,7 +18192,7 @@ Vui lòng cài đặt PostGIS có sự hỗ trợ của GEOS (http://geos.refrac
 
 Extended error information:
 </source>
-        <translation>Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
+        <translation type="obsolete">Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
 
 Thông tin bổ sung về lỗi:</translation>
     </message>
@@ -17135,6 +18200,14 @@ Thông tin bổ sung về lỗi:</translation>
         <location filename="../src/app/qgsnewconnection.cpp" line="119"/>
         <source>Connection to %1 was successful</source>
         <translation>Kết nối đến %1 thành công</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsnewconnection.cpp" line="123"/>
+        <source>Connection failed - Check settings and try again.
+
+Extended error information:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17535,7 +18608,7 @@ Thông tin bổ sung về lỗi:</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="156"/>
         <source>Detected active locale on your system: </source>
-        <translation>Thấy thiết lập bản địa đang kích hoạt trên hệ thống của bạn: </translation>
+        <translation type="obsolete">Thấy thiết lập bản địa đang kích hoạt trên hệ thống của bạn: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="176"/>
@@ -17575,6 +18648,11 @@ Thông tin bổ sung về lỗi:</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="72"/>
         <source>Show features in current canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsoptions.cpp" line="156"/>
+        <source>Detected active locale on your system: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18379,12 +19457,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPgGeoprocessing</name>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="119"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="118"/>
         <source>Buffer features in layer %1</source>
         <translation>Đệm các đối tượng trong lớp %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="364"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="363"/>
         <source>Error connecting to the database</source>
         <translation>Lỗi kết nối đến CSDL</translation>
     </message>
@@ -18396,55 +19474,55 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="78"/>
         <source>A new layer is created in the database with the buffered features.</source>
-        <translation>Một lớp mới được tạo ra trong CSDL với các đối tượng được đệm.</translation>
+        <translation type="obsolete">Một lớp mới được tạo ra trong CSDL với các đối tượng được đệm.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="445"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="83"/>
         <source>&amp;Geoprocessing</source>
         <translation>&amp;Xử lý địa lý</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="345"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="344"/>
         <source>Unable to add geometry column</source>
         <translation>Không thể thêm cột hình học</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="347"/>
         <source>Unable to add geometry column to the output table </source>
-        <translation>Không thể thêm cột hình học vào bảng đầu ra </translation>
+        <translation type="obsolete">Không thể thêm cột hình học vào bảng đầu ra </translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="353"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="352"/>
         <source>Unable to create table</source>
         <translation>Không thể tạo bảng</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="355"/>
         <source>Failed to create the output table </source>
-        <translation>Thất bại trong việc tạo bảng đầu ra </translation>
+        <translation type="obsolete">Thất bại trong việc tạo bảng đầu ra </translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="370"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="369"/>
         <source>No GEOS support</source>
         <translation>Không hỗ trợ GEOS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="371"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="370"/>
         <source>Buffer function requires GEOS support in PostGIS</source>
         <translation>Chức năng đệm đòi hỏi hỗ trợ GEOS trong PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="384"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="382"/>
         <source>No Active Layer</source>
         <translation>Không có lớp kích hoạt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="385"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="383"/>
         <source>You must select a layer in the legend to buffer</source>
         <translation>Bạn phải chọn một lớp trong phần &apos;Chú giải&apos; để chạy lệnh đệm</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="376"/>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="375"/>
         <source>Not a PostgreSQL/PostGIS Layer</source>
         <translation>Không phải là một lớp PostgreSQL/PostGIS</translation>
     </message>
@@ -18452,24 +19530,40 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="379"/>
         <source> is not a PostgreSQL/PostGIS layer.
 </source>
-        <translation> không phải là một lớp PostgresQL/PostGIS.
+        <translation type="obsolete"> không phải là một lớp PostgresQL/PostGIS.
 </translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="379"/>
         <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-        <translation>Các chức năng xử lý địa lý chỉ dùng được đối với các lớp PostgreSQL/PostGIS</translation>
+        <translation type="obsolete">Các chức năng xử lý địa lý chỉ dùng được đối với các lớp PostgreSQL/PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="78"/>
-        <source>Create a buffer for a PostgreSQL layer. </source>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="77"/>
+        <source>Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="346"/>
+        <source>Unable to add geometry column to the output table %1-%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="354"/>
+        <source>Failed to create the output table %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="377"/>
+        <source>%1 is not a PostgreSQL/PostGIS layer.
+Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsPgQueryBuilder</name>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="84"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="85"/>
         <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
         <translation>Bảng &lt;b&gt;%1&lt;/b&gt; trong CSDL &lt;b&gt;%2&lt;/b&gt; trên máy chủ &lt;b&gt;%3&lt;/b&gt;, người dùng &lt;b&gt;%4&lt;/b&gt;</translation>
     </message>
@@ -18481,7 +19575,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="68"/>
         <source>Connection to the database failed:</source>
-        <translation>Kết nối đến CSDL thất bại:</translation>
+        <translation type="obsolete">Kết nối đến CSDL thất bại:</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="207"/>
@@ -18494,59 +19588,84 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Thất bại trong việc lấy mẫu của các giá trị trường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="282"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="280"/>
         <source>Query Result</source>
         <translation>Kết quả Truy vấn</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="284"/>
         <source>The where clause returned </source>
-        <translation>mệnh đề where được trả về</translation>
+        <translation type="obsolete">mệnh đề where được trả về</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="284"/>
         <source> rows.</source>
-        <translation>các hàng.</translation>
+        <translation type="obsolete">các hàng.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="288"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="285"/>
         <source>Query Failed</source>
         <translation>Truy vấn thất bại</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="290"/>
         <source>An error occurred when executing the query:</source>
-        <translation>Lỗi xảy ra khi thực thi truy vấn:</translation>
+        <translation type="obsolete">Lỗi xảy ra khi thực thi truy vấn:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="344"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="341"/>
         <source>No Records</source>
         <translation>Không có bản ghi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="344"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="341"/>
         <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
         <translation>Phép truy vấn bạn chỉ định trả về 0 bản ghi. Lớp PostgreSQL hợp lệ phải có ít nhất một đối tượng.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgquerybuilder.cpp" line="207"/>
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;</source>
-        <translation>&lt;p&gt;Thất bại trong việc lấy mẫu các giá trị trường khi dùng SQL:&lt;/p&gt;&lt;p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Thất bại trong việc lấy mẫu các giá trị trường khi dùng SQL:&lt;/p&gt;&lt;p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="271"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="269"/>
         <source>No Query</source>
         <translation>Không có Truy vấn</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="271"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="269"/>
         <source>You must create a query before you can test it</source>
         <translation>Bạn phải tạo một phép truy vấn trước khi có thể kiểm tra nó</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgquerybuilder.cpp" line="337"/>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="334"/>
         <source>Error in Query</source>
         <translation>Lỗi trong phép truy vấn</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="68"/>
+        <source>Connection to the database failed:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="209"/>
+        <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="281"/>
+        <source>The where clause returned %n row(s).</source>
+        <comment>returned test rows</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspgquerybuilder.cpp" line="287"/>
+        <source>An error occurred when executing the query:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19512,7 +20631,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="209"/>
         <source>No QGIS plugins found in </source>
-        <translation>Không tìm thấy phần mở rộng của QGIS trong</translation>
+        <translation type="obsolete">Không tìm thấy phần mở rộng của QGIS trong</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="85"/>
@@ -19527,6 +20646,11 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="154"/>
         <source>[ incompatible ]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspluginmanager.cpp" line="209"/>
+        <source>No QGIS plugins found in %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19651,77 +20775,77 @@ You need to restart Quantum GIS in order to reload it.</source>
 <context>
     <name>QgsPointDialog</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="497"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="496"/>
         <source>Zoom In</source>
         <translation>Phóng to</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="496"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="495"/>
         <source>z</source>
         <translation>z</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="502"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="501"/>
         <source>Zoom Out</source>
         <translation>Thu nhỏ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="501"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="500"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="505"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="504"/>
         <source>Zoom To Layer</source>
         <translation>Phóng Đến lớp</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="507"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="506"/>
         <source>Zoom to Layer</source>
         <translation>Phóng đến lớp</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="510"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="509"/>
         <source>Pan Map</source>
         <translation>Di chuyển bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="511"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="510"/>
         <source>Pan the map</source>
         <translation>Di chuyển bản đồ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="514"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="513"/>
         <source>Add Point</source>
         <translation>Thêm Điểm</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="515"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="514"/>
         <source>.</source>
         <translation>.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="516"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="515"/>
         <source>Capture Points</source>
         <translation>Vẽ điểm</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="519"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="518"/>
         <source>Delete Point</source>
         <translation>Xóa điểm</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="520"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="519"/>
         <source>Delete Selected</source>
         <translation>Xóa điểm được chọn</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="573"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="572"/>
         <source>Linear</source>
         <translation>Tuyến tính</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="574"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="573"/>
         <source>Helmert</source>
         <translation>Helmert</translation>
     </message>
@@ -19759,22 +20883,22 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="300"/>
         <source>&lt;p&gt;The </source>
-        <translation>&lt;p&gt; Phép </translation>
+        <translation type="obsolete">&lt;p&gt; Phép </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="301"/>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation> chuyển đổi chưa được hỗ trợ. &lt;/p&gt; </translation>
+        <translation type="obsolete"> chuyển đổi chưa được hỗ trợ. &lt;/p&gt; </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="339"/>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="338"/>
         <source>Error</source>
         <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="340"/>
         <source>Could not write to </source>
-        <translation>Không thể ghi vào </translation>
+        <translation type="obsolete">Không thể ghi vào </translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="280"/>
@@ -19791,6 +20915,16 @@ You need to restart Quantum GIS in order to reload it.</source>
         <source>-modified</source>
         <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given file name</comment>
         <translation type="unfinished">-bị thay đổi</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="300"/>
+        <source>&lt;p&gt;The %1 transform is not yet supported.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="339"/>
+        <source>Could not write to %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19912,21 +21046,21 @@ You need to restart Quantum GIS in order to reload it.</source>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="124"/>
         <source>Unable to access relation</source>
         <translation>Không thể truy cấp mối liên hệ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="106"/>
         <source>Unable to access the </source>
-        <translation>Không thể truy cập</translation>
+        <translation type="obsolete">Không thể truy cập</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="128"/>
         <source> relation.
 The error message from the database was:
 </source>
-        <translation>mối liên hệ. Thông báo lỗi từ CSDL là:</translation>
+        <translation type="obsolete">mối liên hệ. Thông báo lỗi từ CSDL là:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -19943,12 +21077,12 @@ Phép chọn và nhận diện tính chất sẽ không làm việc đúng đắ
 Vui lòng cài đặt PostGIS có sự hỗ trợ của GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="920"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
         <source>No suitable key column in table</source>
         <translation>Không có cột key thích hợp trong bảng</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="924"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="922"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -19964,105 +21098,105 @@ primary key) hoặc có một cột oid PostgreSQL.
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="964"/>
         <source>The unique index on column</source>
-        <translation>Chỉ mục không trùng trong cột</translation>
+        <translation type="obsolete">Chỉ mục không trùng trong cột</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="966"/>
         <source>is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation>không thích hợp vì QGIS hiện tại không hỗ trợ các cột không phải kiểu int4 làm key trong bảng.
+        <translation type="obsolete">không thích hợp vì QGIS hiện tại không hỗ trợ các cột không phải kiểu int4 làm key trong bảng.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="987"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="983"/>
         <source>and </source>
         <translation>và </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="993"/>
         <source>The unique index based on columns </source>
-        <translation>Chỉ mục không trùng dựa trên các cột </translation>
+        <translation type="obsolete">Chỉ mục không trùng dựa trên các cột </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="995"/>
         <source> is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
-        <translation> không thích hợp bởi vì hiện tại QGIS không hỗ trợ nhiều cột dùng làm key trong bảng.
+        <translation type="obsolete"> không thích hợp bởi vì hiện tại QGIS không hỗ trợ nhiều cột dùng làm key trong bảng.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1037"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1032"/>
         <source>Unable to find a key column</source>
         <translation>Không thể tìm thấy cột key</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1117"/>
         <source> derives from </source>
-        <translation> xuất xứ từ </translation>
+        <translation type="obsolete"> xuất xứ từ </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1121"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1115"/>
         <source>and is suitable.</source>
         <translation>và thích hợp.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1125"/>
         <source>and is not suitable </source>
-        <translation>và không thích hợp </translation>
+        <translation type="obsolete">và không thích hợp </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1126"/>
         <source>type is </source>
-        <translation>kiểu là </translation>
+        <translation type="obsolete">kiểu là </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1128"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1121"/>
         <source> and has a suitable constraint)</source>
         <translation> và có tiêu chuẩn thích hợp)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1130"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1123"/>
         <source> and does not have a suitable constraint)</source>
         <translation> và không có tiêu chuẩn thích hợp)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1214"/>
         <source>Note: </source>
-        <translation>Ghi chú: </translation>
+        <translation type="obsolete">Ghi chú: </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1216"/>
         <source>initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation>ban đầu có vẻ thích hợp nhưng không chứa dữ liệu không trùng, do vậy không thích hợp.
+        <translation type="obsolete">ban đầu có vẻ thích hợp nhưng không chứa dữ liệu không trùng, do vậy không thích hợp.
 </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1228"/>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation>Vùng xem bạn đã chọn có các cột sau, không có cột nào trong số đó thỏa các điều kiện trên:</translation>
+        <translation type="obsolete">Vùng xem bạn đã chọn có các cột sau, không có cột nào trong số đó thỏa các điều kiện trên:</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1234"/>
         <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 </source>
-        <translation>QGIS yêu cầu vùng xem có một cột có thể được dùng làm key không trùng. Một cột như vậy phải được trích xuất từ một cột trong bảng có kiểu int4 và là primary key, có tiêu chuẩn không trùng trong cột, hoặc là một cột oid PostgreSQL. Để tăng cường hiệu suất cột đó cũng phải được đánh chỉ mục.
+        <translation type="obsolete">QGIS yêu cầu vùng xem có một cột có thể được dùng làm key không trùng. Một cột như vậy phải được trích xuất từ một cột trong bảng có kiểu int4 và là primary key, có tiêu chuẩn không trùng trong cột, hoặc là một cột oid PostgreSQL. Để tăng cường hiệu suất cột đó cũng phải được đánh chỉ mục.
 </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1235"/>
         <source>The view </source>
-        <translation>Vùng xem </translation>
+        <translation type="obsolete">Vùng xem </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1236"/>
         <source>has no column suitable for use as a unique key.
 </source>
-        <translation>không có cột thích hợp để dùng làm key không trùng.
+        <translation type="obsolete">không có cột thích hợp để dùng làm key không trùng.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1237"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1226"/>
         <source>No suitable key column in view</source>
         <translation>Không có cột key thích hợp trong vùng xem</translation>
     </message>
@@ -20097,39 +21231,39 @@ primary key) hoặc có một cột oid PostgreSQL.
         <translation type="obsolete">Khi đang: </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2553"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2542"/>
         <source>Unknown geometry type</source>
         <translation>Kiểu hình học không rõ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2554"/>
         <source>Column </source>
-        <translation>Cột </translation>
+        <translation type="obsolete">Cột </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2564"/>
         <source> in </source>
-        <translation> trong </translation>
+        <translation type="obsolete"> trong </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2556"/>
         <source> has a geometry type of </source>
-        <translation> có một kiểu hình học </translation>
+        <translation type="obsolete"> có một kiểu hình học </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2556"/>
         <source>, which Qgis does not currently support.</source>
-        <translation>, mà QGIS hiện tại không hỗ trợ.</translation>
+        <translation type="obsolete">, mà QGIS hiện tại không hỗ trợ.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2565"/>
         <source>. The database communication log was:
 </source>
-        <translation>. Báo cáo thông tin với CSDL là:
+        <translation type="obsolete">. Báo cáo thông tin với CSDL là:
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2566"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2552"/>
         <source>Unable to get feature type and srid</source>
         <translation>Không thể lấy kiểu đối tượng và srid</translation>
     </message>
@@ -20144,43 +21278,33 @@ primary key) hoặc có một cột oid PostgreSQL.
         <translation type="obsolete">CSDL PostgreSQL trả lại: </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="126"/>
-        <source>Unable to determine table access privileges for the </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1888"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1877"/>
         <source>Error while adding features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1928"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1917"/>
         <source>Error while deleting features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1966"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1955"/>
         <source>Error while adding attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2011"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2000"/>
         <source>Error while deleting attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2081"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2070"/>
         <source>Error while changing attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2160"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2149"/>
         <source>Error while changing geometry values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2563"/>
-        <source>Qgis was unable to determine the type and srid of column </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -20188,19 +21312,117 @@ primary key) hoặc có một cột oid PostgreSQL.
         <source>unexpected PostgreSQL error</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="106"/>
+        <source>Unable to access the %1 relation.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="127"/>
+        <source>The error message from the database was:
+%1.
+SQL: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
+        <source>Unable to determine table access privileges for the %1 relation.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="962"/>
+        <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="990"/>
+        <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1111"/>
+        <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1119"/>
+        <source>and is not suitable (type is %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1209"/>
+        <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1225"/>
+        <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
+Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
+The view you selected has the following columns, none of which satisfy the above conditions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2544"/>
+        <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2551"/>
+        <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="323"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="321"/>
         <source>No GEOS Support!</source>
         <translation type="unfinished">Không có hỗ trợ GEOS!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="327"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="325"/>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsProject</name>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="755"/>
+        <source>Unable to open %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="770"/>
+        <source>Project file read error: %1 at line %2 column %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="776"/>
+        <source>%1 for file %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="930"/>
+        <source>Unable to save to file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="939"/>
+        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsproject.cpp" line="1026"/>
+        <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20648,11 +21870,17 @@ p, li { white-space: pre-wrap; }(new line)
         <source> unknown</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/gui/qgsquickprint.cpp" line="659"/>
+        <source>Please wait while your report is generated</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3344"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3346"/>
         <source>Not Set</source>
         <translation>Không thiết lập</translation>
     </message>
@@ -20684,17 +21912,17 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2504"/>
         <source>X: </source>
-        <translation>X:</translation>
+        <translation type="obsolete">X:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2505"/>
         <source> Y: </source>
-        <translation>Y:</translation>
+        <translation type="obsolete">Y:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2505"/>
         <source> Bands: </source>
-        <translation>Các băng:</translation>
+        <translation type="obsolete">Các băng:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -20702,12 +21930,12 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">Projektion:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2620"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2622"/>
         <source>Origin:</source>
         <translation>Gốc:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2629"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2631"/>
         <source>Pixel Size:</source>
         <translation>Kích thước điểm ảnh:</translation>
     </message>
@@ -20722,7 +21950,7 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">Vùng bị cắt:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2571"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2573"/>
         <source>Pyramid overviews:</source>
         <translation>Vùng nhìn tổng quát tháp pyramid:</translation>
     </message>
@@ -20742,62 +21970,62 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">Giá trị</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2647"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2649"/>
         <source>Band</source>
         <translation>Băng</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2654"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2656"/>
         <source>Band No</source>
         <translation>Băng số</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2666"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2668"/>
         <source>No Stats</source>
         <translation>Không thống kê</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2671"/>
         <source>No stats collected yet</source>
         <translation>Thống kê chưa được thu thập</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2679"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2681"/>
         <source>Min Val</source>
         <translation>Trị nhỏ nhất</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2687"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2689"/>
         <source>Max Val</source>
         <translation>Trị lớn nhất</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2697"/>
         <source>Range</source>
         <translation>Ranh giới</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2703"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
         <source>Mean</source>
         <translation>Trung bình</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2711"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2713"/>
         <source>Sum of squares</source>
         <translation>Tổng các hình vuông</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2719"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2721"/>
         <source>Standard Deviation</source>
         <translation>Độ lệch chuẩn</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2727"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2729"/>
         <source>Sum of all cells</source>
         <translation>Tổng các ô</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2735"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2737"/>
         <source>Cell Count</source>
         <translation>Đếm ô</translation>
     </message>
@@ -20814,67 +22042,67 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">Quyền ghi bị từ chối. Điều chỉnh quyền hạn đối với tập tin và thử lại.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2527"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2529"/>
         <source>Data Type:</source>
         <translation>Kiểu dữ liệu:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2533"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2535"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - Số nguyên không đăng ký 8 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2536"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2538"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - Số nguyên không đăng ký 16 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2539"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2541"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - Số nguyên có đăng ký 16 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2542"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2544"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - Số nguyên không đăng ký 32 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2545"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2547"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - Số nguyên có đăng ký 32 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2548"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2550"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - Dấu chấm động 32 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2551"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2553"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - Dấu chấm động 64 bit</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2554"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2556"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2557"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2559"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2560"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2562"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2563"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2565"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2566"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2568"/>
         <source>Could not determine raster data type.</source>
         <translation>Không thể xác định kiểu dữ liệu raster.</translation>
     </message>
@@ -20904,14 +22132,14 @@ p, li { white-space: pre-wrap; }(new line)
         <translation>Trung bình</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2592"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2594"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Hệ tham chiếu không gian của lớp:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2604"/>
         <source>Project Spatial Reference System: </source>
-        <translation type="obsolete">Hệ tham chiếu không gian của dự án:</translation>
+        <translation type="unfinished">Hệ tham chiếu không gian của dự án:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1792"/>
@@ -20941,7 +22169,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="380"/>
         <source>and all other files</source>
-        <translation>và tất cả các tập tin khác</translation>
+        <translation type="obsolete">và tất cả các tập tin khác</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2449"/>
@@ -20949,7 +22177,7 @@ p, li { white-space: pre-wrap; }(new line)
         <translation>Mô tả Bộ Dữ liệu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2512"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2514"/>
         <source>No Data Value</source>
         <translation>Không có Giá trị Dữ liệu</translation>
     </message>
@@ -20959,8 +22187,23 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2521"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2523"/>
         <source>NoDataValue not set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="380"/>
+        <source>%1 and all other files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1836"/>
+        <source>Band%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2505"/>
+        <source>X: %1 Y: %2 Bands: %3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20997,17 +22240,17 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">&lt;h3&gt;Các ghi chú ảnh thang xám&lt;/h3&gt; &lt;p&gt;Bạn có thể lập bản đồ lại các màu thang xám này thành một ảnh giả ảnh màu bằng cách dùng ramp tạo màu tự động.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1001"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1002"/>
         <source>Grayscale</source>
         <translation>Thang màu xám</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2373"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2374"/>
         <source>Pseudocolor</source>
         <translation>Màu giả</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2373"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2374"/>
         <source>Freak Out</source>
         <translation>Freak Out</translation>
     </message>
@@ -21032,32 +22275,32 @@ p, li { white-space: pre-wrap; }(new line)
         <translation>Không thiết lập</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="810"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="811"/>
         <source>Columns: </source>
         <translation>Số cột: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="811"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
         <source>Rows: </source>
         <translation>Số hàng: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="813"/>
         <source>No-Data Value: </source>
         <translation>Giá trị không có Dữ liệu: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="812"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="813"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2734"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2735"/>
         <source>Write access denied</source>
         <translation>Quyền ghi bị từ chối</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2734"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2735"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -21065,7 +22308,7 @@ p, li { white-space: pre-wrap; }(new line)
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1597"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1598"/>
         <source>Building pyramids failed.</source>
         <translation>Xây dựng tháp pyramid thất bại.</translation>
     </message>
@@ -21075,57 +22318,57 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="obsolete">Tập tin không ghi được. Một số định dạng không thể ghi được, chỉ đọc được. Bạn cũng có thể thử kiểm tra các quyền trên tập tin và thử lại.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1598"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1599"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Xây dựng vùng xem tổng quát cho tháp pyramid không được hỗ trợ đối với kiểu ảnh raster này. </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2912"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2913"/>
         <source>No Stretch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2917"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2918"/>
         <source>Stretch To MinMax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2922"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2923"/>
         <source>Stretch And Clip To MinMax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2927"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2928"/>
         <source>Clip To MinMax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2791"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2792"/>
         <source>Discrete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2583"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2584"/>
         <source>Equal interval</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2606"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2607"/>
         <source>Quantiles</source>
         <translation type="unfinished">Phân vị</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1826"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1827"/>
         <source>Red</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1826"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1827"/>
         <source>Green</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1826"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1827"/>
         <source>Blue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21150,81 +22393,81 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1843"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1844"/>
         <source>Percent Transparent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1839"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1840"/>
         <source>Gray</source>
         <translation type="unfinished">Xám</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1843"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1844"/>
         <source>Indexed Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2910"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2911"/>
         <source>User Defined</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="804"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="805"/>
         <source>No-Data Value: Not Set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2680"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2681"/>
         <source>Save file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2761"/>
         <source>Textfile (*.txt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1823"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1824"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2761"/>
         <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2828"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2829"/>
         <source>Import Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2828"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2829"/>
         <source>The following lines contained errors
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2833"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2834"/>
         <source>Read access denied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2833"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2834"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2373"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2374"/>
         <source>Color Ramp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3076"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3077"/>
         <source>Default Style</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21239,22 +22482,17 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3207"/>
-        <source>Unknown style format: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1719"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1720"/>
         <source>Colormap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2787"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2788"/>
         <source>Linear</source>
         <translation type="unfinished">Tuyến tính</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2795"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2796"/>
         <source>Exact</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21269,27 +22507,22 @@ p, li { white-space: pre-wrap; }(new line)
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2905"/>
-        <source>Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1583"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1584"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2675"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2676"/>
         <source>Custom color map entry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2692"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2693"/>
         <source>QGIS Generated Color Map Export File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2750"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2751"/>
         <source>Load Color Map</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21301,7 +22534,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message numerus="yes">
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2750"/>
         <source>The color map for Band %n failed to load</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         
@@ -21309,7 +22542,7 @@ p, li { white-space: pre-wrap; }(new line)
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1594"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21321,6 +22554,66 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="441"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="565"/>
+        <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished">&lt;h3&gt;Ghi chú ảnh nhiều băng&lt;/h3&gt;&lt;p&gt;Đây là ảnh nhiều băng. Bạn có thể chọn để render nó thành thang xám hoặc ảnh màu (RGB). Với ảnh màu, bạn có thể liên hệ các băng đến các màu một cách tùy ý. Ví dụ, nếu bạn có ảnh landsat 7 băng, bạn có thể chọn render nó thành:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Xanh nhìn thấy được (0.45 đến 0.52 micromet) - không lên bản đồ&lt;/li&gt;&lt;li&gt;Lục nhìn thấy được (0.52 đến 0.60 microme1t) - không lên bản đồ&lt;/li&gt;&lt;/li&gt;Đỏ nhìn thấy được (0.63 đến 0.69 micromet) - lên bản đồ thành màu đỏ&lt;/li&gt;&lt;li&gt;Gần Hồng ngoại (0.76 đến 0.90 micromet) - lên thành màu lục trong ảnh&lt;/li&gt;&lt;li&gt;Giữa Hồng ngoại (1.55 đến 1.75 micromet) - không lên bản đồ&lt;/li&gt;&lt;li&gt;Hồng ngoại nhiệt (10.4 đến 12.5 micromet) - không lên bản đồ&lt;/li&gt;&lt;li&gt;Giữa Hồng ngoại (2.08 đến 2.35 micromet) - lên bản đồ thành màu xanh trong ảnh&lt;/li&gt;&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="572"/>
+        <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished">&lt;h3&gt;Ghi chú về ảnh có bảng màu&lt;/h3&gt; &lt;p&gt;Ảnh này dùng bảng màu cố định. Bạn có thể lập lại bản đồ những màu này thành các tổ hợp khác.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Đỏ - xanh trong ảnh&lt;/li&gt;&lt;li&gt;Lục - xanh trong ảnh&lt;/li&gt;&lt;li&gt;Xanh - lục trong ảnh&lt;/li&gt;&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="579"/>
+        <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished">&lt;h3&gt;Các ghi chú ảnh thang xám&lt;/h3&gt; &lt;p&gt;Bạn có thể lập bản đồ lại các màu thang xám này thành một ảnh giả ảnh màu bằng cách dùng ramp tạo màu tự động.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2906"/>
+        <source>Default R:%1 G:%2 B:%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="797"/>
+        <source>Columns: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="798"/>
+        <source>Rows: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="801"/>
+        <source>No-Data Value: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1578"/>
+        <source>Write access denied. Adjust the file permissions and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2343"/>
+        <source>The following lines contained errors
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2751"/>
+        <source>The color map for band %1 failed to load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3206"/>
+        <source>Unknown style format: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22268,7 +23561,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="150"/>
         <source>Unable to run command</source>
-        <translation>Không thể chạy lệnh</translation>
+        <translation type="obsolete">Không thể chạy lệnh</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -22278,16 +23571,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="57"/>
         <source>Starting</source>
-        <translation>Đang bắt đầu</translation>
+        <translation type="obsolete">Đang bắt đầu</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsrunprocess.cpp" line="119"/>
+        <location filename="../src/core/qgsrunprocess.cpp" line="118"/>
         <source>Done</source>
         <translation>Xong</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsrunprocess.cpp" line="72"/>
+        <location filename="../src/core/qgsrunprocess.cpp" line="71"/>
         <source>Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsrunprocess.cpp" line="57"/>
+        <source>&lt;b&gt;Starting %1...&lt;/b&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsrunprocess.cpp" line="72"/>
+        <source>Unable to run command
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsrunprocess.cpp" line="149"/>
+        <source>Unable to run command %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22601,25 +23910,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="169"/>
         <source>No matching features found.</source>
-        <translation>Không tìm thấy các đối tượng khớp.</translation>
+        <translation type="obsolete">Không tìm thấy các đối tượng khớp.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="170"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="165"/>
         <source>Search results</source>
         <translation>Kết quả tìm kiếm</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="179"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="174"/>
         <source>Search string parsing error</source>
         <translation>Lỗi phân tách chuỗi tìm kiếm</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="235"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="230"/>
         <source>No Records</source>
         <translation>Không có Bản ghi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="235"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="230"/>
         <source>The query you specified results in zero records being returned.</source>
         <translation>Phép truy vấn bạn thực hiện không trả lại bản ghi nào.</translation>
     </message>
@@ -22629,8 +23938,9 @@ p, li { white-space: pre-wrap; }
         <translation>Tìm kiếm trình xây dựng phép truy vấn</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
-        <source>Found %1 matching features.</source>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="165"/>
+        <source>Found %n matching feature(s).</source>
+        <comment>test result</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
@@ -22641,12 +23951,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="172"/>
         <source>Are you sure you want to remove the </source>
-        <translation>Có chắc bạn muốn loại bỏ </translation>
+        <translation type="obsolete">Có chắc bạn muốn loại bỏ </translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="172"/>
         <source> connection and all associated settings?</source>
-        <translation> kết nối và tất cả các thiết lập liên quan?</translation>
+        <translation type="obsolete"> kết nối và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="173"/>
@@ -22654,29 +23964,29 @@ p, li { white-space: pre-wrap; }
         <translation>Xác nhận việc xóa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="352"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="353"/>
         <source>WMS Provider</source>
         <translation>Trình cung cấp WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="354"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="355"/>
         <source>Could not open the WMS Provider</source>
         <translation>Không thể mở Trình cung cấp WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="363"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="364"/>
         <source>Select Layer</source>
         <translation>Chọn Lớp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="363"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="364"/>
         <source>You must select at least one layer first.</source>
         <translation>Bạn phải chọn ít nhất một lớp trước.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsserversourceselect.cpp" line="475"/>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>
         
         
@@ -22688,15 +23998,15 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="634"/>
         <source>Could not understand the response.  The</source>
-        <translation>Không hiểu đáp ứng.  Trình</translation>
+        <translation type="obsolete">Không hiểu đáp ứng.  Trình</translation>
     </message>
     <message>
         <location filename="../src/app/qgsserversourceselect.cpp" line="635"/>
         <source>provider said</source>
-        <translation>cung cấp nói rằng</translation>
+        <translation type="obsolete">cung cấp nói rằng</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="686"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="683"/>
         <source>WMS proxies</source>
         <translation>các proxy WMS</translation>
     </message>
@@ -22706,18 +24016,44 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&lt;p&gt;Một vài server WMS đã được thêm vào danh sách server. Lưu ý rằng các trường proxy được bỏ trống và nếu bạn truy cập internet thông qua một web proxy, bạn sẽ phải thiết lập từng trường proxy với các giá trị phù hợp.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="367"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="368"/>
         <source>Coordinate Reference System</source>
         <translation>Hệ Tham chiếu Tọa độ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="367"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="368"/>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
         <translation>Không có hệ tham chiếu tọa độ nào dùng được cho tập hợp các lớp mà bạn đã chọn.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsserversourceselect.cpp" line="689"/>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="686"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="172"/>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgsserversourceselect.cpp" line="475"/>
+        <source>Coordinate Reference System (%n available)</source>
+        <comment>crs count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="626"/>
+        <source>Could not understand the response.  The %1 provider said:
+%2</source>
+        <comment>COMMENTED OUT</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsserversourceselect.cpp" line="633"/>
+        <source>Could not understand the response.  The %1 provider said:
+%2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22842,17 +24178,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsShapeFile</name>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="448"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="441"/>
         <source>The database gave an error while executing this SQL:</source>
         <translation>CSDL sinh ra một lỗi khi thực thi SQL này:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="456"/>
         <source>The error was:</source>
-        <translation>Lỗi là:</translation>
+        <translation type="obsolete">Lỗi là:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="453"/>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="446"/>
         <source>... (rest of SQL trimmed)</source>
         <comment>is appended to a truncated SQL statement</comment>
         <translation>...(phần còn lại của SQL bị cắt bỏ)</translation>
@@ -22860,6 +24196,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="89"/>
         <source>Scanning </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="374"/>
+        <source>The database gave an error while executing this SQL:
+%1
+The error was:
+%2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsshapefile.cpp" line="449"/>
+        <source>The error was:
+%1
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23281,12 +24633,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="148"/>
         <source>Are you sure you want to remove the [</source>
-        <translation>Bạn có chắc bạn muốn loại bỏ [</translation>
+        <translation type="obsolete">Bạn có chắc bạn muốn loại bỏ [</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="148"/>
         <source>] connection and all associated settings?</source>
-        <translation>] kết nối và tất cả các thiết lập liên quan?</translation>
+        <translation type="obsolete">] kết nối và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="149"/>
@@ -23331,82 +24683,82 @@ p, li { white-space: pre-wrap; }
         <translation>Trợ giúp Giao diện tổng quát:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="356"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="355"/>
         <source>PostgreSQL Connections:</source>
         <translation>Các kết nối PostgreSQL:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="357"/>
         <source>[New ...] - create a new connection</source>
         <translation>[Mới...] - tạo một kết nối mới</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="359"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
         <source>[Edit ...] - edit the currently selected connection</source>
         <translation>[Chỉnh sửa ...] - chỉnh sửa kết nối đang được chọn</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="360"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="359"/>
         <source>[Remove] - remove the currently selected connection</source>
         <translation>[Loại bỏ] - loại bỏ kết nối đang được chọn</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="361"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="360"/>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
         <translation>- bạn cần chọn một kết nối có hoạt động (kết nối đúng) để nhập các tập tin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="362"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="361"/>
         <source>-when changing connections Global Schema also changes accordingly</source>
         <translation>-khi thay đổi các kết nối, Schema Toàn cục cũng thay đổi tương ứng</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="363"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="362"/>
         <source>Shapefile List:</source>
         <translation>Danh sách tập tin shape:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="364"/>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
         <translation>[Thêm ...] - mở hộp thoại Tập tin và duyệt đến (các) tập tin cần nhập</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="366"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
         <source>[Remove] - remove the currently selected file(s) from the list</source>
         <translation>[Loại bỏ] - loại bỏ (các) tập tin hiện đang được chọn ra khỏi danh sách</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="367"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="366"/>
         <source>[Remove All] - remove all the files in the list</source>
         <translation>[Loại bỏ tất cả]  - loại bỏ tất cả các tập tin trong danh sách</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="368"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="367"/>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
         <translation>[SRID] - Tham chiếu nhận diện (ID) cho các tập tin shape cần nhập</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="369"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="368"/>
         <source>[Use Default (SRID)] - set SRID to -1</source>
         <translation>[Dùng mặc định (SRID)] - thiết lập SRID thành -1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="370"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="369"/>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
         <translation>[Tên cột Hình học] - Tên của cột hình học trong CSDL</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="371"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="370"/>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
         <translation>[Dùng mặc định (Tên Cột hình học)] - thiết lập tên cột thành &apos;cột_hh&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="372"/>
         <source>[Glogal Schema] - set the schema for all files to be imported into</source>
-        <translation>[Schema Toàn cục] - thiết lập schema cho tất cả các tập tin cần nhập vào</translation>
+        <translation type="obsolete">[Schema Toàn cục] - thiết lập schema cho tất cả các tập tin cần nhập vào</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="374"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="373"/>
         <source>[Import] - import the current shapefiles in the list</source>
         <translation>[Nhập] - nhập các tập tin shape hiện tại trong danh sách</translation>
     </message>
@@ -23417,109 +24769,109 @@ p, li { white-space: pre-wrap; }
         <translation>[Thoát] - thoát khỏi chương trình</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="376"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="375"/>
         <source>[Help] - display this help dialog</source>
         <translation>[Trợ giúp] - trình bày hộp thoại trợ giúp này</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="835"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="832"/>
         <source>Import Shapefiles</source>
         <translation>Nhập các tập tin shape</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="835"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="832"/>
         <source>You need to specify a Connection first</source>
         <translation>Bạn cần phải chỉ định kết nối trước</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="428"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="427"/>
         <source>Connection failed - Check settings and try again</source>
         <translation>Kết nối thất bại - Kiểm tra các thiết lập và thử lại</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="514"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="513"/>
         <source>You need to add shapefiles to the list first</source>
         <translation>Trước tiên bạn cần phải thêm các tập tin shape vào danh sách</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="581"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="518"/>
         <source>Importing files</source>
         <translation>Đang nhập các tập tin</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="519"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="518"/>
         <source>Cancel</source>
         <translation>Hủy bỏ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="523"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="522"/>
         <source>Progress</source>
         <translation>Tiến trình</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="532"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="531"/>
         <source>Problem inserting features from file:</source>
         <translation>Trục trặc khi chèn các đối tượng từ tập tin:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="539"/>
         <source>Invalid table name.</source>
-        <translation>Tên bảng không hợp lệ.</translation>
+        <translation type="obsolete">Tên bảng không hợp lệ.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="549"/>
         <source>No fields detected.</source>
-        <translation>Không phát hiện ra trường nào.</translation>
+        <translation type="obsolete">Không phát hiện ra trường nào.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="574"/>
         <source>The following fields are duplicates:</source>
-        <translation>Các trường sau bị lặp:</translation>
+        <translation type="obsolete">Các trường sau bị lặp:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="674"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="672"/>
         <source>Import Shapefiles - Relation Exists</source>
         <translation>Nhập các tập tin shape - mối liên hệ đã có</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="675"/>
         <source>The Shapefile:</source>
-        <translation>Tập tin shape:</translation>
+        <translation type="obsolete">Tập tin shape:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="676"/>
         <source>will use [</source>
-        <translation>sẽ dùng [</translation>
+        <translation type="obsolete">sẽ dùng [</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="676"/>
         <source>] relation for its data,</source>
-        <translation>] mối liên hệ cho dữ liệu của nó</translation>
+        <translation type="obsolete">] mối liên hệ cho dữ liệu của nó</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="676"/>
         <source>which already exists and possibly contains data.</source>
-        <translation>, là mối liên hệ đã tồn tại và có thể chứa dữ liệu.</translation>
+        <translation type="obsolete">, là mối liên hệ đã tồn tại và có thể chứa dữ liệu.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="677"/>
         <source>To avoid data loss change the &quot;DB Relation Name&quot;</source>
-        <translation>Để tránh mất dữ liệu thay đổi &quot;Tên Mối liên hệ CSDL&quot;</translation>
+        <translation type="obsolete">Để tránh mất dữ liệu thay đổi &quot;Tên Mối liên hệ CSDL&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="677"/>
         <source>for this Shapefile in the main dialog file list.</source>
-        <translation>cho tập tin shape này trong danh sách tập tin của hộp thoại chính.</translation>
+        <translation type="obsolete">cho tập tin shape này trong danh sách tập tin của hộp thoại chính.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="678"/>
         <source>Do you want to overwrite the [</source>
-        <translation>Bạn có muốn ghi đè liên hệ [</translation>
+        <translation type="obsolete">Bạn có muốn ghi đè liên hệ [</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="678"/>
         <source>] relation?</source>
-        <translation>] ?</translation>
+        <translation type="obsolete">] ?</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -23582,12 +24934,12 @@ p, li { white-space: pre-wrap; }
         <translation>Tập tin shape (*.shp);;Tất cả các tập tin (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="468"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="467"/>
         <source>PostGIS not available</source>
         <translation>PostGIS không có</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="470"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="469"/>
         <source>&lt;p&gt;The chosen database does not have PostGIS installed, but this is required for storage of spatial data.&lt;/p&gt;</source>
         <translation>&lt;p&gt;CSDL được chọn không cài đặt PostGIS, mà điều cần thiết để lưu trữ dữ liệu không gian. &lt;/p&gt;</translation>
     </message>
@@ -23599,26 +24951,84 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="816"/>
         <source>&lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;</source>
-        <translation>&lt;p&gt;Lỗi khi đang thực hiện SQL:&lt;/p&gt;&lt;p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Lỗi khi đang thực hiện SQL:&lt;/p&gt;&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="817"/>
         <source>&lt;/p&gt;&lt;p&gt;The database said:</source>
-        <translation>&lt;/p&gt;&lt;p&gt;CSDL nói rằng:</translation>
+        <translation type="obsolete">&lt;/p&gt;&lt;p&gt;CSDL nói rằng:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="408"/>
         <source>Password for </source>
-        <translation type="unfinished">Mật mã cho</translation>
+        <translation type="obsolete">Mật mã cho</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="409"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="408"/>
         <source>Please enter your password:</source>
         <translation type="unfinished">Vui lòng nhập mật mã của bạn:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="831"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="828"/>
         <source>%1 of %2 shapefiles could not be imported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="148"/>
+        <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="371"/>
+        <source>[Global Schema] - set the schema for all files to be imported into</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="407"/>
+        <source>Password for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="538"/>
+        <source>%1
+Invalid table name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="548"/>
+        <source>%1
+No fields detected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="574"/>
+        <source>%1
+The following fields are duplicates:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="581"/>
+        <source>Importing files
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="813"/>
+        <source>%1
+&lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;The database said:%3&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="678"/>
+        <source>The Shapefile:
+%1
+will use [%2] relation for its data,
+which already exists and possibly contains data.
+To avoid data loss change the &quot;DB Relation Name&quot;
+for this Shapefile in the main dialog file list.
+
+Do you want to overwrite the [%2] relation?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24161,26 +25571,6 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2652"/>
-        <source>SUCCESS: %1 attributes added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2658"/>
-        <source>ERROR: %1 new attributes not added</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2630"/>
-        <source>SUCCESS: %1 attributes deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2636"/>
-        <source>ERROR: %1 attributes not deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2699"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation type="unfinished"></translation>
@@ -24188,46 +25578,6 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2706"/>
         <source>ERROR: attribute %1 not added</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2765"/>
-        <source>SUCCESS: %1 attribute values changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2770"/>
-        <source>ERROR: %1 attribute value changes not applied.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2802"/>
-        <source>SUCCESS: %1 features added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2807"/>
-        <source>ERROR: %1 features not added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2820"/>
-        <source>SUCCESS: %1 geometries were changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2825"/>
-        <source>ERROR: %1 geometries not changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2837"/>
-        <source>SUCCESS: %1 features deleted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2847"/>
-        <source>ERROR: %1 features not deleted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24239,6 +25589,102 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2328"/>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2630"/>
+        <source>SUCCESS: %n attribute(s) deleted.</source>
+        <comment>deleted attributes count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2636"/>
+        <source>ERROR: %n attribute(s) not deleted.</source>
+        <comment>not deleted attributes count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2652"/>
+        <source>SUCCESS: %n attribute(s) added.</source>
+        <comment>added attributes count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2658"/>
+        <source>ERROR: %n new attribute(s) not added</source>
+        <comment>not added attributes count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2765"/>
+        <source>SUCCESS: %n attribute value(s) changed.</source>
+        <comment>changed attribute values count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2770"/>
+        <source>ERROR: %n attribute value change(s) not applied.</source>
+        <comment>not changed attribute values count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2802"/>
+        <source>SUCCESS: %n feature(s) added.</source>
+        <comment>added features count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2807"/>
+        <source>ERROR: %n feature(s) not added.</source>
+        <comment>not added features count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2820"/>
+        <source>SUCCESS: %n geometries were changed.</source>
+        <comment>changed geometries count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2825"/>
+        <source>ERROR: %n geometries not changed.</source>
+        <comment>not changed geometries count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2837"/>
+        <source>SUCCESS: %n feature(s) deleted.</source>
+        <comment>deleted features count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2847"/>
+        <source>ERROR: %n feature(s) not deleted.</source>
+        <comment>not deleted features count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -24261,7 +25707,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="304"/>
         <source>Transparency: </source>
-        <translation>Độ trong suốt: </translation>
+        <translation type="obsolete">Độ trong suốt: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="395"/>
@@ -24294,7 +25740,7 @@ Should the existing classes be deleted before classification?</source>
         <translation>Phép truy vấn được dùng để giới hạn các đối tượng trong lớp được hiển thị. Lệnh này hiện tại chỉ được hỗ trợ cho các lớp PostgreSQL. Để nhập hoặc thay đổi phép truy vấn, nhắp chuột vào nút &apos;Trình tạo Truy vấn&apos;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="656"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="655"/>
         <source>Spatial Index</source>
         <translation>Chỉ mục Không gian</translation>
     </message>
@@ -24304,128 +25750,123 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">Tạo chỉ mục không gian thành công</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="656"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="655"/>
         <source>Creation of spatial index failed</source>
         <translation>Tạo chỉ mục không gian thất bại</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="669"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="668"/>
         <source>General:</source>
         <translation>Tổng quát:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="684"/>
         <source>Storage type of this layer : </source>
-        <translation>Kiểu lưu trữ của lớp này: </translation>
+        <translation type="obsolete">Kiểu lưu trữ của lớp này: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="690"/>
         <source>Source for this layer : </source>
-        <translation>Nguồn của lớp này: </translation>
+        <translation type="obsolete">Nguồn của lớp này: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="707"/>
         <source>Geometry type of the features in this layer : </source>
-        <translation>Kiểu hình học của các đối tượng trong lớp này: </translation>
+        <translation type="obsolete">Kiểu hình học của các đối tượng trong lớp này: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="715"/>
         <source>The number of features in this layer : </source>
-        <translation>Số đối tượng trong lớp này: </translation>
+        <translation type="obsolete">Số đối tượng trong lớp này: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="720"/>
         <source>Editing capabilities of this layer : </source>
-        <translation>Khả năng chỉnh sửa lớp này: </translation>
+        <translation type="obsolete">Khả năng chỉnh sửa lớp này: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="727"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="720"/>
         <source>Extents:</source>
         <translation>Phạm vi:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="732"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="725"/>
         <source>In layer spatial reference system units : </source>
         <translation>Đơn vị hệ tham chiếu không gian trong lớp: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="733"/>
         <source>xMin,yMin </source>
-        <translation>x.Nhỏ.nhất, y.Nhỏ.nhất </translation>
+        <translation type="obsolete">x.Nhỏ.nhất, y.Nhỏ.nhất </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="737"/>
         <source> : xMax,yMax </source>
-        <translation> : x.Lớn.nhất,y.Lớn.nhất </translation>
+        <translation type="obsolete"> : x.Lớn.nhất,y.Lớn.nhất </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="792"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="777"/>
         <source>In project spatial reference system units : </source>
         <translation>Đơn vị hệ tham chiếu không gian trong dự án: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="766"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="751"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Hệ tham chiếu không gian của lớp:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="763"/>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation type="obsolete">Hệ tham chiếu không gian của dự án (đầu ra):</translation>
+        <translation type="unfinished">Hệ tham chiếu không gian của dự án (đầu ra):</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="803"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="787"/>
         <source>Attribute field info:</source>
         <translation>Thông tin trường thuộc tính:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="810"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="794"/>
         <source>Field</source>
         <translation>Trường</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="813"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="797"/>
         <source>Type</source>
         <translation>Kiểu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="816"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="800"/>
         <source>Length</source>
         <translation>Chiều dài</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="819"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="803"/>
         <source>Precision</source>
         <translation>Độ chính xác</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="677"/>
         <source>Layer comment: </source>
-        <translation>Nhận xét về lớp: </translation>
+        <translation type="obsolete">Nhận xét về lớp: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="822"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="806"/>
         <source>Comment</source>
         <translation>Ghi chú</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="918"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="898"/>
         <source>Default Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1021"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="995"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1049"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1020"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1050"/>
-        <source>Unknown style format: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24519,13 +25960,73 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished">Thuộc tính không thể chèn vào được. Tên này đã có trong bảng.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="651"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="650"/>
         <source>Creation of spatial index successful</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1042"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1015"/>
         <source>Saved Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="304"/>
+        <source>Transparency: %1%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="675"/>
+        <source>Layer comment: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="681"/>
+        <source>Storage type of this layer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="686"/>
+        <source>Source for this layer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="702"/>
+        <source>Geometry type of the features in this layer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="709"/>
+        <source>The number of features in this layer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="713"/>
+        <source>Editing capabilities of this layer: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="740"/>
+        <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="777"/>
+        <source>(Invalid transformation of layer extents)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="913"/>
+        <source>Load layer properties from style file (.qml)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1021"/>
+        <source>Unknown style format: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="974"/>
+        <source>Save layer properties as style file (.qml)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24856,17 +26357,22 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="257"/>
         <source>Are you sure you want to remove the </source>
-        <translation>Có chắc bạn muốn loại bỏ </translation>
+        <translation type="obsolete">Có chắc bạn muốn loại bỏ </translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="257"/>
         <source> connection and all associated settings?</source>
-        <translation> kết nối và tất cả các thiết lập liên quan?</translation>
+        <translation type="obsolete"> kết nối và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="258"/>
         <source>Confirm Delete</source>
         <translation>Xác nhận việc xóa</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="257"/>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24945,17 +26451,17 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="719"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="718"/>
         <source>Tried URL: </source>
         <translation>URL đã thử: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="699"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="698"/>
         <source>HTTP Exception</source>
         <translation>Lỗi HTTP exception</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="662"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="661"/>
         <source>WMS Service Exception</source>
         <translation>Lỗi WMS Service exception</translation>
     </message>
@@ -24967,90 +26473,90 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="773"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3</source>
-        <translation>Không thể lấy &apos;WMS capabiities&apos;: %1 tại dòng %2 cột %3</translation>
+        <translation type="obsolete">Không thể lấy &apos;WMS capabiities&apos;: %1 tại dòng %2 cột %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="804"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="797"/>
         <source>This is probably due to an incorrect WMS Server URL.</source>
         <translation>Điều có thể là do một URL WMS Server không đúng.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="800"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found</source>
-        <translation>Không thể lấy các &apos;năng lực&apos; của WMS ở định dạng mong đợi (DTD): không thấy %1 hoặc %2</translation>
+        <translation type="obsolete">Không thể lấy các &apos;năng lực&apos; của WMS ở định dạng mong đợi (DTD): không thấy %1 hoặc %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1548"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1541"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
         <translation>Không thể lấy WMS Service Exception tại %1: %2 tại dòng %3 cột %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1600"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1593"/>
         <source>Request contains a Format not offered by the server.</source>
         <translation>Trong yêu cầu có một định dạng không được server này cung cấp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1604"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1597"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Trong yêu cầu chứa một CRS không được server này cung cấp đối với một hay nhiều lớp đang yêu cầu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1608"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1601"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Trong yêu cầu chứa một SRS không được server này cung cấp đối với một hay nhiều lớp đang yêu cầu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1613"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1606"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>Yêu cầu GetMap (lấy bản đồ) đối với một lớp không được server này cung cấp, hoặc yêu cầu GetFeatureInfo (lấy thông tin đối tượng) đối với một lớp không hiển thị trên bản đồ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1617"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1610"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Yêu cầu này đối với một lớp thuộc một kiểu không do server này cung cấp.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1621"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1614"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>Yêu cầu GetFeatureInfo (lấy thông tin đối tượng) được áp dụng cho một lớp không thể khai báo bằng phép truy vấn.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1625"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1618"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>Yêu cầu GetFeatureInfo chứa giá trị X hoặc Y không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1630"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Giá trị của tham số UpdateSequence (tùy chọn) trong GetCapabilities giống với giá trị hiện tại của số hiệu trình tự cập nhật metadata.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1635"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1628"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Giá trị của tham số UpdateSequence (tùy chọn) trong yêu cầu GetCapabilities lớn hơn giá trị hiện tại của số hiệu trình tự cập nhật metadata.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1640"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1633"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Yêu cầu không có một giá trị kích thước mẫu, và máy chủ không khai báo giá trị mặc định cho kích thước đó.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1644"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1637"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Yêu cầu có giá trị kích thước mẫu không hợp lệ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1648"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1641"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Yêu cầu đối với một lệnh tùy chọn không được máy chủ hỗ trợ.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1652"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1645"/>
         <source>(Unknown error code from a post-1.3 WMS server)</source>
         <translation>(mã lỗi không rõ từ máy chủ WMS post-1.3)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1655"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1648"/>
         <source>The WMS vendor also reported: </source>
         <translation>&apos;Nhà cung cấp&apos; WMS báo cáo: </translation>
     </message>
@@ -25060,173 +26566,191 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">Điều này có thể do một lỗi trong chương trình QGIS. Hãy thông báo lỗi này.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1840"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1833"/>
         <source>Server Properties:</source>
         <translation>Các đặc điểm của máy chủ:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1964"/>
         <source>Property</source>
         <translation>Đặc điểm</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1974"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1967"/>
         <source>Value</source>
         <translation>Giá trị</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1857"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1850"/>
         <source>WMS Version</source>
         <translation>Phiên bản WMS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2103"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2096"/>
         <source>Title</source>
         <translation>Tiêu đề</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2111"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2104"/>
         <source>Abstract</source>
         <translation>Tóm tắt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1881"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1874"/>
         <source>Keywords</source>
         <translation>Các từ khóa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1889"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1882"/>
         <source>Online Resource</source>
         <translation>Tài nguyên trực tuyến</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1897"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1890"/>
         <source>Contact Person</source>
         <translation>Người liên hệ</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1909"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1902"/>
         <source>Fees</source>
         <translation>Lệ phí</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1917"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
         <source>Access Constraints</source>
         <translation>Các giới hạn truy cập</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1925"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1918"/>
         <source>Image Formats</source>
         <translation>Định dạng ảnh</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1933"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1926"/>
         <source>Identify Formats</source>
         <translation>Nhận diện các định dạng</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1941"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1934"/>
         <source>Layer Count</source>
         <translation>Đếm lớp</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1961"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1954"/>
         <source>Layer Properties: </source>
         <translation>Các tính chất của lớp: </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1979"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1972"/>
         <source>Selected</source>
         <translation>Được chọn</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2036"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2029"/>
         <source>Yes</source>
         <translation>Có</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2036"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2029"/>
         <source>No</source>
         <translation>Không</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1988"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1981"/>
         <source>Visibility</source>
         <translation>Khả năng xem</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1994"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1987"/>
         <source>Visible</source>
         <translation>Xem được</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1995"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1988"/>
         <source>Hidden</source>
         <translation>Ẩn</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1996"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1989"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2017"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
         <source>Can Identify</source>
         <translation>Có thể nhận diện</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2025"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2018"/>
         <source>Can be Transparent</source>
         <translation>Có thể trong suốt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2033"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2026"/>
         <source>Can Zoom In</source>
         <translation>Có thể phóng lớn</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2041"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2034"/>
         <source>Cascade Count</source>
         <translation>&apos;Đếm theo tầng&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2049"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2042"/>
         <source>Fixed Width</source>
         <translation>Chiều ngang cố định</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2057"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2050"/>
         <source>Fixed Height</source>
         <translation>Chiều đứng cố định</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2065"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2058"/>
         <source>WGS 84 Bounding Box</source>
         <translation>Khung giới hạn WGS 84</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2075"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2068"/>
         <source>Available in CRS</source>
         <translation>Dùng được theo CRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2086"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2079"/>
         <source>Available in style</source>
         <translation>Dùng được theo kiểu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2095"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2088"/>
         <source>Name</source>
         <translation>Tên</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2196"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2173"/>
         <source>Layer cannot be queried.</source>
         <translation>Lớp không thể truy vấn được.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1546"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1539"/>
         <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="666"/>
+        <source>
+Tried URL: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="772"/>
+        <source>Could not get WMS capabilities: %1 at line %2 column %3
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="796"/>
+        <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25244,7 +26768,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintgui.cpp" line="155"/>
-        <source>Unknown format: </source>
+        <source>Unknown format: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25309,7 +26833,7 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QuickPrintPlugin</name>
     <message>
-        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="75"/>
+        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="74"/>
         <source>Quick Print</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25319,12 +26843,12 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">Thay thế dòng này bằng một mô tả ngắn gọn về chức năng của phần mở rộng</translation>
     </message>
     <message>
-        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="82"/>
+        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="81"/>
         <source>&amp;Quick Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="77"/>
+        <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="76"/>
         <source>Provides a way to quickly produce a map with minimal user input.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25536,12 +27060,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>dxf2shpConverter</name>
     <message>
-        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="73"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="72"/>
         <source>Converts DXF files in Shapefile format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="109"/>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="108"/>
         <source>&amp;Dxf2Shp</source>
         <translation type="unfinished"></translation>
     </message>
