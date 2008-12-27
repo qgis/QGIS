@@ -21,13 +21,13 @@
 #include "ui_qgsserversourceselectbase.h"
 #include "qgisgui.h"
 
-#include <vector>
-#include <map>
-#include <set>
+#include <QStringList>
 
 class QgisApp;
 class QgsWmsProvider;
 class QButtonGroup;
+class QgsNumericSortTreeWidgetItem;
+
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
  *
@@ -140,6 +140,9 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! Populate the image encoding button group - private for now.
     void populateImageEncodingGroup( QgsWmsProvider* wmsProvider );
 
+    //! create an item including possible parents
+    QgsNumericSortTreeWidgetItem *createItem(int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int,int> &layerParents, const QMap<int, QStringList> &layerParentNames );
+
     //! Returns a textual description for the EpsgCrsId number
     QString descriptionForEpsg( long epsg );
 
@@ -165,7 +168,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     QStringList m_selectedStylesForSelectedLayers;
     long m_Epsg;
 
-    std::map<QString, QString> m_selectedStyleIdForLayer;
+    QMap<QString, QString> m_selectedStyleIdForLayer;
 
     //! The mime type, the text to use in the button and a unique number
     QMap<QString, QPair<QString, int> > m_PotentialFormats;
