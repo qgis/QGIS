@@ -59,7 +59,8 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
     cachedPixelHeight( 0 ),
     mCoordinateTransform( 0 ),
     extentDirty( TRUE ),
-    mGetFeatureInfoUrlBase( 0 )
+    mGetFeatureInfoUrlBase( 0 ),
+    mLayerCount( -1 )
 {
   QgsDebugMsg( "QgsWmsProvider: constructing with uri '" + uri + "'." );
 
@@ -134,7 +135,7 @@ QgsWmsProvider::~QgsWmsProvider()
 
 
 
-bool QgsWmsProvider::supportedLayers( std::vector<QgsWmsLayerProperty> & layers )
+bool QgsWmsProvider::supportedLayers( QVector<QgsWmsLayerProperty> &layers )
 {
   QgsDebugMsg( "Entering." );
 
@@ -159,11 +160,11 @@ QSet<QString> QgsWmsProvider::supportedCrsForLayers( QStringList const & layers 
   QStringList::const_iterator i;
   for ( i = layers.constBegin(); i != layers.constEnd(); ++i )
   {
-    std::vector<QString> crsVector = crsForLayer[*i];
+    QVector<QString> crsVector = crsForLayer[*i];
     QSet<QString>    crsSet;
 
     // convert std::vector to std::set for set comparisons
-    for ( uint j = 0; j < crsVector.size(); j++ )
+    for ( int j = 0; j < crsVector.size(); j++ )
     {
       crsSet.insert( crsVector[j] );
     }
@@ -192,8 +193,8 @@ size_t QgsWmsProvider::layerCount() const
 } // QgsWmsProvider::layerCount()
 
 
-void QgsWmsProvider::addLayers( QStringList const &  layers,
-                                QStringList const &  styles )
+void QgsWmsProvider::addLayers( QStringList const &layers,
+                                QStringList const &styles )
 {
   QgsDebugMsg( "Entering with layer list of " + layers.join( ", " )
                + " and style list of " + styles.join( ", " ) );
@@ -220,7 +221,7 @@ void QgsWmsProvider::addLayers( QStringList const &  layers,
 }
 
 
-void QgsWmsProvider::setLayerOrder( QStringList const &  layers )
+void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
   QgsDebugMsg( "Entering." );
 
@@ -271,7 +272,6 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
   }
 
 }
-
 
 QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
@@ -335,17 +335,15 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   // Width in WMS format
   QString width;
   width = width.setNum( pixelWidth );
-
+  
   // Height in WMS format
   QString height;
   height = height.setNum( pixelHeight );
-
 
   // Calculate active layers that are also visible.
 
   QgsDebugMsg( "Active layer list of "  + activeSubLayers.join( ", " )
                + " and style list of "  + activeSubStyles.join( ", " ) );
-
 
   QStringList visibleLayers = QStringList();
   QStringList visibleStyles = QStringList();
@@ -356,7 +354,7 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
         it != activeSubLayers.end();
         ++it )
   {
-    if ( TRUE == activeSubLayerVisibility.find( *it )->second )
+    if ( activeSubLayerVisibility.find( *it ).value() )
     {
       visibleLayers += *it;
       visibleStyles += *it2;
@@ -380,7 +378,7 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   }
 
   QString url;
-  std::vector<QgsWmsDcpTypeProperty> dcpType = mCapabilities.capability.request.getMap.dcpType;
+  QVector<QgsWmsDcpTypeProperty> dcpType = mCapabilities.capability.request.getMap.dcpType;
   if ( dcpType.size() < 1 )
   {
     url = baseUrl;
@@ -409,14 +407,25 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   url += "STYLES=" + styles;
   url += "&";
   url += "FORMAT=" + imageMimeType;
-  if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
+
+  //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
+  if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
   {
     url += "&";
     url += "TRANSPARENT=TRUE";
   }
 
+  dcpType = mCapabilities.capability.request.getFeatureInfo.dcpType;
+  if ( dcpType.size() < 1 )
+  {
+    mGetFeatureInfoUrlBase = baseUrl;
+  }
+  else
+  {
+    mGetFeatureInfoUrlBase = prepareUri( dcpType.front().http.get.onlineResource.xlinkHref );
+  }
+
   // cache some details for if the user wants to do an identifyAsHtml() later
-  mGetFeatureInfoUrlBase = baseUrl;
   mGetFeatureInfoUrlBase += "SERVICE=WMS";
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "VERSION=" + mCapabilities.version;
@@ -436,12 +445,12 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   mGetFeatureInfoUrlBase += "STYLES=" + styles;
   mGetFeatureInfoUrlBase += "&";
   mGetFeatureInfoUrlBase += "FORMAT=" + imageMimeType;
+
   if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
   {
     mGetFeatureInfoUrlBase += "&";
     mGetFeatureInfoUrlBase += "TRANSPARENT=TRUE";
   }
-
 
   QByteArray imagesource;
   imagesource = retrieveUrl( url );
@@ -904,7 +913,7 @@ void QgsWmsProvider::parseCapability( QDomElement const & e, QgsWmsCapabilityPro
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg("  "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg("  "  + e1.tagName() ); // the node really is an element.
 
       if ( e1.tagName() == "Request" )
       {
@@ -1303,10 +1312,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
 //  layerProperty.title =       QString::null;
 //  layerProperty.abstract =    QString::null;
 //  layerProperty.keywordList.clear();
-
-  // assume true until we find a child layer
-  bool atleaf = TRUE;
-
+  layerProperty.orderId     = ++mLayerCount;
   layerProperty.queryable   = e.attribute( "queryable" ).toUInt();
   layerProperty.cascaded    = e.attribute( "cascaded" ).toUInt();
   layerProperty.opaque      = e.attribute( "opaque" ).toUInt();
@@ -1320,11 +1326,11 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      // QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       if ( e1.tagName() == "Layer" )
       {
-        // QgsDebugMsg( "      Nested layer." );
+        QgsDebugMsg( "      Nested layer." );
 
         QgsWmsLayerProperty subLayerProperty;
 
@@ -1339,8 +1345,6 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
         parseLayer( e1, subLayerProperty, &layerProperty );
 
         layerProperty.layer.push_back( subLayerProperty );
-
-        atleaf = FALSE;
       }
       else if ( e1.tagName() == "Name" )
       {
@@ -1469,7 +1473,12 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     n1 = n1.nextSibling();
   }
 
-  if ( atleaf )
+  if(parentProperty)
+  {
+    mLayerParents[ layerProperty.orderId ] = parentProperty->orderId;
+  }
+
+  if ( layerProperty.layer.empty() )
   {
     // We have all the information we need to properly evaluate a layer definition
     // TODO: Save this somewhere
@@ -1488,7 +1497,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     extentForLayer[ layerProperty.name ] = layerProperty.ex_GeographicBoundingBox;
 
     // see if we can refine the bounding box with the CRS-specific bounding boxes
-    for ( uint i = 0; i < layerProperty.boundingBox.size(); i++ )
+    for ( int i = 0; i < layerProperty.boundingBox.size(); i++ )
     {
       QgsDebugMsg( "testing bounding box CRS which is "
                    + layerProperty.boundingBox[i].crs + "." );
@@ -1508,15 +1517,24 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     layersSupported.push_back( layerProperty );
 
     //if there are several <Layer> elements without a parent layer, the style list needs to be cleared
-    if ( atleaf )
+    if ( layerProperty.layer.empty() )
     {
       layerProperty.style.clear();
     }
+  }
+  else
+  {
+    mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
 
 //  QgsDebugMsg("exiting.");
 }
 
+void QgsWmsProvider::layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const
+{
+  parents = mLayerParents;
+  parentNames = mLayerParentNames;
+}
 
 bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
 {
@@ -1744,7 +1762,7 @@ bool QgsWmsProvider::calculateExtent()
   {
     QgsDebugMsg( "Sublayer Iterator: " + *it );
     // This is the extent for the layer name in *it
-    QgsRectangle extent = extentForLayer.find( *it )->second;
+    QgsRectangle extent = extentForLayer.find( *it ).value();
 
     // Convert to the user's CRS as required
     try
@@ -1800,10 +1818,10 @@ int QgsWmsProvider::capabilities() const
         ++it )
   {
     // Is sublayer visible?
-    if ( TRUE == activeSubLayerVisibility.find( *it )->second )
+    if ( activeSubLayerVisibility.find( *it ).value() )
     {
       // Is sublayer queryable?
-      if ( TRUE == mQueryableForLayer.find( *it )->second )
+      if ( mQueryableForLayer.find( *it ).value() )
       {
         QgsDebugMsg( "'"  + ( *it )  + "' is queryable." );
         canIdentify = TRUE;
@@ -1843,7 +1861,7 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += "</th>";
   myMetadataQString += "<th bgcolor=\"black\">";
   myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
-  myMetadataQString += "</th><tr>";
+  myMetadataQString += "</th></tr>";
 
   // WMS Version
   myMetadataQString += "<tr><td bgcolor=\"gray\">";
@@ -1937,21 +1955,33 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += QString::number( layersSupported.size() );
   myMetadataQString += "</td></tr>";
 
+  // Base URL
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr( "GetFeatureInfoUrl" );
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += mGetFeatureInfoUrlBase;
+  myMetadataQString += "</td></tr>";
+
   // Close the nested table
   myMetadataQString += "</table>";
   myMetadataQString += "</td></tr>";
 
+  // Layer properties
+  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += tr( "Layer Properties:" );
+  myMetadataQString += "</td></tr>";
+
   // Iterate through layers
 
-  for ( uint i = 0; i < layersSupported.size(); i++ )
+  for ( int i = 0; i < layersSupported.size(); i++ )
   {
 
     // TODO: Handle nested layers
     QString layerName = layersSupported[i].name;   // for aesthetic convenience
 
     // Layer Properties section
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr( "Layer Properties: " );
+    myMetadataQString += "<tr><td bgcolor=\"white\">";
     myMetadataQString += layerName;
     myMetadataQString += "</td></tr>";
 
@@ -1965,7 +1995,7 @@ QString QgsWmsProvider::metadata()
     myMetadataQString += "</th>";
     myMetadataQString += "<th bgcolor=\"black\">";
     myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
-    myMetadataQString += "</th><tr>";
+    myMetadataQString += "</th></tr>";
 
     // Layer Selectivity (as managed by this provider)
     myMetadataQString += "<tr><td bgcolor=\"gray\">";
@@ -1983,7 +2013,7 @@ QString QgsWmsProvider::metadata()
     myMetadataQString += "<td bgcolor=\"gray\">";
     myMetadataQString += ( activeSubLayers.indexOf( layerName ) >= 0 ) ?
                          (
-                           ( activeSubLayerVisibility.find( layerName )->second ) ?
+                           ( activeSubLayerVisibility.find( layerName ).value() ) ?
                            tr( "Visible" ) : tr( "Hidden" )
                          ) :
                              tr( "n/a" );
@@ -2062,8 +2092,8 @@ QString QgsWmsProvider::metadata()
     myMetadataQString += "</td></tr>";
 
     // Layer Coordinate Reference Systems
-    for ( uint j = 0; j < layersSupported[i].crs.size(); j++ )
-{
+    for ( int j = 0; j < layersSupported[i].crs.size(); j++ )
+    {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr( "Available in CRS" );
       myMetadataQString += "</td>";
@@ -2073,7 +2103,7 @@ QString QgsWmsProvider::metadata()
     }
 
     // Layer Styles
-    for ( uint j = 0; j < layersSupported[i].style.size(); j++ )
+    for ( int j = 0; j < layersSupported[i].style.size(); j++ )
     {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr( "Available in style" );
@@ -2140,10 +2170,10 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
         ++it )
   {
     // Is sublayer visible?
-    if ( TRUE == activeSubLayerVisibility.find( *it )->second )
+    if ( activeSubLayerVisibility.find( *it ).value() )
     {
       // Is sublayer queryable?
-      if ( TRUE == mQueryableForLayer.find( *it )->second )
+      if ( mQueryableForLayer.find( *it ).value() )
       {
         QgsDebugMsg( "Layer '" + *it + "' is queryable." );
         // Compose request to WMS server

@@ -21,15 +21,14 @@
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
 
-#include <map>
-#include <vector>
-
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
+#include <QMap>
+#include <QVector>
 
 class QgsCoordinateTransform;
 
@@ -78,8 +77,8 @@ struct QgsWmsDcpTypeProperty
 // TODO: Fill to WMS specifications
 struct QgsWmsOperationType
 {
-  QStringList                          format;
-  std::vector<QgsWmsDcpTypeProperty>   dcpType;
+  QStringList                      format;
+  QVector<QgsWmsDcpTypeProperty>   dcpType;
 };
 
 /** Request Property structure */
@@ -220,12 +219,12 @@ struct QgsWmsStyleUrlProperty
 // TODO: Fill to WMS specifications
 struct QgsWmsStyleProperty
 {
-  QString                               name;
-  QString                               title;
-  QString                               abstract;
-  std::vector<QgsWmsLegendUrlProperty>  legendUrl;
-  QgsWmsStyleSheetUrlProperty           styleSheetUrl;
-  QgsWmsStyleUrlProperty                styleUrl;
+  QString                           name;
+  QString                           title;
+  QString                           abstract;
+  QVector<QgsWmsLegendUrlProperty>  legendUrl;
+  QgsWmsStyleSheetUrlProperty       styleSheetUrl;
+  QgsWmsStyleUrlProperty            styleUrl;
 };
 
 /** Authority URL Property structure */
@@ -273,24 +272,25 @@ struct QgsWmsFeatureListUrlProperty
 struct QgsWmsLayerProperty
 {
   // WMS layer properties
-  QString                                     name;
-  QString                                     title;
-  QString                                     abstract;
-  QStringList                                 keywordList;
-  std::vector<QString>                        crs;        // coord ref sys
-  QgsRectangle                                     ex_GeographicBoundingBox;
-  std::vector<QgsWmsBoundingBoxProperty>      boundingBox;
-  std::vector<QgsWmsDimensionProperty>        dimension;
-  QgsWmsAttributionProperty                   attribution;
-  std::vector<QgsWmsAuthorityUrlProperty>     authorityUrl;
-  std::vector<QgsWmsIdentifierProperty>       identifier;
-  std::vector<QgsWmsMetadataUrlProperty>      metadataUrl;
-  std::vector<QgsWmsDataListUrlProperty>      dataListUrl;
-  std::vector<QgsWmsFeatureListUrlProperty>   featureListUrl;
-  std::vector<QgsWmsStyleProperty>            style;
-  double                                      minimumScaleDenominator;
-  double                                      maximumScaleDenominator;
-  std::vector<QgsWmsLayerProperty>            layer;      // nested layers
+  int					  orderId;
+  QString                                 name;
+  QString                                 title;
+  QString                                 abstract;
+  QStringList                             keywordList;
+  QVector<QString>                        crs;        // coord ref sys
+  QgsRectangle                            ex_GeographicBoundingBox;
+  QVector<QgsWmsBoundingBoxProperty>      boundingBox;
+  QVector<QgsWmsDimensionProperty>        dimension;
+  QgsWmsAttributionProperty               attribution;
+  QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
+  QVector<QgsWmsIdentifierProperty>       identifier;
+  QVector<QgsWmsMetadataUrlProperty>      metadataUrl;
+  QVector<QgsWmsDataListUrlProperty>      dataListUrl;
+  QVector<QgsWmsFeatureListUrlProperty>   featureListUrl;
+  QVector<QgsWmsStyleProperty>            style;
+  double                                  minimumScaleDenominator;
+  double                                  maximumScaleDenominator;
+  QVector<QgsWmsLayerProperty>            layer;      // nested layers
 
   // WMS layer attributes
   bool               queryable;
@@ -331,12 +331,9 @@ struct QgsWmsCapabilitiesProperty
 */
 class QgsWmsProvider : public QgsRasterDataProvider
 {
-
     Q_OBJECT
 
   public:
-
-
     /**
     * Constructor for the provider.
     *
@@ -359,7 +356,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \todo Document this better, make static
      */
-    virtual bool supportedLayers( std::vector<QgsWmsLayerProperty> & layers );
+    virtual bool supportedLayers( QVector<QgsWmsLayerProperty> & layers );
+
+    /**
+     * \brief   Returns a map for the hierachy of layers 
+     */
+    virtual void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
     // TODO: Document this better
     /** \brief   Returns a list of the supported CRSs of the given layers
@@ -735,23 +737,23 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * layers hosted by the WMS Server
      */
-    std::vector<QgsWmsLayerProperty> layersSupported;
+    QVector<QgsWmsLayerProperty> layersSupported;
 
     /**
      * extents per layer (in WMS CRS:84 datum)
      */
-    std::map<QString, QgsRectangle> extentForLayer;
+    QMap<QString, QgsRectangle> extentForLayer;
 
     /**
      * available CRSs per layer
      */
-    std::map<QString, std::vector<QString> > crsForLayer;
+    QMap<QString, QVector<QString> > crsForLayer;
 
     /**
      * WMS "queryable" per layer
      * Used in determining if the Identify map tool can be useful on the rendered WMS map layer.
      */
-    std::map<QString, bool> mQueryableForLayer;
+    QMap<QString, bool> mQueryableForLayer;
 
     /**
      * Active sublayers managed by this provider in a draw function, in order from bottom to top
@@ -764,7 +766,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Visibility status of the given active sublayer
      */
-    std::map<QString, bool> activeSubLayerVisibility;
+    QMap<QString, bool> activeSubLayerVisibility;
 
     /**
      * MIME type of the image encoding used from the WMS server
@@ -816,6 +818,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! Base URL for WMS GetFeatureInfo requests
     QString mGetFeatureInfoUrlBase;
+
+    int mLayerCount;
+    QMap<int, int> mLayerParents;
+    QMap<int, QStringList> mLayerParentNames;
+
 };
 
 #endif

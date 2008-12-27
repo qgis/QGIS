@@ -186,55 +186,87 @@ void QgsServerSourceSelect::on_btnHelp_clicked()
 
 }
 
-bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider* wmsProvider )
+QgsNumericSortTreeWidgetItem *QgsServerSourceSelect::createItem(
+	int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount,
+	const QMap<int,int> &layerParents, const QMap<int, QStringList> &layerParentNames )
+
 {
-  std::vector<QgsWmsLayerProperty> layers;
+  if( items.contains(id) )
+    return items[id];
+
+  QgsNumericSortTreeWidgetItem *item;
+  if( layerParents.contains( id ) )
+  {
+    int parent = layerParents[ id ];
+    item = new QgsNumericSortTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
+  }
+  else
+    item = new QgsNumericSortTreeWidgetItem( lstLayers );
+
+  item->setText( 0, QString::number( ++layerAndStyleCount ) );
+  item->setText( 1, names[0].simplified() );
+  item->setText( 2, names[1].simplified() );
+  item->setText( 3, names[2].simplified() );
+
+  items[ id ] = item;
+
+  return item;
+}
+
+bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
+{
+  QVector<QgsWmsLayerProperty> layers;
 
   if ( !wmsProvider->supportedLayers( layers ) )
   {
     return FALSE;
   }
 
+  QMap<int, QgsNumericSortTreeWidgetItem *> items;
+  QMap<int, int> layerParents;
+  QMap<int, QStringList> layerParentNames;
+  wmsProvider->layerParents( layerParents, layerParentNames );
+
   lstLayers->clear();
+  lstLayers->setSortingEnabled( true );
 
-  int layerAndStyleCount = 0;
+  int layerAndStyleCount = -1;
 
-  for ( std::vector<QgsWmsLayerProperty>::iterator layer  = layers.begin();
+  for ( QVector<QgsWmsLayerProperty>::iterator layer = layers.begin();
         layer != layers.end();
         layer++ )
   {
-    // QgsDebugMsg(QString("got layer name %1 and title '%2'.").arg(layer->name).arg(layer->title));
+    QgsNumericSortTreeWidgetItem *lItem = createItem(layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
-    layerAndStyleCount++;
-
-    QgsNumericSortTreeWidgetItem *lItem = new QgsNumericSortTreeWidgetItem( lstLayers );
-    lItem->setText( 0, QString::number( layerAndStyleCount ) );
-    lItem->setText( 1, layer->name.simplified() );
-    lItem->setText( 2, layer->title.simplified() );
-    lItem->setText( 3, layer->abstract.simplified() );
+    lItem->setData( 0, Qt::UserRole, layer->name );
+    lItem->setData( 0, Qt::UserRole+1, "" );
 
     // Also insert the styles
     // Layer Styles
-    for ( uint j = 0; j < layer->style.size(); j++ )
+    for ( int j = 0; j < layer->style.size(); j++ )
     {
       QgsDebugMsg( QString( "got style name %1 and title '%2'." ).arg( layer->style[j].name ).arg( layer->style[j].title ) );
 
-      layerAndStyleCount++;
-
       QgsNumericSortTreeWidgetItem *lItem2 = new QgsNumericSortTreeWidgetItem( lItem );
-      lItem2->setText( 0, QString::number( layerAndStyleCount ) );
+      lItem2->setText( 0, QString::number( ++layerAndStyleCount ) );
       lItem2->setText( 1, layer->style[j].name.simplified() );
       lItem2->setText( 2, layer->style[j].title.simplified() );
       lItem2->setText( 3, layer->style[j].abstract.simplified() );
 
+      lItem2->setData( 0, Qt::UserRole, layer->name );
+      lItem2->setData( 0, Qt::UserRole+1, layer->style[j].name );
     }
-
   }
 
   // If we got some layers, let the user add them to the map
   if ( lstLayers->topLevelItemCount() > 0 )
   {
     btnAdd->setEnabled( TRUE );
+
+    if( lstLayers->topLevelItemCount()==1 )
+    {
+      lstLayers->expandItem( lstLayers->topLevelItem(0) );
+    }
   }
   else
   {
@@ -361,7 +393,7 @@ void QgsServerSourceSelect::on_btnAdd_clicked()
 {
   if ( m_selectedLayers.empty() == TRUE )
   {
-    QMessageBox::information( this, tr( "Select Layer" ), tr( "You must select at least one layer first." ) );
+    QMessageBox::information( this, tr( "Select Layer" ), tr( "You must select at least one leaf layer first." ) );
   }
   else if ( mWmsProvider->supportedCrsForLayers( m_selectedLayers ).size() == 0 )
   {
@@ -426,7 +458,7 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
   QStringList newSelectedLayers;
   QStringList newSelectedStylesForSelectedLayers;
 
-  std::map<QString, QString> newSelectedStyleIdForLayer;
+  QMap<QString, QString> newSelectedStyleIdForLayer;
 
   // Iterate through the layers
   QList<QTreeWidgetItem *> selected( lstLayers->selectedItems() );
@@ -434,20 +466,14 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
   for ( it = selected.begin(); it != selected.end(); ++it )
   {
     QTreeWidgetItem *item = *it;
-    QString layerName;
 
-    if ( item->parent() != 0 )
-    {
-      layerName = item->parent()->text( 1 );
-      newSelectedStylesForSelectedLayers += item->text( 1 );
-    }
-    else
-    {
-      layerName = item->text( 1 );
-      newSelectedStylesForSelectedLayers += "";
-    }
+    QString layerName = item->data(0, Qt::UserRole).toString();
+    if( layerName.isEmpty() )
+      continue;
 
-    newSelectedLayers += layerName;
+    newSelectedLayers << layerName;
+    newSelectedStylesForSelectedLayers << item->data( 0, Qt::UserRole+1 ).toString();
+
     newSelectedStyleIdForLayer[layerName] = item->text( 0 );
 
     // Check if multiple styles have now been selected
