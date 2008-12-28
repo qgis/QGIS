@@ -1,5 +1,18 @@
 
-SET (SVG_DIRS biology geometric gpsicons icon north_arrows sport symbol)
+SET (SVG_DIRS 
+  biology  
+  emergency  
+  entertainment  
+  geometric  
+  gpsicons    
+  icon  
+  landmark  
+  north_arrows  
+  services  
+  sport  
+  symbol  
+  transport)
+  
 
 FOREACH (SVG_DIR ${SVG_DIRS})
 
