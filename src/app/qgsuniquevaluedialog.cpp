@@ -183,7 +183,7 @@ void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
   {
     pen.setColor( thecolor );
     pen.setStyle( Qt::SolidLine );
-    pen.setWidthF( 0.1 );
+    pen.setWidthF( symbol->lineWidth() );
   }
   else
   {
@@ -191,7 +191,7 @@ void QgsUniqueValueDialog::setSymbolColor( QgsSymbol *symbol, QColor thecolor )
     brush.setStyle( Qt::SolidPattern );
     pen.setColor( Qt::black );
     pen.setStyle( Qt::SolidLine );
-    pen.setWidthF( 0.1 );
+    pen.setWidthF( symbol->lineWidth() );
   }
   symbol->setPen( pen );
   symbol->setBrush( brush );
@@ -247,7 +247,7 @@ void QgsUniqueValueDialog::randomizeColors()
 void QgsUniqueValueDialog::resetColors()
 {
   QColor white;
-  white.setRgb( 255.0, 255.0, 255.0 );
+  white.setRgb( 255, 255, 255 );
 
   QList<QListWidgetItem *> selection = mClassListWidget->selectedItems();
   if ( selection.size() == 0 )

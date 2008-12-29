@@ -50,7 +50,7 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
 {
-  mPen.setWidth( DEFAULT_LINE_WIDTH );
+  mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
 
 
@@ -70,7 +70,7 @@ QgsSymbol::QgsSymbol( QGis::GeometryType t, QString lvalue, QString uvalue, QStr
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
 {
-  mPen.setWidth( DEFAULT_LINE_WIDTH );
+  mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
 
 QgsSymbol::QgsSymbol()
@@ -83,7 +83,7 @@ QgsSymbol::QgsSymbol()
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
 {
-  mPen.setWidth( DEFAULT_LINE_WIDTH );
+  mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
 
 
@@ -99,7 +99,7 @@ QgsSymbol::QgsSymbol( QColor c )
     mRotationClassificationField( -1 ),
     mScaleClassificationField( -1 )
 {
-  mPen.setWidth( DEFAULT_LINE_WIDTH );
+  mPen.setWidthF( DEFAULT_LINE_WIDTH );
 }
 
 QgsSymbol::QgsSymbol( const QgsSymbol& s )
@@ -353,7 +353,7 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
   QImage preRotateImage;
   QPen pen = mPen;
   double newWidth = mPen.widthF() * widthScale * rasterScaleFactor;
-  pen.setWidth( newWidth );
+  pen.setWidthF( newWidth );
 
   if ( selected )
   {
