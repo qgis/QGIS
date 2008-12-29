@@ -332,7 +332,7 @@ void QgsGraduatedSymbolDialog::adjustClassification()
       pen.setColor( Qt::black );
     }
 
-    pen.setWidth( 0.1 );
+    pen.setWidthF( symbol->lineWidth() );
     brush.setStyle( Qt::SolidPattern );
     symbol->setPen( pen );
     symbol->setBrush( brush );
