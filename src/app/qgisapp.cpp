@@ -5492,7 +5492,7 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
                               "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
                           .arg( oldVersion )
                           .arg( QGis::QGIS_VERSION )
-                          .arg( "<a href=https://svn.qgis.org/trac/wiki>http://svn.qgis.org/trac/wiki</a> " )
+                          .arg( "<a href=\"https://trac.osgeo.org/qgis\">http://trac.osgeo.org/qgis</a> " )
                           .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
                           .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )
                         );
