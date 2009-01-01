@@ -31,7 +31,7 @@ int main( int argc, char **argv )
   // Set up the QSettings environment must be done after a is created
   QCoreApplication::setOrganizationName( "QuantumGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "qgis" );
+  QCoreApplication::setApplicationName( "QGIS" );
 
   // Install translations if available. Based on the code in the Qgis
   // main.cpp file.
