@@ -1620,6 +1620,8 @@ void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget * thepDockW
   // add to the Panel submenu
   mPanelMenu->addAction( thepDockWidget->toggleViewAction() );
 
+  thepDockWidget->show();
+
   // refresh the map canvas
   mMapCanvas->refresh();
 }
