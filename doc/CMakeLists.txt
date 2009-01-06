@@ -3,7 +3,6 @@ SET (DOC_FILES
 favicon.ico
 index.html
 qgisdoc.css
-userguide.pdf
 )
 
 #SUBDIRS (images plugins install_guide)
