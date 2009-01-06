@@ -700,13 +700,18 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "fiel
   {
     name = el.attribute( name );
 
-    int i;
-    for ( i = 0; i < mField.size() && mField[i].name() != name; i++ )
-      ;
-
-    if ( i < mField.size() )
+    QgsFieldMap::const_iterator field_it = mField.constBegin();
+    for(; field_it != mField.constEnd(); ++field_it)
     {
-      mLabelFieldIdx[attr] = i;
+        if(field_it.value().name() == name)
+        {
+            break;
+        }
+    }
+
+    if ( field_it != mField.constEnd() )
+    {
+      mLabelFieldIdx[attr] = field_it.key();
       return true;
     }
   }
