@@ -241,7 +241,8 @@ int QgsAttributeTable::compareItems( QString s1, QString s2, bool ascending, boo
 {
   if ( alphanumeric )
   {
-    if ( s1 > s2 )
+    int compareValue = QString::localeAwareCompare(s1, s2);
+    if ( compareValue > 0 )
     {
       if ( ascending )
       {
@@ -252,7 +253,7 @@ int QgsAttributeTable::compareItems( QString s1, QString s2, bool ascending, boo
         return -1;
       }
     }
-    else if ( s1 < s2 )
+    else if ( compareValue < 0 )
     {
       if ( ascending )
       {
@@ -263,7 +264,7 @@ int QgsAttributeTable::compareItems( QString s1, QString s2, bool ascending, boo
         return 1;
       }
     }
-    else if ( s1 == s2 )
+    else if ( compareValue = 0 )
     {
       return 0;
     }
