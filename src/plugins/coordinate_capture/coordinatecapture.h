@@ -43,6 +43,8 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "coordinatecapturemaptool.h"
+#include <qgscoordinatereferencesystem.h>
+#include <qgscoordinatetransform.h>
 
 //forward declarations
 class QAction;
@@ -99,7 +101,8 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void update( QgsPoint thePoint );
     //! Called when user clicks the copy button
     void copy();
-
+    //! called when the project's CRS is changed
+    void setSourceCrs();
 
   private:
     //! Container for the coordinate info
@@ -117,10 +120,17 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //!A toolbutton to keep track whether mouse tracking is enabled
     QToolButton * mpTrackMouseButton;
 
-    //!epsg id for showin in geoedit box
-    long mEpsgId;
-    //!proj4 string for coordinate translation
-    QString mProj4Str;
+    //! transform object
+    QgsCoordinateTransform mTransform;
+
+    //! map coordinate display precision
+    int mCanvasDisplayPrecision;
+
+    //! user CRS object
+    QgsCoordinateReferenceSystem mCrs;
+
+    //! user coordinate display precision
+    int mUserCrsDisplayPrecision;
 
     ////////////////////////////////////////////////////////////////////
     //
