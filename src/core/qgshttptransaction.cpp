@@ -184,7 +184,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 //  QgsDebugMsg("Response received; being '" + httpresponsestring + "'.");
 #endif
 
-  delete http;
+    delete http;
+    http = 0;
 
   // Did we get an error? If so, bail early
   if ( !mError.isNull() )
@@ -286,6 +287,9 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
+
+  emit dataReadProgress(done);
+  emit totalSteps(total);
 
   QString status;
 
@@ -462,6 +466,14 @@ void QgsHttpTransaction::networkTimedOut()
 QString QgsHttpTransaction::errorString()
 {
   return mError;
+}
+
+void QgsHttpTransaction::abort()
+{
+    if(http)
+    {
+        http->abort();
+    }
 }
 
 // ENDS

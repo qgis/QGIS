@@ -99,10 +99,18 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
 
     void networkTimedOut();
 
+    /**Aborts the current transaction*/
+    void abort();
+
   signals:
 
-    /** \brief emit a signal to notify of a progress event */
-    void setProgress( int theProgress, int theTotalSteps );
+    /**legacy code. This signal is currently not emitted and only kept for API compatibility*/
+    void setProgress(int done, int total);
+
+    /**Signal for progress update */
+    void dataReadProgress( int theProgress);
+    /**Signal for adjusted number of steps*/
+    void totalSteps(int theTotalSteps);
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString theStatusQString );
