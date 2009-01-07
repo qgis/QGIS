@@ -253,6 +253,15 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 
+#assume we have excaped compiler directives
+#eventually we want to change this to new
+#since we dont need to jump through so many 
+#hoops to escape compiler directives then
+IF(COMMAND cmake_policy)
+  cmake_policy(SET CMP0003 NEW)
+  cmake_policy(SET CMP0005 OLD)
+ENDIF(COMMAND cmake_policy)
+
 IF (WIN32)
   # expect that classes are being imported
   # Note: MSVC doesn't like when the macros are quotes
