@@ -62,6 +62,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leProxyPort->setText( settings.value( "proxy/proxyPort", "" ).toString() );
   leProxyUser->setText( settings.value( "proxy/proxyUser", "" ).toString() );
   leProxyPassword->setText( settings.value( "proxy/proxyPassword", "" ).toString() );
+
+  //available proxy types
+  mProxyTypeComboBox->insertItem(0, "DefaultProxy");
+  mProxyTypeComboBox->insertItem(1, "Socks5Proxy");
+  mProxyTypeComboBox->insertItem(2, "HttpProxy");
+  mProxyTypeComboBox->insertItem(3, "HttpCachingProxy");
+  mProxyTypeComboBox->insertItem(4, "FtpCachingProxy");
+  QString settingProxyType = settings.value("proxy/proxyType", "DefaultProxy").toString();
+  mProxyTypeComboBox->setCurrentIndex(mProxyTypeComboBox->findText(settingProxyType));
+
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
 
@@ -261,6 +271,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "proxy/proxyPort", leProxyPort->text() );
   settings.setValue( "proxy/proxyUser", leProxyUser->text() );
   settings.setValue( "proxy/proxyPassword", leProxyPassword->text() );
+  settings.setValue( "proxy/proxyType", mProxyTypeComboBox->currentText());
+
   //general settings
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );

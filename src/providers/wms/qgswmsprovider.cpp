@@ -32,6 +32,7 @@
 #include <QUrl>
 #include <QImage>
 #include <QSet>
+#include <QSettings>
 
 #ifdef _MSC_VER
 #include <float.h>
@@ -636,7 +637,46 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 QByteArray QgsWmsProvider::retrieveUrl( QString url )
 {
   QgsDebugMsg( "WMS request Url: " + url );
-  QgsHttpTransaction http( url );
+
+  //read proxy settings
+   QSettings settings;
+   QString proxyHost, proxyUser, proxyPassword;
+   int proxyPort;
+   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+
+   bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
+   if(proxyEnabled)
+   {
+     proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+     proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+     proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+     proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+     QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
+    if(proxyTypeString == "DefaultProxy")
+    {
+         proxyType = QNetworkProxy::DefaultProxy;
+     }
+     else if(proxyTypeString == "Socks5Proxy")
+     {
+         proxyType = QNetworkProxy::Socks5Proxy;
+    }
+     else if(proxyTypeString == "HttpProxy")
+     {
+         proxyType = QNetworkProxy::HttpProxy;
+     }
+     else if(proxyTypeString == "HttpCachingProxy")
+     {
+         proxyType = QNetworkProxy::HttpCachingProxy;
+     }
+     else if(proxyTypeString == "FtpCachingProxy")
+     {
+        proxyType = QNetworkProxy::FtpCachingProxy;
+     }
+   }
+
+
+    QgsHttpTransaction http(url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
+
 
   // Do a passthrough for the status bar text
   connect(

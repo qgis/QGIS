@@ -345,7 +345,6 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   createLegend();
   createOverview();
   createMapTips();
-  setupProxy();
   readSettings();
   updateRecentProjectPaths();
 
@@ -4293,8 +4292,6 @@ void QgisApp::options()
     int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
-
-    setupProxy();
   }
 }
 
@@ -5504,26 +5501,6 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
   }
   return;
-}
-
-void QgisApp::setupProxy()
-{
-  QSettings mySettings;
-  bool myFlag = mySettings.value( "proxy/proxyEnabled", "0" ).toBool();
-  QNetworkProxy myProxy;
-  if ( myFlag )
-  {
-    myProxy.setType( QNetworkProxy::HttpProxy );
-    myProxy.setHostName( mySettings.value( "proxy/proxyHost", "" ).toString() );
-    myProxy.setPort( mySettings.value( "proxy/proxyPort", "" ).toInt() );
-    myProxy.setUser( mySettings.value( "proxy/proxyUser", "" ).toString() );
-    myProxy.setPassword( mySettings.value( "proxy/proxyPassword", "" ).toString() );
-  }
-  else
-  {
-    // otherwise leave it blank to disable proxy usage
-  }
-  QNetworkProxy::setApplicationProxy( myProxy );
 }
 
 QIcon QgisApp::getThemeIcon( const QString theName )
