@@ -80,7 +80,14 @@ CoordinateCapture::~CoordinateCapture()
  */
 void CoordinateCapture::initGui()
 {
-  mEpsgId = GEO_EPSG_CRS_ID;
+  mCrs.createFromSrsId( GEOCRS_ID );	// initialize the CRS object
+
+  connect( mQGisIface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setSourceCrs() ) );
+
+  setSourceCrs();	//set up the source CRS 
+  mTransform.setDestCRS( mCrs );	// set the CRS in the transform
+  mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 8 : 3;	// precision depends on CRS units
+
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/coordinatecapture/coordinate_capture.png" ), tr( "Coordinate Capture" ), this );
   // Set the what's this text
@@ -158,12 +165,19 @@ void CoordinateCapture::help()
 void CoordinateCapture::setCRS()
 {
   QgsGenericProjectionSelector mySelector( mQGisIface->mainWindow() );
-  mySelector.setSelectedEpsg( mEpsgId );
+  mySelector.setSelectedCrsId( mCrs.srsid() );
   if ( mySelector.exec() )
   {
-    mEpsgId = mySelector.selectedEpsg();
-    mProj4Str =  mySelector.selectedProj4String();
+    mCrs.createFromSrsId( mySelector.selectedCrsId() );
+    mTransform.setDestCRS( mCrs );
+    mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 8 : 3;	//precision depends on CRS units
   }
+}
+
+void CoordinateCapture::setSourceCrs()
+{
+  mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs() );
+  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs().mapUnits() == QGis::Degrees ) ? 8 : 3;	// for the map canvas coordinate display
 }
 
 void CoordinateCapture::mouseClicked( QgsPoint thePoint )
@@ -185,15 +199,12 @@ void CoordinateCapture::mouseMoved( QgsPoint thePoint )
 void CoordinateCapture::update( QgsPoint thePoint )
 {
   //this is the coordinate resolved back to lat / lon
-  QgsCoordinateReferenceSystem mySrs;
-  mySrs.createFromProj4( mProj4Str );
-  QgsCoordinateTransform myTransform( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs(), mySrs );
-  QgsPoint myUserCrsPoint = myTransform.transform( thePoint );
-  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', 3 ) + "," +
-                          QString::number( myUserCrsPoint.y(), 'f', 3 ) );
+  QgsPoint myUserCrsPoint = mTransform.transform( thePoint );
+  mpUserCrsEdit->setText( QString::number( myUserCrsPoint.x(), 'f', mUserCrsDisplayPrecision ) + "," +
+                          QString::number( myUserCrsPoint.y(), 'f', mUserCrsDisplayPrecision ) );
   // This is the coordinate space of the map canvas
-  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', 3 ) + "," +
-                         QString::number( thePoint.y(), 'f', 3 ) );
+  mpCanvasEdit->setText( QString::number( thePoint.x(), 'f', mCanvasDisplayPrecision ) + "," +
+                         QString::number( thePoint.y(), 'f', mCanvasDisplayPrecision ) );
 }
 void CoordinateCapture::copy()
 {
