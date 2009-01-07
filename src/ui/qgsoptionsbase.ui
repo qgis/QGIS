@@ -25,7 +25,7 @@
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tabGeneral" >
       <attribute name="title" >
@@ -1000,7 +1000,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" >
+          <item row="0" column="1" colspan="2" >
            <widget class="QLineEdit" name="leProxyHost" />
           </item>
           <item row="1" column="0" >
@@ -1013,7 +1013,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" >
+          <item row="1" column="1" colspan="2" >
            <widget class="QLineEdit" name="leProxyPort" />
           </item>
           <item row="2" column="0" >
@@ -1026,7 +1026,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" >
+          <item row="2" column="1" colspan="2" >
            <widget class="QLineEdit" name="leProxyUser" >
             <property name="toolTip" >
              <string>Leave this blank if no proxy username / password are required</string>
@@ -1043,7 +1043,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" >
+          <item row="3" column="1" colspan="2" >
            <widget class="QLineEdit" name="leProxyPassword" >
             <property name="toolTip" >
              <string>Leave this blank if no proxy username / password are required</string>
@@ -1052,6 +1052,29 @@
              <enum>QLineEdit::Password</enum>
             </property>
            </widget>
+          </item>
+          <item row="4" column="0" >
+           <widget class="QLabel" name="mTypeLabel" >
+            <property name="text" >
+             <string>Proxy type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QComboBox" name="mProxyTypeComboBox" />
+          </item>
+          <item row="4" column="2" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>241</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -1063,8 +1086,8 @@
          </property>
          <property name="sizeHint" >
           <size>
-           <width>20</width>
-           <height>40</height>
+           <width>577</width>
+           <height>251</height>
           </size>
          </property>
         </spacer>

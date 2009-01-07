@@ -37,13 +37,15 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
                                         QString proxyHost,
                                         int     proxyPort,
                                         QString proxyUser,
-                                        QString proxyPass )
+                                        QString proxyPass,
+                                        QNetworkProxy::ProxyType proxyType)
     : httpresponsecontenttype( 0 ),
     httpurl( uri ),
     httphost( proxyHost ),
     httpport( proxyPort ),
     httpuser( proxyUser ),
     httppass( proxyPass ),
+    mProxyType(proxyType),
     mError( 0 )
 {
 
@@ -105,7 +107,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   else
   {
     // Insert proxy username and password authentication
-    http->setProxy( httphost, httpport, httpuser, httppass );
+    http->setProxy( QNetworkProxy(mProxyType, httphost, httpport, httpuser, httppass) );
   }
 
 //  int httpid1 = http->setHost( qurl.host(), qurl.port() );

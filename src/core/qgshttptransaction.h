@@ -23,6 +23,7 @@
 #define QGSHTTPTRANSACTION_H
 
 #include <QHttp>
+#include <QNetworkProxy>
 #include <QString>
 
 class QTimer;
@@ -46,7 +47,8 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
                         QString proxyHost = QString(),
                         int     proxyPort = 80,
                         QString proxyUser = QString(),
-                        QString proxyPass = QString() );
+                        QString proxyPass = QString(),
+                        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy);
 
     //! Destructor
     virtual ~QgsHttpTransaction();
@@ -186,6 +188,8 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
      *
      */
     int httpredirections;
+
+    QNetworkProxy::ProxyType mProxyType;
 
     /**
      * Indicates the associated QTimer object - used to detect network timeouts
