@@ -140,6 +140,10 @@ SET (QGIS_APP_MOC_HDRS
   )
 
 IF (POSTGRES_FOUND)
+  IF(HAVE_PGCONFIG)
+    ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
+  ENDIF(HAVE_PGCONFIG)
+
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
     qgsdbsourceselect.cpp
     qgsnewconnection.cpp

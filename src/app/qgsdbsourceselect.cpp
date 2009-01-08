@@ -38,7 +38,9 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <iostream>
 
+#ifdef HAVE_PGCONFIG
 #include <pg_config.h>
+#endif
 
 QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
