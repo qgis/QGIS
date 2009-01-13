@@ -811,8 +811,8 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
     int height = lastSize.height();
     lastSize = QSize( -1, -1 );
 
-    //set map size before scene size seems to solve the white box problem
-    //when moving rubber bands
+    //set map size before scene size helps keep scene indexes updated properly
+    // this was the cause of rubberband artifacts
     mMap->resize( QSize( width, height ) );
     mScene->setSceneRect( QRectF( 0, 0, width, height ) );
 
