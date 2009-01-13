@@ -2617,6 +2617,7 @@ Errores: %2</translation>
       <source>Ctrl+M</source>
       <comment>
 
+
 Minimize Window</comment>
       <translation type="unfinished" >Ctrl+R</translation>
     </message>
@@ -4253,7 +4254,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-      <translation>Use los cuadros de texto para probar la definición del SRC que está creando. Introduzca una coordenada donde tanto la lat/long como el resultado transformado sean conocidos (por ejemplo tomándolos de un mapa). Pulse luego el botón Calcular para ver si le definición del SRC que está creando es correcto.</translation>
+      <translation>Use los cuadros de texto para probar la definición del SRC que está creando. Introduzca una coordenada donde tanto la lat/long como el resultado transformado sean conocidos (por ejemplo tomándolos de un mapa). Pulse luego el botón Calcular para ver si le definición del SRC que está creando es correcta.</translation>
     </message>
     <message>
       <source>Destination CRS        </source>
@@ -5449,7 +5450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
       <source>Classification field</source>
-      <translation>Falló la clasificación</translation>
+      <translation>Campo de clasificación</translation>
     </message>
     <message>
       <source>Mode</source>
