@@ -1835,7 +1835,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
       }
       theResults[tr( "Band%1" ).arg( i )] = v;
 
-      free( data );
+      CPLFree( data );
     }
   }
 
