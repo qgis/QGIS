@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Import OGR/PostGIS vector" module="v.in.ogr">
 	<flag key="o" answer="on" hidden="yes" />
 	<flag key="z" answer="off" hidden="no" />
-	<flag key="r" answer="off" hidden="no" />
+	<flag key="e" answer="off" hidden="no" />
 	<file key="dsn" type="old" label="OGR file" />
 	<option key="output" />	
 	<option key="type" />
