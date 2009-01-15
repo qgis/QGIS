@@ -576,6 +576,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** cache of the committed geometries retrieved *for the current display* */
     QgsGeometryMap mCachedGeometries;
+    
+    /** extent for which there are cached geometries */
+    QgsRectangle mCachedGeometriesRect;
 
     /** Set holding the feature IDs that are activated.  Note that if a feature
         subsequently gets deleted (i.e. by its addition to mDeletedFeatureIds),

@@ -697,6 +697,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     {
       // Destroy all cached geometries and clear the references to them
       deleteCachedGeometries();
+      
+      mCachedGeometriesRect = rendererContext.extent();
     }
 
     updateFeatureCount();
@@ -783,6 +785,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsLogger::warning( "QgsRenderer is null in QgsVectorLayer::draw()" );
   }
 
+  if ( mEditable )
+  {
+    QgsDebugMsg(QString("Cached %1 geometries.").arg(mCachedGeometries.count()));
+  }
+  
   return TRUE; // Assume success always
 }
 
@@ -790,6 +797,7 @@ void QgsVectorLayer::deleteCachedGeometries()
 {
   // Destroy any cached geometries
   mCachedGeometries.clear();
+  mCachedGeometriesRect = QgsRectangle();
 }
 
 void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type )
@@ -3135,15 +3143,36 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   QgsRectangle searchRect( startPoint.x() - snappingTolerance, startPoint.y() - snappingTolerance,
                            startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
-
-  select( QgsAttributeList(), searchRect, true, true );
-
+  
   int n = 0;
   QgsFeature f;
-  while ( nextFeature( f ) )
+  
+  if (mCachedGeometriesRect.contains(searchRect))
   {
-    snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
-    ++n;
+    QgsDebugMsg("Using cached geometries for snapping.");
+    
+    QgsGeometryMap::iterator it = mCachedGeometries.begin();
+    for ( ; it != mCachedGeometries.end() ; ++it)
+    {
+      QgsGeometry* g = &(it.value());
+      if (g->boundingBox().intersects(searchRect))
+      {
+        snapToGeometry( startPoint, it.key(), g, sqrSnappingTolerance, snappingResults, snap_to );
+        ++n;
+      }
+    }
+  }
+  else
+  {
+    // snapping outside cached area
+    
+    select( QgsAttributeList(), searchRect, true, true );
+  
+    while ( nextFeature( f ) )
+    {
+      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
+      ++n;
+    }
   }
 
   return n == 0 ? 2 : 0;
