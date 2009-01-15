@@ -61,6 +61,9 @@ class QgsRectangle
     QgsRectangle intersect(QgsRectangle *rect);
     //! returns true when rectangle intersects with other rectangle
     bool intersects(const QgsRectangle& rect) const;
+    //! return true when rectangle contains other rectangle
+    //! @note added in version 1.1
+    bool contains( const QgsRectangle& rect ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith(QgsRectangle *rect);
     //! expand the rectangle so that covers both the original rectangle and the given point
