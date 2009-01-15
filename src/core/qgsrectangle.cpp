@@ -156,6 +156,11 @@ bool QgsRectangle::intersects( const QgsRectangle& rect ) const
   return TRUE;
 }
 
+bool QgsRectangle::contains( const QgsRectangle& rect ) const
+{
+  return (rect.xmin >= xmin && rect.xmax <= xmax && rect.ymin >= ymin && rect.ymax <= ymax);
+}
+
 
 void QgsRectangle::combineExtentWith( QgsRectangle * rect )
 {
