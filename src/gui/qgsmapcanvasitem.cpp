@@ -33,7 +33,7 @@ QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
 
 QgsMapCanvasItem::~QgsMapCanvasItem()
 {
-  update(); // shedule redraw of canvas
+  update(); // schedule redraw of canvas
 }
 
 void QgsMapCanvasItem::paint( QPainter * painter,

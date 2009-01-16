@@ -141,8 +141,8 @@ class QgisInterface : QObject
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
     virtual QAction *actionAddVertex() = 0;
-    virtual QAction *actionDelerteVertex() = 0;
-    virtual QAction *actioMoveVertex() = 0;
+    virtual QAction *actionDeleteVertex() = 0;
+    virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
     virtual QAction *actionAddIsland() = 0;
     virtual QAction *actionEditSeparator2() = 0;

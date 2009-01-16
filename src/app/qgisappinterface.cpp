@@ -200,8 +200,8 @@ QAction *QgisAppInterface::actionDeleteSelected() { return qgis->actionDeleteSel
 QAction *QgisAppInterface::actionMoveFeature() { return qgis->actionMoveFeature(); }
 QAction *QgisAppInterface::actionSplitFeatures() { return qgis->actionSplitFeatures(); }
 QAction *QgisAppInterface::actionAddVertex() { return qgis->actionAddVertex(); }
-QAction *QgisAppInterface::actionDelerteVertex() { return qgis->actionDelerteVertex(); }
-QAction *QgisAppInterface::actioMoveVertex() { return qgis->actioMoveVertex(); }
+QAction *QgisAppInterface::actionDeleteVertex() { return qgis->actionDeleteVertex(); }
+QAction *QgisAppInterface::actionMoveVertex() { return qgis->actionMoveVertex(); }
 QAction *QgisAppInterface::actionAddRing() { return qgis->actionAddRing(); }
 QAction *QgisAppInterface::actionAddIsland() { return qgis->actionAddIsland(); }
 QAction *QgisAppInterface::actionEditSeparator2() { return qgis->actionEditSeparator2(); }
