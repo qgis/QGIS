@@ -23,7 +23,7 @@ public:
  //! Retrieve a pointer to a loaded plugin by id
  QgsMapLayer * mapLayer(QString theLayerId);
 
- //! Retrieve the mapLayers collection (mainly intended for use by projectio)
+ //! Retrieve the mapLayers collection (mainly intended for use by projection)
  QMap<QString,QgsMapLayer*> & mapLayers();
 
  /** Add a layer to the map of loaded layers 

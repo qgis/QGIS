@@ -212,8 +212,8 @@ class QgisApp : public QMainWindow
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionAddVertex() { return mActionAddVertex; }
-    QAction *actionDelerteVertex() { return mActionDeleteVertex; }
-    QAction *actioMoveVertex() { return mActionMoveVertex; }
+    QAction *actionDeleteVertex() { return mActionDeleteVertex; }
+    QAction *actionMoveVertex() { return mActionMoveVertex; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
