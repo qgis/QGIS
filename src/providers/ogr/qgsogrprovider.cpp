@@ -189,7 +189,7 @@ void QgsOgrProvider::loadFields()
         case OFTReal: varType = QVariant::Double; break;
           // unsupported in OGR 1.3
           //case OFTDateTime: varType = QVariant::DateTime; break;
-#if GDAL_VERSION_NUM >= 1400
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
         case OFTString: varType = QVariant::String; break;
 #endif
         default: varType = QVariant::String; // other unsupported, leave it as a string
@@ -578,31 +578,31 @@ bool QgsOgrProvider::addAttributes( const QgsNewAttributesMap & attributes )
 
   for ( QgsNewAttributesMap::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
   {
-    OGRFieldDefnH fielddefn =
-      OGR_Fld_Create( mEncoding->fromUnicode( iter.key() ).data(), OFTInteger );
+    OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter.key() ).data(), OFTInteger );
 
-    if ( *iter == "OFTInteger" )
+    if ( *iter == "Integer" )
     {
       OGR_Fld_SetType( fielddefn, OFTInteger );
+      OGR_Fld_SetWidth( fielddefn, 10 );
     }
-    else if ( *iter == "OFTReal" )
+    else if ( *iter == "Real" )
     {
       OGR_Fld_SetType( fielddefn, OFTReal );
     }
-    else if ( *iter == "OFTString" )
+    else if ( *iter == "String" )
     {
       OGR_Fld_SetType( fielddefn, OFTString );
     }
     else
     {
-      QgsLogger::warning( "QgsOgrProvider::addAttributes, type not found" );
+      QgsLogger::warning( QString( "QgsOgrProvider::addAttributes, type %1 not found" ).arg( *iter ) );
       returnvalue = false;
       continue;
     }
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, TRUE ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider.cpp: writing of OFTInteger field failed" );
+      QgsLogger::warning( "QgsOgrProvider.cpp: writing of field failed" );
       returnvalue = false;
     }
     OGR_Fld_Destroy( fielddefn );
@@ -727,7 +727,7 @@ bool QgsOgrProvider::createSpatialIndex()
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( fi.completeBaseName() ) );  // quote the layer name so spaces are handled
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), OGR_L_GetSpatialFilter( ogrLayer ), "" );
   //find out, if the .qix file is there
-  QFile indexfile( fi.path().append( "/").append( fi.completeBaseName() ).append( ".qix" ) );
+  QFile indexfile( fi.path().append( "/" ).append( fi.completeBaseName() ).append( ".qix" ) );
   if ( indexfile.exists() )
   {
     return true;
@@ -749,7 +749,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     }
   }
 
-  OGR_L_SyncToDisk( ogrLayer );  
+  OGR_L_SyncToDisk( ogrLayer );
   QFileInfo fi( dataSourceUri() );     // to get the base name
   QString sql = QString( "REPACK %1" ).arg( fi.completeBaseName() );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
@@ -852,8 +852,16 @@ int QgsOgrProvider::capabilities() const
     {
       // Ideally this should test for Shapefile type and GDAL >= 1.2.6
       // In reality, createSpatialIndex() looks after itself.
-      ability |= QgsVectorDataProvider::CreateSpatialIndex;
+      ability |= CreateSpatialIndex;
     }
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+    // adding attributes was added in GDAL 1.6
+    if ( ogrDriverName.startsWith( "ESRI" ) )
+    {
+      ability |= AddAttributes;
+    }
+#endif
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( ogrDriverName.startsWith( "ESRI" ) && mAttributeFields.size() == 0 )
@@ -1216,7 +1224,7 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
   OGR_DS_Destroy( dataSource );
 
   QgsDebugMsg( QString( "GDAL Version number %1" ).arg( GDAL_VERSION_NUM ) );
-#if GDAL_VERSION_NUM >= 1310
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1310
   if ( reference )
   {
     OSRRelease( reference );
