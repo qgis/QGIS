@@ -78,17 +78,17 @@ class MapServerExport:
     if result == 1: 
       # get the settings from the dialog and export the map file
       print "Creating exporter using %s and %s" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
-      exporter = Qgis2Map(str(self.dlg.ui.txtQgisFilePath.text()), str(self.dlg.ui.txtMapFilePath.text()))
+      exporter = Qgis2Map(unicode(self.dlg.ui.txtQgisFilePath.text()), unicode(self.dlg.ui.txtMapFilePath.text()))
       print "Setting options"
       exporter.setOptions( 
-          self.dlg.ui.cmbMapUnits.itemData( self.dlg.ui.cmbMapUnits.currentIndex() ).toString(),
-          self.dlg.ui.cmbMapImageType.currentText(),
-          self.dlg.ui.txtMapName.text(),
-          self.dlg.ui.txtMapWidth.text(),
-          self.dlg.ui.txtMapHeight.text(),
-          self.dlg.ui.txtWebTemplate.text(),
-          self.dlg.ui.txtWebFooter.text(),
-          self.dlg.ui.txtWebHeader.text()
+          unicode(self.dlg.ui.cmbMapUnits.itemData( self.dlg.ui.cmbMapUnits.currentIndex() ).toString()),
+          unicode(self.dlg.ui.cmbMapImageType.currentText()),
+          unicode(self.dlg.ui.txtMapName.text()),
+          unicode(self.dlg.ui.txtMapWidth.text()),
+          unicode(self.dlg.ui.txtMapHeight.text()),
+          unicode(self.dlg.ui.txtWebTemplate.text()),
+          unicode(self.dlg.ui.txtWebFooter.text()),
+          unicode(self.dlg.ui.txtWebHeader.text())
           )
       print "Calling writeMapFile"
       result = exporter.writeMapFile()

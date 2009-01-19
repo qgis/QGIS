@@ -53,17 +53,17 @@ class Qgis2Map:
 
   # Set the options collected from the GUI
   def setOptions(self, units, image, mapname, width, height, template, header, footer):
-    self.units = units
-    self.imageType = str(image)
-    self.mapName = mapname
-    self.width = width
-    self.height = height
+    self.units = units.encode('utf-8')
+    self.imageType = image.encode('utf-8')
+    self.mapName = mapname.encode('utf-8')
+    self.width = width.encode('utf-8')
+    self.height = height.encode('utf-8')
     #self.minimumScale = minscale
     #self.maximumScale = maxscale
-    self.template = template
-    self.header = header
-    self.footer = footer
-    print units, image, mapname, width, height, template, header, footer
+    self.template = template.encode('utf-8')
+    self.header = header.encode('utf-8')
+    self.footer = footer.encode('utf-8')
+    #print units, image, mapname, width, height, template, header, footer
 
   ## All real work happens here by calling methods to write the
   ## various sections of the map file
@@ -121,7 +121,7 @@ class Qgis2Map:
 
   # Write the general parts of the map section
   def writeMapSection(self):
-    self.outFile.write("# Map file created from QGIS project file " + self.project + "\n")
+    self.outFile.write("# Map file created from QGIS project file " + self.project.encode('utf-8') + "\n")
     self.outFile.write("# Edit this file to customize for your map interface\n")
     self.outFile.write("# (Created with PyQgis MapServer Export plugin)\n")
     self.outFile.write("MAP\n")
@@ -417,10 +417,10 @@ class Qgis2Map:
 
     # outline color
     outlineNode = symbolNode.getElementsByTagName('outlinecolor')[0]
-    class_def += "         OUTLINECOLOR " + outlineNode.getAttribute('red') + ' ' + outlineNode.getAttribute('green') + ' ' + outlineNode.getAttribute('blue') + "\n"
+    class_def += "         OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + ' ' + outlineNode.getAttribute('green').encode('utf-8') + ' ' + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
     # color
     colorNode = symbolNode.getElementsByTagName('fillcolor')[0]
-    class_def += "         COLOR " + colorNode.getAttribute('red') + ' ' + colorNode.getAttribute('green') + ' ' + colorNode.getAttribute('blue') + "\n"
+    class_def += "         COLOR " + colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8') + "\n"
 
     class_def += "       END\n"
 
@@ -469,10 +469,10 @@ class Qgis2Map:
 
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
-      class_def += "          OUTLINECOLOR " + outlineNode.getAttribute('red') + ' ' + outlineNode.getAttribute('green') + ' ' + outlineNode.getAttribute('blue') + "\n"
+      class_def += "          OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + ' ' + outlineNode.getAttribute('green').encode('utf-8') + ' ' + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
       # color
       colorNode = cls.getElementsByTagName('fillcolor')[0]
-      class_def += "          COLOR " + colorNode.getAttribute('red') + ' ' + colorNode.getAttribute('green') + ' ' + colorNode.getAttribute('blue') + "\n"
+      class_def += "          COLOR " + colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8') + "\n"
 
       class_def += "        END\n"
 
@@ -493,7 +493,7 @@ class Qgis2Map:
     classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
 
     # write the rendering info for each class
-    class_def += "    CLASS\n"
+    class_def = "    CLASS\n"
 
     # Class name irrelevant for color ramps since mapserver can't render their legend
     #self.outFile.write("      NAME '" + classField + "'\n")
@@ -510,7 +510,7 @@ class Qgis2Map:
     class_def += "      STYLE\n"
     
     # The first and last color of the ramp ( r g b r g b )
-    class_def += "        COLORRANGE " + lowerColor.getAttribute('red') + " " + lowerColor.getAttribute('green') + " " + lowerColor.getAttribute('blue') + " " + upperColor.getAttribute('red') + " " + upperColor.getAttribute('green') + " " + upperColor.getAttribute('blue') + "\n"
+    class_def += "        COLORRANGE " + lowerColor.getAttribute('red').encode('utf-8') + " " + lowerColor.getAttribute('green').encode('utf-8') + " " + lowerColor.getAttribute('blue').encode('utf-8') + " " + upperColor.getAttribute('red').encode('utf-8') + " " + upperColor.getAttribute('green').encode('utf-8') + " " + upperColor.getAttribute('blue').encode('utf-8') + "\n"
 
     # The range of values over which to ramp the colors
     class_def += "        DATARANGE " + lower.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + ' ' + upper.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8') + '\n'
@@ -519,7 +519,7 @@ class Qgis2Map:
     class_def += "      END\n"
 
     class_def += "      STYLE\n"
-    class_def += "        OUTLINECOLOR " + outlineNode.getAttribute('red') + " " + outlineNode.getAttribute('green') + " " + outlineNode.getAttribute('blue') + "\n"
+    class_def += "        OUTLINECOLOR " + outlineNode.getAttribute('red').encode('utf-8') + " " + outlineNode.getAttribute('green').encode('utf-8') + " " + outlineNode.getAttribute('blue').encode('utf-8') + "\n"
     class_def += "      END\n"
 
     # label
@@ -577,17 +577,17 @@ class Qgis2Map:
       # outline color
       outlineNode = cls.getElementsByTagName('outlinecolor')[0]
       class_def += "         OUTLINECOLOR "  \
-            + outlineNode.getAttribute('red') + ' ' \
-            + outlineNode.getAttribute('green') + ' ' \
-            + outlineNode.getAttribute('blue') \
+            + outlineNode.getAttribute('red').encode('utf-8') + ' ' \
+            + outlineNode.getAttribute('green').encode('utf-8') + ' ' \
+            + outlineNode.getAttribute('blue').encode('utf-8') \
             + "\n"
 
       # color
       colorNode = cls.getElementsByTagName('fillcolor')[0]
       class_def += "         COLOR "  \
-            + colorNode.getAttribute('red') + ' ' \
-            + colorNode.getAttribute('green') + ' ' \
-            + colorNode.getAttribute('blue') \
+            + colorNode.getAttribute('red').encode('utf-8') + ' ' \
+            + colorNode.getAttribute('green').encode('utf-8') + ' ' \
+            + colorNode.getAttribute('blue').encode('utf-8') \
             + "\n"
       class_def += "       END\n"
 
