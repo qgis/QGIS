@@ -247,6 +247,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! Selection rectangle
     OGRGeometryH mSelectionRectangle;
+
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
