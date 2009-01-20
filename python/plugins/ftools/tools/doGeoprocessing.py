@@ -139,7 +139,6 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
 #8: Clip
 
 	def geoprocessing( self,  myLayerA,  myLayerB,  myParam,  myMerge ):
-		print "starting geoprocessing..."
 		self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA, 
 		myLayerB, myParam, myMerge, self.shapefileName, self.encoding )
 		QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
@@ -148,7 +147,6 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
 		self.cancel_close.setText( "Cancel" )
 		QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
 		self.testThread.start()
-		print "\n"
 		return True
 
 	def cancelThread( self ):
@@ -239,8 +237,6 @@ class geoprocessingThread( QThread ):
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-				print '%s\r' % ''*20,
-				print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 				atMap = inFeat.attributeMap()
 				if useField:
 					value = atMap[ self.myParam ].toDouble()[ 0 ]
@@ -260,8 +256,6 @@ class geoprocessingThread( QThread ):
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-				print '%s\r' % ''*20,
-				print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 				atMap = inFeat.attributeMap()
 				if useField:
 					value = atMap[ self.myParam ].toDouble()[ 0 ]
@@ -300,8 +294,6 @@ class geoprocessingThread( QThread ):
 				while vproviderA.nextFeature( inFeat ):
 					nElement += 1
 					self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-					print '%s\r' % ''*20,
-					print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 					atMap = inFeat.attributeMap()
 					idVar = atMap[ self.myParam ]
 					if idVar.toString().trimmed() == i.toString().trimmed():
@@ -329,8 +321,6 @@ class geoprocessingThread( QThread ):
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-				print '%s\r' % ''*20,
-				print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 				inGeom = inFeat.geometry()
 				points = ftools_utils.extractPoints( inGeom )
 				hull.extend( points )
@@ -366,8 +356,6 @@ class geoprocessingThread( QThread ):
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-				print '%s\r' % ''*20,
-				print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 				if not useField:
 					if first:
 						attrs = inFeat.attributeMap()
@@ -411,8 +399,6 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print '%s\r' % ''*20,
-			print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = inFeatA.geometry()
 			atMap = inFeatA.attributeMap()
 			intersects = index.intersects( geom.boundingBox() )
@@ -449,8 +435,6 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print '%s\r' % ''*20,
-			print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = inFeatA.geometry()
 			atMapA = inFeatA.attributeMap()    
 			intersects = index.intersects( geom.boundingBox() )
@@ -490,7 +474,6 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print int( float( nElement ) / float( nFeat ) * 100.00 )
 			found = False
 			geom = QgsGeometry( inFeatA.geometry() )
 			diffGeom = QgsGeometry( inFeatA.geometry() )
@@ -520,7 +503,6 @@ class geoprocessingThread( QThread ):
 		while vproviderB.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = QgsGeometry( inFeatA.geometry() )
 			atMap = inFeatA.attributeMap().values()
 			atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
@@ -565,8 +547,6 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print '%s\r' % ''*20,
-			print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = inFeatA.geometry()
 			atMapA = inFeatA.attributeMap()
 			intersects = indexA.intersects( geom.boundingBox() )
@@ -582,8 +562,6 @@ class geoprocessingThread( QThread ):
 		while vproviderB.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print '%s\r' % ''*20,
-			print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = inFeatA.geometry()
 			atMap = inFeatA.attributeMap().values()
 			atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
@@ -622,8 +600,6 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			print '%s\r' % ''*20,
-			print '%d%%' % int( float( nElement ) / float( nFeat ) * 100.00 ),
 			geom = inFeatA.geometry()
 			atMap = inFeatA.attributeMap()    
 			intersects = index.intersects( geom.boundingBox() )
