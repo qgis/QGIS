@@ -1,0 +1,366 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="windowModality" >
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>373</width>
+    <height>435</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Generate Random Points</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="label_3" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Input Boundary Layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QComboBox" name="inShape" />
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QCheckBox" name="chkMinimum" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>Minimum distance between points</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spnMinimum" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Sample Size</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Unstratified Sampling Design (Entire layer)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QRadioButton" name="rdoUnstratified" >
+          <property name="text" >
+           <string>Use this number of points</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spnUnstratified" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>9999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="font" >
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text" >
+         <string>Stratified Sampling Design (Individual polygons)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QRadioButton" name="rdoStratified" >
+          <property name="text" >
+           <string>Use this number of points</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spnStratified" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="minimum" >
+           <number>1</number>
+          </property>
+          <property name="maximum" >
+           <number>9999</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QRadioButton" name="rdoDensity" >
+          <property name="text" >
+           <string>Use this density of points</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="spnDensity" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+          <property name="decimals" >
+           <number>4</number>
+          </property>
+          <property name="minimum" >
+           <double>0.000100000000000</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.000100000000000</double>
+          </property>
+          <property name="value" >
+           <double>0.000100000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QRadioButton" name="rdoField" >
+          <property name="text" >
+           <string>Use value from input field</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cmbField" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>Output Shapefile</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLineEdit" name="outShape" >
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolOut" >
+       <property name="text" >
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0" >
+    <widget class="QProgressBar" name="progressBar" >
+     <property name="value" >
+      <number>24</number>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textVisible" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" >
+    <widget class="QDialogButtonBox" name="buttonBox_2" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox_2</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>133</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>215</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox_2</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>59</x>
+     <y>408</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>132</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoUnstratified</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spnUnstratified</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>102</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>218</x>
+     <y>164</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoStratified</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spnStratified</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>101</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>247</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoField</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cmbField</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>150</x>
+     <y>280</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>219</x>
+     <y>281</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkMinimum</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spnMinimum</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>172</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>260</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoDensity</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spnDensity</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>96</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>221</x>
+     <y>254</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
