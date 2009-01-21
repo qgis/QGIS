@@ -205,6 +205,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Cross" ) ) );
   }
 
+  chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
+
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing 
   groupBox_5->setEnabled( false );
 #endif //Q_WS_MAC
@@ -362,6 +364,8 @@ void QgsOptions::saveOptions()
   {
     settings.setValue( "/qgis/digitizing/marker_style", "Cross" );
   }
+
+  settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
 
   //
   // Locale settings

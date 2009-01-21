@@ -13,7 +13,9 @@
    <string>QGIS Options</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -25,7 +27,7 @@
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneral" >
       <attribute name="title" >
@@ -38,16 +40,7 @@
           <string>Project files</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item>
@@ -88,7 +81,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -124,7 +117,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>40</width>
               <height>20</height>
@@ -256,7 +249,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>577</width>
            <height>21</height>
@@ -323,16 +316,7 @@
           <string>Rendering quality</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item>
@@ -367,7 +351,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -382,16 +366,7 @@
        <string>&amp;Map tools</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>11</number>
        </property>
        <item row="2" column="0" >
@@ -400,16 +375,7 @@
           <string>Panning and zooming</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="0" column="1" >
@@ -472,16 +438,7 @@
           <string>Measure tool</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="1" column="2" >
@@ -489,7 +446,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>191</width>
               <height>20</height>
@@ -542,16 +499,7 @@
           <string>Search radius</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item row="1" column="0" colspan="2" >
@@ -598,7 +546,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>20</width>
            <height>40</height>
@@ -612,8 +560,8 @@
       <attribute name="title" >
        <string>Digitizing</string>
       </attribute>
-      <layout class="QGridLayout" >
-       <item row="0" column="0" >
+      <layout class="QVBoxLayout" name="verticalLayout" >
+       <item>
         <widget class="QGroupBox" name="mRubberBandGroupBox" >
          <property name="title" >
           <string>Rubberband</string>
@@ -665,7 +613,7 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" >
+       <item>
         <widget class="QGroupBox" name="mSnappingGroupBox" >
          <property name="title" >
           <string>Snapping</string>
@@ -683,7 +631,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>311</width>
               <height>20</height>
@@ -713,7 +661,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>241</width>
               <height>20</height>
@@ -743,7 +691,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>61</width>
               <height>20</height>
@@ -764,7 +712,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0" >
+       <item>
         <widget class="QGroupBox" name="mVertexMarkerGroupBox" >
          <property name="title" >
           <string>Vertex markers</string>
@@ -782,7 +730,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>281</width>
               <height>20</height>
@@ -803,12 +751,31 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" >
+       <item>
+        <widget class="QGroupBox" name="mEnterAttributeValuesGroupBox" >
+         <property name="title" >
+          <string>Enter attribute values</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout" >
+          <item>
+           <widget class="QCheckBox" name="chkDisableAttributeValuesDlg" >
+            <property name="text" >
+             <string>Suppress attributes pop-up windows after each created feature</string>
+            </property>
+            <property name="tristate" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>547</width>
            <height>71</height>
@@ -823,16 +790,7 @@
        <string>CRS</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="leftMargin" >
-        <number>11</number>
-       </property>
-       <property name="topMargin" >
-        <number>11</number>
-       </property>
-       <property name="rightMargin" >
-        <number>11</number>
-       </property>
-       <property name="bottomMargin" >
+       <property name="margin" >
         <number>11</number>
        </property>
        <item row="3" column="0" >
@@ -840,7 +798,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>51</width>
            <height>31</height>
@@ -864,16 +822,7 @@
           <string>When layer is loaded that has no coordinate reference system (CRS)</string>
          </property>
          <layout class="QVBoxLayout" >
-          <property name="leftMargin" >
-           <number>11</number>
-          </property>
-          <property name="topMargin" >
-           <number>11</number>
-          </property>
-          <property name="rightMargin" >
-           <number>11</number>
-          </property>
-          <property name="bottomMargin" >
+          <property name="margin" >
            <number>11</number>
           </property>
           <item>
@@ -947,7 +896,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>501</width>
            <height>51</height>
@@ -1068,7 +1017,7 @@
             <property name="orientation" >
              <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" >
+            <property name="sizeHint" stdset="0" >
              <size>
               <width>241</width>
               <height>20</height>
@@ -1084,7 +1033,7 @@
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>577</width>
            <height>251</height>
@@ -1102,7 +1051,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
