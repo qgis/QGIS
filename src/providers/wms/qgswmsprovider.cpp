@@ -1698,9 +1698,13 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   {
     mError = tr( "Request is for an optional operation that is not supported by the server." );
   }
+  else if( seCode.isEmpty() )
+  {
+    mError = tr( "(No error code was reported)" );
+  }
   else
   {
-    mError = tr( "(Unknown error code from a post-1.3 WMS server)" );
+    mError = seCode + " " + tr( "(Unknown error code)" );
   }
 
   mError += "\n" + tr( "The WMS vendor also reported: " );
