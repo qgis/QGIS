@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, enum CaptureTool tool ): QgsMapToolCapture( canvas, tool )
 {
@@ -175,18 +176,28 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       // show the dialog to enter attribute values
-      QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
-      if ( mypDialog->exec() )
+      QSettings settings;
+      bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+      if ( isDisabledAttributeValuesDlg )
       {
         qDebug( "Adding feature to layer" );
         vlayer->addFeature( *f );
       }
       else
       {
-        qDebug( "Adding feature to layer failed" );
-        delete f;
+        QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
+        if ( mypDialog->exec() )
+        {
+          qDebug( "Adding feature to layer" );
+          vlayer->addFeature( *f );
+        }
+        else
+        {
+          qDebug( "Adding feature to layer failed" );
+          delete f;
+        }
+        delete mypDialog;
       }
-      delete mypDialog;
       mCanvas->refresh();
     }
 
@@ -444,21 +455,38 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         f->addAttribute( it.key(), provider->defaultValue( it.key() ) );
       }
 
-      QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
-      if ( mypDialog->exec() )
+      QSettings settings;
+      bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+      if ( isDisabledAttributeValuesDlg )
       {
         if ( vlayer->addFeature( *f ) )
-        {
-          //add points to other features to keep topology up-to-date
-          int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-          if ( topologicalEditing )
           {
-            vlayer->addTopologicalPoints( f->geometry() );
+            //add points to other features to keep topology up-to-date
+            int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+            if ( topologicalEditing )
+            {
+              vlayer->addTopologicalPoints( f->geometry() );
+            }
+          }
+      }
+      else
+      {
+        QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
+        if ( mypDialog->exec() )
+        {
+          if ( vlayer->addFeature( *f ) )
+          {
+            //add points to other features to keep topology up-to-date
+            int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+            if ( topologicalEditing )
+            {
+              vlayer->addTopologicalPoints( f->geometry() );
+            }
           }
         }
+        delete mypDialog;
       }
       delete f;
-      delete mypDialog;
 
       delete mRubberBand;
       mRubberBand = NULL;
