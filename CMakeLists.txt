@@ -345,7 +345,7 @@ ADD_CUSTOM_TARGET(svnversion ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversi
 #############################################################
 # process subdirs
 
-SUBDIRS(src doc images resources i18n tools)
+SUBDIRS(src doc images resources i18n)
 
 IF (HAVE_PYTHON AND WITH_BINDINGS)
   SUBDIRS (python)
