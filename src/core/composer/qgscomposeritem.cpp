@@ -225,7 +225,6 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
     double diffX = event->lastScenePos().x() - mLastMouseEventPos.x();
     double diffY = event->lastScenePos().y() - mLastMouseEventPos.y();
 
-    double mx, my, rx, ry;
     changeItemRectangle( event->lastScenePos(), mMouseMoveStartPos, this, diffX, diffY, mBoundingResizeRectangle );
   }
   mLastMouseEventPos = event->lastScenePos();
@@ -272,7 +271,6 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-  double mx, my, rx, ry;
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
 
   //reset default action
@@ -377,7 +375,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
     return;
   }
 
-  double mx, my, rx, ry;
+  double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
   //double diffX = snappedPosition.x() - mouseMoveStartPos.x();
   //double diffY = snappedPosition.y() - mouseMoveStartPos.y();
