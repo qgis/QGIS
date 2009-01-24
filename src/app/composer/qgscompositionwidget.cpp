@@ -45,13 +45,13 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
 
     //snap grid
-    if( mComposition->snapToGridEnabled() )
+    if ( mComposition->snapToGridEnabled() )
     {
-      mSnapToGridCheckBox->setCheckState(Qt::Checked);
+      mSnapToGridCheckBox->setCheckState( Qt::Checked );
     }
     else
     {
-      mSnapToGridCheckBox->setCheckState(Qt::Unchecked);
+      mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
     }
     mResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
@@ -59,26 +59,26 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
 
     //grid pen width
-    mPenWidthSpinBox->blockSignals(true);
-    mPenWidthSpinBox->setValue(mComposition->gridPen().widthF());
-    mPenWidthSpinBox->blockSignals(false);
+    mPenWidthSpinBox->blockSignals( true );
+    mPenWidthSpinBox->setValue( mComposition->gridPen().widthF() );
+    mPenWidthSpinBox->blockSignals( false );
 
     //grid pen color
-    mGridColorButton->blockSignals(true);
-    mGridColorButton->setColor(mComposition->gridPen().color());
-    mGridColorButton->blockSignals(false);
+    mGridColorButton->blockSignals( true );
+    mGridColorButton->setColor( mComposition->gridPen().color() );
+    mGridColorButton->blockSignals( false );
 
-    mGridStyleComboBox->blockSignals(true);
-    mGridStyleComboBox->insertItem( 0, tr("Solid"));
-    mGridStyleComboBox->insertItem( 1, tr("Dots"));
-    mGridStyleComboBox->insertItem( 2, tr("Crosses"));
+    mGridStyleComboBox->blockSignals( true );
+    mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
+    mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
+    mGridStyleComboBox->insertItem( 2, tr( "Crosses" ) );
 
     QgsComposition::GridStyle snapGridStyle = mComposition->gridStyle();
-    if(snapGridStyle == QgsComposition::Solid)
+    if ( snapGridStyle == QgsComposition::Solid )
     {
       mGridStyleComboBox->setCurrentIndex( 0 );
     }
-    else if(snapGridStyle == QgsComposition::Dots)
+    else if ( snapGridStyle == QgsComposition::Dots )
     {
       mGridStyleComboBox->setCurrentIndex( 1 );
     }
@@ -86,7 +86,7 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     {
       mGridStyleComboBox->setCurrentIndex( 2 );
     }
-    mGridStyleComboBox->blockSignals(false);
+    mGridStyleComboBox->blockSignals( false );
   }
 }
 
@@ -322,33 +322,33 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
 
 void QgsCompositionWidget::displaySnapingSettings()
 {
-  if(!mComposition)
-    {
-      return;
-    }
+  if ( !mComposition )
+  {
+    return;
+  }
 
-  mSnapToGridCheckBox->blockSignals(true);
-  mResolutionSpinBox->blockSignals(true);
-  mOffsetXSpinBox->blockSignals(true);
-  mOffsetYSpinBox->blockSignals(true);
-  
-  if(mComposition->snapToGridEnabled())
-    {
-      mSnapToGridCheckBox->setCheckState(Qt::Checked);
-    }
+  mSnapToGridCheckBox->blockSignals( true );
+  mResolutionSpinBox->blockSignals( true );
+  mOffsetXSpinBox->blockSignals( true );
+  mOffsetYSpinBox->blockSignals( true );
+
+  if ( mComposition->snapToGridEnabled() )
+  {
+    mSnapToGridCheckBox->setCheckState( Qt::Checked );
+  }
   else
-    {
-      mSnapToGridCheckBox->setCheckState(Qt::Unchecked);
-    }
+  {
+    mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
+  }
 
-  mResolutionSpinBox->setValue(mComposition->snapGridResolution());
-  mOffsetXSpinBox->setValue(mComposition->snapGridOffsetX());
-  mOffsetYSpinBox->setValue(mComposition->snapGridOffsetY());
+  mResolutionSpinBox->setValue( mComposition->snapGridResolution() );
+  mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
+  mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
 
-  mSnapToGridCheckBox->blockSignals(false);
-  mResolutionSpinBox->blockSignals(false);
-  mOffsetXSpinBox->blockSignals(false);
-  mOffsetYSpinBox->blockSignals(false); 
+  mSnapToGridCheckBox->blockSignals( false );
+  mResolutionSpinBox->blockSignals( false );
+  mOffsetXSpinBox->blockSignals( false );
+  mOffsetYSpinBox->blockSignals( false );
 }
 
 void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& text )
@@ -367,87 +367,87 @@ void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& te
   }
 }
 
-void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged(int state)
+void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged( int state )
 {
-  if(mComposition)
+  if ( mComposition )
+  {
+    if ( state == Qt::Checked )
     {
-      if(state == Qt::Checked)
-	{
-	  mComposition->setSnapToGridEnabled(true);
-	}
-      else
-	{
-	  mComposition->setSnapToGridEnabled(false);
-	}
+      mComposition->setSnapToGridEnabled( true );
     }
+    else
+    {
+      mComposition->setSnapToGridEnabled( false );
+    }
+  }
 }
 
-void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged(double d)
+void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( double d )
 {
-  if(mComposition)
-    {
-      mComposition->setSnapGridResolution(d);
-    }
+  if ( mComposition )
+  {
+    mComposition->setSnapGridResolution( d );
+  }
 }
 
-void QgsCompositionWidget::on_mOffsetXSpinBox_valueChanged(double d)
+void QgsCompositionWidget::on_mOffsetXSpinBox_valueChanged( double d )
 {
-  if(mComposition)
-    {
-      mComposition->setSnapGridOffsetX(d);
-    }
+  if ( mComposition )
+  {
+    mComposition->setSnapGridOffsetX( d );
+  }
 }
 
-void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged(double d)
+void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
 {
-  if(mComposition)
-    {
-      mComposition->setSnapGridOffsetY(d);
-    }
+  if ( mComposition )
+  {
+    mComposition->setSnapGridOffsetY( d );
+  }
 }
 
 void QgsCompositionWidget::on_mGridColorButton_clicked()
 {
-  QColor newColor = QColorDialog::getColor(mGridColorButton->color());
-  if( !newColor.isValid() )
+  QColor newColor = QColorDialog::getColor( mGridColorButton->color() );
+  if ( !newColor.isValid() )
   {
     return ; //dialog canceled by user
   }
-  mGridColorButton->setColor(newColor);
+  mGridColorButton->setColor( newColor );
 
-  if(mComposition)
+  if ( mComposition )
   {
     QPen pen = mComposition->gridPen();
-    pen.setColor(newColor);
-    mComposition->setGridPen(pen);
+    pen.setColor( newColor );
+    mComposition->setGridPen( pen );
   }
 }
 
 void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QString& text )
 {
-  if(mComposition)
+  if ( mComposition )
   {
-    if( mGridStyleComboBox->currentText() == tr("Solid") )
+    if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )
     {
-      mComposition->setGridStyle(QgsComposition::Solid);
+      mComposition->setGridStyle( QgsComposition::Solid );
     }
-    else if( mGridStyleComboBox->currentText() == tr("Dots") )
+    else if ( mGridStyleComboBox->currentText() == tr( "Dots" ) )
     {
-      mComposition->setGridStyle(QgsComposition::Dots);
+      mComposition->setGridStyle( QgsComposition::Dots );
     }
-    else if( mGridStyleComboBox->currentText() == tr("Crosses"))
+    else if ( mGridStyleComboBox->currentText() == tr( "Crosses" ) )
     {
-      mComposition->setGridStyle(QgsComposition::Crosses);
+      mComposition->setGridStyle( QgsComposition::Crosses );
     }
   }
 }
 
-void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged(double d)
+void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged( double d )
 {
-  if(mComposition)
+  if ( mComposition )
   {
     QPen pen = mComposition->gridPen();
-    pen.setWidthF(d);
-    mComposition->setGridPen(pen);
+    pen.setWidthF( d );
+    mComposition->setGridPen( pen );
   }
 }

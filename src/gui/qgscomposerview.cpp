@@ -41,8 +41,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     return;
   }
 
-  QPointF scenePoint = mapToScene( e->pos());
-  QPointF snappedScenePoint = composition()->snapPointToGrid(scenePoint);
+  QPointF scenePoint = mapToScene( e->pos() );
+  QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
 
   switch ( mCurrentTool )
   {

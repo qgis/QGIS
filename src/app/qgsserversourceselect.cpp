@@ -187,15 +187,15 @@ void QgsServerSourceSelect::on_btnHelp_clicked()
 }
 
 QgsNumericSortTreeWidgetItem *QgsServerSourceSelect::createItem(
-	int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount,
-	const QMap<int,int> &layerParents, const QMap<int, QStringList> &layerParentNames )
+  int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount,
+  const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames )
 
 {
-  if( items.contains(id) )
+  if ( items.contains( id ) )
     return items[id];
 
   QgsNumericSortTreeWidgetItem *item;
-  if( layerParents.contains( id ) )
+  if ( layerParents.contains( id ) )
   {
     int parent = layerParents[ id ];
     item = new QgsNumericSortTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
@@ -236,10 +236,10 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
         layer != layers.end();
         layer++ )
   {
-    QgsNumericSortTreeWidgetItem *lItem = createItem(layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
 
     lItem->setData( 0, Qt::UserRole, layer->name );
-    lItem->setData( 0, Qt::UserRole+1, "" );
+    lItem->setData( 0, Qt::UserRole + 1, "" );
 
     // Also insert the styles
     // Layer Styles
@@ -254,7 +254,7 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       lItem2->setText( 3, layer->style[j].abstract.simplified() );
 
       lItem2->setData( 0, Qt::UserRole, layer->name );
-      lItem2->setData( 0, Qt::UserRole+1, layer->style[j].name );
+      lItem2->setData( 0, Qt::UserRole + 1, layer->style[j].name );
     }
   }
 
@@ -263,9 +263,9 @@ bool QgsServerSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   {
     btnAdd->setEnabled( TRUE );
 
-    if( lstLayers->topLevelItemCount()==1 )
+    if ( lstLayers->topLevelItemCount() == 1 )
     {
-      lstLayers->expandItem( lstLayers->topLevelItem(0) );
+      lstLayers->expandItem( lstLayers->topLevelItem( 0 ) );
     }
   }
   else
@@ -467,12 +467,12 @@ void QgsServerSourceSelect::on_lstLayers_itemSelectionChanged()
   {
     QTreeWidgetItem *item = *it;
 
-    QString layerName = item->data(0, Qt::UserRole).toString();
-    if( layerName.isEmpty() )
+    QString layerName = item->data( 0, Qt::UserRole ).toString();
+    if ( layerName.isEmpty() )
       continue;
 
     newSelectedLayers << layerName;
-    newSelectedStylesForSelectedLayers << item->data( 0, Qt::UserRole+1 ).toString();
+    newSelectedStylesForSelectedLayers << item->data( 0, Qt::UserRole + 1 ).toString();
 
     newSelectedStyleIdForLayer[layerName] = item->text( 0 );
 

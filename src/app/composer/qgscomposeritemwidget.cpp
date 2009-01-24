@@ -152,11 +152,11 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
 void QgsComposerItemWidget::on_mPositionButton_clicked()
 {
-  if(!mItem)
-    {
-      return;
-    }
+  if ( !mItem )
+  {
+    return;
+  }
 
-  QgsItemPositionDialog d(mItem, 0);
+  QgsItemPositionDialog d( mItem, 0 );
   d.exec();
 }

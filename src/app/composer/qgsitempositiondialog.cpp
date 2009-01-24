@@ -20,93 +20,93 @@
 #include <QButtonGroup>
 #include <QDoubleValidator>
 
-QgsItemPositionDialog::QgsItemPositionDialog(QgsComposerItem* item, QWidget* parent): QDialog(parent), mItem(item)
+QgsItemPositionDialog::QgsItemPositionDialog( QgsComposerItem* item, QWidget* parent ): QDialog( parent ), mItem( item )
 {
-  setupUi(this);
+  setupUi( this );
 
   //make button exclusive
-  QButtonGroup* buttonGroup = new QButtonGroup(this);
-  buttonGroup->addButton(mUpperLeftCheckBox);
-  buttonGroup->addButton(mUpperMiddleCheckBox);
-  buttonGroup->addButton(mUpperRightCheckBox);
-  buttonGroup->addButton(mMiddleLeftCheckBox);
-  buttonGroup->addButton(mMiddleCheckBox);
-  buttonGroup->addButton(mMiddleRightCheckBox);
-  buttonGroup->addButton(mLowerLeftCheckBox);
-  buttonGroup->addButton(mLowerMiddleCheckBox);
-  buttonGroup->addButton(mLowerRightCheckBox);
-  buttonGroup->setExclusive(true);
+  QButtonGroup* buttonGroup = new QButtonGroup( this );
+  buttonGroup->addButton( mUpperLeftCheckBox );
+  buttonGroup->addButton( mUpperMiddleCheckBox );
+  buttonGroup->addButton( mUpperRightCheckBox );
+  buttonGroup->addButton( mMiddleLeftCheckBox );
+  buttonGroup->addButton( mMiddleCheckBox );
+  buttonGroup->addButton( mMiddleRightCheckBox );
+  buttonGroup->addButton( mLowerLeftCheckBox );
+  buttonGroup->addButton( mLowerMiddleCheckBox );
+  buttonGroup->addButton( mLowerRightCheckBox );
+  buttonGroup->setExclusive( true );
 
-  mXLineEdit->setValidator(new QDoubleValidator(0));
-  mYLineEdit->setValidator(new QDoubleValidator(0));
+  mXLineEdit->setValidator( new QDoubleValidator( 0 ) );
+  mYLineEdit->setValidator( new QDoubleValidator( 0 ) );
 
   //set lower left position of item
-  mUpperLeftCheckBox->setCheckState(Qt::Checked);
+  mUpperLeftCheckBox->setCheckState( Qt::Checked );
 }
 
-QgsItemPositionDialog::QgsItemPositionDialog(): mItem(0)
+QgsItemPositionDialog::QgsItemPositionDialog(): mItem( 0 )
 {
 }
 
 QgsItemPositionDialog::~QgsItemPositionDialog()
 {
-  
+
 }
 
-int QgsItemPositionDialog::position(QgsPoint& point) const
+int QgsItemPositionDialog::position( QgsPoint& point ) const
 {
   bool convXSuccess, convYSuccess;
-  double x = mXLineEdit->text().toDouble(&convXSuccess);
-  double y = mYLineEdit->text().toDouble(&convYSuccess);
+  double x = mXLineEdit->text().toDouble( &convXSuccess );
+  double y = mYLineEdit->text().toDouble( &convYSuccess );
 
-  if(!convXSuccess || !convYSuccess)
-    {
-      return 1;
-    }
+  if ( !convXSuccess || !convYSuccess )
+  {
+    return 1;
+  }
 
-  point.setX(x);
-  point.setY(y);
+  point.setX( x );
+  point.setY( y );
   return 0;
 }
 
 QgsComposerItem::ItemPositionMode QgsItemPositionDialog::positionMode() const
 {
-  if(mUpperLeftCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::UpperLeft;
-    }
-  else if(mUpperMiddleCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::UpperMiddle;
-    }
-  else if(mUpperRightCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::UpperRight;
-    }
-  else if(mMiddleLeftCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::MiddleLeft;
-    }
-  else if(mMiddleCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::Middle;
-    }
-  else if(mMiddleRightCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::MiddleRight;
-    }
-  else if(mLowerLeftCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::LowerLeft;
-    }
-  else if(mLowerMiddleCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::LowerMiddle;
-    }
-  else if(mLowerRightCheckBox->checkState() == Qt::Checked)
-    {
-      return QgsComposerItem::LowerRight;
-    }
+  if ( mUpperLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::UpperLeft;
+  }
+  else if ( mUpperMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::UpperMiddle;
+  }
+  else if ( mUpperRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::UpperRight;
+  }
+  else if ( mMiddleLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::MiddleLeft;
+  }
+  else if ( mMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::Middle;
+  }
+  else if ( mMiddleRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::MiddleRight;
+  }
+  else if ( mLowerLeftCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::LowerLeft;
+  }
+  else if ( mLowerMiddleCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::LowerMiddle;
+  }
+  else if ( mLowerRightCheckBox->checkState() == Qt::Checked )
+  {
+    return QgsComposerItem::LowerRight;
+  }
   return QgsComposerItem::UpperLeft;
 }
 
@@ -117,98 +117,98 @@ void QgsItemPositionDialog::on_mCloseButton_clicked()
 
 void QgsItemPositionDialog::on_mSetPositionButton_clicked()
 {
-  if(!mItem)
-    {
-      return;
-    }
+  if ( !mItem )
+  {
+    return;
+  }
 
   QgsPoint itemPosition;
-  if(position(itemPosition) == 0)
-    {
-      //query position and mode from dialog
-      mItem->setItemPosition(itemPosition.x(), itemPosition.y(), positionMode());
-      mItem->update();
-    }
+  if ( position( itemPosition ) == 0 )
+  {
+    //query position and mode from dialog
+    mItem->setItemPosition( itemPosition.x(), itemPosition.y(), positionMode() );
+    mItem->update();
+  }
 }
 
-void QgsItemPositionDialog::on_mUpperLeftCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mUpperLeftCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy()));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mUpperMiddleCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mUpperMiddleCheckBox_stateChanged( int state )
 {
-  
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width() / 2.0)); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy()));
-    }
-}
-  
-void QgsItemPositionDialog::on_mUpperRightCheckBox_stateChanged(int state)
-{
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy()));
-    }
+
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mMiddleLeftCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mUpperRightCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height() / 2.0));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mMiddleCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mMiddleLeftCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width() / 2.0)); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height() / 2.0));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mMiddleRightCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mMiddleCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height() / 2.0));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mLowerLeftCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mMiddleRightCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height()));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mLowerMiddleCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mLowerLeftCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width() / 2.0)); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height()));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+  }
 }
 
-void QgsItemPositionDialog::on_mLowerRightCheckBox_stateChanged(int state)
+void QgsItemPositionDialog::on_mLowerMiddleCheckBox_stateChanged( int state )
 {
-  if(state == Qt::Checked && mItem)
-    {
-      mXLineEdit->setText(QString::number(mItem->transform().dx() + mItem->rect().width())); 
-      mYLineEdit->setText(QString::number(mItem->transform().dy() + mItem->rect().height()));
-    }
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+  }
+}
+
+void QgsItemPositionDialog::on_mLowerRightCheckBox_stateChanged( int state )
+{
+  if ( state == Qt::Checked && mItem )
+  {
+    mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
+    mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
+  }
 }

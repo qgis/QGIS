@@ -701,12 +701,12 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "fiel
     name = el.attribute( name );
 
     QgsFieldMap::const_iterator field_it = mField.constBegin();
-    for(; field_it != mField.constEnd(); ++field_it)
+    for ( ; field_it != mField.constEnd(); ++field_it )
     {
-        if(field_it.value().name() == name)
-        {
-            break;
-        }
+      if ( field_it.value().name() == name )
+      {
+        break;
+      }
     }
 
     if ( field_it != mField.constEnd() )

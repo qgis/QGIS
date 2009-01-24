@@ -48,7 +48,7 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
                         int     proxyPort = 80,
                         QString proxyUser = QString(),
                         QString proxyPass = QString(),
-                        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy);
+                        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy );
 
     //! Destructor
     virtual ~QgsHttpTransaction();
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
 
     /**Apply proxy settings from QSettings to a http object
     @param return true if proxy settings was applied, false else*/
-    static bool applyProxySettings(QHttp& http, const QString& url);
+    static bool applyProxySettings( QHttp& http, const QString& url );
 
 
   public slots:
@@ -111,12 +111,12 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
   signals:
 
     /**legacy code. This signal is currently not emitted and only kept for API compatibility*/
-    void setProgress(int done, int total);
+    void setProgress( int done, int total );
 
     /**Signal for progress update */
-    void dataReadProgress( int theProgress);
+    void dataReadProgress( int theProgress );
     /**Signal for adjusted number of steps*/
-    void totalSteps(int theTotalSteps);
+    void totalSteps( int theTotalSteps );
 
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString theStatusQString );

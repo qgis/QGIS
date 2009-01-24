@@ -48,13 +48,13 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
   private:
     QgsComposerPicture* mPicture;
     /**Add the icons of a directory to the preview. Returns 0 in case of success*/
-    int addDirectoryToPreview(const QString& path);
+    int addDirectoryToPreview( const QString& path );
     /**Add the icons of the standard directories to the preview*/
     void addStandardDirectoriesToPreview();
     /**Tests if a file is valid svg*/
-    bool testSvgFile(const QString& filename) const;
+    bool testSvgFile( const QString& filename ) const;
     /**Tests if a file is a valid pixel format*/
-    bool testImageFile(const QString& filename) const;
+    bool testImageFile( const QString& filename ) const;
 };
 
 #endif

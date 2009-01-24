@@ -336,7 +336,7 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   // Width in WMS format
   QString width;
   width = width.setNum( pixelWidth );
-  
+
   // Height in WMS format
   QString height;
   height = height.setNum( pixelHeight );
@@ -550,19 +550,19 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
 
 }
 
-/*
+#if 0
 void QgsWmsProvider::getServerCapabilities()
 {
-  QgsDebugMsg("entering.");
+  QgsDebugMsg( "entering." );
 
   retrieveServerCapabilities();
 
   // TODO: Return generic server capabilities here
 
-  QgsDebugMsg("exiting.");
+  QgsDebugMsg( "exiting." );
 
 }
-*/
+#endif
 
 bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 {
@@ -640,47 +640,47 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
 
 #if 0 //MH: not necessary any more
   //read proxy settings
-   QSettings settings;
-   QString proxyHost, proxyUser, proxyPassword;
-   int proxyPort;
-   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+  QSettings settings;
+  QString proxyHost, proxyUser, proxyPassword;
+  int proxyPort;
+  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
-   bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
-   if(proxyEnabled)
-   {
-     proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-     proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-     proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-     proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
-     QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
-    if(proxyTypeString == "DefaultProxy")
+  bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
+  if ( proxyEnabled )
+  {
+    proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+    proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+    proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+    proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+    QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
+    if ( proxyTypeString == "DefaultProxy" )
     {
-         proxyType = QNetworkProxy::DefaultProxy;
-     }
-     else if(proxyTypeString == "Socks5Proxy")
-     {
-         proxyType = QNetworkProxy::Socks5Proxy;
+      proxyType = QNetworkProxy::DefaultProxy;
     }
-     else if(proxyTypeString == "HttpProxy")
-     {
-         proxyType = QNetworkProxy::HttpProxy;
-     }
-     else if(proxyTypeString == "HttpCachingProxy")
-     {
-         proxyType = QNetworkProxy::HttpCachingProxy;
-     }
-     else if(proxyTypeString == "FtpCachingProxy")
-     {
-        proxyType = QNetworkProxy::FtpCachingProxy;
-     }
-   }
+    else if ( proxyTypeString == "Socks5Proxy" )
+    {
+      proxyType = QNetworkProxy::Socks5Proxy;
+    }
+    else if ( proxyTypeString == "HttpProxy" )
+    {
+      proxyType = QNetworkProxy::HttpProxy;
+    }
+    else if ( proxyTypeString == "HttpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::HttpCachingProxy;
+    }
+    else if ( proxyTypeString == "FtpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::FtpCachingProxy;
+    }
+  }
 
 
 
-    QgsHttpTransaction http(url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
+  QgsHttpTransaction http( url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
 #endif //0
 
-QgsHttpTransaction http(url);
+  QgsHttpTransaction http( url );
 
   // Do a passthrough for the status bar text
   connect(
@@ -822,8 +822,8 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabil
   {
     mErrorCaption = tr( "Dom Exception" );
     mError = tr( "Could not get WMS capabilities: %1 at line %2 column %3\n" )
-               .arg( errorMsg ).arg( errorLine ).arg( errorColumn )
-           + tr( "This is probably due to an incorrect WMS Server URL." );
+             .arg( errorMsg ).arg( errorLine ).arg( errorColumn )
+             + tr( "This is probably due to an incorrect WMS Server URL." );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -846,8 +846,8 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabil
     mErrorCaption = tr( "Dom Exception" );
     mError = tr( "Could not get WMS capabilities in the "
                  "expected format (DTD): no %1 or %2 found\n" )
-               .arg( "WMS_Capabilities" ).arg( "WMT_MS_Capabilities" )
-           + tr( "This is probably due to an incorrect WMS Server URL." );
+             .arg( "WMS_Capabilities" ).arg( "WMT_MS_Capabilities" )
+             + tr( "This is probably due to an incorrect WMS Server URL." );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -957,7 +957,7 @@ void QgsWmsProvider::parseCapability( QDomElement const & e, QgsWmsCapabilityPro
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      QgsDebugMsg("  "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg( "  "  + e1.tagName() ); // the node really is an element.
 
       if ( e1.tagName() == "Request" )
       {
@@ -1517,7 +1517,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     n1 = n1.nextSibling();
   }
 
-  if(parentProperty)
+  if ( parentProperty )
   {
     mLayerParents[ layerProperty.orderId ] = parentProperty->orderId;
   }
@@ -1600,10 +1600,10 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
   {
     mErrorCaption = tr( "Dom Exception" );
     mError = tr( "Could not get WMS Service Exception at %1: %2 at line %3 column %4" )
-               .arg( baseUrl )
-               .arg( errorMsg )
-               .arg( errorLine )
-               .arg( errorColumn );
+             .arg( baseUrl )
+             .arg( errorMsg )
+             .arg( errorLine )
+             .arg( errorColumn );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -1702,7 +1702,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   {
     mError = tr( "Request is for an optional operation that is not supported by the server." );
   }
-  else if( seCode.isEmpty() )
+  else if ( seCode.isEmpty() )
   {
     mError = tr( "(No error code was reported)" );
   }

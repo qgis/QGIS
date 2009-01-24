@@ -63,12 +63,12 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
   mTypeName = rhs.mTypeName;
 
   // make sure to delete the old geometry (if exists)
-  if (mGeometry && mOwnsGeometry)
+  if ( mGeometry && mOwnsGeometry )
     delete mGeometry;
-  
+
   mGeometry = 0;
   mOwnsGeometry = false;
-  
+
   if ( rhs.mGeometry )
     setGeometry( *rhs.mGeometry );
 
