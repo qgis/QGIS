@@ -66,22 +66,22 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns width of paper item*/
     double paperWidth() const;
 
-    void setSnapToGridEnabled(bool b); 
+    void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
-    void setSnapGridResolution(double r);
+    void setSnapGridResolution( double r );
     double snapGridResolution() const {return mSnapGridResolution;}
 
-    void setSnapGridOffsetX(double offset);
+    void setSnapGridOffsetX( double offset );
     double snapGridOffsetX() const {return mSnapGridOffsetX;}
 
-    void setSnapGridOffsetY(double offset);
+    void setSnapGridOffsetY( double offset );
     double snapGridOffsetY() const {return mSnapGridOffsetY;}
 
-    void setGridPen(const QPen& p);
+    void setGridPen( const QPen& p );
     const QPen& gridPen() const {return mGridPen;}
 
-    void setGridStyle(GridStyle s);
+    void setGridStyle( GridStyle s );
     GridStyle gridStyle() const {return mGridStyle;}
 
     /**Returns the topmose composer item. Ignores mPaperItem*/
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void sortZList();
 
     /**Snaps a scene coordinate point to grid*/
-    QPointF snapPointToGrid(const QPointF& scenePoint) const;
+    QPointF snapPointToGrid( const QPointF& scenePoint ) const;
 
 
   private:
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns the bounding rectangle of the selected items in scene coordinates
      @return 0 in case of success*/
-    int boundingRectOfSelectedItems(QRectF& bRect);
+    int boundingRectOfSelectedItems( QRectF& bRect );
 
     void loadGridAppearanceSettings();
     void saveGridAppearanceSettings();

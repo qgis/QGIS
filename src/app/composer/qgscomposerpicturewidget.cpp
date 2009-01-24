@@ -41,7 +41,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   setGuiElementValues();
 
-  mPreviewListWidget->setIconSize(QSize(30, 30));
+  mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
 
   //add preview icons
   addStandardDirectoriesToPreview();
@@ -155,45 +155,45 @@ void QgsComposerPictureWidget::on_mRotationSpinBox_valueChanged( double d )
 
 void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
 {
-  if(!mPicture || !current)
+  if ( !mPicture || !current )
   {
     return;
   }
 
-  QString absoluteFilePath = current->data(Qt::UserRole).toString();
-  mPicture->setPictureFile(absoluteFilePath);
-  mPictureLineEdit->setText(absoluteFilePath);
+  QString absoluteFilePath = current->data( Qt::UserRole ).toString();
+  mPicture->setPictureFile( absoluteFilePath );
+  mPictureLineEdit->setText( absoluteFilePath );
   mPicture->update();
 }
 
 void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
 {
   //let user select a directory
-  QString directory = QFileDialog::getExistingDirectory(0, tr("Select new preview directory"));
-  if(directory.isNull())
+  QString directory = QFileDialog::getExistingDirectory( 0, tr( "Select new preview directory" ) );
+  if ( directory.isNull() )
   {
     return; //dialog canceled by user
   }
 
   //add entry to mSearchDirectoriesComboBox
-  mSearchDirectoriesComboBox->addItem(directory);
+  mSearchDirectoriesComboBox->addItem( directory );
 
   //and add icons to the preview
-  addDirectoryToPreview(directory);
+  addDirectoryToPreview( directory );
 }
 
 void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
 {
   QString directoryToRemove = mSearchDirectoriesComboBox->currentText();
-  mSearchDirectoriesComboBox->removeItem(mSearchDirectoriesComboBox->currentIndex());
+  mSearchDirectoriesComboBox->removeItem( mSearchDirectoriesComboBox->currentIndex() );
 
   //remove entries from back to front (to have the indices of existing items constant)
-  for(int i = (mPreviewListWidget->count() - 1); i >=0; --i)
+  for ( int i = ( mPreviewListWidget->count() - 1 ); i >= 0; --i )
   {
-    QListWidgetItem* currentItem = mPreviewListWidget->item(i);
-    if(currentItem && currentItem->data(Qt::UserRole).toString().startsWith(directoryToRemove))
+    QListWidgetItem* currentItem = mPreviewListWidget->item( i );
+    if ( currentItem && currentItem->data( Qt::UserRole ).toString().startsWith( directoryToRemove ) )
     {
-      delete(mPreviewListWidget->takeItem(i));
+      delete( mPreviewListWidget->takeItem( i ) );
     }
   }
 }
@@ -221,30 +221,30 @@ void QgsComposerPictureWidget::setGuiElementValues()
   }
 }
 
-int QgsComposerPictureWidget::addDirectoryToPreview(const QString& path)
+int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
 {
   //go through all files of a directory
-  QDir directory(path);
-  if(!directory.exists() || !directory.isReadable())
+  QDir directory( path );
+  if ( !directory.exists() || !directory.isReadable() )
   {
     return 1; //error
   }
 
-  QFileInfoList fileList = directory.entryInfoList(QDir::Files);
+  QFileInfoList fileList = directory.entryInfoList( QDir::Files );
   QFileInfoList::const_iterator fileIt = fileList.constBegin();
 
-  QProgressDialog progress("Adding Icons...", "Abort", 0, fileList.size() - 1, this);
+  QProgressDialog progress( "Adding Icons...", "Abort", 0, fileList.size() - 1, this );
   //cancel button does not seem to work properly with modal dialog
   //progress.setWindowModality(Qt::WindowModal);
 
   int counter = 0;
-  for(; fileIt != fileList.constEnd(); ++fileIt)
+  for ( ; fileIt != fileList.constEnd(); ++fileIt )
   {
 
-    progress.setLabelText(tr("Creating icon for file ") + fileIt->fileName());
-    progress.setValue(counter);
+    progress.setLabelText( tr( "Creating icon for file " ) + fileIt->fileName() );
+    progress.setValue( counter );
     QCoreApplication::processEvents();
-    if(progress.wasCanceled())
+    if ( progress.wasCanceled() )
     {
       break;
     }
@@ -252,45 +252,45 @@ int QgsComposerPictureWidget::addDirectoryToPreview(const QString& path)
 
     //test if file is svg or pixel format
     bool fileIsPixel = false;
-    bool fileIsSvg = testSvgFile(filePath);
-    if(!fileIsSvg)
-      {
-	fileIsPixel = testImageFile(filePath);
-      }
+    bool fileIsSvg = testSvgFile( filePath );
+    if ( !fileIsSvg )
+    {
+      fileIsPixel = testImageFile( filePath );
+    }
 
     //exclude files that are not svg or image
-    if(!fileIsSvg && !fileIsPixel)
+    if ( !fileIsSvg && !fileIsPixel )
     {
       ++counter; continue;
     }
 
-    QListWidgetItem * listItem = new QListWidgetItem(mPreviewListWidget);
+    QListWidgetItem * listItem = new QListWidgetItem( mPreviewListWidget );
 
-    if(fileIsSvg)
+    if ( fileIsSvg )
     {
-      QIcon icon(filePath);
-      listItem->setIcon(icon);
+      QIcon icon( filePath );
+      listItem->setIcon( icon );
     }
-    else if(fileIsPixel) //for pixel formats: create icon from scaled pixmap
+    else if ( fileIsPixel ) //for pixel formats: create icon from scaled pixmap
     {
-      QPixmap iconPixmap(filePath);
-      if(iconPixmap.isNull())
+      QPixmap iconPixmap( filePath );
+      if ( iconPixmap.isNull() )
       {
         ++counter; continue; //unknown file format or other problem
       }
       //set pixmap hardcoded to 30/30, same as icon size for mPreviewListWidget
-      QPixmap scaledPixmap(iconPixmap.scaled(QSize(30, 30), Qt::KeepAspectRatio));
-      QIcon icon(scaledPixmap);
-      listItem->setIcon(icon);
+      QPixmap scaledPixmap( iconPixmap.scaled( QSize( 30, 30 ), Qt::KeepAspectRatio ) );
+      QIcon icon( scaledPixmap );
+      listItem->setIcon( icon );
     }
     else
-      {
-	++counter; continue;
-      }
+    {
+      ++counter; continue;
+    }
 
     listItem->setText( "" );
     //store the absolute icon file path as user data
-    listItem->setData( Qt::UserRole, fileIt->absoluteFilePath());
+    listItem->setData( Qt::UserRole, fileIt->absoluteFilePath() );
     ++counter;
   }
 
@@ -300,37 +300,37 @@ int QgsComposerPictureWidget::addDirectoryToPreview(const QString& path)
 void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 {
   //list all directories in $prefix/share/qgis/svg
-  QDir svgDirectory(QgsApplication::svgPath());
-  if(!svgDirectory.exists() || !svgDirectory.isReadable())
+  QDir svgDirectory( QgsApplication::svgPath() );
+  if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
   {
-      return; //error
+    return; //error
   }
 
-  QFileInfoList directoryList = svgDirectory.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+  QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
   QFileInfoList::const_iterator dirIt = directoryList.constBegin();
-  for(; dirIt != directoryList.constEnd(); ++dirIt)
+  for ( ; dirIt != directoryList.constEnd(); ++dirIt )
   {
-    if(addDirectoryToPreview(dirIt->absoluteFilePath()) == 0)
+    if ( addDirectoryToPreview( dirIt->absoluteFilePath() ) == 0 )
     {
-       mSearchDirectoriesComboBox->addItem(dirIt->absoluteFilePath());
+      mSearchDirectoriesComboBox->addItem( dirIt->absoluteFilePath() );
     }
   }
 }
 
-bool QgsComposerPictureWidget::testSvgFile(const QString& filename) const
+bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
 {
-  QSvgRenderer svgRenderer(filename);
-  if(svgRenderer.isValid())
+  QSvgRenderer svgRenderer( filename );
+  if ( svgRenderer.isValid() )
   {
     return true;
   }
   return false;
 }
 
-bool QgsComposerPictureWidget::testImageFile(const QString& filename) const
+bool QgsComposerPictureWidget::testImageFile( const QString& filename ) const
 {
-  QString formatName = QString(QImageReader::imageFormat(filename));
-  if(!formatName.isEmpty())
+  QString formatName = QString( QImageReader::imageFormat( filename ) );
+  if ( !formatName.isEmpty() )
   {
     return true; //file is in a supported pixel format
   }

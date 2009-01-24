@@ -138,12 +138,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionAddImage_activated( void );
 
     //! Save composer as template
-    void on_mActionSaveAsTemplate_activated(void);
+    void on_mActionSaveAsTemplate_activated( void );
 
-    void on_mActionLoadFromTemplate_activated(void);
+    void on_mActionLoadFromTemplate_activated( void );
 
     //! Set tool to move item content
-    void on_mActionMoveItemContent_activated(void);
+    void on_mActionMoveItemContent_activated( void );
 
     //! Group selected items
     void on_mActionGroupItems_activated( void );
@@ -152,34 +152,34 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void on_mActionUngroupItems_activated( void );
 
     //! Move selected items one position up
-    void on_mActionRaiseItems_activated(void);
+    void on_mActionRaiseItems_activated( void );
 
     //!Move selected items one position down
-    void on_mActionLowerItems_activated(void);
+    void on_mActionLowerItems_activated( void );
 
     //!Move selected items to top
-    void on_mActionMoveItemsToTop_activated(void);
+    void on_mActionMoveItemsToTop_activated( void );
 
     //!Move selected items to bottom
-    void on_mActionMoveItemsToBottom_activated(void);
+    void on_mActionMoveItemsToBottom_activated( void );
 
     //!Align selected composer items left
-    void on_mActionAlignLeft_activated(void);
+    void on_mActionAlignLeft_activated( void );
 
     //!Align selected composere items horizontally centered
-    void on_mActionAlignHCenter_activated(void);
+    void on_mActionAlignHCenter_activated( void );
 
     //!Align selected composer items right
-    void on_mActionAlignRight_activated(void);
+    void on_mActionAlignRight_activated( void );
 
     //!Align selected composer items to top
-    void on_mActionAlignTop_activated(void);
+    void on_mActionAlignTop_activated( void );
 
     //!Align selected composer items vertically centered
-    void on_mActionAlignVCenter_activated(void);
+    void on_mActionAlignVCenter_activated( void );
 
     //!Align selected composer items to bottom
-    void on_mActionAlignBottom_activated(void);
+    void on_mActionAlignBottom_activated( void );
 
     //! Save window state
     void saveWindowState();
@@ -243,8 +243,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
 
-     //! Writes state under DOM element
-    void writeXML(QDomNode& parentNode, QDomDocument& doc);
+    //! Writes state under DOM element
+    void writeXML( QDomNode& parentNode, QDomDocument& doc );
     //! Pointer to composer view
     QgsComposerView *mView;
 

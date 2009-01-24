@@ -20,22 +20,22 @@
 
 #include "qgscomposeritem.h"
 
-/**Item representing the paper. May draw the snapping grid lines if composition is in 
+/**Item representing the paper. May draw the snapping grid lines if composition is in
  preview mode*/
 class QgsPaperItem: public QgsComposerItem
 {
- public:
-  QgsPaperItem(QgsComposition* c);
-  QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
-  ~QgsPaperItem();
+  public:
+    QgsPaperItem( QgsComposition* c );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    ~QgsPaperItem();
 
-  /** \brief Reimplementation of QCanvasItem::paint*/
-  void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    /** \brief Reimplementation of QCanvasItem::paint*/
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  /** stores state in Dom node
-     * @param node is Dom node corresponding to 'Composer' tag
-     * @param temp write template file
-     */
+    /** stores state in Dom node
+       * @param node is Dom node corresponding to 'Composer' tag
+       * @param temp write template file
+       */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
     /** sets state from Dom document
@@ -43,8 +43,8 @@ class QgsPaperItem: public QgsComposerItem
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
- private:
-  QgsPaperItem();
+  private:
+    QgsPaperItem();
 };
 
 #endif

@@ -338,7 +338,7 @@ void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double cur
     if ( paintDevice )
     {
       double rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
-      QgsRenderer::scaleBrush(symbolBrush, rasterScaleFactor);
+      QgsRenderer::scaleBrush( symbolBrush, rasterScaleFactor );
     }
     p->setBrush( symbolBrush );
     p->setPen( s->pen() );

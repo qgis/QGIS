@@ -118,7 +118,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
   //set antialiasing if enabled in options
   QSettings settings;
-  if(settings.value( "/qgis/enable_anti_aliasing", false ).toBool())
+  if ( settings.value( "/qgis/enable_anti_aliasing", false ).toBool() )
   {
     painter->setRenderHint( QPainter::Antialiasing );
   }
@@ -247,7 +247,7 @@ void QgsComposerMap::updateCachedImage( void )
 
 void QgsComposerMap::renderModeUpdateCachedImage()
 {
-  if(mPreviewMode == Render)
+  if ( mPreviewMode == Render )
   {
     updateCachedImage();
   }

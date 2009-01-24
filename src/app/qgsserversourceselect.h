@@ -141,7 +141,7 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     void populateImageEncodingGroup( QgsWmsProvider* wmsProvider );
 
     //! create an item including possible parents
-    QgsNumericSortTreeWidgetItem *createItem(int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int,int> &layerParents, const QMap<int, QStringList> &layerParentNames );
+    QgsNumericSortTreeWidgetItem *createItem( int id, const QStringList &names, QMap<int, QgsNumericSortTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the EpsgCrsId number
     QString descriptionForEpsg( long epsg );

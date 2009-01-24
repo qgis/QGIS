@@ -293,7 +293,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   int cat, type, id;
   unsigned char *wkb;
   int wkbsize;
-  
+
   QgsDebugMsgLevel( "entered.", 3 );
 
   if ( isEdited() || isFrozen() || !mValid )
@@ -318,7 +318,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
 #endif
 
-  feature.setFeatureId(id);
+  feature.setFeatureId( id );
 
   // TODO int may be 64 bits (memcpy)
   if ( type & ( GV_POINTS | GV_LINES ) ) /* points or lines */

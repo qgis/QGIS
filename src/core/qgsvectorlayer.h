@@ -576,7 +576,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** cache of the committed geometries retrieved *for the current display* */
     QgsGeometryMap mCachedGeometries;
-    
+
     /** extent for which there are cached geometries */
     QgsRectangle mCachedGeometriesRect;
 

@@ -39,14 +39,14 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
                                         int     proxyPort,
                                         QString proxyUser,
                                         QString proxyPass,
-                                        QNetworkProxy::ProxyType proxyType)
+                                        QNetworkProxy::ProxyType proxyType )
     : httpresponsecontenttype( 0 ),
     httpurl( uri ),
     httphost( proxyHost ),
     httpport( proxyPort ),
     httpuser( proxyUser ),
     httppass( proxyPass ),
-    mProxyType(proxyType),
+    mProxyType( proxyType ),
     mError( 0 )
 {
 
@@ -98,7 +98,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   // Set the host in the QHttp object
   http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
 
-  if(!QgsHttpTransaction::applyProxySettings(*http, httpurl))
+  if ( !QgsHttpTransaction::applyProxySettings( *http, httpurl ) )
   {
     httphost = qurl.host();
     httpport = qurl.port( HTTP_PORT_DEFAULT );
@@ -187,8 +187,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 //  QgsDebugMsg("Response received; being '" + httpresponsestring + "'.");
 #endif
 
-    delete http;
-    http = 0;
+  delete http;
+  http = 0;
 
   // Did we get an error? If so, bail early
   if ( !mError.isNull() )
@@ -291,8 +291,8 @@ void QgsHttpTransaction::dataProgress( int done, int total )
   // We saw something come back, therefore restart the watchdog timer
   mWatchdogTimer->start( NETWORK_TIMEOUT_MSEC );
 
-  emit dataReadProgress(done);
-  emit totalSteps(total);
+  emit dataReadProgress( done );
+  emit totalSteps( total );
 
   QString status;
 
@@ -471,25 +471,25 @@ QString QgsHttpTransaction::errorString()
   return mError;
 }
 
-bool QgsHttpTransaction::applyProxySettings(QHttp& http, const QString& url)
+bool QgsHttpTransaction::applyProxySettings( QHttp& http, const QString& url )
 {
   QSettings settings;
   //check if proxy is enabled
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
-  if(!proxyEnabled)
+  if ( !proxyEnabled )
   {
     return false;
   }
 
   //check if the url should go through proxy
-  QString  proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "").toString();
-  if(!proxyExcludedURLs.isEmpty())
+  QString  proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
+  if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList excludedURLs = proxyExcludedURLs.split("|");
+    QStringList excludedURLs = proxyExcludedURLs.split( "|" );
     QStringList::const_iterator exclIt = excludedURLs.constBegin();
-    for(; exclIt != excludedURLs.constEnd(); ++exclIt)
+    for ( ; exclIt != excludedURLs.constEnd(); ++exclIt )
     {
-      if(url.startsWith(*exclIt))
+      if ( url.startsWith( *exclIt ) )
       {
         return false; //url does not go through proxy
       }
@@ -504,36 +504,36 @@ bool QgsHttpTransaction::applyProxySettings(QHttp& http, const QString& url)
 
   QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-    if(proxyTypeString == "DefaultProxy")
-    {
-         proxyType = QNetworkProxy::DefaultProxy;
-     }
-     else if(proxyTypeString == "Socks5Proxy")
-     {
-         proxyType = QNetworkProxy::Socks5Proxy;
-    }
-     else if(proxyTypeString == "HttpProxy")
-     {
-         proxyType = QNetworkProxy::HttpProxy;
-     }
-     else if(proxyTypeString == "HttpCachingProxy")
-     {
-         proxyType = QNetworkProxy::HttpCachingProxy;
-     }
-     else if(proxyTypeString == "FtpCachingProxy")
-     {
-        proxyType = QNetworkProxy::FtpCachingProxy;
-     }
-  http.setProxy( QNetworkProxy(proxyType, proxyHost, proxyPort, proxyUser, proxyPassword) );
+  if ( proxyTypeString == "DefaultProxy" )
+  {
+    proxyType = QNetworkProxy::DefaultProxy;
+  }
+  else if ( proxyTypeString == "Socks5Proxy" )
+  {
+    proxyType = QNetworkProxy::Socks5Proxy;
+  }
+  else if ( proxyTypeString == "HttpProxy" )
+  {
+    proxyType = QNetworkProxy::HttpProxy;
+  }
+  else if ( proxyTypeString == "HttpCachingProxy" )
+  {
+    proxyType = QNetworkProxy::HttpCachingProxy;
+  }
+  else if ( proxyTypeString == "FtpCachingProxy" )
+  {
+    proxyType = QNetworkProxy::FtpCachingProxy;
+  }
+  http.setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
   return true;
 }
 
 void QgsHttpTransaction::abort()
 {
-    if(http)
-    {
-        http->abort();
-    }
+  if ( http )
+  {
+    http->abort();
+  }
 }
 
 // ENDS

@@ -460,14 +460,14 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       if ( isDisabledAttributeValuesDlg )
       {
         if ( vlayer->addFeature( *f ) )
+        {
+          //add points to other features to keep topology up-to-date
+          int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+          if ( topologicalEditing )
           {
-            //add points to other features to keep topology up-to-date
-            int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-            if ( topologicalEditing )
-            {
-              vlayer->addTopologicalPoints( f->geometry() );
-            }
+            vlayer->addTopologicalPoints( f->geometry() );
           }
+        }
       }
       else
       {

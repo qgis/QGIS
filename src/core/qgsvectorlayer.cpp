@@ -697,7 +697,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     {
       // Destroy all cached geometries and clear the references to them
       deleteCachedGeometries();
-      
+
       mCachedGeometriesRect = rendererContext.extent();
     }
 
@@ -787,9 +787,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
   if ( mEditable )
   {
-    QgsDebugMsg(QString("Cached %1 geometries.").arg(mCachedGeometries.count()));
+    QgsDebugMsg( QString( "Cached %1 geometries." ).arg( mCachedGeometries.count() ) );
   }
-  
+
   return TRUE; // Assume success always
 }
 
@@ -3143,19 +3143,19 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   QgsRectangle searchRect( startPoint.x() - snappingTolerance, startPoint.y() - snappingTolerance,
                            startPoint.x() + snappingTolerance, startPoint.y() + snappingTolerance );
   double sqrSnappingTolerance = snappingTolerance * snappingTolerance;
-  
+
   int n = 0;
   QgsFeature f;
-  
-  if (mCachedGeometriesRect.contains(searchRect))
+
+  if ( mCachedGeometriesRect.contains( searchRect ) )
   {
-    QgsDebugMsg("Using cached geometries for snapping.");
-    
+    QgsDebugMsg( "Using cached geometries for snapping." );
+
     QgsGeometryMap::iterator it = mCachedGeometries.begin();
-    for ( ; it != mCachedGeometries.end() ; ++it)
+    for ( ; it != mCachedGeometries.end() ; ++it )
     {
-      QgsGeometry* g = &(it.value());
-      if (g->boundingBox().intersects(searchRect))
+      QgsGeometry* g = &( it.value() );
+      if ( g->boundingBox().intersects( searchRect ) )
       {
         snapToGeometry( startPoint, it.key(), g, sqrSnappingTolerance, snappingResults, snap_to );
         ++n;
@@ -3165,9 +3165,9 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
   else
   {
     // snapping outside cached area
-    
+
     select( QgsAttributeList(), searchRect, true, true );
-  
+
     while ( nextFeature( f ) )
     {
       snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );

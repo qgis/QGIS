@@ -64,26 +64,26 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leProxyPassword->setText( settings.value( "proxy/proxyPassword", "" ).toString() );
 
   //available proxy types
-  mProxyTypeComboBox->insertItem(0, "DefaultProxy");
-  mProxyTypeComboBox->insertItem(1, "Socks5Proxy");
-  mProxyTypeComboBox->insertItem(2, "HttpProxy");
-  mProxyTypeComboBox->insertItem(3, "HttpCachingProxy");
-  mProxyTypeComboBox->insertItem(4, "FtpCachingProxy");
-  QString settingProxyType = settings.value("proxy/proxyType", "DefaultProxy").toString();
-  mProxyTypeComboBox->setCurrentIndex(mProxyTypeComboBox->findText(settingProxyType));
+  mProxyTypeComboBox->insertItem( 0, "DefaultProxy" );
+  mProxyTypeComboBox->insertItem( 1, "Socks5Proxy" );
+  mProxyTypeComboBox->insertItem( 2, "HttpProxy" );
+  mProxyTypeComboBox->insertItem( 3, "HttpCachingProxy" );
+  mProxyTypeComboBox->insertItem( 4, "FtpCachingProxy" );
+  QString settingProxyType = settings.value( "proxy/proxyType", "DefaultProxy" ).toString();
+  mProxyTypeComboBox->setCurrentIndex( mProxyTypeComboBox->findText( settingProxyType ) );
 
   //URLs excluded not going through proxies
-  QString proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "").toString();
-  if(!proxyExcludedURLs.isEmpty())
+  QString proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
+  if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList splittedUrls = proxyExcludedURLs.split("|");
+    QStringList splittedUrls = proxyExcludedURLs.split( "|" );
     QStringList::const_iterator urlIt = splittedUrls.constBegin();
-    for(; urlIt != splittedUrls.constEnd(); ++urlIt)
+    for ( ; urlIt != splittedUrls.constEnd(); ++urlIt )
     {
-      QListWidgetItem* newItem = new QListWidgetItem(mExcludeUrlListWidget);
-      newItem->setText(*urlIt);
-      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-      mExcludeUrlListWidget->addItem(newItem);
+      QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
+      newItem->setText( *urlIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mExcludeUrlListWidget->addItem( newItem );
     }
   }
 
@@ -288,19 +288,19 @@ void QgsOptions::saveOptions()
   settings.setValue( "proxy/proxyPort", leProxyPort->text() );
   settings.setValue( "proxy/proxyUser", leProxyUser->text() );
   settings.setValue( "proxy/proxyPassword", leProxyPassword->text() );
-  settings.setValue( "proxy/proxyType", mProxyTypeComboBox->currentText());
+  settings.setValue( "proxy/proxyType", mProxyTypeComboBox->currentText() );
 
   //url to exclude from proxys
   QString proxyExcludeString;
-  for(int i = 0; i < mExcludeUrlListWidget->count(); ++i)
+  for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
   {
-    if(i != 0)
+    if ( i != 0 )
     {
       proxyExcludeString += "|";
     }
-    proxyExcludeString += mExcludeUrlListWidget->item(i)->text();
+    proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
   }
-  settings.setValue( "proxy/proxyExcludedUrls", proxyExcludeString);
+  settings.setValue( "proxy/proxyExcludedUrls", proxyExcludeString );
 
   //general settings
   settings.setValue( "/Map/identifyRadius", spinBoxIdentifyValue->value() );
@@ -577,16 +577,16 @@ QStringList QgsOptions::i18nList()
 
 void QgsOptions::on_mAddUrlPushButton_clicked()
 {
-  QListWidgetItem* newItem = new QListWidgetItem(mExcludeUrlListWidget);
-  newItem->setText("URL");
-  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-  mExcludeUrlListWidget->addItem(newItem);
-  mExcludeUrlListWidget->setCurrentItem(newItem);
+  QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
+  newItem->setText( "URL" );
+  newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  mExcludeUrlListWidget->addItem( newItem );
+  mExcludeUrlListWidget->setCurrentItem( newItem );
 }
 
 void QgsOptions::on_mRemoveUrlPushButton_clicked()
 {
   int currentRow = mExcludeUrlListWidget->currentRow();
-  QListWidgetItem* itemToRemove = mExcludeUrlListWidget->takeItem(currentRow);
+  QListWidgetItem* itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
   delete itemToRemove;
 }

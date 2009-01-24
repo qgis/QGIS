@@ -49,24 +49,24 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     };
 
     enum ItemPositionMode
-      {
-	UpperLeft,
-	UpperMiddle,
-	UpperRight,
-	MiddleLeft,
-	Middle,
-	MiddleRight,
-	LowerLeft,
-	LowerMiddle,
-	LowerRight
-      };
+    {
+      UpperLeft,
+      UpperMiddle,
+      UpperRight,
+      MiddleLeft,
+      Middle,
+      MiddleRight,
+      LowerLeft,
+      LowerMiddle,
+      LowerRight
+    };
 
-    /**Constructor 
+    /**Constructor
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( QgsComposition* composition, bool manageZValue = true);
+    QgsComposerItem( QgsComposition* composition, bool manageZValue = true );
     /**Constructor with box position and composer object
      @param manageZValue true if the z-Value of this object should be managed by mComposition*/
-    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true);
+    QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
     /** \brief Set selected, selected item should be highlighted */
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     virtual void zoomContent( int delta, double x, double y ) {}
 
     /**Moves the item to a new position (in canvas coordinates)*/
-    void setItemPosition(double x, double y, ItemPositionMode itemPoint = UpperLeft);
+    void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
      @param dy y-Change of mouse cursor
      @param changeItem Item to change size (can be the same as originalItem or a differen one)
     */
-    void changeItemRectangle(const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem);
+    void changeItemRectangle( const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem );
 
     /**Draw selection boxes around item*/
     virtual void drawSelectionBoxes( QPainter* p );

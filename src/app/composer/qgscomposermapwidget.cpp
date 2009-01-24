@@ -38,7 +38,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mYMaxLineEdit->setValidator( new QDoubleValidator( 0 ) );
 
   mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
-  mPreviewModeComboBox->insertItem(1, tr("Render"));
+  mPreviewModeComboBox->insertItem( 1, tr( "Render" ) );
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
   if ( composerMap )

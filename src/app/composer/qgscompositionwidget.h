@@ -46,13 +46,13 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperHeightLineEdit_editingFinished();
     void on_mResolutionLineEdit_textChanged( const QString& text );
 
-    void on_mSnapToGridCheckBox_stateChanged(int state);
-    void on_mResolutionSpinBox_valueChanged(double d);
-    void on_mOffsetXSpinBox_valueChanged(double d);
-    void on_mOffsetYSpinBox_valueChanged(double d);
+    void on_mSnapToGridCheckBox_stateChanged( int state );
+    void on_mResolutionSpinBox_valueChanged( double d );
+    void on_mOffsetXSpinBox_valueChanged( double d );
+    void on_mOffsetYSpinBox_valueChanged( double d );
     void on_mGridColorButton_clicked();
     void on_mGridStyleComboBox_currentIndexChanged( const QString& text );
-    void on_mPenWidthSpinBox_valueChanged(double d);
+    void on_mPenWidthSpinBox_valueChanged( double d );
 
   private:
     QgsComposition* mComposition;

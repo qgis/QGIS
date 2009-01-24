@@ -272,7 +272,7 @@ struct QgsWmsFeatureListUrlProperty
 struct QgsWmsLayerProperty
 {
   // WMS layer properties
-  int					  orderId;
+  int                                     orderId;
   QString                                 name;
   QString                                 title;
   QString                                 abstract;
@@ -359,7 +359,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual bool supportedLayers( QVector<QgsWmsLayerProperty> & layers );
 
     /**
-     * \brief   Returns a map for the hierachy of layers 
+     * \brief   Returns a map for the hierachy of layers
      */
     virtual void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
