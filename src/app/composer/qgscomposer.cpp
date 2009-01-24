@@ -766,7 +766,7 @@ void QgsComposer::on_mActionSaveAsTemplate_activated(void)
   settings.setValue("UI/LastComposerTemplateDir", saveFileInfo.absolutePath());
 
   QFile templateFile(saveFileName);
-  if(!templateFile.open(QIODevice::ReadWrite))
+  if(!templateFile.open(QIODevice::WriteOnly))
   {
       return;
   }
