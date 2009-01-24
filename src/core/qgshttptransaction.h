@@ -82,6 +82,10 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
      */
     QString errorString();
 
+    /**Apply proxy settings from QSettings to a http object
+    @param return true if proxy settings was applied, false else*/
+    static bool applyProxySettings(QHttp& http, const QString& url);
+
 
   public slots:
 
