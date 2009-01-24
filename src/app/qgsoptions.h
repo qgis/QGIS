@@ -82,6 +82,12 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mLineColourToolButton_clicked();
 
+    /**Add a new URL to exclude from Proxy*/
+    void on_mAddUrlPushButton_clicked();
+
+    /**Remove an URL to exclude from Proxy*/
+    void on_mRemoveUrlPushButton_clicked();
+
   protected:
     //! Populates combo box with ellipsoids
     void getEllipsoidList();

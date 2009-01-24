@@ -638,6 +638,7 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
 {
   QgsDebugMsg( "WMS request Url: " + url );
 
+#if 0 //MH: not necessary any more
   //read proxy settings
    QSettings settings;
    QString proxyHost, proxyUser, proxyPassword;
@@ -675,8 +676,11 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
    }
 
 
-    QgsHttpTransaction http(url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
 
+    QgsHttpTransaction http(url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
+#endif //0
+
+QgsHttpTransaction http(url);
 
   // Do a passthrough for the status bar text
   connect(
