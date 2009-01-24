@@ -29,7 +29,7 @@
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
-QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
+QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue): QGraphicsRectItem( 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -41,13 +41,13 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition ): QGraphicsRectIt
   setPen( defaultPen );
 
   //let z-Value be managed by composition
-  if ( mComposition )
+  if ( mComposition && manageZValue)
   {
     mComposition->addItemToZList( this );
   }
 }
 
-QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
+QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue): QGraphicsRectItem( 0, 0, width, height, 0 ), mComposition( composition ), mBoundingResizeRectangle( 0 ), mFrame( true )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
@@ -63,7 +63,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
   setPen( defaultPen );
 
 //let z-Value be managed by composition
-  if ( mComposition )
+  if ( mComposition && manageZValue)
   {
     mComposition->addItemToZList( this );
   }
@@ -222,35 +222,21 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
   qWarning( "QgsComposerItem::mouseMoveEvent" );
   if ( mBoundingResizeRectangle )
   {
-    double diffX = event->lastPos().x() - mLastMouseEventPos.x();
-    double diffY = event->lastPos().y() - mLastMouseEventPos.y();
+    double diffX = event->lastScenePos().x() - mLastMouseEventPos.x();
+    double diffY = event->lastScenePos().y() - mLastMouseEventPos.y();
 
     double mx, my, rx, ry;
-
-    rectangleChange( diffX, diffY, mx, my, rx, ry );
-
-    QRectF r = mBoundingResizeRectangle->rect();
-    double newWidth = r.width() + rx;
-    double newHeight = r.height() + ry;
-
-    QTransform oldTransform = mBoundingResizeRectangle->transform();
-    QTransform transform;
-    transform.translate( oldTransform.dx() + mx, oldTransform.dy() + my );
-
-    QRectF newBoundingRect( 0, 0, newWidth, newHeight );
-
-    mBoundingResizeRectangle->setRect( newBoundingRect );
-    mBoundingResizeRectangle->setTransform( transform );
+    changeItemRectangle(event->lastScenePos(), mMouseMoveStartPos, this, diffX, diffY, mBoundingResizeRectangle);
   }
-  mLastMouseEventPos = event->lastPos();
+  mLastMouseEventPos = event->lastScenePos();
 }
 
 void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
   //set current position and type of mouse move action
   mMouseMoveStartPos = event->lastScenePos();
-  mLastMouseEventPos = event->lastPos();
-  mCurrentMouseMoveAction = mouseMoveActionForPosition( event->pos() );
+  mLastMouseEventPos = event->lastScenePos();
+  mCurrentMouseMoveAction = mouseMoveActionForPosition(event->pos());
 
   //create and show bounding rectangle
   mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
@@ -287,14 +273,7 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   }
 
   double mx, my, rx, ry;
-  rectangleChange( diffX, diffY, mx, my, rx, ry );
-
-  QRectF currentRect = rect();
-  QRectF newRect( transform().dx() + mx, transform().dy() + my, currentRect.width() + rx, currentRect.height() + ry );
-  setSceneRect( newRect );
-
-  update();
-  scene()->update();
+  changeItemRectangle(mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this);
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;
@@ -391,50 +370,92 @@ QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
   return QgsComposerItem::MoveItem; //default
 }
 
-
-void QgsComposerItem::rectangleChange( double dx, double dy, double& mx, double& my, double& rx, double& ry ) const
+void QgsComposerItem::changeItemRectangle(const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem)
 {
+  if(!changeItem || !originalItem || !mComposition)
+    {
+      return;
+    }
+
+  double mx, my, rx, ry;
+  QPointF snappedPosition = mComposition->snapPointToGrid(currentPosition);
+  //double diffX = snappedPosition.x() - mouseMoveStartPos.x();
+  //double diffY = snappedPosition.y() - mouseMoveStartPos.y();
+  double diffX = 0;
+  double diffY = 0;
+
   switch ( mCurrentMouseMoveAction )
   {
       //vertical resize
     case QgsComposerItem::ResizeUp:
-      mx = 0; my = dy; rx = 0; ry = -dy;
+      diffY = snappedPosition.y() - originalItem->transform().dy();
+      mx = 0; my = diffY; rx = 0; ry = -diffY;
       break;
 
     case QgsComposerItem::ResizeDown:
-      mx = 0; my = 0; rx = 0; ry = dy;
+      diffY = snappedPosition.y() - (originalItem->transform().dy() + originalItem->rect().height());
+      mx = 0; my = 0; rx = 0; ry = diffY;
       break;
 
       //horizontal resize
     case QgsComposerItem::ResizeLeft:
-      mx = dx, my = 0; rx = -dx; ry = 0;
+      diffX = snappedPosition.x() - originalItem->transform().dx();
+      mx = diffX, my = 0; rx = -diffX; ry = 0;
       break;
 
     case QgsComposerItem::ResizeRight:
-      mx = 0; my = 0; rx = dx, ry = 0;
+      diffX = snappedPosition.x() - (originalItem->transform().dx() + originalItem->rect().width());
+      mx = 0; my = 0; rx = diffX, ry = 0;
       break;
 
       //diagonal resize
     case QgsComposerItem::ResizeLeftUp:
-      mx = dx, my = dy; rx = -dx; ry = -dy;
+      diffX = snappedPosition.x() - originalItem->transform().dx();
+      diffY = snappedPosition.y() - originalItem->transform().dy();
+      mx = diffX, my = diffY; rx = -diffX; ry = -diffY;
       break;
 
     case QgsComposerItem::ResizeRightDown:
-      mx = 0; my = 0; rx = dx, ry = dy;
+      diffX = snappedPosition.x() - (originalItem->transform().dx() + originalItem->rect().width());
+      diffY = snappedPosition.y() - (originalItem->transform().dy() + originalItem->rect().height());
+      mx = 0; my = 0; rx = diffX, ry = diffY;
       break;
 
     case QgsComposerItem::ResizeRightUp:
-      mx = 0; my = dy, rx = dx, ry = -dy;
+      diffX = snappedPosition.x() - (originalItem->transform().dx() + originalItem->rect().width());
+      diffY = snappedPosition.y() - originalItem->transform().dy();
+      mx = 0; my = diffY, rx = diffX, ry = -diffY;
       break;
 
     case QgsComposerItem::ResizeLeftDown:
-      mx = dx, my = 0; rx = -dx; ry = dy;
+      diffX = snappedPosition.x() - originalItem->transform().dx();
+      diffY = snappedPosition.y() - (originalItem->transform().dy() + originalItem->rect().height());
+      mx = diffX, my = 0; rx = -diffX; ry = diffY;
       break;
 
     case QgsComposerItem::MoveItem:
-      mx = dx; my = dy; rx = 0, ry = 0;
-      break;
+      
+      //calculate total move difference
+      double moveX = currentPosition.x() - mouseMoveStartPos.x();
+      double moveY = currentPosition.y() - mouseMoveStartPos.y();
+
+      QPointF upperLeftPoint(originalItem->transform().dx() + moveX, originalItem->transform().dy() + moveY);
+      QPointF snappedLeftPoint = mComposition->snapPointToGrid(upperLeftPoint);
+
+      double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
+      double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
+      
+      QTransform moveTransform;
+      moveTransform.translate(originalItem->transform().dx() + moveRectX, originalItem->transform().dy() + moveRectY);
+      changeItem->setTransform(moveTransform);
+      return;
   }
+
+  QTransform itemTransform;
+  itemTransform.translate(originalItem->transform().dx() + mx, originalItem->transform().dy() + my);
+  changeItem->setTransform(itemTransform);
+  QRectF itemRect(0, 0, originalItem->rect().width() + rx,  originalItem->rect().height() + ry);
+  changeItem->setRect(itemRect);
 }
 
 void QgsComposerItem::drawSelectionBoxes( QPainter* p )
@@ -474,6 +495,37 @@ void QgsComposerItem::move( double dx, double dy )
   QTransform t = transform();
   QRectF newSceneRect( t.dx() + dx, t.dy() + dy, rect().width(), rect().height() );
   setSceneRect( newSceneRect );
+}
+
+void QgsComposerItem::setItemPosition(double x, double y, ItemPositionMode itemPoint)
+{
+  double width = rect().width();
+  double height = rect().height();
+
+  double upperLeftX = x;
+  double upperLeftY = y;
+
+  //adjust x-coordinate if placement is not done to a left point
+  if(itemPoint == UpperMiddle || itemPoint == Middle || itemPoint == LowerMiddle)
+    {
+      upperLeftX -= width / 2.0;
+    }
+  else if(itemPoint == UpperRight || itemPoint == MiddleRight || itemPoint == LowerRight)
+    {
+      upperLeftX -= width;
+    }
+
+  //adjust y-coordinate if placement is not done to an upper point
+  if(itemPoint == MiddleLeft || itemPoint == Middle || itemPoint == MiddleRight)
+    {
+      upperLeftY -= height / 2.0;
+    }
+  else if(itemPoint == LowerLeft || itemPoint == LowerMiddle || itemPoint == LowerRight)
+    {
+      upperLeftY -= height;
+    }
+
+  setSceneRect(QRectF(upperLeftX, upperLeftY, width, height));
 }
 
 void QgsComposerItem::setSceneRect( const QRectF& rectangle )

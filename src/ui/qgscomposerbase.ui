@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>710</width>
+    <width>737</width>
     <height>609</height>
    </rect>
   </property>
@@ -229,6 +229,8 @@
    <attribute name="toolBarBreak" >
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionLoadFromTemplate" />
+   <addaction name="mActionSaveAsTemplate" />
    <addaction name="mActionExportAsImage" />
    <addaction name="mActionExportAsSVG" />
    <addaction name="mActionPrint" />
@@ -247,10 +249,6 @@
    <addaction name="mActionMoveItemContent" />
    <addaction name="mActionGroupItems" />
    <addaction name="mActionUngroupItems" />
-   <addaction name="mActionRaiseItems" />
-   <addaction name="mActionLowerItems" />
-   <addaction name="mActionMoveItemsToTop" />
-   <addaction name="mActionMoveItemsToBottom" />
   </widget>
   <action name="mActionPrint" >
    <property name="icon" >
@@ -428,6 +426,64 @@
    </property>
    <property name="toolTip" >
     <string>Move selected items to bottom</string>
+   </property>
+  </action>
+  <action name="mActionLoadFromTemplate" >
+   <property name="text" >
+    <string>Load From template</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsTemplate" >
+   <property name="text" >
+    <string>Save as template</string>
+   </property>
+  </action>
+  <action name="mActionAlignLeft" >
+   <property name="text" >
+    <string>Align left</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align selected items left</string>
+   </property>
+  </action>
+  <action name="mActionAlignHCenter" >
+   <property name="text" >
+    <string>Align center</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align center horizontal</string>
+   </property>
+  </action>
+  <action name="mActionAlignRight" >
+   <property name="text" >
+    <string>Align right</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align selected items right</string>
+   </property>
+  </action>
+  <action name="mActionAlignTop" >
+   <property name="text" >
+    <string>Align top</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionAlignVCenter" >
+   <property name="text" >
+    <string>Align center vertical</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align center vertical</string>
+   </property>
+  </action>
+  <action name="mActionAlignBottom" >
+   <property name="text" >
+    <string>Align bottom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Align selected items bottom</string>
    </property>
   </action>
  </widget>

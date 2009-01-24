@@ -51,7 +51,7 @@ bool QgsRenderer::containsPixmap() const
   }
 }
 
-void QgsRenderer::scaleBrush( QBrush& b, double rasterScaleFactor ) const
+void QgsRenderer::scaleBrush( QBrush& b, double rasterScaleFactor )
 {
   if ( rasterScaleFactor != 1.0 )
   {

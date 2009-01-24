@@ -16,6 +16,7 @@
 
 #include "qgscompositionwidget.h"
 #include "qgscomposition.h"
+#include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
 
@@ -38,10 +39,54 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
   //read with/height from composition and find suitable entries to display
   displayCompositionWidthHeight();
 
-  //read printout resolution from composition
   if ( mComposition )
   {
+    //read printout resolution from composition
     mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
+
+    //snap grid
+    if( mComposition->snapToGridEnabled() )
+    {
+      mSnapToGridCheckBox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+      mSnapToGridCheckBox->setCheckState(Qt::Unchecked);
+    }
+    mResolutionSpinBox->setValue( mComposition->snapGridResolution() );
+    mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
+    mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
+
+
+    //grid pen width
+    mPenWidthSpinBox->blockSignals(true);
+    mPenWidthSpinBox->setValue(mComposition->gridPen().widthF());
+    mPenWidthSpinBox->blockSignals(false);
+
+    //grid pen color
+    mGridColorButton->blockSignals(true);
+    mGridColorButton->setColor(mComposition->gridPen().color());
+    mGridColorButton->blockSignals(false);
+
+    mGridStyleComboBox->blockSignals(true);
+    mGridStyleComboBox->insertItem( 0, tr("Solid"));
+    mGridStyleComboBox->insertItem( 1, tr("Dots"));
+    mGridStyleComboBox->insertItem( 2, tr("Crosses"));
+
+    QgsComposition::GridStyle snapGridStyle = mComposition->gridStyle();
+    if(snapGridStyle == QgsComposition::Solid)
+    {
+      mGridStyleComboBox->setCurrentIndex( 0 );
+    }
+    else if(snapGridStyle == QgsComposition::Dots)
+    {
+      mGridStyleComboBox->setCurrentIndex( 1 );
+    }
+    else
+    {
+      mGridStyleComboBox->setCurrentIndex( 2 );
+    }
+    mGridStyleComboBox->blockSignals(false);
   }
 }
 
@@ -275,6 +320,37 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   mResolutionLineEdit->blockSignals( false );
 }
 
+void QgsCompositionWidget::displaySnapingSettings()
+{
+  if(!mComposition)
+    {
+      return;
+    }
+
+  mSnapToGridCheckBox->blockSignals(true);
+  mResolutionSpinBox->blockSignals(true);
+  mOffsetXSpinBox->blockSignals(true);
+  mOffsetYSpinBox->blockSignals(true);
+  
+  if(mComposition->snapToGridEnabled())
+    {
+      mSnapToGridCheckBox->setCheckState(Qt::Checked);
+    }
+  else
+    {
+      mSnapToGridCheckBox->setCheckState(Qt::Unchecked);
+    }
+
+  mResolutionSpinBox->setValue(mComposition->snapGridResolution());
+  mOffsetXSpinBox->setValue(mComposition->snapGridOffsetX());
+  mOffsetYSpinBox->setValue(mComposition->snapGridOffsetY());
+
+  mSnapToGridCheckBox->blockSignals(false);
+  mResolutionSpinBox->blockSignals(false);
+  mOffsetXSpinBox->blockSignals(false);
+  mOffsetYSpinBox->blockSignals(false); 
+}
+
 void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& text )
 {
   bool conversionOk;
@@ -288,5 +364,90 @@ void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& te
     //set screen resolution per default
     QPrinter resolutionInfo( QPrinter::ScreenResolution );
     mComposition->setPrintResolution( resolutionInfo.resolution() );
+  }
+}
+
+void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged(int state)
+{
+  if(mComposition)
+    {
+      if(state == Qt::Checked)
+	{
+	  mComposition->setSnapToGridEnabled(true);
+	}
+      else
+	{
+	  mComposition->setSnapToGridEnabled(false);
+	}
+    }
+}
+
+void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged(double d)
+{
+  if(mComposition)
+    {
+      mComposition->setSnapGridResolution(d);
+    }
+}
+
+void QgsCompositionWidget::on_mOffsetXSpinBox_valueChanged(double d)
+{
+  if(mComposition)
+    {
+      mComposition->setSnapGridOffsetX(d);
+    }
+}
+
+void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged(double d)
+{
+  if(mComposition)
+    {
+      mComposition->setSnapGridOffsetY(d);
+    }
+}
+
+void QgsCompositionWidget::on_mGridColorButton_clicked()
+{
+  QColor newColor = QColorDialog::getColor(mGridColorButton->color());
+  if( !newColor.isValid() )
+  {
+    return ; //dialog canceled by user
+  }
+  mGridColorButton->setColor(newColor);
+
+  if(mComposition)
+  {
+    QPen pen = mComposition->gridPen();
+    pen.setColor(newColor);
+    mComposition->setGridPen(pen);
+  }
+}
+
+void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QString& text )
+{
+  if(mComposition)
+  {
+    if( mGridStyleComboBox->currentText() == tr("Solid") )
+    {
+      mComposition->setGridStyle(QgsComposition::Solid);
+    }
+    else if( mGridStyleComboBox->currentText() == tr("Dots") )
+    {
+      mComposition->setGridStyle(QgsComposition::Dots);
+    }
+    else if( mGridStyleComboBox->currentText() == tr("Crosses"))
+    {
+      mComposition->setGridStyle(QgsComposition::Crosses);
+    }
+  }
+}
+
+void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged(double d)
+{
+  if(mComposition)
+  {
+    QPen pen = mComposition->gridPen();
+    pen.setWidthF(d);
+    mComposition->setGridPen(pen);
   }
 }

@@ -17,6 +17,8 @@
 
 #include "qgscomposeritemwidget.h"
 #include "qgscomposeritem.h"
+#include "qgsitempositiondialog.h"
+#include "qgspoint.h"
 #include <QColorDialog>
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
@@ -146,4 +148,15 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameCheckBox->blockSignals( false );
 
+}
+
+void QgsComposerItemWidget::on_mPositionButton_clicked()
+{
+  if(!mItem)
+    {
+      return;
+    }
+
+  QgsItemPositionDialog d(mItem, 0);
+  d.exec();
 }

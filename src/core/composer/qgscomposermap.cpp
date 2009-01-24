@@ -116,6 +116,13 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
   theMapRenderer.setDestinationSrs( mMapRenderer->destinationSrs() );
 
+  //set antialiasing if enabled in options
+  QSettings settings;
+  if(settings.value( "/qgis/enable_anti_aliasing", false ).toBool())
+  {
+    painter->setRenderHint( QPainter::Antialiasing );
+  }
+
   QgsRenderContext* theRendererContext = theMapRenderer.rendererContext();
   if ( theRendererContext )
   {
@@ -142,14 +149,14 @@ void QgsComposerMap::cache( void )
   int w = rect().width() * horizontalViewScaleFactor();
   int h = rect().height() * horizontalViewScaleFactor();
 
-  if ( w > 3000 ) //limit size of image for better performance
+  if ( w > 5000 ) //limit size of image for better performance
   {
-    w = 3000;
+    w = 5000;
   }
 
-  if ( h > 3000 )
+  if ( h > 5000 )
   {
-    h = 3000;
+    h = 5000;
   }
 
   mCachePixmap = QPixmap( w, h );
@@ -231,11 +238,19 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   mLastScaleFactorX =  currentScaleFactorX;
 }
 
-void QgsComposerMap::mapCanvasChanged( void )
+void QgsComposerMap::updateCachedImage( void )
 {
   mCacheUpdated = false;
   cache();
   QGraphicsRectItem::update();
+}
+
+void QgsComposerMap::renderModeUpdateCachedImage()
+{
+  if(mPreviewMode == Render)
+  {
+    updateCachedImage();
+  }
 }
 
 void QgsComposerMap::setCacheUpdated( bool u )
@@ -461,8 +476,8 @@ void QgsComposerMap::connectUpdateSlot()
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
   if ( layerRegistry )
   {
-    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( mapCanvasChanged() ) );
-    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( mapCanvasChanged() ) );
+    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateCachedImage() ) );
+    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateCachedImage() ) );
   }
 }
 

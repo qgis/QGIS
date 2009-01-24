@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>203</height>
+    <width>347</width>
+    <height>207</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -68,6 +68,13 @@
        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox" />
       </item>
       <item row="3" column="0" colspan="2" >
+       <widget class="QPushButton" name="mPositionButton" >
+        <property name="text" >
+         <string>Position...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" >
        <widget class="QCheckBox" name="mFrameCheckBox" >
         <property name="text" >
          <string>Frame</string>
