@@ -39,11 +39,22 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mWidthLineEdit_editingFinished();
     void on_mHeightLineEdit_editingFinished();
+    void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
+    void on_mAddDirectoryButton_clicked();
+    void on_mRemoveDirectoryButton_clicked();
     /**Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
 
   private:
     QgsComposerPicture* mPicture;
+    /**Add the icons of a directory to the preview. Returns 0 in case of success*/
+    int addDirectoryToPreview(const QString& path);
+    /**Add the icons of the standard directories to the preview*/
+    void addStandardDirectoriesToPreview();
+    /**Tests if a file is valid svg*/
+    bool testSvgFile(const QString& filename) const;
+    /**Tests if a file is a valid pixel format*/
+    bool testImageFile(const QString& filename) const;
 };
 
 #endif

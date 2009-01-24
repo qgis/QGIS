@@ -21,6 +21,7 @@
 
 class QgsComposerItem;
 class QgsComposerMap;
+class QgsPaperItem;
 class QGraphicsRectItem;
 class QgsMapRenderer;
 
@@ -45,6 +46,14 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
       Postscript   // Fonts need different scaling!
     };
 
+    /**Style to draw the snapping grid*/
+    enum GridStyle
+    {
+      Solid,
+      Dots,
+      Crosses
+    };
+
     QgsComposition( QgsMapRenderer* mapRenderer );
     ~QgsComposition();
 
@@ -56,6 +65,24 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns width of paper item*/
     double paperWidth() const;
+
+    void setSnapToGridEnabled(bool b); 
+    bool snapToGridEnabled() const {return mSnapToGrid;}
+
+    void setSnapGridResolution(double r);
+    double snapGridResolution() const {return mSnapGridResolution;}
+
+    void setSnapGridOffsetX(double offset);
+    double snapGridOffsetX() const {return mSnapGridOffsetX;}
+
+    void setSnapGridOffsetY(double offset);
+    double snapGridOffsetY() const {return mSnapGridOffsetY;}
+
+    void setGridPen(const QPen& p);
+    const QPen& gridPen() const {return mGridPen;}
+
+    void setGridStyle(GridStyle s);
+    GridStyle gridStyle() const {return mGridStyle;}
 
     /**Returns the topmose composer item. Ignores mPaperItem*/
     QgsComposerItem* composerItemAt( const QPointF & position );
@@ -97,6 +124,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
     void removeItemFromZList( QgsComposerItem* item );
 
+    //functions to move selected items in hierarchy
     void raiseSelectedItems();
     void raiseItem( QgsComposerItem* item );
     void lowerSelectedItems();
@@ -106,16 +134,27 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void moveSelectedItemsToBottom();
     void moveItemToBottom( QgsComposerItem* item );
 
+    //functions to align selected items
+    void alignSelectedItemsLeft();
+    void alignSelectedItemsHCenter();
+    void alignSelectedItemsRight();
+    void alignSelectedItemsTop();
+    void alignSelectedItemsVCenter();
+    void alignSelectedItemsBottom();
+
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      after reading all the items from xml file*/
     void sortZList();
+
+    /**Snaps a scene coordinate point to grid*/
+    QPointF snapPointToGrid(const QPointF& scenePoint) const;
 
 
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
     QgsComposition::PlotStyle mPlotStyle;
-    QGraphicsRectItem* mPaperItem;
+    QgsPaperItem* mPaperItem;
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
@@ -123,10 +162,25 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Dpi for printout*/
     int mPrintResolution;
 
+    /**Parameters for snap to grid function*/
+    bool mSnapToGrid;
+    double mSnapGridResolution;
+    double mSnapGridOffsetX;
+    double mSnapGridOffsetY;
+    QPen mGridPen;
+    GridStyle mGridStyle;
+
     QgsComposition(); //default constructor is forbidden
 
     /**Reset z-values of items based on position in z list*/
     void updateZValues();
+
+    /**Returns the bounding rectangle of the selected items in scene coordinates
+     @return 0 in case of success*/
+    int boundingRectOfSelectedItems(QRectF& bRect);
+
+    void loadGridAppearanceSettings();
+    void saveGridAppearanceSettings();
 };
 
 #endif

@@ -55,6 +55,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerscalebar.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
+  composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
   composer/qgsnumericscalebarstyle.cpp

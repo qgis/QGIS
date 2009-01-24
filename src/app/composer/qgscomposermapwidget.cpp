@@ -38,8 +38,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mYMaxLineEdit->setValidator( new QDoubleValidator( 0 ) );
 
   mPreviewModeComboBox->insertItem( 0, tr( "Cache" ) );
-  //MH: disabled because this option leads to frequent crashes with Qt 4.4.0 and 4.4.1
-  //mPreviewModeComboBox->insertItem(1, tr("Render"));
+  mPreviewModeComboBox->insertItem(1, tr("Render"));
   mPreviewModeComboBox->insertItem( 2, tr( "Rectangle" ) );
 
   if ( composerMap )

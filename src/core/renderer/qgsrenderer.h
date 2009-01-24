@@ -88,6 +88,9 @@ class CORE_EXPORT QgsRenderer
      This is a hint for QgsVectorLayer to not use the transparency setting on layer level in this cases*/
     virtual bool usesTransparency() const {return false;}
 
+    /**Scales a brush to a given raster scale factor (e.g. for printing)*/
+    static void scaleBrush( QBrush& b, double rasterScaleFactor );
+
   protected:
     /**Color to draw selected features - static so we can change it in proj props and automatically
      all renderers are updated*/
@@ -95,9 +98,6 @@ class CORE_EXPORT QgsRenderer
 
     /**Layer type*/
     QGis::GeometryType mGeometryType;
-
-    /**Scales a brush to a given raster scale factor (e.g. for printing)*/
-    void scaleBrush( QBrush& b, double rasterScaleFactor ) const;
 };
 
 #endif // QGSRENDERER_H

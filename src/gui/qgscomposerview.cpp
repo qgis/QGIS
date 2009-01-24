@@ -41,7 +41,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     return;
   }
 
-  QPointF scenePoint = mapToScene( e->pos() );
+  QPointF scenePoint = mapToScene( e->pos());
+  QPointF snappedScenePoint = composition()->snapPointToGrid(scenePoint);
 
   switch ( mCurrentTool )
   {
@@ -83,7 +84,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
-      t.translate( scenePoint.x(), scenePoint.y() );
+      t.translate( snappedScenePoint.x(), snappedScenePoint.y() );
       mRubberBandItem->setTransform( t );
       mRubberBandItem->setZValue( 100 );
       scene()->addItem( mRubberBandItem );
@@ -99,7 +100,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newLabelItem );
       emit composerLabelAdded( newLabelItem );
       scene()->clearSelection();
-      newLabelItem->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
+      newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
       newLabelItem->setSelected( true );
       emit selectedItemChanged( newLabelItem );
       emit actionFinished();
@@ -117,7 +118,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newScaleBar->setComposerMap( mapItemList.at( 0 ) );
       }
 
-      newScaleBar->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), 20, 20 ) );
+      newScaleBar->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 20, 20 ) );
       newScaleBar->applyDefaultSettings(); //4 segments, 1/5 of composer map width
       scene()->addItem( newScaleBar );
       emit composerScaleBarAdded( newScaleBar );
@@ -134,7 +135,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newLegend );
       emit composerLegendAdded( newLegend );
       scene()->clearSelection();
-      newLegend->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
+      newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
       newLegend->setSelected( true );
       emit selectedItemChanged( newLegend );
       emit actionFinished();
@@ -146,7 +147,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       scene()->addItem( newPicture );
       emit composerPictureAdded( newPicture );
       scene()->clearSelection();
-      newPicture->setSceneRect( QRectF( scenePoint.x(), scenePoint.y(), 30, 30 ) );
+      newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
       newPicture->setSelected( true );
       emit selectedItemChanged( newPicture );
       emit actionFinished();

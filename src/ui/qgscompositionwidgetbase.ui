@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>243</width>
-    <height>422</height>
+    <width>301</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -19,24 +19,6 @@
    <string>Composition</string>
   </property>
   <layout class="QGridLayout" >
-   <property name="leftMargin" >
-    <number>9</number>
-   </property>
-   <property name="topMargin" >
-    <number>9</number>
-   </property>
-   <property name="rightMargin" >
-    <number>9</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>9</number>
-   </property>
-   <property name="horizontalSpacing" >
-    <number>6</number>
-   </property>
-   <property name="verticalSpacing" >
-    <number>6</number>
-   </property>
    <item row="0" column="0" colspan="2" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
@@ -189,23 +171,93 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QGroupBox" name="mSnapGroupBox" >
+     <property name="title" >
+      <string>Snapping</string>
      </property>
-     <property name="sizeType" >
-      <enum>QSizePolicy::Expanding</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>223</width>
-       <height>41</height>
-      </size>
-     </property>
-    </spacer>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QCheckBox" name="mSnapToGridCheckBox" >
+        <property name="text" >
+         <string>Snap to grid</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="mResolutionLabel_2" >
+        <property name="text" >
+         <string>Grid resolution:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QDoubleSpinBox" name="mResolutionSpinBox" />
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="mXOffsetLabel" >
+        <property name="text" >
+         <string>Offset x:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QDoubleSpinBox" name="mOffsetXSpinBox" />
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <widget class="QLabel" name="mYOffsetLabel" >
+        <property name="text" >
+         <string>Offset y:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" >
+       <widget class="QDoubleSpinBox" name="mOffsetYSpinBox" />
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="mPenWidthLabel" >
+        <property name="text" >
+         <string>Pen width:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2" >
+       <widget class="QDoubleSpinBox" name="mPenWidthSpinBox" />
+      </item>
+      <item row="5" column="0" >
+       <widget class="QLabel" name="mGridColorLabel" >
+        <property name="text" >
+         <string>Grid color:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2" >
+       <widget class="QgsColorButton" name="mGridColorButton" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QLabel" name="mGridStyleLabel" >
+        <property name="text" >
+         <string>Grid style:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1" colspan="2" >
+       <widget class="QComboBox" name="mGridStyleComboBox" />
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="1" column="0" >
+   <item row="2" column="0" >
     <widget class="QLabel" name="mResolutionLabel" >
      <property name="sizePolicy" >
       <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
@@ -221,12 +273,19 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" >
+   <item row="2" column="1" >
     <widget class="QLineEdit" name="mResolutionLineEdit" />
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

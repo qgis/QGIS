@@ -19,6 +19,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
+#include "qgsrenderer.h" //for brush scaling
 #include "qgssymbol.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -331,7 +332,15 @@ void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double cur
 
   if ( p )
   {
-    p->setBrush( s->brush() );
+    //scale brush
+    QBrush symbolBrush = s->brush();
+    QPaintDevice* paintDevice = p->device();
+    if ( paintDevice )
+    {
+      double rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
+      QgsRenderer::scaleBrush(symbolBrush, rasterScaleFactor);
+    }
+    p->setBrush( symbolBrush );
     p->setPen( s->pen() );
     p->drawRect( QRectF( currentXPosition, currentYCoord, mSymbolWidth, mSymbolHeight ) );
   }
