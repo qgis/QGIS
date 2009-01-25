@@ -589,7 +589,7 @@ void QgsComposition::sortZList()
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
 {
-  if ( !mSnapToGrid || ( !mSnapGridResolution > 0 ) )
+  if ( !mSnapToGrid || mSnapGridResolution <= 0 )
   {
     return scenePoint;
   }
