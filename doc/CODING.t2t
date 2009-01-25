@@ -342,7 +342,7 @@ This page describes how to get started using the QGIS Subversion repository
 == Accessing the Repository ==
 To check out QGIS HEAD:
 ```
-  svn --username [your user name] co https://svn.qgis.org/repos/qgis/trunk/qgis
+  svn --username [your user name] co https://svn.osgeo.org/qgis/trunk/qgis
 ```
 
 
@@ -356,11 +356,11 @@ for more information. The Links page contains a good selection of SVN clients fo
 
 To check out a branch
 ```
-  svn co https://svn.qgis.org/repos/qgis/branches/<branch name>
+  svn co https://svn.osgeo.org/qgis/branches/<branch name>
 ```
 To check out SVN stable trunk:
 ```
-  svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis_unstable
+  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis_trunk
 ```
 
 /!\ **Note:** If you are behind a proxy server, edit your ~/subversion/servers file to specify 
@@ -375,7 +375,7 @@ See the INSTALL file in the source tree for specific instructions on building de
 
 If you're interested in checking out Quantum GIS documentation sources:
 ```
-  svn co https://svn.qgis.org/repos/qgis_docs/trunk qgis_docs
+  svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
 ```
 
 You can also take a look at DocumentationWritersCorner for more information.
@@ -426,7 +426,7 @@ We prefer that new feature developments happen out of trunk so that trunk remain
 stable state. To create a branch use the following command:
 
 ```
-svn copy https://svn.qgis.org/repos/qgis/trunk/qgis https://svn.qgis.org/repos/qgis/branches/qgis_newfeature
+svn copy https://svn.osgeo.org/qgis/trunk/qgis https://svn.osgeo.org/qgis/branches/qgis_newfeature
 svn commit -m "New feature branch"
 ```
 
@@ -439,8 +439,8 @@ numbers of your branch which will produce output something like this:
 ```
 timlinux@timlinux-desktop:~/dev/cpp/qgis_raster_transparency_branch$ svn info
 Caminho: .
-URL: https://svn.qgis.org/repos/qgis/branches/raster_transparency_branch
-Raiz do Repositório: https://svn.qgis.org/repos/qgis
+URL: https://svn.osgeo.org/qgis/branches/raster_transparency_branch
+Raiz do Repositório: https://svn.osgeo.org/qgis
 UUID do repositório: c8812cc2-4d05-0410-92ff-de0c093fc19c
 Revisão: 6546
 Tipo de Nó: diretório
@@ -455,13 +455,13 @@ The second revision number shows the revision number of the start revision of yo
 current revision. You can do a dry run of the merge like this:
 
 ```
-svn merge --dry-run -r 6495:6546 https://svn.qgis.org/repos/qgis/trunk/qgis
+svn merge --dry-run -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
 ```
 
 After you are happy with the changes that will be made do the merge for real like this:
 
 ```
-svn merge -r 6495:6546 https://svn.qgis.org/repos/qgis/trunk/qgis
+svn merge -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
 svn commit -m "Merged upstream changes from trunk to my branch"
 ```
 
@@ -535,7 +535,7 @@ several substantial patches that demonstrate their understanding of modifying th
 Checkout the sources:
 
 ```
-svn co https://svn.qgis.org/repos/qgis/trunk/qgis qgis
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
 ```
 
 
