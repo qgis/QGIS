@@ -276,5 +276,9 @@ not disjoint with existing polygons of the feature*/
         if wkbType is WKBPolygon, otherwise an empty list */
     QgsMultiPolygon asMultiPolygon();
 
+    /** return contents of the geometry as a list of geometries
+     @note added in version 1.1 */
+    QList<QgsGeometry*> asGeometryCollection();
+
 }; // class QgsGeometry
 
