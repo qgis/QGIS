@@ -516,6 +516,7 @@ bool QgsHttpTransaction::applyProxySettings( QHttp& http, const QString& url )
   {
     proxyType = QNetworkProxy::HttpProxy;
   }
+#if QT_VERSION >= 0x040400
   else if ( proxyTypeString == "HttpCachingProxy" )
   {
     proxyType = QNetworkProxy::HttpCachingProxy;
@@ -524,6 +525,7 @@ bool QgsHttpTransaction::applyProxySettings( QHttp& http, const QString& url )
   {
     proxyType = QNetworkProxy::FtpCachingProxy;
   }
+#endif
   http.setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
   return true;
 }
