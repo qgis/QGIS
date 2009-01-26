@@ -122,7 +122,13 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
   if ( theOption.state & QStyle::State_Selected )
   {
     drawHighlight( theOption, thepPainter, height( theOption, theData ) );
+    thepPainter->setPen(theOption.palette.highlightedText().color());
   }
+  else
+  {
+    thepPainter->setPen(theOption.palette.text().color());
+  }
+
 
   //
   // Draw the checkbox
@@ -191,7 +197,6 @@ void QgsDetailedItemDelegate::paintAsWidget( QPainter * thepPainter,
   mpWidget->setAutoFillBackground( true );
   //mpWidget->setAttribute(Qt::WA_OpaquePaintEvent);
   mpWidget->repaint();
-
   if ( theOption.state & QStyle::State_Selected )
   {
     drawHighlight( theOption, thepPainter, height( theOption, theData ) );
