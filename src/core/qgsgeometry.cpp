@@ -5443,3 +5443,39 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
   }
   CATCH_GEOS( 0 )
 }
+
+
+QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
+{
+  if ( mGeos == NULL )
+  {
+    exportWkbToGeos();
+    if ( mGeos == NULL )
+      return QList<QgsGeometry*>();
+  }
+ 
+  int type = GEOSGeomTypeId( mGeos );
+  QgsDebugMsg("geom type: "+QString::number(type));
+  
+  if ( type != GEOS_MULTIPOINT &&
+       type != GEOS_MULTILINESTRING &&
+       type != GEOS_MULTIPOLYGON &&
+       type != GEOS_GEOMETRYCOLLECTION )
+  {
+    // we have a single-part geometry
+    return QList<QgsGeometry*>();
+  }
+  
+  int count = GEOSGetNumGeometries( mGeos );
+  QgsDebugMsg("geom count: "+QString::number(count));
+
+  QList<QgsGeometry*> geomCollection;
+  
+  for ( int i = 0; i < count; ++i )
+  {
+    const GEOSGeometry * geometry = GEOSGetGeometryN( mGeos, i );
+    geomCollection.append( fromGeosGeom( GEOSGeom_clone(geometry) ) );
+  }
+
+  return geomCollection;
+}
