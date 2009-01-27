@@ -5457,20 +5457,21 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
   int type = GEOSGeomTypeId( mGeos );
   QgsDebugMsg("geom type: "+QString::number(type));
   
+  QList<QgsGeometry*> geomCollection;
+  
   if ( type != GEOS_MULTIPOINT &&
        type != GEOS_MULTILINESTRING &&
        type != GEOS_MULTIPOLYGON &&
        type != GEOS_GEOMETRYCOLLECTION )
   {
-    // we have a single-part geometry
-    return QList<QgsGeometry*>();
+    // we have a single-part geometry - put there a copy of this one
+    geomCollection.append( new QgsGeometry(*this) );
+    return geomCollection;
   }
   
   int count = GEOSGetNumGeometries( mGeos );
   QgsDebugMsg("geom count: "+QString::number(count));
 
-  QList<QgsGeometry*> geomCollection;
-  
   for ( int i = 0; i < count; ++i )
   {
     const GEOSGeometry * geometry = GEOSGetGeometryN( mGeos, i );

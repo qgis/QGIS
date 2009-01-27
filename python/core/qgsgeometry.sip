@@ -278,7 +278,8 @@ not disjoint with existing polygons of the feature*/
 
     /** return contents of the geometry as a list of geometries
      @note added in version 1.1 */
-    QList<QgsGeometry*> asGeometryCollection();
+    // TODO: destruction of created geometries??
+    QList<QgsGeometry*> asGeometryCollection() /Factory/;
 
 }; // class QgsGeometry
 
