@@ -637,49 +637,6 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 QByteArray QgsWmsProvider::retrieveUrl( QString url )
 {
   QgsDebugMsg( "WMS request Url: " + url );
-
-#if 0 //MH: not necessary any more
-  //read proxy settings
-  QSettings settings;
-  QString proxyHost, proxyUser, proxyPassword;
-  int proxyPort;
-  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-
-  bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
-  if ( proxyEnabled )
-  {
-    proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-    proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-    proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-    proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
-    QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
-    if ( proxyTypeString == "DefaultProxy" )
-    {
-      proxyType = QNetworkProxy::DefaultProxy;
-    }
-    else if ( proxyTypeString == "Socks5Proxy" )
-    {
-      proxyType = QNetworkProxy::Socks5Proxy;
-    }
-    else if ( proxyTypeString == "HttpProxy" )
-    {
-      proxyType = QNetworkProxy::HttpProxy;
-    }
-    else if ( proxyTypeString == "HttpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::HttpCachingProxy;
-    }
-    else if ( proxyTypeString == "FtpCachingProxy" )
-    {
-      proxyType = QNetworkProxy::FtpCachingProxy;
-    }
-  }
-
-
-
-  QgsHttpTransaction http( url, proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
-#endif //0
-
   QgsHttpTransaction http( url );
 
   // Do a passthrough for the status bar text
@@ -725,62 +682,6 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
 
   return httpResponse;
 }
-
-#if 0
-// deprecated
-bool QgsWmsProvider::downloadCapabilitiesURI( QString const & uri )
-{
-
-  QgsDebugMsg( "Entered with '"  + uri  + "'" );
-
-  QgsHttpTransaction http( uri, httpproxyhost, httpproxyport );
-
-  // Do a passthrough for the status bar text
-  connect(
-    &http, SIGNAL( statusChanged( QString ) ),
-    this,   SLOT( showStatusMessage( QString ) )
-  );
-
-  bool httpOk;
-  httpOk = http.getSynchronously( httpcapabilitiesresponse );
-
-  if ( !httpOk )
-  {
-    // We had an HTTP exception
-
-    mErrorCaption = tr( "HTTP Exception" );
-    mError = http.errorString();
-
-    mError += "\n" + tr( "Tried URL: " ) + uri;
-
-    QgsDebugMsg( "!httpOK: "  + mError );
-
-    return FALSE;
-  }
-
-  QgsDebugMsg( "Converting to Dom." );
-
-  bool domOK;
-  domOK = parseCapabilitiesDom( httpcapabilitiesresponse, capabilities );
-
-  if ( !domOK )
-  {
-    // We had an Dom exception -
-    // mErrorCaption and mError are pre-filled by parseCapabilitiesDom
-
-    mError += "\n" + tr( "Tried URL: " ) + uri;
-
-    QgsDebugMsg( "!domOK: " + mError );
-
-    return FALSE;
-  }
-
-  QgsDebugMsg( "exiting." );
-
-  return TRUE;
-
-}
-#endif
 
 bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
 {
