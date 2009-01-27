@@ -20,6 +20,8 @@ email                : sherman at mrcc.com
 #include <QtGlobal>
 #include <QApplication>
 #include <QCursor>
+#include <QDir>
+#include <QFile>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -29,6 +31,7 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
+#include <QTextStream>
 #include <QResizeEvent>
 #include <QString>
 #include <QStringList>
@@ -412,6 +415,31 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   {
     mMap->pixmap().save( theFileName, theFormat.toLocal8Bit().data() );
   }
+  //create a world file to go with the image...
+  QgsRectangle myRect = mMapRenderer->extent();
+  QString myHeader;
+  //Pixel XDim
+  myHeader += QString::number( mapUnitsPerPixel() ) + "\r\n";
+  //Rotation on y axis - hard coded
+  myHeader += "0 \r\n";
+  //Rotation on x axis - hard coded
+  myHeader += "0 \r\n";
+  //Pixel YDim - almost always negative - see
+  //http://en.wikipedia.org/wiki/World_file#cite_note-2
+  myHeader += "-" + QString::number( mapUnitsPerPixel() ) + "\r\n";
+  //Origin X (top left corner)
+  myHeader += QString::number( myRect.xMinimum() ) + "\r\n";
+  //Origin Y (top left corner)
+  myHeader += QString::number( myRect.yMaximum() ) + "\r\n";
+  QFileInfo myInfo  = QFileInfo(theFileName);
+  QString myWorldFileName = myInfo.absolutePath() + QDir::separator() + myInfo.baseName() + "." + theFormat + "w";
+  QFile myWorldFile(myWorldFileName);
+  if (!myWorldFile.open(QIODevice::WriteOnly | QIODevice::Text))
+  {
+    return;
+  }
+  QTextStream myStream(&myWorldFile);
+  myStream << myHeader;
 } // saveAsImage
 
 
