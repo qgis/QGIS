@@ -42,52 +42,67 @@ class Dialog(QDialog, Ui_Dialog):
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
 		QObject.connect(self.spnX, SIGNAL("valueChanged(double)"), self.offset)
+		#QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
+		QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateInput)
 		self.setWindowTitle("Vector grid")
-		mapCanvas = self.iface.mapCanvas()
-		for i in range(mapCanvas.layerCount()):
-			layer = mapCanvas.layer(i)
-			self.inShape.addItem(layer.name())
+		self.xMin.setValidator(QDoubleValidator(self.xMin))
+		self.xMax.setValidator(QDoubleValidator(self.xMax))
+		self.yMin.setValidator(QDoubleValidator(self.yMin))
+		self.yMax.setValidator(QDoubleValidator(self.yMax))
+		layers = ftools_utils.getLayerNames( 
+		[ QGis.Point, QGis.Line, QGis.Polygon ] )
+		for layer in layers:
+			self.inShape.addItem( layer )
 
 	def offset(self, value):
 		if self.chkLock.isChecked():
 			self.spnY.setValue(value)
 
+	def updateInput( self ):
+		mLayerName = self.inShape.currentText()
+		if not mLayerName == "":
+			mLayer = self.getMapLayerByName( unicode( mLayerName ) )
+			self.inLayer = mLayer
+			boundBox = mLayer.extent()
+			self.updateExtents( boundBox )
+		
+	def updateExtents( self, boundBox ):
+		self.xMin.setText( unicode( boundBox.xMinimum() ) )
+		self.yMin.setText( unicode( boundBox.yMinimum() ) )
+		self.xMax.setText( unicode( boundBox.xMaximum() ) )
+		self.yMax.setText( unicode( boundBox.yMaximum() ) )
+
 	def accept(self):
-		if not self.rdoCoordinates.isChecked() and self.inShape.currentText() == "":
-			QMessageBox.information(self, "Generate Vector Grid", "Please specify input layer")
-		elif self.rdoCoordinates.isChecked() and (self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == ""):
-			QMessageBox.information(self, "Generate Vector Grid", "Please properly specify extent coordinates")
+		if self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == "":
+			QMessageBox.information(self, "Vector grid", "Please specify valid extent coordinates")
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Generate Vector Grid", "Please specify output shapefile")
+			QMessageBox.information(self, "Vector grid", "Please specify output shapefile")
 		else:
-			inName = self.inShape.currentText()
-			outPath = self.outShape.text()
-			self.outShape.clear()
-			if outPath.contains("\\"):
-				outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-			else:
-				outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-			if outName.endsWith(".shp"):
-				outName = outName.left(outName.length() - 4)
-			if self.rdoBoundary.isChecked():
-				mLayer = self.getMapLayerByName(unicode(inName))
-				boundBox = mLayer.extent()
-			else:
-				boundBox = QgsRect(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
+			try:
+				boundBox = QgsRectangle( 
+				float( self.xMin.text() ),
+				float( self.yMin.text() ),
+				float( self.xMax.text() ),
+				float( self.yMax.text() ) )
+			except:
+				QMessageBox.information(self, "Vector grid", "Invalid extent coordinates entered")
 			xSpace = self.spnX.value()
 			ySpace = self.spnY.value()
 			if self.rdoPolygons.isChecked(): polygon = True
 			else: polygon = False
-			self.compute(boundBox, outPath, xSpace, ySpace, polygon, self.progressBar)
-			addToTOC = QMessageBox.question(self, "Generate Vector Grid", "Created output Shapefile:\n" + outPath 
-				+ "\nNote: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system."
-				+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			self.outShape.clear()
+			self.compute( boundBox, xSpace, ySpace, polygon )
+			addToTOC = QMessageBox.question(self, 
+			"Generate Vector Grid", "Created output Shapefile:\n" + outPath 
+			+ "\nNote: Layer has no associated coordinate system, please use "
+			+ "the Projection Management Tool to specify spatial reference system."
+			+ "\n\nWould you like to add the new layer to the TOC?", 
+			QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
-				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
-			self.progressBar.setValue(0)
+				ftools_utils.addShapeToCanvas( self.shapefileName )
+			self.progressBar.setValue( 0 )
 
-	def compute(self, bound, outPath, xOffset, yOffset, polygon, progressBar):
+	def compute( self, bound, xOffset, yOffset, polygon ):
 		if polygon:
 			fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
 			3:QgsField("YMIN", QVariant.Double), 4:QgsField("YMAX", QVariant.Double)}
@@ -108,7 +123,7 @@ class Dialog(QDialog, Ui_Dialog):
 		outFeat = QgsFeature()
 		outGeom = QgsGeometry()
 		idVar = 0
-		progressBar.setRange(0,0)
+		self.progressBar.setRange( 0, 0 )
 		if not polygon:
 			y = bound.yMaximum()
 			while y >= bound.yMinimum():
@@ -153,7 +168,7 @@ class Dialog(QDialog, Ui_Dialog):
 					idVar = idVar + 1
 					x = x + xOffset
 				y = y - yOffset
-		progressBar.setRange(0,100)
+		self.progressBar.setRange( 0, 100 )
 		del writer
 
 	def outFile(self):
