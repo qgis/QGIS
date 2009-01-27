@@ -15,6 +15,7 @@
 #include "qgswfsdata.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgshttptransaction.h"
 #include <QBuffer>
 #include <QUrl>
 #include <QList>
@@ -89,6 +90,8 @@ int QgsWFSData::getWFSData()
   {
     mHttp.setHost( requestUrl.host() );
   }
+
+  QgsHttpTransaction::applyProxySettings( mHttp, mUri );
 
   //mHttp.get( mUri );
   mHttp.get( requestUrl.path() + "?" + QString( requestUrl.encodedQuery() ) );
