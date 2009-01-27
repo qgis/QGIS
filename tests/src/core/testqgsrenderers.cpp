@@ -193,9 +193,10 @@ bool TestQgsRenderers::setQml( QString theType )
   }
   QString myFileName = mTestDataDir + "points_" + theType + "_symbol.qml";
   bool myStyleFlag = false;
-  mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
+  QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
+    qDebug(error.toLocal8Bit().data());
     return false;
   }
   else
