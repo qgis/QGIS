@@ -43,19 +43,8 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     : httpresponsecontenttype( 0 ),
     httpurl( uri ),
     httphost( proxyHost ),
-    httpport( proxyPort ),
-    httpuser( proxyUser ),
-    httppass( proxyPass ),
-    mProxyType( proxyType ),
     mError( 0 )
 {
-
-  QgsDebugMsg( "constructing." );
-  QgsDebugMsg( "  proxyHost = " + proxyHost + "." );
-  QgsDebugMsg( "  proxyPort = " + QString::number( proxyPort ) + "." );
-  QgsDebugMsg( "  proxyUser = " + proxyUser + "." );
-  QgsDebugMsg( "  proxyPass = " + proxyPass + "." );
-  QgsDebugMsg( "exiting constructor." );
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()
@@ -78,6 +67,8 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QgsDebugMsg( "Entered." );
   QgsDebugMsg( "Using '" + httpurl + "'." );
+
+  int httpport;
 
   QUrl qurl( httpurl );
 
