@@ -164,21 +164,6 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     QString httphost;
 
     /**
-     * The port being used for this transaction
-     */
-    int httpport;
-
-    /**
-     * The username being used for this transaction
-     */
-    QString httpuser;
-
-    /**
-     * The password being used for this transaction
-     */
-    QString httppass;
-
-    /**
      * If not empty, indicates that the QHttp is a redirect
      * to the contents of this variable
      */
@@ -192,8 +177,6 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
      *
      */
     int httpredirections;
-
-    QNetworkProxy::ProxyType mProxyType;
 
     /**
      * Indicates the associated QTimer object - used to detect network timeouts
