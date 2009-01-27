@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>483</height>
+    <width>369</width>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -18,39 +18,58 @@
   <property name="sizeGripEnabled" >
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
+  <layout class="QGridLayout" name="gridLayout_2" >
    <item row="0" column="0" colspan="2" >
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>Grid Extent</string>
+      <string>Grid extent</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QRadioButton" name="rdoBoundary" >
-        <property name="text" >
-         <string>Input Boundary Layer</string>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="1" column="0" >
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="checked" >
-         <bool>true</bool>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>80</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QToolButton" name="btnUpdate" >
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>Update extents from layer</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2" >
-       <widget class="QComboBox" name="inShape" />
+      <item row="1" column="3" >
+       <spacer name="horizontalSpacer_2" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>79</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="2" column="0" colspan="2" >
-       <widget class="QRadioButton" name="rdoCoordinates" >
-        <property name="text" >
-         <string>Input Coordinates</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
            <string>X Min</string>
@@ -58,16 +77,26 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="xMin" />
+         <widget class="QLineEdit" name="xMin" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="inputMask" >
+           <string/>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="3" column="1" >
+      <item row="2" column="2" colspan="2" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_4" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
            <string>Y Min</string>
@@ -75,16 +104,26 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="yMin" />
+         <widget class="QLineEdit" name="yMin" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="inputMask" >
+           <string/>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="4" column="0" >
+      <item row="3" column="0" colspan="2" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_3" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
            <string>X Max</string>
@@ -92,16 +131,26 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="xMax" />
+         <widget class="QLineEdit" name="xMax" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="inputMask" >
+           <string/>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
-      <item row="4" column="1" >
+      <item row="3" column="2" colspan="2" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_5" >
           <property name="enabled" >
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text" >
            <string>Y Max</string>
@@ -109,9 +158,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="yMax" />
+         <widget class="QLineEdit" name="yMax" >
+          <property name="enabled" >
+           <bool>true</bool>
+          </property>
+          <property name="inputMask" >
+           <string/>
+          </property>
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
         </item>
        </layout>
+      </item>
+      <item row="0" column="0" colspan="4" >
+       <widget class="QComboBox" name="inShape" />
       </item>
      </layout>
     </widget>
@@ -151,7 +213,7 @@
          <double>0.000100000000000</double>
         </property>
         <property name="maximum" >
-         <double>9999.000000000000000</double>
+         <double>999999999.000000000000000</double>
         </property>
         <property name="singleStep" >
          <double>0.000100000000000</double>
@@ -216,7 +278,7 @@
          <double>0.000100000000000</double>
         </property>
         <property name="maximum" >
-         <double>9999.000000000000000</double>
+         <double>999999999.000000000000000</double>
         </property>
         <property name="singleStep" >
          <double>0.000100000000000</double>
@@ -226,7 +288,7 @@
       <item row="2" column="0" colspan="3" >
        <widget class="QRadioButton" name="rdoPolygons" >
         <property name="text" >
-         <string>Output as polygons</string>
+         <string>Output grid as polygons</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
@@ -236,7 +298,7 @@
       <item row="3" column="0" colspan="3" >
        <widget class="QRadioButton" name="rdoLines" >
         <property name="text" >
-         <string>Output as lines</string>
+         <string>Output grid as lines</string>
         </property>
        </widget>
       </item>
@@ -252,7 +314,7 @@
       </sizepolicy>
      </property>
      <property name="text" >
-      <string>Output Shapefile</string>
+      <string>Output shapefile</string>
      </property>
     </widget>
    </item>
@@ -298,6 +360,12 @@
     </widget>
    </item>
   </layout>
+  <zorder>groupBox</zorder>
+  <zorder>gridBox</zorder>
+  <zorder>label_2</zorder>
+  <zorder>progressBar</zorder>
+  <zorder>buttonBox_2</zorder>
+  <zorder>inShape</zorder>
  </widget>
  <resources/>
  <connections>
@@ -308,8 +376,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>142</x>
-     <y>444</y>
+     <x>330</x>
+     <y>449</y>
     </hint>
     <hint type="destinationlabel" >
      <x>215</x>
@@ -324,156 +392,12 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>68</x>
-     <y>444</y>
+     <x>256</x>
+     <y>449</y>
     </hint>
     <hint type="destinationlabel" >
      <x>132</x>
      <y>239</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoBoundary</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>inShape</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>125</x>
-     <y>59</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>123</x>
-     <y>89</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>xMin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>57</x>
-     <y>120</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>118</x>
-     <y>151</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>xMax</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>39</x>
-     <y>120</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>132</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>yMin</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>102</x>
-     <y>120</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>351</x>
-     <y>151</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>yMax</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>78</x>
-     <y>120</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>351</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>26</x>
-     <y>115</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>34</x>
-     <y>143</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>155</x>
-     <y>111</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>52</x>
-     <y>170</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>222</x>
-     <y>108</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>213</x>
-     <y>136</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdoCoordinates</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_5</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>257</x>
-     <y>119</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>210</x>
-     <y>174</y>
     </hint>
    </hints>
   </connection>
@@ -484,12 +408,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>264</x>
-     <y>268</y>
+     <x>279</x>
+     <y>244</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>158</x>
-     <y>272</y>
+     <x>164</x>
+     <y>280</y>
     </hint>
    </hints>
   </connection>
@@ -500,12 +424,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>248</x>
-     <y>256</y>
+     <x>302</x>
+     <y>261</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>90</x>
-     <y>275</y>
+     <x>73</x>
+     <y>280</y>
     </hint>
    </hints>
   </connection>
