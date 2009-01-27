@@ -1,6 +1,5 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
-<qgis version="0.9.2-Ganymede" >
-  <maplayer minimumScale="1" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
+<qgis version="0.9.2-Ganymede" minimumScale="1" maximumScale="1e+08" hasScaleBasedVisibilityFlag="0" geometry="Point" type="vector" >
     <id>points20080109122431720</id>
     <datasource>/home/timlinux/dev/cpp/qgis/tests/testdata/points.shp</datasource>
     <layername>Points</layername>
@@ -90,5 +89,4 @@
       <buffersize field="" units="pt" value="1" />
       <bufferenabled field="" on="" />
     </labelattributes>
-  </maplayer>
 </qgis>
