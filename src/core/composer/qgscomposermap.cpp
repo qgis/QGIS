@@ -48,6 +48,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
   mId = mCurrentComposerId++;
+  mPreviewMode = QgsComposerMap::Rectangle;
 
   // Cache
   mCacheUpdated = false;
@@ -80,6 +81,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mComposition = composition;
   mMapRenderer = mComposition->mapRenderer();
   mId = mCurrentComposerId++;
+  mPreviewMode = QgsComposerMap::Rectangle;
   setToolTip( tr( "Map %1" ).arg( mId ) );
   QGraphicsRectItem::show();
 }
@@ -370,7 +372,10 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
   mCacheUpdated = false;
   emit extentChanged();
-  cache();
+  if(mPreviewMode != Rectangle)
+  {
+    cache();
+  }
   update();
 }
 
