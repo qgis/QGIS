@@ -43,7 +43,8 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
 		QObject.connect(self.spnX, SIGNAL("valueChanged(double)"), self.offset)
 		#QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
-		QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateInput)
+		QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
+		QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
 		self.setWindowTitle("Vector grid")
 		self.xMin.setValidator(QDoubleValidator(self.xMin))
 		self.xMax.setValidator(QDoubleValidator(self.xMax))
@@ -58,13 +59,17 @@ class Dialog(QDialog, Ui_Dialog):
 		if self.chkLock.isChecked():
 			self.spnY.setValue(value)
 
-	def updateInput( self ):
+	def updateLayer( self ):
 		mLayerName = self.inShape.currentText()
 		if not mLayerName == "":
 			mLayer = self.getMapLayerByName( unicode( mLayerName ) )
-			self.inLayer = mLayer
 			boundBox = mLayer.extent()
 			self.updateExtents( boundBox )
+			
+	def updateCanvas( self ):
+		canvas = self.iface.mapCanvas()
+		boundBox = canvas.extent()
+		self.updateExtents( boundBox )
 		
 	def updateExtents( self, boundBox ):
 		self.xMin.setText( unicode( boundBox.xMinimum() ) )
@@ -93,7 +98,7 @@ class Dialog(QDialog, Ui_Dialog):
 			self.outShape.clear()
 			self.compute( boundBox, xSpace, ySpace, polygon )
 			addToTOC = QMessageBox.question(self, 
-			"Generate Vector Grid", "Created output Shapefile:\n" + outPath 
+			"Generate Vector Grid", "Created output Shapefile:\n" + self.shapefileName 
 			+ "\nNote: Layer has no associated coordinate system, please use "
 			+ "the Projection Management Tool to specify spatial reference system."
 			+ "\n\nWould you like to add the new layer to the TOC?", 

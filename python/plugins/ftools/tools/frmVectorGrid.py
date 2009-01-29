@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'frmVectorGrid.ui'
 #
-# Created: Tue Jan 27 23:10:42 2009
+# Created: Thu Jan 29 18:39:47 2009
 #      by: PyQt4 UI code generator 4.3.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -25,16 +25,19 @@ class Ui_Dialog(object):
         self.gridlayout1 = QtGui.QGridLayout(self.groupBox)
         self.gridlayout1.setObjectName("gridlayout1")
 
-        spacerItem = QtGui.QSpacerItem(80,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout1.addItem(spacerItem,1,0,1,1)
+        self.inShape = QtGui.QComboBox(self.groupBox)
+        self.inShape.setObjectName("inShape")
+        self.gridlayout1.addWidget(self.inShape,0,0,1,2)
 
         self.btnUpdate = QtGui.QToolButton(self.groupBox)
         self.btnUpdate.setMinimumSize(QtCore.QSize(0,30))
         self.btnUpdate.setObjectName("btnUpdate")
-        self.gridlayout1.addWidget(self.btnUpdate,1,1,1,2)
+        self.gridlayout1.addWidget(self.btnUpdate,1,0,1,1)
 
-        spacerItem1 = QtGui.QSpacerItem(79,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout1.addItem(spacerItem1,1,3,1,1)
+        self.btnCanvas = QtGui.QToolButton(self.groupBox)
+        self.btnCanvas.setMinimumSize(QtCore.QSize(0,30))
+        self.btnCanvas.setObjectName("btnCanvas")
+        self.gridlayout1.addWidget(self.btnCanvas,1,1,1,1)
 
         self.hboxlayout = QtGui.QHBoxLayout()
         self.hboxlayout.setObjectName("hboxlayout")
@@ -48,7 +51,7 @@ class Ui_Dialog(object):
         self.xMin.setEnabled(True)
         self.xMin.setObjectName("xMin")
         self.hboxlayout.addWidget(self.xMin)
-        self.gridlayout1.addLayout(self.hboxlayout,2,0,1,2)
+        self.gridlayout1.addLayout(self.hboxlayout,2,0,1,1)
 
         self.hboxlayout1 = QtGui.QHBoxLayout()
         self.hboxlayout1.setObjectName("hboxlayout1")
@@ -62,7 +65,7 @@ class Ui_Dialog(object):
         self.yMin.setEnabled(True)
         self.yMin.setObjectName("yMin")
         self.hboxlayout1.addWidget(self.yMin)
-        self.gridlayout1.addLayout(self.hboxlayout1,2,2,1,2)
+        self.gridlayout1.addLayout(self.hboxlayout1,2,1,1,1)
 
         self.hboxlayout2 = QtGui.QHBoxLayout()
         self.hboxlayout2.setObjectName("hboxlayout2")
@@ -76,7 +79,7 @@ class Ui_Dialog(object):
         self.xMax.setEnabled(True)
         self.xMax.setObjectName("xMax")
         self.hboxlayout2.addWidget(self.xMax)
-        self.gridlayout1.addLayout(self.hboxlayout2,3,0,1,2)
+        self.gridlayout1.addLayout(self.hboxlayout2,3,0,1,1)
 
         self.hboxlayout3 = QtGui.QHBoxLayout()
         self.hboxlayout3.setObjectName("hboxlayout3")
@@ -90,11 +93,7 @@ class Ui_Dialog(object):
         self.yMax.setEnabled(True)
         self.yMax.setObjectName("yMax")
         self.hboxlayout3.addWidget(self.yMax)
-        self.gridlayout1.addLayout(self.hboxlayout3,3,2,1,2)
-
-        self.inShape = QtGui.QComboBox(self.groupBox)
-        self.inShape.setObjectName("inShape")
-        self.gridlayout1.addWidget(self.inShape,0,0,1,4)
+        self.gridlayout1.addLayout(self.hboxlayout3,3,1,1,1)
         self.gridlayout.addWidget(self.groupBox,0,0,1,2)
 
         self.gridBox = QtGui.QGroupBox(Dialog)
@@ -103,8 +102,8 @@ class Ui_Dialog(object):
         self.gridlayout2 = QtGui.QGridLayout(self.gridBox)
         self.gridlayout2.setObjectName("gridlayout2")
 
-        spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout2.addItem(spacerItem2,0,0,1,1)
+        spacerItem = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout2.addItem(spacerItem,0,0,1,1)
 
         self.label_7 = QtGui.QLabel(self.gridBox)
         self.label_7.setObjectName("label_7")
@@ -123,11 +122,11 @@ class Ui_Dialog(object):
         self.chkLock.setObjectName("chkLock")
         self.gridlayout2.addWidget(self.chkLock,0,3,2,1)
 
-        spacerItem3 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout2.addItem(spacerItem3,0,4,1,1)
+        spacerItem1 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout2.addItem(spacerItem1,0,4,1,1)
 
-        spacerItem4 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
-        self.gridlayout2.addItem(spacerItem4,1,0,1,1)
+        spacerItem2 = QtGui.QSpacerItem(40,20,QtGui.QSizePolicy.Expanding,QtGui.QSizePolicy.Minimum)
+        self.gridlayout2.addItem(spacerItem2,1,0,1,1)
 
         self.label_8 = QtGui.QLabel(self.gridBox)
         self.label_8.setEnabled(False)
@@ -200,6 +199,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Generate Regular Points", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Grid extent", None, QtGui.QApplication.UnicodeUTF8))
         self.btnUpdate.setText(QtGui.QApplication.translate("Dialog", "Update extents from layer", None, QtGui.QApplication.UnicodeUTF8))
+        self.btnCanvas.setText(QtGui.QApplication.translate("Dialog", "Update extents from canvas", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Dialog", "X Min", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Y Min", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "X Max", None, QtGui.QApplication.UnicodeUTF8))

@@ -25,20 +25,10 @@
       <string>Grid extent</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" >
-      <item row="1" column="0" >
-       <spacer name="horizontalSpacer" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
-         <size>
-          <width>80</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QComboBox" name="inShape" />
       </item>
-      <item row="1" column="1" colspan="2" >
+      <item row="1" column="0" >
        <widget class="QToolButton" name="btnUpdate" >
         <property name="minimumSize" >
          <size>
@@ -51,20 +41,20 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3" >
-       <spacer name="horizontalSpacer_2" >
-        <property name="orientation" >
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0" >
+      <item row="1" column="1" >
+       <widget class="QToolButton" name="btnCanvas" >
+        <property name="minimumSize" >
          <size>
-          <width>79</width>
-          <height>20</height>
+          <width>0</width>
+          <height>30</height>
          </size>
         </property>
-       </spacer>
+        <property name="text" >
+         <string>Update extents from canvas</string>
+        </property>
+       </widget>
       </item>
-      <item row="2" column="0" colspan="2" >
+      <item row="2" column="0" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label" >
@@ -91,7 +81,7 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="2" colspan="2" >
+      <item row="2" column="1" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_4" >
@@ -118,7 +108,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0" colspan="2" >
+      <item row="3" column="0" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_3" >
@@ -145,7 +135,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="2" colspan="2" >
+      <item row="3" column="1" >
        <layout class="QHBoxLayout" >
         <item>
          <widget class="QLabel" name="label_5" >
@@ -171,9 +161,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="0" column="0" colspan="4" >
-       <widget class="QComboBox" name="inShape" />
       </item>
      </layout>
     </widget>
@@ -360,12 +347,6 @@
     </widget>
    </item>
   </layout>
-  <zorder>groupBox</zorder>
-  <zorder>gridBox</zorder>
-  <zorder>label_2</zorder>
-  <zorder>progressBar</zorder>
-  <zorder>buttonBox_2</zorder>
-  <zorder>inShape</zorder>
  </widget>
  <resources/>
  <connections>
