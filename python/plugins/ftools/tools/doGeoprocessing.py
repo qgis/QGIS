@@ -152,14 +152,18 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
 	def cancelThread( self ):
 		self.testThread.stop()
 		
-	def runFinishedFromThread( self, success ):
+	def runFinishedFromThread( self, results ):
 		self.testThread.stop()
 		self.cancel_close.setText( "Close" )
-		if success:
-			QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
+		QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
+		if results[0]:
+			if not results[1]:
+				out_text = self.tr( "\n\nWarning: Different input coordinate reference systems detected, results may not be as expected.")
+			else:
+				out_text = ""
 			addToTOC = QMessageBox.question( self, "Geoprocessing", self.tr( "Created output shapefile:" ) + "\n" + 
-			unicode( self.shapefileName ) + "\n\n" + self.tr( "Would you like to add the new layer to the TOC?" ), 
-			QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+			unicode( self.shapefileName ) + "\n\n" + self.tr( "Would you like to add the new layer to the TOC?" ) 
+			+ out_text, QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
 			if addToTOC == QMessageBox.Yes:
 				ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
 		else:
@@ -193,24 +197,24 @@ class geoprocessingThread( QThread ):
 			( self.myParam, useField ) = self.checkParameter( self.vlayerA, self.myParam )
 			if not self.myParam is None:
 				if self.myFunction == 1:
-					success = self.buffering( useField )
+					success, match = self.buffering( useField )
 				elif self.myFunction == 2:
-					success = self.convex_hull( useField )
+					success, match = self.convex_hull( useField )
 				elif self.myFunction == 4:
-					success = self.dissolve( useField )
+					success, match = self.dissolve( useField )
 		else:
 			self.vlayerB = ftools_utils.getVectorLayerByName( self.myLayerB )
 			if self.myFunction == 3:
-				success = self.difference()
+				success, match = self.difference()
 			elif self.myFunction == 5:
-				success = self.intersect()
+				success, match = self.intersect()
 			elif self.myFunction == 6:
-				success = self.union()
+				success, match = self.union()
 			elif self.myFunction == 7:    
-				success = self.symetrical_difference()
+				success, match = self.symetrical_difference()
 			elif self.myFunction == 8:    
-				success = self.clip()
-		self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), success )
+				success, match = self.clip()
+		self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), (success, match) )
 		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
 
 	def stop(self):
@@ -242,13 +246,13 @@ class geoprocessingThread( QThread ):
 					value = atMap[ self.myParam ].toDouble()[ 0 ]
 				else:
 					value = self.myParam
-				inGeom = inFeat.geometry()
-				outGeom = inGeom.buffer( float( value ), 5 )
+				inGeom = QgsGeometry( inFeat.geometry() )
+				outGeom = QgsGeometry( inGeom.buffer( float( value ), 5 ) )
 				if first:
 					tempGeom = QgsGeometry( outGeom )
 					first = False
 				else:
-					tempGeom = tempGeom.combine( QgsGeometry( outGeom ) )
+					tempGeom = QgsGeometry( tempGeom.combine( outGeom ) )
 			outFeat.setGeometry( tempGeom )
 			writer.addFeature( outFeat )
 		else:
@@ -261,13 +265,13 @@ class geoprocessingThread( QThread ):
 					value = atMap[ self.myParam ].toDouble()[ 0 ]
 				else:
 					value = self.myParam
-				inGeom = inFeat.geometry()
-				outGeom = inGeom.buffer( float( value ), 5 )
+				inGeom = QgsGeometry( inFeat.geometry() )
+				outGeom = QgsGeometry( inGeom.buffer( float( value ), 5 ) )
 				outFeat.setGeometry( outGeom )
 				outFeat.setAttributeMap( atMap )
 				writer.addFeature( outFeat )
-			del writer
-		return True
+		del writer
+		return True, True
 
 	def convex_hull(self, useField ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -300,11 +304,12 @@ class geoprocessingThread( QThread ):
 						if first:
 							outID = idVar
 							first = False
-						inGeom = inFeat.geometry()
+						inGeom = QgsGeometry( inFeat.geometry() )
 						points = ftools_utils.extractPoints( inGeom )
 						hull.extend( points )
 				if len( hull ) >= 3:
-					outGeom = outGeom.fromMultiPoint( hull ).convexHull()
+					tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
+					outGeom = QgsGeometry( tmpGeom.convexHull() )
 					outFeat.setGeometry( outGeom )
 					(area, perim) = self.simpleMeasure( outGeom )
 					outFeat.addAttribute( 0, QVariant( outID ) )
@@ -321,14 +326,15 @@ class geoprocessingThread( QThread ):
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-				inGeom = inFeat.geometry()
+				inGeom = QgsGeometry( inFeat.geometry() )
 				points = ftools_utils.extractPoints( inGeom )
 				hull.extend( points )
-			outGeom = outGeom.fromMultiPoint( hull ).convexHull()
-			outFeat.setGeometry(outGeom)
+			tmpGeom = QgsGeometry( outGeom.fromMultiPoint( hull ) )
+			outGeom = QgsGeometry( tmpGeom.convexHull() )
+			outFeat.setGeometry( outGeom )
 			writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, True
 
 	def dissolve( self, useField ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -339,42 +345,55 @@ class geoprocessingThread( QThread ):
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeat = QgsFeature()
 		outFeat = QgsFeature()
-		inGeom = QgsGeometry()
-		outGeom = QgsGeometry()
 		vproviderA.rewind()
-		if useField:
-			unique = ftools_utils.getUniqueValues( vproviderA, int( self.myParam ) )
-		else:
-			unique = [ 1 ]
-		nFeat = vproviderA.featureCount() * len( unique )
+		nFeat = vproviderA.featureCount()
 		nElement = 0
-		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
-		self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-		for item in unique:
+		if not useField:
+			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
+			self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 			first = True
-			vproviderA.rewind()
 			while vproviderA.nextFeature( inFeat ):
 				nElement += 1
 				self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-				if not useField:
-					if first:
-						attrs = inFeat.attributeMap()
-						outFeat.setGeometry( QgsGeometry( inFeat.geometry() ) )
-						first = False
-					else:
-						outFeat.setGeometry( QgsGeometry( outFeat.geometry().combine( inFeat.geometry() ) ) )
+				if first:
+					attrs = inFeat.attributeMap()
+					tmpInGeom = QgsGeometry( inFeat.geometry() )
+					outFeat.setGeometry( tmpInGeom )
+					first = False
 				else:
+					tmpInGeom = QgsGeometry( inFeat.geometry() )
+					tmpOutGeom = QgsGeometry( outFeat.geometry() )
+					tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
+					outFeat.setGeometry( tmpOutGeom )
+			outFeat.setAttributeMap( attrs )
+			writer.addFeature( outFeat )
+		else:
+			unique = ftools_utils.getUniqueValues( vproviderA, int( self.myParam ) )
+			nFeat = nFeat * len( unique )
+			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
+			self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+			for item in unique:
+				first = True
+				vproviderA.rewind()
+				while vproviderA.nextFeature( inFeat ):
+					nElement += 1
+					self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
 					if inFeat.attributeMap()[ self.myParam ].toString().trimmed() == item.toString().trimmed():
 						if first:
-							outFeat.setGeometry( QgsGeometry( inFeat.geometry() ) )
+							QgsGeometry( inFeat.geometry() )
+							tmpInGeom = QgsGeometry( inFeat.geometry() )
+							outFeat.setGeometry( tmpInGeom )
 							first = False
 							attrs = inFeat.attributeMap()
 						else:
-							outFeat.setGeometry( QgsGeometry( outFeat.geometry().combine( inFeat.geometry() ) ) )
-			outFeat.setAttributeMap( attrs )
-			writer.addFeature( outFeat )
+							tmpInGeom = QgsGeometry( inFeat.geometry() )
+							tmpOutGeom = QgsGeometry( outFeat.geometry() )
+							tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
+							outFeat.setGeometry( tmpOutGeom )
+				outFeat.setAttributeMap( attrs )
+				writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, True
 
 	def difference( self ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -384,12 +403,13 @@ class geoprocessingThread( QThread ):
 		allAttrsB = vproviderB.attributeIndexes()
 		vproviderB.select( allAttrsB )
 		fields = vproviderA.fields()
+		if vproviderA.crs() == vproviderB.crs(): crs_match = True
+		else: crs_match = False
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeatA = QgsFeature()
 		inFeatB = QgsFeature()
 		outFeat = QgsFeature()
-		geom = QgsGeometry()
 		index = ftools_utils.createIndex( vproviderB )
 		nFeat = vproviderA.featureCount()
 		nElement = 0
@@ -399,18 +419,19 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			geom = inFeatA.geometry()
+			geom = QgsGeometry( inFeatA.geometry() )
 			atMap = inFeatA.attributeMap()
 			intersects = index.intersects( geom.boundingBox() )
-			for _id in intersects:
-				vproviderB.featureAtId( int( _id ), inFeatB , True, allAttrsB )
-				if geom.intersects( inFeatB.geometry() ):
-					geom = geom.difference( inFeatB.geometry() )
+			for id in intersects:
+				vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+				tmpGeom = QgsGeometry( inFeatB.geometry() )
+				if geom.intersects( tmpGeom ):
+					geom = geom.difference( tmpGeom )
 			outFeat.setGeometry( geom )
 			outFeat.setAttributeMap( atMap )
 			writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, crs_match
 
 	def intersect( self ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -419,13 +440,14 @@ class geoprocessingThread( QThread ):
 		vproviderB = self.vlayerB.dataProvider()
 		allAttrsB = vproviderB.attributeIndexes()
 		vproviderB.select( allAttrsB )
+		if vproviderA.crs() == vproviderB.crs(): crs_match = True
+		else: crs_match = False
 		fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeatA = QgsFeature()
 		inFeatB = QgsFeature()
 		outFeat = QgsFeature()
-		geom = QgsGeometry()
 		index = ftools_utils.createIndex( vproviderB )
 		nFeat = vproviderA.featureCount()
 		nElement = 0
@@ -435,20 +457,21 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			geom = inFeatA.geometry()
+			geom = QgsGeometry( inFeatA.geometry() )
 			atMapA = inFeatA.attributeMap()    
 			intersects = index.intersects( geom.boundingBox() )
-			for _id in intersects: 
-				vproviderB.featureAtId( int( _id ), inFeatB , True, allAttrsB )
-				if geom.intersects( inFeatB.geometry() ):
+			for id in intersects: 
+				vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+				tmpGeom = QgsGeometry( inFeatB.geometry() )
+				if geom.intersects( tmpGeom ):
 					atMapB = inFeatB.attributeMap()
-					result = geom.intersection( inFeatB.geometry() )
-					outFeat.setGeometry( result )
+					geom = geom.intersection( tmpGeom )
+					outFeat.setGeometry( geom )
 					outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
 					writer.addFeature( outFeat )
 		del writer
-		return True
-
+		return True, crs_match
+		
 	def union( self ):
 		vproviderA = self.vlayerA.dataProvider()
 		allAttrsA = vproviderA.attributeIndexes()
@@ -456,14 +479,14 @@ class geoprocessingThread( QThread ):
 		vproviderB = self.vlayerB.dataProvider()
 		allAttrsB = vproviderB.attributeIndexes()
 		vproviderB.select( allAttrsB )
+		if vproviderA.crs() == vproviderB.crs(): crs_match = True
+		else: crs_match = False
 		fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeatA = QgsFeature()
 		inFeatB = QgsFeature()
 		outFeat = QgsFeature()
-		geom = QgsGeometry()
-		diffGeom = QgsGeometry()
 		indexA = ftools_utils.createIndex( vproviderB )
 		indexB = ftools_utils.createIndex( vproviderA )
 		nFeat = vproviderA.featureCount() * vproviderB.featureCount()
@@ -484,21 +507,22 @@ class geoprocessingThread( QThread ):
 				outFeat.setAttributeMap( atMapA )
 				writer.addFeature( outFeat )
 			else:
-				for _id in intersects:
-					vproviderB.featureAtId( int( _id ), inFeatB , True, allAttrsB )
+				for id in intersects:
+					vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
 					atMapB = inFeatB.attributeMap()
-					if geom.intersects( inFeatB.geometry() ):
+					tmpGeom = QgsGeometry( inFeatB.geometry() )
+					if geom.intersects( tmpGeom ):
 						found = True
-						diffGeom = diffGeom.difference( inFeatB.geometry() )
-						result = geom.intersection( inFeatB.geometry() )
-						outFeat.setGeometry( result )
+						diffGeom = diffGeom.difference( tmpGeom )
+						geom = geom.intersection( tmpGeom )
+						outFeat.setGeometry( geom )
 						outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
 						writer.addFeature( outFeat )
 				if found:
 					outFeat.setGeometry( diffGeom )
 					outFeat.setAttributeMap( atMapA )
 					writer.addFeature( outFeat )
-		length = len( atMapA.values() )
+		length = len( vproviderA.fields().values() )
 		vproviderB.rewind()
 		while vproviderB.nextFeature( inFeatA ):
 			nElement += 1
@@ -512,16 +536,17 @@ class geoprocessingThread( QThread ):
 				outFeat.setAttributeMap( atMapA )
 				writer.addFeature( outFeat )
 			else:
-				for _id in intersects:
-					vproviderA.featureAtId( int( _id ), inFeatB , True, allAttrsA )
+				for id in intersects:
+					vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
 					atMapB = inFeatB.attributeMap()
-					if geom.intersects( inFeatB.geometry() ):
-						geom = geom.difference( inFeatB.geometry() )
+					tmpGeom = QgsGeometry( inFeatB.geometry() )
+					if geom.intersects( tmpGeom ):
+						geom = geom.difference( tmpGeom )
 				outFeat.setGeometry( geom )
 				outFeat.setAttributeMap( atMap )
 				writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, crs_match
 
 	def symetrical_difference( self ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -530,13 +555,14 @@ class geoprocessingThread( QThread ):
 		vproviderB = self.vlayerB.dataProvider()
 		allAttrsB = vproviderB.attributeIndexes()
 		vproviderB.select( allAttrsB )
+		if vproviderA.crs() == vproviderB.crs(): crs_match = True
+		else: crs_match = False
 		fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeatA = QgsFeature()
 		inFeatB = QgsFeature()
 		outFeat = QgsFeature()
-		geom = QgsGeometry()
 		indexA = ftools_utils.createIndex( vproviderB )
 		indexB = ftools_utils.createIndex( vproviderA )
 		nFeat = vproviderA.featureCount() * vproviderB.featureCount()
@@ -547,34 +573,36 @@ class geoprocessingThread( QThread ):
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			geom = inFeatA.geometry()
+			geom = QgsGeometry( inFeatA.geometry() )
 			atMapA = inFeatA.attributeMap()
 			intersects = indexA.intersects( geom.boundingBox() )
-			for _id in intersects:
-				vproviderB.featureAtId( int( _id ), inFeatB , True, allAttrsB )
-				if geom.intersects( inFeatB.geometry() ):
-					geom = geom.difference( inFeatB.geometry() )        
+			for id in intersects:
+				vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+				tmpGeom = QgsGeometry( inFeatB.geometry() )
+				if geom.intersects( tmpGeom ):
+					geom = geom.difference( tmpGeom )
 			outFeat.setGeometry( geom )
 			outFeat.setAttributeMap( atMapA )
 			writer.addFeature( outFeat )
-		length = len( atMapA.values() )
+		length = len( vproviderA.fields().values() )
 		vproviderB.rewind()
 		while vproviderB.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			geom = inFeatA.geometry()
+			geom = QgsGeometry( inFeatA.geometry() )
 			atMap = inFeatA.attributeMap().values()
 			atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
 			intersects = indexB.intersects( geom.boundingBox() )
-			for _id in intersects:
-				vproviderA.featureAtId( int( _id ), inFeatB , True, allAttrsA )
-				if geom.intersects( inFeatB.geometry() ):
-					geom = geom.difference( inFeatB.geometry() )      
+			for id in intersects:
+				vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
+				tmpGeom = QgsGeometry( inFeatB.geometry() )
+				if geom.intersects( tmpGeom ):
+					geom = geom.difference( tmpGeom )
 			outFeat.setGeometry( geom )
 			outFeat.setAttributeMap( atMap )
 			writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, crs_match
 
 	def clip( self ):
 		vproviderA = self.vlayerA.dataProvider()
@@ -583,35 +611,36 @@ class geoprocessingThread( QThread ):
 		vproviderB = self.vlayerB.dataProvider()
 		allAttrsB = vproviderB.attributeIndexes()
 		vproviderB.select( allAttrsB )
+		if vproviderA.crs() == vproviderB.crs(): crs_match = True
+		else: crs_match = False
 		fields = vproviderA.fields()
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
 		inFeatA = QgsFeature()
 		inFeatB = QgsFeature()
 		outFeat = QgsFeature()
-		geom = QgsGeometry()
-		outGeom = QgsGeometry()
-		index = ftools_utils.createIndex(vproviderB)
+		index = ftools_utils.createIndex( vproviderB )
 		nFeat = vproviderA.featureCount()
 		nElement = 0
-		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
+		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
 		self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 		vproviderA.rewind()
 		while vproviderA.nextFeature( inFeatA ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-			geom = inFeatA.geometry()
+			geom = QgsGeometry( inFeatA.geometry() )
 			atMap = inFeatA.attributeMap()    
 			intersects = index.intersects( geom.boundingBox() )
-			for _id in intersects:
-				vproviderB.featureAtId( int( _id ), inFeatB , True, allAttrsB )
-				if geom.intersects( inFeatB.geometry() ):  
-					outGeom = geom.intersection( inFeatB.geometry() )
-					outFeat.setGeometry( outGeom )
+			for id in intersects:
+				vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
+				tmpGeom = QgsGeometry( inFeatB.geometry() )
+				if geom.intersects( tmpGeom ):  
+					geom= geom.intersection( tmpGeom )
+					outFeat.setGeometry( geom )
 					outFeat.setAttributeMap( atMap )
 					writer.addFeature( outFeat )
 		del writer
-		return True
+		return True, crs_match
 
 	def checkParameter( self, layer, param ):
 		if self.myFunction == 1:
