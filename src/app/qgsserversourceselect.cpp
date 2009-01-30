@@ -586,8 +586,6 @@ QString QgsServerSourceSelect::selectedImageEncoding()
   //substitute blanks with %20 (e.g. in "image/png; mode=24bit")
   imageEncoding.replace(QRegExp(" "), "%20");
   return imageEncoding;
-
-  //return m_PotentialFormats.key( qMakePair( label, id ) );
 }
 
 
