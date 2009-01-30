@@ -70,12 +70,14 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
   // Some wms servers will support tiff, but by default Qt doesn't, but leave
   // this in for those versions of Qt that might support tiff
   m_PotentialFormats.insert( "image/tiff",            qMakePair( QString( "TIFF" ), 6 ) );
+  //MH: UMN mapserver often offers png 24 bit
+  m_PotentialFormats.insert( "image/png; mode=24bit", qMakePair( QString( "PNG" ), 7 ) );
 
   QMap<QString, QPair<QString, int> >::const_iterator iter = m_PotentialFormats.constBegin();
   int i = 1;
   while ( iter != m_PotentialFormats.end() )
   {
-    QRadioButton* btn = new QRadioButton( iter.value().first );
+    QRadioButton* btn = new QRadioButton(iter.value().first);
     m_imageFormatGroup->addButton( btn, iter.value().second );
     m_imageFormatLayout->addWidget( btn );
     if ( i == 1 )
@@ -579,7 +581,13 @@ QString QgsServerSourceSelect::selectedImageEncoding()
   // a value that isn't in the map, hence we don't need to check for the value
   // not being found.
 
-  return m_PotentialFormats.key( qMakePair( label, id ) );
+  QString imageEncoding = m_PotentialFormats.key( qMakePair( label, id ) );
+
+  //substitute blanks with %20 (e.g. in "image/png; mode=24bit")
+  imageEncoding.replace(QRegExp(" "), "%20");
+  return imageEncoding;
+
+  //return m_PotentialFormats.key( qMakePair( label, id ) );
 }
 
 
