@@ -39,6 +39,7 @@ SET(QGIS_APP_SRCS
   qgsmeasuretool.cpp
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
+  qgsogrsublayersdialog.cpp
   qgsoptions.cpp
   qgspastetransformations.cpp
   qgspluginitem.cpp
@@ -113,6 +114,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuredialog.h
   qgsnewhttpconnection.h
   qgsoptions.h
+  qgsogrsublayersdialog.h
   qgspastetransformations.h
   qgspluginmanager.h
   qgspythondialog.h

@@ -47,6 +47,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual QgsCoordinateReferenceSystem crs();
 
+	   /**
+     * Sub-layers handled by this provider, in order from bottom to top
+     *
+     * Sub-layers are used when the provider's source can combine layers
+     * it knows about in some way before it hands them off to the provider.
+     */
+    virtual QStringList subLayers() const;
 
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
@@ -181,14 +188,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
-
-  protected:
-    /** loads fields from input file to member attributeFields */
-    void loadFields();
-
-    /**Get an attribute associated with a feature*/
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
-
+    
     /** return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
@@ -219,6 +219,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     QString description() const;
 
+  protected:
+    /** loads fields from input file to member attributeFields */
+    void loadFields();
+
+    /**Get an attribute associated with a feature*/
+    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
+
+
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
@@ -247,7 +255,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     //! Selection rectangle
     OGRGeometryH mSelectionRectangle;
-
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/

@@ -73,14 +73,61 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // try to open for update, but disable error messages to avoid a
   // message if the file is read only, because we cope with that
   // ourselves.
+
+  // This part of the code parses the uri transmitted to the ogr provider to 
+  // get the options the client wants us to apply
+
+  QString mFilePath;
+  QString theLayerName;
+  int theLayerIndex=0;
+
+  // If there is no & in the uri, then the uri is just the filename. The loaded
+  // layer will be layer 0.
+  if ( ! uri.contains('&', Qt::CaseSensitive))
+  {
+    mFilePath = uri;
+  }
+  else
+  {
+  // If we get here, there are some options added to the filename. We must parse
+  // the different parts separated by &, and among each option, the name and the
+  // value around the =.
+  // A valid uri is of the form: filename&option1=value1&option2=value2,...
+
+ 	  QStringList theURIParts = uri.split("&");
+    mFilePath = theURIParts.at( 0 );
+
+    for (int i = 1 ; i < theURIParts.size(); i++ )
+    {
+      QStringList theInstruction = theURIParts.at( i ).split( "=" );
+      if ( theInstruction.at( 0 ) == QString( "layerid" ) )
+      {
+        bool ok;
+        theLayerIndex = theInstruction.at( 1 ).toInt( &ok );
+        if ( ! ok )
+        {
+          theLayerIndex = 0;
+        }
+      }
+      if ( theInstruction.at( 0 ) == QString( "layername" ) )
+      {
+        theLayerName = theInstruction.at( 1 );
+      }				
+    }
+  }
+
+  QgsDebugMsg("mFilePath: " + mFilePath);
+  QgsDebugMsg("theLayerIndex: "+theLayerIndex);
+  QgsDebugMsg("theLayerName: "+theLayerName);
+	
   CPLPushErrorHandler( CPLQuietErrorHandler );
-  ogrDataSource = OGROpen( QFile::encodeName( uri ).constData(), TRUE, &ogrDriver );
+  ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
   CPLPopErrorHandler();
 
   if ( ogrDataSource == NULL )
   {
     // try to open read-only
-    ogrDataSource = OGROpen( QFile::encodeName( uri ).constData(), FALSE, &ogrDriver );
+    ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), FALSE, &ogrDriver );
 
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail
@@ -95,8 +142,17 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     valid = true;
 
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
-
-    ogrLayer = OGR_DS_GetLayer( ogrDataSource, 0 );
+		
+    // We get the layer which was requested by the uri. The layername
+    // has precedence over the layerid if both are given.
+    if ( theLayerName.isNull() )
+    {
+      ogrLayer = OGR_DS_GetLayer( ogrDataSource, theLayerIndex );
+    }
+    else
+    {
+      ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, (char*)(theLayerName.toLocal8Bit().data()) );
+    }
 
     // get the extent_ (envelope) of the layer
 
@@ -143,6 +199,44 @@ QgsOgrProvider::~QgsOgrProvider()
     OGR_G_DestroyGeometry( mSelectionRectangle );
     mSelectionRectangle = 0;
   }
+}
+
+QStringList QgsOgrProvider::subLayers() const
+{
+  QStringList theList = QStringList();
+  if (! valid )
+  {
+    return theList;
+  }
+  for ( int i = 0; i < layerCount() ; i++ )
+  {  
+    QString theLayerName = QString(OGR_FD_GetName(OGR_L_GetLayerDefn(OGR_DS_GetLayer( ogrDataSource, i ))));
+    OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType(OGR_L_GetLayerDefn(OGR_DS_GetLayer( ogrDataSource, i )));
+
+    int theLayerFeatureCount=OGR_L_GetFeatureCount(OGR_DS_GetLayer( ogrDataSource, i ),1) ;
+
+    QString geom;
+    switch (layerGeomType)
+    {
+      case wkbUnknown:            geom = "Unknown"; break;
+      case wkbPoint:              geom="Point"; break;
+      case wkbLineString:         geom="LineString"; break;
+      case wkbPolygon:            geom="Polygon"; break;
+      case wkbMultiPoint:         geom="MultiPoint"; break;
+      case wkbMultiLineString:    geom="MultiLineString"; break;
+      case wkbGeometryCollection: geom = "GeometryCollection"; break;
+      case wkbNone:               geom = "None"; break;
+      case wkbPoint25D:           geom="Point25D"; break;
+      case wkbLineString25D:      geom="LineString25D"; break;
+      case wkbPolygon25D:         geom="Polygon25D"; break;
+      case wkbMultiPoint25D:      geom="MultiPoint25D"; break;
+      case wkbMultiLineString25D: geom="MultiLineString25D"; break;
+      case wkbMultiPolygon25D:    geom="MultiPolygon25D"; break;
+      default: geom="Unknown WKB: " + QString::number(layerGeomType);
+    }
+    theList.append(QString::number(i)+":"+ theLayerName+":"+QString::number(theLayerFeatureCount)+":"+geom);
+  }
+  return theList;
 }
 
 void QgsOgrProvider::setEncoding( const QString& e )
