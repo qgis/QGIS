@@ -183,6 +183,16 @@ def getVectorLayerByName( myName ):
 				return layer
 			else:
 				return None
+				
+# Return QgsMapLayer from a layer name ( as string )
+def getMapLayerByName( myName ):
+	layermap = QgsMapLayerRegistry.instance().mapLayers()
+	for name, layer in layermap.iteritems():
+		if layer.name() == myName:
+			if layer.isValid():
+				return layer
+			else:
+				return None
 
 # Return the field list of a vector layer
 def getFieldList( vlayer ):
