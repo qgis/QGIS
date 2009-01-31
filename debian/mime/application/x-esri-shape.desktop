@@ -4,4 +4,5 @@ MimeType=application/x-esri-shape
 Hidden=false
 Comment=ESRI shape file
 Comment[de]=ESRI-Shapedatei
+Icon=qgis-mime-icon
 Patterns=*.shp;*.shx;

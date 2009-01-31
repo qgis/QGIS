@@ -35,6 +35,12 @@ ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += VERBOSE=YES
 endif
 
+ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -pg
+	CXXFLAGS += -pg
+	LDFLAGS += -pg
+endif
+
 debian/build/CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
@@ -79,7 +85,8 @@ install: build
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-icon.xpm
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
 
 # Build architecture-independent files here.
 binary-indep: build install

@@ -43,3 +43,5 @@ usr/lib/qgis/libcoordinatecaptureplugin.so
 ../mime/application/x-qgis-project.desktop usr/share/mimelnk/application
 ../mime/application/x-raster-mrsid.desktop usr/share/mimelnk/application
 ../mime/application/x-qgis-layer-settings.desktop usr/share/mimelnk/application
+usr/share/pixmaps/qgis-mime-icon.png
+usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
