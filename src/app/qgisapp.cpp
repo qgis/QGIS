@@ -2269,7 +2269,7 @@ void QgisApp::loadOGRSublayers( QString uri, QStringList list )
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI = uri + "&layername=" + list.at( i );
-    QgsVectorLayer *layer = addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
+    addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
   }
 }
 
@@ -5017,7 +5017,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           //don't enable vertex move for single point
-          if ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D )
+          if ( QGis::wkbType2d( vlayer->wkbType() ) != QGis::WKBPoint )
           {
             mActionMoveVertex->setEnabled( true );
           }
