@@ -306,7 +306,6 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
   if ( !PyErr_Occurred() )
     return false;
 
-  PyObject* obj_str;
   PyObject* err_type;
   PyObject* err_value;
   PyObject* err_tb;

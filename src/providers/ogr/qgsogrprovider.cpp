@@ -208,7 +208,7 @@ QStringList QgsOgrProvider::subLayers() const
   {
     return theList;
   }
-  for ( int i = 0; i < layerCount() ; i++ )
+  for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
     QString theLayerName = QString( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
     OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
@@ -219,19 +219,19 @@ QStringList QgsOgrProvider::subLayers() const
     switch ( layerGeomType )
     {
       case wkbUnknown:            geom = "Unknown"; break;
-      case wkbPoint:              geom="Point"; break;
-      case wkbLineString:         geom="LineString"; break;
-      case wkbPolygon:            geom="Polygon"; break;
-      case wkbMultiPoint:         geom="MultiPoint"; break;
-      case wkbMultiLineString:    geom="MultiLineString"; break;
+      case wkbPoint:              geom = "Point"; break;
+      case wkbLineString:         geom = "LineString"; break;
+      case wkbPolygon:            geom = "Polygon"; break;
+      case wkbMultiPoint:         geom = "MultiPoint"; break;
+      case wkbMultiLineString:    geom = "MultiLineString"; break;
       case wkbGeometryCollection: geom = "GeometryCollection"; break;
       case wkbNone:               geom = "None"; break;
-      case wkbPoint25D:           geom="Point25D"; break;
-      case wkbLineString25D:      geom="LineString25D"; break;
-      case wkbPolygon25D:         geom="Polygon25D"; break;
-      case wkbMultiPoint25D:      geom="MultiPoint25D"; break;
-      case wkbMultiLineString25D: geom="MultiLineString25D"; break;
-      case wkbMultiPolygon25D:    geom="MultiPolygon25D"; break;
+      case wkbPoint25D:           geom = "Point25D"; break;
+      case wkbLineString25D:      geom = "LineString25D"; break;
+      case wkbPolygon25D:         geom = "Polygon25D"; break;
+      case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
+      case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
+      case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
       default: geom="Unknown WKB: " + QString::number( layerGeomType );
     }
     theList.append( QString::number( i ) + ":" + theLayerName + ":" + QString::number( theLayerFeatureCount ) + ":" + geom );

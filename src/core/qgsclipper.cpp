@@ -31,9 +31,3 @@ const double QgsClipper::MAX_Y =  30000;
 const double QgsClipper::MIN_Y = -30000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
-
-
-
-
-
-
