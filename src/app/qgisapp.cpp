@@ -801,7 +801,7 @@ void QgisApp::createActions()
   mActionLayerSelectionSaveAs->setStatusTip( tr( "Save the selection as a shapefile" ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsShapefile() ) );
   mActionLayerSelectionSaveAs->setEnabled( false );
-  
+
   mActionRemoveLayer = new QAction( getThemeIcon( "mActionRemoveLayer.png" ), tr( "Remove Layer" ), this );
   mActionRemoveLayer->setShortcut( tr( "Ctrl+D", "Remove a Layer" ) );
   mActionRemoveLayer->setStatusTip( tr( "Remove a Layer" ) );
@@ -2173,15 +2173,16 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
       // If the newly created layer has more than 1 layer of data available, we show the
       // sublayers selection dialog so the user can select the sublayers to actually load.
-			if ( sublayers.count() > 1)
-			{
-        askUserForSublayers(layer);				
+      if ( sublayers.count() > 1 )
+      {
+        askUserForSublayers( layer );
 
-        // The first layer loaded is not usefull in that case. The user can select it in 
+        // The first layer loaded is not usefull in that case. The user can select it in
         // the list if he wants to load it.
         delete layer;
 
-			}else  // there is 1 layer of data available
+      }
+      else  // there is 1 layer of data available
       {
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
@@ -2219,57 +2220,57 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 } // QgisApp::addVectorLayer()
 
 // This method is the method that does the real job. If the layer given in
-// parameter is NULL, then the method tries to act on the activeLayer. 
-void QgisApp::askUserForSublayers(QgsVectorLayer *layer)
+// parameter is NULL, then the method tries to act on the activeLayer.
+void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
 {
-  if (layer == NULL)
+  if ( layer == NULL )
   {
-    if (activeLayer() == NULL || activeLayer()->type() != QgsMapLayer::VectorLayer)
+    if ( activeLayer() == NULL || activeLayer()->type() != QgsMapLayer::VectorLayer )
       return;
-    
-    layer = (QgsVectorLayer*) activeLayer();
-    if (layer->dataProvider()->name() != "ogr")
+
+    layer = ( QgsVectorLayer* ) activeLayer();
+    if ( layer->dataProvider()->name() != "ogr" )
       return;
   }
-  
+
   QStringList sublayers = layer->dataProvider()->subLayers();
 
   // We initialize a selection dialog and display it.
   QgsOGRSublayersDialog chooseSublayersDialog( this );
   chooseSublayersDialog.populateLayerTable( sublayers );
-  
-  if (chooseSublayersDialog.exec())
+
+  if ( chooseSublayersDialog.exec() )
   {
     QString uri = layer->source();
-    if ( uri.contains('&', Qt::CaseSensitive) )
+    if ( uri.contains( '&', Qt::CaseSensitive ) )
     {
       // If we get here, there are some options added to the filename.
       // A valid uri is of the form: filename&option1=value1&option2=value2,...
       // We want only the filename here, so we get the first part of the split.
-      QStringList theURIParts = uri.split("&");
+      QStringList theURIParts = uri.split( "&" );
       uri = theURIParts.at( 0 );
     }
-    
+
     // the user has done his choice
-    loadOGRSublayers(uri, chooseSublayersDialog.getSelection());
+    loadOGRSublayers( uri, chooseSublayersDialog.getSelection() );
   }
 }
 
-// This method will load with OGR the layers  in parameter. 
+// This method will load with OGR the layers  in parameter.
 // This method has been conceived to use the new URI
 // format of the ogrprovider so as to give precisions about which
 // sublayer to load into QGIS. It is normally triggered by the
 // sublayer selection dialog.
-void QgisApp::loadOGRSublayers( QString uri, QStringList list)
+void QgisApp::loadOGRSublayers( QString uri, QStringList list )
 {
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
-  QString fileName = QFileInfo(uri).baseName();
-	for (int i = 0; i < list.size(); i++)
-	{
-		QString composedURI=uri+"&layername="+list.at(i);
-		QgsVectorLayer *layer=addVectorLayer(composedURI,fileName+":"+list.at(i),"ogr");
-	}
+  QString fileName = QFileInfo( uri ).baseName();
+  for ( int i = 0; i < list.size(); i++ )
+  {
+    QString composedURI = uri + "&layername=" + list.at( i );
+    QgsVectorLayer *layer = addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
+  }
 }
 
 /** This helper checks to see whether the file name appears to be a valid vector file name */

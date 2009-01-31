@@ -122,11 +122,11 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
   if ( theOption.state & QStyle::State_Selected )
   {
     drawHighlight( theOption, thepPainter, height( theOption, theData ) );
-    thepPainter->setPen(theOption.palette.highlightedText().color());
+    thepPainter->setPen( theOption.palette.highlightedText().color() );
   }
   else
   {
-    thepPainter->setPen(theOption.palette.text().color());
+    thepPainter->setPen( theOption.palette.text().color() );
   }
 
 

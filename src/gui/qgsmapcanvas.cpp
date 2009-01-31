@@ -431,14 +431,14 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   myHeader += QString::number( myRect.xMinimum() ) + "\r\n";
   //Origin Y (top left corner)
   myHeader += QString::number( myRect.yMaximum() ) + "\r\n";
-  QFileInfo myInfo  = QFileInfo(theFileName);
+  QFileInfo myInfo  = QFileInfo( theFileName );
   QString myWorldFileName = myInfo.absolutePath() + QDir::separator() + myInfo.baseName() + "." + theFormat + "w";
-  QFile myWorldFile(myWorldFileName);
-  if (!myWorldFile.open(QIODevice::WriteOnly | QIODevice::Text))
+  QFile myWorldFile( myWorldFileName );
+  if ( !myWorldFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     return;
   }
-  QTextStream myStream(&myWorldFile);
+  QTextStream myStream( &myWorldFile );
   myStream << myHeader;
 } // saveAsImage
 

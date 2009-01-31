@@ -23,8 +23,8 @@ QgsOGRSublayersDialog::QgsOGRSublayersDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  QStringList labels=QStringList() << "Layer ID" << "Layer name" << "Nb of features" << "Geometry type";
-	layersTable->setHeaderLabels(labels);
+  QStringList labels = QStringList() << "Layer ID" << "Layer name" << "Nb of features" << "Geometry type";
+  layersTable->setHeaderLabels( labels );
 }
 
 QgsOGRSublayersDialog::~QgsOGRSublayersDialog()
@@ -33,22 +33,23 @@ QgsOGRSublayersDialog::~QgsOGRSublayersDialog()
 
 QStringList QgsOGRSublayersDialog::getSelection()
 {
-  QStringList list=QStringList();
-  for (int i = 0; i < layersTable-> selectedItems().size(); i++)
+  QStringList list = QStringList();
+  for ( int i = 0; i < layersTable-> selectedItems().size(); i++ )
   {
-    QString theItem =layersTable-> selectedItems().at(i)->text(1);
-    list.append(theItem);
+    QString theItem = layersTable-> selectedItems().at( i )->text( 1 );
+    list.append( theItem );
   }
   return list;
 }
 
-void QgsOGRSublayersDialog::populateLayerTable (QStringList theList)
+void QgsOGRSublayersDialog::populateLayerTable( QStringList theList )
 {
-	for (int i =0; i< theList.size(); i++){
-		QString ligne = theList.at(i);
-		QStringList elements = ligne.split(":");
-    QStringList item=QStringList();
-    item << elements.at(0) << elements.at(1) << elements.at(2) << elements.at(3);
-    layersTable -> addTopLevelItem(new QTreeWidgetItem(item));
-	}	
+  for ( int i = 0; i < theList.size(); i++ )
+  {
+    QString ligne = theList.at( i );
+    QStringList elements = ligne.split( ":" );
+    QStringList item = QStringList();
+    item << elements.at( 0 ) << elements.at( 1 ) << elements.at( 2 ) << elements.at( 3 );
+    layersTable -> addTopLevelItem( new QTreeWidgetItem( item ) );
+  }
 }
