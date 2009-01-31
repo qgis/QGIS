@@ -600,7 +600,7 @@ class QgisApp : public QMainWindow
     /** This method will open a dialog so the user can select the sublayers
     * to load
     */
-    void askUserForSublayers(QgsVectorLayer *layer);
+    void askUserForSublayers( QgsVectorLayer *layer );
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */

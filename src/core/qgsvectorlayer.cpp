@@ -2324,7 +2324,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
   if ( !renderer )
   {
-    errorMessage = tr("Unknown renderer");
+    errorMessage = tr( "Unknown renderer" );
     return false;
   }
 

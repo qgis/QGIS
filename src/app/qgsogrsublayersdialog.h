@@ -28,8 +28,8 @@ class QgsOGRSublayersDialog : public QDialog, private Ui::QgsOGRSublayersDialogB
   public:
     QgsOGRSublayersDialog( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsOGRSublayersDialog();
-		void populateLayerTable(QStringList theList);
-		QStringList getSelection();
+    void populateLayerTable( QStringList theList );
+    QStringList getSelection();
 
 };
 

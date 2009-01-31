@@ -305,7 +305,7 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
 {
   if ( !PyErr_Occurred() )
     return false;
-  
+
   PyObject* obj_str;
   PyObject* err_type;
   PyObject* err_value;
@@ -341,13 +341,13 @@ QString QgsPythonUtilsImpl::getResult()
 QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
 {
   QString result;
-  
+
   // is it None?
   if ( obj == Py_None )
   {
     return QString();
   }
-  
+
   // check whether the object is already a unicode string
   if ( PyUnicode_Check( obj ) )
   {
@@ -359,31 +359,31 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
     Py_XDECREF( utf8 );
     return result;
   }
-  
+
   // check whether the object is a classical (8-bit) string
   if ( PyString_Check( obj ) )
   {
     return QString::fromUtf8( PyString_AS_STRING( obj ) );
   }
-  
+
   // it's some other type of object:
   // convert object to unicode string (equivalent to calling unicode(obj) )
-  
+
   PyObject* obj_uni = PyObject_Unicode( obj ); // obj_uni is new reference
   if ( obj_uni )
   {
     // get utf-8 representation of unicode string (new reference)
-    PyObject* obj_utf8 = PyUnicode_AsUTF8String(obj_uni);
+    PyObject* obj_utf8 = PyUnicode_AsUTF8String( obj_uni );
     // convert from utf-8 to QString
     if ( obj_utf8 )
-      result = QString::fromUtf8(PyString_AsString( obj_utf8 ));
+      result = QString::fromUtf8( PyString_AsString( obj_utf8 ) );
     else
       result = "(qgis error)";
     Py_XDECREF( obj_utf8 );
     Py_XDECREF( obj_uni );
     return result;
   }
-  
+
   // if conversion to unicode failed, try to convert it to classic string, i.e. str(obj)
   PyObject* obj_str = PyObject_Str( obj ); // new reference
   if ( obj_str )
@@ -392,9 +392,9 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
     Py_XDECREF( obj_str );
     return result;
   }
-  
+
   // some problem with conversion to unicode string
-  QgsDebugMsg("unable to convert PyObject to a QString!");
+  QgsDebugMsg( "unable to convert PyObject to a QString!" );
   return "(qgis error)";
 }
 

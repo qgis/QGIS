@@ -47,7 +47,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual QgsCoordinateReferenceSystem crs();
 
-	   /**
+    /**
      * Sub-layers handled by this provider, in order from bottom to top
      *
      * Sub-layers are used when the provider's source can combine layers
@@ -188,7 +188,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues );
-    
+
     /** return a provider name
 
     Essentially just returns the provider key.  Should be used to build file

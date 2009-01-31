@@ -5453,29 +5453,29 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
     if ( mGeos == NULL )
       return QList<QgsGeometry*>();
   }
- 
+
   int type = GEOSGeomTypeId( mGeos );
-  QgsDebugMsg("geom type: "+QString::number(type));
-  
+  QgsDebugMsg( "geom type: " + QString::number( type ) );
+
   QList<QgsGeometry*> geomCollection;
-  
+
   if ( type != GEOS_MULTIPOINT &&
        type != GEOS_MULTILINESTRING &&
        type != GEOS_MULTIPOLYGON &&
        type != GEOS_GEOMETRYCOLLECTION )
   {
     // we have a single-part geometry - put there a copy of this one
-    geomCollection.append( new QgsGeometry(*this) );
+    geomCollection.append( new QgsGeometry( *this ) );
     return geomCollection;
   }
-  
+
   int count = GEOSGetNumGeometries( mGeos );
-  QgsDebugMsg("geom count: "+QString::number(count));
+  QgsDebugMsg( "geom count: " + QString::number( count ) );
 
   for ( int i = 0; i < count; ++i )
   {
     const GEOSGeometry * geometry = GEOSGetGeometryN( mGeos, i );
-    geomCollection.append( fromGeosGeom( GEOSGeom_clone(geometry) ) );
+    geomCollection.append( fromGeosGeom( GEOSGeom_clone( geometry ) ) );
   }
 
   return geomCollection;

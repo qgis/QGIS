@@ -372,7 +372,7 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
   mCacheUpdated = false;
   emit extentChanged();
-  if(mPreviewMode != Rectangle)
+  if ( mPreviewMode != Rectangle )
   {
     cache();
   }

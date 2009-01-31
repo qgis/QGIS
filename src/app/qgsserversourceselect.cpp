@@ -77,7 +77,7 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
   int i = 1;
   while ( iter != m_PotentialFormats.end() )
   {
-    QRadioButton* btn = new QRadioButton(iter.value().first);
+    QRadioButton* btn = new QRadioButton( iter.value().first );
     m_imageFormatGroup->addButton( btn, iter.value().second );
     m_imageFormatLayout->addWidget( btn );
     if ( i == 1 )
@@ -584,7 +584,7 @@ QString QgsServerSourceSelect::selectedImageEncoding()
   QString imageEncoding = m_PotentialFormats.key( qMakePair( label, id ) );
 
   //substitute blanks with %20 (e.g. in "image/png; mode=24bit")
-  imageEncoding.replace(QRegExp(" "), "%20");
+  imageEncoding.replace( QRegExp( " " ), "%20" );
   return imageEncoding;
 }
 
