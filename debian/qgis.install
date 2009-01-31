@@ -18,7 +18,6 @@ usr/lib/qgis/libdelimitedtextprovider.so
 usr/lib/qgis/libgeorefplugin.so
 usr/lib/qgis/libgpsimporterplugin.so
 usr/lib/qgis/libgpxprovider.so
-usr/lib/qgis/libgridmakerplugin.so
 usr/lib/qgis/libnortharrowplugin.so
 usr/lib/qgis/libogrprovider.so
 usr/lib/qgis/libpostgresprovider.so
