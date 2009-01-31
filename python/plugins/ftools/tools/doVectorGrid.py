@@ -50,10 +50,9 @@ class Dialog(QDialog, Ui_Dialog):
 		self.xMax.setValidator(QDoubleValidator(self.xMax))
 		self.yMin.setValidator(QDoubleValidator(self.yMin))
 		self.yMax.setValidator(QDoubleValidator(self.yMax))
-		layers = ftools_utils.getLayerNames( 
-		[ QGis.Point, QGis.Line, QGis.Polygon ] )
-		for layer in layers:
-			self.inShape.addItem( layer )
+		layermap = QgsMapLayerRegistry.instance().mapLayers()
+		for name, layer in layermap.iteritems():
+			self.inShape.addItem( unicode( layer.name() ) )
 
 	def offset(self, value):
 		if self.chkLock.isChecked():
@@ -62,7 +61,7 @@ class Dialog(QDialog, Ui_Dialog):
 	def updateLayer( self ):
 		mLayerName = self.inShape.currentText()
 		if not mLayerName == "":
-			mLayer = self.getMapLayerByName( unicode( mLayerName ) )
+			mLayer = ftools_utils.getMapLayerByName( unicode( mLayerName ) )
 			boundBox = mLayer.extent()
 			self.updateExtents( boundBox )
 			
