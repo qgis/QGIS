@@ -63,6 +63,7 @@ class QgsVectorLayer;
 #include "qgsconfig.h"
 #include "qgspoint.h"
 
+
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
@@ -342,6 +343,8 @@ class QgisApp : public QMainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
+    void loadOGRSublayers( QString uri, QStringList list );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -594,6 +597,10 @@ class QgisApp : public QMainWindow
     void bookmarkAdded();
 
   private:
+    /** This method will open a dialog so the user can select the sublayers
+    * to load
+    */
+    void askUserForSublayers(QgsVectorLayer *layer);
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */
