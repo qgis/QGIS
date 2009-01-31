@@ -4195,7 +4195,7 @@ void QgisApp::loadPythonSupport()
   else
   {
     //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( "Couldn't load Python support library." );
+    QgsDebugMsg( "Couldn't load Python support library: " + pythonlib.errorString() );
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
