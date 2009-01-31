@@ -1,1 +1,1 @@
-SUBDIRS(plugin_installer mapserver_export ftools)
+SUBDIRS(plugin_installer mapserver_export fTools)
