@@ -5017,7 +5017,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           //don't enable vertex move for single point
-          if ( QGis::wkbType2d( vlayer->wkbType() ) != QGis::WKBPoint )
+          if ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D )
           {
             mActionMoveVertex->setEnabled( true );
           }
