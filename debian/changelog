@@ -1,6 +1,7 @@
 qgis (1.0.0-1) experimental; urgency=low
 
   * gridmaker plugin removed from package
+  * updated mime support
 
  -- Jürgen E. Fischer <jef@norbit.de>  Sat, 31 Jan 2009 17:21:47 +0100
 
