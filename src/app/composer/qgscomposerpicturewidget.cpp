@@ -241,7 +241,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
   for ( ; fileIt != fileList.constEnd(); ++fileIt )
   {
 
-    progress.setLabelText( tr( "Creating icon for file " ) + fileIt->fileName() );
+    progress.setLabelText( tr( "Creating icon for file %1" ).arg( fileIt->fileName() ) );
     progress.setValue( counter );
     QCoreApplication::processEvents();
     if ( progress.wasCanceled() )
