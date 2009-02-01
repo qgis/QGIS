@@ -24,7 +24,7 @@ Email                : sherman at mrcc dot com
 
 class TestQgsApplication: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void checkTheme();
     void initTestCase();
@@ -39,8 +39,8 @@ void TestQgsApplication::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
 };
 
@@ -48,14 +48,14 @@ void TestQgsApplication::checkTheme()
 {
   QString myIconPath = QgsApplication::defaultThemePath();
   QPixmap myPixmap;
-  myPixmap.load(myIconPath+"/mIconProjectionDisabled.png");
-  qDebug("Checking if a theme icon exists:");
-  qDebug(myIconPath.toLocal8Bit()+"/mIconProjectionDisabled.png");
-  QVERIFY(!myPixmap.isNull());
+  myPixmap.load( myIconPath + "/mIconProjectionDisabled.png" );
+  qDebug( "Checking if a theme icon exists:" );
+  qDebug( "%s/mIconProjectionDisabled.png", myIconPath.toLocal8Bit().constData() );
+  QVERIFY( !myPixmap.isNull() );
 
 };
 
 
-QTEST_MAIN(TestQgsApplication)
+QTEST_MAIN( TestQgsApplication )
 #include "moc_testqgsapplication.cxx"
 

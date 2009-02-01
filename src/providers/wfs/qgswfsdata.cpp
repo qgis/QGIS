@@ -57,8 +57,7 @@ QgsWFSData::QgsWFSData(
     if ( it->startsWith( "TYPENAME", Qt::CaseInsensitive ) )
     {
       mTypeName = it->section( "=", 1, 1 );
-      qWarning( "mTypeName is:" );
-      qWarning( mTypeName.toLocal8Bit().data() );
+      qWarning( "mTypeName is: %s", mTypeName.toLocal8Bit().constData() );
     }
   }
 

@@ -214,7 +214,7 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
 
   //print out result for a test
   QString resultString( result );
-  qWarning( resultString.toUtf8() );
+  qWarning( "%s", resultString.toUtf8().constData() );
 
   return 0;
 }
@@ -269,7 +269,7 @@ void QgsWFSSourceSelect::connectToServer()
   QSettings settings;
   QString key = "/Qgis/connections-wfs/" + cmbConnections->currentText() + "/url";
   mUri = settings.value( key ).toString();
-  qWarning( "url is: " + mUri.toUtf8() );
+  qWarning( "url is: %s", mUri.toUtf8().constData() );
 
   //make a GetCapabilities request
   std::list<QString> typenames;
@@ -349,7 +349,7 @@ void QgsWFSSourceSelect::addLayer()
   {
     uri.append( "?" );
   }
-  qWarning( uri.toUtf8() + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName.toUtf8() );
+  qWarning( "%sSERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=%s", uri.toUtf8().constData(), typeName.toUtf8().constData() );
 
   //get CRS
   QString crsString;
@@ -385,7 +385,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
   if ( currentTreeItem )
   {
     QString currentTypename = currentTreeItem->text( 1 );
-    qWarning( "the current typename is: " + currentTypename.toUtf8() );
+    qWarning( "the current typename is: %s", currentTypename.toUtf8().constData() );
 
     std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
     if ( crsIterator != mAvailableCRS.end() )

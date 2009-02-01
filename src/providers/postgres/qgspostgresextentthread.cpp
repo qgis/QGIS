@@ -98,10 +98,7 @@ void QgsPostgresExtentThread::run()
         "ymax(extent(" + geometryColumn + ")) as ymax," "ymin(extent(" + geometryColumn + ")) as ymin" " from " + tableName;
 #endif
 
-#ifdef QGISDEBUG
-  qDebug( "+++++++++QgsPostgresExtentThread::run -  Getting extents using schema.table: " + sql.toUtf8() );
-#endif
-
+  QgsDebugMsg( QString( "Getting extents using schema.table: %1" ).arg( sql ) );
 
   QgsDebugMsg( "About to issue query." );
 

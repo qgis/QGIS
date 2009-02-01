@@ -56,8 +56,8 @@ void QgsAbout::init()
 
   QFile file( QgsApplication::authorsFilePath() );
 #ifdef QGISDEBUG
-  printf(( "Reading authors file " + file.fileName() +
-           ".............................................\n" ).toLocal8Bit().constData() );
+  printf( "Reading authors file %s.............................................\n",
+          file.fileName().toLocal8Bit().constData() );
 #endif
   if ( file.open( QIODevice::ReadOnly ) )
   {
@@ -103,8 +103,8 @@ void QgsAbout::init()
   // read the SPONSORS file and populate the text widget
   QFile sponsorFile( QgsApplication::sponsorsFilePath() );
 #ifdef QGISDEBUG
-  printf(( "Reading sponsors file " + sponsorFile.fileName() +
-           ".............................................\n" ).toLocal8Bit().constData() );
+  printf( "Reading sponsors file %s.............................................\n",
+          sponsorFile.fileName().toLocal8Bit().constData() );
 #endif
   if ( sponsorFile.open( QIODevice::ReadOnly ) )
   {

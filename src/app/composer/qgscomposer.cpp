@@ -587,7 +587,7 @@ void QgsComposer::on_mActionExportAsImage_activated( void )
   }
 
   myOutputFileNameQString = myQFileDialog->selectedFiles().last();
-  qWarning( myOutputFileNameQString.toLocal8Bit().data() );
+  qWarning( "%s", myOutputFileNameQString.toLocal8Bit().constData() );
   QString myFilterString = myQFileDialog->selectedFilter();
   QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
   QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );

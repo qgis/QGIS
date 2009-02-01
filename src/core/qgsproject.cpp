@@ -769,7 +769,7 @@ bool QgsProject::read()
     QString errorString = tr( "Project file read error: %1 at line %2 column %3" )
                           .arg( errorMsg ).arg( line ).arg( column );
 
-    qDebug( errorString.toUtf8().constData() );
+    qDebug( "%s", errorString.toUtf8().constData() );
 
     imp_->file.close();
 

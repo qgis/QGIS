@@ -196,7 +196,7 @@ bool TestQgsRenderers::setQml( QString theType )
   QString error = mpPointsLayer->loadNamedStyle( myFileName, myStyleFlag );
   if ( !myStyleFlag )
   {
-    qDebug( error.toLocal8Bit().data() );
+    qDebug( "%s", error.toLocal8Bit().constData() );
     return false;
   }
   else
