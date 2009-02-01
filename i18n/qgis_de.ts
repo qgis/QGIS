@@ -16092,7 +16092,7 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="93"/>
         <source>&amp;Spit</source>
-        <translation type="unfinished">Split</translation>
+        <translation type="unfinished">&amp;Spit</translation>
     </message>
 </context>
 <context>
