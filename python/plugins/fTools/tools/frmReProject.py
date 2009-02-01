@@ -125,7 +125,7 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Projection Management Tool", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("Dialog", "Input vector layer", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Input spatial reference system", None, QtGui.QApplication.UnicodeUTF8))
-        self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Ouput spatial reference system", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("Dialog", "Output spatial reference system", None, QtGui.QApplication.UnicodeUTF8))
         self.rdoProjection.setText(QtGui.QApplication.translate("Dialog", "Use predefined spatial reference system", None, QtGui.QApplication.UnicodeUTF8))
         self.btnProjection.setText(QtGui.QApplication.translate("Dialog", "Choose", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton_2.setText(QtGui.QApplication.translate("Dialog", "Import spatial reference system from existing layer", None, QtGui.QApplication.UnicodeUTF8))

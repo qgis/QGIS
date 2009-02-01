@@ -69,7 +69,7 @@ class Dialog(QDialog, Ui_Dialog):
 		format = QString( "<h2>%1</h2>%2 <br/> %3" )
 		header = QString( "Choose output CRS:" )
 		sentence1 = QString( "Please select the projection system to be used by the output layer." )
-		sentence2 = QString( "Ouput layer will be projected from it's current CRS to the output CRS." )
+		sentence2 = QString( "Output layer will be projected from it's current CRS to the output CRS." )
 		self.projSelect = QgsGenericProjectionSelector(self, Qt.Widget)
 		self.projSelect.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
 		if self.projSelect.exec_():
@@ -136,7 +136,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 
-#Retreive the field map of a vector Layer
+#Retrieve the field map of a vector Layer
 #Return: QgsFieldMap
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()
