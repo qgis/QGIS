@@ -172,8 +172,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 0 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
 
-  cbxSplitterRedraw->setChecked( settings.value( "/qgis/splitterRedraw", QVariant( true ) ).toBool() );
-
   //
   // Locale settings
   //
@@ -366,8 +364,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/wheel_action", cmbWheelAction->currentIndex() );
   settings.setValue( "/qgis/zoom_factor", spinZoomFactor->value() );
-
-  settings.setValue( "/qgis/splitterRedraw", cbxSplitterRedraw->isChecked() );
 
   //digitizing
   settings.setValue( "/qgis/digitizing/line_width", mLineWidthSpinBox->value() );
