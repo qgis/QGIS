@@ -99,8 +99,7 @@ void Regression1141::diacriticalTest()
   mFields.insert( 0, myField );
   mCRS = QgsCoordinateReferenceSystem( GEOWkt );
 
-  qDebug( "Checking test dataset exists..." );
-  qDebug( mFileName.toLocal8Bit() );
+  qDebug( "Checking test dataset exists...\n%s", mFileName.toLocal8Bit().constData() );
 
   if ( !QFile::exists( mFileName ) )
   {

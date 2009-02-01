@@ -211,7 +211,7 @@ void TestQgsGeometry::intersectionCheck1()
   QVERIFY( mpPolygonGeometryA->intersects( mpPolygonGeometryB ) );
   // should be a single polygon as A intersect B
   QgsGeometry * mypIntersectionGeometry  =  mpPolygonGeometryA->intersection( mpPolygonGeometryB );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypIntersectionGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypIntersectionGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypIntersectionGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypIntersectionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -228,7 +228,7 @@ void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryC );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBMultiPolygon );
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
@@ -241,7 +241,7 @@ void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryB );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypUnionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -254,7 +254,7 @@ void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
   QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryC );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
@@ -267,7 +267,7 @@ void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
   QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryB );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -279,7 +279,7 @@ void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
   QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer( 10, 10 );
-  qDebug( "Geometry Type: " + wkbTypeAsString( mypBufferGeometry->wkbType() ).toLocal8Bit() );
+  qDebug( "Geometry Type: %s", wkbTypeAsString( mypBufferGeometry->wkbType() ).toLocal8Bit().constData() );
   QVERIFY( mypBufferGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
@@ -310,7 +310,7 @@ void TestQgsGeometry::dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon )
   for ( int i = 0; i < theMultiPolygon.size(); i++ )
   {
     QgsPolygon myPolygon = theMultiPolygon.at( i );
-    qDebug( "\tPolygon in multipolygon: " + QString::number( i ).toLocal8Bit() );
+    qDebug( "\tPolygon in multipolygon: %d", i );
     dumpPolygon( myPolygon );
   }
 }
@@ -321,12 +321,12 @@ void TestQgsGeometry::dumpPolygon( QgsPolygon &thePolygon )
   for ( int j = 0; j < thePolygon.size(); j++ )
   {
     QgsPolyline myPolyline = thePolygon.at( j ); //rings of polygon
-    qDebug( "\t\tRing  in polygon: " + QString::number( j ).toLocal8Bit() );
+    qDebug( "\t\tRing in polygon: %d", j );
 
     for ( int k = 0; k < myPolyline.size(); k++ )
     {
       QgsPoint myPoint = myPolyline.at( k );
-      qDebug( "\t\t\tPoint in ring " + QString::number( k ).toLocal8Bit() + " :" + myPoint.toString().toLocal8Bit() );
+      qDebug( "\t\t\tPoint in ring %d : %s", k, myPoint.toString().toLocal8Bit().constData() );
       myPoints << QPointF( myPoint.x(), myPoint.y() );
     }
   }

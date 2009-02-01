@@ -35,22 +35,22 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   {
     if ( file == NULL )
     {
-      qDebug( msg.toLocal8Bit().data() );
+      qDebug( "%s", msg.toLocal8Bit().constData() );
     }
     else if ( function == NULL )
     {
-      qDebug( "%s: %s", file, msg.toLocal8Bit().data() );
+      qDebug( "%s: %s", file, msg.toLocal8Bit().constData() );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s) %s", file, function, msg.toLocal8Bit().data() );
+      qDebug( "%s: (%s) %s", file, function, msg.toLocal8Bit().constData() );
     }
     else
     {
 #ifndef _MSC_VER
-      qDebug( "%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().data() );
+      qDebug( "%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
 #else
-      qDebug( "%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().data() );
+      qDebug( "%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
 #endif
     }
   }
@@ -72,22 +72,22 @@ void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* 
   {
     if ( file == NULL )
     {
-      qDebug( "%s: %d", var.toLocal8Bit().data(), val );
+      qDebug( "%s: %d", var.toLocal8Bit().constData(), val );
     }
     else if ( function == NULL )
     {
-      qDebug( "%s: %s: %d", file, var.toLocal8Bit().data(), val );
+      qDebug( "%s: %s: %d", file, var.toLocal8Bit().constData(), val );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s): %s: %d", file, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s: (%s): %s: %d", file, function, var.toLocal8Bit().constData(), val );
     }
     else
     {
 #ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s(%d): (%s), %s: %d", file, line, function, var.toLocal8Bit().constData(), val );
 #else
-      qDebug( "%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().constData(), val );
 #endif
     }
   }
@@ -109,22 +109,22 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
   {
     if ( file == NULL )
     {
-      qDebug( "%s: %f", var.toLocal8Bit().data(), val );
+      qDebug( "%s: %f", var.toLocal8Bit().constData(), val );
     }
     else if ( function == NULL )
     {
-      qDebug( "%s: %s: %f", file, var.toLocal8Bit().data(), val );
+      qDebug( "%s: %s: %f", file, var.toLocal8Bit().constData(), val );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s): %s: %f", file, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s: (%s): %s: %f", file, function, var.toLocal8Bit().constData(), val );
     }
     else
     {
 #ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s(%d): (%s), %s: %f", file, line, function, var.toLocal8Bit().constData(), val );
 #else
-      qDebug( "%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().data(), val );
+      qDebug( "%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().constData(), val );
 #endif
     }
   }
@@ -132,17 +132,17 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
 
 void QgsLogger::warning( const QString& msg )
 {
-  qWarning( msg.toLocal8Bit().data() );
+  qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::critical( const QString& msg )
 {
-  qCritical( msg.toLocal8Bit().data() );
+  qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::fatal( const QString& msg )
 {
-  qFatal( msg.toLocal8Bit().data() );
+  qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
 int QgsLogger::debugLevel()

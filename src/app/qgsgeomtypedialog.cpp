@@ -96,7 +96,7 @@ void QgsGeomTypeDialog::attributes( std::list<std::pair<QString, QString> >& at 
     QTreeWidgetItem *item = *it;
     at.push_back( std::make_pair( item->text( 0 ), item->text( 1 ) ) );
 #ifdef QGISDEBUG
-    qWarning(( "appending " + item->text( 0 ) + "//" + item->text( 1 ) ).toLocal8Bit().data() );
+    qWarning( "appending %s//%s", item->text( 0 ).toLocal8Bit().constData(), item->text( 1 ).toLocal8Bit().constData() );
 #endif
     ++it;
   }

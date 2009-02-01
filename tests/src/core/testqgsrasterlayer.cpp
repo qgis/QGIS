@@ -186,7 +186,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
                        "NEAREST",
                        myInternalFlag
                      );
-  qDebug( myResult.toLocal8Bit() );
+  qDebug( "%s", myResult.toLocal8Bit().constData() );
   //
   // Lets verify we have pyramids now...
   //
@@ -232,7 +232,7 @@ bool TestQgsRasterLayer::setQml( QString theType )
   if ( !myStyleFlag )
   {
     qDebug( " **** setQml -> mpLandsatRasterLayer is invalid" );
-    qDebug( "Qml File :" +  myFileName.toLocal8Bit() );
+    qDebug( "Qml File :%s", myFileName.toLocal8Bit().constData() );
   }
   return myStyleFlag;
 }

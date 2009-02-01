@@ -100,8 +100,7 @@ void TestQgsMapRenderer::initTestCase()
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
   QFile::copy( myQmlFileName, myTmpDir + "maprender_testdata.qml" );
-  qDebug( "Checking test dataset exists..." );
-  qDebug( myFileName.toLocal8Bit() );
+  qDebug( "Checking test dataset exists...\n%s", myFileName.toLocal8Bit().constData() );
   if ( !QFile::exists( myFileName ) )
   {
     qDebug( "Creating test dataset: " );
