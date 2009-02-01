@@ -8,7 +8,8 @@ from frmMeanCoords import Ui_Dialog
 class Dialog(QDialog, Ui_Dialog):
 	def __init__(self, iface, function):
 		QDialog.__init__(self)
-		self.iface = iface		self.function = function
+		self.iface = iface
+		self.function = function
 		self.setupUi(self)
 		self.updateUi()
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
@@ -189,7 +190,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 
-# Retreive the field map of a vector Layer     
+# Retrieve the field map of a vector Layer     
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()
 		feat = QgsFeature()
@@ -237,4 +238,4 @@ class Dialog(QDialog, Ui_Dialog):
 			if not f.attributeMap()[index].toString() in check:
 				values.append( f.attributeMap()[index] )
 				check.append( f.attributeMap()[index].toString() )
-		return values   
+		return values   

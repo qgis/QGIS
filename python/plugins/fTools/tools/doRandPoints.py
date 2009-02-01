@@ -191,8 +191,8 @@ class Dialog(QDialog, Ui_Dialog):
     		layer = mc.layer(l)
     		if layer.name() == unicode(myName):
     			if layer.isValid():
-    				return layer	
-# Retreive the field map of a vector Layer
+    				return layer
+# Retrieve the field map of a vector Layer
     def getFieldList(self, vlayer):
     	fProvider = vlayer.dataProvider()
     	feat = QgsFeature()

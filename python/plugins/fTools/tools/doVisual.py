@@ -257,31 +257,31 @@ class visualThread( QThread ):
 				polygons = geom.asMultiPolygon()
 				for polygon in polygons:
 					if not self.isHoleNested( polygon ):
-						lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " contains an unested hole" ) )
+						lstErrors.append( self.tr( "Feature %1 contains an unnested hole" ).arg( unicode( feat.id() ) ) )
 						count += 1
 					if not self.isPolygonClosed( polygon ):
-						lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " is not closed" ) )
+						lstErrors.append( self.tr( "Feature %1 is not closed" ).arg( unicode( feat.id() ) ) )
 						count += 1
 					if self.isSelfIntersecting( polygon ):
-						lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " is self intersecting" ) )
+						lstErrors.append( self.tr( "Feature %1 is self intersecting" ).arg( unicode( feat.id() ) ) )
 						count += 1
 					if not self.isCorrectOrientation( polygon ):
-						lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " has incorrect node ordering" ) )
+						lstErrors.append( self.tr( "Feature %1 has incorrect node ordering" ).arg( unicode( feat.id() ) ) )
 						count += 1
 					
 			else:
 				geom = geom.asPolygon()
 				if not self.isHoleNested( geom ):
-					lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " contains an unested hole" ) )
+					lstErrors.append( self.tr( "Feature %1 contains an unnested hole" ).arg( unicode( feat.id() ) ) )
 					count += 1
 				if not self.isPolygonClosed( geom ):
-					lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " is not closed" ) )
+					lstErrors.append( self.tr( "Feature %1 is not closed" ).arg( unicode( feat.id() ) ) )
 					count += 1
 				if self.isSelfIntersecting( geom ):
-					lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " is self intersecting" ) )
+					lstErrors.append( self.tr( "Feature %1 is self intersecting" ).arg( unicode( feat.id() ) ) )
 					count += 1
 				if not self.isCorrectOrientation( geom ):
-					lstErrors.append( self.tr( "Feature " ) + unicode( feat.id() ) + self.tr( " has incorrect node ordering" ) )
+					lstErrors.append( self.tr( "Feature %1 has incorrect node ordering" ).arg( unicode( feat.id() ) ) )
 					count += 1
 		return ( lstErrors, count )
 
