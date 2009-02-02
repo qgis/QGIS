@@ -15,6 +15,12 @@
 /* $Id$ */
 
 // Dbase header structure
+#ifndef _MSC_VER
+#include <stdint.h>
+#else
+typedef __int32 int32_t;
+typedef __int16 int16_t;
+#endif
 
 struct DbaseHeader
 {
@@ -22,9 +28,9 @@ struct DbaseHeader
   char year;
   char month;
   char day;
-  long num_recs;
-  short size_hdr;
-  short size_rec;
+  int32_t num_recs;
+  int16_t size_hdr;
+  int16_t size_rec;
   char reserved[3];
   char lan[13];
   char reserved2[4];
@@ -35,7 +41,7 @@ struct FieldDescriptorArray
 {
   char field_name[11];
   char field_type;
-  long field_addr;  /* used only in memory */
+  int32_t field_addr;  /* used only in memory */
   unsigned char field_length;
   unsigned char field_decimal;
   char reserved[2];
