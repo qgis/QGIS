@@ -118,6 +118,11 @@ qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
+
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 )
 
 
