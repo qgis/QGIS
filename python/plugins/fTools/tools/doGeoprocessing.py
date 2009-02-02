@@ -276,7 +276,6 @@ class geoprocessingThread( QThread ):
 	def convex_hull(self, useField ):
 		vproviderA = self.vlayerA.dataProvider()
 		allAttrsA = vproviderA.attributeIndexes()
-		vproviderA.select( allAttrsA )
 		fields = vproviderA.fields()
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, QGis.WKBPolygon, vproviderA.crs() )
@@ -291,10 +290,11 @@ class geoprocessingThread( QThread ):
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
 			self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 			for i in unique:
-				vproviderA.rewind()
 				hull = []
 				first = True
 				outID = 0
+				vproviderA.select( allAttrsA )
+				vproviderA.rewind()
 				while vproviderA.nextFeature( inFeat ):
 					nElement += 1
 					self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
@@ -339,7 +339,6 @@ class geoprocessingThread( QThread ):
 	def dissolve( self, useField ):
 		vproviderA = self.vlayerA.dataProvider()
 		allAttrsA = vproviderA.attributeIndexes()
-		vproviderA.select( allAttrsA )
 		fields = vproviderA.fields()
 		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
 		fields, vproviderA.geometryType(), vproviderA.crs() )
@@ -368,17 +367,20 @@ class geoprocessingThread( QThread ):
 			outFeat.setAttributeMap( attrs )
 			writer.addFeature( outFeat )
 		else:
-			unique = ftools_utils.getUniqueValues( vproviderA, int( self.myParam ) )
+			unique = vproviderA.uniqueValues( int( self.myParam ) )
 			nFeat = nFeat * len( unique )
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
 			self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
 			for item in unique:
 				first = True
+				vproviderA.select( allAttrsA )
 				vproviderA.rewind()
 				while vproviderA.nextFeature( inFeat ):
 					nElement += 1
 					self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-					if inFeat.attributeMap()[ self.myParam ].toString().trimmed() == item.toString().trimmed():
+					atMap = inFeat.attributeMap()
+					tempItem = atMap[ self.myParam ]
+					if tempItem.toString().trimmed() == item.toString().trimmed():
 						if first:
 							QgsGeometry( inFeat.geometry() )
 							tmpInGeom = QgsGeometry( inFeat.geometry() )
