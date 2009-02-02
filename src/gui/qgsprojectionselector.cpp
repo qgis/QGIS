@@ -9,7 +9,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsprojectionselector.h"
+#include <qgsprojectionselector.h>
 
 //standard includes
 #include <cassert>
@@ -41,8 +41,8 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
     mProjListDone( FALSE ),
     mUserProjListDone( FALSE ),
     mCRSNameSelectionPending( FALSE ),
-    mCRSIDSelectionPending( FALSE )
-
+    mCRSIDSelectionPending( FALSE ),
+    mEPSGIDSelectionPending( FALSE )
 {
   setupUi( this );
   connect( lstCoordinateSystems, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
@@ -93,6 +93,10 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
   if ( mCRSIDSelectionPending )
   {
     applyCRSIDSelection();
+  }
+  if ( mEPSGIDSelectionPending )
+  {
+    applyEPSGIDSelection();
   }
 
   // Pass up the inheritance heirarchy
@@ -168,6 +172,7 @@ void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
   mCRSNameSelection = theCRSName;
   mCRSNameSelectionPending = TRUE;
   mCRSIDSelectionPending = FALSE;  // only one type can be pending at a time
+  mEPSGIDSelectionPending = TRUE;
 
   if ( isVisible() )
   {
@@ -184,6 +189,7 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   mCRSIDSelection = theCRSID;
   mCRSIDSelectionPending = TRUE;
   mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
+  mEPSGIDSelectionPending = FALSE;
 
   if ( isVisible() )
   {
@@ -196,7 +202,10 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 
 void QgsProjectionSelector::setSelectedEpsg( long epsg )
 {
-  //QgsSpatial
+  mEPSGIDSelection = epsg;
+  mCRSIDSelectionPending = FALSE;
+  mEPSGIDSelectionPending = TRUE;
+  mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
 }
 
 void QgsProjectionSelector::applyCRSNameSelection()
@@ -223,6 +232,33 @@ void QgsProjectionSelector::applyCRSNameSelection()
     }
 
     mCRSNameSelectionPending = FALSE;
+  }
+}
+
+void QgsProjectionSelector::applyEPSGIDSelection()
+{
+  if (
+    ( mEPSGIDSelectionPending ) &&
+    ( mProjListDone ) &&
+    ( mUserProjListDone )
+  )
+  {
+    //get the srid given the wkt so we can pick the correct list item
+    QgsDebugMsg( "called with " + QString::number( mEPSGIDSelection ) );
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( mEPSGIDSelection ), Qt::MatchExactly | Qt::MatchRecursive, EPSG_COLUMN );
+
+    if ( nodes.count() > 0 )
+    {
+      lstCoordinateSystems->setCurrentItem( nodes.first() );
+      lstCoordinateSystems->scrollToItem( nodes.first() );
+    }
+    else // unselect the selected item to avoid confusing the user
+    {
+      lstCoordinateSystems->clearSelection();
+      teProjection->setText( "" );
+    }
+
+    mEPSGIDSelectionPending = FALSE;
   }
 }
 

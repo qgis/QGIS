@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include "qgsgenericprojectionselector.h"
+#include <qgsgenericprojectionselector.h>
 #include <QApplication>
 
 /**
