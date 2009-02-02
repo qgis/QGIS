@@ -57,6 +57,13 @@ class QgsWFSData: public QObject
   private slots:
     void setFinished( bool error );
 
+    /**Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
+  void handleProgressEvent(int progress, int totalSteps);
+
+  signals:
+  void dataReadProgress(int progress);
+  void totalStepsUpdate(int totalSteps);
+
   private:
 
     enum parseMode
@@ -125,6 +132,9 @@ class QgsWFSData: public QObject
     int createMultiPolygonFromFragments();
     /**Adds all the integers contained in mCurrentWKBFragmentSizes*/
     int totalWKBFragmentSize() const;
+
+     /**Returns pointer to main window or 0 if it does not exist*/
+    QWidget* findMainWindow() const;
 
     QString mUri;
     //results are members such that handler routines are able to manipulate them
