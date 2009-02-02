@@ -25,6 +25,9 @@ def version():
   
 def qgisMinimumVersion():
 	return "1.0.0"
+	
+def authorName():
+	return "Carson Farmer"
 
 def classFactory( iface ):
 	from fTools import fToolsPlugin
