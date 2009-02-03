@@ -139,6 +139,11 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
 #8: Clip
 
 	def geoprocessing( self,  myLayerA,  myLayerB,  myParam,  myMerge ):
+		check = QFile( self.shapefileName )
+		if check.exists():
+			if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
+				QMessageBox.warning( self, "Geoprocessing", self.tr( "Unable to delete existing shapefile." ) )
+				return
 		self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA, 
 		myLayerB, myParam, myMerge, self.shapefileName, self.encoding )
 		QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
