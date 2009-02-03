@@ -467,8 +467,8 @@ class geoprocessingThread( QThread ):
 				tmpGeom = QgsGeometry( inFeatB.geometry() )
 				if geom.intersects( tmpGeom ):
 					atMapB = inFeatB.attributeMap()
-					geom = geom.intersection( tmpGeom )
-					outFeat.setGeometry( geom )
+					int_geom = geom.intersection( tmpGeom )
+					outFeat.setGeometry( int_geom )
 					outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
 					writer.addFeature( outFeat )
 		del writer
@@ -515,13 +515,13 @@ class geoprocessingThread( QThread ):
 					tmpGeom = QgsGeometry( inFeatB.geometry() )
 					if geom.intersects( tmpGeom ):
 						found = True
-						diffGeom = diffGeom.difference( tmpGeom )
-						geom = geom.intersection( tmpGeom )
-						outFeat.setGeometry( geom )
+						diff_geom = diff_geom.difference( tmpGeom )
+						int_geom = geom.intersection( tmpGeom )
+						outFeat.setGeometry( int_geom )
 						outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
 						writer.addFeature( outFeat )
 				if found:
-					outFeat.setGeometry( diffGeom )
+					outFeat.setGeometry( diff_geom )
 					outFeat.setAttributeMap( atMapA )
 					writer.addFeature( outFeat )
 		length = len( vproviderA.fields().values() )
