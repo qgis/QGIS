@@ -217,6 +217,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       case QVariant::Double:
         OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
         break;
+      case QVariant::LongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
