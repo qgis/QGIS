@@ -117,9 +117,15 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     int ogrPrecision = -1;
     switch ( attrField.type() )
     {
+      case QVariant::LongLong:
+        ogrType = OFTString;
+        ogrWidth = 21;
+        break;
+
       case QVariant::String:
         ogrType = OFTString;
         break;
+
       case QVariant::Int:
         ogrType = OFTInteger;
         ogrWidth = 10;
