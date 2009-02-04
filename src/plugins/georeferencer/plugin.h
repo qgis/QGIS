@@ -87,6 +87,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //! show the help document
     void help();
 
+    void about( );
     //////////////////////////////////////////////////////////////////////
     //
     //                  END OF MANDATORY PLUGIN METHODS

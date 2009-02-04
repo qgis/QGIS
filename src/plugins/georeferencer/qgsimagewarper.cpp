@@ -25,29 +25,43 @@
 
 #include "qgsimagewarper.h"
 
+bool QgsImageWarper::openSrcDSAndGetWarpOpt(const QString &input, const QString &output,
+                            const ResamplingMethod &resampling, const GDALTransformerFunc &pfnTransform,
+                            GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions)
+{
+      // Open input file
+      GDALAllRegister();
+      hSrcDS = GDALOpen( QFile::encodeName( input ).constData(), GA_ReadOnly );
+      if (hSrcDS == NULL) return false;
+
+      // Setup warp options.
+      psWarpOptions = GDALCreateWarpOptions();
+      psWarpOptions->hSrcDS = hSrcDS;
+      psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS );
+      psWarpOptions->panSrcBands =
+      ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+      psWarpOptions->panDstBands =
+      ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+      for ( int i = 0; i < psWarpOptions->nBandCount; ++i )
+      {
+      psWarpOptions->panSrcBands[i] = i + 1;
+      psWarpOptions->panDstBands[i] = i + 1;
+      }
+      psWarpOptions->pfnProgress = GDALTermProgress;
+      psWarpOptions->pfnTransformer = pfnTransform;
+      psWarpOptions->eResampleAlg = GDALResampleAlg( resampling );
+
+      return true;
+}
+
 void QgsImageWarper::warp( const QString& input, const QString& output,
                            double& xOffset, double& yOffset,
                            ResamplingMethod resampling, bool useZeroAsTrans, const QString& compression )
 {
-  // Open input file
-  GDALAllRegister();
-  GDALDatasetH hSrcDS = GDALOpen( QFile::encodeName( input ).constData(), GA_ReadOnly );
-  // Setup warp options.
-  GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-  psWarpOptions->hSrcDS = hSrcDS;
-  psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS );
-  psWarpOptions->panSrcBands =
-    ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
-  psWarpOptions->panDstBands =
-    ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
-  for ( int i = 0; i < psWarpOptions->nBandCount; ++i )
-  {
-    psWarpOptions->panSrcBands[i] = i + 1;
-    psWarpOptions->panDstBands[i] = i + 1;
-  }
-  psWarpOptions->pfnProgress = GDALTermProgress;
-  psWarpOptions->pfnTransformer = &QgsImageWarper::transform;
-  psWarpOptions->eResampleAlg = GDALResampleAlg( resampling );
+      GDALDatasetH hSrcDS;
+      GDALWarpOptions *psWarpOptions;
+      openSrcDSAndGetWarpOpt(input, output, resampling,  &QgsImageWarper::transform,
+                  hSrcDS, psWarpOptions);
 
   // check the bounds for the warped raster
   // order: upper right, lower right, lower left (y points down)
@@ -142,3 +156,80 @@ int QgsImageWarper::transform( void *pTransformerArg, int bDstToSrc,
   }
   return TRUE;
 }
+
+bool QgsImageWarper::warpgcp( const QString& input, const QString& output,
+                              const char *worldExt,
+                              std::vector<QgsPoint> mapCoords,
+                              std::vector<QgsPoint> pixelCoords,
+                              const int nReqOrder, ResamplingMethod resampling, 
+                              bool useZeroAsTrans, const QString& compression, bool bUseTPS)
+{
+      int n = mapCoords.size();
+      if ((nReqOrder == 1 && n < 3) || (nReqOrder == 2 && n < 6) || 
+                  (nReqOrder == 3 && n < 10) ) return false;
+
+      CPLErr eErr;
+      GDALDatasetH hSrcDS;
+      GDALWarpOptions *psWarpOptions;
+      openSrcDSAndGetWarpOpt(input, output, resampling,  
+                  bUseTPS ? *GDALTPSTransform : *GDALGCPTransform,
+                  hSrcDS, psWarpOptions);
+
+      GDAL_GCP *pasGCPList = (GDAL_GCP *) malloc(n * sizeof(GDAL_GCP));
+
+      for (int i = 0; i < n; i++) {
+            pasGCPList[i].pszId = (char *) malloc(20 * sizeof(char));
+            sprintf(pasGCPList[i].pszId, "gcp%i", i);
+            pasGCPList[i].pszInfo = NULL;
+            pasGCPList[i].dfGCPPixel = pixelCoords[i].x();
+            pasGCPList[i].dfGCPLine = - pixelCoords[i].y();
+            pasGCPList[i].dfGCPX = mapCoords[i].x();
+            pasGCPList[i].dfGCPY = mapCoords[i].y();
+            pasGCPList[i].dfGCPZ = 0;
+      }
+
+      GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
+      GDALDatasetH hSrcCopyDS = GDALCreateCopy(hDriver, ".tmpcopy.tif", hSrcDS, 
+                  TRUE, NULL, NULL, NULL);
+      if (hSrcCopyDS == NULL) return false;
+
+      GDALSetGCPs(hSrcCopyDS, n, pasGCPList, "");
+
+      if(bUseTPS)
+            psWarpOptions->pTransformerArg = GDALCreateTPSTransformer(n, pasGCPList, false);
+      else
+            psWarpOptions->pTransformerArg = GDALCreateGCPTransformer(n, pasGCPList, nReqOrder, false);
+
+      if (psWarpOptions->pTransformerArg == NULL) return false;
+
+      // create and warp the output file
+      char **papszOptions = NULL;
+      papszOptions = CSLSetNameValue( papszOptions, "INIT_DEST", "NO_DATA" );
+      papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toAscii() );
+      eErr = GDALCreateAndReprojectImage(hSrcCopyDS,
+                  /*pszSrcWKT*/"", QFile::encodeName(output).constData(), /*pszDstWKT*/"",
+                  hDriver, papszOptions, GDALResampleAlg(resampling), 0.0, 0, NULL, NULL, psWarpOptions);
+      if (eErr != CE_None) return false;
+
+      // write worldfile
+      int nPixels, nLines;
+      double adfGeoTransform[6];
+
+      eErr = GDALSuggestedWarpOutput(hSrcDS, GDALGCPTransform,
+            psWarpOptions->pTransformerArg, 
+            adfGeoTransform, &nPixels, &nLines);
+      if (eErr != CE_None) return false;
+
+      GDALWriteWorldFile(QFile::encodeName(output).constData(), worldExt, adfGeoTransform);
+
+      free(pasGCPList);
+      if (bUseTPS)
+            GDALDestroyTPSTransformer(psWarpOptions->pTransformerArg);
+      else
+            GDALDestroyGCPTransformer(psWarpOptions->pTransformerArg);
+      GDALDestroyWarpOptions( psWarpOptions );
+      GDALClose( hSrcDS );
+
+      return true;
+}
+

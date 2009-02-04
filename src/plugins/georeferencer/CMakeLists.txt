@@ -1,11 +1,9 @@
-
 ########################################################
 # Files
 
 SET (GEOREF_SRCS
      plugin.cpp
      qgsgeorefdatapoint.cpp
-     plugingui.cpp
      qgsimagewarper.cpp
      qgsleastsquares.cpp
      qgspointdialog.cpp
@@ -15,7 +13,6 @@ SET (GEOREF_SRCS
 )
 
 SET (GEOREF_UIS
-     pluginguibase.ui
      qgspointdialogbase.ui
      mapcoordsdialogbase.ui
      qgsgeorefdescriptiondialogbase.ui
@@ -24,7 +21,6 @@ SET (GEOREF_UIS
 
 SET (GEOREF_MOC_HDRS
      plugin.h
-     plugingui.h
      qgspointdialog.h
      mapcoordsdialog.h
      qgsgeorefwarpoptionsdialog.h
@@ -51,7 +47,9 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ..
      ${GSL_INCLUDE_DIR}
+     ${QGIS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
+     ${QT_QTXML_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(georefplugin
@@ -59,7 +57,6 @@ TARGET_LINK_LIBRARIES(georefplugin
   qgis_gui
   ${GSL_LIBRARIES}
 )
-
 
 ########################################################
 # Install
