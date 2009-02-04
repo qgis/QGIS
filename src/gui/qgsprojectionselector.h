@@ -14,6 +14,7 @@
 #include <ui_qgsprojectionselectorbase.h>
 
 #include <QSet>
+#include <QStringList>
 
 class QResizeEvent;
 
@@ -104,6 +105,11 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     void on_pbnFind_clicked();
 
+    void on_pbnPopular1_clicked();
+    void on_pbnPopular2_clicked();
+    void on_pbnPopular3_clicked();
+    void on_pbnPopular4_clicked();
+
   protected:
     /** Used to ensure the projection list view is actually populated */
     void showEvent( QShowEvent * theEvent );
@@ -189,6 +195,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      */
     long getLargestCRSIDMatch( QString theSql );
 
+    //! Returns name from CRS Id
+    QString getCrsIdName( long theCrsId );
+
     //! Has the Projection List been populated?
     bool mProjListDone;
 
@@ -215,6 +224,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;
+
+    //! Most recently used projections (trimmed at 25 entries)
+    QStringList mRecentProjections;
 
   private slots:
     /**private handler for when user selects a cs
