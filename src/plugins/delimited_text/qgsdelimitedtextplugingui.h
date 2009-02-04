@@ -14,6 +14,7 @@
 #define PLUGINGUI_H
 
 #include "ui_qgsdelimitedtextpluginguibase.h"
+#include <QTextStream>
 
 class QgisInterface;
 
@@ -26,6 +27,8 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
   public:
     QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsDelimitedTextPluginGui();
+
+    static QString readLine( QTextStream & stream );
 
   public slots:
     void help();
@@ -52,5 +55,6 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void drawRasterLayer( QString );
     void drawVectorLayer( QString, QString, QString );
 };
+
 
 #endif

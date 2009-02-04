@@ -140,14 +140,14 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   if ( QFile::exists( txtFilePath->text() ) )
   {
     QFile *file = new QFile( txtFilePath->text() );
-    if ( file->open( QIODevice::ReadOnly ) )
+    if ( file->open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       // clear the field lists
       cmbXField->clear();
       cmbYField->clear();
       QTextStream stream( file );
       QString line;
-      line = stream.readLine(); // line of text excluding '\n'
+      line = readLine( stream ); // line of text excluding '\n'
       if ( txtDelimiter->text().length() > 0 )
       {
         QgsDebugMsg( QString( "Attempting to split the input line: %1 using delimiter %2" ).arg( line ).arg( txtDelimiter->text() ) );
@@ -212,13 +212,12 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       txtSample->insertPlainText( line + "\n" );
       // put a few more lines into the sample box
       int counter = 0;
-      while (
-        ( !( line = stream.readLine() ).isEmpty() ) &&
-        ( counter < 20 )
-      )
+      line = QgsDelimitedTextPluginGui::readLine( stream );
+      while ( not line.isEmpty() && ( counter < 20 ) )
       {
         txtSample->insertPlainText( line + "\n" );
         counter++;
+        line = QgsDelimitedTextPluginGui::readLine( stream );
       }
       // close the file
       file->close();
@@ -264,4 +263,53 @@ void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged( const QString & tex
   {
     pbnParse->setEnabled( true );
   }
+}
+
+QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
+{
+  QString buffer("");
+  QString c;
+
+  // Strip leading newlines
+
+  c = stream.read( 1 );
+  if ( c == NULL or c.size() == 0 )
+  {
+    // Reach end of file
+    return buffer;
+  }
+  while ( c == (char *)"\r" or c == (char *)"\n" )
+  {
+    c = stream.read( 1 );
+    if ( c == NULL or c.size() == 0 )
+    {
+      // Reach end of file
+      return buffer;
+    }
+  }
+  
+  // First non-newline character
+  buffer.append( c );
+
+  c = stream.read( 1 );
+  if ( c == NULL or c.size() == 0 )
+  {
+    // Reach end of file
+    return buffer;
+  }
+    
+  while ( not ( c == (char *)"\r" or c == (char *)"\n" ) )
+  {
+    
+    buffer.append( c );    
+    c = stream.read( 1 );
+    if ( c == NULL or c.size() == 0 )
+    {
+      // Reach end of file
+      return buffer;
+    }
+  }
+
+  return buffer;
+
 }
