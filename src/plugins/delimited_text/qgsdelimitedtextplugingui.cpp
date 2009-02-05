@@ -213,7 +213,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
       // put a few more lines into the sample box
       int counter = 0;
       line = QgsDelimitedTextPluginGui::readLine( stream );
-      while ( not line.isEmpty() && ( counter < 20 ) )
+      while ( !line.isEmpty() && ( counter < 20 ) )
       {
         txtSample->insertPlainText( line + "\n" );
         counter++;
@@ -273,15 +273,15 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
   // Strip leading newlines
 
   c = stream.read( 1 );
-  if ( c == NULL or c.size() == 0 )
+  if ( c == NULL || c.size() == 0 )
   {
     // Reach end of file
     return buffer;
   }
-  while ( c == (char *)"\r" or c == (char *)"\n" )
+  while ( c == (char *)"\r" || c == (char *)"\n" )
   {
     c = stream.read( 1 );
-    if ( c == NULL or c.size() == 0 )
+    if ( c == NULL || c.size() == 0 )
     {
       // Reach end of file
       return buffer;
@@ -292,18 +292,18 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
   buffer.append( c );
 
   c = stream.read( 1 );
-  if ( c == NULL or c.size() == 0 )
+  if ( c == NULL || c.size() == 0 )
   {
     // Reach end of file
     return buffer;
   }
     
-  while ( not ( c == (char *)"\r" or c == (char *)"\n" ) )
+  while ( !( c == (char *)"\r" || c == (char *)"\n" ) )
   {
     
     buffer.append( c );    
     c = stream.read( 1 );
-    if ( c == NULL or c.size() == 0 )
+    if ( c == NULL || c.size() == 0 )
     {
       // Reach end of file
       return buffer;
