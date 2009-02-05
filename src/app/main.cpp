@@ -74,6 +74,7 @@ typedef SInt32 SRefCon;
 
 static const char * const ident_ = "$Id$";
 
+#ifndef WIN32
 /** print usage text
  */
 void usage( std::string const & appName )
@@ -100,6 +101,7 @@ void usage( std::string const & appName )
 
 
 } // usage()
+#endif
 
 
 /////////////////////////////////////////////////////////////////
@@ -355,6 +357,13 @@ int main( int argc, char *argv[] )
         myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
       }
     }
+  }
+#else
+  for(int i=1; i<argc; i++) {
+#ifdef QGISDEBUG
+    QgsDebugMsg( QString( "%1: %2" ).arg( i ).arg( argv[i] ) );
+#endif
+    myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
   }
 #endif //WIN32
 
