@@ -1,4 +1,4 @@
-SUBDIRS (copyright_label delimited_text interpolation north_arrow scale_bar qgis2google)
+SUBDIRS (copyright_label delimited_text interpolation north_arrow scale_bar)
 
 IF (POSTGRES_FOUND)
   SUBDIRS (spit)
