@@ -296,6 +296,7 @@ void QgsProjectionSelector::applyCRSNameSelection()
 
 QString QgsProjectionSelector::getCrsIdName( long theCrsId )
 {
+  QString retvalue("");
   if (
     ( mProjListDone ) &&
     ( mUserProjListDone )
@@ -307,10 +308,14 @@ QString QgsProjectionSelector::getCrsIdName( long theCrsId )
 
     if ( nodes.count() > 0 )
     {
-      return nodes.first()->text(0);
+      retvalue = nodes.first()->text(NAME_COLUMN);
+      if (nodes.first()->text(EPSG_COLUMN) != "" )
+      {
+        retvalue += QString(" (EPSG : %1)").arg(nodes.first()->text(EPSG_COLUMN));
+      }
     }
   }
-  return QString( "" );
+  return retvalue;
 
 }
 
