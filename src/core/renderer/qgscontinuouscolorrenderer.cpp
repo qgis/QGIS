@@ -83,7 +83,6 @@ void QgsContinuousColorRenderer::renderFeature( QPainter * p, QgsFeature & f, QI
     {
       if ( img )
         *img = QImage();
-      return;
     }
     double fvalue = attrs[mClassificationField].toDouble();
 
