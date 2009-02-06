@@ -132,6 +132,10 @@ void QgsMapTool::keyPressEvent( QKeyEvent* e )
 {
 }
 
+void QgsMapTool::keyReleaseEvent( QKeyEvent* e )
+{
+}
+
 void QgsMapTool::renderComplete()
 {
 }
