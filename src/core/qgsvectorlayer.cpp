@@ -2214,7 +2214,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "type", "vector" );
 
   // set the geometry type
-  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[type()] );
+  mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[geometryType()] );
 
   // add provider node
   QDomElement provider  = document.createElement( "provider" );
