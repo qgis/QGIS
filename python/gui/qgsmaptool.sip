@@ -41,7 +41,15 @@ class QgsMapTool : QObject
 
     //! Mouse release event for overriding
     virtual void canvasReleaseEvent(QMouseEvent * e);
+
+    //! Key press for overriding
+    //! (binding) added in version 1.1
+    virtual void keyPressEvent(QKeyEvent * e);
     
+    //! Key press for overriding
+    //! Added in version 1.1
+    virtual void keyReleaseEvent(QKeyEvent * e);
+
     //! Called when rendering has finished
     virtual void renderComplete();
     

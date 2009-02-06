@@ -732,6 +732,11 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
 
     default:
       // Pass it on
+        if ( mMapTool )
+        {
+          mMapTool->keyReleaseEvent( e );
+        }
+      
       e->ignore();
 
       QgsDebugMsg( "Ignoring key release: " + QString::number( e->key() ) );

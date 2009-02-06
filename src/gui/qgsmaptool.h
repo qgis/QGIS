@@ -59,6 +59,10 @@ class GUI_EXPORT QgsMapTool : public QObject
     //! Key event for overriding. Default implementation does nothing.
     virtual void keyPressEvent( QKeyEvent* e );
 
+    //! Key event for overriding. Default implementation does nothing.
+    //! Added in version 1.1
+    virtual void keyReleaseEvent( QKeyEvent* e );
+
     //! Called when rendering has finished. Default implementation does nothing.
     virtual void renderComplete();
 
