@@ -808,7 +808,7 @@ void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer
     p.setBrush( QColor( 200, 200, 210, 120 ) );
     p.drawEllipse( QRectF( x - 7, y - 7, 14, 14 ) );
   }
-  else
+  else if ( type == QgsVectorLayer::Cross )
   {
     int size = 15;
     int m = ( size - 1 ) / 2;
@@ -3303,9 +3303,13 @@ QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
   {
     return QgsVectorLayer::Cross;
   }
-  else
+  else if ( markerTypeString == "SemiTransparentCircle" )
   {
     return QgsVectorLayer::SemiTransparentCircle;
+  }
+  else
+  {
+    return QgsVectorLayer::NoMarker;
   }
 }
 

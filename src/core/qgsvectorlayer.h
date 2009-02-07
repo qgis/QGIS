@@ -465,7 +465,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     enum VertexMarkerType
     {
       SemiTransparentCircle,
-      Cross
+      Cross,
+      NoMarker  /* added in version 1.1 */
     };
 
     /** vector layers are not copyable */
