@@ -1394,6 +1394,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
       }
       updateFeatureAttributes( f );
     }
+    return true;
   }
 
   //added features
