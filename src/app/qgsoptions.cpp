@@ -207,6 +207,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //vertex marker
   mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
+  mMarkerStyleComboBox->addItem( tr( "None" ) );
 
   QString markerStyle = settings.value( "/qgis/digitizing/marker_style", "SemiTransparentCircle" ).toString();
   if ( markerStyle == "SemiTransparentCircle" )
@@ -216,6 +217,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   else if ( markerStyle == "Cross" )
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Cross" ) ) );
+  }
+  else if (markerStyle == "None" )
+  {
+    mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "None" ) ) );
   }
 
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
@@ -386,6 +391,10 @@ void QgsOptions::saveOptions()
   else if ( markerComboText == tr( "Cross" ) )
   {
     settings.setValue( "/qgis/digitizing/marker_style", "Cross" );
+  }
+  else if ( markerComboText == tr( "None" ) )
+  {
+    settings.setValue( "/qgis/digitizing/marker_style", "None" );
   }
 
   settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
