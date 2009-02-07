@@ -1645,7 +1645,7 @@ void QgisApp::createLegend()
   mMapLegend->setToggleEditingAction( mActionToggleEditing );
 
   mMapLegend->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
-  mLegendDock = new QDockWidget( tr( "Legend" ), this );
+  mLegendDock = new QDockWidget( tr( "Layers" ), this );
   mLegendDock->setObjectName( "Legend" );
   mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mLegendDock->setWidget( mMapLegend );
