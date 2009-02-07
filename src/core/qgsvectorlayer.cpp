@@ -1657,7 +1657,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
     }
   }
 
-  //else, if must be contained in mCachedGeometries
+  //is the feature contained in the view extent (mCachedGeometries) ?
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( selectedFeatureId );
   if ( cachedIt != mCachedGeometries.end() )
   {
@@ -1668,6 +1668,23 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
       setModified( true, true );
     }
     return errorCode;
+  }
+  else //maybe the selected feature has been moved outside the visible area and therefore is not contained in mCachedGeometries
+  {
+    QgsFeature f;
+    QgsGeometry* fGeom = 0;
+    if(featureAtId( selectedFeatureId, f, true, false ))
+    {
+      fGeom = f.geometryAndOwnership();
+      if(fGeom)
+      {
+        int errorCode = fGeom->addIsland(ring);
+        mChangedGeometries.insert( selectedFeatureId, *fGeom);
+        setModified( true, true );
+        delete fGeom;
+        return errorCode;
+      }
+    }
   }
 
   return 6; //geometry not found
