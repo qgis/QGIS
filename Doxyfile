@@ -25,7 +25,7 @@ PROJECT_NAME           = "Quantum GIS API Documentation"
 # automatically updated by the documentation process. If you run doxygen
 # manually, the revision number may not reflect the current revision.
 
-PROJECT_NUMBER = HEAD-r8279
+PROJECT_NUMBER = HEAD-r10124
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -1259,4 +1259,4 @@ DOT_CLEANUP            = YES
 # The SEARCHENGINE tag specifies whether or not a search engine should be 
 # used. If set to NO the values of all tags below this one will be ignored.
 
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES
