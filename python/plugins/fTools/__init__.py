@@ -21,13 +21,13 @@ def description():
 	return "Tools for vector data analysis and management"
 
 def version():
-	return "0.5.5"
+	return "0.5.6"
   
 def qgisMinimumVersion():
 	return "1.0.0"
 	
 def authorName():
-	return "Carson Farmer"
+	return "Carson J. Q. Farmer"
 
 def classFactory( iface ):
 	from fTools import fToolsPlugin
