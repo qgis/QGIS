@@ -170,31 +170,8 @@ void QgsGrassTools::runModule( QString name )
 #endif
 
 #ifdef WIN32
-    // Run MSYS if available
-    // Note: I was not able to run cmd.exe and command.com
-    //       with QProcess
-
-    QString msysPath = appDir() + "/msys/bin/rxvt.exe";
-    QString myArguments = "-backspacekey ^H -sl 2500 -fg white -bg black -sr -fn Courier-16 -tn msys -geometry 80x25 -e    /bin/sh --login -i";
-    QFile file( msysPath );
-
-    if ( !file.exists() )
-    {
-      QMessageBox::warning( 0, tr( "Warning" ),
-                            tr( "Cannot find MSYS (%1)" ).arg( msysPath ) );
-    }
-    else
-    {
-      QProcess *proc = new QProcess( this );
-      //allow msys to exist in a path with spaces
-      msysPath =  "\"" + msysPath + "\""  ;
-      proc->start( msysPath + " " +  myArguments );
-      proc->waitForStarted();
-      if ( proc->state() != QProcess::Running )
-      {
-        QMessageBox::warning( 0, "Warning",
-                              tr( "Cannot start MSYS (%1)" ).arg( msysPath ) );
-      }
+    if( !QProcess::startDetached( getenv("COMSPEC") ) ) {
+      QMessageBox::warning( 0, "Warning", tr("Cannot start command shell (%1)").arg( getenv("COMSPEC") ) );
     }
     return;
 #else

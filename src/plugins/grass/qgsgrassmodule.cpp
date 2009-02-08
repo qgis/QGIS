@@ -87,6 +87,32 @@ QString QgsGrassModule::findExec( QString file )
 
   if ( QFile::exists( file ) ) return file;  // full path
 
+#ifdef WIN32
+  // On windows try .bat first
+  for ( QStringList::iterator it = mExecPath.begin();
+        it != mExecPath.end(); ++it )
+  {
+    QString full = *it + "/" + file + ".bat";
+    if ( QFile::exists( full ) )
+    {
+      return full;
+    }
+  }
+
+  // .exe next
+  for ( QStringList::iterator it = mExecPath.begin();
+        it != mExecPath.end(); ++it )
+  {
+    QString full = *it + "/" + file + ".exe";
+    if ( QFile::exists( full ) )
+    {
+      return full;
+    }
+  }
+
+  // and then try if it's a script (w/o extension)
+#endif
+
   // Search for module
   for ( QStringList::iterator it = mExecPath.begin();
         it != mExecPath.end(); ++it )
@@ -97,19 +123,6 @@ QString QgsGrassModule::findExec( QString file )
       return full;
     }
   }
-
-  // Not found try with .exe
-#ifdef WIN32
-  for ( QStringList::iterator it = mExecPath.begin();
-        it != mExecPath.end(); ++it )
-  {
-    QString full = *it + "/" + file + ".exe";
-    if ( QFile::exists( full ) )
-    {
-      return full;
-    }
-  }
-#endif
 
   return QString();
 }
@@ -131,24 +144,7 @@ QStringList QgsGrassModule::execArguments( QString module )
     return arguments;
   }
 
-#if defined(WIN32)
-  QFileInfo fi( exe );
-  if ( fi.isExecutable() )
-  {
-    arguments.append( exe );
-  }
-  else // script
-  {
-    QString cmd = getShortPath( QgsApplication::applicationDirPath() ) + "/msys/bin/sh";
-    arguments.append( cmd );
-
-    // Important! Otherwise it does not find DLL even if it is in PATH
-    arguments.append( "--login" );
-    arguments.append( exe );
-  }
-#else
   arguments.append( exe );
-#endif
 
   return arguments;
 }
