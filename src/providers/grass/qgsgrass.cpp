@@ -89,7 +89,12 @@ void GRASS_EXPORT QgsGrass::init( void )
   // This is set when QGIS is run from within GRASS
   // or when set explicitly by the user.
   // This value should always take precedence.
+#if WIN32
+  QString gisBase = getenv( "WINGISBASE" ) ? getenv("WINGISBASE") : getenv("GISBASE");
+  gisBase = getShortPath( gisBase );
+#else
   QString gisBase = getenv( "GISBASE" );
+#endif
 #ifdef QGISDEBUG
   qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
 #endif
