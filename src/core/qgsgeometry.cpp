@@ -31,6 +31,7 @@ email                : morb at ozemail dot com dot au
 #define CATCH_GEOS(r) \
   catch (GEOSException &e) \
   { \
+    Q_UNUSED(e); \
     QgsDebugMsg("GEOS: " + QString( e.what() ) ); \
     return r; \
   }
