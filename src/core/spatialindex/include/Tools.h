@@ -25,8 +25,10 @@
 #ifdef _MSC_VER
 #include <locale>
 #include <limits>
-#endif//_MSC_VER
+typedef unsigned __int8 uint8_t;
+#else
 #include <stdint.h>
+#endif//_MSC_VER
 #include <assert.h>
 #include <iostream>
 #include <iomanip>
