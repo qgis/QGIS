@@ -183,7 +183,7 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools,
     setsid();
     seteuid( 0 );
 
-    int fd = open(( char* ) slaveName.ascii(), O_RDWR );
+    int fd = ::open(( char* ) slaveName.ascii(), O_RDWR );
     if ( fd < 0 )
     {
       QMessageBox::warning( 0, "Warning", "Cannot open slave file "
