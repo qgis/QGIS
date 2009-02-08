@@ -170,7 +170,7 @@ class fToolsPlugin:
 		QCoreApplication.translate( "fTools", "Split vector layer" ), self.iface.mainWindow() )
 		self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect ] )
 
-		self.about_ftools = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
+		self.ftools_about = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
 		QCoreApplication.translate( "fTools", "About fTools" ), self.iface.mainWindow() )
 
 		self.menu.addMenu( self.analysisMenu )
@@ -179,7 +179,7 @@ class fToolsPlugin:
 		self.menu.addMenu( self.conversionMenu )
 		self.menu.addMenu( self.dataManageMenu )
 		self.menu.addSeparator()
-		self.menu.addAction( self.about_ftools )
+		self.menu.addAction( self.ftools_about )
 
 		menuBar = self.iface.mainWindow().menuBar()
 		actions = menuBar.actions()
@@ -226,7 +226,7 @@ class fToolsPlugin:
 		QObject.connect( self.spatJoin, SIGNAL("triggered()"), self.dospatJoin )
 		QObject.connect( self.splitVect, SIGNAL("triggered()"), self.dosplitVect )
 
-		QObject.connect( self.about_ftools, SIGNAL("triggered()"), self.doabout )
+		QObject.connect( self.ftools_about, SIGNAL("triggered()"), self.doabout )
 
 	def unload( self ):
 		pass

@@ -32,7 +32,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.btnWeb, SIGNAL("clicked()"), self.openWeb)
 		QObject.connect(self.btnHelp, SIGNAL("clicked()"), self.openHelp)
 		self.fToolsLogo.setPixmap(QPixmap(":/icons/default/ftools_logo.png"))
-		self.label_3.setText("fTools 0.5.2")
+		self.label_3.setText("fTools 0.5.6")
 		self.textEdit.setText(self.getText())
 
 	def getText(self):
@@ -71,6 +71,8 @@ class Dialog(QDialog, Ui_Dialog):
 		aknowledgeString.append("Paolo Cavallini\n")
 		aknowledgeString.append("Aaron Racicot\n")
 		aknowledgeString.append("Colin Robertson\n")
+		aknowledgeString.append("Agustin Lobo\n")		
+		aknowledgeString.append("Jurgen E. Fischer\n")
 		aknowledgeString.append("QGis developer and user communities\n")
 		aknowledgeString.append("Folks on #qgis at freenode.net\n")
 		aknowledgeString.append("All those who have reported bugs/fixes/suggestions/comments/etc.")
