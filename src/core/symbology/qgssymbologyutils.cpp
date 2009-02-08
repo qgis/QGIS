@@ -873,7 +873,7 @@ Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle( QString brushString )
   }
   else                        //return a null string
   {
-    qWarning( "Brush style \"" + brushString.toUtf8() + "\" not found in qString2BrushStyle" );
+    qWarning( "Brush style \"%s\" not found in qString2BrushStyle", brushString.toUtf8().constData() );
     return Qt::NoBrush;
   }
 }

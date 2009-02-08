@@ -264,7 +264,7 @@ int QgsAttributeTable::compareItems( QString s1, QString s2, bool ascending, boo
         return 1;
       }
     }
-    else if ( compareValue = 0 )
+    else if ( compareValue == 0 )
     {
       return 0;
     }

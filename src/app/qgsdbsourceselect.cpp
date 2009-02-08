@@ -38,7 +38,9 @@ email                : sherman at mrcc.com
 #include <cassert>
 #include <iostream>
 
+#ifdef HAVE_PGCONFIG
 #include <pg_config.h>
+#endif
 
 QgsDbSourceSelect::QgsDbSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
@@ -440,8 +442,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     }
     else
     {
-      qDebug( "Unable to get list of spatially enabled tables from the database" );
-      qDebug( PQerrorMessage( pd ) );
+      qDebug( "Unable to get list of spatially enabled tables from the database\n%s", PQerrorMessage( pd ) );
     }
     // BEGIN CHANGES ECOS
     if ( cmbConnections->count() > 0 )
@@ -509,7 +510,7 @@ void QgsDbSourceSelect::setSql( const QModelIndex& index )
   QString schemaName = mTableModel.itemFromIndex( mProxyModel.mapToSource( schemaSibling ) )->text();
   QString tableName = mTableModel.itemFromIndex( mProxyModel.mapToSource( tableSibling ) )->text();
   QString tableString = "\"" + schemaName + "\".\"" + tableName + "\"";
-  qWarning( tableString.toUtf8() );
+  qWarning( "%s", tableString.toUtf8().constData() );
 
   QString currentSql;
   QModelIndex sqlSibling = index.sibling( index.row(), 4 );

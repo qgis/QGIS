@@ -91,7 +91,6 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
                             QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes,
                             double sizeScale, double rasterScaleFactor )
 {
-
   QPen pen;
   QFont font;
   QString value;
@@ -163,10 +162,11 @@ void QgsLabel::renderLabel( QPainter * painter, const QgsRectangle& viewExtent,
   //and scale the painter down by rasterScaleFactor when drawing the label
   size *= rasterScaleFactor;
 
-  if ( size > 0.0 )
-  {
-    font.setPixelSize( size );
-  }
+  if (( int )size <= 0 )
+    // skip too small labels
+    return;
+
+  font.setPixelSize( size );
 
   value = fieldValue( Color, feature );
   if ( value.isEmpty() )

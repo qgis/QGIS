@@ -138,14 +138,12 @@ bool QgsRenderChecker::compareImages( QString theTestName )
   // Put the same info to debug too
   //
 
-  qDebug( "Expected size: " + QString::number( myExpectedImage.width() ).toLocal8Bit() + "w x " +
-          QString::number( myExpectedImage.width() ).toLocal8Bit() + "h" );
-  qDebug( "Actual   size: " + QString::number( myResultImage.width() ).toLocal8Bit() + "w x " +
-          QString::number( myResultImage.width() ).toLocal8Bit() + "h" );
+  qDebug( "Expected size: %dw x %dh", myExpectedImage.width(), myExpectedImage.height() );
+  qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( QString( "Test image and result image for %1 are different - FAILING!" ).arg( theTestName ).toLocal8Bit() );
+    qDebug( "Test image and result image for %s are different - FAILING!", theTestName.toLocal8Bit().constData() );
     mReport += "<tr><td colspan=3>";
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
@@ -180,9 +178,7 @@ bool QgsRenderChecker::compareImages( QString theTestName )
   //
   // Send match result to debug
   //
-  qDebug( QString::number( mMismatchCount ).toLocal8Bit() + "/" +
-          QString::number( mMatchTarget ).toLocal8Bit() +
-          " pixels mismatched" );;
+  qDebug( "%d/%d pixels mismatched", mMismatchCount, mMatchTarget );
 
   //
   // Send match result to report

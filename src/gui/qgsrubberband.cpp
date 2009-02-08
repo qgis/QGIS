@@ -186,10 +186,10 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         pt = geom->asPoint();
       }
-      addPoint( QgsPoint( pt.x() - d, pt.y() - d ) );
-      addPoint( QgsPoint( pt.x() + d, pt.y() - d ) );
-      addPoint( QgsPoint( pt.x() + d, pt.y() + d ) );
-      addPoint( QgsPoint( pt.x() - d, pt.y() + d ) );
+      addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false );
+      addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false );
+      addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false );
+      addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false );
     }
     break;
 
@@ -204,17 +204,17 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         QgsPoint pt = mpt[i];
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ) );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ) );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ) );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ) );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false );
         }
         else
         {
-          addPoint( QgsPoint( pt.x() - d, pt.y() - d ) );
-          addPoint( QgsPoint( pt.x() + d, pt.y() - d ) );
-          addPoint( QgsPoint( pt.x() + d, pt.y() + d ) );
-          addPoint( QgsPoint( pt.x() - d, pt.y() + d ) );
+          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false );
+          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false );
+          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false );
+          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false );
         }
       }
     }
@@ -229,11 +229,11 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false );
         }
         else
         {
-          addPoint( line[i] );
+          addPoint( line[i], false );
         }
       }
     }
@@ -259,7 +259,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
           }
           else
           {
-            addPoint( line[j] );
+            addPoint( line[j], false, i );
           }
         }
       }
@@ -276,11 +276,11 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, line[i] ) );
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false );
         }
         else
         {
-          addPoint( line[i] );
+          addPoint( line[i], false );
         }
       }
     }
@@ -307,7 +307,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
           }
           else
           {
-            addPoint( line[j] );
+            addPoint( line[j], false, i );
           }
         }
       }

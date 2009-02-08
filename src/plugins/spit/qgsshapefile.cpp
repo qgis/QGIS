@@ -207,7 +207,8 @@ QString QgsShapeFile::getFeatureClass()
         dbf.read(( char * )&fda, sizeof( fda ) );
         switch ( fda.field_type )
         {
-          case 'N': if (( int )fda.field_decimal > 0 )
+          case 'N':
+            if (( int )fda.field_decimal > 0 )
               column_types.push_back( "float" );
             else
               column_types.push_back( "int" );

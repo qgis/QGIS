@@ -296,6 +296,9 @@ void QgsAttributeTableDisplay::zoomMapToSelectedRows()
 
 void QgsAttributeTableDisplay::search()
 {
+  if ( tblAttributes->rowCount() == 0 )
+    return;
+
   int type = tblAttributes->item( 0, mSearchColumns->currentIndex() )->data( QgsAttributeTable::AttributeType ).toInt();
   bool numeric = ( type == QVariant::Int || type == QVariant::Double );
 

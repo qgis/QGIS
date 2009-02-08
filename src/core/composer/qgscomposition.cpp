@@ -197,7 +197,7 @@ void QgsComposition::addItemToZList( QgsComposerItem* item )
     return;
   }
   mItemZList.push_back( item );
-  qWarning( QString::number( mItemZList.size() ).toLocal8Bit().data() );
+  qWarning( "%d", mItemZList.size() );
   item->setZValue( mItemZList.size() );
 }
 
@@ -330,7 +330,7 @@ void QgsComposition::updateZValues()
     currentItem = *it;
     if ( currentItem )
     {
-      qWarning( QString::number( counter ).toLocal8Bit().data() );
+      qWarning( "%d", counter );
       currentItem->setZValue( counter );
     }
     ++counter;
@@ -344,7 +344,7 @@ void QgsComposition::sortZList()
   QLinkedList<QgsComposerItem*>::iterator before_it = mItemZList.begin();
   for ( ; before_it != mItemZList.end(); ++before_it )
   {
-    qWarning( QString::number(( *before_it )->zValue() ).toLocal8Bit().data() );
+    qWarning( "%lf", ( *before_it )->zValue() );
   }
 
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
@@ -398,6 +398,6 @@ void QgsComposition::sortZList()
   QLinkedList<QgsComposerItem*>::iterator after_it = mItemZList.begin();
   for ( ; after_it != mItemZList.end(); ++after_it )
   {
-    qWarning( QString::number(( *after_it )->zValue() ).toLocal8Bit().data() );
+    qWarning( "%lf", ( *after_it )->zValue() );
   }
 }

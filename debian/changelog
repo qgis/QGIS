@@ -1,3 +1,14 @@
+qgis (1.0.0) experimental; urgency=low
+ 
+  * new upstream release
+  * update qgis.mime
+  * add qgis.desktop and qgis.xml 
+  * add mime types for KDE
+  * don't ignore errors in preinst and postrm
+  * run ldconfig in postrm
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 23 Dec 2008 20:42:21 +0100
+
 qgis (1.0preview18) experimental; urgency=low
 
   * add suggestion for gpsbabel

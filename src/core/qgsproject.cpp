@@ -770,7 +770,7 @@ bool QgsProject::read()
                           errorMsg + QObject::tr( " at line " ) + QString::number( line ) + QObject::tr( " column " ) +
                           QString::number( column );
 
-    qDebug( errorString.toUtf8().constData() );
+    qDebug( "%s", errorString.toUtf8().constData() );
 
     imp_->file.close();
 
