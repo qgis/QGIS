@@ -16,7 +16,7 @@
    <item row="0" column="0" >
     <widget class="QGroupBox" name="mPositionGroupBox" >
      <property name="title" >
-      <string>Item Point</string>
+      <string>Item reference point</string>
      </property>
      <layout class="QGridLayout" >
       <item row="0" column="0" >
