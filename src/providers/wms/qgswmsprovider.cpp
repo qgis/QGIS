@@ -523,8 +523,10 @@ QImage* QgsWmsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, 
   {
     delete cachedImage;
   }
-  cachedImage = new QImage();
-  *cachedImage = QImage::fromData( imagesource );
+
+  //Create a local image from source then convert it to RGBA, so we can set the transparency later
+  QImage myLocalImage = QImage::fromData( imagesource );
+  cachedImage = new QImage( myLocalImage.convertToFormat( QImage::Format_ARGB32 ) );
 
   // Remember settings for useful caching next time.
   cachedViewExtent = viewExtent;
