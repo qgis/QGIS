@@ -1508,9 +1508,19 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     QgsDebugMsg( QString( "(int)origin y: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ) );
 
     //Set the transparency for the whole layer
-    QImage myAlphaChannel( image->width(), image->height(), QImage::Format_Indexed8 );
-    myAlphaChannel.fill(( uint ) mTransparencyLevel );
-    image->setAlphaChannel( myAlphaChannel );
+    //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
+    //Currently this is only done for WMS images, which should be small enough not to impact performance
+    int myWidth = image->width();
+    int myHeight = image->height();
+    QRgb myRgb;
+    for( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+    {
+        for( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+        {
+            myRgb = image->pixel( myWidthRunner, myHeightRunner );
+            image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), mTransparencyLevel ) );
+        }
+    }
 
     // Since GDAL's RasterIO can't handle floating point, we have to round to
     // the nearest pixel.  Add 0.5 to get rounding instead of truncation
