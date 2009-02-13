@@ -460,7 +460,6 @@ void QgsComposer::on_mActionPrint_activated( void )
   printer.setColorMode( QPrinter::Color );
 
   QPrintDialog printDialog( &printer );
-
   if ( printDialog.exec() == QDialog::Accepted )
   {
     //set user-defined resolution
@@ -475,6 +474,24 @@ void QgsComposer::on_mActionPrint_activated( void )
 
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
+    if(mComposition->printAsRaster())
+    {
+      //print out via QImage, code copied from on_mActionExportAsImage_activated
+      int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
+      int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
+      QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+      image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
+      image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
+      image.fill( 0 );
+      QPainter imagePainter( &image );
+      QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+      QRectF targetArea( 0, 0, width, height );
+      mComposition->render( &imagePainter, targetArea, sourceArea );
+      imagePainter.end();
+      p.drawImage(targetArea, image, targetArea);
+    }
+    else
+    {
 #if QT_VERSION < 0x040400
     QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
     QRect pageRect = printer.pageRect();
@@ -485,8 +502,8 @@ void QgsComposer::on_mActionPrint_activated( void )
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
     mComposition->render( &p, paperRectPixel, paperRectMM );
 #endif
+    }
     mComposition->setPlotStyle( savedPlotStyle );
-
     QApplication::restoreOverrideCursor();
   }
 }

@@ -99,6 +99,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
 
+    bool printAsRaster() const {return mPrintAsRaster;}
+    void setPrintAsRaster(bool enabled);
+
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
@@ -161,6 +164,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Dpi for printout*/
     int mPrintResolution;
+
+    /**Flag if map should be printed as a raster (via QImage). False by default*/
+    bool mPrintAsRaster;
 
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;

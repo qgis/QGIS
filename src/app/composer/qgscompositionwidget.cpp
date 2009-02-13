@@ -44,6 +44,16 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     //read printout resolution from composition
     mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
 
+    //print as raster
+    if(mComposition->printAsRaster())
+    {
+      mPrintAsRasterCheckBox->setCheckState(Qt::Checked);
+    }
+    else
+    {
+      mPrintAsRasterCheckBox->setCheckState(Qt::Unchecked);
+    }
+
     //snap grid
     if ( mComposition->snapToGridEnabled() )
     {
@@ -364,6 +374,23 @@ void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& te
     //set screen resolution per default
     QPrinter resolutionInfo( QPrinter::ScreenResolution );
     mComposition->setPrintResolution( resolutionInfo.resolution() );
+  }
+}
+
+void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged(int state)
+{
+  if(!mComposition)
+  {
+    return;
+  }
+
+  if(state == Qt::Checked)
+  {
+    mComposition->setPrintAsRaster(true);
+  }
+  else
+  {
+    mComposition->setPrintAsRaster(false);
   }
 }
 
