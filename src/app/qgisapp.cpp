@@ -3749,6 +3749,14 @@ void QgisApp::deleteSelected()
     return;
   }
 
+  //display a warning
+  int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
+  if(QMessageBox::warning(this, tr("Delete features"), tr("Delete %1 feature(s)?").arg(numberOfDeletedFeatures), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
+  {
+    return;
+  }
+
+
   if ( !vlayer->deleteSelectedFeatures() )
   {
     QMessageBox::information( this, tr( "Problem deleting features" ),
