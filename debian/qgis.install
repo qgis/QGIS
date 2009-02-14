@@ -1,17 +1,4 @@
 usr/bin/qgis_help
-usr/share/qgis/doc/CODING
-usr/share/qgis/doc/favicon.ico 
-usr/share/qgis/doc/index.html
-usr/share/qgis/doc/qgisdoc.css
-usr/share/qgis/doc/AUTHORS
-usr/share/qgis/doc/SPONSORS
-usr/share/qgis/doc/images
-usr/share/pixmaps/*
-usr/share/qgis/i18n/*
-usr/share/qgis/images/*
-usr/share/qgis/resources/*
-usr/share/qgis/svg/*
-usr/share/qgis/themes/*
 usr/lib/qgis/libcopyrightlabelplugin.so
 usr/lib/qgis/libdelimitedtextplugin.so
 usr/lib/qgis/libdelimitedtextprovider.so
@@ -32,6 +19,9 @@ usr/lib/qgis/libdxf2shpconverterplugin.so
 usr/lib/qgis/libinterpolationplugin.so 
 usr/lib/qgis/libogrconverterplugin.so
 usr/lib/qgis/libcoordinatecaptureplugin.so
+usr/share/pixmaps/qgis-icon.xpm
+usr/share/pixmaps/qgis-mime-icon.png
+usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
 ../qgis.desktop usr/share/applications
 ../qgis.xml usr/share/mime/packages
 ../mime/application/x-esri-shape.desktop usr/share/mimelnk/application
@@ -43,5 +33,3 @@ usr/lib/qgis/libcoordinatecaptureplugin.so
 ../mime/application/x-qgis-project.desktop usr/share/mimelnk/application
 ../mime/application/x-raster-mrsid.desktop usr/share/mimelnk/application
 ../mime/application/x-qgis-layer-settings.desktop usr/share/mimelnk/application
-usr/share/pixmaps/qgis-mime-icon.png
-usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
