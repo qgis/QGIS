@@ -6,8 +6,6 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/dpatch/dpatch.make
-
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
@@ -44,12 +42,11 @@ endif
 debian/build/CMakeCache.txt: CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
-	uudecode -o $(CURDIR)/src/plugins/georeferencer/pencil.png $(CURDIR)/debian/pencil.uu
 	[ -d debian/build ] || mkdir debian/build
 	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
 	cd debian/build; cmake $(CMAKE_OPTS) ../..
 
-build: patch build-stamp
+build: build-stamp
 
 build-stamp: debian/build/CMakeCache.txt
 	dh_testdir
@@ -59,8 +56,7 @@ build-stamp: debian/build/CMakeCache.txt
 
 	touch build-stamp
 
-clean: clean-patched unpatch
-clean-patched:
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
@@ -69,8 +65,6 @@ clean-patched:
 
 	# Add here commands to clean up after the build process.
 	rm -rf debian/build
-
-	rm -f $(CURDIR)/src/plugins/georeferencer/pencil.png
 
 	dh_clean 
 
@@ -87,6 +81,7 @@ install: build
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -115,6 +110,7 @@ binary-arch: build install
 	dh_installman -pqgis qgis_help.man
 	dh_installmime -pqgis
 	dh_link
+	dh_lintian
 	dh_strip
 	dh_compress --exclude=pdf
 	dh_fixperms

@@ -1,4 +1,3 @@
-usr/share/qgis/python/*
 usr/lib/python*/site-packages/qgis/__init__.py
 usr/lib/python*/site-packages/qgis/qgisconfig.py
 usr/lib/python*/site-packages/qgis/*.so
