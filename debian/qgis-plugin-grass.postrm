@@ -4,7 +4,8 @@ set -e
 
 if [ "$1" = "remove" ]; then
 	dpkg-divert --package qgis-plugin-grass --remove --rename --divert /usr/bin/qgis.bin /usr/bin/qgis
-	ldconfig
 fi
+
+#DEBHELPER#
 
 exit 0

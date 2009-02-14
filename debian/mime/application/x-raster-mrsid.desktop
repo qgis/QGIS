@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=MimeType
+MimeType=application/x-raster-mrsid
+Hidden=false
+Comment=MrSID raster data
+Comment[de]=MrSID-Rasterdaten
+Icon=qgis-mime-icon
+Patterns=*.sid;

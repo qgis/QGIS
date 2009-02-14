@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+
+  <mime-type type="application/x-qgis-project">
+    <comment>Quantum GIS Project</comment>
+    <comment xml:lang="de">Quantum GIS-Projekt</comment>
+    <sub-class-of type="application/xml"/>
+    <alias type="application/x-qgis"/>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
+      </match>
+    </magic>
+    <glob pattern="*.qgs"/>
+  </mime-type>
+
+  <mime-type type="application/x-qgis-layer-settings">
+    <comment>Quantum GIS layer settings</comment>
+    <comment xml:lang="de">Quantum GIS Layer Einstellungen</comment>
+    <sub-class-of type="application/xml"/>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis version"/>
+      </match>
+    </magic>
+    <glob pattern="*.qml"/>
+  </mime-type>
+
+  <mime-type type="application/x-esri-shape">
+    <comment>ESRI shape file</comment>
+    <comment xml:lang="de">ESRI-Shapedatei</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="100">
+      <match type="big32" offset="0" value="9994">
+        <match type="big32" offset="4" value="0">
+          <match type="big32" offset="8" value="0">
+            <match type="big32" offset="12" value="0">
+              <match type="big32" offset="16" value="0">
+                <match type="big32" offset="20" value="0">
+                  <match type="big32" offset="28" value="1000"/>
+		</match>
+              </match>
+	    </match>
+	  </match>
+	</match>
+      </match>
+    </magic>
+    <glob pattern="*.shp"/>
+    <glob pattern="*.shx"/>
+  </mime-type>
+
+  <mime-type type="application/x-esri-crs">
+    <comment>ESRI coordinate reference system</comment>
+    <comment xml:lang="de">ESRI-Koordinatenreferenzsystem</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic>
+      <match type="string" offset="0" value="GEOGCS["/>
+      <match type="string" offset="0" value="PROJCS["/>
+      <match type="string" offset="0" value="LOCAL_CS["/>
+    </magic>
+    <glob pattern="*.prj"/>
+  </mime-type>
+
+  <mime-type type="image/tiff">
+    <comment>TIFF raster data</comment>
+    <comment xml:lang="de">TIFF-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="MM">
+        <match type="little16" offset="2" value="42"/>
+      </match>
+      <match type="string" offset="0" value="MM">
+        <match type="big16" offset="2" value="42"/>
+      </match>
+    </magic>
+    <glob pattern="*.tiff"/>
+    <glob pattern="*.tif"/>
+  </mime-type>
+
+  <mime-type type="image/jpeg">
+    <comment>JPEG raster data</comment>
+    <comment xml:lang="de">JPEG-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="50">
+       <match type="big16" offset="0" value="65496"/>
+    </magic>
+    <glob pattern="*.jpeg"/>
+    <glob pattern="*.jpg"/>
+  </mime-type>
+
+  <mime-type type="image/jp2">
+    <comment>JPEG2000 raster data</comment>
+    <comment xml:lang="de">JPEG2000-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="50">
+      <match type="little32" offset="0" value="12">
+        <match type="string" offset="8" value="jP">
+          <match type="byte" offset="10" value="32">
+            <match type="byte" offset="11" value="32">
+              <match type="byte" offset="12" value="13">
+                <match type="byte" offset="13" value="10">
+                  <match type="byte" offset="14" value="135">
+                    <match type="byte" offset="13" value="10"/>
+		  </match>
+                </match>
+              </match>
+            </match>
+          </match>
+        </match>
+      </match>
+    </magic>
+    <glob pattern="*.jp2"/>
+    <glob pattern="*.j2k"/>
+  </mime-type>
+
+  <mime-type type="application/x-raster-aig">
+    <comment>AIG raster data</comment>
+    <comment xml:lang="de">AIG-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <glob pattern="*.aig"/>
+  </mime-type>
+
+  <mime-type type="application/x-raster-ecw">
+    <comment>ECW raster data</comment>
+    <comment xml:lang="de">ECW-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <glob pattern="*.ecw"/>
+  </mime-type>
+
+  <mime-type type="application/x-raster-mrsid">
+    <comment>MrSID raster data</comment>
+    <comment xml:lang="de">MrSID-Rasterdaten</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <glob pattern="*.sid"/>
+  </mime-type>
+
+  <mime-type type="application/x-mapinfo-mif">
+    <comment>MapInfo file</comment>
+    <comment xml:lang="de">MapInfo-Datei</comment>
+    <icon name="qgis-mime-icon.png"/>
+    <magic priority="51">
+      <match type="string" offset="0" value="VERSION">
+        <match type="string" offset="0:512" value="COLUMNS"/>
+          <match type="string" offset="0:512" value="DATA">
+        </match>
+      </match>
+    </magic>
+    <glob weight="60" pattern="*.mif"/>
+  </mime-type>
+
+  <!-- .mif is just not good enough -->
+  <mime-type type="application/x-adobe-mif">
+    <alias type="application/x-mif"/>
+    <comment>Adobe FrameMaker MIF file</comment>
+    <magic priority="100">
+      <match type="string" offset="0" value="&lt;MIFFile"/>
+    </magic>
+    <glob weight="51" pattern="*.mif"/>
+  </mime-type>
+
+</mime-info>

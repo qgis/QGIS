@@ -1,3 +1,22 @@
+qgis (1.0.1) experimental; urgency=low
+
+  * upstream bugfix release
+  * sync with debian-gis debian/ tree
+    - introduce arch-independant qgis-comman and
+      qgis-plugin-grass-common
+    - policy updated to 3.8.0
+    - join libqgis1-core and libqgis1-gui to libqgis1
+    - add debian/watch
+    - dh_lintian overrides
+    - compat 5=>6
+    - fix qgis.desktop
+    - fix license reference in copyright
+  * introduce arch-independant python-qgis-comman
+  * added sharedmimeinfo
+  * remove dpatch
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 13 Feb 2009 21:08:52 +0100
+
 qgis (1.0.0) experimental; urgency=low
  
   * new upstream release
