@@ -48,24 +48,24 @@ build-stamp: debian/build/CMakeCache.txt
 	# Add here commands to compile the package.
 	$(MAKE) -C debian/build
 
-	touch build-stamp
+	touch $@
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f build-stamp
 	rm -f i18n/*.qm
 	rm -rf debian/tmp
 
 	# Add here commands to clean up after the build process.
 	rm -rf debian/build
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
@@ -104,7 +104,7 @@ binary-arch: build install
 	dh_installman -pqgis qgis_help.man
 	dh_installmime -pqgis
 	dh_link
-	dh_lintian
+	which dh_lintian >/dev/null && dh_lintian
 	dh_strip
 	dh_compress --exclude=pdf
 	dh_fixperms
