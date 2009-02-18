@@ -1806,6 +1806,11 @@ void QgisApp::about()
     QString whatsNew = "<html><body>" + tr( "Version" ) + " ";
     whatsNew += QGis::QGIS_VERSION;
     whatsNew += "<h3>" + tr( "Changes" ) + "</h3>" +
+                tr( "QGIS 1.0.2 is a bug fix release for the stable version of QGIS."
+                    "A summary of the improvements can be found at "
+                    "https://trac.osgeo.org/qgis/query?status=closed&milestone=Version+1.0.2"
+                    );
+    whatsNew += "<h3>" + tr( "Changes" ) + "</h3>" +
                 tr( "QGIS 1.0.1 is a bug fix release for the stable version of QGIS."
                     "A summary of the improvements can be found at "
                     "https://trac.osgeo.org/qgis/query?status=closed&milestone=Version+1.0.1"
