@@ -1,5 +1,9 @@
 /* ChangeLog,v 1.214 2004/11/12 00:42:21 gsherman Exp */
 ------------------------------------------------------------------------------
+Version 1.0.1 'Kore'
+** This is a bugfix release in the stable release series. See
+**  https://trac.osgeo.org/qgis/query?status=closed&milestone=Version+1 for
+**  details. 
 Version 1.0.0 'Kore'
 ** This release includes over 265 bug fixes and enhancements over the 
 ** QGIS 0.11.0 release. In addition we have made the following changes:
