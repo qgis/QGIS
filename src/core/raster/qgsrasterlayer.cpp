@@ -85,22 +85,31 @@ QgsRasterLayer::QgsRasterLayer(
     mInvertColor( false )
 {
 
+  mRasterType = QgsRasterLayer::GrayOrUndefined;
+
+  mRedBandName = TRSTRING_NOT_SET;
+  mGreenBandName = TRSTRING_NOT_SET;
+  mBlueBandName = TRSTRING_NOT_SET;
+  mGrayBandName = TRSTRING_NOT_SET;
+  mTransparencyBandName = TRSTRING_NOT_SET;
+
+
   mUserDefinedRGBMinimumMaximum = false; //defaults needed to bypass enhanceContrast
   mUserDefinedGrayMinimumMaximum = false;
   mRGBMinimumMaximumEstimated = true;
   mGrayMinimumMaximumEstimated = true;
 
+  mDrawingStyle = QgsRasterLayer::UndefinedDrawingStyle;
+  mContrastEnhancementAlgorithm = QgsContrastEnhancement::NoEnhancement;
+  mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
   mRasterShader = new QgsRasterShader();
 
-  if ( loadDefaultStyleFlag )
-  {
-    bool defaultLoadedFlag = false;
-    loadDefaultStyle( defaultLoadedFlag );
-    if ( defaultLoadedFlag )
-    {
-      return;
-    }
-  }
+  mHasPyramids = false;
+  mNoDataValue = -9999;
+  mValidNoDataValue = false;
+
+  mGdalBaseDataset = 0;
+  mGdalDataset = 0;
 
   // Initialise the affine transform matrix
   mGeoTransform[0] =  0;
@@ -121,6 +130,18 @@ QgsRasterLayer::QgsRasterLayer(
   if ( ! path.isEmpty() )
   {
     readFile( path ); // XXX check for failure?
+
+    //readFile() is really an extension of the constructor as many imporant fields are set in this method
+    //loadDefaultStyle() can not be called before the layer has actually be opened
+    if ( loadDefaultStyleFlag )
+    {
+      bool defaultLoadedFlag = false;
+      loadDefaultStyle( defaultLoadedFlag );
+      if ( defaultLoadedFlag )
+      {
+        return;
+      }
+    }
   }
 
 } // QgsRasterLayer ctor
@@ -199,6 +220,10 @@ QgsRasterLayer::~QgsRasterLayer()
     if ( mGdalBaseDataset )
     {
       GDALDereferenceDataset( mGdalBaseDataset );
+    }
+
+    if( mGdalDataset )
+    {
       GDALClose( mGdalDataset );
     }
   }
@@ -377,7 +402,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   }                           // each loaded GDAL driver
 
   // can't forget the default case
-  theFileFiltersString += catchallFilter.join( ", " ) + " " + tr( "and all other files" ) + " (*)";
+  theFileFiltersString += tr( "%1 and all other files (*)" ).arg( catchallFilter.join( ", " ) );
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
 
@@ -1799,7 +1824,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      theResults[tr( "Band" ) + QString::number( i )] = tr( "out of extent" );
+      theResults[ tr( "Band%1" ).arg( i )] = tr( "out of extent" );
     }
   }
   else
@@ -1843,7 +1868,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
       {
         v.setNum( value );
       }
-      theResults[tr( "Band" ) + QString::number( i )] = v;
+      theResults[tr( "Band%1" ).arg( i )] = v;
 
       CPLFree( data );
     }
@@ -2511,8 +2536,10 @@ QString QgsRasterLayer::metadata()
     myMetadata += tr( "Dimensions:" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
-    myMetadata += tr( "X: " ) + QString::number( GDALGetRasterXSize( mGdalDataset ) ) +
-                  tr( " Y: " ) + QString::number( GDALGetRasterYSize( mGdalDataset ) ) + tr( " Bands: " ) + QString::number( GDALGetRasterCount( mGdalDataset ) );
+    myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
+                  .arg( GDALGetRasterXSize( mGdalDataset ) )
+                  .arg( GDALGetRasterYSize( mGdalDataset ) )
+                  .arg( GDALGetRasterCount( mGdalDataset ) );
     myMetadata += "</p>\n";
 
     //just use the first band
@@ -2607,14 +2634,14 @@ QString QgsRasterLayer::metadata()
 
   // output coordinate system
   // TODO: this is not related to layer, to be removed? [MD]
-  /*
-      myMetadata += "<tr><td class=\"glossy\">";
-      myMetadata += tr("Project Spatial Reference System: ");
-      myMetadata += "</p>\n";
-      myMetadata += "<p>";
-      myMetadata +=  mCoordinateTransform->destCRS().toProj4();
-      myMetadata += "</p>\n";
-      */
+#if 0
+  myMetadata += "<tr><td class=\"glossy\">";
+  myMetadata += tr( "Project Spatial Reference System: " );
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
+  myMetadata +=  mCoordinateTransform->destCRS().toProj4();
+  myMetadata += "</p>\n";
+#endif
 
   if ( mProviderKey.isEmpty() )
   {
@@ -3160,8 +3187,6 @@ void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingA
       mRasterShader = new QgsRasterShader();
     }
 
-    mColorShadingAlgorithm = theShadingAlgorithm;
-
     switch ( theShadingAlgorithm )
     {
       case PseudoColorShader:
@@ -3180,6 +3205,9 @@ void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingA
         mRasterShader->setRasterShaderFunction( new QgsRasterShaderFunction() );
         break;
     }
+
+    //Set the class variable after the call to setRasterShader(), so memory recovery can happen
+    mColorShadingAlgorithm = theShadingAlgorithm;
   }
   QgsDebugMsg( "mColorShadingAlgorithm = " + QString::number( theShadingAlgorithm ) );
 }
@@ -3376,6 +3404,12 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
 
 void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
+  //Free old shader if it is not a userdefined shader
+  if( mColorShadingAlgorithm != QgsRasterLayer::UserDefinedShader && 0 != mRasterShader->rasterShaderFunction() )
+  {
+    delete( mRasterShader->rasterShaderFunction() );
+  }
+
   if ( theFunction )
   {
     mRasterShader->setRasterShaderFunction( theFunction );
@@ -3385,7 +3419,7 @@ void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFuncti
   {
     //If NULL as passed in, set a default shader function to prevent segfaults
     mRasterShader->setRasterShaderFunction( new QgsRasterShaderFunction() );
-    mColorShadingAlgorithm = QgsRasterLayer::UserDefinedShader;
+    mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
   }
 }
 
@@ -5173,6 +5207,8 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     //Set up a new color ramp shader
     setColorShadingAlgorithm( ColorRampShader );
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
+    //TODO: Make sure the set algorithm and cast was successful,
+    //e.g., if ( 0 != myColorRampShader && myColorRampShader->shaderTypeAsString == "ColorRampShader" )
     myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
     myColorRampShader->setColorRampItemList( *colorTable( 1 ) );
   }
