@@ -51,6 +51,7 @@ class TestQgsRenderers: public QObject
     void continuousSymbol();
     void checkClassificationFieldMismatch();
   private:
+    bool mTestHasError;
     bool setQml( QString theType ); //uniquevalue / continuous / single /
     bool imageCheck( QString theType ); //as above
     QgsMapRenderer * mpMapRenderer;
@@ -64,6 +65,7 @@ class TestQgsRenderers: public QObject
 
 void TestQgsRenderers::initTestCase()
 {
+  mTestHasError = false;
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
   QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
