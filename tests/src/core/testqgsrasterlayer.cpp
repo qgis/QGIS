@@ -34,6 +34,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
+#include <qgsmaplayerregistry.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -57,6 +58,7 @@ class TestQgsRasterLayer: public QObject
     void landsatBasic875Qml();
     void checkDimensions();
     void buildExternalOverviews();
+    void registry();
   private:
     bool render( QString theFileName );
     bool setQml( QString theType );
@@ -204,6 +206,28 @@ void TestQgsRasterLayer::buildExternalOverviews()
   //cleanup
   delete mypLayer;
 }
+
+
+void TestQgsRasterLayer::registry()
+{
+  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QFile::remove( myTempPath + "landsat.tif.ovr" );
+  QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" );
+  QFileInfo myRasterFileInfo( myTempPath + "landsat.tif" );
+  QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
+      myRasterFileInfo.completeBaseName() );
+
+  QgsMapLayerRegistry::instance()->addMapLayer(mypLayer,false);
+  QgsMapLayerRegistry::instance()->removeMapLayer(mypLayer->getLayerID());
+  //cleanup
+  delete mypLayer;
+}
+
+//
+// Helper methods
+//
+
+
 bool TestQgsRasterLayer::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
