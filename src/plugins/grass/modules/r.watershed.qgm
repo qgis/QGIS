@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="r.watershed - Watershed Analysis." module="r.watershed">
+
+	<option key="elevation" />
+	<option key="threshold" />
+
+	<option key="accumulation" />
+	<option key="drainage" />
+	<option key="stream" />
+
+	<option key="basin" />
+
+</qgisgrassmodule>
