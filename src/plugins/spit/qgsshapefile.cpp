@@ -64,7 +64,7 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
     valid = false;
   setDefaultTable();
   // init the geometry types
-  geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTPOINT"
+  geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTIPOINT"
   << "MULTILINESTRING" << "MULTIPOLYGON" << "GEOMETRYCOLLECTION";
 
   codec = QTextCodec::codecForName( encoding.toLocal8Bit().data() );
