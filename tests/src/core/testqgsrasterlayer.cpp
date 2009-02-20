@@ -220,7 +220,7 @@ void TestQgsRasterLayer::registry()
   QgsMapLayerRegistry::instance()->addMapLayer(mypLayer,false);
   QgsMapLayerRegistry::instance()->removeMapLayer(mypLayer->getLayerID());
   //cleanup
-  delete mypLayer;
+  //delete mypLayer;
 }
 
 //
