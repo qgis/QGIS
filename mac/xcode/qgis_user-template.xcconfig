@@ -1,0 +1,159 @@
+// QGIS Xcode project common build settings
+
+// duplicate this file as qgis_user.xcconfig.
+// uncomment settings in qgis_user.xcconfig to override defaults
+//   in qgis_settings.xcconfig.
+// commented values values shown here are defaults
+
+//SDKSYS =  // tig (Tiger), leo (Leopard), [empty] (native)
+//ARCHS = $(NATIVE_ARCH) // default
+//ARCHS = ppc i386 // for universal
+
+//////////////////////////////////////////////////////////////////////
+// Qt and other support
+//////////////////////////////////////////////////////////////////////
+
+//QTDIR = /Developer/Tools/Qt // bin dir
+//BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
+//GPSBABEL = /usr/local/bin/gpsbabel
+//SIP_system = /usr/local/bin/sip
+
+//////////////////////////////////////////////////////////////////////
+// forms of some libraries
+//   'fw' for framework
+//   'shared' or 'static' for user unix builds
+//   if unix, make sure to double-check that corresponding *_PREFIX_shared
+//      value is correct (defaults usually /usr/local).
+//      framework prefixes should not change.
+//   some have alternate form choices
+//      static vs. shared choices are always user unix libs
+//////////////////////////////////////////////////////////////////////
+
+//GDAL_FORM = fw // fw or shared
+//PROJ_FORM = fw // fw or shared
+//GEOS_FORM = fw // fw or shared
+
+// system sqlite3 only on Tiger+
+//SQLITE_FORM = fw // fw, system, static or shared
+
+//GSL_FORM = shared // static or shared
+//PGSQL_FORM = shared // static or shared
+
+// system expat only on Leopard+
+//EXPAT_FORM = shared // static, shared or system
+
+//GRASS_FORM = app // app or unix
+// version as in app name or unix folder name, can't auto-detect here
+//GRASS_VERSION = 6.4
+
+// system Python only on Leopard+
+//PYTHON_FORM = fw // fw, system or disabled
+//PYTHON_VERSION = 2.5 // can't auto-detect here
+
+//////////////////////////////////////////////////////////////////////
+// whether to bundle some external libs in the app package
+//   some checking is done, so /Library frameworks (except Qt) and
+//   /usr/lib libraries and /usr/bin progs won't be bundled
+// bundling ignored for static libs
+//////////////////////////////////////////////////////////////////////
+
+//BUNDLE_GSL = YES
+//BUNDLE_PGSQL = YES
+//BUNDLE_GPSBABEL = YES
+
+// no need to bundle frameworks
+//BUNDLE_GDAL = NO
+//BUNDLE_GEOS = NO
+//BUNDLE_PROJ = NO
+//BUNDLE_SQLITE = NO
+
+//////////////////////////////////////////////////////////////////////
+// above is the most that might need to be changed to handle
+// most common cases
+//////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////
+// support library versions
+//   if shared libraries are bundled, need to change install_names
+//   and need to know library version as it currently is specified
+//   in the library
+//   check a library version with otool -L /path/to/library
+//////////////////////////////////////////////////////////////////////
+// ***** need to figure out install_names in script
+
+//GSL_LIBVER = 0
+//PGSQL_LIBVER = 5
+//QT_FWVER = 4 // the Versions/ folder name
+//QT_MVER = 4 // the install_name version
+
+// these only need to be checked for unix forms
+// since bundling is not set up yet for these, ignore them
+//GDAL_LIBVER = 12
+//PROJ_LIBVER = 4
+//GEOS_LIBVER = 2
+//GEOSC_LIBVER = 1 // GEOS has 2 libs, diff versions
+//SQLITE_LIBVER = 0
+
+//////////////////////////////////////////////////////////////////////
+// locations of user forms of dependencies
+//   only used when the _shared or _static form is used above
+//   or always for some libraries
+// shared and static use same prefix
+//////////////////////////////////////////////////////////////////////
+
+//GDAL_PREFIX_shared = /usr/local
+//PROJ_PREFIX_shared = /usr/local
+//GEOS_PREFIX_shared = /usr/local
+
+//GSL_PREFIX = /usr/local
+
+// this must match exactly how GRASS was *built*, not where it is currently
+// installed, if it was moved.  ie GRASS.app must be directly in /Applications
+// prefix is the equivalent of the GRASS GISBASE
+//GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
+//GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
+
+//EXPAT_PREFIX = /usr/local // not used for system expat
+
+// unix SQLite defaults to system, but that's Tiger+ -only
+//   use custom unix build for Panther-compatibility
+//SQLITE_PREFIX_shared = /usr
+
+//PGSQL_PREFIX = /usr/local/pgsql
+// used to link static libs
+//PGSQL_LIBADD = -lssl -lcrypto -lpam -lkrb5
+
+//////////////////////////////////////////////////////////////////////
+// do not change these unless you have a very odd layout for them
+// or they just aren't coming out right in Xcode
+//////////////////////////////////////////////////////////////////////
+
+//GDAL_INC = $(GDAL_INC_$(GDAL_FORM))
+//GDAL_LIB = $(GDAL_LIB_$(GDAL_FORM))
+
+//PROJ_INC = $(PROJ_INC_$(PROJ_FORM))
+//PROJ_LIB = $(PROJ_LIB_$(PROJ_FORM))
+
+//GEOS_INC = $(GEOS_INC_$(GEOS_FORM))
+//GEOS_LIB = $(GEOS_LIB_$(GEOS_FORM))
+
+//GRASS_PREFIX = $(GRASS_PREFIX_$(GRASS_FORM))
+//GRASS_INC = $(GRASS_PREFIX)/include $(GRASS_PREFIX)/include/grass
+//GRASS_LIB = -L$(GRASS_PREFIX)/lib -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj
+//GRASS_BASE = $(GRASS_PREFIX)
+
+//EXPAT_INC = $(EXPAT_INC_$(EXPAT_FORM))
+//EXPAT_LIB = $(EXPAT_LIB_$(EXPAT_FORM))
+
+//GSL_INC = $(GSL_PREFIX)/include
+//GSL_LIB = $(GSL_LIB_$(GSL_FORM))
+
+//PGSQL_INC = $(PGSQL_PREFIX)/include
+//PGSQL_LIB = $(PGSQL_LIB_$(PGSQL_FORM))
+
+//SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
+//SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
+
+//PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/Current
+//PYTHON_INC = $(PYTHON_PREFIX)/Headers
+//PYTHON_LIB = -framework Python
