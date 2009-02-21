@@ -1,0 +1,306 @@
+// QGIS Xcode project common build settings
+
+CURRENT_PROJECT_VERSION = 2.1.0
+
+// SDK not required for native universal build, but recommended,
+// and allows building multiple SDK builds side-by-side
+SDKSYS = // tig (Tiger), leo (Leopard), [empty] (native)
+
+ARCHS = $(NATIVE_ARCH)
+//ARCHS = ppc i386 // for universal
+
+//////////////////////////////////////////////////////////////////////
+// QGIS version info & config
+//////////////////////////////////////////////////////////////////////
+
+// major-minor-micro must be integers for Mac OS X
+QGIS_RELEASE_NAME = Unstable-trunk
+QGIS_VERSION_MAJOR = 1
+QGIS_VERSION_MINOR = 1
+QGIS_VERSION_PATCH = 0
+QGIS_VERSION_BUILD = 20090215
+QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
+QGIS_VERSION_INT = 10100
+
+// library version - generally, keep in sync with qgis version
+LIBQGIS_VERSION_MAJOR = 1
+LIBQGIS_VERSION_MINOR = 1
+LIBQGIS_VERSION_CURRENT = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
+LIBQGIS_VERSION_COMPAT = $(LIBQGIS_VERSION_MAJOR).0
+
+//////////////////////////////////////////////////////////////////////
+// Qt and other support
+//////////////////////////////////////////////////////////////////////
+
+QTDIR = /Developer/Tools/Qt
+QTMOC = $(QTDIR)/moc
+QTUIC = $(QTDIR)/uic
+QTRCC = $(QTDIR)/rcc
+QTLREL = $(QTDIR)/lrelease
+BISON = /usr/bin/bison
+GPSBABEL = /usr/local/bin/gpsbabel
+SIP_system = /usr/local/bin/sip
+SIP_fw = $(PYTHON_PREFIX_fw)/bin/sip
+
+//////////////////////////////////////////////////////////////////////
+// forms of some libraries
+//   'fw' for framework
+//   'shared' or 'static' for user unix builds
+//   if unix, make sure to double-check that corresponding *_PREFIX_shared
+//      value is correct (defaults usually /usr/local).
+//      framework prefixes should not change.
+//   some have alternate form choices
+//      static vs. shared choices are always user unix libs
+//////////////////////////////////////////////////////////////////////
+
+GDAL_FORM = fw // fw or shared
+PROJ_FORM = fw // fw or shared
+GEOS_FORM = fw // fw or shared
+
+// system sqlite3 only on Tiger+
+// could also have source form for in-source copy
+SQLITE_FORM = fw // fw, system, static or shared
+
+GSL_FORM = shared // static or shared
+PGSQL_FORM = shared // static or shared
+
+// system expat only on Leopard+
+EXPAT_FORM = shared // static, shared or system
+
+GRASS_FORM = app // app or unix
+// version as in app name or unix folder name, can't auto-detect here
+GRASS_VERSION = 6.4
+
+// system Python only on Leopard+
+PYTHON_FORM = fw // fw, system or disabled
+PYTHON_VERSION = 2.5 // can't auto-detect here
+
+//////////////////////////////////////////////////////////////////////
+// whether to bundle some external libs in the app package
+//   some checking is done, so /Library frameworks (except Qt) and
+//   /usr/lib libraries and /usr/bin progs won't be bundled
+// bundling ignored for static libs
+//////////////////////////////////////////////////////////////////////
+
+// bundling GRASS doesn't make sense, as a full GRASS install is required
+
+//BUNDLE_QT = YES // always - else Qt plugins will load that cause grief
+BUNDLE_GSL = YES
+BUNDLE_PGSQL = YES
+BUNDLE_GPSBABEL = YES
+
+// no need to bundle frameworks
+BUNDLE_GDAL = NO
+BUNDLE_GEOS = NO
+BUNDLE_PROJ = NO
+BUNDLE_SQLITE = NO
+
+//////////////////////////////////////////////////////////////////////
+// support library versions
+//   if shared libraries are bundled, need to change install_names
+//   and need to know library version as it currently is specified
+//   in the library
+//   check a library version with otool -L /path/to/library
+//////////////////////////////////////////////////////////////////////
+// ***** need to figure out install_names in script
+
+GSL_LIBVER = 0
+PGSQL_LIBVER = 5
+QT_FWVER = 4 // the Versions/ folder name
+QT_MVER = 4 // the install_name version
+
+// these only need to be checked for unix forms
+// since bundling is not set up yet for these, ignore them
+GDAL_LIBVER = 12
+PROJ_LIBVER = 4
+GEOS_LIBVER = 2
+GEOSC_LIBVER = 1 // GEOS has 2 libs, diff versions
+SQLITE_LIBVER = 0
+
+//////////////////////////////////////////////////////////////////////
+// locations of user forms of dependencies
+//   only used when the _shared or _static form is used above
+//   or always for some libraries
+// shared and static use same prefix
+//////////////////////////////////////////////////////////////////////
+
+GDAL_PREFIX_shared = /usr/local
+PROJ_PREFIX_shared = /usr/local
+GEOS_PREFIX_shared = /usr/local
+
+GSL_PREFIX = /usr/local
+
+// this must match exactly how GRASS was *built*, not where it is currently
+// installed, if it was moved.  ie GRASS.app must be directly in /Applications
+// prefix is the equivalent of the GRASS GISBASE
+GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
+GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
+
+EXPAT_PREFIX = /usr/local // not used for system expat
+
+// unix SQLite defaults to system, but that's Tiger+ -only
+//   use custom unix build for Panther-compatibility
+SQLITE_PREFIX_shared = /usr
+
+PGSQL_PREFIX = /usr/local/pgsql
+// used to link static libs
+PGSQL_LIBADD = -lssl -lcrypto -lpam -lkrb5
+
+//////////////////////////////////////////////////////////////////////
+// DO NOT CHANGE THESE
+//////////////////////////////////////////////////////////////////////
+
+SDKROOT_tig = /Developer/SDKs/MacOSX10.4u.sdk
+SDKROOT_leo = /Developer/SDKs/MacOSX10.5.sdk
+SDKROOT = $(SDKROOT_$(SDKSYS))
+SYMROOT_tig = build/tig
+SYMROOT_leo = build/leo
+SYMROOT_ = build/native
+SYMROOT = $(SYMROOT_$(SDKSYS))
+INSTALL_PREFIX = /Applications
+QGIS_APP_NAME = Qgis.app
+PROJECT_TARGET_APP_DIR = $(CONFIGURATION_BUILD_DIR)/$(QGIS_PREFIX)
+QGIS_PREFIX = $(QGIS_APP_NAME)/Contents
+QGIS_INSTALL_PATH = $(INSTALL_PREFIX)/$(QGIS_PREFIX)
+QGIS_BUILD_PATH = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(QGIS_PREFIX)
+// subdirs are relative to MacOS dir, as if MacOS is unix "prefix"
+QGIS_BIN_SUBDIR = bin // leave this alone for now
+QGIS_FW_SUBDIR = ../Frameworks
+QGIS_LIB_SUBDIR = lib
+QGIS_DATA_SUBDIR = ../Resources
+QGIS_PLUGIN_SUBDIR = ../PlugIns/qgis
+HEADER_SEARCH_PATHS = generated
+//LIBRARY_SEARCH_PATHS = $(PROJECT_TARGET_APP_DIR)/../Frameworks
+ALWAYS_SEARCH_USER_PATHS = NO
+USE_HEADERMAP = NO
+
+DYLIB_CURRENT_VERSION = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
+DYLIB_COMPATIBILITY_VERSION = $(LIBQGIS_VERSION_MAJOR).0
+MACOSX_DEPLOYMENT_TARGET_tig = 10.4
+MACOSX_DEPLOYMENT_TARGET_leo = 10.5
+MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET_$(SDKSYS))
+GCC_INLINES_ARE_PRIVATE_EXTERN = NO
+GCC_ENABLE_CPP_EXCEPTIONS = YES
+GCC_ENABLE_CPP_RTTI = YES
+GCC_SYMBOLS_PRIVATE_EXTERN = NO
+GCC_WARN_ABOUT_RETURN_TYPE = YES
+GCC_WARN_UNUSED_VARIABLE = YES
+GCC_INCREASE_PRECOMPILED_HEADER_SHARING = YES
+GCC_GENERATE_DEBUGGING_SYMBOLS = NO
+GCC_MODEL_TUNING = 
+GCC_CW_ASM_SYNTAX = NO
+GCC_ENABLE_PASCAL_STRINGS = NO
+GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO
+GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO
+PREBINDING = NO
+PERL = /usr/bin/perl
+INFOPLIST_EXPAND_BUILD_SETTINGS = YES
+DEBUG_INFORMATION_FORMAT = dwarf-with-dsym
+OTHER_LDFLAGS = -headerpad_max_install_names
+
+GCC_PREPROCESSOR_DEFINITIONS = CORE_EXPORT= GUI_EXPORT= PYTHON_EXPORT= $(DEFS_$(CONFIGURATION))
+DEFS_Debug = QGISDEBUG=1
+DEFS_Release = NDEBUG
+
+// use full flags instead of Xcode includes and defs,
+// since these are needed in scripts also
+QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtSql.framework/Headers -I/Library/Frameworks/QtSvg.framework/Headers -I/Library/Frameworks/QtXml.framework/Headers
+QTDEFS_Debug = -DQT_DEBUG
+QTDEFS_Release = -DQT_NO_DEBUG
+QT_CXXFLAGS_APP = $(PGSQL_HAVE)
+QT_INC_QT3 = /Library/Frameworks/Qt3Support.framework/Headers
+// old qt: -D_REENTRANT -DQT_THREAD_SUPPORT
+// -I/Library/Frameworks/QtTest.framework/Headers
+QT_LIB_CORE = -framework QtCore
+QT_LIB_GUI = -framework QtGui
+QT_LIB_NET = -framework QtNetwork
+QT_LIB_XML = -framework QtXml
+QT_LIB_SVG = -framework QtSvg
+QT_LIB_SQL = -framework QtSql
+QT_LIB_QT3 = -framework Qt3Support
+QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
+// -framework QtDesigner
+
+// with a choice of system vs user unix libs, use full path to lib file
+// to avoid possible accidental linking to system lib
+
+GDAL_PREFIX_fw = /Library/Frameworks/GDAL.framework
+GDAL_PREFIX = $(GDAL_PREFIX_$(GDAL_FORM))
+GDAL_INC_fw = $(GDAL_PREFIX_fw)/Headers
+GDAL_INC_shared = $(GDAL_PREFIX_shared)/include
+GDAL_INC = $(GDAL_INC_$(GDAL_FORM))
+GDAL_LIB_fw = -framework GDAL
+GDAL_LIB_shared = -L$(GDAL_PREFIX_shared)/lib -lgdal
+GDAL_LIB = $(GDAL_LIB_$(GDAL_FORM))
+
+PROJ_PREFIX_fw = /Library/Frameworks/PROJ.framework
+PROJ_INC_fw = $(PROJ_PREFIX_fw)/Headers
+PROJ_INC_shared = $(PROJ_PREFIX_shared)/include
+PROJ_INC = $(PROJ_INC_$(PROJ_FORM))
+PROJ_LIB_fw = -framework PROJ
+PROJ_LIB_shared = -L$(PROJ_PREFIX_shared)/lib -lproj
+PROJ_LIB = $(PROJ_LIB_$(PROJ_FORM))
+
+GEOS_PREFIX_fw = /Library/Frameworks/GEOS.framework
+GEOS_PREFIX = $(GEOS_PREFIX_$(GEOS_FORM))
+GEOS_INC_fw = $(GEOS_PREFIX_fw)/Headers
+GEOS_INC_shared = $(GEOS_PREFIX_shared)/include
+GEOS_INC = $(GEOS_INC_$(GEOS_FORM))
+GEOS_LIB_fw = -framework GEOS
+GEOS_LIB_shared = -L$(GEOS_PREFIX_shared)/lib -lgeos -lgeos_c
+GEOS_LIB = $(GEOS_LIB_$(GEOS_FORM))
+
+GRASS_PREFIX = $(GRASS_PREFIX_$(GRASS_FORM))
+GRASS_INC = $(GRASS_PREFIX)/include $(GRASS_PREFIX)/include/grass
+GRASS_LIB = -L$(GRASS_PREFIX)/lib -lgrass_vect -lgrass_dig2 -lgrass_dbmiclient -lgrass_dbmibase -lgrass_shape -lgrass_dgl -lgrass_rtree -lgrass_gis -lgrass_datetime -lgrass_linkm -lgrass_form -lgrass_gproj
+GRASS_BASE = $(GRASS_PREFIX)
+HAVE_OPENPTY = 1
+
+EXPAT_INC_system = 
+EXPAT_INC_shared = $(EXPAT_PREFIX)/include
+EXPAT_INC_static = $(EXPAT_PREFIX)/include
+EXPAT_INC = $(EXPAT_INC_$(EXPAT_FORM))
+EXPAT_LIB_system = -lexpat
+EXPAT_LIB_shared = $(EXPAT_PREFIX)/lib/libexpat.dylib
+EXPAT_LIB_static = $(EXPAT_PREFIX)/lib/libexpat.a
+EXPAT_LIB = $(EXPAT_LIB_$(EXPAT_FORM))
+
+GSL_INC = $(GSL_PREFIX)/include
+GSL_LIB_shared = -L$(GSL_PREFIX)/lib -lgsl -lgslcblas -lm
+GSL_LIB_static = $(GSL_PREFIX)/lib/libgsl.a $(GSL_PREFIX)/lib/libgslcblas.a -lm
+GSL_LIB = $(GSL_LIB_$(GSL_FORM))
+
+PGSQL_INC = $(PGSQL_PREFIX)/include
+PGSQL_LIB_shared = -L$(PGSQL_PREFIX)/lib -lpq
+PGSQL_LIB_static = $(PGSQL_PREFIX)/lib/libpq.a $(PGSQL_LIBADD)
+PGSQL_LIB = $(PGSQL_LIB_$(PGSQL_FORM))
+PGSQL_HAVE_shared = -DHAVE_PGCONFIG=1
+PGSQL_HAVE_static = -DHAVE_PGCONFIG=1
+PGSQL_HAVE = $(PGSQL_HAVE_$(PGSQL_FORM))
+
+SQLITE_PREFIX_fw = /Library/Frameworks/SQLite3.framework
+SQLITE_INC_system = 
+SQLITE_INC_fw = $(SQLITE_PREFIX_fw)/Headers
+SQLITE_INC_shared = $(SQLITE_PREFIX_shared)/include
+SQLITE_INC_static = $(SQLITE_PREFIX_static)/include
+SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
+SQLITE_LIB_system = -lsqlite3
+SQLITE_LIB_fw = -framework SQLite3
+SQLITE_LIB_shared = $(SQLITE_PREFIX_shared)/lib/libsqlite3.dylib
+SQLITE_LIB_static = $(SQLITE_PREFIX_static)/lib/libsqlite3.a
+SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
+
+PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
+PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
+PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/Current
+PYTHON_INC = $(PYTHON_PREFIX)/Headers
+PYTHON_LIB = -framework Python
+PYTHON_HAVE_fw_tig = HAVE_PYTHON=1
+PYTHON_HAVE_fw_leo = HAVE_PYTHON=1
+PYTHON_HAVE_system_tig = 
+PYTHON_HAVE_system_leo = HAVE_PYTHON=1
+PYTHON_HAVE = $(PYTHON_HAVE_$(PYTHON_FORM)_$(SDKSYS))
+PYTHON = $(PYTHON_PREFIX)/bin/python
+
+#include "qgis_user.xcconfig"
+#include "moc_sources.xcconfig"
