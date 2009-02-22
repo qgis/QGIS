@@ -13,24 +13,28 @@ ARCHS = $(NATIVE_ARCH)
 // QGIS version info & config
 //////////////////////////////////////////////////////////////////////
 
-// major-minor-micro must be integers for Mac OS X
+// major-minor-patch must be integers for Mac OS X
 QGIS_RELEASE_NAME = Unstable-trunk
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 1
 QGIS_VERSION_PATCH = 0
-QGIS_VERSION_BUILD = 20090215
+QGIS_VERSION_BUILD = 20090221
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
 QGIS_VERSION_INT = 10100
 
 // library version - generally, keep in sync with qgis version
-LIBQGIS_VERSION_MAJOR = 1
-LIBQGIS_VERSION_MINOR = 1
+LIBQGIS_VERSION_MAJOR = $(QGIS_VERSION_MAJOR)
+LIBQGIS_VERSION_MINOR = $(QGIS_VERSION_MINOR)
 LIBQGIS_VERSION_CURRENT = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
 LIBQGIS_VERSION_COMPAT = $(LIBQGIS_VERSION_MAJOR).0
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
 //////////////////////////////////////////////////////////////////////
+
+// ***TODO*** - detect current version, only used in bundle script
+QT_FWVER = 4 // the Versions/ folder name
+QT_MVER = 4 // the install_name version
 
 QTDIR = /Developer/Tools/Qt
 QTMOC = $(QTDIR)/moc
@@ -57,8 +61,7 @@ GDAL_FORM = fw // fw or shared
 PROJ_FORM = fw // fw or shared
 GEOS_FORM = fw // fw or shared
 
-// system sqlite3 only on Tiger+
-// could also have source form for in-source copy
+// could also have source form for in-source copy  ***TODO***
 SQLITE_FORM = fw // fw, system, static or shared
 
 GSL_FORM = shared // static or shared
@@ -73,6 +76,7 @@ GRASS_VERSION = 6.4
 
 // system Python only on Leopard+
 PYTHON_FORM = fw // fw, system or disabled
+// ***TODO*** "Current" will autodetect version
 PYTHON_VERSION = 2.5 // can't auto-detect here
 
 //////////////////////////////////////////////////////////////////////
@@ -83,39 +87,16 @@ PYTHON_VERSION = 2.5 // can't auto-detect here
 //////////////////////////////////////////////////////////////////////
 
 // bundling GRASS doesn't make sense, as a full GRASS install is required
+// Qt always bundled - else Qt plugins will load that cause grief
 
-//BUNDLE_QT = YES // always - else Qt plugins will load that cause grief
 BUNDLE_GSL = YES
 BUNDLE_PGSQL = YES
 BUNDLE_GPSBABEL = YES
-
-// no need to bundle frameworks
-BUNDLE_GDAL = NO
-BUNDLE_GEOS = NO
-BUNDLE_PROJ = NO
-BUNDLE_SQLITE = NO
-
-//////////////////////////////////////////////////////////////////////
-// support library versions
-//   if shared libraries are bundled, need to change install_names
-//   and need to know library version as it currently is specified
-//   in the library
-//   check a library version with otool -L /path/to/library
-//////////////////////////////////////////////////////////////////////
-// ***** need to figure out install_names in script
-
-GSL_LIBVER = 0
-PGSQL_LIBVER = 5
-QT_FWVER = 4 // the Versions/ folder name
-QT_MVER = 4 // the install_name version
-
-// these only need to be checked for unix forms
-// since bundling is not set up yet for these, ignore them
-GDAL_LIBVER = 12
-PROJ_LIBVER = 4
-GEOS_LIBVER = 2
-GEOSC_LIBVER = 1 // GEOS has 2 libs, diff versions
-SQLITE_LIBVER = 0
+// frameworks not bundled
+BUNDLE_GDAL = YES
+BUNDLE_GEOS = YES
+BUNDLE_PROJ = YES
+BUNDLE_SQLITE = YES
 
 //////////////////////////////////////////////////////////////////////
 // locations of user forms of dependencies
@@ -130,16 +111,15 @@ GEOS_PREFIX_shared = /usr/local
 
 GSL_PREFIX = /usr/local
 
-// this must match exactly how GRASS was *built*, not where it is currently
-// installed, if it was moved.  ie GRASS.app must be directly in /Applications
-// prefix is the equivalent of the GRASS GISBASE
+// This must match exactly how GRASS was built and installed.
+// If it was moved or renamed, qgis GRASS plugin will not work.
+// Prefix is the equivalent of the GRASS GISBASE
 GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
 GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
 
 EXPAT_PREFIX = /usr/local // not used for system expat
 
-// unix SQLite defaults to system, but that's Tiger+ -only
-//   use custom unix build for Panther-compatibility
+// unix SQLite defaults to system
 SQLITE_PREFIX_shared = /usr
 
 PGSQL_PREFIX = /usr/local/pgsql
@@ -166,13 +146,13 @@ QGIS_BUILD_PATH = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(QGIS_P
 // subdirs are relative to MacOS dir, as if MacOS is unix "prefix"
 QGIS_BIN_SUBDIR = bin // leave this alone for now
 QGIS_FW_SUBDIR = ../Frameworks
-QGIS_LIB_SUBDIR = lib
+QGIS_LIB_SUBDIR = lib // qgispython lib MUST be in MacOS/lib
 QGIS_DATA_SUBDIR = ../Resources
 QGIS_PLUGIN_SUBDIR = ../PlugIns/qgis
 HEADER_SEARCH_PATHS = generated
 //LIBRARY_SEARCH_PATHS = $(PROJECT_TARGET_APP_DIR)/../Frameworks
 ALWAYS_SEARCH_USER_PATHS = NO
-USE_HEADERMAP = NO
+USE_HEADERMAP = NO // else headers with same name cause confusion
 
 DYLIB_CURRENT_VERSION = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
 DYLIB_COMPATIBILITY_VERSION = $(LIBQGIS_VERSION_MAJOR).0
@@ -209,8 +189,6 @@ QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
 QT_CXXFLAGS_APP = $(PGSQL_HAVE)
 QT_INC_QT3 = /Library/Frameworks/Qt3Support.framework/Headers
-// old qt: -D_REENTRANT -DQT_THREAD_SUPPORT
-// -I/Library/Frameworks/QtTest.framework/Headers
 QT_LIB_CORE = -framework QtCore
 QT_LIB_GUI = -framework QtGui
 QT_LIB_NET = -framework QtNetwork
@@ -218,11 +196,11 @@ QT_LIB_XML = -framework QtXml
 QT_LIB_SVG = -framework QtSvg
 QT_LIB_SQL = -framework QtSql
 QT_LIB_QT3 = -framework Qt3Support
+// convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
-// -framework QtDesigner
 
 // with a choice of system vs user unix libs, use full path to lib file
-// to avoid possible accidental linking to system lib
+// to avoid possible accidental linking to system lib (ie expat)
 
 GDAL_PREFIX_fw = /Library/Frameworks/GDAL.framework
 GDAL_PREFIX = $(GDAL_PREFIX_$(GDAL_FORM))
