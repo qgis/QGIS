@@ -113,6 +113,7 @@
 				7256F1A40F411B480022BE1F /* PBXTargetDependency */,
 				7256F1A20F411B480022BE1F /* PBXTargetDependency */,
 				7256F1A00F411B480022BE1F /* PBXTargetDependency */,
+				72F07FEA0F5112D8008D3148 /* PBXTargetDependency */,
 				7256F1BD0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1BB0F411C4B0022BE1F /* PBXTargetDependency */,
 				7256F1B90F411C4B0022BE1F /* PBXTargetDependency */,
@@ -3010,6 +3011,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72E706F20F42611800142011;
 			remoteInfo = Python;
+		};
+		72F07FE90F5112D8008D3148 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72A07D880F3BDF9C004FC2A4 /* postgresprovider */;
+			remoteInfo = postgresprovider;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -13634,7 +13642,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "mkdir -p generated/core\n\nif [ ! -f generated/core/qgssearchstringparser.cpp ] || [ ../../src/core/qgssearchstringparser.yy -nt generated/core/qgssearchstringparser.cpp ] ; then\n\techo \"$BISON -o generated/core/qgssearchstringparser.cpp -d -v -t ../../src/core/qgssearchstringparser.yy\"\n\t$BISON -o generated/core/qgssearchstringparser.cpp -d -v -t ../../src/core/qgssearchstringparser.yy\nfi\nif [ ! -f generated/core/qgssearchstringparser.cpp ] ; then\n\texit 1\nfi\n\nif [ ! -f generated/core/flex_qgssearchstringlexer.cpp ] || [ ../../src/core/qgssearchstringlexer.ll -nt generated/core/flex_qgssearchstringlexer.cpp ] ; then\n\techo \"$LEX -o generated/core/flex_qgssearchstringlexer.cpp -d ../../src/core/qgssearchstringlexer.ll\"\n\t$LEX -o generated/core/flex_qgssearchstringlexer.cpp -d ../../src/core/qgssearchstringlexer.ll\nfi\nif [ ! -f generated/core/flex_qgssearchstringlexer.cpp ] ; then\n\texit 1\nfi\n";
+			shellScript = "mkdir -p generated/core\n\nif [ ! -f generated/core/qgssearchstringparser.cpp ] || [ ../../src/core/qgssearchstringparser.yy -nt generated/core/qgssearchstringparser.cpp ] ; then\n\techo \"$BISON -o \\\"$PROJECT_DIR/generated/core/qgssearchstringparser.cpp\\\" -d -v -t \\\"$PROJECT_DIR/../../src/core/qgssearchstringparser.yy\\\"\"\n\t$BISON -o \"$PROJECT_DIR/generated/core/qgssearchstringparser.cpp\" -d -v -t \"$PROJECT_DIR/../../src/core/qgssearchstringparser.yy\"\nfi\nif [ ! -f generated/core/qgssearchstringparser.cpp ] ; then\n\texit 1\nfi\n\nif [ ! -f generated/core/flex_qgssearchstringlexer.cpp ] || [ ../../src/core/qgssearchstringlexer.ll -nt generated/core/flex_qgssearchstringlexer.cpp ] ; then\n\techo \"$LEX -o \\\"$PROJECT_DIR/generated/core/flex_qgssearchstringlexer.cpp\\\" -d \\\"$PROJECT_DIR/../../src/core/qgssearchstringlexer.ll\\\"\"\n\t$LEX -o \"$PROJECT_DIR/generated/core/flex_qgssearchstringlexer.cpp\" -d \"$PROJECT_DIR/../../src/core/qgssearchstringlexer.ll\"\nfi\nif [ ! -f generated/core/flex_qgssearchstringlexer.cpp ] ; then\n\texit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		729BBF0E0F407818001BCB63 /* Generate Sources */ = {
@@ -15123,6 +15131,11 @@
 			target = 72E706F20F42611800142011 /* Python */;
 			targetProxy = 72E706F90F42613A00142011 /* PBXContainerItemProxy */;
 		};
+		72F07FEA0F5112D8008D3148 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72A07D880F3BDF9C004FC2A4 /* postgresprovider */;
+			targetProxy = 72F07FE90F5112D8008D3148 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -16380,7 +16393,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 				);
-				PRODUCT_NAME = gpsimporter.so;
+				PRODUCT_NAME = gpsimporterplugin.so;
 			};
 			name = Debug;
 		};
