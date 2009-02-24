@@ -18,7 +18,7 @@ QGIS_RELEASE_NAME = Unstable-trunk
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 1
 QGIS_VERSION_PATCH = 0
-QGIS_VERSION_BUILD = 20090221
+QGIS_VERSION_BUILD = 20090223
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
 QGIS_VERSION_INT = 10100
 
@@ -36,11 +36,12 @@ LIBQGIS_VERSION_COMPAT = $(LIBQGIS_VERSION_MAJOR).0
 QT_FWVER = 4 // the Versions/ folder name
 QT_MVER = 4 // the install_name version
 
-QTDIR = /Developer/Tools/Qt
-QTMOC = $(QTDIR)/moc
-QTUIC = $(QTDIR)/uic
-QTRCC = $(QTDIR)/rcc
-QTLREL = $(QTDIR)/lrelease
+QTDIR = /Developer/Applications/Qt
+QTBIN = /Developer/Tools/Qt
+QTMOC = $(QTBIN)/moc
+QTUIC = $(QTBIN)/uic
+QTRCC = $(QTBIN)/rcc
+QTLREL = $(QTBIN)/lrelease
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel
 SIP_system = /usr/local/bin/sip

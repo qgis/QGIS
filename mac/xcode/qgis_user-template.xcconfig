@@ -4,6 +4,7 @@
 // uncomment settings in qgis_user.xcconfig to override defaults
 //   in qgis_settings.xcconfig.
 // commented values values shown here are defaults
+// there is no need to set *everything* here.
 
 //SDKSYS =  // tig (Tiger), leo (Leopard), [empty] (native)
 //ARCHS = $(NATIVE_ARCH) // default
@@ -13,7 +14,11 @@
 // Qt and other support
 //////////////////////////////////////////////////////////////////////
 
-//QTDIR = /Developer/Tools/Qt // bin dir
+//QT_FWVER = 4 // the Versions/ folder name
+//QT_MVER = 4 // the install_name version
+
+//QTDIR = /Developer/Applications/Qt // Qt apps and plugins
+//QTBIN = /Developer/Tools/Qt // bin dir
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
 //GPSBABEL = /usr/local/bin/gpsbabel
 //SIP_system = /usr/local/bin/sip
@@ -33,7 +38,6 @@
 //PROJ_FORM = fw // fw or shared
 //GEOS_FORM = fw // fw or shared
 
-// system sqlite3 only on Tiger+
 //SQLITE_FORM = fw // fw, system, static or shared
 
 //GSL_FORM = shared // static or shared
@@ -61,38 +65,18 @@
 //BUNDLE_PGSQL = YES
 //BUNDLE_GPSBABEL = YES
 
-// no need to bundle frameworks
-//BUNDLE_GDAL = NO
-//BUNDLE_GEOS = NO
-//BUNDLE_PROJ = NO
-//BUNDLE_SQLITE = NO
+// frameworks not bundled
+//BUNDLE_GDAL = YES
+//BUNDLE_GEOS = YES
+//BUNDLE_PROJ = YES
+//BUNDLE_SQLITE = YES
 
 //////////////////////////////////////////////////////////////////////
-// above is the most that might need to be changed to handle
-// most common cases
 //////////////////////////////////////////////////////////////////////
-
+//// above is the most that might need to be changed to handle    ////
+//// most common cases                                            ////
 //////////////////////////////////////////////////////////////////////
-// support library versions
-//   if shared libraries are bundled, need to change install_names
-//   and need to know library version as it currently is specified
-//   in the library
-//   check a library version with otool -L /path/to/library
 //////////////////////////////////////////////////////////////////////
-// ***** need to figure out install_names in script
-
-//GSL_LIBVER = 0
-//PGSQL_LIBVER = 5
-//QT_FWVER = 4 // the Versions/ folder name
-//QT_MVER = 4 // the install_name version
-
-// these only need to be checked for unix forms
-// since bundling is not set up yet for these, ignore them
-//GDAL_LIBVER = 12
-//PROJ_LIBVER = 4
-//GEOS_LIBVER = 2
-//GEOSC_LIBVER = 1 // GEOS has 2 libs, diff versions
-//SQLITE_LIBVER = 0
 
 //////////////////////////////////////////////////////////////////////
 // locations of user forms of dependencies
@@ -107,16 +91,15 @@
 
 //GSL_PREFIX = /usr/local
 
-// this must match exactly how GRASS was *built*, not where it is currently
-// installed, if it was moved.  ie GRASS.app must be directly in /Applications
-// prefix is the equivalent of the GRASS GISBASE
+// This must match exactly how GRASS was built and installed.
+// If it was moved or renamed, qgis GRASS plugin will not work.
+// Prefix is the equivalent of the GRASS GISBASE
 //GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
 //GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
 
 //EXPAT_PREFIX = /usr/local // not used for system expat
 
-// unix SQLite defaults to system, but that's Tiger+ -only
-//   use custom unix build for Panther-compatibility
+// unix SQLite defaults to system
 //SQLITE_PREFIX_shared = /usr
 
 //PGSQL_PREFIX = /usr/local/pgsql
