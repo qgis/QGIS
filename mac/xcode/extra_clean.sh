@@ -22,7 +22,6 @@ rm -f generated/dxf2shpconverterplugin/*
 rm -f generated/georeferencerplugin/*
 rm -f generated/gpsimporterplugin/*
 rm -f generated/grassplugin/*
-rm -f generated/gridmakerplugin/*
 rm -f generated/interpolationplugin/*
 rm -f generated/northarrowplugin/*
 rm -f generated/quickprintplugin/*
