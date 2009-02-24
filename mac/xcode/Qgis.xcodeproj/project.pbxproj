@@ -1156,7 +1156,6 @@
 		72A56B470F3C822800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B520F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B5C0F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
-		72A56B660F3C824300BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B700F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B7A0F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B840F3C824400BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -1169,7 +1168,6 @@
 		72A56BB50F3C849A00BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BB60F3C84A000BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BB70F3C84A700BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
-		72A56BB80F3C84AC00BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BB90F3C84B200BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BBA0F3C84B800BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BBB0F3C84C000BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
@@ -1179,12 +1177,6 @@
 		72A56BC50F3C854900BA32A1 /* moc_qgsdelimitedtextplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BC10F3C854900BA32A1 /* moc_qgsdelimitedtextplugin.cpp */; };
 		72A56BC60F3C854900BA32A1 /* moc_qgsdelimitedtextplugingui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BC20F3C854900BA32A1 /* moc_qgsdelimitedtextplugingui.cpp */; };
 		72A56BC70F3C854900BA32A1 /* qrc_delimited_text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BC30F3C854900BA32A1 /* qrc_delimited_text.cpp */; };
-		72A56BDB0F3C867200BA32A1 /* moc_plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BD70F3C867200BA32A1 /* moc_plugin.cpp */; };
-		72A56BDC0F3C867200BA32A1 /* moc_plugingui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BD80F3C867200BA32A1 /* moc_plugingui.cpp */; };
-		72A56BDD0F3C867200BA32A1 /* qrc_gridmaker_plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A56BD90F3C867200BA32A1 /* qrc_gridmaker_plugin.cpp */; };
-		72A56BDE0F3C868300BA32A1 /* plugingui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBB40F39E57B003DC336 /* plugingui.cpp */; };
-		72A56BDF0F3C868800BA32A1 /* graticulecreator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBAE0F39E57B003DC336 /* graticulecreator.cpp */; };
-		72A56BE00F3C868C00BA32A1 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBB20F39E57B003DC336 /* plugin.cpp */; };
 		72A56BF40F3C886100BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56BF50F3C886100BA32A1 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		72A56BFF0F3C887000BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -2915,20 +2907,6 @@
 			remoteInfo = qgis_gui;
 		};
 		729BBEEB0F4076B9001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F1D10F39E760003DC336;
-			remoteInfo = qgis_core;
-		};
-		729BBEED0F4076BD001BCB63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
-			remoteInfo = qgis_gui;
-		};
-		729BBEEF0F4076BD001BCB63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
@@ -6438,19 +6416,6 @@
 		7209EBA70F39E57B003DC336 /* mapcalc_save_as.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mapcalc_save_as.png; path = ../../src/plugins/grass/themes/default/mapcalc_save_as.png; sourceTree = SOURCE_ROOT; };
 		7209EBA80F39E57B003DC336 /* mapcalc_select.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mapcalc_select.png; path = ../../src/plugins/grass/themes/default/mapcalc_select.png; sourceTree = SOURCE_ROOT; };
 		7209EBA90F39E57B003DC336 /* world.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = world.png; path = ../../src/plugins/grass/themes/default/world.png; sourceTree = SOURCE_ROOT; };
-		7209EBAC0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grid_maker/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EBAD0F39E57B003DC336 /* graticule.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = graticule.svg; path = ../../src/plugins/grid_maker/graticule.svg; sourceTree = SOURCE_ROOT; };
-		7209EBAE0F39E57B003DC336 /* graticulecreator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = graticulecreator.cpp; path = ../../src/plugins/grid_maker/graticulecreator.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBAF0F39E57B003DC336 /* graticulecreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = graticulecreator.h; path = ../../src/plugins/grid_maker/graticulecreator.h; sourceTree = SOURCE_ROOT; };
-		7209EBB00F39E57B003DC336 /* grid_maker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grid_maker.png; path = ../../src/plugins/grid_maker/grid_maker.png; sourceTree = SOURCE_ROOT; };
-		7209EBB10F39E57B003DC336 /* gridmaker_plugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gridmaker_plugin.qrc; path = ../../src/plugins/grid_maker/gridmaker_plugin.qrc; sourceTree = SOURCE_ROOT; };
-		7209EBB20F39E57B003DC336 /* plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plugin.cpp; path = ../../src/plugins/grid_maker/plugin.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBB30F39E57B003DC336 /* plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plugin.h; path = ../../src/plugins/grid_maker/plugin.h; sourceTree = SOURCE_ROOT; };
-		7209EBB40F39E57B003DC336 /* plugingui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plugingui.cpp; path = ../../src/plugins/grid_maker/plugingui.cpp; sourceTree = SOURCE_ROOT; };
-		7209EBB50F39E57B003DC336 /* plugingui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = plugingui.h; path = ../../src/plugins/grid_maker/plugingui.h; sourceTree = SOURCE_ROOT; };
-		7209EBB60F39E57B003DC336 /* pluginguibase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = pluginguibase.ui; path = ../../src/plugins/grid_maker/pluginguibase.ui; sourceTree = SOURCE_ROOT; };
-		7209EBB70F39E57B003DC336 /* pluginguibase.ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pluginguibase.ui.h; path = ../../src/plugins/grid_maker/pluginguibase.ui.h; sourceTree = SOURCE_ROOT; };
-		7209EBB80F39E57B003DC336 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../src/plugins/grid_maker/README; sourceTree = SOURCE_ROOT; };
 		7209EBBA0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/interpolation/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EBBB0F39E57B003DC336 /* DualEdgeTriangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DualEdgeTriangulation.cc; path = ../../src/plugins/interpolation/DualEdgeTriangulation.cc; sourceTree = SOURCE_ROOT; };
 		7209EBBC0F39E57B003DC336 /* DualEdgeTriangulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DualEdgeTriangulation.h; path = ../../src/plugins/interpolation/DualEdgeTriangulation.h; sourceTree = SOURCE_ROOT; };
@@ -7716,7 +7681,6 @@
 		72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgeoreferencerplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B560F3C823800BA32A1 /* libgpsimporter.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgpsimporter.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B600F3C823800BA32A1 /* libgrassplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgrassplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		72A56B6A0F3C824300BA32A1 /* libgridmakerplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgridmakerplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B740F3C824400BA32A1 /* libinterpolationplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libinterpolationplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B7E0F3C824400BA32A1 /* libnortharrowplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libnortharrowplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B880F3C824400BA32A1 /* libquickprintplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libquickprintplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7727,10 +7691,6 @@
 		72A56BC20F3C854900BA32A1 /* moc_qgsdelimitedtextplugingui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgsdelimitedtextplugingui.cpp; path = generated/delimitedtextplugin/moc_qgsdelimitedtextplugingui.cpp; sourceTree = SOURCE_ROOT; };
 		72A56BC30F3C854900BA32A1 /* qrc_delimited_text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qrc_delimited_text.cpp; path = generated/delimitedtextplugin/qrc_delimited_text.cpp; sourceTree = SOURCE_ROOT; };
 		72A56BC40F3C854900BA32A1 /* ui_qgsdelimitedtextpluginguibase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsdelimitedtextpluginguibase.h; path = generated/delimitedtextplugin/ui_qgsdelimitedtextpluginguibase.h; sourceTree = SOURCE_ROOT; };
-		72A56BD70F3C867200BA32A1 /* moc_plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_plugin.cpp; path = generated/gridmakerplugin/moc_plugin.cpp; sourceTree = SOURCE_ROOT; };
-		72A56BD80F3C867200BA32A1 /* moc_plugingui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_plugingui.cpp; path = generated/gridmakerplugin/moc_plugingui.cpp; sourceTree = SOURCE_ROOT; };
-		72A56BD90F3C867200BA32A1 /* qrc_gridmaker_plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qrc_gridmaker_plugin.cpp; path = generated/gridmakerplugin/qrc_gridmaker_plugin.cpp; sourceTree = SOURCE_ROOT; };
-		72A56BDA0F3C867200BA32A1 /* ui_pluginguibase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_pluginguibase.h; path = generated/gridmakerplugin/ui_pluginguibase.h; sourceTree = SOURCE_ROOT; };
 		72A56BF90F3C886100BA32A1 /* libcoordinatecaptureplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libcoordinatecaptureplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56C040F3C887000BA32A1 /* libdxf2shpconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdxf2shpconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56C0F0F3C887300BA32A1 /* libogrconverterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libogrconverterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -8170,15 +8130,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		72A56B650F3C824300BA32A1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				72A56B660F3C824300BA32A1 /* libqgis_core.dylib in Frameworks */,
-				72A56BB80F3C84AC00BA32A1 /* libqgis_gui.dylib in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		72A56B6F0F3C824400BA32A1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8305,7 +8256,6 @@
 				72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */,
 				72A56B560F3C823800BA32A1 /* libgpsimporter.so */,
 				72A56B600F3C823800BA32A1 /* libgrassplugin.so */,
-				72A56B6A0F3C824300BA32A1 /* libgridmakerplugin.so */,
 				72A56B740F3C824400BA32A1 /* libinterpolationplugin.so */,
 				72A56B7E0F3C824400BA32A1 /* libnortharrowplugin.so */,
 				72A56B880F3C824400BA32A1 /* libquickprintplugin.so */,
@@ -9072,7 +9022,6 @@
 				7209E79A0F39E57A003DC336 /* CMakeLists.txt */,
 				7209E7AE0F39E57A003DC336 /* copyright_label */,
 				7209E7BB0F39E57B003DC336 /* delimited_text */,
-				7209EBAA0F39E57B003DC336 /* grid_maker */,
 				7209EBB90F39E57B003DC336 /* interpolation */,
 				7209EBE90F39E57B003DC336 /* north_arrow */,
 				7209EC1E0F39E57B003DC336 /* scale_bar */,
@@ -10256,27 +10205,6 @@
 			);
 			name = default;
 			path = ../../src/plugins/grass/themes/default;
-			sourceTree = SOURCE_ROOT;
-		};
-		7209EBAA0F39E57B003DC336 /* grid_maker */ = {
-			isa = PBXGroup;
-			children = (
-				7209EBAC0F39E57B003DC336 /* CMakeLists.txt */,
-				7209EBAD0F39E57B003DC336 /* graticule.svg */,
-				7209EBAE0F39E57B003DC336 /* graticulecreator.cpp */,
-				7209EBAF0F39E57B003DC336 /* graticulecreator.h */,
-				7209EBB00F39E57B003DC336 /* grid_maker.png */,
-				7209EBB10F39E57B003DC336 /* gridmaker_plugin.qrc */,
-				7209EBB20F39E57B003DC336 /* plugin.cpp */,
-				7209EBB30F39E57B003DC336 /* plugin.h */,
-				7209EBB40F39E57B003DC336 /* plugingui.cpp */,
-				7209EBB50F39E57B003DC336 /* plugingui.h */,
-				7209EBB60F39E57B003DC336 /* pluginguibase.ui */,
-				7209EBB70F39E57B003DC336 /* pluginguibase.ui.h */,
-				7209EBB80F39E57B003DC336 /* README */,
-			);
-			name = grid_maker;
-			path = ../../src/plugins/grid_maker;
 			sourceTree = SOURCE_ROOT;
 		};
 		7209EBB90F39E57B003DC336 /* interpolation */ = {
@@ -11916,7 +11844,6 @@
 				72A07DEF0F3BE6CD004FC2A4 /* wfsprovider */,
 				72A07E9C0F3C0218004FC2A4 /* copyrightlabelplugin */,
 				72A56BC00F3C854900BA32A1 /* delimitedtextplugin */,
-				72A56BD60F3C867200BA32A1 /* gridmakerplugin */,
 				72A56C250F3C89DC00BA32A1 /* interpolationplugin */,
 				72A56C550F3C99C000BA32A1 /* northarrowplugin */,
 				72A56CA70F3CAF2500BA32A1 /* scalebarplugin */,
@@ -12267,18 +12194,6 @@
 			);
 			name = delimitedtextplugin;
 			path = generated/delimitedtextplugin;
-			sourceTree = SOURCE_ROOT;
-		};
-		72A56BD60F3C867200BA32A1 /* gridmakerplugin */ = {
-			isa = PBXGroup;
-			children = (
-				72A56BD70F3C867200BA32A1 /* moc_plugin.cpp */,
-				72A56BD80F3C867200BA32A1 /* moc_plugingui.cpp */,
-				72A56BD90F3C867200BA32A1 /* qrc_gridmaker_plugin.cpp */,
-				72A56BDA0F3C867200BA32A1 /* ui_pluginguibase.h */,
-			);
-			name = gridmakerplugin;
-			path = generated/gridmakerplugin;
 			sourceTree = SOURCE_ROOT;
 		};
 		72A56C250F3C89DC00BA32A1 /* interpolationplugin */ = {
@@ -13141,25 +13056,6 @@
 			productReference = 72A56B600F3C823800BA32A1 /* libgrassplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
-		72A56B620F3C824300BA32A1 /* gridmakerplugin */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 72A56B670F3C824300BA32A1 /* Build configuration list for PBXNativeTarget "gridmakerplugin" */;
-			buildPhases = (
-				72A56B630F3C824300BA32A1 /* Generate Sources */,
-				72A56B640F3C824300BA32A1 /* Sources */,
-				72A56B650F3C824300BA32A1 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				729BBEF00F4076BD001BCB63 /* PBXTargetDependency */,
-				729BBEEE0F4076BD001BCB63 /* PBXTargetDependency */,
-			);
-			name = gridmakerplugin;
-			productName = testprog;
-			productReference = 72A56B6A0F3C824300BA32A1 /* libgridmakerplugin.so */;
-			productType = "com.apple.product-type.tool";
-		};
 		72A56B6C0F3C824400BA32A1 /* interpolationplugin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 72A56B710F3C824400BA32A1 /* Build configuration list for PBXNativeTarget "interpolationplugin" */;
@@ -13432,7 +13328,6 @@
 				72A07DB90F3BDFC8004FC2A4 /* provider template */,
 				72A07E570F3BF35F004FC2A4 /* copyrightlabelplugin */,
 				72A56B290F3C810600BA32A1 /* delimitedtextplugin */,
-				72A56B620F3C824300BA32A1 /* gridmakerplugin */,
 				72A56B6C0F3C824400BA32A1 /* interpolationplugin */,
 				72A56B760F3C824400BA32A1 /* northarrowplugin */,
 				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
@@ -13821,21 +13716,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "QTUIC_FILES=\"qgsgrasstoolsbase qgsgrassselectbase qgsgrasseditbase qgsgrassmapcalcbase qgsgrassmodulebase qgsgrassnewmapsetbase qgsgrassshellbase qgsgrassattributesbase qgsgrassregionbase\"\nQTMOC_FILES=\"qgsgrassplugin qgsgrassselect qgsgrassbrowser qgsgrassedit qgsgrasstools qgsgrassmodel qgsgrassmapcalc qgsgrassmodule qgsgrassnewmapset qgsgrassshell qgsgrassattributes qgsgrassregion qgsgrassutils qgsgrassedittools\"\nQTRCC_FILE=qgsgrass_plugin\nLIBNAME=grass\nDIRNAME=grass\n# plugin or provider\nLIBTYPE=plugin\n\nif [ \"$QTUIC_FILES\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nfor u in $QTUIC_FILES\ndo\n\tif [ ! -f generated/$LIBNAME$LIBTYPE/ui_$u.h ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui -nt generated/$LIBNAME$LIBTYPE/ui_$u.h ] ; then\n\t\trm -f generated/$LIBNAME$LIBTYPE/ui_$u.h\n\t\techo \"$QTUIC -o generated/$LIBNAME$LIBTYPE/ui_$u.h ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui\"\n\t\t$QTUIC -o generated/$LIBNAME$LIBTYPE/ui_$u.h ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui\n\tfi\ndone\nfi\n\nif [ \"$QTMOC_FILES\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nfor h in $QTMOC_FILES\ndo\n\tif [ ! -f generated/$LIBNAME$LIBTYPE/moc_$h.cpp ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h -nt generated/$LIBNAME$LIBTYPE/moc_$h.cpp ] ; then\n\t\trm -f generated/$LIBNAME$LIBTYPE/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/$LIBNAME$LIBTYPE/moc_$h.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/$LIBNAME$LIBTYPE/moc_$h.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h\n\tfi\ndone\nfi\n\nif [ \"$QTRCC_FILE\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nif [ ! -f generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc -nt generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ] ; then\n\trm -f generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp\n\techo \"$QTRCC -name $QTRCC_FILE -o generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc\"\n\t$QTRCC -name $QTRCC_FILE -o generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc\nfi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		72A56B630F3C824300BA32A1 /* Generate Sources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Generate Sources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "QTUIC_FILES=\"pluginguibase\"\nQTMOC_FILES=\"plugingui plugin\"\nQTRCC_FILE=gridmaker_plugin\nLIBNAME=gridmaker\nDIRNAME=grid_maker\n# plugin or provider\nLIBTYPE=plugin\n\nif [ \"$QTUIC_FILES\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nfor u in $QTUIC_FILES\ndo\n\tif [ ! -f generated/$LIBNAME$LIBTYPE/ui_$u.h ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui -nt generated/$LIBNAME$LIBTYPE/ui_$u.h ] ; then\n\t\trm -f generated/$LIBNAME$LIBTYPE/ui_$u.h\n\t\techo \"$QTUIC -o generated/$LIBNAME$LIBTYPE/ui_$u.h ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui\"\n\t\t$QTUIC -o generated/$LIBNAME$LIBTYPE/ui_$u.h ../../src/$LIBTYPE\"\"s/$DIRNAME/$u.ui\n\tfi\ndone\nfi\n\nif [ \"$QTMOC_FILES\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nfor h in $QTMOC_FILES\ndo\n\tif [ ! -f generated/$LIBNAME$LIBTYPE/moc_$h.cpp ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h -nt generated/$LIBNAME$LIBTYPE/moc_$h.cpp ] ; then\n\t\trm -f generated/$LIBNAME$LIBTYPE/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/$LIBNAME$LIBTYPE/moc_$h.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/$LIBNAME$LIBTYPE/moc_$h.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$h.h\n\tfi\ndone\nfi\n\nif [ \"$QTRCC_FILE\" ] ; then\nmkdir -p generated/$LIBNAME$LIBTYPE\nif [ ! -f generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ] || [ ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc -nt generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ] ; then\n\trm -f generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp\n\techo \"$QTRCC -name $QTRCC_FILE -o generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc\"\n\t$QTRCC -name $QTRCC_FILE -o generated/$LIBNAME$LIBTYPE/qrc_$QTRCC_FILE.cpp ../../src/$LIBTYPE\"\"s/$DIRNAME/$QTRCC_FILE.qrc\nfi\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		72A56B6D0F3C824400BA32A1 /* Generate Sources */ = {
@@ -14396,19 +14276,6 @@
 				72A56D670F3CC0F400BA32A1 /* qgsgrassutils.cpp in Sources */,
 				72A56D920F3CCA9500BA32A1 /* moc_qgsgrassmodel.cpp in Sources */,
 				72EBCB360F49E41A0016BA3C /* moc_qgsgrassedittools.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		72A56B640F3C824300BA32A1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				72A56BDB0F3C867200BA32A1 /* moc_plugin.cpp in Sources */,
-				72A56BDC0F3C867200BA32A1 /* moc_plugingui.cpp in Sources */,
-				72A56BDD0F3C867200BA32A1 /* qrc_gridmaker_plugin.cpp in Sources */,
-				72A56BDE0F3C868300BA32A1 /* plugingui.cpp in Sources */,
-				72A56BDF0F3C868800BA32A1 /* graticulecreator.cpp in Sources */,
-				72A56BE00F3C868C00BA32A1 /* plugin.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15063,16 +14930,6 @@
 			isa = PBXTargetDependency;
 			target = 7209F1D10F39E760003DC336 /* qgis_core */;
 			targetProxy = 729BBEEB0F4076B9001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEEE0F4076BD001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
-			targetProxy = 729BBEED0F4076BD001BCB63 /* PBXContainerItemProxy */;
-		};
-		729BBEF00F4076BD001BCB63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7209F1D10F39E760003DC336 /* qgis_core */;
-			targetProxy = 729BBEEF0F4076BD001BCB63 /* PBXContainerItemProxy */;
 		};
 		729BBEF20F4076C0001BCB63 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -16530,69 +16387,6 @@
 			};
 			name = Release;
 		};
-		72A56B680F3C824300BA32A1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
-				EXECUTABLE_PREFIX = lib;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					generated/gridmakerplugin,
-					../../src/plugins,
-					../../src/plugins/grid_maker,
-					../../src/core,
-					../../src/core/raster,
-					../../src/core/renderer,
-					../../src/core/symbology,
-					../../src/gui,
-					"$(GEOS_INC)",
-				);
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(QT_LIB_CORE)",
-					"$(QT_LIB_GUI)",
-				);
-				PRODUCT_NAME = gridmakerplugin.so;
-			};
-			name = Debug;
-		};
-		72A56B690F3C824300BA32A1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
-				EXECUTABLE_PREFIX = lib;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					generated/gridmakerplugin,
-					../../src/plugins,
-					../../src/plugins/grid_maker,
-					../../src/core,
-					../../src/core/raster,
-					../../src/core/renderer,
-					../../src/core/symbology,
-					../../src/gui,
-					"$(GEOS_INC)",
-				);
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(QT_LIB_CORE)",
-					"$(QT_LIB_GUI)",
-				);
-				PRODUCT_NAME = gridmakerplugin.so;
-			};
-			name = Release;
-		};
 		72A56B720F3C824400BA32A1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -17644,15 +17438,6 @@
 			buildConfigurations = (
 				72A56B5E0F3C823800BA32A1 /* Debug */,
 				72A56B5F0F3C823800BA32A1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		72A56B670F3C824300BA32A1 /* Build configuration list for PBXNativeTarget "gridmakerplugin" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				72A56B680F3C824300BA32A1 /* Debug */,
-				72A56B690F3C824300BA32A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
