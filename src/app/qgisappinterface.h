@@ -92,6 +92,11 @@ class QgisAppInterface : public QgisInterface
     */
     QWidget * mainWindow();
 
+    /** Return pointers to the composer views of the running instance (currently only one)*/
+    //QList<QgsComposerView*> composerViews();
+
+    QList< QPair<QMainWindow*, QgsComposerView*> > composerList();
+
     /** Add action to the plugins menu */
     void addPluginToMenu( QString name, QAction* action );
     /** Remove action from the plugins menu */

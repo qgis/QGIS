@@ -23,12 +23,16 @@ class QAction;
 class QMenu;
 class QToolBar;
 class QDockWidget;
+class QMainWindow;
 class QWidget;
 #include <QObject>
+#include <QPair>
 
 #include <map>
 
+
 class QgisApp;
+class QgsComposerView;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
@@ -102,6 +106,12 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow() = 0;
+
+    /** Return pointers to composer main windows*/
+    //virtual QList<QgsComposerView*> composerViews() = 0;
+
+    /**Return mainwindows / composer views of running composer instances (currently only one)*/
+    virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu( QString name, QAction* action ) = 0;

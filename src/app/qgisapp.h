@@ -137,6 +137,9 @@ class QgisApp : public QMainWindow
     void saveMapAsImage( QString, QPixmap * );
     /** Get the mapcanvas object from the app */
     QgsMapCanvas * mapCanvas() { return mMapCanvas; };
+
+    QgsComposer* printComposer() {return mComposer;}
+
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
     //! Setup the toolbar popup menus for a given theme

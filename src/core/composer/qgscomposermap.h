@@ -55,9 +55,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
       Rectangle    // Display only rectangle
     };
 
-    /** \brief Initialise GUI and other settings, shared by constructors */
-    void init( void );
-
     /** \brief Draw to paint device
     @param extent map extent
     @param size size in scene coordinates
@@ -66,9 +63,6 @@ class CORE_EXPORT QgsComposerMap : /*public QWidget, private Ui::QgsComposerMapB
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
-
-    /** \brief Recalculate rectangle/extent/scale according to current rule */
-    void recalculate( void );
 
     /** \brief Create cache image */
     void cache( void );
