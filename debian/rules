@@ -104,7 +104,7 @@ binary-arch: build install
 	dh_installman -pqgis qgis_help.man
 	dh_installmime -pqgis
 	dh_link
-	which dh_lintian >/dev/null && dh_lintian
+	if which dh_lintian >/dev/null; then dh_lintian; fi
 	dh_strip
 	dh_compress --exclude=pdf
 	dh_fixperms
