@@ -64,7 +64,7 @@ void QgsComposerScaleBarWidget::refreshMapComboBox()
       QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
       for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
       {
-        mMapComboBox->addItem( tr( "Map " ) + QString::number(( *mapItemIt )->id() ) );
+        mMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ) );
       }
     }
   }
@@ -145,7 +145,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //map combo box
   if ( mComposerScaleBar->composerMap() )
   {
-    QString mapText = tr( "Map " ) + mComposerScaleBar->composerMap()->id();
+    QString mapText = tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() );
     int itemId = mMapComboBox->findText( mapText );
     if ( itemId > 0 )
     {
