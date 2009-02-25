@@ -3751,7 +3751,7 @@ void QgisApp::deleteSelected()
 
   //display a warning
   int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
-  if(QMessageBox::warning(this, tr("Delete features"), tr("Delete %1 feature(s)?").arg(numberOfDeletedFeatures), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel)
+  if ( QMessageBox::warning( this, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
