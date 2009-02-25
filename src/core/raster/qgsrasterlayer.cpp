@@ -209,7 +209,7 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
   );
   QgsDebugMsg( "(8 arguments) exiting." );
 
-  emit statusChanged( "QgsRasterLayer created" );
+  emit statusChanged( tr( "QgsRasterLayer created" ) );
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -222,7 +222,7 @@ QgsRasterLayer::~QgsRasterLayer()
       GDALDereferenceDataset( mGdalBaseDataset );
     }
 
-    if( mGdalDataset )
+    if ( mGdalDataset )
     {
       GDALClose( mGdalDataset );
     }
@@ -723,7 +723,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     return myRasterBandStats;
   }
   // only print message if we are actually gathering the stats
-  emit statusChanged( QString( "Retrieving stats for " ) + name() );
+  emit statusChanged( tr( "Retrieving stats for %1" ).arg( name() ) );
   qApp->processEvents();
   QgsDebugMsg( "stats for band " + QString::number( theBandNo ) );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
@@ -737,7 +737,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
 
   myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
 
-  emit statusChanged( QString( "Calculating stats for " ) + name() );
+  emit statusChanged( tr( "Calculating stats for %1" ).arg( name() ) );
   //reset the main app progress bar
   emit drawingProgress( 0, 0 );
 
@@ -1492,7 +1492,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     QgsDebugMsg( "Wanting a '" + mProviderKey + "' provider to draw this." );
 
-    emit statusChanged( QString( "Retrieving using " ) + mProviderKey );
+    emit statusChanged( tr( "Retrieving using %1" ).arg( mProviderKey ) );
 
     QImage* image =
       mDataProvider->draw(
@@ -1538,13 +1538,13 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     int myWidth = image->width();
     int myHeight = image->height();
     QRgb myRgb;
-    for( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+    for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
     {
-        for( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
-        {
-            myRgb = image->pixel( myWidthRunner, myHeightRunner );
-            image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), mTransparencyLevel ) );
-        }
+      for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+      {
+        myRgb = image->pixel( myWidthRunner, myHeightRunner );
+        image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), mTransparencyLevel ) );
+      }
     }
 
     // Since GDAL's RasterIO can't handle floating point, we have to round to
@@ -3405,7 +3405,7 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
 void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
   //Free old shader if it is not a userdefined shader
-  if( mColorShadingAlgorithm != QgsRasterLayer::UserDefinedShader && 0 != mRasterShader->rasterShaderFunction() )
+  if ( mColorShadingAlgorithm != QgsRasterLayer::UserDefinedShader && 0 != mRasterShader->rasterShaderFunction() )
   {
     delete( mRasterShader->rasterShaderFunction() );
   }
