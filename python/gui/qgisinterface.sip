@@ -73,6 +73,11 @@ class QgisInterface : QObject
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow()=0;
 
+    /** Return pointers to the composer views of the running instance (currently only one)*/
+    //virtual QList<QgsComposerView*> composerViews()=0;
+    
+    virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
+
     /** Add action to the plugins menu */
     virtual void addPluginToMenu(QString name, QAction* action)=0;
     /** Remove action from the plugins menu */

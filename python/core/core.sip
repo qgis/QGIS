@@ -11,6 +11,13 @@
 
 %Include qgis.sip
 %Include qgsapplication.sip
+%Include qgscomposeritem.sip
+%Include qgscomposerlabel.sip
+%Include qgscomposerlegend.sip
+%Include qgscomposermap.sip
+%Include qgscomposerpicture.sip
+%Include qgscomposerscalebar.sip
+%Include qgscomposition.sip
 %Include qgscontexthelp.sip
 %Include qgscontinuouscolorrenderer.sip
 %Include qgscontrastenhancement.sip
@@ -25,6 +32,7 @@
 %Include qgsgraduatedsymbolrenderer.sip
 %Include qgslabel.sip
 %Include qgslabelattributes.sip
+%Include qgslegendmodel.sip
 %Include qgslogger.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerregistry.sip
@@ -32,6 +40,7 @@
 %Include qgsmaptopixel.sip
 %Include qgsmarkercatalogue.sip
 %Include qgsmessageoutput.sip
+%Include qgspaperitem.sip
 %Include qgspoint.sip
 %Include qgsproject.sip
 %Include qgsprovidermetadata.sip
@@ -47,6 +56,7 @@
 %Include qgsrect.sip
 %Include qgsrendercontext.sip
 %Include qgsrenderer.sip
+%Include qgsscalebarstyle.sip
 %Include qgsscalecalculator.sip
 %Include qgssinglesymbolrenderer.sip
 %Include qgssnapper.sip
