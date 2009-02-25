@@ -54,7 +54,7 @@ build-stamp: debian/build/CMakeCache.txt
 	# Add here commands to compile the package.
 	$(MAKE) -C debian/build
 
-	touch build-stamp
+	touch $@
 
 clean:
 	dh_testdir
@@ -110,7 +110,7 @@ binary-arch: build install
 	dh_installman -pqgis qgis_help.man
 	dh_installmime -pqgis
 	dh_link
-	dh_lintian
+	if which dh_lintian >/dev/null; then dh_lintian; fi
 	dh_strip
 	dh_compress --exclude=pdf
 	dh_fixperms

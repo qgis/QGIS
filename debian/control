@@ -31,7 +31,7 @@ Description: Geographic Information System (GIS)
 
 Package: qgis-common
 Architecture: all
-Depends: qgis (= ${binary:Version})
+Depends: qgis (>= ${source:Version})
 Description: Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -80,7 +80,7 @@ Description: GRASS plugin for Quantum GIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: qgis-plugin-grass (= ${binary:Version})
+Depends: qgis-plugin-grass (>= ${source:Version})
 Description: GRASS plugin for Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -91,7 +91,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), ${shlibs:Depends}, ${misc:Depends}
+Depends: python-qt4 (>=4.1.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
@@ -103,7 +103,7 @@ Description: Python bindings to Quantum GIS
 Package: python-qgis-common
 Section: python
 Architecture: all
-Depends: python-qgis (= ${binary:Version})
+Depends: python-qgis (>= ${source:Version})
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS - architecture-independent files
