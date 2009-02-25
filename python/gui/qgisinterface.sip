@@ -76,7 +76,7 @@ class QgisInterface : QObject
     /** Return pointers to the composer views of the running instance (currently only one)*/
     //virtual QList<QgsComposerView*> composerViews()=0;
     
-    virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
+    //virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu(QString name, QAction* action)=0;

@@ -111,7 +111,7 @@ class GUI_EXPORT QgisInterface : public QObject
     //virtual QList<QgsComposerView*> composerViews() = 0;
 
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
-    virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
+    //virtual QList< QPair<QMainWindow*, QgsComposerView*> > composerList() = 0;
 
     /** Add action to the plugins menu */
     virtual void addPluginToMenu( QString name, QAction* action ) = 0;
