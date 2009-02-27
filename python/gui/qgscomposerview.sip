@@ -1,36 +1,3 @@
-/***************************************************************************
-                         qgscomposerview.h
-                             -------------------
-    begin                : January 2005
-    copyright            : (C) 2005 by Radim Blazek
-    email                : blazek@itc.it
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-/* $Id$ */
-#ifndef QGSCOMPOSERVIEW_H
-#define QGSCOMPOSERVIEW_H
-
-#include <QGraphicsView>
-
-class QKeyEvent;
-class QMainWindow;
-class QMouseEvent;
-class QgsComposition;
-class QgsComposerItem;
-class QgsComposerLabel;
-class QgsComposerLegend;
-class QgsComposerMap;
-class QgsComposerPicture;
-class QgsComposerScaleBar;
-
 /** \ingroup MapComposer
  * \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
@@ -38,9 +5,11 @@ class QgsComposerScaleBar;
  * Creates the composer items according to the current map tools and keeps track
  * of the rubber band item.
  */
-class GUI_EXPORT QgsComposerView: public QGraphicsView
+class QgsComposerView: QGraphicsView
 {
-    Q_OBJECT
+%TypeHeaderCode
+#include "qgscomposerview.h"
+%End
 
   public:
 
@@ -64,22 +33,22 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Ungroups the selected items*/
     void ungroupItems();
 
-    QgsComposerView::Tool currentTool() const {return mCurrentTool;}
-    void setCurrentTool( QgsComposerView::Tool t ) {mCurrentTool = t;}
+    QgsComposerView::Tool currentTool() const;
+    void setCurrentTool( QgsComposerView::Tool t );
 
     /**Sets composition (derived from QGraphicsScene)*/
     void setComposition( QgsComposition* c );
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
-
+    
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLabel( QgsComposerLabel* label);
+    void addComposerLabel( QgsComposerLabel* label /Transfer/);
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map);
+    void addComposerMap( QgsComposerMap* map /Transfer/);
     /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerScaleBar( QgsComposerScaleBar* scaleBar);
+    void addComposerScaleBar( QgsComposerScaleBar* scaleBar /Transfer/);
     /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLegend( QgsComposerLegend* legend);
+    void addComposerLegend( QgsComposerLegend* legend /Transfer/);
     /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerPicture( QgsComposerPicture* picture );
 
@@ -97,16 +66,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void wheelEvent( QWheelEvent* event );
 
   private:
-    /**Status of shift key (used for multiple selection)*/
-    bool mShiftKeyPressed;
-    /**Current composer tool*/
-    QgsComposerView::Tool mCurrentTool;
-    /**Rubber band item*/
-    QGraphicsRectItem* mRubberBandItem;
-    /**Item to move content*/
-    QgsComposerItem* mMoveContentItem;
-    /**Start position of content move*/
-    QPointF mMoveContentStartPos;
+    
 
   public slots:
     /**For QgsComposerItemGroup to send its signals to QgsComposer (or other classes that keep track of input widgets)*/
@@ -131,5 +91,3 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
      QgsComposer may set the selection tool again*/
     void actionFinished();
 };
-
-#endif

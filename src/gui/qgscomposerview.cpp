@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMainWindow>
 #include <QMouseEvent>
 #include <QKeyEvent>
 
@@ -97,12 +98,8 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       QgsComposerLabel* newLabelItem = new QgsComposerLabel( composition() );
       newLabelItem->setText( "Quantum GIS" );
       newLabelItem->adjustSizeToText();
-      scene()->addItem( newLabelItem );
-      emit composerLabelAdded( newLabelItem );
-      scene()->clearSelection();
       newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
-      newLabelItem->setSelected( true );
-      emit selectedItemChanged( newLabelItem );
+      addComposerLabel(newLabelItem);
       emit actionFinished();
     }
     break;
@@ -110,46 +107,24 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case AddScalebar:
     {
       QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( composition() );
-
-      //take first available map...
-      QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-      if ( mapItemList.size() > 0 )
-      {
-        newScaleBar->setComposerMap( mapItemList.at( 0 ) );
-      }
-
+      addComposerScaleBar(newScaleBar);
       newScaleBar->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 20, 20 ) );
-      newScaleBar->applyDefaultSettings(); //4 segments, 1/5 of composer map width
-      scene()->addItem( newScaleBar );
-      emit composerScaleBarAdded( newScaleBar );
-      scene()->clearSelection();
-      newScaleBar->setSelected( true );
-      emit selectedItemChanged( newScaleBar );
-      emit actionFinished();
+     emit actionFinished();
     }
     break;
 
     case AddLegend:
     {
       QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
-      scene()->addItem( newLegend );
-      emit composerLegendAdded( newLegend );
-      scene()->clearSelection();
+      addComposerLegend(newLegend);
       newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
-      newLegend->setSelected( true );
-      emit selectedItemChanged( newLegend );
-      emit actionFinished();
       break;
     }
     case AddPicture:
     {
       QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
-      scene()->addItem( newPicture );
-      emit composerPictureAdded( newPicture );
-      scene()->clearSelection();
+      addComposerPicture(newPicture);
       newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
-      newPicture->setSelected( true );
-      emit selectedItemChanged( newPicture );
       emit actionFinished();
     }
 
@@ -205,16 +180,9 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 
       QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
       composerMap->setPreviewMode( QgsComposerMap::Rectangle );
-
-      emit composerMapAdded( composerMap );
-      scene()->addItem( composerMap );
-      scene()->clearSelection();
-
+      addComposerMap(composerMap);
       scene()->removeItem( mRubberBandItem );
       delete mRubberBandItem;
-
-      composerMap->setSelected( true );
-      emit selectedItemChanged( composerMap );
       emit actionFinished();
     }
     break;
@@ -371,6 +339,59 @@ QgsComposition* QgsComposerView::composition()
   return 0;
 }
 
+void QgsComposerView::addComposerLabel( QgsComposerLabel* label)
+{
+   composition()->addItem(label);
+   emit composerLabelAdded(label);
+   scene()->clearSelection();
+   label->setSelected( true );
+   emit selectedItemChanged(label);
+}
+
+void QgsComposerView::addComposerMap( QgsComposerMap* map)
+{
+  scene()->addItem( map );
+  emit composerMapAdded( map );
+  scene()->clearSelection();
+  map->setSelected( true );
+  emit selectedItemChanged( map );
+}
+
+void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar)
+{
+  //take first available map...
+  QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    scaleBar->setComposerMap( mapItemList.at( 0 ) );
+   }
+   scaleBar->applyDefaultSettings(); //4 segments, 1/5 of composer map width
+   scene()->addItem( scaleBar );
+   emit composerScaleBarAdded( scaleBar );
+   scene()->clearSelection();
+   scaleBar->setSelected( true );
+   emit selectedItemChanged( scaleBar );
+}
+
+void QgsComposerView::addComposerLegend( QgsComposerLegend* legend)
+{
+  scene()->addItem( legend );
+  emit composerLegendAdded( legend );
+  scene()->clearSelection();
+  legend->setSelected( true );
+  emit selectedItemChanged( legend );
+  emit actionFinished();
+}
+
+void QgsComposerView::addComposerPicture( QgsComposerPicture* picture )
+{
+   scene()->addItem( picture );
+   emit composerPictureAdded( picture );
+   scene()->clearSelection();
+   picture->setSelected( true );
+   emit selectedItemChanged( picture );
+}
+
 void QgsComposerView::groupItems()
 {
   if ( !composition() )
@@ -424,5 +445,27 @@ void QgsComposerView::ungroupItems()
 void QgsComposerView::sendItemRemovedSignal( QgsComposerItem* item )
 {
   emit itemRemoved( item );
+}
+
+QMainWindow* QgsComposerView::composerWindow()
+{
+  QObject* composerObject = 0;
+  QObject* currentObject = parent();
+  if(!currentObject)
+  {
+    return dynamic_cast<QMainWindow*>(currentObject);
+  }
+
+  while(true)
+  {
+    if(currentObject->parent() == 0)
+    {
+      composerObject = currentObject;
+      break;
+    }
+    currentObject = currentObject->parent();
+  }
+
+ return dynamic_cast<QMainWindow*>(composerObject);
 }
 
