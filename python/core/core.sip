@@ -11,6 +11,16 @@
 
 %Include qgis.sip
 %Include qgsapplication.sip
+%Include qgscomposeritem.sip
+%Include qgscomposerlabel.sip
+%Include qgscomposerlegend.sip
+%Include qgscomposermap.sip
+%Include qgscomposerpicture.sip
+%Include qgscomposerscalebar.sip
+%Include qgscomposition.sip
+%Include qgslegendmodel.sip
+%Include qgspaperitem.sip
+%Include qgsscalebarstyle.sip
 %Include qgscontexthelp.sip
 %Include qgscontinuouscolorrenderer.sip
 %Include qgscontrastenhancement.sip

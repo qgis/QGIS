@@ -8,6 +8,7 @@
 %Import core/core.sip
 
 %Include qgisinterface.sip
+%Include qgscomposerview.sip
 %Include qgsencodingfiledialog.sip
 %Include qgsgenericprojectionselector.sip
 %Include qgsmapcanvas.sip

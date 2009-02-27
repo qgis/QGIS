@@ -139,8 +139,7 @@ QWidget * QgisAppInterface::mainWindow()
   return qgis;
 }
 
-#if 0
-QList<QgsComposerView*> QgisAppInterface::composerViews()
+QList<QgsComposerView*> QgisAppInterface::activeComposers()
 {
   QList<QgsComposerView*> composerViewList;
   if(qgis)
@@ -156,26 +155,6 @@ QList<QgsComposerView*> QgisAppInterface::composerViews()
     }
   }
   return composerViewList;
-}
-#endif //0
-
-QList< QPair<QMainWindow*, QgsComposerView*> > QgisAppInterface::composerList()
-{
-
-QList< QPair<QMainWindow*, QgsComposerView*> > composerList;
-  if(qgis)
-  {
-    QgsComposer* c = qgis->printComposer();
-    if(c)
-    {
-      QgsComposerView* v = c->view();
-      if(v)
-      {
-        composerList.push_back(qMakePair((QMainWindow*)(c), v));
-      }
-    }
-  }
-  return composerList;
 }
 
 void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget )
