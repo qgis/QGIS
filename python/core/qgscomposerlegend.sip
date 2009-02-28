@@ -8,7 +8,7 @@ class QgsComposerLegend: QObject, QgsComposerItem
 %End
 
   public:
-    QgsComposerLegend( QgsComposition* composition );
+    QgsComposerLegend( QgsComposition* composition /TransferThis/);
     ~QgsComposerLegend();
 
     /** \brief Reimplementation of QCanvasItem::paint*/

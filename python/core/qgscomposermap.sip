@@ -11,9 +11,9 @@ class QgsComposerMap : QObject, QgsComposerItem
 
   public:
     /** Constructor. */
-    QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height );
+    QgsComposerMap( QgsComposition *composition /TransferThis/, int x, int y, int width, int height );
     /** Constructor. Settings are read from project. */
-    QgsComposerMap( QgsComposition *composition );
+    QgsComposerMap( QgsComposition *composition /TransferThis/ );
     ~QgsComposerMap();
 
     /** \brief Preview style  */

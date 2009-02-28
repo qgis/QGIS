@@ -9,7 +9,7 @@ class QgsComposerScaleBar: QObject, QgsComposerItem
 %End
   public:
 
-    QgsComposerScaleBar( QgsComposition* composition );
+    QgsComposerScaleBar( QgsComposition* composition /TransferThis/);
     ~QgsComposerScaleBar();
 
     /** \brief Reimplementation of QCanvasItem::paint*/

@@ -57,12 +57,12 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
       //select topmost item at position of event
       QgsComposerItem* selectedItem = composition()->composerItemAt( scenePoint );
-      if ( selectedItem )
+      if ( !selectedItem )
       {
-        selectedItem->setSelected( true );
+        break;
       }
 
-
+      selectedItem->setSelected( true );
       QGraphicsView::mousePressEvent( e );
       emit selectedItemChanged( selectedItem );
       break;
@@ -71,6 +71,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case MoveItemContent:
     {
       //store item as member if it is selected and cursor is over item
+      QGraphicsItem* gitem = itemAt( e->pos());
       QgsComposerItem* item = dynamic_cast<QgsComposerItem*>( itemAt( e->pos() ) );
       if ( item )
       {

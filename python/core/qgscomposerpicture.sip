@@ -9,7 +9,7 @@ class QgsComposerPicture: QObject, QgsComposerItem
 %End
 
   public:
-    QgsComposerPicture( QgsComposition *composition );
+    QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
     /**Reimplementation of QCanvasItem::paint*/

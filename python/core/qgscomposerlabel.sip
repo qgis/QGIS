@@ -7,7 +7,7 @@ class QgsComposerLabel: QgsComposerItem
 #include "qgscomposerlabel.h"
 %End
   public:
-    QgsComposerLabel( QgsComposition *composition );
+    QgsComposerLabel( QgsComposition *composition /TransferThis/);
     ~QgsComposerLabel();
 
     /** \brief Reimplementation of QCanvasItem::paint*/
