@@ -79,7 +79,7 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
     QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
-    if ( composerItem )
+    if ( composerItem && composerItem != mPaperItem )
     {
       return composerItem;
     }
