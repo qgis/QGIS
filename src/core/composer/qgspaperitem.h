@@ -22,7 +22,7 @@
 
 /**Item representing the paper. May draw the snapping grid lines if composition is in
  preview mode*/
-class QgsPaperItem: public QgsComposerItem
+class CORE_EXPORT QgsPaperItem: public QgsComposerItem
 {
   public:
     QgsPaperItem( QgsComposition* c );

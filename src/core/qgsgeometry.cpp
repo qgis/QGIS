@@ -4871,6 +4871,11 @@ int QgsGeometry::splitPolygonGeometry( GEOSGeometry* splitLine, QList<QgsGeometr
   {
     const GEOSGeometry *polygon = GEOSGetGeometryN( polygons, i );
     intersectGeometry = GEOSIntersection( mGeos, polygon );
+    if ( !intersectGeometry )
+    {
+      QgsDebugMsg( "intersectGeometry is NULL" );
+      continue;
+    }
 
     double intersectionArea;
     GEOSArea( intersectGeometry, &intersectionArea );
