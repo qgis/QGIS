@@ -56,4 +56,4 @@ ftools_utils.py
 doVectorSplit.py
 frmRandPoints.ui
 )
-INSTALL(FILES ${TOOLS_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/ftools/tools)
+INSTALL(FILES ${TOOLS_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/tools)

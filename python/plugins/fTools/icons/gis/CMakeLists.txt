@@ -44,4 +44,4 @@ random_selection.png
 ftools_logo.png
 regular_points.png
 )
-INSTALL(FILES ${ICON_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/ftools/icons/gis)
+INSTALL(FILES ${ICON_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools/icons/gis)
