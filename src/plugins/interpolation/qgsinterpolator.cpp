@@ -19,6 +19,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
 #include <cmath>
+#ifdef _MSC_VER
+#include <float.h>
+#define isnan(f) _isnan(f)
+#endif
 
 QgsInterpolator::QgsInterpolator( const QList<QgsVectorLayer*>& vlayers ): mDataIsCached( false ), mVectorLayers( vlayers ), zCoordInterpolation( false ), mValueAttribute( -1 )
 {
