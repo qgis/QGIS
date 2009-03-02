@@ -12036,11 +12036,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Pole obsahujúce popisy:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Default label:</source>
-        <translation type="obsolete">Štandardný text popisu:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="999"/>
         <source>Preview:</source>
         <translation>Náhľad:</translation>
@@ -12049,11 +12044,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="1008"/>
         <source>QGIS Rocks!</source>
         <translation>QGIS Rocks!</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Style</source>
-        <translation type="obsolete">Štýl písma</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="152"/>
@@ -12081,29 +12071,9 @@ p, li { white-space: pre-wrap; }
         <translation>Priehľadnosť:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Colour</source>
-        <translation type="obsolete">Farba</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="95"/>
         <source>Position</source>
         <translation>Umiestnenie</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Offset (pts):</source>
-        <translation type="obsolete">X-ový posun (v bodoch):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Offset (pts):</source>
-        <translation type="obsolete">Y-ový posun (v bodoch):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">Okolie popisu?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="900"/>
@@ -12166,69 +12136,9 @@ p, li { white-space: pre-wrap; }
         <translation>Naľavo pod</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">Uhol (v stupňoch):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Style</source>
-        <translation type="obsolete">Údajmi určovaný štýl</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">&amp;Rodina písiem:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">&amp;Kurzíva:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">&amp;Podčiarknuté:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">&amp;Tučné:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">&amp;Veľkosť:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">X-ová súradnica:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Y-ová súradnica:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Placement:</source>
-        <translation type="obsolete">Umiestnenie:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="313"/>
         <source>Font size units</source>
         <translation>Jednotky veľkosti písma</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Alignment</source>
-        <translation type="obsolete">Zarovnanie písma</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="824"/>

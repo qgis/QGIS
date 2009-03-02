@@ -11997,16 +11997,6 @@ p, li { white-space: pre-wrap; }
         <translation>Форм1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Field containing label:</source>
-        <translation type="obsolete">Шошго бүхий талбар:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Default label:</source>
-        <translation type="obsolete">Өгөгдсөн шошго:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="999"/>
         <source>Preview:</source>
         <translation>Тойм:</translation>
@@ -12015,11 +12005,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="1008"/>
         <source>QGIS Rocks!</source>
         <translation>QGIS-ийн Хад!</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Style</source>
-        <translation type="obsolete">Үсгийн Маяг</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="152"/>
@@ -12047,29 +12032,9 @@ p, li { white-space: pre-wrap; }
         <translation>Нэвтхарагдал:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Colour</source>
-        <translation type="obsolete">Өнгө</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="95"/>
         <source>Position</source>
         <translation>Байрлал</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Offset (pts):</source>
-        <translation type="obsolete">X-ээр Хэсэглэх (pts):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Offset (pts):</source>
-        <translation type="obsolete">Y-ээр Хэсэглэх (pts):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">Мужийн Шошго уу?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="900"/>
@@ -12132,69 +12097,9 @@ p, li { white-space: pre-wrap; }
         <translation>Зүүн Доод</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">Өнцөг (град):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Style</source>
-        <translation type="obsolete">Өгөгдлөөр Тодорхойлогдсон Маяг</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">&amp;Үсгийн хэвийн бүл:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">&amp;Налуу:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">&amp;Улзураас:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">&amp;Дармал:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">&amp;Хэмжээ:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">X Солбицол:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Y Солбицол:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Placement:</source>
-        <translation type="obsolete">Байршуулах:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Colour:</source>
-        <translation type="obsolete">&amp;Өнгө:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="313"/>
         <source>Font size units</source>
         <translation>Үсгийн хэвийг хэмжих нэгж</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Alignment</source>
-        <translation type="obsolete">Үсгийн хэвийг зэрэгцүүлэх</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="824"/>
@@ -12215,31 +12120,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="576"/>
         <source>Offset units</source>
         <translation>Хэсэглэх нэгж</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Alignment</source>
-        <translation type="obsolete">Өгөгдлөөр заасан зэрэгцүүлэлт</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Buffer</source>
-        <translation type="obsolete">Өгөгдлөөр заасан муж</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Position</source>
-        <translation type="obsolete">Өгөгдлөөр заасан байрлал</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Source</source>
-        <translation type="obsolete">Эх</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
     </message>
     <message encoding="UTF-8">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="220"/>

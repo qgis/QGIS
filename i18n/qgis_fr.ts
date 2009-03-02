@@ -13596,16 +13596,6 @@ p, li { white-space: pre-wrap; }
         <translation>Form1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Field containing label:</source>
-        <translation type="obsolete">Champ contenant une étiquette:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Default label:</source>
-        <translation type="obsolete">Etiquette par défaut:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="999"/>
         <source>Preview:</source>
         <translation>Prévisualisation:</translation>
@@ -13614,11 +13604,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="1008"/>
         <source>QGIS Rocks!</source>
         <translation>QGIS déchire!</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Font Style</source>
-        <translation type="obsolete">Style de police</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="152"/>
@@ -13646,29 +13631,9 @@ p, li { white-space: pre-wrap; }
         <translation>Transparence:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Colour</source>
-        <translation type="obsolete">Couleur</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="95"/>
         <source>Position</source>
         <translation>Position</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>X Offset (pts):</source>
-        <translation type="obsolete">X décalage (pts):</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Y Offset (pts):</source>
-        <translation type="obsolete">Y décalage (pts):</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">Remplir les étiquettes?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="900"/>
@@ -13731,79 +13696,14 @@ p, li { white-space: pre-wrap; }
         <translation>Au-dessous à gauche</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">Angle (deg):</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Data Defined Style</source>
-        <translation type="obsolete">Style défini des données</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">&amp;Famille de Police:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">&amp;Italique:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">So&amp;uslignage:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">&amp;Gras:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">&amp;Taille:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">Coordonnée X:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Coordonnée Y:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Placement:</source>
-        <translation type="obsolete">Placement:</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&amp;Colour:</source>
-        <translation type="obsolete">&amp;Couleur:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="313"/>
         <source>Font size units</source>
         <translation>Taille de la police des unités</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Font Alignment</source>
-        <translation type="obsolete">Alignement de la police</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="824"/>
         <source>Placement</source>
         <translation>Placement</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>°</source>
-        <translation type="obsolete">°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="90"/>
@@ -13820,35 +13720,10 @@ p, li { white-space: pre-wrap; }
         <source>Offset units</source>
         <translation>Unités de décalage </translation>
     </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Data Defined Alignment</source>
-        <translation type="obsolete">Alignement défini des données</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Data Defined Buffer</source>
-        <translation type="obsolete">Buffer défini des données</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Data Defined Position</source>
-        <translation type="obsolete">Position définie des données</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Source</source>
-        <translation type="obsolete">Source</translation>
-    </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="220"/>
         <source>°</source>
         <translation>°</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>Size Units:</source>
-        <translation type="obsolete">Unité de taille :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>
