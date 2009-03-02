@@ -12049,16 +12049,6 @@ p, li { white-space: pre-wrap; }
         <translation>Forma1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Field containing label:</source>
-        <translation type="obsolete">Birkas lauks:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Default label:</source>
-        <translation type="obsolete">Noklusējuma birka:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="999"/>
         <source>Preview:</source>
         <translation>Priekšapskate:</translation>
@@ -12067,11 +12057,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="1008"/>
         <source>QGIS Rocks!</source>
         <translation>QGIS ruļevoj!</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Style</source>
-        <translation type="obsolete">Fontu stils</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="152"/>
@@ -12099,29 +12084,9 @@ p, li { white-space: pre-wrap; }
         <translation>Caurspīdīgums:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Colour</source>
-        <translation type="obsolete">Krāsa</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="95"/>
         <source>Position</source>
         <translation>Novietojums</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Offset (pts):</source>
-        <translation type="obsolete">X nobīde (punktos):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Offset (pts):</source>
-        <translation type="obsolete">Y nobīde (punktos):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">Veidot buferi ap birku?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="900"/>
@@ -12184,69 +12149,9 @@ p, li { white-space: pre-wrap; }
         <translation>Zem pa kreisi</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">Leņķis (grādi):</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Style</source>
-        <translation type="obsolete">Datu definēts stils</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">&amp;Fontu saime:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">&amp;Kursīvs:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">&amp;Pasvītrots:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">&amp;Treknraksts:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">&amp;Izmērs:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">X koordināta:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Y koordināta:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Placement:</source>
-        <translation type="obsolete">Novietojums:</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="313"/>
         <source>Font size units</source>
         <translation>Fonta izmēra vienības</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Font Alignment</source>
-        <translation type="obsolete">Fonta novietojums</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="824"/>
@@ -12267,31 +12172,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="576"/>
         <source>Offset units</source>
         <translation>Nobīdes vienības</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Alignment</source>
-        <translation type="obsolete">Datu definēts novietojums</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Buffer</source>
-        <translation type="obsolete">Datu definēts buferis</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Data Defined Position</source>
-        <translation type="obsolete">Datu definēta vieta</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Source</source>
-        <translation type="obsolete">Avots</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>Size Units:</source>
-        <translation type="obsolete">Izmēra vienības:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>

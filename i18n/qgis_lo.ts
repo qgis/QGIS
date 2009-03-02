@@ -13838,11 +13838,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
-        <location filename="" line="0"/>
         <source>Data Defined Style</source>
         <translation type="obsolete">ຮູບແບບການກຳໜົດຂໍ້ມູນ</translation>
     </message>
