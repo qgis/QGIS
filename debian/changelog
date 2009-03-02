@@ -1,3 +1,9 @@
+qgis (1.1.0-1) UNRELEASED; urgency=low
+
+  * allow build with GRASS 6.4rc3
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 02 Mar 2009 21:06:07 +0100
+
 qgis (1.1.0) UNRELEASED; urgency=low
 
   * gridmaker plugin removed from package
