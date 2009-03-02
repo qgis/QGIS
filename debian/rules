@@ -13,6 +13,7 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 CMAKE_OPTS = \
 	-Wno-dev \
+	-D GRASS_PREFIX=/usr/lib/grass64 \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_SKIP_RPATH=TRUE \
 	-D BINDINGS_GLOBAL_INSTALL=TRUE \
@@ -116,7 +117,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass/lib dh_shlibdeps
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass/lib:/usr/lib/grass64/lib dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
