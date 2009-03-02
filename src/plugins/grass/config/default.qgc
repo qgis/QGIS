@@ -180,6 +180,7 @@
 		</section>
 		<section label="Spatial models">
 			<section label="Hydrologic modelling">
+				<grass name="r.watershed"/>
 				<grass name="r.carve"/>
 				<grass name="r.fill.dir"/>
 				<grass name="r.lake.xy"/>
