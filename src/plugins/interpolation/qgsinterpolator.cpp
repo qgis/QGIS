@@ -18,7 +18,11 @@
 #include "qgsinterpolator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
+#ifndef Q_OS_MACX
 #include <cmath>
+#else
+#include <math.h>
+#endif
 #ifdef _MSC_VER
 #include <float.h>
 #define isnan(f) _isnan(f)
