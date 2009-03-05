@@ -512,15 +512,16 @@ void QgsVectorLayerProperties::apply()
     QgsVectorLayer::EditType editType = ( QgsVectorLayer::EditType ) cb->itemData( cb->currentIndex() ).toInt();
     layer->setEditType( idx, editType );
 
+    QString value = tblAttributes->item( i, 7 ) ? tblAttributes->item( i, 7 )->text() : QString::null;
+
     if ( editType == QgsVectorLayer::ValueMap )
     {
       QMap<QString, QVariant> &map = layer->valueMap( idx );
       map.clear();
 
-      QString value = tblAttributes->item( i, 7 )->text();
       if ( !value.isEmpty() )
       {
-        QStringList values = tblAttributes->item( i, 7 )->text().split( ";" );
+        QStringList values = value.split( ";" );
         for ( int j = 0; j < values.size(); j++ )
         {
           QStringList args = values[j].split( "=" );
@@ -548,7 +549,7 @@ void QgsVectorLayerProperties::apply()
     else if ( editType == QgsVectorLayer::EditRange ||
               editType == QgsVectorLayer::SliderRange )
     {
-      QStringList values = tblAttributes->item( i, 7 )->text().split( ";" );
+      QStringList values = value.split( ";" );
 
       if ( values.size() == 3 )
       {
