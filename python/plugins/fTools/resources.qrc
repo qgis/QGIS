@@ -42,6 +42,8 @@
         <file>icons/default/vector_grid.png</file>
         <file>icons/default/split_layer.png</file>
 		<file>icons/default/neighbour.png</file>
+		<file>icons/default/delaunay.png</file>
+		<file>icons/default/layer_extent.png</file>
 		<file>icons/gis/single_to_multi.png</file>
 		<file>icons/gis/simplify.png</file>
 		<file>icons/gis/difference.png</file>
@@ -84,5 +86,7 @@
         <file>icons/gis/vector_grid.png</file>
         <file>icons/gis/split_layer.png</file>
 		<file>icons/gis/neighbour.png</file>
+		<file>icons/gis/delaunay.png</file>
+		<file>icons/gis/layer_extent.png</file>
     </qresource>
 </RCC>

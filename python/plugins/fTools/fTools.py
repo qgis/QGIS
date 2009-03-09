@@ -97,8 +97,8 @@ class fToolsPlugin:
 		self.analysisMenu.addActions( [ self.distMatrix, self.sumLines, self.pointsPoly,
 		self.listUnique, self.compStats, self.nearestNeigh, self.meanCoords, self.intLines ] )
 
-		self.samplingMenu = QMenu( QCoreApplication.translate( "fTools", "&Sampling Tools" ) )
-		self.samplingMenu.setIcon( QIcon( self.getThemeIcon( "sampling.png" ) ) )
+		self.researchMenu = QMenu( QCoreApplication.translate( "fTools", "&Research Tools" ) )
+		self.researchMenu.setIcon( QIcon( self.getThemeIcon( "sampling.png" ) ) )
 		self.randSel = QAction( QIcon( self.getThemeIcon( "random_selection.png" ) ), 
 		QCoreApplication.translate( "fTools", "Random selection" ),self.iface.mainWindow() )
 		self.randSub = QAction( QIcon( self.getThemeIcon( "sub_selection.png" ) ), 
@@ -111,8 +111,10 @@ class fToolsPlugin:
 		QCoreApplication.translate( "fTools", "Vector grid" ), self.iface.mainWindow() )
 		self.selectLocation = QAction( QIcon( self.getThemeIcon( "select_location.png" ) ), 
 		QCoreApplication.translate( "fTools", "Select by location" ), self.iface.mainWindow() )
-		self.samplingMenu.addActions( [ self.randSel, self.randSub, self.randPoints, 
-		self.regPoints, self.vectGrid, self.selectLocation ] )
+		self.layerExtent = QAction( QIcon( self.getThemeIcon( "layer_extent.png" ) ), 
+		QCoreApplication.translate( "fTools", "Polygon from layer extent" ), self.iface.mainWindow() )
+		self.researchMenu.addActions( [ self.randSel, self.randSub, self.randPoints, 
+		self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent ] )
 
 		self.geoMenu = QMenu( QCoreApplication.translate( "fTools", "&Geoprocessing Tools" ) )
 		self.geoMenu.setIcon( QIcon( self.getThemeIcon( "geoprocessing.png" ) ) )
@@ -143,6 +145,8 @@ class fToolsPlugin:
 		QCoreApplication.translate( "fTools", "Check geometry validity" ),self.iface.mainWindow() )
 		self.centroids = QAction( QIcon( self.getThemeIcon( "centroids.png") ),  
 		QCoreApplication.translate( "fTools", "Polygon centroids" ),self.iface.mainWindow() )
+		self.delaunay = QAction( QIcon( self.getThemeIcon( "delaunay.png") ),  
+		QCoreApplication.translate( "fTools", "Delaunay triangulation" ),self.iface.mainWindow() )
 		self.extNodes = QAction( QIcon( self.getThemeIcon( "extract_nodes.png") ),  
 		QCoreApplication.translate( "fTools", "Extract nodes" ),self.iface.mainWindow() )
 		self.simplify = QAction( QIcon( self.getThemeIcon( "simplify.png") ),  
@@ -153,8 +157,8 @@ class fToolsPlugin:
 		QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
 		self.polysToLines = QAction( QIcon( self.getThemeIcon( "to_lines.png") ),  
 		QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
-		self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.simplify, 
-		self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes ] )
+		self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay, 
+		self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes] )
 
 		self.dataManageMenu = QMenu( QCoreApplication.translate( "fTools", "&Data Management Tools") )
 		self.dataManageMenu.setIcon( QIcon( self.getThemeIcon( "management.png") ) )
@@ -170,21 +174,21 @@ class fToolsPlugin:
 		QCoreApplication.translate( "fTools", "Split vector layer" ), self.iface.mainWindow() )
 		self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect ] )
 
-		self.ftools_about = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
-		QCoreApplication.translate( "fTools", "About fTools" ), self.iface.mainWindow() )
+		self.ftools_aboot = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
+		QCoreApplication.translate( "fTools", "fTools About" ), self.iface.mainWindow() )
 
 		self.menu.addMenu( self.analysisMenu )
-		self.menu.addMenu( self.samplingMenu )
+		self.menu.addMenu( self.researchMenu )
 		self.menu.addMenu( self.geoMenu )
 		self.menu.addMenu( self.conversionMenu )
 		self.menu.addMenu( self.dataManageMenu )
 		self.menu.addSeparator()
-		self.menu.addAction( self.ftools_about )
+		self.menu.addAction( self.ftools_aboot )
 
 		menuBar = self.iface.mainWindow().menuBar()
 		actions = menuBar.actions()
-		helpAction = actions[ len( actions ) - 1 ]
-		menuBar.insertMenu( helpAction, self.menu )
+		lastAction = actions[ len( actions ) - 1 ]
+		menuBar.insertMenu( lastAction, self.menu )
         
 		QObject.connect( self.distMatrix, SIGNAL("triggered()"), self.dodistMatrix )
 		QObject.connect( self.sumLines, SIGNAL("triggered()"), self.dosumLines )
@@ -201,6 +205,7 @@ class fToolsPlugin:
 		QObject.connect( self.regPoints, SIGNAL("triggered()"), self.doregPoints )
 		QObject.connect( self.vectGrid, SIGNAL("triggered()"), self.dovectGrid )
 		QObject.connect( self.selectLocation, SIGNAL("triggered()"), self.doselectLocation )
+		QObject.connect( self.layerExtent, SIGNAL("triggered()"), self.doextent )
 
 		QObject.connect( self.minConvex, SIGNAL("triggered()"), self.dominConvex )
 		QObject.connect( self.intersect, SIGNAL("triggered()"), self.dointersect )
@@ -216,6 +221,7 @@ class fToolsPlugin:
 		QObject.connect( self.checkGeom, SIGNAL("triggered()"), self.docheckGeom )
 		QObject.connect( self.simplify, SIGNAL("triggered()"), self.dosimplify )
 		QObject.connect( self.centroids, SIGNAL("triggered()"), self.docentroids )
+		QObject.connect( self.delaunay, SIGNAL("triggered()"), self.dodelaunay )
 		QObject.connect( self.polysToLines, SIGNAL("triggered()"), self.dopolysToLines )
 		QObject.connect( self.compGeo, SIGNAL("triggered()"), self.docompGeo )
 		QObject.connect( self.extNodes, SIGNAL("triggered()"), self.doextNodes )
@@ -226,7 +232,7 @@ class fToolsPlugin:
 		QObject.connect( self.spatJoin, SIGNAL("triggered()"), self.dospatJoin )
 		QObject.connect( self.splitVect, SIGNAL("triggered()"), self.dosplitVect )
 
-		QObject.connect( self.ftools_about, SIGNAL("triggered()"), self.doabout )
+		QObject.connect( self.ftools_aboot, SIGNAL("triggered()"), self.doaboot )
 
 	def unload( self ):
 		pass
@@ -302,6 +308,14 @@ class fToolsPlugin:
 	def docentroids( self ):
 		d = doGeometry.GeometryDialog( self.iface, 7 )
 		d.exec_()
+		
+	def dodelaunay( self ):
+		d = doGeometry.GeometryDialog( self.iface, 8 )
+		d.exec_()
+		
+	def doextent( self ):
+		d = doGeometry.GeometryDialog( self.iface, 9 )
+		d.exec_()
 
 	def dosumLines(self):
 		d = doSumLines.Dialog(self.iface)
@@ -371,6 +385,6 @@ class fToolsPlugin:
 		d = doSpatialJoin.Dialog( self.iface )
 		d.exec_()
 
-	def doabout( self ):
+	def doaboot( self ):
 		d = doAbout.Dialog( self.iface )
 		d.exec_()

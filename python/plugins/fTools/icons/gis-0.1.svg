@@ -17,7 +17,7 @@
    version="1.0"
    sodipodi:docname="gis-0.1.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/cfarmer/.qgis/python/plugins/fTools/gis_icons/matrix.png"
+   inkscape:export-filename="/home/cfarmer/dev/cpp/qgis/python/plugins/fTools/icons/gis/layer_extent.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    style="display:inline;enable-background:new">
@@ -32,15 +32,15 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="9.0201001"
-     inkscape:cy="8.9456096"
+     inkscape:cx="9.2319959"
+     inkscape:cy="11.794933"
      inkscape:document-units="px"
-     inkscape:current-layer="layer129"
+     inkscape:current-layer="layer155"
      showgrid="true"
      inkscape:window-width="1159"
      inkscape:window-height="700"
      inkscape:window-x="86"
-     inkscape:window-y="72"
+     inkscape:window-y="48"
      inkscape:snap-global="false"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -2369,6 +2369,28 @@
            d="M 7.65625,8.5 C 7.6732091,12.870064 11.205685,16.40625 15.5625,16.40625 C 15.867393,16.40625 16.172803,16.408757 16.46875,16.375 L 16.46875,8.5 L 7.65625,8.5 z"
            style="fill:#82a0b4;fill-opacity:1;fill-rule:nonzero;stroke:#3c5a6e;stroke-width:1;stroke-linecap:square;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.4;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
       </g>
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer134"
+       inkscape:label="delaunay"
+       style="display:none"
+       sodipodi:insensitive="true">
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#3c5a6e;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 5.5,15.9375 L 12.5,9.5625 L 0.625,6.125"
+         id="path3778"
+         sodipodi:nodetypes="ccc" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#3c5a6e;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 8.0625,0.9375 L 12.4375,9.5 L 17.3125,0.8125"
+         id="path3780"
+         sodipodi:nodetypes="ccc" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#3c5a6e;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 23.25,14 L 12.5625,9.4375 L 16.9375,23.0625"
+         id="path3782"
+         sodipodi:nodetypes="ccc" />
     </g>
   </g>
   <g
@@ -6099,25 +6121,34 @@
        inkscape:groupmode="layer"
        id="layer129"
        inkscape:label="matrix"
-       style="display:inline">
-      <g
-         id="g4571">
-        <path
-           id="path3756"
-           d="M 5.499146,0.50519709 L 5.499146,23.480886"
-           style="fill:none;fill-rule:evenodd;stroke:#969696;stroke-width:0.97941929px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
-        <path
-           id="path3761"
-           d="M 0.51176719,5.499146 L 23.528038,5.499146"
-           style="fill:none;fill-rule:evenodd;stroke:#969696;stroke-width:0.98028392px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1" />
-        <rect
-           y="6.4966083"
-           x="6.4907565"
-           height="17.023754"
-           width="17.035219"
-           id="rect4569"
-           style="opacity:1;fill:#82a0b4;fill-opacity:0.99215686;fill-rule:nonzero;stroke:#3c5a6e;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.9;stroke-opacity:0.99215686;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
-      </g>
+       style="display:none">
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#969696;stroke-width:0.97941929px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="M 5.499146,0.50519709 L 5.499146,23.480886"
+         id="path3756" />
+      <path
+         style="fill:none;fill-rule:evenodd;stroke:#969696;stroke-width:0.98028392px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
+         d="M 0.51176719,5.499146 L 23.528038,5.499146"
+         id="path3761" />
+      <rect
+         style="fill:#82a0b4;fill-opacity:0.99215686;fill-rule:nonzero;stroke:#3c5a6e;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.9;stroke-opacity:0.99215686;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect4569"
+         width="17.035219"
+         height="17.023754"
+         x="6.4907565"
+         y="6.4966083" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer155"
+       inkscape:label="extent">
+      <rect
+         style="fill:#82a0b4;fill-opacity:0.99215686;fill-rule:nonzero;stroke:#3c5a6e;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0.9;stroke-opacity:0.99215686;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         id="rect3768"
+         width="17.035219"
+         height="17.023754"
+         x="0.5448904"
+         y="0.55062294" />
     </g>
   </g>
   <g
@@ -7097,7 +7128,7 @@
      id="layer39"
      inkscape:groupmode="layer">
     <g
-       style="display:inline"
+       style="display:none"
        inkscape:label="print composer"
        id="layer43"
        inkscape:groupmode="layer">
@@ -8017,7 +8048,7 @@
     </g>
   </g>
   <g
-     style="display:none"
+     style="display:inline"
      inkscape:label="actions"
      id="layer11"
      inkscape:groupmode="layer">
@@ -8267,7 +8298,7 @@
     </g>
     <g
        sodipodi:insensitive="true"
-       style="display:none"
+       style="display:inline"
        inkscape:label="create [yellow]"
        id="layer15"
        inkscape:groupmode="layer">
