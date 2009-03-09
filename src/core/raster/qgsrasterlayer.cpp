@@ -1538,6 +1538,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     if(mTransparencyLevel != 255) //improve performance if layer transparency not altered
     {
+         QImage* transparentImageCopy = new QImage(*image); //copy image if there is user transparency
+         image = transparentImageCopy;
         int myWidth = image->width();
         int myHeight = image->height();
         QRgb myRgb;
@@ -1568,6 +1570,11 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
                               // TODO: Check for rigorous correctness
                             ),
                             *image );
+
+    if(mTransparencyLevel != 255)
+    {
+        delete image;
+    }
 
   }
   else
