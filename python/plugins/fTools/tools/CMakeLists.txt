@@ -53,6 +53,7 @@ frmVisual.ui
 doVectorGrid.py
 frmRandPoints.py
 ftools_utils.py
+voronoi.py
 doVectorSplit.py
 frmRandPoints.ui
 )

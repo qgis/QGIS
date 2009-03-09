@@ -159,10 +159,14 @@ def createUniqueFieldName( field ):
 def getLayerNames( vTypes ):
 	layermap = QgsMapLayerRegistry.instance().mapLayers()
 	layerlist = []
-	for name, layer in layermap.iteritems():
-		if layer.type() == QgsMapLayer.VectorLayer:
-			if layer.geometryType() in vTypes and not layer.name() in layerlist:
-				layerlist.append( unicode( layer.name() ) )
+	if vTypes == "all":
+		for name, layer in layermap.iteritems():
+			layerlist.append( unicode( layer.name() ) )
+	else:
+		for name, layer in layermap.iteritems():
+			if layer.type() == QgsMapLayer.VectorLayer:
+				if layer.geometryType() in vTypes:
+					layerlist.append( unicode( layer.name() ) )
 	return layerlist
 
 # Return list of names of all fields from input QgsVectorLayer

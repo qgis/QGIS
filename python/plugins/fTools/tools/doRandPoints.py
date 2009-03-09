@@ -218,7 +218,6 @@ class Dialog(QDialog, Ui_Dialog):
 			if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
 				return
 		writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, None)
-		#writer = QgsVectorFileWriter(unicode(outPath), "CP1250", fields, QGis.WKBPoint, None)
 		idVar = 0
 		count = 70.00
 		add = 30.00 / len(points)

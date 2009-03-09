@@ -4,6 +4,7 @@ from qgis.core import *
 from frmGeometry import Ui_Dialog
 import ftools_utils
 import math
+from itertools import izip
 
 class GeometryDialog(QDialog, Ui_Dialog):
 
@@ -92,10 +93,22 @@ class GeometryDialog(QDialog, Ui_Dialog):
 			self.label_2.setText( self.tr( "Output shapefile" ) )
 			self.cmbField.setVisible(False)
 			self.field_label.setVisible(False)
-		else: # Polygon centroids
+		elif self.myFunction == 7: # Polygon centroids
 			self.setWindowTitle( self.tr( "Polygon centroids" ) )
 			self.label_2.setText( self.tr( "Output point shapefile" ) )
 			self.label_3.setText( self.tr( "Input polygon vector layer" ) )
+			self.label.setVisible( False )
+			self.lineEdit.setVisible( False )
+			self.cmbField.setVisible( False )
+			self.field_label.setVisible( False )
+		else:
+			if self.myFunction == 8: # Delaunay triangulation
+				self.setWindowTitle( self.tr( "Delaunay triangulation" ) )
+				self.label_3.setText( self.tr( "Input point vector layer" ) )
+			else: # Polygon from layer extent
+				self.setWindowTitle( self.tr( "Polygon from layer extent" ) )
+				self.label_3.setText( self.tr( "Input layer" ) )
+			self.label_2.setText( self.tr( "Output polygon shapefile" ) )
 			self.label.setVisible( False )
 			self.lineEdit.setVisible( False )
 			self.cmbField.setVisible( False )
@@ -107,6 +120,10 @@ class GeometryDialog(QDialog, Ui_Dialog):
 			myList = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )    
 		elif self.myFunction == 4 or self.myFunction == 7:
 			myList = ftools_utils.getLayerNames( [ QGis.Polygon ] )
+		elif self.myFunction == 8:
+			myList = ftools_utils.getLayerNames( [ QGis.Point ] )
+		elif self.myFunction == 9:
+			myList = ftools_utils.getLayerNames( "all" )
 		else:
 			myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )    
 		self.inShape.addItems( myList )
@@ -119,9 +136,14 @@ class GeometryDialog(QDialog, Ui_Dialog):
 #5:	Export/Add geometry columns
 #6:	Simplify geometries
 #7:	Polygon centroids
+#8: Delaunay triangulation
+#9: Polygon from layer extent
 
 	def geometry( self, myLayer, myParam, myField ):
-		vlayer = ftools_utils.getVectorLayerByName( myLayer )
+		if self.myFunction == 9:
+			vlayer = ftools_utils.getMapLayerByName( myLayer )
+		else:
+			vlayer = ftools_utils.getVectorLayerByName( myLayer )
 		error = False
 		check = QFile( self.shapefileName )
 		if check.exists():
@@ -143,21 +165,21 @@ class GeometryDialog(QDialog, Ui_Dialog):
 	def runFinishedFromThread( self, success ):
 		self.testThread.stop()
 		if success == "math_error":
-			QMessageBox.warning( self, "Geoprocessing", self.tr( "Error processing specified tolerance!" ) + "\n"
+			QMessageBox.warning( self, "Geometry", self.tr( "Error processing specified tolerance!" ) + "\n"
 			+ self.tr( "Please choose larger tolerance..." ) )
 			if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
-				QMessageBox.warning( self, "Geoprocessing", self.tr( "Unable to delete incomplete shapefile." ) )
+				QMessageBox.warning( self, "Geometry", self.tr( "Unable to delete incomplete shapefile." ) )
 		else: 
 			self.cancel_close.setText( "Close" )
 			QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
 			if success:
-				addToTOC = QMessageBox.question( self, "Geoprocessing", self.tr( "Created output shapefile:" ) + "\n" + 
+				addToTOC = QMessageBox.question( self, "Geometry", self.tr( "Created output shapefile:" ) + "\n" + 
 				unicode( self.shapefileName ) + "\n\n" + self.tr( "Would you like to add the new layer to the TOC?" ), 
 				QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
 				if addToTOC == QMessageBox.Yes:
 					ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
 			else:
-				QMessageBox.warning( self, "Geoprocessing", self.tr( "Error writing output shapefile." ) )
+				QMessageBox.warning( self, "Geometry", self.tr( "Error writing output shapefile." ) )
 				
 	def runStatusFromThread( self, status ):
 		self.progressBar.setValue( status )
@@ -193,6 +215,10 @@ class geometryThread( QThread ):
 			success = self.simplify_geometry()
 		elif self.myFunction == 7: # Polygon centroids
 			success = self.polygon_centroids()
+		elif self.myFunction == 8: # Delaunay triangulation
+			success = self.delaunay_triangulation()
+		elif self.myFunction == 9: # Polygon from layer extent
+			success = self.layer_extent()
 		self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), success )
 		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
 
@@ -451,6 +477,108 @@ class geometryThread( QThread ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
 		del writer
+		return True
+		
+	def delaunay_triangulation( self ):
+		import voronoi
+		vprovider = self.vlayer.dataProvider()
+		allAttrs = vprovider.attributeIndexes()
+		vprovider.select( allAttrs )
+		fields = {
+		0 : QgsField( "POINTA", QVariant.Double ),
+		1 : QgsField( "POINTB", QVariant.Double ),
+		2 : QgsField( "POINTC", QVariant.Double ) }
+		writer = QgsVectorFileWriter( self.myName, self.myEncoding,
+		fields, QGis.WKBPolygon, vprovider.crs() )
+		inFeat = QgsFeature()
+		points = []
+		print "here"
+		while vprovider.nextFeature( inFeat ):
+			inGeom = QgsGeometry( inFeat.geometry() )
+			point = inGeom.asPoint()
+			points.append( point )
+		print "or here"
+		vprovider.rewind()
+		vprovider.select( allAttrs )
+		triangles = voronoi.computeDelaunayTriangulation( points )
+		feat = QgsFeature()
+		nFeat = len( triangles )
+		nElement = 0
+		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+		self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+		for triangle in triangles:
+			indicies = list( triangle )
+			indicies.append( indicies[ 0 ] )
+			polygon = []
+			step = 0
+			for index in indicies:
+				vprovider.featureAtId( index, feat, True,  allAttrs )
+				geom = QgsGeometry( feat.geometry() )
+				point = QgsPoint( geom.asPoint() )
+				polygon.append( point )
+				feat.addAttribute( step, QVariant( index ) )
+				step += 1
+			geometry = QgsGeometry().fromPolygon( [ polygon ] )
+			feat.setGeometry( geometry )			
+			writer.addFeature( feat )
+			nElement += 1
+			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+		del writer
+		return True
+		
+	def layer_extent( self ):
+		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+		self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, 0 ) )
+		fields = {
+		0 : QgsField( "MINX", QVariant.Double ),
+		1 : QgsField( "MINY", QVariant.Double ),
+		2 : QgsField( "MAXX", QVariant.Double ),
+		3 : QgsField( "MAXY", QVariant.Double ),
+		4 : QgsField( "CNTX", QVariant.Double ),
+		5 : QgsField( "CNTY", QVariant.Double ),
+		6 : QgsField( "AREA", QVariant.Double ),
+		7 : QgsField( "PERIM", QVariant.Double ),
+		8 : QgsField( "HEIGHT", QVariant.Double ),
+		9 : QgsField( "WIDTH", QVariant.Double ) }
+
+		writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+		fields, QGis.WKBPolygon, self.vlayer.srs() )
+		rect = self.vlayer.extent()
+		minx = rect.xMinimum()
+		miny = rect.yMinimum()
+		maxx = rect.xMaximum()
+		maxy = rect.yMaximum()
+		height = rect.height()
+		width = rect.width()
+		cntx = minx + ( width / 2.0 )
+		cnty = miny + ( height / 2.0 )
+		area = width * height
+		perim = ( 2 * width ) + (2 * height )
+		rect = [
+		QgsPoint( minx, miny ),
+		QgsPoint( minx, maxy ),
+		QgsPoint( maxx, maxy ),
+		QgsPoint( maxx, miny ),
+		QgsPoint( minx, miny ) ]
+		geometry = QgsGeometry().fromPolygon( [ rect ] )
+		feat = QgsFeature()
+		feat.setGeometry( geometry )
+		feat.setAttributeMap( {
+		0 : QVariant( minx ),
+		1 : QVariant( miny ),
+		2 : QVariant( maxx ),
+		3 : QVariant( maxy ),
+		4 : QVariant( cntx ),
+		5 : QVariant( cnty ),
+		6 : QVariant( area ),
+		7 : QVariant( perim ),
+		8 : QVariant( height ),
+		9 : QVariant( width ) } )
+		writer.addFeature( feat )
+		self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, 100 ) )
+		self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  0 )
+		del writer
+
 		return True
 
 	def extractAsSimple( self, geom, tolerance ):
