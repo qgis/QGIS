@@ -17,10 +17,13 @@ originally part of the larger QgsRasterLayer class
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#define REALLY_SMALL 0.0000001
 
 #include "qgslogger.h"
 
 #include "qgscolorrampshader.h"
+
+#include <math.h>
 
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
 {
@@ -54,17 +57,19 @@ bool QgsColorRampShader::discreteColor( double theValue, int* theReturnRedValue,
     return false;
   }
 
+  double myTinyDiff = 0.0;
   QgsColorRampShader::ColorRampItem myColorRampItem;
   while ( mCurrentColorRampItemIndex >= 0 && mCurrentColorRampItemIndex < myColorRampItemCount )
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
+    myTinyDiff = fabs( theValue - myColorRampItem.value );
     //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
     if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
       mCurrentColorRampItemIndex--;
     }
-    else if ( theValue <= myColorRampItem.value )
+    else if ( theValue <= myColorRampItem.value || myTinyDiff <= REALLY_SMALL )
     {
       *theReturnRedValue = myColorRampItem.color.red();
       *theReturnGreenValue = myColorRampItem.color.green();
@@ -94,12 +99,14 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
     return false;
   }
 
+  double myTinyDiff = 0.0;
   QgsColorRampShader::ColorRampItem myColorRampItem;
   while ( mCurrentColorRampItemIndex >= 0 && mCurrentColorRampItemIndex < myColorRampItemCount )
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
-    if ( theValue == myColorRampItem.value )
+    myTinyDiff = fabs( theValue - myColorRampItem.value );
+    if ( theValue == myColorRampItem.value || myTinyDiff <= REALLY_SMALL )
     {
       *theReturnRedValue = myColorRampItem.color.red();
       *theReturnGreenValue = myColorRampItem.color.green();
@@ -133,13 +140,13 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
 
 bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
-
   int myColorRampItemCount = mColorRampItemList.count();
   if ( myColorRampItemCount <= 0 )
   {
     return false;
   }
 
+  double myTinyDiff = 0.0;
   double myCurrentRampRange; //difference between two consecutive entry values
   double myOffsetInRange; //difference between the previous entry value and value
   QgsColorRampShader::ColorRampItem myColorRampItem;
@@ -147,12 +154,13 @@ bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedVa
   {
     //Start searching from the last index - assumtion is that neighboring pixels tend to be similar values
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
+    myTinyDiff = fabs( theValue - myColorRampItem.value );
     //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
     if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
       mCurrentColorRampItemIndex--;
     }
-    else if ( mCurrentColorRampItemIndex != 0 && theValue <= myColorRampItem.value )
+    else if ( mCurrentColorRampItemIndex != 0 && ( theValue <= myColorRampItem.value || myTinyDiff <= REALLY_SMALL ) )
     {
       QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
       myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
