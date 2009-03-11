@@ -3343,7 +3343,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
   // used in all cases of the statement (otherwise they may get
   // executed, but never used, in a bit of code where performance is
   // critical).
-
+  if (! fet.isValid() ) { return; }
 #if defined(Q_WS_X11)
   bool needToTrim = false;
 #endif

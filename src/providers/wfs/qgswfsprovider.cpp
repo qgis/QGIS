@@ -65,6 +65,8 @@ QgsWFSProvider::~QgsWFSProvider()
 
 bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
+  
   while ( true ) //go through the loop until we find a feature in the filter
   {
     if ( mSelectedFeatures.size() == 0 || mFeatureIterator == mSelectedFeatures.end() )
@@ -92,6 +94,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
     {
       if ( feature.geometry() && feature.geometry()->intersects( mSpatialFilter ) )
       {
+        feature.setValid( true );
         return true;
       }
       else
@@ -101,6 +104,7 @@ bool QgsWFSProvider::nextFeature( QgsFeature& feature )
     }
     else
     {
+      feature.setValid( true );
       return true;
     }
   }
