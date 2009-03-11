@@ -129,6 +129,7 @@ int QgsGPXProvider::capabilities() const
 
 bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
   bool result = false;
 
   QgsAttributeList::const_iterator iter;
@@ -402,6 +403,10 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
       }
 
     }
+  }
+  if ( result )
+  {
+    feature.setValid( true );
   }
   return result;
 }

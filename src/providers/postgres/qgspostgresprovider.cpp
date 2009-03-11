@@ -568,6 +568,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
 bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
   QString cursorName = QString( "qgisf%1" ).arg( providerId );
 
   if ( !valid )
@@ -621,7 +622,8 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   feature.setAttributeMap( mFeatureQueue.front().attributeMap() );
 
   mFeatureQueue.pop();
-
+  
+  feature.setValid( true );
   return true;
 }
 

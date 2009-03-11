@@ -62,6 +62,7 @@ QString QgsMemoryProvider::storageType() const
 
 bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
   bool hasFeature = FALSE;
 
   // option 1: using spatial index
@@ -128,8 +129,9 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
   {
     feature = mSelectIterator.value();
     mSelectIterator++;
+    feature.setValid( true );
   }
-
+  
   return hasFeature;
 }
 

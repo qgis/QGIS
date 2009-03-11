@@ -341,6 +341,8 @@ bool QgsOgrProvider::featureAtId( int featureId,
 
 bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 {
+  feature.setValid( false );
+  
   if ( !valid )
   {
     QgsLogger::warning( "Read attempt on an invalid shapefile data source" );
@@ -410,6 +412,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   if ( fet )
   {
     OGR_F_Destroy( fet );
+    feature.setValid( true );
     return true;
   }
   else
