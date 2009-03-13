@@ -2071,6 +2071,7 @@ QString QgsWmsProvider::metadata()
     myMetadataQString += "</td></tr>";
 
     // Layer Coordinate Reference Systems
+    /* MH: disable this as it causes performance problems if the server supports many CRS (e.g. QGIS mapserver)
     for ( uint j = 0; j < layersSupported[i].crs.size(); j++ )
 {
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
@@ -2079,7 +2080,7 @@ QString QgsWmsProvider::metadata()
       myMetadataQString += "<td bgcolor=\"gray\">";
       myMetadataQString += layersSupported[i].crs[j];
       myMetadataQString += "</td></tr>";
-    }
+    }*/
 
     // Layer Styles
     for ( uint j = 0; j < layersSupported[i].style.size(); j++ )

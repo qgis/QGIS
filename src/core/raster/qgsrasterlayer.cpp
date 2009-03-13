@@ -1535,15 +1535,24 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     //Set the transparency for the whole layer
     //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
     //Currently this is only done for WMS images, which should be small enough not to impact performance
-    int myWidth = image->width();
-    int myHeight = image->height();
-    QRgb myRgb;
-    for( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+
+    if(mTransparencyLevel != 255) //improve performance if layer transparency not altered
     {
-        for( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+         QImage* transparentImageCopy = new QImage(*image); //copy image if there is user transparency
+         image = transparentImageCopy;
+        int myWidth = image->width();
+        int myHeight = image->height();
+        QRgb myRgb;
+        int newTransparency;
+        for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
         {
+          for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+          {
             myRgb = image->pixel( myWidthRunner, myHeightRunner );
-            image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), mTransparencyLevel ) );
+            //combine transparency from WMS and layer transparency
+            newTransparency =  (double) mTransparencyLevel / 255.0 * (double)(qAlpha(myRgb));
+            image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency ));
+          }
         }
     }
 
@@ -1561,6 +1570,11 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
                               // TODO: Check for rigorous correctness
                             ),
                             *image );
+
+     if(mTransparencyLevel != 255)
+    {
+        delete image;
+    }
 
   }
   else
