@@ -18,7 +18,4 @@ class QgsScaleBarStyle
     virtual QRectF calculateBoxSize() const; //default implementation provided
     virtual QString name() const = 0; //return name of the style
     //virtual QIcon styleIcon() const = 0;
-
-  private:
-    QgsScaleBarStyle(); //default constructor forbidden
 };

@@ -71,27 +71,4 @@ class QgsComposerLegend: QObject, QgsComposerItem
   public slots:
     /**Data changed*/
     void synchronizeWithModel();
-
-  protected:
-
-
-  private:
-    QgsComposerLegend(); //forbidden
-
-    /**Draws child items of a layer item
-       @param layerItem parent model item (layer)
-       @param currentYCoord in/out: current y position of legend item
-       @param maxXCoord in/out: maximum x-coordinate of the whole legend
-    */
-    void drawLayerChildItems( QPainter* p, QStandardItem* layerItem, double& currentYCoord, double& maxXCoord );
-
-    /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
-     it is possible that it differs from mSymbolHeight*/
-    void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
-    void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
-    void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
-    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition ) const;
-
-    /**Helper function that lists ids of layers contained in map canvas*/
-    QStringList layerIdList() const;
 };

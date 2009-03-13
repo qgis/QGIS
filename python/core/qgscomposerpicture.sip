@@ -38,13 +38,6 @@ class QgsComposerPicture: QObject, QgsComposerItem
       */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-  private:
-
-    //default constructor is forbidden
-    QgsComposerPicture();
-    /**Updates content of current image using svg generator*/
-    void updateImageFromSvg();
-
   signals:
     /**Tell the configuration widget that the settings need to be updated*/
     void settingsChanged();

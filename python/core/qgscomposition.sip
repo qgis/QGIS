@@ -125,19 +125,4 @@ class QgsComposition: QGraphicsScene
 
     /**Snaps a scene coordinate point to grid*/
     QPointF snapPointToGrid( const QPointF& scenePoint ) const;
-
-  private:
-   
-
-    QgsComposition(); //default constructor is forbidden
-
-    /**Reset z-values of items based on position in z list*/
-    void updateZValues();
-
-    /**Returns the bounding rectangle of the selected items in scene coordinates
-     @return 0 in case of success*/
-    int boundingRectOfSelectedItems( QRectF& bRect );
-
-    void loadGridAppearanceSettings();
-    void saveGridAppearanceSettings();
 };
