@@ -105,13 +105,4 @@ class QgsComposerMap : QObject, QgsComposerItem
   signals:
     /**Is emitted when width/height is changed as a result of user interaction*/
     void extentChanged();
-
-  private:
-
-    /**Establishes signal/slot connection for update in case of layer change*/
-    void connectUpdateSlot();
-
-    /**Returns the zoom factor of the graphics view. If no
-     graphics view exists, the default 1 is returned*/
-    double horizontalViewScaleFactor() const;
 };

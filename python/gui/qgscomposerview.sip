@@ -64,8 +64,6 @@ class QgsComposerView: QGraphicsView
     void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
-
-  private:
     
 
   public slots:
