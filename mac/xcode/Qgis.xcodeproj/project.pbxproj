@@ -1019,6 +1019,11 @@
 		7256F5EF0F41C9C70022BE1F /* qt_sv.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C20F41C9990022BE1F /* qt_sv.qm */; };
 		7256F5F00F41C9C70022BE1F /* qt_zh_CN.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C30F41C9990022BE1F /* qt_zh_CN.qm */; };
 		7256F5F10F41C9C70022BE1F /* qt_zh_TW.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C40F41C9990022BE1F /* qt_zh_TW.qm */; };
+		726FD99D0F6BF81300D50560 /* delaunay.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99C0F6BF7FE00D50560 /* delaunay.png */; };
+		726FD99E0F6BF81300D50560 /* layer_extent.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99B0F6BF7FE00D50560 /* layer_extent.png */; };
+		726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A10F6BF83100D50560 /* delaunay.png */; };
+		726FD9A30F6BF83F00D50560 /* layer_extent.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A00F6BF83100D50560 /* layer_extent.png */; };
+		726FD9A50F6BF87300D50560 /* voronoi.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 726FD9A40F6BF86600D50560 /* voronoi.py */; };
 		729278270F3A82B400D9C992 /* moc_qgscomposerlegend.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729278140F3A82B400D9C992 /* moc_qgscomposerlegend.cpp */; };
 		729278280F3A82B400D9C992 /* moc_qgsmaprenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729278150F3A82B400D9C992 /* moc_qgsmaprenderer.cpp */; };
 		729278290F3A82B400D9C992 /* moc_qgscontexthelp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729278160F3A82B400D9C992 /* moc_qgscontexthelp.cpp */; };
@@ -4738,7 +4743,7 @@
 		72EBCA6C0F49DDA60016BA3C /* Copy - fTools */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/ftools";
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools";
 			dstSubfolderSpec = 0;
 			files = (
 				72EBCA6D0F49DDC00016BA3C /* __init__.py in Copy - fTools */,
@@ -4758,7 +4763,7 @@
 		72EBCB0D0F49DEC10016BA3C /* Copy - fTools-tools */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/ftools/tools";
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools/tools";
 			dstSubfolderSpec = 0;
 			files = (
 				72EBCA790F49DDF80016BA3C /* doDefineProj.py in Copy - fTools-tools */,
@@ -4815,6 +4820,7 @@
 				72EBCAAC0F49DDF80016BA3C /* frmVisual.py in Copy - fTools-tools */,
 				72EBCAAD0F49DDF80016BA3C /* frmVisual.ui in Copy - fTools-tools */,
 				72EBCAAE0F49DDF80016BA3C /* ftools_utils.py in Copy - fTools-tools */,
+				726FD9A50F6BF87300D50560 /* voronoi.py in Copy - fTools-tools */,
 			);
 			name = "Copy - fTools-tools";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4822,7 +4828,7 @@
 		72EBCB0E0F49DEC10016BA3C /* Copy - fTools-icons */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/ftools/icons";
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools/icons";
 			dstSubfolderSpec = 0;
 			files = (
 				72EBCAB10F49DE330016BA3C /* gis-0.1.svg in Copy - fTools-icons */,
@@ -4835,9 +4841,11 @@
 		72EBCB0F0F49DEC10016BA3C /* Copy - ftools-icons-default */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/ftools/icons/default";
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools/icons/default";
 			dstSubfolderSpec = 0;
 			files = (
+				726FD99D0F6BF81300D50560 /* delaunay.png in Copy - ftools-icons-default */,
+				726FD99E0F6BF81300D50560 /* layer_extent.png in Copy - ftools-icons-default */,
 				72EBCAB50F49DE800016BA3C /* analysis.png in Copy - ftools-icons-default */,
 				72EBCAB60F49DE800016BA3C /* basic_statistics.png in Copy - ftools-icons-default */,
 				72EBCAB70F49DE800016BA3C /* buffer.png in Copy - ftools-icons-default */,
@@ -4888,9 +4896,11 @@
 		72EBCB100F49DEC10016BA3C /* Copy - ftools-icons-gis */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/ftools/icons/gis";
+			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools/icons/gis";
 			dstSubfolderSpec = 0;
 			files = (
+				726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */,
+				726FD9A30F6BF83F00D50560 /* layer_extent.png in Copy - ftools-icons-gis */,
 				72EBCAE10F49DEA60016BA3C /* analysis.png in Copy - ftools-icons-gis */,
 				72EBCAE20F49DEA60016BA3C /* basic_statistics.png in Copy - ftools-icons-gis */,
 				72EBCAE30F49DEA60016BA3C /* buffer.png in Copy - ftools-icons-gis */,
@@ -7564,6 +7574,11 @@
 		7256F5C40F41C9990022BE1F /* qt_zh_TW.qm */ = {isa = PBXFileReference; lastKnownFileType = file; name = qt_zh_TW.qm; path = generated/i18n/qt_zh_TW.qm; sourceTree = SOURCE_ROOT; };
 		7256F5FC0F41CB380022BE1F /* configure.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = configure.py; path = generated/python/python/configure.py; sourceTree = SOURCE_ROOT; };
 		7256F6AD0F41CB390022BE1F /* qgisconfig.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgisconfig.py; path = generated/python/python/qgisconfig.py; sourceTree = SOURCE_ROOT; };
+		726FD99B0F6BF7FE00D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/default/layer_extent.png; sourceTree = SOURCE_ROOT; };
+		726FD99C0F6BF7FE00D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/default/delaunay.png; sourceTree = SOURCE_ROOT; };
+		726FD9A00F6BF83100D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/gis/layer_extent.png; sourceTree = SOURCE_ROOT; };
+		726FD9A10F6BF83100D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/gis/delaunay.png; sourceTree = SOURCE_ROOT; };
+		726FD9A40F6BF86600D50560 /* voronoi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = voronoi.py; path = ../../python/plugins/fTools/tools/voronoi.py; sourceTree = SOURCE_ROOT; };
 		729278140F3A82B400D9C992 /* moc_qgscomposerlegend.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgscomposerlegend.cpp; path = generated/core/moc_qgscomposerlegend.cpp; sourceTree = SOURCE_ROOT; };
 		729278150F3A82B400D9C992 /* moc_qgsmaprenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgsmaprenderer.cpp; path = generated/core/moc_qgsmaprenderer.cpp; sourceTree = SOURCE_ROOT; };
 		729278160F3A82B400D9C992 /* moc_qgscontexthelp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgscontexthelp.cpp; path = generated/core/moc_qgscontexthelp.cpp; sourceTree = SOURCE_ROOT; };
@@ -7774,6 +7789,17 @@
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
 		72E70AD20F439BFF00142011 /* extra_clean.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = extra_clean.sh; sourceTree = "<group>"; };
+		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
+		72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsscalebarstyle.sip; path = ../../python/core/qgsscalebarstyle.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3BF0F5AE63500E78E3C /* qgscomposeritem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposeritem.sip; path = ../../python/core/qgscomposeritem.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C00F5AE63500E78E3C /* qgslegendmodel.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgslegendmodel.sip; path = ../../python/core/qgslegendmodel.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C10F5AE63500E78E3C /* qgspaperitem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspaperitem.sip; path = ../../python/core/qgspaperitem.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C20F5AE63500E78E3C /* qgscomposition.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposition.sip; path = ../../python/core/qgscomposition.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C30F5AE63500E78E3C /* qgscomposerlegend.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerlegend.sip; path = ../../python/core/qgscomposerlegend.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C40F5AE63500E78E3C /* qgscomposermap.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposermap.sip; path = ../../python/core/qgscomposermap.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C50F5AE63500E78E3C /* qgscomposerpicture.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerpicture.sip; path = ../../python/core/qgscomposerpicture.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C60F5AE63500E78E3C /* qgscomposerscalebar.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerscalebar.sip; path = ../../python/core/qgscomposerscalebar.sip; sourceTree = SOURCE_ROOT; };
+		72E9A3C70F5AE63500E78E3C /* qgscomposerlabel.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerlabel.sip; path = ../../python/core/qgscomposerlabel.sip; sourceTree = SOURCE_ROOT; };
 		72EBC9410F49D0E20016BA3C /* qgspaperitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspaperitem.h; path = ../../src/core/composer/qgspaperitem.h; sourceTree = SOURCE_ROOT; };
 		72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspaperitem.cpp; path = ../../src/core/composer/qgspaperitem.cpp; sourceTree = SOURCE_ROOT; };
 		72EBC94F0F49D1DE0016BA3C /* qgsogrsublayersdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsogrsublayersdialogbase.ui; path = ../../src/ui/qgsogrsublayersdialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -10954,6 +10980,16 @@
 				7209EDBA0F39E5D9003DC336 /* qgsvectordataprovider.sip */,
 				7209EDBB0F39E5D9003DC336 /* qgsvectorfilewriter.sip */,
 				7209EDBC0F39E5D9003DC336 /* qgsvectorlayer.sip */,
+				72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */,
+				72E9A3BF0F5AE63500E78E3C /* qgscomposeritem.sip */,
+				72E9A3C00F5AE63500E78E3C /* qgslegendmodel.sip */,
+				72E9A3C10F5AE63500E78E3C /* qgspaperitem.sip */,
+				72E9A3C20F5AE63500E78E3C /* qgscomposition.sip */,
+				72E9A3C30F5AE63500E78E3C /* qgscomposerlegend.sip */,
+				72E9A3C40F5AE63500E78E3C /* qgscomposermap.sip */,
+				72E9A3C50F5AE63500E78E3C /* qgscomposerpicture.sip */,
+				72E9A3C60F5AE63500E78E3C /* qgscomposerscalebar.sip */,
+				72E9A3C70F5AE63500E78E3C /* qgscomposerlabel.sip */,
 			);
 			name = core;
 			path = ../../python/core;
@@ -10964,6 +11000,7 @@
 			children = (
 				7209EDBE0F39E5D9003DC336 /* gui.sip */,
 				7209EDBF0F39E5D9003DC336 /* qgisinterface.sip */,
+				72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */,
 				7209EDC00F39E5D9003DC336 /* qgsencodingfiledialog.sip */,
 				7209EDC10F39E5D9003DC336 /* qgsgenericprojectionselector.sip */,
 				7209EDC20F39E5D9003DC336 /* qgsmapcanvas.sip */,
@@ -12418,6 +12455,8 @@
 		72EBC9D00F49DC120016BA3C /* default */ = {
 			isa = PBXGroup;
 			children = (
+				726FD99B0F6BF7FE00D50560 /* layer_extent.png */,
+				726FD99C0F6BF7FE00D50560 /* delaunay.png */,
 				72EBC9D10F49DC120016BA3C /* analysis.png */,
 				72EBC9D20F49DC120016BA3C /* basic_statistics.png */,
 				72EBC9D30F49DC120016BA3C /* buffer.png */,
@@ -12470,6 +12509,8 @@
 		72EBC9FD0F49DC120016BA3C /* gis */ = {
 			isa = PBXGroup;
 			children = (
+				726FD9A00F6BF83100D50560 /* layer_extent.png */,
+				726FD9A10F6BF83100D50560 /* delaunay.png */,
 				72EBC9FE0F49DC120016BA3C /* analysis.png */,
 				72EBC9FF0F49DC120016BA3C /* basic_statistics.png */,
 				72EBCA000F49DC120016BA3C /* buffer.png */,
@@ -12577,6 +12618,7 @@
 				72EBCA640F49DC130016BA3C /* frmVisual.py */,
 				72EBCA650F49DC130016BA3C /* frmVisual.ui */,
 				72EBCA660F49DC130016BA3C /* ftools_utils.py */,
+				726FD9A40F6BF86600D50560 /* voronoi.py */,
 			);
 			name = tools;
 			path = ../../python/plugins/fTools/tools;
