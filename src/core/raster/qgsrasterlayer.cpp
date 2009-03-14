@@ -104,6 +104,7 @@ QgsRasterLayer::QgsRasterLayer(
   mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
   mRasterShader = new QgsRasterShader();
 
+  mBandCount = 0;
   mHasPyramids = false;
   mNoDataValue = -9999;
   mValidNoDataValue = false;
@@ -638,7 +639,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 unsigned int QgsRasterLayer::bandCount()
 {
-  return mRasterStatsList.size();
+  return mBandCount;
 }
 
 const QString QgsRasterLayer::bandName( int theBandNo )
@@ -1838,7 +1839,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      theResults[ tr( "Band%1" ).arg( i )] = tr( "out of extent" );
+      theResults[ generateBandName( i ) ] = tr( "out of extent" );
     }
   }
   else
@@ -1882,7 +1883,8 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
       {
         v.setNum( value );
       }
-      theResults[tr( "Band%1" ).arg( i )] = v;
+
+     theResults[ generateBandName( i ) ] = v;
 
       CPLFree( data );
     }
@@ -4888,6 +4890,37 @@ void QgsRasterLayer::closeDataset()
   mRasterStatsList.clear();
 }
 
+QString QgsRasterLayer::generateBandName( int theBandNumber )
+{
+  //Calculate magnitude of band count for padding
+  QString myBandName = tr( "Band" ) + " ";
+  int myBandCount = bandCount();
+  int myLeadingZeros = 0;
+  int myWholeNumber = myBandCount / 10;
+  while( myWholeNumber > 0 )
+  {
+    myLeadingZeros++;
+    myWholeNumber = myBandCount / pow( 10, myLeadingZeros + 1 );
+  }
+
+  //Pad the band number of needed
+  int myMagnitude = 0;
+  myWholeNumber = theBandNumber / 10;
+  while( myWholeNumber > 0 )
+  {
+    myMagnitude++;
+    myWholeNumber = theBandNumber / pow( 10, myMagnitude + 1 );
+  }
+
+  for( int myPadder = 0; myPadder < myLeadingZeros - myMagnitude; myPadder++ )
+  {
+    myBandName += "0";
+  }
+  myBandName += QString::number( theBandNumber );
+
+  return myBandName;
+}
+
 /**
  * This method looks to see if a given band name exists.
  *@note This function is no longer really needed and about to be removed
@@ -5166,13 +5199,12 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     mRasterTransparency.initializeTransparentPixelList( mNoDataValue );
   }
 
-  //initialise the raster band stats and contrast enhancement vector
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+  mBandCount = GDALGetRasterCount( mGdalDataset );
+  for ( int i = 1; i <= mBandCount; i++ )
   {
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     QgsRasterBandStats myRasterBandStats;
-    //myRasterBandStats.bandName = myColorQString ;
-    myRasterBandStats.bandName = "Band " + QString::number( i );
+    myRasterBandStats.bandName = generateBandName( i );
     myRasterBandStats.bandNumber = i;
     myRasterBandStats.statsGathered = false;
     myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
@@ -5347,12 +5379,34 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   }
   QgsDebugMsg( "No matching band name found in raster band stats" );
 
+  QgsDebugMsg( "Testing for non zero-buffered names" );
+  //TODO Remove test in v2.0 or earlier
+  QStringList myBandNameComponents = theBandName.split( " " );
+  if ( myBandNameComponents.size() == 2 )
+  {
+    int myBandNumber = myBandNameComponents.at( 1 ).toInt();
+    if ( myBandNumber > 0 )
+    {
+      QString myBandName = generateBandName( myBandNumber );
+      for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
+      {
+        //find out the name of this band
+        if ( mRasterStatsList[myIterator].bandName == myBandName )
+        {
+          QgsDebugMsg( "Matching band name found" );
+          return myBandName;
+        }
+      }
+    }
+  }
+
   QgsDebugMsg( "Testing older naming format" );
   //See of the band in an older format #:something.
-  //TODO Remove test in v2.0
+  //TODO Remove test in v2.0 or earlier
+  myBandNameComponents.clear();
   if ( theBandName.contains( ':' ) )
   {
-    QStringList myBandNameComponents = theBandName.split( ":" );
+    myBandNameComponents = theBandName.split( ":" );
     if ( myBandNameComponents.size() == 2 )
     {
       int myBandNumber = myBandNameComponents.at( 0 ).toInt();

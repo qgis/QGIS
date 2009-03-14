@@ -668,6 +668,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //
     // Private methods
     //
+
     /** \brief Drawing routine for multiband image  */
     void drawMultiBandColor( QPainter * theQPainter,
                              QgsRasterViewPort * theRasterViewPort,
@@ -724,6 +725,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Close data set and release related data */
     void closeDataset();
 
+    /** \brief helper function to create zero padded band names */
+    QString  generateBandName( int );
+
     /** \brief Find out whether a given band exists.    */
     bool hasBand( const QString &  theBandName );
 
@@ -758,6 +762,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief  Constant defining flag for XML and a constant that signals property not used */
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
+
+    /** \brief The number of bands in the dataset */
+    int mBandCount;
 
     /** \brief The band to be associated with the color blue - usually 3 */
     QString mBlueBandName;
