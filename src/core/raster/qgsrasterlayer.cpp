@@ -4892,33 +4892,7 @@ void QgsRasterLayer::closeDataset()
 
 QString QgsRasterLayer::generateBandName( int theBandNumber )
 {
-  //Calculate magnitude of band count for padding
-  QString myBandName = tr( "Band" ) + " ";
-  int myBandCount = bandCount();
-  int myLeadingZeros = 0;
-  int myWholeNumber = myBandCount / 10;
-  while( myWholeNumber > 0 )
-  {
-    myLeadingZeros++;
-    myWholeNumber = myBandCount / pow( 10, myLeadingZeros + 1 );
-  }
-
-  //Pad the band number of needed
-  int myMagnitude = 0;
-  myWholeNumber = theBandNumber / 10;
-  while( myWholeNumber > 0 )
-  {
-    myMagnitude++;
-    myWholeNumber = theBandNumber / pow( 10, myMagnitude + 1 );
-  }
-
-  for( int myPadder = 0; myPadder < myLeadingZeros - myMagnitude; myPadder++ )
-  {
-    myBandName += "0";
-  }
-  myBandName += QString::number( theBandNumber );
-
-  return myBandName;
+  return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10( ( float ) bandCount() ), 10, QChar( '0' ) );
 }
 
 /**
