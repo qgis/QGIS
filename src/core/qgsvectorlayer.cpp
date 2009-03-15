@@ -1261,6 +1261,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
           continue;
 
         f.setFeatureId( fid );
+        f.setValid(true);
 
         if ( mFetchGeometry )
           f.setGeometry( mFetchChangedGeomIt.value() );
@@ -1318,6 +1319,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
         continue;
 
       f.setFeatureId( fid );
+      f.setValid(true);
 
       if ( mFetchGeometry )
         f.setGeometry( *mFetchAddedFeaturesIt->geometry() );
@@ -1362,6 +1364,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
   if ( fetchGeometries && mChangedGeometries.contains( featureId ) )
   {
     f.setFeatureId( featureId );
+    f.setValid(true);
     f.setGeometry( mChangedGeometries[featureId] );
 
     if ( fetchAttributes )
@@ -1403,7 +1406,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
     if ( iter->id() == featureId )
     {
       f.setFeatureId( iter->id() );
-
+      f.setValid(true);
       if ( fetchGeometries )
         f.setGeometry( *iter->geometry() );
 
