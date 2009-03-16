@@ -35,19 +35,6 @@
                                 <grass name="v.in.garmin"/>
                                 <grass name="v.in.gpsbabel"/>
                         </section>
-
-			<section label="Import vector">
-				<grass name="v.in.ogr"/>
-				<grass name="v.in.ogr.loc"/>
-                                <grass name="v.in.ogr.all"/> 
-                                <grass name="v.in.ogr.all.loc"/> 
-				<grass name="v.in.dxf"/>
-				<grass name="v.in.e00"/>
-				<grass name="v.in.mapgen"/>
-				<grass name="v.in.db"/>
-				<grass name="v.in.garmin"/>
-				<grass name="v.in.gpsbabel"/>
-			</section>
 		</section>
 		<section label="Export">
 			<section label="Export raster">
