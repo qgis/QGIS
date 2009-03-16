@@ -8,6 +8,8 @@
 	<section label="File">
 		<section label="Import">
 			<section label="Import raster">
+                                <grass name="r.in.gdal.qgis"/>
+                                <grass name="r.in.gdal.qgis.loc"/>
 				<grass name="r.in.gdal"/>
 				<grass name="r.in.gdal.loc"/>
 				<grass name="r.in.ascii"/>
@@ -19,6 +21,21 @@
 				<grass name="r.in.srtm"/>
 				<grass name="r.in.aster"/>
 			</section>
+			 <section label="Import vector">
+                                <grass name="v.in.ogr.qgis"/>
+                                <grass name="v.in.ogr"/>
+                                <grass name="v.in.ogr.qgis.loc"/>
+                                <grass name="v.in.ogr.loc"/>
+                                <grass name="v.in.ogr.all"/> 
+				<grass name="v.in.ogr.all.loc"/> 
+                                <grass name="v.in.dxf"/>
+                                <grass name="v.in.e00"/>
+                                <grass name="v.in.mapgen"/>
+                                <grass name="v.in.db"/>
+                                <grass name="v.in.garmin"/>
+                                <grass name="v.in.gpsbabel"/>
+                        </section>
+
 			<section label="Import vector">
 				<grass name="v.in.ogr"/>
 				<grass name="v.in.ogr.loc"/>
