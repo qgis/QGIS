@@ -500,6 +500,18 @@
 		720FC8E50F3D5A430069492F /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFB0F39E57B003DC336 /* dialog.cpp */; };
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
+		721DDCDC0F6E979C006DD13E /* r.in.gdal.qgis.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCDB0F6E9787006DD13E /* r.in.gdal.qgis.1.png */; };
+		721DDCDD0F6E979C006DD13E /* r.in.gdal.qgis.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCDA0F6E9787006DD13E /* r.in.gdal.qgis.2.png */; };
+		721DDCDE0F6E979C006DD13E /* r.in.gdal.qgis.loc.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCD90F6E9787006DD13E /* r.in.gdal.qgis.loc.1.png */; };
+		721DDCDF0F6E979C006DD13E /* r.in.gdal.qgis.loc.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCD80F6E9787006DD13E /* r.in.gdal.qgis.loc.2.png */; };
+		721DDCE00F6E979C006DD13E /* r.in.gdal.qgis.loc.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCD70F6E9787006DD13E /* r.in.gdal.qgis.loc.qgm */; };
+		721DDCE10F6E979C006DD13E /* r.in.gdal.qgis.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCD60F6E9787006DD13E /* r.in.gdal.qgis.qgm */; };
+		721DDCE90F6E97D4006DD13E /* v.in.ogr.qgis.1.svg in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE80F6E97C2006DD13E /* v.in.ogr.qgis.1.svg */; };
+		721DDCEA0F6E97D4006DD13E /* v.in.ogr.qgis.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE70F6E97C2006DD13E /* v.in.ogr.qgis.2.png */; };
+		721DDCEB0F6E97D4006DD13E /* v.in.ogr.qgis.loc.1.svg in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE60F6E97C2006DD13E /* v.in.ogr.qgis.loc.1.svg */; };
+		721DDCEC0F6E97D4006DD13E /* v.in.ogr.qgis.loc.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE50F6E97C2006DD13E /* v.in.ogr.qgis.loc.2.png */; };
+		721DDCED0F6E97D4006DD13E /* v.in.ogr.qgis.loc.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE40F6E97C2006DD13E /* v.in.ogr.qgis.loc.qgm */; };
+		721DDCEE0F6E97D4006DD13E /* v.in.ogr.qgis.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE30F6E97C2006DD13E /* v.in.ogr.qgis.qgm */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -3812,6 +3824,18 @@
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
 			dstSubfolderSpec = 0;
 			files = (
+				721DDCE90F6E97D4006DD13E /* v.in.ogr.qgis.1.svg in Copy - modules */,
+				721DDCEA0F6E97D4006DD13E /* v.in.ogr.qgis.2.png in Copy - modules */,
+				721DDCEB0F6E97D4006DD13E /* v.in.ogr.qgis.loc.1.svg in Copy - modules */,
+				721DDCEC0F6E97D4006DD13E /* v.in.ogr.qgis.loc.2.png in Copy - modules */,
+				721DDCED0F6E97D4006DD13E /* v.in.ogr.qgis.loc.qgm in Copy - modules */,
+				721DDCEE0F6E97D4006DD13E /* v.in.ogr.qgis.qgm in Copy - modules */,
+				721DDCDC0F6E979C006DD13E /* r.in.gdal.qgis.1.png in Copy - modules */,
+				721DDCDD0F6E979C006DD13E /* r.in.gdal.qgis.2.png in Copy - modules */,
+				721DDCDE0F6E979C006DD13E /* r.in.gdal.qgis.loc.1.png in Copy - modules */,
+				721DDCDF0F6E979C006DD13E /* r.in.gdal.qgis.loc.2.png in Copy - modules */,
+				721DDCE00F6E979C006DD13E /* r.in.gdal.qgis.loc.qgm in Copy - modules */,
+				721DDCE10F6E979C006DD13E /* r.in.gdal.qgis.qgm in Copy - modules */,
 				72E707370F426C7600142011 /* db.connect.1.png in Copy - modules */,
 				72E707380F426C7600142011 /* db.connect.qgm in Copy - modules */,
 				72E707390F426C7600142011 /* db.connect.schema.1.png in Copy - modules */,
@@ -7520,6 +7544,18 @@
 		720FC8DE0F3D5A350069492F /* moc_plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_plugin.cpp; path = generated/ogrconverterplugin/moc_plugin.cpp; sourceTree = SOURCE_ROOT; };
 		720FC8DF0F3D5A350069492F /* qrc_ogrconverter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qrc_ogrconverter.cpp; path = generated/ogrconverterplugin/qrc_ogrconverter.cpp; sourceTree = SOURCE_ROOT; };
 		720FC8E00F3D5A350069492F /* ui_ogrconverterguibase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_ogrconverterguibase.h; path = generated/ogrconverterplugin/ui_ogrconverterguibase.h; sourceTree = SOURCE_ROOT; };
+		721DDCD60F6E9787006DD13E /* r.in.gdal.qgis.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.gdal.qgis.qgm; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.qgm; sourceTree = SOURCE_ROOT; };
+		721DDCD70F6E9787006DD13E /* r.in.gdal.qgis.loc.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.gdal.qgis.loc.qgm; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.loc.qgm; sourceTree = SOURCE_ROOT; };
+		721DDCD80F6E9787006DD13E /* r.in.gdal.qgis.loc.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.gdal.qgis.loc.2.png; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.loc.2.png; sourceTree = SOURCE_ROOT; };
+		721DDCD90F6E9787006DD13E /* r.in.gdal.qgis.loc.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.gdal.qgis.loc.1.png; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.loc.1.png; sourceTree = SOURCE_ROOT; };
+		721DDCDA0F6E9787006DD13E /* r.in.gdal.qgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.gdal.qgis.2.png; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.2.png; sourceTree = SOURCE_ROOT; };
+		721DDCDB0F6E9787006DD13E /* r.in.gdal.qgis.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.gdal.qgis.1.png; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.1.png; sourceTree = SOURCE_ROOT; };
+		721DDCE30F6E97C2006DD13E /* v.in.ogr.qgis.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.qgm; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.qgm; sourceTree = SOURCE_ROOT; };
+		721DDCE40F6E97C2006DD13E /* v.in.ogr.qgis.loc.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.loc.qgm; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.loc.qgm; sourceTree = SOURCE_ROOT; };
+		721DDCE50F6E97C2006DD13E /* v.in.ogr.qgis.loc.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.loc.2.png; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.loc.2.png; sourceTree = SOURCE_ROOT; };
+		721DDCE60F6E97C2006DD13E /* v.in.ogr.qgis.loc.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.loc.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.loc.1.svg; sourceTree = SOURCE_ROOT; };
+		721DDCE70F6E97C2006DD13E /* v.in.ogr.qgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.2.png; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.2.png; sourceTree = SOURCE_ROOT; };
+		721DDCE80F6E97C2006DD13E /* v.in.ogr.qgis.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.1.svg; sourceTree = SOURCE_ROOT; };
 		7256F29B0F4141240022BE1F /* core.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = core.so; path = generated/python/python/core/core.so; sourceTree = SOURCE_ROOT; };
 		7256F29C0F4141570022BE1F /* gui.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = gui.so; path = generated/python/python/gui/gui.so; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
@@ -9550,6 +9586,12 @@
 				7209E8F30F39E57B003DC336 /* r.in.gdal.loc.2.png */,
 				7209E8F40F39E57B003DC336 /* r.in.gdal.loc.qgm */,
 				7209E8F50F39E57B003DC336 /* r.in.gdal.qgm */,
+				721DDCD60F6E9787006DD13E /* r.in.gdal.qgis.qgm */,
+				721DDCD70F6E9787006DD13E /* r.in.gdal.qgis.loc.qgm */,
+				721DDCD80F6E9787006DD13E /* r.in.gdal.qgis.loc.2.png */,
+				721DDCD90F6E9787006DD13E /* r.in.gdal.qgis.loc.1.png */,
+				721DDCDA0F6E9787006DD13E /* r.in.gdal.qgis.2.png */,
+				721DDCDB0F6E9787006DD13E /* r.in.gdal.qgis.1.png */,
 				7209E8F60F39E57B003DC336 /* r.in.gridatb.1.png */,
 				7209E8F70F39E57B003DC336 /* r.in.gridatb.2.png */,
 				7209E8F80F39E57B003DC336 /* r.in.gridatb.qgm */,
@@ -9946,6 +9988,12 @@
 				7209EA7C0F39E57B003DC336 /* v.in.ogr.loc.2.png */,
 				7209EA7D0F39E57B003DC336 /* v.in.ogr.loc.qgm */,
 				7209EA7E0F39E57B003DC336 /* v.in.ogr.qgm */,
+				721DDCE30F6E97C2006DD13E /* v.in.ogr.qgis.qgm */,
+				721DDCE40F6E97C2006DD13E /* v.in.ogr.qgis.loc.qgm */,
+				721DDCE50F6E97C2006DD13E /* v.in.ogr.qgis.loc.2.png */,
+				721DDCE60F6E97C2006DD13E /* v.in.ogr.qgis.loc.1.svg */,
+				721DDCE70F6E97C2006DD13E /* v.in.ogr.qgis.2.png */,
+				721DDCE80F6E97C2006DD13E /* v.in.ogr.qgis.1.svg */,
 				7209EA7F0F39E57B003DC336 /* v.in.region.1.svg */,
 				7209EA800F39E57B003DC336 /* v.in.region.qgm */,
 				7209EA810F39E57B003DC336 /* v.kcv.1.png */,
