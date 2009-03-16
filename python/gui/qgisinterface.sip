@@ -87,6 +87,9 @@ class QgisInterface : QObject
     /** Add a dock widget to the main window */
     virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
 
+	/** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+	virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
+
     /** refresh legend of a layer */
     virtual void refreshLegend( QgsMapLayer * layer )=0;
 
