@@ -3810,7 +3810,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/modules";
-			dstSubfolderSpec = 7;
+			dstSubfolderSpec = 0;
 			files = (
 				72E707370F426C7600142011 /* db.connect.1.png in Copy - modules */,
 				72E707380F426C7600142011 /* db.connect.qgm in Copy - modules */,
