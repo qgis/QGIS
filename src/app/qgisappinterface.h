@@ -102,6 +102,9 @@ class QgisAppInterface : public QgisInterface
     /** Add a dock widget to the main window */
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 
+	/** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+	void removeDockWidget ( QDockWidget * dockwidget );
+
     virtual void refreshLegend( QgsMapLayer *l );
 
     /** Add window to Window menu. The action title is the window title

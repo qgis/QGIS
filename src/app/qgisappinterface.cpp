@@ -162,6 +162,11 @@ void QgisAppInterface::addDockWidget( Qt::DockWidgetArea area, QDockWidget * doc
   qgis->addDockWidget( area, dockwidget );
 }
 
+void QgisAppInterface::removeDockWidget( QDockWidget * dockwidget )
+{
+  qgis->removeDockWidget( dockwidget );
+}
+
 void QgisAppInterface::refreshLegend( QgsMapLayer *l )
 {
   if ( l && qgis && qgis->legend() )
