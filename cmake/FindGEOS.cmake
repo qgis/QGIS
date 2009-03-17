@@ -21,10 +21,18 @@ IF(WIN32)
        "$ENV{LIB_DIR}/include"
        CACHE STRING INTERNAL
        )
-    SET (
-       GEOS_LIBRARY 
-       "$ENV{LIB_DIR}/lib/geos_c.lib";odbc32;odbccp32 
-       CACHE STRING INTERNAL)
+    FIND_LIBRARY(GEOS_LIBRARY NAMES geos geos_c_i PATHS 
+      "$ENV{LIB_DIR}/lib"
+      #mingw
+      c:/msys/local/lib
+      NO_DEFAULT_PATH
+      )
+    IF (GEOS_LIBRARY)
+       SET (
+         GEOS_LIBRARY 
+         GEOS_LIBRARY;odbc32;odbccp32 
+         CACHE STRING INTERNAL)
+    ENDIF (GEOS_LIBRARY)
   ENDIF (MSVC)
   
 ELSE(WIN32)

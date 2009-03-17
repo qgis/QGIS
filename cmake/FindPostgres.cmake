@@ -16,11 +16,12 @@ IF(WIN32)
       /usr/include 
       c:/msys/local/include
       "$ENV{LIB_DIR}/include/postgresql"
+      "$ENV{LIB_DIR}/include"
       )
   ENDIF (NOT POSTGRES_INCLUDE_DIR)
 
   IF (NOT POSTGRES_LIBRARY)
-    FIND_LIBRARY(POSTGRES_LIBRARY NAMES pq libpq PATHS 
+    FIND_LIBRARY(POSTGRES_LIBRARY NAMES pq libpq libpqdll PATHS 
       /usr/local/lib 
       /usr/lib 
       c:/msys/local/lib
@@ -61,13 +62,11 @@ ENDIF(WIN32)
 
 IF (POSTGRES_INCLUDE_DIR AND POSTGRES_LIBRARY)
    SET(POSTGRES_FOUND TRUE)
-
    IF(EXISTS "${POSTGRES_INCLUDE_DIR}/pg_config.h")
      SET(HAVE_PGCONFIG TRUE)
    ELSE(EXISTS "${POSTGRES_INCLUDE_DIR}/pg_config.h")
      SET(HAVE_PGCONFIG FALSE)
    ENDIF(EXISTS "${POSTGRES_INCLUDE_DIR}/pg_config.h")
-   
 ENDIF (POSTGRES_INCLUDE_DIR AND POSTGRES_LIBRARY)
 
 
