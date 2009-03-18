@@ -48,6 +48,20 @@ class QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
     */
     virtual QString fileVectorFilters() const;
+    /** return a string containing the available database drivers
+    * @note this method was added in QGIS 1.1
+    */
+    virtual QString databaseDrivers() const;
+    /** return a string containing the available directory drivers
+     * @note this method was added in QGIS 1.1   
+     */
+    virtual QString directoryDrivers() const;
+    /** return a string containing the available protocol drivers
+     * @note this method was added in QGIS 1.1
+     */
+    virtual QString protocolDrivers() const;
+    
+
 
   private:
 

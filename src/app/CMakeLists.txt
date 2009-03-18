@@ -78,6 +78,10 @@ SET(QGIS_APP_SRCS
   legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslegendvectorsymbologyitem.cpp
+
+  ogr/qgsogrhelperfunctions.cpp
+  ogr/qgsopenvectorlayerdialog.cpp
+  ogr/qgsnewogrconnection.cpp
   )
 
 
@@ -141,6 +145,10 @@ SET (QGIS_APP_MOC_HDRS
   legend/qgslegend.h
   legend/qgslegendlayer.h
   legend/qgslegendlayerfile.h
+  
+  
+  ogr/qgsopenvectorlayerdialog.h
+  ogr/qgsnewogrconnection.h
   )
 
 IF (POSTGRES_FOUND)

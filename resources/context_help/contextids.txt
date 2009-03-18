@@ -11,3 +11,5 @@
 863656587_en_US   QgsMapserverExport
 94000531_en_US    QgsVectorLayerProperties
 985715179_en_US   QgsComposer
+63428984_en_US    QgsNewOgrConnection
+348772824_en_US   QgsOpenVectorLayerDialog

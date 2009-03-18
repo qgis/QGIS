@@ -38,6 +38,9 @@ typedef QString providerkey_t();
 typedef QString description_t();
 typedef bool    isprovider_t();
 typedef QString fileVectorFilters_t();
+typedef QString databaseDrivers_t();
+typedef QString directoryDrivers_t();
+typedef QString protocolDrivers_t();
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -132,6 +135,27 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
               // now get vector file filters, if any
               fileVectorFilters_t *pFileVectorFilters =
                 ( fileVectorFilters_t * ) cast_to_fptr( myLib->resolve( "fileVectorFilters" ) );
+			  //load database drivers
+			  databaseDrivers_t *pDatabaseDrivers =
+                  ( databaseDrivers_t * ) cast_to_fptr( myLib->resolve( "databaseDrivers" ) );
+              if ( pDatabaseDrivers )
+                {
+                  mDatabaseDrivers = pDatabaseDrivers();
+			    }
+              //load directory drivers
+			  directoryDrivers_t *pDirectoryDrivers =
+                  ( directoryDrivers_t * ) cast_to_fptr( myLib->resolve( "directoryDrivers" ) );
+              if ( pDirectoryDrivers )
+                {
+                  mDirectoryDrivers = pDirectoryDrivers();
+			    }
+              //load protocol drivers
+			  protocolDrivers_t *pProtocolDrivers =
+                  ( protocolDrivers_t * ) cast_to_fptr( myLib->resolve( "protocolDrivers" ) );
+              if ( pProtocolDrivers )
+                {
+                  mProtocolDrivers = pProtocolDrivers();
+			    }
 
               if ( pFileVectorFilters )
               {
@@ -400,14 +424,25 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 
 } // QgsProviderRegistry::setDataProvider
 
-
-
-
-
 QString QgsProviderRegistry::fileVectorFilters() const
 {
   return mVectorFileFilters;
-} //  QgsProviderRegistry::fileVectorFilters
+} 
+
+QString QgsProviderRegistry::databaseDrivers() const
+{
+  return mDatabaseDrivers;
+} 
+
+QString QgsProviderRegistry::directoryDrivers() const
+{
+  return mDirectoryDrivers;
+} 
+
+QString QgsProviderRegistry::protocolDrivers() const
+{
+  return mProtocolDrivers;
+} 
 
 
 QStringList QgsProviderRegistry::providerList() const
