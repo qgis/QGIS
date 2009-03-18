@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.0
+CURRENT_PROJECT_VERSION = 2.1.1
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -276,8 +276,10 @@ PYTHON_INC = $(PYTHON_PREFIX)/Headers
 PYTHON_LIB = -framework Python
 PYTHON_HAVE_fw_tig = HAVE_PYTHON=1
 PYTHON_HAVE_fw_leo = HAVE_PYTHON=1
+PYTHON_HAVE_fw_ = HAVE_PYTHON=1
 PYTHON_HAVE_system_tig = 
 PYTHON_HAVE_system_leo = HAVE_PYTHON=1
+PYTHON_HAVE_system_ = 
 PYTHON_HAVE = $(PYTHON_HAVE_$(PYTHON_FORM)_$(SDKSYS))
 PYTHON = $(PYTHON_PREFIX)/bin/python
 

@@ -53,6 +53,8 @@
 // system Python only on Leopard+
 //PYTHON_FORM = fw // fw, system or disabled
 //PYTHON_VERSION = 2.5 // can't auto-detect here
+// only uncomment this for a native build on Leopard
+//PYTHON_HAVE_system_ = HAVE_PYTHON=1
 
 //////////////////////////////////////////////////////////////////////
 // whether to bundle some external libs in the app package
