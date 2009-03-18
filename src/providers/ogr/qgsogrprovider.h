@@ -43,8 +43,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual ~QgsOgrProvider();
 
-
-
     virtual QgsCoordinateReferenceSystem crs();
 
     /**
@@ -111,7 +109,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const;
 
-
     /**
      * Get the number of fields in the layer
      */
@@ -170,7 +167,14 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
       It'd be nice to eventually be raster/vector neutral.
     */
-    /* virtual */ QString fileVectorFilters() const;
+    /* virtual */
+	QString fileVectorFilters() const;
+    /** return a string containing the available database drivers */
+	QString databaseDrivers() const;
+	/** return a string containing the available directory drivers */
+	QString protocolDrivers() const;
+	/** return a string containing the available protocol drivers */
+	QString directoryDrivers() const;
 
     /**Returns true if this is a valid shapefile
     */
@@ -217,7 +221,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       anything strange with regards to their name or description?
 
      */
-    QString description() const;
+    QString description() const;	
 
   protected:
     /** loads fields from input file to member attributeFields */
@@ -230,9 +234,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
-
     QgsFieldMap mAttributeFields;
-
     OGRDataSourceH ogrDataSource;
     void *extent_;
 

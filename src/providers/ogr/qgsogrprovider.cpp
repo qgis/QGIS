@@ -83,7 +83,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // If there is no & in the uri, then the uri is just the filename. The loaded
   // layer will be layer 0.
-  if ( ! uri.contains( '&', Qt::CaseSensitive ) )
+  //this is not true for geojson
+  if ( ! uri.contains( '|', Qt::CaseSensitive ) )
   {
     mFilePath = uri;
   }
@@ -94,7 +95,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     // value around the =.
     // A valid uri is of the form: filename&option1=value1&option2=value2,...
 
-    QStringList theURIParts = uri.split( "&" );
+    QStringList theURIParts = uri.split( "|" );
     mFilePath = theURIParts.at( 0 );
 
     for ( int i = 1 ; i < theURIParts.size(); i++ )
@@ -1014,17 +1015,25 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 } // createFileFilter_
 
 
-
-QGISEXTERN QString fileVectorFilters()
+QString createFilters(QString type)
 {
-  static QString myFileFilters;
+    /**Database drivers available*/
+	static QString myDatabaseDrivers;
+	/**Protocol drivers available*/
+	static QString myProtocolDrivers;
+	/**File filters*/
+	static QString myFileFilters;
+	/**Directory drivers*/
+	static QString myDirectoryDrivers;
+
 
   // if we've already built the supported vector string, just return what
   // we've already built
-  if ( !( myFileFilters.isEmpty() || myFileFilters.isNull() ) )
+  
+  if  ( myFileFilters.isEmpty() || myFileFilters.isNull() )      
   {
-    return myFileFilters;
-  }
+    
+  
 
   // register ogr plugins
   QgsApplication::registerOgrDrivers();
@@ -1057,95 +1066,151 @@ QGISEXTERN QString fileVectorFilters()
 
     driverName = OGR_Dr_GetName( driver );
 
-
-    if ( driverName.startsWith( "ESRI" ) )
+    if ( driverName.startsWith( "AVCBin" ) )
+    {
+      myDirectoryDrivers += "Arc/Info Binary Coverage,AVCBin;";
+    }
+	else if ( driverName.startsWith( "AVCE00" ) )
+    {
+      myFileFilters += createFileFilter_( "Arc/Info ASCII Coverage", "*.e00");
+    }
+	else if ( driverName.startsWith( "BNA" ) )
+    {
+      myFileFilters += createFileFilter_( "Atlas BNA", "*.bna" );
+    }
+	else if ( driverName.startsWith( "CSV" ) )
+    {
+      myFileFilters += createFileFilter_( "Comma Separated Value", "*.csv" );
+    }
+    else if ( driverName.startsWith( "DODS" ) )
+    {
+      myProtocolDrivers += "DODS/OPeNDAP,DODS;";
+    }
+    else if ( driverName.startsWith( "PGeo" ) )
+    {
+      myDatabaseDrivers += "ESRI Personal GeoDatabase,PGeo;";
+      #ifdef WIN32
+      myFileFilters += createFileFilter_( "ESRI Personal GeoDatabase", "*.mdb" );
+      #endif
+    }
+    else if ( driverName.startsWith( "SDE" ) )
+    {
+      myDatabaseDrivers += "ESRI ArcSDE,SDE;";      
+    }
+	else if ( driverName.startsWith( "ESRI" ) )
     {
       myFileFilters += createFileFilter_( "ESRI Shapefiles", "*.shp" );
     }
-    else if ( driverName.startsWith( "UK" ) )
+    else if ( driverName.startsWith( "FMEObjects Gateway" ) )
     {
-      // XXX needs file filter extension
+      myFileFilters += createFileFilter_( "FMEObjects Gateway", "*.fdd" );     
+    }
+    else if ( driverName.startsWith( "GeoJSON" ) )
+    {
+      myProtocolDrivers += "GeoJSON,GeoJSON;";    
+	  myFileFilters += createFileFilter_( "GeoJSON", "*.geojson" );
+    }
+    else if ( driverName.startsWith( "GeoRSS" ) )
+    {
+      myFileFilters += createFileFilter_( "GeoRSS", "*.xml" );
+    }
+	else if ( driverName.startsWith( "GML" ) )
+    {
+      myFileFilters += createFileFilter_( "Geography Markup Language", "*.gml" );
+    }
+	else if ( driverName.startsWith( "GMT" ) )
+    {
+      myFileFilters += createFileFilter_( "GMT", "*.gmt" );
+    }
+    else if ( driverName.startsWith( "GPX" ) )
+    {
+      myFileFilters += createFileFilter_( "GPX", "*.gpx" );
+    }
+	else if ( driverName.startsWith( "GRASS" ) )
+    {
+      myDirectoryDrivers += "Grass Vector,GRASS;";
+    } 
+    else if ( driverName.startsWith( "IDB" ) )
+    {
+      myDatabaseDrivers += "Informix DataBlade,IDB;";
+    } 
+    else if ( driverName.startsWith( "Interlis 1" ) )		     
+    {
+      myFileFilters += createFileFilter_( "INTERLIS 1", "*.itf *.xml *.ili" );
+    } 
+	else if (driverName.startsWith( "Interlis 2" ) )		    
+    {
+      myFileFilters += createFileFilter_( "INTERLIS 2", "*.itf *.xml *.ili" );
+    } 
+    else if ( driverName.startsWith( "INGRES" ) )
+    {
+      myDatabaseDrivers += "INGRES,INGRES;";
+    } 
+	else if ( driverName.startsWith( "KML" ) )
+    {
+      myFileFilters += createFileFilter_( "KML", "*.kml" );
+    } 
+	else if ( driverName.startsWith( "MapInfo File" ) )
+    {
+      myFileFilters += createFileFilter_( "Mapinfo File", "*.mif *.tab" );
+    } 
+	else if ( driverName.startsWith( "DGN" ) )
+    {
+      myFileFilters += createFileFilter_( "Microstation DGN", "*.dgn" );
+    }
+    else if ( driverName.startsWith( "MySQL" ) )
+    {
+      myDatabaseDrivers += "MySQL,MySQL;";
+    }
+    else if ( driverName.startsWith( "OCI" ) )
+    {
+      myDatabaseDrivers += "Oracle Spatial,OCI;";
+    }
+    else if ( driverName.startsWith( "ODBC" ) )
+    {
+      myDatabaseDrivers += "ODBC,ODBC;";
+    }
+    else if ( driverName.startsWith( "OGDI" ) )
+    {
+      myDatabaseDrivers += "OGDI Vectors,OGDI;";
+    }
+    else if ( driverName.startsWith( "PostgreSQL" ) )
+    {
+      myDatabaseDrivers += "PostgreSQL,PostgreSQL;";
+    }
+	else if ( driverName.startsWith( "S57" ) )
+    {
+      myFileFilters += createFileFilter_( "S-57 Base file",
+                                          "*.000" );
     }
     else if ( driverName.startsWith( "SDTS" ) )
     {
       myFileFilters += createFileFilter_( "Spatial Data Transfer Standard",
                                           "*catd.ddf" );
     }
+	else if ( driverName.startsWith( "SQLite" ) )
+    {
+      myFileFilters += createFileFilter_( "SQLite",
+                                          "*.sqlite" );
+    }
+    else if ( driverName.startsWith( "UK .NTF" ) )
+    {
+      myDirectoryDrivers += "UK. NTF,UK. NTF;";
+    }
     else if ( driverName.startsWith( "TIGER" ) )
     {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "S57" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "MapInfo" ) )
-    {
-      myFileFilters += createFileFilter_( "MapInfo", "*.mif *.tab" );
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "DGN" ) )
-    {
-      // XXX needs file filter extension
+      myDirectoryDrivers += "U.S. Census TIGER/Line,TIGER;";
     }
     else if ( driverName.startsWith( "VRT" ) )
     {
-      // XXX needs file filter extension
+      myFileFilters += createFileFilter_( "VRT - Virtual Datasource ",
+                                          "*.vrt" );
     }
-    else if ( driverName.startsWith( "AVCBin" ) )
+	else if ( driverName.startsWith( "XPlane" ) )
     {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "REC" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Memory" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Jis" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "GML" ) )
-    {
-      // XXX not yet supported; post 0.1 release task
-      myFileFilters += createFileFilter_( "Geography Markup Language",
-                                          "*.gml" );
-    }
-    else if ( driverName.startsWith( "CSV" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "PostgreSQL" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "GRASS" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "KML" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Interlis 1" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Interlis 2" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "SQLite" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "MySQL" ) )
-    {
-      // XXX needs file filter extension
-    }
+      myFileFilters += createFileFilter_( "X-Plane/Flighgear",
+                                          "apt.dat nav.dat fix.dat awy.dat" );
+    }    
     else
     {
       // NOP, we don't know anything about the current driver
@@ -1157,17 +1222,71 @@ QGISEXTERN QString fileVectorFilters()
 
   // can't forget the default case
 
-  myFileFilters += "All files (*.*)";
+   myFileFilters += "All files (*.*)";
+  }
 
-  return myFileFilters;
+  if (type=="file")
+  {
+    return myFileFilters;
+  }
+  if (type=="database")
+  {
+    return myDatabaseDrivers;
+  }
+  if (type=="protocol")
+  {
+    return myProtocolDrivers;
+  }
+  if (type=="directory")
+  {
+    return myDirectoryDrivers;
+  }
+  else
+  {
+    return "";
+  }
+}
 
-} // fileVectorFilters() const
 
+QGISEXTERN QString fileVectorFilters()
+{	
+  return createFilters("file");
+} 
 
 QString QgsOgrProvider::fileVectorFilters() const
 {
-  return fileVectorFilters();
-} // QgsOgrProvider::fileVectorFilters() const
+	return createFilters("file");
+} 
+
+QGISEXTERN QString databaseDrivers()
+{
+    return createFilters("database");
+} 
+
+QString QgsOgrProvider::databaseDrivers() const
+{  
+   return createFilters("database");
+} 
+
+QGISEXTERN QString protocolDrivers()
+{  
+  return createFilters("protocol");
+} 
+
+QString QgsOgrProvider::protocolDrivers() const
+{  
+  return createFilters("protocol");
+} 
+
+QGISEXTERN QString directoryDrivers()
+{
+  return  createFilters("directory");
+} 
+
+QString QgsOgrProvider::directoryDrivers() const
+{
+  return  createFilters("directory");
+} 
 
 
 /**

@@ -346,7 +346,7 @@ class QgisApp : public QMainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
-    void loadOGRSublayers( QString uri, QStringList list );
+    void loadOGRSublayers(QString layertype, QString uri, QStringList list );
 
   protected:
 

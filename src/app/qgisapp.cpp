@@ -132,7 +132,7 @@
 #include "qgsserversourceselect.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-
+#include "ogr/qgsopenvectorlayerdialog.h"
 //
 // Gdal/Ogr includes
 //
@@ -2054,6 +2054,7 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters )
   with the current filter name.
 
 */
+
 static void openFilesRememberingFilter_( QString const &filterName,
     QString const &filters, QStringList & selectedFiles, QString& enc, QString &title )
 {
@@ -2117,23 +2118,25 @@ void QgisApp::addVectorLayer()
     return;
   }
   mMapCanvas->freeze();
-
-  QStringList selectedFiles;
-  QgsDebugMsg( "Vector file filters: " + mVectorFileFilter );
-
-  QString enc;
-  QString title = tr( "Open an OGR Supported Vector Layer" );
-  openFilesRememberingFilter_( "lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
-                               title );
-  if ( selectedFiles.isEmpty() )
+  QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this );
+  
+  if ( ovl->exec() )
   {
-    // no files were selected, so just bail
-    mMapCanvas->freeze( false );
-
-    return;
+    QStringList selectedSources=ovl->dataSources();
+    QString enc=ovl->encoding();
+    if ( selectedSources.isEmpty() )
+     {
+      // no files were selected, so just bail
+      mMapCanvas->freeze( false );
+      return;
+     }
+	else
+     addVectorLayers( selectedSources, enc );
   }
 
-  addVectorLayers( selectedFiles, enc );
+  delete ovl;
+  // update UI
+  qApp->processEvents();
 }
 
 
@@ -2234,6 +2237,7 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
   }
 
   QStringList sublayers = layer->dataProvider()->subLayers();
+  QString layertype = layer->dataProvider()->storageType();
 
   // We initialize a selection dialog and display it.
   QgsOGRSublayersDialog chooseSublayersDialog( this );
@@ -2242,17 +2246,19 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
   if ( chooseSublayersDialog.exec() )
   {
     QString uri = layer->source();
-    if ( uri.contains( '&', Qt::CaseSensitive ) )
+	//the separator char & was changed to | to be compatible
+	//with url for protocol drivers
+    if ( uri.contains( '|', Qt::CaseSensitive ) )
     {
       // If we get here, there are some options added to the filename.
       // A valid uri is of the form: filename&option1=value1&option2=value2,...
       // We want only the filename here, so we get the first part of the split.
-      QStringList theURIParts = uri.split( "&" );
+      QStringList theURIParts = uri.split( "|" );
       uri = theURIParts.at( 0 );
     }
-
+    QgsDebugMsg("Layer type "+layertype);
     // the user has done his choice
-    loadOGRSublayers( uri, chooseSublayersDialog.getSelection() );
+    loadOGRSublayers(layertype ,uri, chooseSublayersDialog.getSelection() );
   }
 }
 
@@ -2261,14 +2267,22 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
 // format of the ogrprovider so as to give precisions about which
 // sublayer to load into QGIS. It is normally triggered by the
 // sublayer selection dialog.
-void QgisApp::loadOGRSublayers( QString uri, QStringList list )
+void QgisApp::loadOGRSublayers(QString layertype, QString uri, QStringList list )
 {
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
   for ( int i = 0; i < list.size(); i++ )
   {
-    QString composedURI = uri + "&layername=" + list.at( i );
+    QString composedURI;
+    if(layertype!="GRASS")
+	{
+      composedURI = uri + "|layername=" + list.at( i );
+	}
+	else
+	{
+      composedURI = uri + "|layerindex=" + list.at( i );
+	}
     addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
   }
 }
