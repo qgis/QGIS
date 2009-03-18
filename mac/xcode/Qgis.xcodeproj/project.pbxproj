@@ -1031,6 +1031,13 @@
 		7256F5EF0F41C9C70022BE1F /* qt_sv.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C20F41C9990022BE1F /* qt_sv.qm */; };
 		7256F5F00F41C9C70022BE1F /* qt_zh_CN.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C30F41C9990022BE1F /* qt_zh_CN.qm */; };
 		7256F5F10F41C9C70022BE1F /* qt_zh_TW.qm in Copy - i18n */ = {isa = PBXBuildFile; fileRef = 7256F5C40F41C9990022BE1F /* qt_zh_TW.qm */; };
+		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
+		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
+		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
+		726979BF0F71383200AFA402 /* moc_qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979BD0F71383200AFA402 /* moc_qgsopenvectorlayerdialog.cpp */; };
+		726979C00F71383200AFA402 /* moc_qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979BE0F71383200AFA402 /* moc_qgsnewogrconnection.cpp */; };
+		726979C50F71393B00AFA402 /* 348772824_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726979C40F71392200AFA402 /* 348772824_en_US */; };
+		726979C60F71393B00AFA402 /* 63428984_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 726979C30F71392200AFA402 /* 63428984_en_US */; };
 		726FD99D0F6BF81300D50560 /* delaunay.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99C0F6BF7FE00D50560 /* delaunay.png */; };
 		726FD99E0F6BF81300D50560 /* layer_extent.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 726FD99B0F6BF7FE00D50560 /* layer_extent.png */; };
 		726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A10F6BF83100D50560 /* delaunay.png */; };
@@ -3613,6 +3620,8 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/resources/context_help";
 			dstSubfolderSpec = 6;
 			files = (
+				726979C50F71393B00AFA402 /* 348772824_en_US in Copy - context_help */,
+				726979C60F71393B00AFA402 /* 63428984_en_US in Copy - context_help */,
 				7256F53C0F41C64F0022BE1F /* 1033030847_de_DE in Copy - context_help */,
 				7256F53D0F41C64F0022BE1F /* 1033030847_en_US in Copy - context_help */,
 				7256F53E0F41C64F0022BE1F /* 1033030847_sk_SK in Copy - context_help */,
@@ -7610,6 +7619,20 @@
 		7256F5C40F41C9990022BE1F /* qt_zh_TW.qm */ = {isa = PBXFileReference; lastKnownFileType = file; name = qt_zh_TW.qm; path = generated/i18n/qt_zh_TW.qm; sourceTree = SOURCE_ROOT; };
 		7256F5FC0F41CB380022BE1F /* configure.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = configure.py; path = generated/python/python/configure.py; sourceTree = SOURCE_ROOT; };
 		7256F6AD0F41CB390022BE1F /* qgisconfig.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgisconfig.py; path = generated/python/python/qgisconfig.py; sourceTree = SOURCE_ROOT; };
+		726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewogrconnection.cpp; path = ../../src/app/ogr/qgsnewogrconnection.cpp; sourceTree = SOURCE_ROOT; };
+		726979A30F71369A00AFA402 /* qgsnewogrconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnewogrconnection.h; path = ../../src/app/ogr/qgsnewogrconnection.h; sourceTree = SOURCE_ROOT; };
+		726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsogrhelperfunctions.cpp; path = ../../src/app/ogr/qgsogrhelperfunctions.cpp; sourceTree = SOURCE_ROOT; };
+		726979A50F71369A00AFA402 /* qgsogrhelperfunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsogrhelperfunctions.h; path = ../../src/app/ogr/qgsogrhelperfunctions.h; sourceTree = SOURCE_ROOT; };
+		726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsopenvectorlayerdialog.cpp; path = ../../src/app/ogr/qgsopenvectorlayerdialog.cpp; sourceTree = SOURCE_ROOT; };
+		726979A70F71369A00AFA402 /* qgsopenvectorlayerdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsopenvectorlayerdialog.h; path = ../../src/app/ogr/qgsopenvectorlayerdialog.h; sourceTree = SOURCE_ROOT; };
+		726979BD0F71383200AFA402 /* moc_qgsopenvectorlayerdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgsopenvectorlayerdialog.cpp; path = generated/app/moc_qgsopenvectorlayerdialog.cpp; sourceTree = SOURCE_ROOT; };
+		726979BE0F71383200AFA402 /* moc_qgsnewogrconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = moc_qgsnewogrconnection.cpp; path = generated/app/moc_qgsnewogrconnection.cpp; sourceTree = SOURCE_ROOT; };
+		726979C10F7138DB00AFA402 /* qgsnewogrconnectionbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsnewogrconnectionbase.ui; path = ../../src/ui/qgsnewogrconnectionbase.ui; sourceTree = SOURCE_ROOT; };
+		726979C20F7138DB00AFA402 /* qgsopenvectorlayerdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsopenvectorlayerdialogbase.ui; path = ../../src/ui/qgsopenvectorlayerdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		726979C30F71392200AFA402 /* 63428984_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 63428984_en_US; path = ../../resources/context_help/63428984_en_US; sourceTree = SOURCE_ROOT; };
+		726979C40F71392200AFA402 /* 348772824_en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 348772824_en_US; path = ../../resources/context_help/348772824_en_US; sourceTree = SOURCE_ROOT; };
+		726979C80F7139BF00AFA402 /* ui_qgsopenvectorlayerdialogbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsopenvectorlayerdialogbase.h; path = generated/ui/ui_qgsopenvectorlayerdialogbase.h; sourceTree = SOURCE_ROOT; };
+		726979C90F7139BF00AFA402 /* ui_qgsnewogrconnectionbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_qgsnewogrconnectionbase.h; path = generated/ui/ui_qgsnewogrconnectionbase.h; sourceTree = SOURCE_ROOT; };
 		726FD99B0F6BF7FE00D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/default/layer_extent.png; sourceTree = SOURCE_ROOT; };
 		726FD99C0F6BF7FE00D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/default/delaunay.png; sourceTree = SOURCE_ROOT; };
 		726FD9A00F6BF83100D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/gis/layer_extent.png; sourceTree = SOURCE_ROOT; };
@@ -8558,6 +8581,7 @@
 				7209E65F0F39E57A003DC336 /* qgsvectorlayerproperties.h */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
+				726979A10F71369A00AFA402 /* ogr */,
 				7209E5EA0F39E57A003DC336 /* qgis_win32.rc */,
 			);
 			name = app;
@@ -10669,6 +10693,8 @@
 				7209ECB90F39E57B003DC336 /* qgsvectorlayerpropertiesbase.ui */,
 				72EBC94F0F49D1DE0016BA3C /* qgsogrsublayersdialogbase.ui */,
 				72EBC9500F49D1DE0016BA3C /* qgsitempositiondialogbase.ui */,
+				726979C10F7138DB00AFA402 /* qgsnewogrconnectionbase.ui */,
+				726979C20F7138DB00AFA402 /* qgsopenvectorlayerdialogbase.ui */,
 			);
 			name = ui;
 			path = ../../src/ui;
@@ -10952,6 +10978,8 @@
 				7209ED7D0F39E5D9003DC336 /* 995980174_de_DE */,
 				7209ED7E0F39E5D9003DC336 /* 995980174_en_US */,
 				7209ED7F0F39E5D9003DC336 /* 995980174_sk_SK */,
+				726979C30F71392200AFA402 /* 63428984_en_US */,
+				726979C40F71392200AFA402 /* 348772824_en_US */,
 				7209ED800F39E5D9003DC336 /* CMakeLists.txt */,
 				7209ED810F39E5D9003DC336 /* contextids.txt */,
 			);
@@ -12031,6 +12059,8 @@
 				7209F6910F3A7691003DC336 /* ui_qgspythondialog.h */,
 				72EBCB230F49E07E0016BA3C /* ui_qgsitempositiondialogbase.h */,
 				72EBCB240F49E07E0016BA3C /* ui_qgsogrsublayersdialogbase.h */,
+				726979C80F7139BF00AFA402 /* ui_qgsopenvectorlayerdialogbase.h */,
+				726979C90F7139BF00AFA402 /* ui_qgsnewogrconnectionbase.h */,
 			);
 			name = ui;
 			path = generated/ui;
@@ -12135,6 +12165,20 @@
 			path = generated/python/python;
 			sourceTree = SOURCE_ROOT;
 		};
+		726979A10F71369A00AFA402 /* ogr */ = {
+			isa = PBXGroup;
+			children = (
+				726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */,
+				726979A30F71369A00AFA402 /* qgsnewogrconnection.h */,
+				726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */,
+				726979A50F71369A00AFA402 /* qgsogrhelperfunctions.h */,
+				726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */,
+				726979A70F71369A00AFA402 /* qgsopenvectorlayerdialog.h */,
+			);
+			name = ogr;
+			path = ../../src/app/ogr;
+			sourceTree = SOURCE_ROOT;
+		};
 		729278810F3A8C9D00D9C992 /* app */ = {
 			isa = PBXGroup;
 			children = (
@@ -12196,6 +12240,8 @@
 				72EBCB180F49E04A0016BA3C /* moc_qgsmaptooladdring.cpp */,
 				72EBCB190F49E04A0016BA3C /* moc_qgsmaptooladdisland.cpp */,
 				72EBCB1A0F49E04A0016BA3C /* moc_qgsogrsublayersdialog.cpp */,
+				726979BD0F71383200AFA402 /* moc_qgsopenvectorlayerdialog.cpp */,
+				726979BE0F71383200AFA402 /* moc_qgsnewogrconnection.cpp */,
 			);
 			name = app;
 			path = generated/app;
@@ -13610,7 +13656,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# core moc\n\nmkdir -p generated/core\nfor h in $QTMOC_CORE\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_COMPOSER\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/composer/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/composer/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/composer/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_RASTER\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/raster/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/raster/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/raster/$h.h\n\tfi\ndone\n\n# gui moc\n\nmkdir -p generated/gui\nfor h in $QTMOC_GUI\ndo\n\tif [ ! -f generated/gui/moc_$h.cpp ] || [ ../../src/gui/$h.h -nt generated/gui/moc_$h.cpp ] ; then\n\t\trm -f generated/gui/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/gui/moc_$h.cpp ../../src/gui/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/gui/moc_$h.cpp ../../src/gui/$h.h\n\tfi\ndone\n\n# app moc\n\nmkdir -p generated/app\nfor h in $QTMOC_APP\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_APP_COMPOSER\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/composer/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/composer/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/composer/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_APP_LEGEND\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/legend/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/legend/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/legend/$h.h\n\tfi\ndone\n\nexit 0\n";
+			shellScript = "# core moc\n\nmkdir -p generated/core\nfor h in $QTMOC_CORE\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_COMPOSER\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/composer/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/composer/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/composer/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_RASTER\ndo\n\tif [ ! -f generated/core/moc_$h.cpp ] || [ ../../src/core/raster/$h.h -nt generated/core/moc_$h.cpp ] ; then\n\t\trm -f generated/core/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/raster/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/core/moc_$h.cpp ../../src/core/raster/$h.h\n\tfi\ndone\n\n# gui moc\n\nmkdir -p generated/gui\nfor h in $QTMOC_GUI\ndo\n\tif [ ! -f generated/gui/moc_$h.cpp ] || [ ../../src/gui/$h.h -nt generated/gui/moc_$h.cpp ] ; then\n\t\trm -f generated/gui/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS -o generated/gui/moc_$h.cpp ../../src/gui/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS -o generated/gui/moc_$h.cpp ../../src/gui/$h.h\n\tfi\ndone\n\n# app moc\n\nmkdir -p generated/app\nfor h in $QTMOC_APP\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_APP_COMPOSER\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/composer/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/composer/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/composer/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_APP_LEGEND\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/legend/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/legend/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/legend/$h.h\n\tfi\ndone\n\nfor h in $QTMOC_APP_OGR\ndo\n\tif [ ! -f generated/app/moc_$h.cpp ] || [ ../../src/app/ogr/$h.h -nt generated/app/moc_$h.cpp ] ; then\n\t\trm -f generated/app/moc_$h.cpp\n\t\techo \"$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/ogr/$h.h\"\n\t\t$QTMOC $QT_CXXFLAGS $QT_CXXFLAGS_APP -o generated/app/moc_$h.cpp ../../src/app/ogr/$h.h\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		729A4B0E0F4B940100944E09 /* lex-bison */ = {
@@ -14600,6 +14646,9 @@
 				7209F4A60F3A5229003DC336 /* qgsdbsourceselect.cpp in Sources */,
 				7209F4A70F3A5229003DC336 /* qgsnewconnection.cpp in Sources */,
 				7209F4A80F3A5229003DC336 /* qgspgquerybuilder.cpp in Sources */,
+				726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */,
+				726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */,
+				726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */,
 				729278B60F3A8E4200D9C992 /* moc_qgscontinuouscolordialog.cpp in Sources */,
 				729278B70F3A8E4200D9C992 /* moc_qgscompositionwidget.cpp in Sources */,
 				729278B80F3A8E4200D9C992 /* moc_qgscomposerscalebarwidget.cpp in Sources */,
@@ -14660,6 +14709,8 @@
 				72EBCB1F0F49E04A0016BA3C /* moc_qgsmaptooladdring.cpp in Sources */,
 				72EBCB200F49E04A0016BA3C /* moc_qgsmaptooladdisland.cpp in Sources */,
 				72EBCB210F49E04A0016BA3C /* moc_qgsogrsublayersdialog.cpp in Sources */,
+				726979BF0F71383200AFA402 /* moc_qgsopenvectorlayerdialog.cpp in Sources */,
+				726979C00F71383200AFA402 /* moc_qgsnewogrconnection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
