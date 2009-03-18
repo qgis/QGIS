@@ -13,3 +13,5 @@ QTMOC_APP = qgisapp qgisappinterface qgsabout qgsaddattrdialog qgsattributeactio
 QTMOC_APP_COMPOSER = qgscomposer qgscomposeritemwidget qgscomposerlabelwidget qgscomposerlegendwidget qgscomposermapwidget qgscomposerpicturewidget qgscomposerscalebarwidget qgscompositionwidget qgsitempositiondialog
 
 QTMOC_APP_LEGEND = qgslegend qgslegendlayer qgslegendlayerfile
+
+QTMOC_APP_OGR = qgsopenvectorlayerdialog qgsnewogrconnection
