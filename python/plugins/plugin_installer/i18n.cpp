@@ -200,7 +200,7 @@ QgsPluginInstallerDialog::foo()
 // def ChangeCheckingPolicy
 
 // def addKnownRepositories
-  tr( "You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!" )
+  tr( "You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them." )
   tr( "QGIS Python Plugin Installer" )
 
 // def addRepository
