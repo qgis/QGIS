@@ -6,20 +6,54 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>769</width>
-    <height>395</height>
+    <width>799</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>QGIS Python Plugin Installer</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="resources.qrc" >:/plugins/installer/qgis-icon.png</iconset>
+   <iconset resource="resources.qrc" >
+    <normaloff>:/plugins/installer/qgis-icon.png</normaloff>:/plugins/installer/qgis-icon.png</iconset>
   </property>
   <property name="whatsThis" >
    <string>QGIS Python Plugin Installer</string>
   </property>
   <layout class="QGridLayout" >
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="label_3" >
+       <property name="whatsThis" >
+        <string/>
+       </property>
+       <property name="text" >
+        <string>The plugins will be installed to ~/.qgis/python/plugins</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClose" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip" >
+        <string>Close the Installer window</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Close the Installer window</string>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="toolTip" >
@@ -168,7 +202,7 @@
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" >
+           <property name="sizeHint" stdset="0" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -254,22 +288,6 @@
          </column>
         </widget>
        </item>
-       <item row="1" column="0" >
-        <widget class="QCheckBox" name="checkUpdates" >
-         <property name="toolTip" >
-          <string>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</string>
-         </property>
-         <property name="statusTip" >
-          <string/>
-         </property>
-         <property name="whatsThis" >
-          <string>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</string>
-         </property>
-         <property name="text" >
-          <string>Check for updates on startup</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1" >
         <spacer>
          <property name="orientation" >
@@ -278,9 +296,9 @@
          <property name="sizeType" >
           <enum>QSizePolicy::Preferred</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
-           <width>30</width>
+           <width>20</width>
            <height>20</height>
           </size>
          </property>
@@ -307,7 +325,7 @@
          <property name="orientation" >
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
            <width>40</width>
            <height>20</height>
@@ -356,40 +374,194 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_3" >
+      <attribute name="title" >
+       <string>Options</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>Configuration of the plugin installer</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout" >
+       <item>
+        <widget class="QGroupBox" name="checkUpdates" >
+         <property name="enabled" >
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>Check for updates on startup</string>
+         </property>
+         <property name="checkable" >
+          <bool>true</bool>
+         </property>
+         <property name="checked" >
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout" >
+          <item row="0" column="0" >
+           <widget class="QComboBox" name="comboInterval" >
+            <item>
+             <property name="text" >
+              <string>every time QGIS starts</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>once a day</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>every 3 days</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>every week</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>every 2 weeks</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>every month</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <spacer name="verticalSpacer_3" >
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>Allowed plugins</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2" >
+          <item row="0" column="0" >
+           <widget class="QRadioButton" name="radioPluginType0" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Only show plugins from the official repository</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QRadioButton" name="radioPluginType1" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Show all plugins except those marked as experimental</string>
+            </property>
+            <property name="checked" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QRadioButton" name="radioPluginType2" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Show all plugins, even those marked as experimental</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="label_2" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize" >
+             <size>
+              <width>0</width>
+              <height>75</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Note:&lt;/span> Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered 'incomplete' or 'proof of concept' tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+            <property name="textFormat" >
+             <enum>Qt::RichText</enum>
+            </property>
+            <property name="alignment" >
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+            </property>
+            <property name="wordWrap" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item row="1" column="0" >
-    <layout class="QHBoxLayout" >
-     <item>
-      <widget class="QLabel" name="label_3" >
-       <property name="whatsThis" >
-        <string/>
-       </property>
-       <property name="text" >
-        <string>The plugins will be installed to ~/.qgis/python/plugins</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="buttonClose" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip" >
-        <string>Close the Installer window</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Close the Installer window</string>
-       </property>
-       <property name="text" >
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -404,10 +576,14 @@
   <tabstop>buttonClose</tabstop>
   <tabstop>treeRepositories</tabstop>
   <tabstop>buttonFetchRepositories</tabstop>
-  <tabstop>checkUpdates</tabstop>
   <tabstop>buttonAddRep</tabstop>
   <tabstop>buttonEditRep</tabstop>
   <tabstop>buttonDeleteRep</tabstop>
+  <tabstop>checkUpdates</tabstop>
+  <tabstop>comboInterval</tabstop>
+  <tabstop>radioPluginType0</tabstop>
+  <tabstop>radioPluginType1</tabstop>
+  <tabstop>radioPluginType2</tabstop>
  </tabstops>
  <resources>
   <include location="resources.qrc" />
