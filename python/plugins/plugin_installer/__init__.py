@@ -14,7 +14,7 @@ def name():
   return "Plugin Installer"
 
 def version():
-  return "Version 0.9.8"
+  return "Version 0.9.11"
 
 def description():
   return "Downloads and installs QGIS python plugins"
@@ -23,7 +23,7 @@ def qgisMinimumVersion():
   return "0.9"
 
 def authorName():
-  return "perrygeo, borysiasty"
+  return "Matthew Perry, Borys Jurgiel"
 
 def homepage():
   return "http://bwj.aster.net.pl/qgis/"
