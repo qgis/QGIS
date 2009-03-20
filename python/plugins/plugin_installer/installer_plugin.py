@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008 Borys Jurgiel
@@ -32,10 +31,26 @@ class InstallerPlugin():
     else: # old plugin API
       self.mainWindow = self.iface.getMainWindow
 
+
+  # ----------------------------------------- #
+  def getThemeIcon(self, theName):
+    myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
+    myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
+    myQrcPath = ":/plugins/installer/" + theName;
+    if QFile.exists(myCurThemePath):
+      return QIcon(myCurThemePath)
+    elif QFile.exists(myDefThemePath):
+      return QIcon(myDefThemePath)
+    elif QFile.exists(myQrcPath):
+      return QIcon(myQrcPath)
+    else:
+      return QIcon()
+
+
   # ----------------------------------------- #
   def initGui(self):
     """ create action that will start plugin window and then add it to menu """
-    self.action = QAction(QIcon(":/plugins/installer/plugin_installer.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
+    self.action = QAction(self.getThemeIcon("plugin_installer.png"), QCoreApplication.translate("QgsPluginInstaller","Fetch Python Plugins..."), self.mainWindow())
     self.action.setWhatsThis(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     self.action.setStatusTip(QCoreApplication.translate("QgsPluginInstaller","Install more plugins from remote repositories"))
     if QGIS_MAJOR_VER: # new plugin API
@@ -50,10 +65,12 @@ class InstallerPlugin():
     repositories.load()
     plugins.clear()
 
-    if repositories.checkingOnStart() and repositories.allEnabled():
+    if repositories.checkingOnStart() and repositories.timeForChecking() and repositories.allEnabled():
       self.statusLabel = QLabel(QCoreApplication.translate("QgsPluginInstaller","Looking for new plugins..."), self.mainWindow().statusBar())
       self.mainWindow().statusBar().insertPermanentWidget(0,self.statusLabel)
-      QObject.connect(self.statusLabel, SIGNAL("linkActivated (QString)"), self.run)
+      QObject.connect(self.statusLabel, SIGNAL("linkActivated (QString)"), self.preRun)
+
+
       QObject.connect(repositories, SIGNAL("checkingDone()"), self.checkingDone)
       for key in repositories.allEnabled():
         repositories.requestFetching(key)
@@ -89,25 +106,37 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def unload(self):
     """ remove the menu item and notify label """
-    self.mainWindow().menuBar().actions()[4].menu().removeAction(self.action)
+    if QGIS_MAJOR_VER: # new plugin API
+      self.iface.pluginMenu().removeAction(self.action)
+    else: # old plugin API
+      self.mainWindow().menuBar().actions()[4].menu().removeAction(self.action)
     if self.statusLabel:
       self.mainWindow().statusBar().removeWidget(self.statusLabel)
 
 
   # ----------------------------------------- #
-  def run(self, * params):
+  def preRun(self, * params):
+    """ stupid method to get rid of the string value """
+    self.run()
+
+
+  # ----------------------------------------- #
+  def run(self, parent = None):
     """ create and show a configuration dialog """
     QApplication.setOverrideCursor(Qt.WaitCursor)
     if self.statusLabel:
       self.mainWindow().statusBar().removeWidget(self.statusLabel)
       self.statusLabel = None
 
+    if not parent:
+      parent = self.mainWindow()
+  
     for key in repositories.all():
       if repositories.all()[key]["state"] == 3: # if state = 3 (error), try to fetch once again
         repositories.requestFetching(key)
 
     if repositories.fetchingInProgress():
-      self.fetchDlg = QgsPluginInstallerFetchingDialog(self.mainWindow())
+      self.fetchDlg = QgsPluginInstallerFetchingDialog(parent)
       self.fetchDlg.exec_()
       del self.fetchDlg
       for key in repositories.all():
@@ -118,10 +147,10 @@ class InstallerPlugin():
     # display an error message for every unavailable reposioty, except the case if all repositories are unavailable!
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
-        QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + u' %s\n%s' % (key,repositories.all()[key]["error"]))
+        QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + u' %s\n%s' % (key,repositories.all()[key]["error"]))
 
     plugins.getAllInstalled()
 
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
-    self.guiDlg = QgsPluginInstallerDialog(self.mainWindow(),flags)
+    self.guiDlg = QgsPluginInstallerDialog(parent,flags)
     self.guiDlg.show()
