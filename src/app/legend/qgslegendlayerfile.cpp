@@ -35,6 +35,9 @@
 #include "qgsattributetable.h"
 #include "qgsattributetabledisplay.h"
 
+#include "BeataDialog.h"
+
+
 #include "qgsencodingfiledialog.h"
 
 #include <QApplication>
@@ -217,7 +220,10 @@ void QgsLegendLayerFile::saveAsShapefile()
 
 void QgsLegendLayerFile::table()
 {
-  QgsAttributeTableDisplay::attributeTable( dynamic_cast<QgsVectorLayer*>( mLyr.layer() ) );
+  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>(mLyr.layer());
+  BeataDialog *mDialog = new BeataDialog(myLayer);
+  mDialog->show();
+  // the dialog will be deleted by itself on close
 }
 
 void QgsLegendLayerFile::saveSelectionAsShapefile()

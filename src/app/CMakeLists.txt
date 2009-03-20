@@ -82,6 +82,10 @@ SET(QGIS_APP_SRCS
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsnewogrconnection.cpp
+  
+  attributetable/BeataDialog.cpp
+  attributetable/BeataModel.cpp
+  attributetable/BeataView.cpp
   )
 
 
@@ -149,6 +153,9 @@ SET (QGIS_APP_MOC_HDRS
   
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
+  
+  attributetable/BeataDialog.h
+  attributetable/BeataModel.h
   )
 
 IF (POSTGRES_FOUND)
@@ -202,7 +209,7 @@ ENDIF (WIN32)
 
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} composer legend
+  ${CMAKE_CURRENT_SOURCE_DIR} composer legend attributetable
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ../core
