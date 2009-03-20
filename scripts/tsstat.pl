@@ -4,6 +4,8 @@ use strict;
 use Locale::Language;
 use Locale::Country;
 
+my @lang;
+
 print "||'''Language'''||'''Count'''||'''Translated'''||'''Translation finished'''||'''Translated unfinished'''||'''Untranslated'''||'''Percentage'''||\n";
 
 for my $i (<i18n/qgis_*.ts>) {
@@ -37,5 +39,10 @@ for my $i (<i18n/qgis_*.ts>) {
 
         my $n = $translations+$untranslated;
 
-        print "||'''$name'''||$n||$translations||$finished||$unfinished||$untranslated||" . sprintf("%.1f%", ($n-$untranslated)/$n*100) . "||\n";
+        push @lang, { name=>$name, n=>$n, translations=>$translations, finished=>$finished, unfinished=>$unfinished, untranslated=>$untranslated, percentage=>($n-$untranslated)/$n*100 };
+}
+
+
+for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
+        print "||'''", $l->{name}, "'''||", join("||", $l->{n}, $l->{translations}, $l->{finished}, $l->{unfinished}, $l->{untranslated}, sprintf("%.1f", $l->{percentage}) ), "||\n";
 }
