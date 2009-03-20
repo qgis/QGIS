@@ -2628,7 +2628,11 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
     }
   }
 
-  mLayerComboBox = new QComboBox( this );
+  QHBoxLayout *l = new QHBoxLayout( this );
+  mLayerComboBox = new QComboBox();
+  mLayerComboBox->setSizePolicy( QSizePolicy::Expanding,
+                                 QSizePolicy:: Preferred );
+  l->addWidget( mLayerComboBox );
 
   // Of course, activated(int) is not enough, but there is no signal
   // BEFORE the cobo is opened
