@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.1.0	2009-2-16\
+\i \cf0 2.1.2	2009-3-19\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -21,9 +21,9 @@
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b0 \cf0 \
-This builds QGIS, as an alternative to the CLI Unix build (both build the Mac application).  By default everything is built universal for both PPC and Intel.\
+This builds QGIS, as an alternative to the CLI Unix build (both build the Mac application).  By default everything is built for the native architecture.\
 \
-Dependent libraries are optionally copied into the application bundle and embedded library paths are adjusted.\
+Dependent libraries are optionally copied into the application bundle and embedded library paths are adjusted.  Some dependent libraries are always copied for stability reasons (Qt, PyQt).\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -127,7 +127,9 @@ ln -s /Users/Shared/unix /Developer/SDKs/MacOSX10.4u.sdk/Users/Shared/unix
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f1\fs20 \cf0 QTDIR
-\f0\fs24  is where the Qt command-line programs are found.  The default is for a binary installation of Qt.  If built from source, you may need to change this.\
+\f0\fs24  is where the Qt applications and plugins are installed.  
+\f1\fs20 QTBIN
+\f0\fs24  is where the Qt command-line programs are found.  The default is for a binary installation of Qt.  If built from source, you may need to change these.\
 \
 
 \f1\fs20 BISON
@@ -188,7 +190,7 @@ Some of the bundle targets don't exist yet, but can easily be created as needed.
 \f1\fs20 static
 \f0\fs24  forms in the settings.\
 \
-- GRASS - GRASS.app \ul must\ulnone  be installed in /Applications directly, as it was built, not in a subfolder in /Applications or some other folder.  This goes for building Qgis as well as running it to use full GRASS support.\
+- GRASS - GRASS.app \ul must\ulnone  be installed as it was built.  If it was moved or renamed after installation, GRASS support in Qgis won't work.  This goes for building Qgis as well as running it to use full GRASS support.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -203,11 +205,11 @@ Xcode doesn't have a way to conditionally build targets, just code within source
 \i will
 \i0  try to keep building as much as it can after errors.  The last target built is the Qgis application itself, which has all the bundling and cleanup steps.  So, if a dependency is missing for a plugin, it will have errors and fail to build, then the app bundling and cleanup will work with what succeeded.\
 \
-\ul Cleaning\ulnone  - the clean the project, first set the \ul extra clean\ulnone  target as active and build it.  Then 
+\ul Cleaning\ulnone  - to clean the project 
 \b Clean All
-\b0 .\
+\b0 .  This actually leaves qgsconfig.h and qgssvnversion.h in the build folder.\
 \
-Or instead, trash the build and generated folders from the project folder (NOT from the project itself!).\
+For a complete clean, trash the build folder from the project folder (NOT from the project itself!).\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
