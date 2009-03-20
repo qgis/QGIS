@@ -71,7 +71,6 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case MoveItemContent:
     {
       //store item as member if it is selected and cursor is over item
-      QGraphicsItem* gitem = itemAt( e->pos());
       QgsComposerItem* item = dynamic_cast<QgsComposerItem*>( itemAt( e->pos() ) );
       if ( item )
       {
