@@ -9,4 +9,10 @@ QGIS core library. Contains all basic GIS functionality.
 QGIS gui library. It's built on top of core library and adds reusable GUI widgets.
 */
 
+/** @defgroup analysis
+
+Analysis library. Built on top of core library, the analysis library provides 
+high level tools for carrying out spatial analysis on vector and raster data.
+*/
+
 /** @defgroup MapComposer */
