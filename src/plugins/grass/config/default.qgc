@@ -81,14 +81,16 @@
                                 <grass name="g.region.save"/> 
                                 <grass name="g.region.zoom"/> 
                                 <grass name="g.region.multiple.raster"/> 
-                                <grass name="g.region.multiple.vector"/> 			</section>
+                                <grass name="g.region.multiple.vector"/>
+                        </section>
 			<section label="Projection management">
-                                <section label="Print projection information of the current location"> 					<grass name="g.proj.print"/>
-				</section>
+                                <section label="Print projection information of the current location">
+                                        <grass name="g.proj.print"/>
+			        </section>
                                 <section label="Print projection information from a georeferenced file"> 
-					<grass name="g.proj.geo"/>
+			                <grass name="g.proj.geo"/>
                                         <grass name="g.proj.ascii"/> 
-					<grass name="g.proj.proj"/>
+				        <grass name="g.proj.proj"/>
 				</section>
                                 <section label="Print projection information from a georeferenced file and create a new location based on it"> 
                                         <grass name="g.proj.geo.new"/> 
