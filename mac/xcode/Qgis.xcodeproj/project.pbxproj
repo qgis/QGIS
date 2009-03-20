@@ -8099,6 +8099,7 @@
 		72EBCA640F49DC130016BA3C /* frmVisual.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = frmVisual.py; path = ../../python/plugins/fTools/tools/frmVisual.py; sourceTree = SOURCE_ROOT; };
 		72EBCA650F49DC130016BA3C /* frmVisual.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVisual.ui; path = ../../python/plugins/fTools/tools/frmVisual.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA660F49DC130016BA3C /* ftools_utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ftools_utils.py; path = ../../python/plugins/fTools/tools/ftools_utils.py; sourceTree = SOURCE_ROOT; };
+		72F117AB0F73DB1A00D68564 /* tsstat.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = tsstat.pl; path = ../../scripts/tsstat.pl; sourceTree = SOURCE_ROOT; };
 		8D0C4E960486CD37000505A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -10932,6 +10933,7 @@
 				7209ED350F39E5D9003DC336 /* qgsloggermig.pl */,
 				7209ED360F39E5D9003DC336 /* remove_non_svn_files.sh */,
 				7209ED370F39E5D9003DC336 /* remove_svn_conflict_files.sh */,
+				72F117AB0F73DB1A00D68564 /* tsstat.pl */,
 				7209ED380F39E5D9003DC336 /* update-indent.sh */,
 				7209ED390F39E5D9003DC336 /* update_translations.bat */,
 				7209ED3A0F39E5D9003DC336 /* update_ts_files.sh */,
@@ -14651,7 +14653,6 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/ui,
 					../../src/gui,
 					../../src/core,
 					../../src/core/composer,
@@ -14818,7 +14819,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/helpviewer,
 					../../src/core,
 					"$(SQLITE_INC)",
 				);
@@ -15511,7 +15511,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/copyrightlabelplugin,
 					../../src/plugins,
 					../../src/plugins/copyrightlabel,
 					../../src/core,
@@ -15529,6 +15528,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = copyrightlabelplugin.so;
+				TARGET_PLUGINDIR = copyright_label;
 			};
 			name = Debug;
 		};
@@ -15572,7 +15572,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/delimitedtextplugin,
 					../../src/plugins,
 					../../src/plugins/delimited_text,
 					../../src/core,
@@ -15590,6 +15589,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = delimitedtextplugin.so;
+				TARGET_PLUGINDIR = delimited_text;
 			};
 			name = Debug;
 		};
@@ -15633,8 +15633,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/georeferencerplugin,
 					../../src/plugins,
 					../../src/plugins/georeferencer,
 					../../src/core,
@@ -15656,6 +15654,7 @@
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = georeferencerplugin.so;
+				TARGET_PLUGINDIR = georeferencer;
 			};
 			name = Debug;
 		};
@@ -15703,8 +15702,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/gpsimporterplugin,
 					../../src/plugins,
 					../../src/plugins/gps_importer,
 					../../src/core,
@@ -15723,6 +15720,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = gpsimporterplugin.so;
+				TARGET_PLUGINDIR = gps_importer;
 			};
 			name = Debug;
 		};
@@ -15775,9 +15773,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1 = "GRASS_BASE=\\\"$(GRASS_PREFIX)\\\"";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/ui,
-					generated/grassplugin,
 					../../src/plugins,
 					../../src/plugins/grass,
 					../../src/core,
@@ -15786,6 +15781,7 @@
 					../../src/core/symbology,
 					../../src/gui,
 					../../src/providers/grass,
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GRASS_INC)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
@@ -15806,6 +15802,7 @@
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = grassplugin.so;
+				TARGET_PLUGINDIR = grass;
 			};
 			name = Debug;
 		};
@@ -15870,7 +15867,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/interpolationplugin,
 					../../src/plugins,
 					../../src/plugins/interpolation,
 					../../src/core,
@@ -15889,6 +15885,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = interpolationplugin.so;
+				TARGET_PLUGINDIR = interpolation;
 			};
 			name = Debug;
 		};
@@ -15933,7 +15930,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/northarrowplugin,
 					../../src/plugins,
 					../../src/plugins/north_arrow,
 					../../src/core,
@@ -15951,6 +15947,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = northarrowplugin.so;
+				TARGET_PLUGINDIR = north_arrow;
 			};
 			name = Debug;
 		};
@@ -15994,8 +15991,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/quickprintplugin,
 					../../src/plugins,
 					../../src/plugins/quick_print,
 					../../src/core,
@@ -16013,6 +16008,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = quickprintplugin.so;
+				TARGET_PLUGINDIR = quick_print;
 			};
 			name = Debug;
 		};
@@ -16056,7 +16052,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/scalebarplugin,
 					../../src/plugins,
 					../../src/plugins/scale_bar,
 					../../src/core,
@@ -16074,6 +16069,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = scalebarplugin.so;
+				TARGET_PLUGINDIR = scale_bar;
 			};
 			name = Debug;
 		};
@@ -16117,8 +16113,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/spitplugin,
 					../../src/plugins,
 					../../src/plugins/spit,
 					../../src/core,
@@ -16126,7 +16120,7 @@
 					../../src/core/renderer,
 					../../src/core/symbology,
 					../../src/gui,
-					generated/ui,
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					../../src/app,
 					"$(PGSQL_INC)",
 					"$(GDAL_INC)",
@@ -16142,6 +16136,7 @@
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = spitplugin.so;
+				TARGET_PLUGINDIR = spit;
 			};
 			name = Debug;
 		};
@@ -16192,9 +16187,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/ui,
-					generated/wfsplugin,
 					../../src/plugins,
 					../../src/plugins/wfs,
 					../../src/core,
@@ -16202,8 +16194,8 @@
 					../../src/core/renderer,
 					../../src/core/symbology,
 					../../src/gui,
-					generated/app,
 					../../src/app,
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -16216,6 +16208,7 @@
 					"$(QT_LIB_XML)",
 				);
 				PRODUCT_NAME = wfsplugin.so;
+				TARGET_PLUGINDIR = wfs;
 			};
 			name = Debug;
 		};
@@ -16264,9 +16257,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/ui,
-					generated/coordinatecaptureplugin,
 					../../src/plugins,
 					../../src/plugins/coordinate_capture,
 					../../src/core,
@@ -16274,6 +16264,7 @@
 					../../src/core/renderer,
 					../../src/core/symbology,
 					../../src/gui,
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_bundle;
@@ -16284,6 +16275,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = coordinatecaptureplugin.so;
+				TARGET_PLUGINDIR = coordinate_capture;
 			};
 			name = Debug;
 		};
@@ -16329,8 +16321,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/dxf2shpconverterplugin,
 					../../src/plugins,
 					../../src/plugins/dxf2shp_converter,
 					../../src/core,
@@ -16349,6 +16339,7 @@
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = dxf2shpconverterplugin.so;
+				TARGET_PLUGINDIR = dxf2shp_converter;
 			};
 			name = Debug;
 		};
@@ -16393,8 +16384,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/ogrconverterplugin,
 					../../src/plugins,
 					../../src/plugins/ogr_converter,
 					../../src/core,
@@ -16414,6 +16403,7 @@
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = ogrconverterplugin.so;
+				TARGET_PLUGINDIR = ogr_converter;
 			};
 			name = Debug;
 		};
@@ -16459,8 +16449,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/plugin,
 					../../src/plugins,
 					../../src/plugins/plugin,
 					../../src/core,
@@ -16478,6 +16466,7 @@
 					"$(QT_LIB_GUI)",
 				);
 				PRODUCT_NAME = plugin.so;
+				TARGET_PLUGINDIR = "";
 			};
 			name = Debug;
 		};
@@ -16490,8 +16479,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated,
-					generated/plugin,
 					../../src/plugins,
 					../../src/plugins/plugin,
 					../../src/core,
@@ -16541,8 +16528,6 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					generated/ui,
-					generated/app,
 					../../src/app,
 					../../src/app/legend,
 					../../src/app/composer,
@@ -16554,6 +16539,7 @@
 					../../src/gui,
 					../../src/python,
 					../../src/plugins,
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
