@@ -22,6 +22,7 @@
 #include "qgshelpviewer.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsconfig.h"
 
 int main( int argc, char ** argv )
 {
@@ -39,9 +40,9 @@ int main( int argc, char ** argv )
   {
     context = argv[1];
   }
-#ifdef Q_WS_MAC
+#ifdef Q_WS_MACX
   // If we're on Mac, we have the resource library way above us...
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../share/qgis" );
+  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
 #endif
 
   QString i18nPath = QgsApplication::i18nPath();
