@@ -1,0 +1,85 @@
+<ui version="4.0" >
+ <class>BeataDialogGui</class>
+ <widget class="QDialog" name="BeataDialogGui" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>623</width>
+    <height>570</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>BEtter Attribute TAble</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="BeataView" name="mView" />
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="searchButton" >
+       <property name="text" >
+        <string>Search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="searchFor" >
+       <property name="text" >
+        <string>for</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="query" />
+     </item>
+     <item>
+      <widget class="QLabel" name="searchIn" >
+       <property name="text" >
+        <string>in</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="columnBox" />
+     </item>
+     <item>
+      <widget class="Line" name="line" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="showBox" />
+     </item>
+     <item>
+      <widget class="Line" name="line_2" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="actionsButton" >
+       <property name="text" >
+        <string>Actions...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BeataView</class>
+   <extends>QTableView</extends>
+   <header>BeataView.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
