@@ -4,7 +4,7 @@ use strict;
 use Locale::Language;
 use Locale::Country;
 
-print "Language;Count;Translated;Translated_finished;translated_unfinished;untranslated;part\n";
+print "||'''Language'''||'''Count'''||'''Translated'''||'''Translation finished'''||'''Translated unfinished'''||'''Untranslated'''||'''Percentage'''||\n";
 
 for my $i (<i18n/qgis_*.ts>) {
         my ($langcode) = $i =~ /i18n\/qgis_(.*).ts/;
@@ -37,10 +37,5 @@ for my $i (<i18n/qgis_*.ts>) {
 
         my $n = $translations+$untranslated;
 
-        print "$name;$n;$translations;$finished;$unfinished;$untranslated;" . sprintf("%.1f%", ($n-$untranslated)/$n*100) . "\n";
+        print "||'''$name'''||$n||$translations||$finished||$unfinished||$untranslated||" . sprintf("%.1f%", ($n-$untranslated)/$n*100) . "||\n";
 }
-
-__END__
-Updating 'qgis_de.qm'...
-    Generated 3300 translation(s) (1217 finished and 2083 unfinished)
-    Ignored 8 untranslated source text(s)
