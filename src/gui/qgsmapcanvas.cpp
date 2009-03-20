@@ -767,12 +767,24 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
     return;
   }
 
-  // call handler of current map tool
-  if ( mMapTool )
-    mMapTool->canvasPressEvent( e );
+  //use middle mouse button for panning, map tools won't receive any events in that case
+if(e->button() == Qt::MidButton)
+  {
+    mCanvasProperties->panSelectorDown = true;
+    mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+  }
+  else
+  {
+
+    // call handler of current map tool
+    if ( mMapTool )
+      mMapTool->canvasPressEvent( e );
+  }
 
   if ( mCanvasProperties->panSelectorDown )
+  {
     return;
+  }
 
   mCanvasProperties->mouseButtonDown = true;
   mCanvasProperties->rubberStartPoint = e->pos();
@@ -787,25 +799,34 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
     return;
   }
 
-  // call handler of current map tool
-  if ( mMapTool )
+  //use middle mouse button for panning, map tools won't receive any events in that case
+  if(e->button() == Qt::MidButton)
   {
-    // right button was pressed in zoom tool? return to previous non zoom tool
-    if ( e->button() == Qt::RightButton && mMapTool->isTransient() )
+    mCanvasProperties->panSelectorDown = false;
+    panActionEnd( mCanvasProperties->mouseLastXY );
+  }
+  else
+  {
+    // call handler of current map tool
+    if ( mMapTool )
     {
-      QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
+      // right button was pressed in zoom tool? return to previous non zoom tool
+      if ( e->button() == Qt::RightButton && mMapTool->isTransient() )
+      {
+        QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
                    QString( mLastNonZoomMapTool ? "not null." : "null." ) );
 
-      // change to older non-zoom tool
-      if ( mLastNonZoomMapTool )
-      {
-        QgsMapTool* t = mLastNonZoomMapTool;
-        mLastNonZoomMapTool = NULL;
-        setMapTool( t );
+        // change to older non-zoom tool
+        if ( mLastNonZoomMapTool )
+        {
+         QgsMapTool* t = mLastNonZoomMapTool;
+          mLastNonZoomMapTool = NULL;
+         setMapTool( t );
+        }
+        return;
       }
-      return;
-    }
     mMapTool->canvasReleaseEvent( e );
+    }
   }
 
 
@@ -975,10 +996,12 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
   {
     panAction( e );
   }
-
-  // call handler of current map tool
-  if ( mMapTool )
+  else
+  {
+   // call handler of current map tool
+    if ( mMapTool )
     mMapTool->canvasMoveEvent( e );
+  }
 
   // show x y on status bar
   QPoint xy = e->pos();
