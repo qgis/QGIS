@@ -262,27 +262,15 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.connect(self.buttonAddRep, SIGNAL("clicked()"), self.addRepository)
     self.connect(self.buttonEditRep, SIGNAL("clicked()"), self.editRepository)
     self.connect(self.buttonDeleteRep, SIGNAL("clicked()"), self.deleteRepository)
+    # checkingOnStart checkbox
+    self.connect(self.checkUpdates, SIGNAL("stateChanged (int)"), self.ChangeCheckingPolicy)
+    if repositories.checkingOnStart():
+      self.checkUpdates.setCheckState(Qt.Checked)
+    else:
+      self.checkUpdates.setCheckState(Qt.Unchecked)
     self.buttonEditRep.setEnabled(False)
     self.buttonDeleteRep.setEnabled(False)
-    # configuration widgets
-    self.connect(self.checkUpdates, SIGNAL("toggled (bool)"), self.changeCheckingPolicy)
-    self.connect(self.comboInterval, SIGNAL("currentIndexChanged (int)"), self.changeCheckingInterval)
-    self.connect(self.radioPluginType0, SIGNAL("toggled (bool)"), self.changePluginPolicy)
-    self.connect(self.radioPluginType1, SIGNAL("toggled (bool)"), self.changePluginPolicy)
-    self.connect(self.radioPluginType2, SIGNAL("toggled (bool)"), self.changePluginPolicy)
-    if repositories.checkingOnStart():
-      self.checkUpdates.setChecked(Qt.Checked)
-    else:
-      self.checkUpdates.setChecked(Qt.Unchecked)
-    interval = repositories.checkingOnStartInterval()
-    intervals = [0,1,3,7,14,30] # days
-    if intervals.count(interval):
-      index = intervals.index(interval)
-    else:
-      index = 1
-    if QGIS_VER[0] == "0":
-      self.label_2.setText("<b>Note: This functionality requires QGIS 1.0</b>")
-    self.comboInterval.setCurrentIndex(index)
+
     self.populateMostWidgets()
 
 
@@ -340,32 +328,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     for i in [0,1,2]:
       self.treeRepositories.resizeColumnToContents(i)
     self.comboFilter1.addItem(self.tr("orphans"))
-    # fill the status filter comboBox
+    # filling the status filter comboBox
     self.comboFilter2.clear()
     self.comboFilter2.addItem(self.tr("any status"))
     self.comboFilter2.addItem(self.tr("not installed", "plural"))
     self.comboFilter2.addItem(self.tr("installed", "plural"))
     if plugins.isThereAnythingNew():
       self.comboFilter2.addItem(self.tr("upgradeable and news"))
-    #set configuration widgets (dependent on the repository list)
-    if len(repositories.all()) == 1 or QGIS_VER[0] == "0":
-      self.radioPluginType0.setEnabled(False)
-      self.radioPluginType1.setEnabled(False)
-      self.radioPluginType2.setEnabled(False)
-    else:
-      self.radioPluginType0.setEnabled(True)
-      self.radioPluginType1.setEnabled(True)
-      self.radioPluginType2.setEnabled(True)
-    settings = QSettings()
-    (i, ok) = settings.value(settingsGroup+"/allowedPluginType", QVariant(2)).toInt()
-    if QGIS_VER[0] == "0":
-      self.radioPluginType1.setChecked(Qt.Checked)
-    elif i == 1 or len(repositories.all()) == 1:
-      self.radioPluginType0.setChecked(Qt.Checked)
-    elif i == 3:
-      self.radioPluginType2.setChecked(Qt.Checked)
-    else:
-      self.radioPluginType1.setChecked(Qt.Checked)
 
 
   # ----------------------------------------- #
@@ -389,10 +358,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       return False
     if self.comboFilter2.currentIndex() == 3 and not plugin["status"] in ["upgradeable","new"]:
       return False
-    if self.radioPluginType0.isChecked() and plugin["repository"] != officialRepo[0] and plugin["status"] in ["not installed","new"]:
-      return False
-    if self.radioPluginType1.isChecked() and plugin["experimental"] and plugin["status"] in ["not installed","new"]:
-      return False
     if self.lineFilter.text() == "":
       return True
     else:
@@ -400,6 +365,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         item = QString(plugin[i]) #.toUpper()
         if item != None:
           if item.contains(self.lineFilter.text(), Qt.CaseInsensitive):
+          #if item.find(self.lineFilter.text().toUpper()) > -1:
             return True
     return False
 
@@ -692,41 +658,17 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
 
   # ----------------------------------------- #
-  def changeCheckingPolicy(self,policy):
-    """ the Checking On Start checkbox has been clicked """
-    if policy:
+  def ChangeCheckingPolicy(self,policy):
+    if policy == Qt.Checked:
       repositories.setCheckingOnStart(True)
     else:
       repositories.setCheckingOnStart(False)
 
 
   # ----------------------------------------- #
-  def changeCheckingInterval(self,interval):
-    """ the Checking on start interval combobox has been clicked """
-    intervals = [0,1,3,7,14,30]
-    repositories.setCheckingOnStartInterval(intervals[interval])
-
-
-  # ----------------------------------------- #
-  def changePluginPolicy(self, state):
-    """ one of the plugin type radiobuttons has been clicked """
-    if not state: # radio button released
-      return
-    if self.radioPluginType0.isChecked():
-      i = 1
-    elif self.radioPluginType1.isChecked():
-      i = 2
-    else:
-      i = 3
-    settings = QSettings()
-    settings.setValue(settingsGroup+"/allowedPluginType", QVariant(i))
-    self.populatePluginTree()
-
-
-  # ----------------------------------------- #
   def addKnownRepositories(self):
     """ update list of known repositories - in the future it will be replaced with an online fetching """
-    message = self.tr("You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.")
+    message = self.tr("You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can't assume any responsibility for them. FEEL WARNED!")
     if QMessageBox.question(self, self.tr("QGIS Python Plugin Installer"), message, QMessageBox.Ok, QMessageBox.Abort) == QMessageBox.Ok:
       repositories.addKnownRepos()
       # refresh lists and populate widgets
@@ -745,13 +687,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if not dlg.exec_():
       return
     for i in repositories.all().values():
-      if dlg.editURL.text().trimmed() == i["url"]:
+      if dlg.editURL.text() == i["url"]:
         QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Unable to add another repository with the same URL!"))
         return
     settings = QSettings()
     settings.beginGroup(self.reposGroup)
     reposName = dlg.editName.text()
-    reposURL = dlg.editURL.text().trimmed()
+    reposURL = dlg.editURL.text()
     if repositories.all().has_key(reposName):
       reposName = reposName + "(2)"
     # add to settings
@@ -787,7 +729,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if not dlg.exec_():
       return # nothing to do if cancelled
     for i in repositories.all().values():
-      if dlg.editURL.text().trimmed() == i["url"] and dlg.editURL.text().trimmed() != repositories.all()[reposName]["url"]:
+      if dlg.editURL.text() == i["url"] and dlg.editURL.text() != repositories.all()[reposName]["url"]:
         QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Unable to add another repository with the same URL!"))
         return
     # delete old repo from QSettings and create new one
@@ -797,9 +739,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     newName = dlg.editName.text()
     if repositories.all().has_key(newName) and newName != reposName:
       newName = newName + "(2)"
-    settings.setValue(newName+"/url", QVariant(dlg.editURL.text().trimmed()))
+    settings.setValue(newName+"/url", QVariant(dlg.editURL.text()))
     settings.setValue(newName+"/enabled", QVariant(bool(dlg.checkBoxEnabled.checkState())))
-    if dlg.editURL.text().trimmed() == repositories.all()[reposName]["url"] and dlg.checkBoxEnabled.checkState() == checkState[repositories.all()[reposName]["enabled"]]:
+    if dlg.editURL.text() == repositories.all()[reposName]["url"] and dlg.checkBoxEnabled.checkState() == checkState[repositories.all()[reposName]["enabled"]]:
       repositories.rename(reposName, newName)
       self.populateMostWidgets()
       return # nothing else to do if only repository name was changed

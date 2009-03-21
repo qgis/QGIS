@@ -43,7 +43,6 @@ mPlugins = dict of dicts {id : {"name" QString,
                                 "error_details" QString,
                                 "homepage" QString,
                                 "url" QString,
-                                "experimental" bool
                                 "filename" QString,
                                 "repository" QString,
                                 "localdir" QString,
@@ -84,7 +83,7 @@ authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgis
                 ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
                 ("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
                 ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
-                ("GIS-Lab Repository", 		"http://gis-lab.info/programs/qgis/qgis-repo.xml", "")]
+                ("GIS-Lab Repository",         "http://gis-lab.info/programs/qgis/qgis-repo.xml", "")]
 
 
 # --- class QPHttp  ----------------------------------------------------------------------- #
@@ -97,8 +96,6 @@ class QPHttp(QHttp):
     if settings.value("/proxyEnabled").toBool():
       self.proxy=QNetworkProxy()
       proxyType = settings.value( "/proxyType", QVariant(0)).toString()
-      if len(args)>0 and settings.value("/proxyExcludedUrls").toString().contains(args[0]):
-        proxyType = "NoProxy"
       if proxyType in ["1","Socks5Proxy"]: self.proxy.setType(QNetworkProxy.Socks5Proxy)
       elif proxyType in ["2","NoProxy"]: self.proxy.setType(QNetworkProxy.NoProxy)
       elif proxyType in ["3","HttpProxy"]: self.proxy.setType(QNetworkProxy.HttpProxy)
@@ -239,48 +236,6 @@ class Repositories(QObject):
 
 
   # ----------------------------------------- #
-  def checkingOnStartInterval(self):
-    """ return checking for news and updates interval """
-    settings = QSettings()
-    (i, ok) = settings.value(settingsGroup+"/checkOnStartInterval").toInt()
-    if i < 0 or not ok:
-      i = 1
-    # allowed values: 0,1,3,7,14,30 days
-    interval = 0
-    for j in [1,3,7,14,30]:
-      if i >= j:
-	interval = j
-    return interval
-
-
-  # ----------------------------------------- #
-  def setCheckingOnStartInterval(self, interval):
-    """ set checking for news and updates interval """
-    settings = QSettings()
-    settings.setValue(settingsGroup+"/checkOnStartInterval", QVariant(interval))
-
-
-  # ----------------------------------------- #
-  def saveCheckingOnStartLastDate(self):
-    """ set today's date as the day of last checking  """
-    settings = QSettings()
-    settings.setValue(settingsGroup+"/checkOnStartLastDate", QVariant(QDate.currentDate()))
-
-
-  # ----------------------------------------- #
-  def timeForChecking(self):
-    """ determine whether it's the time for checking for news and updates now """
-    if self.checkingOnStartInterval() == 0:
-      return True
-    settings = QSettings()
-    interval = settings.value(settingsGroup+"/checkOnStartLastDate").toDate().daysTo(QDate.currentDate())
-    if interval >= self.checkingOnStartInterval():
-      return True
-    else:
-      return False
-
-
-  # ----------------------------------------- #
   def load(self):
     """ populate the mRepositories dict"""
     self.mRepositories = {}
@@ -376,19 +331,15 @@ class Repositories(QObject):
           fileName = QFileInfo(pluginNodes.item(i).firstChildElement("download_url").text().trimmed()).fileName()
           name = fileName.section(".", 0, 0)
           name = str(name)
-          experimental = False
-          if pluginNodes.item(i).firstChildElement("experimental").text().simplified().toUpper() in ["TRUE","YES"]:
-            experimental = True
           plugin = {}
           plugin[name] = {
             "name"          : pluginNodes.item(i).toElement().attribute("name"),
             "version_avail" : pluginNodes.item(i).toElement().attribute("version"),
-            "desc_repo"     : pluginNodes.item(i).firstChildElement("description").text().simplified(),
+            "desc_repo"     : pluginNodes.item(i).firstChildElement("description").text().trimmed(),
             "desc_local"    : "",
-            "author"        : pluginNodes.item(i).firstChildElement("author_name").text().simplified(),
-            "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().simplified(),
-            "url"           : pluginNodes.item(i).firstChildElement("download_url").text().simplified(),
-            "experimental"  : experimental,
+            "author"        : pluginNodes.item(i).firstChildElement("author_name").text().trimmed(),
+            "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().trimmed(),
+            "url"           : pluginNodes.item(i).firstChildElement("download_url").text().trimmed(),
             "filename"      : fileName,
             "status"        : "not installed",
             "error"         : "",
@@ -397,14 +348,14 @@ class Repositories(QObject):
             "repository"    : reposName,
             "localdir"      : name,
             "read-only"     : False}
-          qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().simplified()
+          qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().trimmed()
           if not qgisMinimumVersion: qgisMinimumVersion = "0"
           # please use the tag below only if really needed! (for example if plugin development is abandoned)
-          qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
+          qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().trimmed()
           if not qgisMaximumVersion: qgisMaximumVersion = "2"
           #if compatible, add the plugin to the list
           if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
-            if QGIS_VER[0]==qgisMinimumVersion[0] or name=="plugin_installer" or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):
+            if QGIS_VER[0]=="0" or qgisMinimumVersion[0]=="1" or name=="plugin_installer":
               plugins.addPlugin(plugin)
         plugins.workarounds()
         self.mRepositories[reposName]["state"] = 2
@@ -418,7 +369,6 @@ class Repositories(QObject):
     # is the checking done?
     if not self.fetchingInProgress():
       plugins.getAllInstalled()
-      self.saveCheckingOnStartLastDate()
       self.emit(SIGNAL("checkingDone()"))
 # --- /class Repositories ---------------------------------------------------------------- #
 
@@ -552,7 +502,6 @@ class Plugins(QObject):
         "author"        : auth,
         "homepage"      : homepage,
         "url"           : path,
-        "experimental"  : False,
         "filename"      : "",
         "status"        : "",
         "error"         : error,
@@ -572,7 +521,6 @@ class Plugins(QObject):
         self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority
       self.mPlugins[key]["version_inst"] = plugin["version_inst"]
       self.mPlugins[key]["desc_local"] = plugin["desc_local"]
-      self.mPlugins[key]["experimental"] = False
     # set status
     #
     # installed   available   status
