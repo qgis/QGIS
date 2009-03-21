@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>BEtter Attribute TAble</string>
+   <string>Attribute Table</string>
   </property>
   <layout class="QVBoxLayout" >
    <item>
