@@ -175,7 +175,7 @@ class fToolsPlugin:
 		self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect ] )
 
 		self.ftools_aboot = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
-		QCoreApplication.translate( "fTools", "fTools About" ), self.iface.mainWindow() )
+		QCoreApplication.translate( "fTools", "fTools Information" ), self.iface.mainWindow() )
 
 		self.menu.addMenu( self.analysisMenu )
 		self.menu.addMenu( self.researchMenu )
