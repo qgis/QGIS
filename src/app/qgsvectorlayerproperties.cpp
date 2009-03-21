@@ -447,6 +447,7 @@ void QgsVectorLayerProperties::reset( void )
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
+  labelOptionsFrame->setEnabled ( layer->hasLabelsEnabled() );
   //set the transparency slider
   sliderTransparency->setValue( 255 - layer->getTransparency() );
   //update the transparency percentage label
