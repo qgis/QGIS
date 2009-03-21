@@ -220,34 +220,6 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0" >
-           <widget class="QLabel" name="textLabel1_6" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Attribute table behaviour</string>
-            </property>
-            <property name="buddy" >
-             <cstring>cmbAttrTableBehaviour</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1" >
-           <widget class="QComboBox" name="cmbAttrTableBehaviour" >
-            <property name="duplicatesEnabled" >
-             <bool>false</bool>
-            </property>
-            <item>
-             <property name="text" >
-              <string/>
-             </property>
-            </item>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -1164,7 +1136,6 @@
   <tabstop>spinBoxUpdateThreshold</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>
-  <tabstop>cbxSplitterRedraw</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>pbnMeasureColour</tabstop>

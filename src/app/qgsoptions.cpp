@@ -90,13 +90,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
 
-  // set the attribute table behaviour
-  cmbAttrTableBehaviour->clear();
-  cmbAttrTableBehaviour->addItem( tr( "Show all features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show features in current canvas" ) );
-  cmbAttrTableBehaviour->setCurrentIndex( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() );
-
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
   //set the default projection behaviour radio buttongs
@@ -310,7 +303,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/showLegendClassifiers", cbxLegendClassifiers->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
-  settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
   settings.setValue( "/qgis/new_layers_visible", chkAddedVisibility->isChecked() );
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
