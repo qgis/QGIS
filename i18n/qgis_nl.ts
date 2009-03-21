@@ -3821,7 +3821,7 @@ Neem alstublieft contact op met de ontwikkelaars.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="818"/>
         <source>Add to Overview</source>
-        <translation>Toevoegan aan Overzichtskaart</translation>
+        <translation>Toevoegen aan Overzichtskaart</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="824"/>
@@ -4070,7 +4070,7 @@ Fouten:  %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1842"/>
         <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation>Een nieuwe &apos;coördinaatprik&apos;-plugin is toegevoegd waarmee in de kaart kan worden geklikt en de coördinaten dan van en naar het klembord kunnen worden verplaatst.</translation>
+        <translation>Een nieuwe &apos;coördinaatprik&apos;-plugin is toegevoegd waarmee in de kaart kan worden geklikt en de coördinaten dan van &amp; naar het klembord kunnen worden verplaatst.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1845"/>
@@ -4110,32 +4110,32 @@ Fouten:  %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1854"/>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished">Totale herbouw van de pythonplugin-installer. De nieuwe versie heeft veel verbeteringen, bijvoorbeeld het controleren of de draaiende QGIS-versie wel compatibel is met de geïnstalleerde plugins.</translation>
+        <translation>Totale herbouw van de pythonplugin-installer. De nieuwe versie heeft veel verbeteringen, bijvoorbeeld het controleren of de draaiende QGIS-versie wel compatibel is met de geïnstalleerde plugins.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1813"/>
         <source>Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanpassingen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1812"/>
         <source>QGIS 1.0.2 is a bug fix release for the stable version of QGIS.A summary of the improvements can be found at https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.2</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS 1.0.2 is een bug fix release van de stabiele QGIS-versie. Een samenvatting van de verbeteringen is te vinden op: https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1817"/>
         <source>QGIS 1.0.1 is a bug fix release for the stable version of QGIS.A summary of the improvements can be found at https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS 1.0.2 is een bug fix release van de stabiele QGIS-versie. Een samenvatting van de verbeteringen is te vinden op: https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1821"/>
         <source>The QGIS 1.0 release includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS 1.0 bevat 265 bug fixes en verbeteringen ten opzichte van de QGIS 0.11.0 release. Verder zijn de volgende verbeteringen toegevoegd:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1869"/>
         <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanpassingen in het &apos;edit gedeelte&apos; - geometrie- en attribuutaanpassingen vinden nu helderder plaats op een plek.</translation>
     </message>
 </context>
 <context>
@@ -4241,12 +4241,12 @@ Fouten:  %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="116"/>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>Website</source>
-        <translation type="unfinished">Website</translation>
+        <translation>Website</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -4286,22 +4286,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="114"/>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;De volgende bedrijven/mensen hebben QGIS gesponsord met gelden om ontwikkeling of ander kosten te betalen&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;De volgende bedrijven/mensen hebben QGIS gesponsord met gelden om ontwikkeling of ander kosten te betalen&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="170"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Beschikbare Data Provider Plugins</translation>
+        <translation>Beschikbare Data Provider Plugins</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="173"/>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Beschikbare QT Database Plugins</translation>
+        <translation>Beschikbare QT Database Plugins</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="179"/>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Beschikbare Qt Image Plugins</translation>
+        <translation>Beschikbare Qt Image Plugins</translation>
     </message>
 </context>
 <context>
@@ -4999,9 +4999,9 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgsattributetabledisplay.cpp" line="406"/>
         <source>Found %1 matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform> %1 passend object gevonden.</numerusform>
+            <numerusform>%1 passende objecten gevonden.</numerusform>
         </translation>
     </message>
 </context>
@@ -5238,7 +5238,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="604"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished">&lt;p&gt;De SVG export functie in QGIS heeft verschillende problemen door fouten en afhankelijkheden in de </translation>
+        <translation>&lt;p&gt;De SVG export functie in QGIS heeft verschillende problemen door fouten en afhankelijkheden in de </translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -5413,17 +5413,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="610"/>
         <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4 svg code. Opmerking: tekst verschijnt niet in het SVG-bestand en er zijn problemen met de kaart-extent en items zoals legenda en schaalbalk.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="614"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt4 svg code. In speciale gevallen zijn er problemen met lagen die niet worden &apos;geclipped&apos; op de extent van de kaart.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="618"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Als u een vectorgebaseerde uitvoer wenst van QGIS, dan suggereren we dat u naar PostScript print als de SVG-uitvoer niet goed genoeg is.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6226,7 +6226,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="148"/>
         <source>Map %1</source>
-        <translation type="unfinished">Kaart %1</translation>
+        <translation>Kaart %1</translation>
     </message>
 </context>
 <context>
@@ -11170,7 +11170,7 @@ in regel</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="175"/>
         <source>Cannot start command shell (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Commandoregel kan niet worden uitgevoerd (%1)</translation>
     </message>
 </context>
 <context>
@@ -11444,14 +11444,11 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/core/qgshttptransaction.cpp" line="463"/>
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Er trad een &apos;network timeout&apos; op na %1 seconden van netwerkinactiviteit.
-Dit zou kunnen zijn veroorzaakt door een probleem in uw lokale netwerk of het netwerk van de WMS server.
-        
-        
-        
-        </numerusform>
-            <numerusform></numerusform>
+Dit zou kunnen zijn veroorzaakt door een probleem in uw lokale netwerk of het netwerk van de WMS server.</numerusform>
+            <numerusform>Er trad een &apos;network timeout&apos; op na %1 seconden van netwerkinactiviteit.
+Dit zou kunnen zijn veroorzaakt door een probleem in uw lokale netwerk of het netwerk van de WMS server.</numerusform>
         </translation>
     </message>
     <message>
@@ -12408,13 +12405,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="404"/>
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="unfinished">
-            <numerusform>- %1 object(en) gevonden
-        
-        
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>- %1 object(en) gevonden       </numerusform>
+            <numerusform>- %1 object(en) gevonden</numerusform>
         </translation>
     </message>
     <message>
@@ -13636,7 +13629,7 @@ Uitgebreide foutinformatie:
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="313"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
-        <translation>&lt;b&gt;Opmerking:&lt;/b&gt;Gebruik nul om hertekening te voorkomen tot alle features zijn getekend</translation>
+        <translation>&lt;b&gt;Opmerking:&lt;/b&gt; Gebruik nul om hertekening te voorkomen tot alle features zijn getekend</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="323"/>
@@ -15971,7 +15964,7 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2578"/>
         <source>Data Type:</source>
-        <translation>Data-Type</translation>
+        <translation>Data-Type:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2550"/>
@@ -16101,7 +16094,7 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2680"/>
         <source>Pixel Size:</source>
-        <translation>Pixelgrootte</translation>
+        <translation>Pixelgrootte:</translation>
     </message>
     <message>
         <location filename="" line="0"/>
@@ -16161,22 +16154,22 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="405"/>
         <source>%1 and all other files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 en alle andere bestanden (*)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1885"/>
         <source>Band%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Band%1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2554"/>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>X: %1 Y: %2 Banden: %3</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2653"/>
         <source>Project Spatial Reference System: </source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijk Referentie Systeem voor project: </translation>
     </message>
 </context>
 <context>
@@ -16496,13 +16489,9 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message numerus="yes">
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2750"/>
         <source>The color map for Band %n failed to load</source>
-        <translation type="unfinished">
-            <numerusform>Het kleurenpalet voor Band %n kon niet worden geladen
-        
-        
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Het kleurenpalet voor Band %n kon niet worden geladen        </numerusform>
+            <numerusform>Het kleurenpalet voor Band %n kon niet worden geladen</numerusform>
         </translation>
     </message>
     <message>
@@ -17499,9 +17488,9 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="167"/>
         <source>Found %1 matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1 passend object gevonden.</numerusform>
+            <numerusform>%1 passende objecten gevonden.</numerusform>
         </translation>
     </message>
 </context>
@@ -17530,13 +17519,9 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <location filename="../src/app/qgsserversourceselect.cpp" line="475"/>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="unfinished">
-            <numerusform>Ruimtelijk Referentie Systeem (%1 aanwezig)
-        
-        
-        
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Ruimtelijk Referentie Systeem (%1 aanwezig)</numerusform>
+            <numerusform>Ruimtelijk Referentie Systeem (%1 aanwezig)</numerusform>
         </translation>
     </message>
     <message>
@@ -19954,7 +19939,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished">Veldbeschrijving:
+        <translation>Veldbeschrijving:
 * Input DXF-bestand: pad naar het te converteren DXF-bestand
 * Output Shp-bestand: gewenste naam van het te genereren shp-bestand
 * Shp output bestandstype: geeft het type van het te genereren shp-bestand aan
@@ -19968,12 +19953,12 @@ Voor ondersteuning stuur email naar scala@itc.cnr.it</translation>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="152"/>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished">Kies een DXF-bestand om te openen</translation>
+        <translation>Kies een DXF-bestand om te openen</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="162"/>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">Kies een bestandsnaam om op te slaan</translation>
+        <translation>Kies een bestandsnaam om te bewaren</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="25"/>
