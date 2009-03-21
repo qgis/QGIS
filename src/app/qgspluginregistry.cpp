@@ -344,6 +344,12 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QStringList pluginList = mPythonUtils->pluginList();
     QgsDebugMsg( "Loading python plugins" );
 
+    // make the plugin installer enabled by default:
+    if ( !mySettings.contains( "/PythonPlugins/plugin_installer" ) )
+    {
+      mySettings.setValue( "/PythonPlugins/plugin_installer", true );
+    }
+
     for ( int i = 0; i < pluginList.size(); i++ )
     {
       QString packageName = pluginList[i];
