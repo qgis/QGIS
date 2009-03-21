@@ -1263,7 +1263,7 @@
 		72A56DEE0F3CFEAE00BA32A1 /* dl_writer_ascii.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7DE0F39E57B003DC336 /* dl_writer_ascii.cpp */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
-		72E7070B0F426A5C00142011 /* icon.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* icon.png */; };
+		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
 		72E7070C0F426A5C00142011 /* mapserverexport.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD60F39E5D9003DC336 /* mapserverexport.py */; };
 		72E7070D0F426A5C00142011 /* mapserverexportdialog.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */; };
 		72E7070E0F426A5C00142011 /* ms_export.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD80F39E5D9003DC336 /* ms_export.py */; };
@@ -4103,7 +4103,7 @@
 			dstSubfolderSpec = 0;
 			files = (
 				72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */,
-				72E7070B0F426A5C00142011 /* icon.png in Copy - mapserver */,
+				72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */,
 				72E7070C0F426A5C00142011 /* mapserverexport.py in Copy - mapserver */,
 				72E7070D0F426A5C00142011 /* mapserverexportdialog.py in Copy - mapserver */,
 				72E7070E0F426A5C00142011 /* ms_export.py in Copy - mapserver */,
@@ -7273,7 +7273,7 @@
 		7209EDD10F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EDD30F39E5D9003DC336 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/mapserver_export/__init__.py; sourceTree = SOURCE_ROOT; };
 		7209EDD40F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/mapserver_export/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EDD50F39E5D9003DC336 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../../python/plugins/mapserver_export/icon.png; sourceTree = SOURCE_ROOT; };
+		7209EDD50F39E5D9003DC336 /* mapserver_export.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mapserver_export.png; path = ../../python/plugins/mapserver_export/mapserver_export.png; sourceTree = SOURCE_ROOT; };
 		7209EDD60F39E5D9003DC336 /* mapserverexport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = mapserverexport.py; path = ../../python/plugins/mapserver_export/mapserverexport.py; sourceTree = SOURCE_ROOT; };
 		7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = mapserverexportdialog.py; path = ../../python/plugins/mapserver_export/mapserverexportdialog.py; sourceTree = SOURCE_ROOT; };
 		7209EDD80F39E5D9003DC336 /* ms_export.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ms_export.py; path = ../../python/plugins/mapserver_export/ms_export.py; sourceTree = SOURCE_ROOT; };
@@ -11174,7 +11174,7 @@
 			children = (
 				7209EDD30F39E5D9003DC336 /* __init__.py */,
 				7209EDD40F39E5D9003DC336 /* CMakeLists.txt */,
-				7209EDD50F39E5D9003DC336 /* icon.png */,
+				7209EDD50F39E5D9003DC336 /* mapserver_export.png */,
 				7209EDD60F39E5D9003DC336 /* mapserverexport.py */,
 				7209EDD70F39E5D9003DC336 /* mapserverexportdialog.py */,
 				7209EDD80F39E5D9003DC336 /* ms_export.py */,
