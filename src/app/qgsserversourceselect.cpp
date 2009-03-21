@@ -2,8 +2,11 @@
     qgserversourceselect.cpp  -  selector for WMS servers, etc.
                              -------------------
     begin                : 3 April 2005
-    copyright            : (C) 2005 by Brendan Morley
-    email                : morb at ozemail dot com dot au
+    copyright            : 
+    original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
+    wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
+
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,29 +19,31 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include "qgsserversourceselect.h"
-
+#include "../providers/wms/qgswmsprovider.h"
+#include "qgis.h" // GEO_EPSG_CRS_ID 
+#include "qgscontexthelp.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
-
+#include "qgshttptransaction.h"
+#include "qgslogger.h"
+#include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsnumericsortlistviewitem.h"
-#include "qgsproviderregistry.h"
-#include "qgscoordinatereferencesystem.h"
-#include "../providers/wms/qgswmsprovider.h"
-#include "qgscontexthelp.h"
-
 #include "qgsproject.h"
+#include "qgsproviderregistry.h"
+#include "qgsserversourceselect.h"
+#include <qgisinterface.h>
 
-#include "qgsmessageviewer.h"
 
+#include <QButtonGroup>
+#include <QDomDocument>
+#include <QHeaderView>
+#include <QImageReader>
+#include <QMap>
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>
-#include <QButtonGroup>
-#include <QMap>
-#include <QImageReader>
-#include "qgslogger.h"
-#include "qgis.h" // GEO_EPSG_CRS_ID 
+#include <QUrl>
 
 
 
@@ -108,6 +113,17 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
 
   // set up the default WMS Coordinate Reference System
   labelCoordRefSys->setText( descriptionForEpsg( m_Epsg ) );
+
+
+  //
+  // For wms search tab
+  //
+  tableWidgetWMSList->setColumnWidth(0, 250);
+  tableWidgetWMSList->setColumnWidth(1, 150);
+  tableWidgetWMSList->setColumnWidth(2, 250);
+  tableWidgetWMSList->verticalHeader()->hide();
+
+  connect(tableWidgetWMSList, SIGNAL(itemSelectionChanged()), this, SLOT(wmsSelectionChanged()));
 }
 
 QgsServerSourceSelect::~QgsServerSourceSelect()
@@ -718,4 +734,166 @@ void QgsServerSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
+bool QgsServerSourceSelect::retrieveSearchResults(const QString& searchTerm, QByteArray& httpResponse)
+{
+  // TODO: test proxy
+  // read proxy settings: code from QgsWmsProvider::retrieveUrl()
+  QSettings settings;
+  QString proxyHost, proxyUser, proxyPassword;
+  int proxyPort;
+  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+
+  bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
+  if(proxyEnabled)
+  {
+    proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+    proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+    proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+    proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+    QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
+    if(proxyTypeString == "DefaultProxy")
+    {
+      proxyType = QNetworkProxy::DefaultProxy;
+    }
+    else if(proxyTypeString == "Socks5Proxy")
+    {
+      proxyType = QNetworkProxy::Socks5Proxy;
+    }
+    else if(proxyTypeString == "HttpProxy")
+    {
+      proxyType = QNetworkProxy::HttpProxy;
+    }
+#if QT_VERSION >= 0x040400
+    else if(proxyTypeString == "HttpCachingProxy")
+    {
+      proxyType = QNetworkProxy::HttpCachingProxy;
+    }
+    else if(proxyTypeString == "FtpCachingProxy")
+    {
+      proxyType = QNetworkProxy::FtpCachingProxy;
+    }
+#endif
+  }
+
+  QUrl url(QString("http://geopole.org/wms/search?search=%1&type=rss").arg(searchTerm));
+  QgsHttpTransaction http(url.toEncoded(),
+                          proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
+
+  bool httpOk = http.getSynchronously( httpResponse );
+  if ( !httpOk )
+  {
+    // TODO: error handling
+    return false;
+  }
+
+  // TODO: check doctype?
+
+  return true;
+}
+
+void QgsServerSourceSelect::addWMSListRow(const QDomElement& item, int row)
+{
+  QDomElement title = item.firstChildElement("title");
+  addWMSListItem(title, row, 0);
+  QDomElement link = item.firstChildElement("link");
+  addWMSListItem(link, row, 1);
+  QDomElement description = item.firstChildElement("description");
+  addWMSListItem(description, row, 2);
+}
+
+void QgsServerSourceSelect::addWMSListItem(const QDomElement& el, int row, int column)
+{
+  if (!el.isNull())
+  {
+    QTableWidgetItem* tableItem = new QTableWidgetItem(el.text());
+    // TODO: add linebreaks to long tooltips?
+    tableItem->setToolTip(el.text());
+    tableWidgetWMSList->setItem(row, column, tableItem);
+  }
+}
+
+void QgsServerSourceSelect::on_btnClose_clicked()
+{
+  accept();
+}
+
+void QgsServerSourceSelect::on_btnSearch_clicked()
+{
+  // clear results
+  tableWidgetWMSList->clearContents();
+  tableWidgetWMSList->setRowCount(0);
+
+  // disable Add WMS button
+  btnAddWMS->setEnabled(false);
+
+  // retrieve search results
+  QByteArray httpResponse;
+  bool success = retrieveSearchResults(leSearchTerm->text(), httpResponse);
+  if (!success)
+  {
+    // TODO: error handling
+    return;
+  }
+
+  // parse results
+  QDomDocument doc("RSS");
+  if (!doc.setContent(httpResponse))
+  {
+    // TODO: error handling
+    return;
+  }
+
+  QDomNodeList list = doc.elementsByTagName("item");
+  tableWidgetWMSList->setRowCount(list.size());
+  for (int i=0;i<list.size();i++)
+  {
+    if (list.item(i).isElement())
+    {
+      QDomElement item = list.item(i).toElement();
+      addWMSListRow(item, i);
+    }
+  }
+}
+
+void QgsServerSourceSelect::on_btnAddWMS_clicked()
+{
+  // TODO: deactivate button if dialog is open?
+  // TODO: remove from config on close?
+
+  int selectedRow = tableWidgetWMSList->currentRow();
+  if (selectedRow == -1)
+  {
+    return;
+  }
+
+  QString wmsTitle = tableWidgetWMSList->item(selectedRow, 0)->text();
+  QString wmsUrl = tableWidgetWMSList->item(selectedRow, 1)->text();
+
+  QSettings settings;
+  if (settings.contains(QString("Qgis/connections-wms/%1/url").arg(wmsTitle)))
+  {
+    QString msg = tr("The %1 connection already exists. Do you want to overwrite it?").arg(wmsTitle);
+    QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
+    if ( result != QMessageBox::Ok )
+    {
+      return;
+    }
+  }
+
+  // add selected WMS to config and mark as current
+  settings.setValue(QString("Qgis/connections-wms/%1/url").arg(wmsTitle), wmsUrl);
+  settings.setValue( "/Qgis/connections-wms/selected", wmsTitle);
+  populateConnectionList();
+  tabWidget->setCurrentIndex( 0 );
+}
+
+void QgsServerSourceSelect::wmsSelectionChanged()
+{
+  btnAddWMS->setEnabled(tableWidgetWMSList->currentRow() != -1);
+}
+
+
+
+//
+//
 // ENDS

@@ -2,8 +2,8 @@
     qgserversourceselect.h  -  selector for WMS servers, etc.
                              -------------------
     begin                : 3 April 2005
-    copyright            : (C) 2005 by Brendan Morley
-    email                : morb at ozemail dot com dot au
+    original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
+    wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,6 +27,8 @@ class QgisApp;
 class QgsWmsProvider;
 class QButtonGroup;
 class QgsNumericSortTreeWidgetItem;
+class QDomDocument;
+class QDomElement;
 
 /*!
  * \brief   Dialog to create connections and add layers from WMS, etc.
@@ -180,7 +182,18 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! The WMS provider that retrieves information for this dialog
     QgsWmsProvider * mWmsProvider;
 
+    
+    bool retrieveSearchResults(const QString& searchTerm, QByteArray& httpResponse);
+    void addWMSListRow(const QDomElement& item, int row);
+    void addWMSListItem(const QDomElement& el, int row, int column);
+
     static const int context_id = 710979116;
+
+  private slots:
+    void on_btnClose_clicked();
+    void on_btnSearch_clicked();
+    void on_btnAddWMS_clicked();
+    void wmsSelectionChanged();
 };
 
 
