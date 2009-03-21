@@ -26,9 +26,10 @@ def description():
 def version(): 
   return "Version 0.1" 
 def qgisMinimumVersion(): 
-  return "1.0" 
+  return "1.0"
+def authorName():
+  return "Gary E. Sherman"
 def classFactory(iface): 
   # load MapServerExport class from file mapserverexport.py
   from mapserverexport import MapServerExport 
   return MapServerExport(iface) 
-
