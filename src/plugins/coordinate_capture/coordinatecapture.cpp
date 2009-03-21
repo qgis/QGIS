@@ -83,6 +83,7 @@ void CoordinateCapture::initGui()
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
   connect( mQGisIface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setSourceCrs() ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS
   mTransform.setDestCRS( mCrs ); // set the CRS in the transform
@@ -251,6 +252,11 @@ void CoordinateCapture::unload()
   delete mQActionPointer;
 }
 
+void CoordinateCapture::setCurrentTheme ( QString theThemeName )
+{
+  qDebug (" Current theme changed \n\n\n\n\n" );
+  mQActionPointer->setIcon( QIcon());
+}
 
 //////////////////////////////////////////////////////////////////////////
 //

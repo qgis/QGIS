@@ -234,6 +234,9 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionHelpSeparator2();
     virtual QAction *actionAbout();
 
+  signals:
+    void currentThemeChanged( QString );
+
   private:
 
     /// QgisInterface aren't copied
