@@ -12897,11 +12897,6 @@ p, li { white-space: pre-wrap; }
         <translation>Placement</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="90"/>
         <source>Buffer</source>
         <translation>Buffer</translation>

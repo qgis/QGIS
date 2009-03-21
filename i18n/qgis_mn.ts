@@ -12255,11 +12255,6 @@ p, li { white-space: pre-wrap; }
         <source>Source</source>
         <translation type="obsolete">Эх</translation>
     </message>
-    <message>
-        <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
     <message encoding="UTF-8">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="220"/>
         <source>°</source>

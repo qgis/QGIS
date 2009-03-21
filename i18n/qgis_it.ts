@@ -12564,11 +12564,6 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
         <translation type="obsolete">&amp;Colore:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="313"/>
         <source>Font size units</source>
         <translation>Unità della dimensione del carattere</translation>
