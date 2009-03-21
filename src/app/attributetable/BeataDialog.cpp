@@ -170,16 +170,12 @@ void BeataDialog::selectedToTop()
 
 void BeataDialog::copySelectedRowsToClipboard()
 {
-  QgisApp* pApp = dynamic_cast<QgisApp*>(parentWidget());
-  if (pApp)
-    pApp->editCopy(mLayer);
+  QgisApp::instance()->editCopy(mLayer);
 }
 
 void BeataDialog::zoomMapToSelectedRows()
 {
-  QgisApp* pApp = dynamic_cast<QgisApp*>(parentWidget());
-  if (pApp)
-    pApp->zoomToSelected();
+  QgisApp::instance()->zoomToSelected();
 }
 
 void BeataDialog::invertSelection()
