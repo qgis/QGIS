@@ -12606,7 +12606,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="33"/>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Konnte Ausgabe des Repositories nicht interpretieren</translation>
+        <translation>Konnte Ausgabe des Repositories nicht interpretieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="34"/>
@@ -12626,7 +12626,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="47"/>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">Mehr Plugins von entfernten Repositories installieren</translation>
+        <translation>Mehr Plugins von entfernten Repositories installieren</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="50"/>
@@ -12651,7 +12651,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="60"/>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Fehler beim Lesen des Repositories</translation>
+        <translation>Fehler beim Lesen des Repositories:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="66"/>
@@ -12679,12 +12679,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="117"/>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Fehler beim Lesen des Repositories:</translation>
+        <translation>Fehler beim Lesen des Repositories:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="118"/>
         <source>all repositories</source>
-        <translation type="unfinished">Alle Repositories</translation>
+        <translation>Alle Repositories</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="119"/>
@@ -13021,7 +13021,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="204"/>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">Sie sind dabei Plugin-Repositories hinzufügen, die zwar vom Quantum GIS-Team weder autorisiert noch unterstützt werden, aber von von uns verbundenen Leuten zur Verfügung gestellt werden. Plugin-Autoren versuchen grundsätzlich ihre Arbeit nützlich und sicher zu machen, aber wir können uns auf deren Verantwortungsgefühl nicht verlassen.  Seien Sie gewarnt!</translation>
+        <translation>Sie sind dabei Plugin-Repositories hinzufügen, die zwar vom Quantum GIS-Team weder autorisiert noch unterstützt werden, aber von von uns verbundenen Leuten zur Verfügung gestellt werden. Plugin-Autoren versuchen grundsätzlich ihre Arbeit nützlich und sicher zu machen, aber wir können uns auf deren Verantwortungsgefühl nicht verlassen.  Seien Sie gewarnt!</translation>
     </message>
 </context>
 <context>
@@ -13123,7 +13123,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="260"/>
         <source>Repositories</source>
-        <translation type="unfinished">Repositories</translation>
+        <translation>Repositories</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="263"/>
