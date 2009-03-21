@@ -19,9 +19,7 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon" >
-   <iconset>
-    <normaloff/>
-   </iconset>
+   <iconset/>
   </property>
   <property name="modal" >
    <bool>true</bool>
@@ -32,7 +30,16 @@
      <property name="spacing" >
       <number>3</number>
      </property>
-     <property name="margin" >
+     <property name="leftMargin" >
+      <number>1</number>
+     </property>
+     <property name="topMargin" >
+      <number>1</number>
+     </property>
+     <property name="rightMargin" >
+      <number>1</number>
+     </property>
+     <property name="bottomMargin" >
       <number>1</number>
      </property>
      <item>
@@ -71,7 +78,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -93,17 +100,9 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex" >
-      <number>5</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab1" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>557</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>General</string>
       </attribute>
@@ -183,7 +182,16 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
+           <number>11</number>
+          </property>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
            <number>11</number>
           </property>
           <item row="0" column="2" >
@@ -241,7 +249,16 @@
           <string>Subset</string>
          </property>
          <layout class="QGridLayout" >
-          <property name="margin" >
+          <property name="leftMargin" >
+           <number>11</number>
+          </property>
+          <property name="topMargin" >
+           <number>11</number>
+          </property>
+          <property name="rightMargin" >
+           <number>11</number>
+          </property>
+          <property name="bottomMargin" >
            <number>11</number>
           </property>
           <item row="0" column="0" colspan="2" >
@@ -265,7 +282,7 @@
             <property name="sizeType" >
              <enum>QSizePolicy::Expanding</enum>
             </property>
-            <property name="sizeHint" stdset="0" >
+            <property name="sizeHint" >
              <size>
               <width>480</width>
               <height>21</height>
@@ -286,14 +303,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab2" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>552</height>
-       </rect>
-      </property>
       <property name="sizePolicy" >
        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
         <horstretch>0</horstretch>
@@ -400,44 +409,27 @@
          <property name="currentIndex" >
           <number>1</number>
          </property>
-         <widget class="QWidget" name="page" >
-          <property name="geometry" >
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>100</width>
-            <height>30</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QWidget" name="page_2" >
-          <property name="geometry" >
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>799</width>
-            <height>502</height>
-           </rect>
-          </property>
-         </widget>
+         <widget class="QWidget" name="page" />
+         <widget class="QWidget" name="page_2" />
         </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab3" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>552</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Metadata</string>
       </attribute>
       <layout class="QGridLayout" >
-       <property name="margin" >
+       <property name="leftMargin" >
+        <number>11</number>
+       </property>
+       <property name="topMargin" >
+        <number>11</number>
+       </property>
+       <property name="rightMargin" >
+        <number>11</number>
+       </property>
+       <property name="bottomMargin" >
         <number>11</number>
        </property>
        <item row="0" column="0" >
@@ -453,14 +445,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab4" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>552</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Labels</string>
       </attribute>
@@ -480,6 +464,9 @@
        </item>
        <item row="1" column="0" >
         <widget class="QFrame" name="labelOptionsFrame" >
+         <property name="enabled" >
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy" >
           <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
            <horstretch>0</horstretch>
@@ -497,14 +484,6 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab5" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>552</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Actions</string>
       </attribute>
@@ -528,20 +507,12 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab6" >
-      <property name="geometry" >
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>817</width>
-        <height>557</height>
-       </rect>
-      </property>
       <attribute name="title" >
        <string>Attributes</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout" >
+      <layout class="QVBoxLayout" >
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout" >
+        <layout class="QHBoxLayout" >
          <property name="sizeConstraint" >
           <enum>QLayout::SetNoConstraint</enum>
          </property>
@@ -560,8 +531,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset>
-             <normaloff>../xpm/new_attribute.png</normaloff>../xpm/new_attribute.png</iconset>
+            <iconset>../xpm/new_attribute.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Ctrl+N</string>
@@ -577,8 +547,7 @@
             <string/>
            </property>
            <property name="icon" >
-            <iconset>
-             <normaloff>../xpm/delete_attribute.png</normaloff>../xpm/delete_attribute.png</iconset>
+            <iconset>../xpm/delete_attribute.png</iconset>
            </property>
            <property name="shortcut" >
             <string>Ctrl+X</string>
@@ -602,11 +571,11 @@
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer" >
+          <spacer>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
-           <property name="sizeHint" stdset="0" >
+           <property name="sizeHint" >
             <size>
              <width>40</width>
              <height>20</height>
@@ -636,8 +605,6 @@
         </widget>
        </item>
       </layout>
-      <zorder>tblAttributes</zorder>
-      <zorder></zorder>
      </widget>
     </widget>
    </item>
@@ -667,5 +634,22 @@
   <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>labelCheckBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>labelOptionsFrame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>60</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>61</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
