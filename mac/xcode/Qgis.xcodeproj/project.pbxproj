@@ -16126,6 +16126,7 @@
 					"$(PGSQL_INC)",
 					"$(GDAL_INC)",
 				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
@@ -16199,6 +16200,7 @@
 					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(GEOS_INC)",
 				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
 				MACH_O_TYPE = mh_bundle;
 				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
