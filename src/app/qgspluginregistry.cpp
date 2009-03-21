@@ -344,6 +344,16 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QStringList pluginList = mPythonUtils->pluginList();
     QgsDebugMsg( "Loading python plugins" );
 
+    // make the plugin installer and the fTools enabled by default:
+    if ( !mySettings.contains( "/PythonPlugins/plugin_installer" ) )
+    {
+      mySettings.setValue( "/PythonPlugins/plugin_installer", true );
+    }
+    if ( !mySettings.contains( "/PythonPlugins/fTools" ) )
+    {
+      mySettings.setValue( "/PythonPlugins/fTools", true );
+    }
+
     for ( int i = 0; i < pluginList.size(); i++ )
     {
       QString packageName = pluginList[i];
