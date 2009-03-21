@@ -87,7 +87,7 @@ void CoordinateCapture::initGui()
 
   setSourceCrs(); //set up the source CRS
   mTransform.setDestCRS( mCrs ); // set the CRS in the transform
-  mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 8 : 3; // precision depends on CRS units
+  mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 3 : 5; // precision depends on CRS units
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/coordinatecapture/coordinate_capture.png" ), tr( "Coordinate Capture" ), this );
@@ -95,8 +95,6 @@ void CoordinateCapture::initGui()
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Coordinate Capture" ), mQActionPointer );
 
   // create our map tool
@@ -138,12 +136,21 @@ void CoordinateCapture::initGui()
   mpTrackMouseButton->setChecked( false );
   mpTrackMouseButton->setIcon( QIcon( ":/coordinatecapture/tracking.png" ) );
 
+  // Create the action for tool
+  mpCaptureButton = new QPushButton( mypWidget );
+  mpCaptureButton->setText( tr( "Start capture" ) );
+  mpCaptureButton->setToolTip( tr( "Click to enable coordinate capture" ) );
+  mpCaptureButton->setIcon( QIcon( ":/coordinatecapture/coordinatecapture/coordinate_capture.png" ));
+  mpCaptureButton->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
+  connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
+
   mypLayout->addWidget( mypUserCrsToolButton, 0, 0 );
   mypLayout->addWidget( mpUserCrsEdit, 0, 1 );
   mypLayout->addWidget( mypCRSLabel, 1, 0 );
   mypLayout->addWidget( mpCanvasEdit, 1, 1 );
   mypLayout->addWidget( mpTrackMouseButton, 2, 0 );
   mypLayout->addWidget( mypCopyButton, 2, 1 );
+  mypLayout->addWidget( mpCaptureButton, 3, 1 );
 
 
   //create the dock widget
@@ -171,14 +178,14 @@ void CoordinateCapture::setCRS()
   {
     mCrs.createFromSrsId( mySelector.selectedCrsId() );
     mTransform.setDestCRS( mCrs );
-    mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 8 : 3; //precision depends on CRS units
+    mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 3 : 5; //precision depends on CRS units
   }
 }
 
 void CoordinateCapture::setSourceCrs()
 {
   mTransform.setSourceCrs( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs() );
-  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs().mapUnits() == QGis::Degrees ) ? 8 : 3; // for the map canvas coordinate display
+  mCanvasDisplayPrecision = ( mQGisIface->mapCanvas()->mapRenderer()->destinationSrs().mapUnits() == QGis::Degrees ) ? 3 : 5; // for the map canvas coordinate display
 }
 
 void CoordinateCapture::mouseClicked( QgsPoint thePoint )
@@ -245,7 +252,7 @@ void CoordinateCapture::unload()
 {
   // remove the GUI
   mQGisIface->removePluginMenu( "&Coordinate Capture", mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  //mQGisIface->removeToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;
   delete mpDockWidget;

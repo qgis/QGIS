@@ -50,6 +50,7 @@
 class QAction;
 class QToolBar;
 class QToolButton;
+class QPushButton;
 class QDockWidget;
 class QLineEdit;
 
@@ -121,6 +122,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
     //!A toolbutton to keep track whether mouse tracking is enabled
     QToolButton * mpTrackMouseButton;
+    QPushButton * mpCaptureButton;
 
     //! transform object
     QgsCoordinateTransform mTransform;
