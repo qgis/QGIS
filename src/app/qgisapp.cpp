@@ -1554,10 +1554,13 @@ void QgisApp::createCanvas()
   mMapTools.mMeasureArea->setAction( mActionMeasureArea );
   mMapTools.mCapturePoint = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CapturePoint );
   mMapTools.mCapturePoint->setAction( mActionCapturePoint );
+  mActionCapturePoint->setVisible( false );
   mMapTools.mCaptureLine = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CaptureLine );
   mMapTools.mCaptureLine->setAction( mActionCaptureLine );
+  mActionCaptureLine->setVisible( false );
   mMapTools.mCapturePolygon = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CapturePolygon );
   mMapTools.mCapturePolygon->setAction( mActionCapturePolygon );
+  mActionCapturePolygon->setVisible( false );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
   mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
@@ -5028,13 +5031,17 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
           mActionCapturePoint->setEnabled( true );
+          mActionCapturePoint->setVisible( true );
         }
         else
         {
           mActionCapturePoint->setEnabled( false );
+          mActionCapturePoint->setVisible( false );
         }
         mActionCaptureLine->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
+        mActionCaptureLine->setVisible( false );
+        mActionCapturePolygon->setVisible( false );
         mActionAddVertex->setEnabled( false );
         mActionDeleteVertex->setEnabled( false );
         mActionMoveVertex->setEnabled( false );
@@ -5056,15 +5063,19 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
           mActionCaptureLine->setEnabled( true );
+          mActionCaptureLine->setVisible( true );
           mActionSplitFeatures->setEnabled( true );
         }
         else
         {
           mActionCaptureLine->setEnabled( false );
+          mActionCaptureLine->setVisible( false );
           mActionSplitFeatures->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
+        mActionCapturePoint->setVisible( false );
+        mActionCapturePolygon->setVisible( false );
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
       }
@@ -5073,6 +5084,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
         {
           mActionCapturePolygon->setEnabled( true );
+          mActionCapturePolygon->setVisible( true );
           mActionAddRing->setEnabled( true );
           mActionAddIsland->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
@@ -5080,12 +5092,15 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         else
         {
           mActionCapturePolygon->setEnabled( false );
+          mActionCapturePolygon->setVisible( false );
           mActionAddRing->setEnabled( false );
           mActionAddIsland->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCaptureLine->setEnabled( false );
+        mActionCapturePoint->setVisible( false );
+        mActionCaptureLine->setVisible( false );
       }
 
       //are add/delete/move vertex supported?
