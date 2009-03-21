@@ -1156,6 +1156,11 @@
 		72A07EA40F3C022A004FC2A4 /* plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7B40F39E57B003DC336 /* plugin.cpp */; };
 		72A07EA50F3C022B004FC2A4 /* plugingui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7B60F39E57B003DC336 /* plugingui.cpp */; };
 		72A07EA80F3C02E1004FC2A4 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		72A239490F74A64400AFC35B /* BeataDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A239430F74A62200AFC35B /* BeataDialog.cpp */; };
+		72A2394A0F74A64400AFC35B /* BeataModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A239450F74A62200AFC35B /* BeataModel.cpp */; };
+		72A2394B0F74A64400AFC35B /* BeataView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A239470F74A62200AFC35B /* BeataView.cpp */; };
+		72A2394C0F74A66400AFC35B /* BeataDialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239440F74A62200AFC35B /* BeataDialog.h */; };
+		72A2394D0F74A66400AFC35B /* BeataModel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239460F74A62200AFC35B /* BeataModel.h */; };
 		72A56B2D0F3C810600BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B470F3C822800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B520F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -7889,6 +7894,13 @@
 		72A07E040F3BE917004FC2A4 /* ReadMe-Developers.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = "ReadMe-Developers.rtf"; sourceTree = "<group>"; };
 		72A07E3A0F3BEE16004FC2A4 /* libqgisgrass.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgisgrass.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A07E5F0F3BF35F004FC2A4 /* libcopyrightlabelplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libcopyrightlabelplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		72A239430F74A62200AFC35B /* BeataDialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BeataDialog.cpp; path = ../../src/app/attributetable/BeataDialog.cpp; sourceTree = SOURCE_ROOT; };
+		72A239440F74A62200AFC35B /* BeataDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeataDialog.h; path = ../../src/app/attributetable/BeataDialog.h; sourceTree = SOURCE_ROOT; };
+		72A239450F74A62200AFC35B /* BeataModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BeataModel.cpp; path = ../../src/app/attributetable/BeataModel.cpp; sourceTree = SOURCE_ROOT; };
+		72A239460F74A62200AFC35B /* BeataModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeataModel.h; path = ../../src/app/attributetable/BeataModel.h; sourceTree = SOURCE_ROOT; };
+		72A239470F74A62200AFC35B /* BeataView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BeataView.cpp; path = ../../src/app/attributetable/BeataView.cpp; sourceTree = SOURCE_ROOT; };
+		72A239480F74A62200AFC35B /* BeataView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeataView.h; path = ../../src/app/attributetable/BeataView.h; sourceTree = SOURCE_ROOT; };
+		72A2395B0F74A69300AFC35B /* BeataGui.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BeataGui.ui; path = ../../src/ui/BeataGui.ui; sourceTree = SOURCE_ROOT; };
 		72A56B310F3C810600BA32A1 /* libdelimitedtextplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdelimitedtextplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B4B0F3C822800BA32A1 /* libgeoreferencerplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgeoreferencerplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B560F3C823800BA32A1 /* libgpsimporter.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgpsimporter.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -8623,6 +8635,7 @@
 				7209E65D0F39E57A003DC336 /* qgsuniquevaluedialog.h */,
 				7209E65E0F39E57A003DC336 /* qgsvectorlayerproperties.cpp */,
 				7209E65F0F39E57A003DC336 /* qgsvectorlayerproperties.h */,
+				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
 				726979A10F71369A00AFA402 /* ogr */,
@@ -10686,6 +10699,7 @@
 			isa = PBXGroup;
 			children = (
 				7209EC880F39E57B003DC336 /* CMakeLists.txt */,
+				72A2395B0F74A69300AFC35B /* BeataGui.ui */,
 				7209EC890F39E57B003DC336 /* qgisappbase.ui */,
 				7209EC8A0F39E57B003DC336 /* qgsabout.ui */,
 				7209EC8B0F39E57B003DC336 /* qgsaddattrdialogbase.ui */,
@@ -11998,6 +12012,20 @@
 			);
 			name = ogr;
 			path = ../../src/app/ogr;
+			sourceTree = SOURCE_ROOT;
+		};
+		72A239420F74A62200AFC35B /* attributetable */ = {
+			isa = PBXGroup;
+			children = (
+				72A239430F74A62200AFC35B /* BeataDialog.cpp */,
+				72A239440F74A62200AFC35B /* BeataDialog.h */,
+				72A239450F74A62200AFC35B /* BeataModel.cpp */,
+				72A239460F74A62200AFC35B /* BeataModel.h */,
+				72A239470F74A62200AFC35B /* BeataView.cpp */,
+				72A239480F74A62200AFC35B /* BeataView.h */,
+			);
+			name = attributetable;
+			path = ../../src/app/attributetable;
 			sourceTree = SOURCE_ROOT;
 		};
 		72EBC96C0F49D6D90016BA3C /* gis */ = {
@@ -14130,6 +14158,11 @@
 				729288B40F71FEE2006D9489 /* qgsnewogrconnection.h in Sources */,
 				729288B50F71FEE2006D9489 /* qgsogrsublayersdialog.h in Sources */,
 				729288B60F71FEE2006D9489 /* qgsopenvectorlayerdialog.h in Sources */,
+				72A239490F74A64400AFC35B /* BeataDialog.cpp in Sources */,
+				72A2394A0F74A64400AFC35B /* BeataModel.cpp in Sources */,
+				72A2394B0F74A64400AFC35B /* BeataView.cpp in Sources */,
+				72A2394C0F74A66400AFC35B /* BeataDialog.h in Sources */,
+				72A2394D0F74A66400AFC35B /* BeataModel.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16534,6 +16567,7 @@
 					"$(inherited)",
 					../../src/app,
 					../../src/app/legend,
+					../../src/app/attributetable,
 					../../src/app/composer,
 					../../src/core,
 					../../src/core/composer,
@@ -16579,6 +16613,7 @@
 					"$(inherited)",
 					../../src/app,
 					../../src/app/legend,
+					../../src/app/attributetable,
 					../../src/app/composer,
 					../../src/core,
 					../../src/core/composer,
