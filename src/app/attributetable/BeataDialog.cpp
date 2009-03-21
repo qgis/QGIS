@@ -30,8 +30,25 @@
 #include "qgisapp.h"
 #include "qgssearchquerybuilder.h"
 
+
+class QBeataTableDock : public QDockWidget
+{
+  public:
+    QBeataTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+        : QDockWidget( title, parent, flags )
+    {
+      setObjectName("AttributeTable"); // set object name so the position can be saved
+    }
+
+    virtual void closeEvent( QCloseEvent * ev )
+    {
+      deleteLater();
+    }
+};
+
+
 BeataDialog::BeataDialog(QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags)
-  : QDialog(parent, flags)
+  : QDialog(parent, flags), mDock(NULL)
 {
   mLayer = theLayer;
 
@@ -50,9 +67,17 @@ BeataDialog::BeataDialog(QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFl
   mColumnBox = columnBox;
   columnBoxInit();
 
-  mShowBox = showBox;
-  mShowBox->addItem("Show unselected rows");
-  mShowBox->addItem("Hide unselected rows");
+  QSettings mySettings;
+  bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
+  if ( myDockFlag )
+  {
+    mDock = new QBeataTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
+    mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
+    mDock->setWidget( this );
+    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+  }
+
+  setWindowTitle( tr( "Attribute table - %1" ).arg( mLayer->name() ) );
   
   mMenuActions = new QMenu();
   mMenuActions->addAction(tr("Advanced search"), this, SLOT(advancedSearch()));
@@ -69,12 +94,14 @@ BeataDialog::BeataDialog(QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFl
   mActionToggleEditing->setCheckable( true );
   mActionToggleEditing->setEnabled( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
   // info from table to application
-  connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), parentWidget(), SLOT( toggleEditing( QgsMapLayer * ) ) );
+  connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   
-  connect(mShowBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(toggleShowDeselected(const QString &)));
+  connect(btnShowAll, SIGNAL(clicked()), this, SLOT(clickedShowAll()));
+  connect(btnShowSelected, SIGNAL(clicked()), this, SLOT(clickedShowSelected()));
+  
   connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
   connect(actionsButton, SIGNAL(clicked()), this, SLOT(showAdvanced()));
 
@@ -82,6 +109,8 @@ BeataDialog::BeataDialog(QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFl
   connect(mLayer, SIGNAL(layerDeleted()), this, SLOT( close()));
   connect(mView->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(updateRowSelection(int)));
   connect(mModel, SIGNAL(modelChanged()), this, SLOT(updateSelection()));
+  
+  clickedShowAll(); // make sure the show all button is checked
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel(mFilterModel);
@@ -96,8 +125,11 @@ void BeataDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
   
-  QSettings settings;
-  settings.setValue( "/Windows/BetterAttributeTable/geometry", saveGeometry() );
+  if ( mDock == NULL )
+  {
+    QSettings settings;
+    settings.setValue( "/Windows/BetterAttributeTable/geometry", saveGeometry() );
+  }
 }
 
 
@@ -188,18 +220,30 @@ void BeataDialog::removeSelection()
   mLayer->removeSelection();
 }
 
-void BeataDialog::toggleShowDeselected(const QString &text)
+void BeataDialog::clickedShowAll()
 {
-  if (text == "Show unselected rows")
+  // the button can't be unchecked by clicking it
+  // gets unchecked when show selected is clicked
+  if (!btnShowAll->isChecked())
   {
-    mFilterModel->mHideUnselected = false;
-    //TODO: divne
-    //mModel->changeLayout();
-    mFilterModel->invalidate();
-    return;
+    btnShowAll->setChecked(true);
   }
+  btnShowSelected->setChecked(false);
+  
+  mFilterModel->mHideUnselected = false;
+  mFilterModel->invalidate();
+  //TODO: weird
+  //mModel->changeLayout();
+}
 
-  // show only selected
+void BeataDialog::clickedShowSelected()
+{
+  if (!btnShowSelected->isChecked())
+  {
+    btnShowSelected->setChecked(true);
+  }
+  btnShowAll->setChecked(false);
+  
   mFilterModel->mHideUnselected = true;
   mFilterModel->invalidate();
   //mModel->changeLayout();

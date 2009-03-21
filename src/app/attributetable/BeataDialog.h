@@ -35,6 +35,7 @@ class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
+class QDockWidget;
 
 class BeataModel;
 class BeataFilterModel;
@@ -60,8 +61,10 @@ private slots:
   void updateSelectionFromLayer();
   void updateRowSelection(int index);
   void updateRowSelection(int first, int last, bool startNewSelection);
-  void toggleShowDeselected(const QString &text);
 
+  void clickedShowAll();
+  void clickedShowSelected();
+  
   void startEditing();
   void invertSelection();
   void removeSelection();
@@ -98,6 +101,8 @@ private:
 
   QItemSelectionModel* mSelectionModel;
   int mLastClickedHeaderIndex;
+  
+  QDockWidget *mDock;
 };
 
 #endif
