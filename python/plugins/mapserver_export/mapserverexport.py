@@ -34,9 +34,22 @@ class MapServerExport:
     # Save reference to the QGIS interface
     self.iface = iface
 
+  def getThemeIcon(self, theName):
+    myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
+    myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
+    myQrcPath = ":/plugins/mapserver_export/" + theName;
+    if QFile.exists(myCurThemePath):
+      return QIcon(myCurThemePath)
+    elif QFile.exists(myDefThemePath):
+      return QIcon(myDefThemePath)
+    elif QFile.exists(myQrcPath):
+      return QIcon(myQrcPath)
+    else:
+      return QIcon()
+
   def initGui(self):  
     # Create action that will start plugin configuration
-    self.action = QAction(QIcon(":/plugins/mapserver_export/icon.png"), \
+    self.action = QAction(self.getThemeIcon("mapserver_export.png"), \
         "MapServer Export", self.iface.mainWindow())
     #self.action.setWhatsThis("Configuration for Zoom To Point plugin")
     # connect the action to the run method
