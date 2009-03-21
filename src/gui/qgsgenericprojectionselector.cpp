@@ -40,7 +40,7 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
   {
     // Set up text edit pane
     QString format( "<h2>%1</h2>%2 %3" );
-    QString header = tr( "Define this layer's projection:" );
+    QString header = tr( "Define this layer's coordinate reference system:" );
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );

@@ -10,10 +10,12 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Projection Selector</string>
+   <string>Coordinate Reference System Selector</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="modal" >
    <bool>true</bool>
@@ -53,7 +55,7 @@
    <item row="2" column="0" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

@@ -128,8 +128,6 @@ class CORE_EXPORT QgsGeometry
     bool isMultipart();
 
 
-
-
     double distance( QgsGeometry& geom );
 
     /**
@@ -269,6 +267,14 @@ class CORE_EXPORT QgsGeometry
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
     QgsGeometry* buffer( double distance, int segments );
+    
+    /** Returns a simplified version of this geometry using a specified tolerance value */
+    QgsGeometry* simplify( double tolerance );
+    
+    /** Returns the center of mass of a geometry
+    * @note for line based geometries, the center point of the line is returned,
+    * and for point based geometries, the point itself is returned */
+    QgsGeometry* centroid();
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
