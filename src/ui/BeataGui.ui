@@ -21,7 +21,7 @@
      <item>
       <widget class="QPushButton" name="searchButton" >
        <property name="text" >
-        <string>Search</string>
+        <string>&amp;Search</string>
        </property>
       </widget>
      </item>
@@ -46,21 +46,53 @@
       <widget class="QComboBox" name="columnBox" />
      </item>
      <item>
-      <widget class="Line" name="line" >
+      <spacer>
        <property name="orientation" >
-        <enum>Qt::Vertical</enum>
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="showBox" />
-     </item>
-     <item>
-      <widget class="Line" name="line_2" >
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
+      <layout class="QHBoxLayout" >
+       <property name="spacing" >
+        <number>0</number>
        </property>
-      </widget>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="btnShowAll" >
+         <property name="focusPolicy" >
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="text" >
+          <string>&amp;All</string>
+         </property>
+         <property name="checkable" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnShowSelected" >
+         <property name="focusPolicy" >
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="text" >
+          <string>S&amp;elected</string>
+         </property>
+         <property name="checkable" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QPushButton" name="actionsButton" >
@@ -80,6 +112,15 @@
    <header>BeataView.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mView</tabstop>
+  <tabstop>searchButton</tabstop>
+  <tabstop>query</tabstop>
+  <tabstop>columnBox</tabstop>
+  <tabstop>btnShowAll</tabstop>
+  <tabstop>btnShowSelected</tabstop>
+  <tabstop>actionsButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
