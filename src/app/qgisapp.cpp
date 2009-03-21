@@ -1485,6 +1485,7 @@ void QgisApp::setTheme( QString theThemeName )
   {
     mComposer->setupTheme();
   }
+  emit currentThemeChanged( theThemeName );
 }
 
 void QgisApp::setupConnections()

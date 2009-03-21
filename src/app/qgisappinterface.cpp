@@ -36,6 +36,8 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
   // connect signals
   connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
+  connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
+           this, SIGNAL( currentThemeChanged( QString ) ) );
 
 }
 
