@@ -12,11 +12,33 @@
   <property name="windowTitle" >
    <string>Attribute Table</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <item>
-    <widget class="BeataView" name="mView" />
+  <layout class="QGridLayout" >
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <property name="horizontalSpacing" >
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing" >
+    <number>0</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="BeataView" name="mView" >
+     <property name="alternatingRowColors" >
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
-   <item>
+   <item row="1" column="0" >
     <layout class="QHBoxLayout" >
      <item>
       <widget class="QPushButton" name="searchButton" >
@@ -46,53 +68,30 @@
       <widget class="QComboBox" name="columnBox" />
      </item>
      <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="btnShowAll" >
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
        </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="text" >
+        <string>&amp;All</string>
        </property>
-      </spacer>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" >
-       <property name="spacing" >
-        <number>0</number>
+      <widget class="QPushButton" name="btnShowSelected" >
+       <property name="focusPolicy" >
+        <enum>Qt::NoFocus</enum>
        </property>
-       <property name="leftMargin" >
-        <number>0</number>
+       <property name="text" >
+        <string>S&amp;elected</string>
        </property>
-       <item>
-        <widget class="QPushButton" name="btnShowAll" >
-         <property name="focusPolicy" >
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="text" >
-          <string>&amp;All</string>
-         </property>
-         <property name="checkable" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnShowSelected" >
-         <property name="focusPolicy" >
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="text" >
-          <string>S&amp;elected</string>
-         </property>
-         <property name="checkable" >
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+       <property name="checkable" >
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="actionsButton" >
