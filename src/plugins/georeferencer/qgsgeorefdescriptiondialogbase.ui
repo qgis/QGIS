@@ -13,7 +13,7 @@
    <string>Description georeferencer</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="georeferencer.qrc" >:/icon.png</iconset>
+	  <iconset resource="georeferencer.qrc" >:/georeferencer.png</iconset>
   </property>
   <property name="modal" >
    <bool>true</bool>

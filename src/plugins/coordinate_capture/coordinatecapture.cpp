@@ -1,6 +1,6 @@
 /***************************************************************************
   coordinatecapture.cpp
-  Capture mouse coordinates in different CRS
+//   Capture mouse coordinates in different CRS
   -------------------
          begin                : [PluginDate]
          copyright            : [(C) Your Name and Date]
@@ -22,6 +22,7 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
+#include "qgsapplication.h"
 #include <qgspoint.h>
 #include <qgsmapcanvas.h>
 #include <qgsmaprenderer.h>
@@ -45,6 +46,7 @@
 #include <QClipboard>
 #include <QPushButton>
 #include <QToolButton>
+#include <QFile>
 
 static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z timlinux $";
 static const QString sName = QObject::tr( "Coordinate Capture" );
@@ -90,7 +92,7 @@ void CoordinateCapture::initGui()
   mUserCrsDisplayPrecision = ( mCrs.mapUnits() == QGis::Degrees ) ? 3 : 5; // precision depends on CRS units
 
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/coordinatecapture/coordinate_capture.png" ), tr( "Coordinate Capture" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "Coordinate Capture" ), this );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
@@ -109,13 +111,11 @@ void CoordinateCapture::initGui()
   mypLayout->setColumnMinimumWidth( 0, 36 );
   mypWidget->setLayout( mypLayout );
 
-  QToolButton * mypUserCrsToolButton = new QToolButton( mypWidget );
-  mypUserCrsToolButton->setIcon( QIcon( ":/coordinatecapture/geographic.png" ) );
+  mypUserCrsToolButton = new QToolButton( mypWidget );
   mypUserCrsToolButton->setToolTip( tr( "Click to select the CRS to use for coordinate display" ) );
   connect( mypUserCrsToolButton, SIGNAL( clicked() ), this, SLOT( setCRS() ) );
 
-  QLabel * mypCRSLabel = new QLabel( mypWidget );
-  mypCRSLabel->setPixmap( QPixmap( ":/coordinatecapture/transformed.png" ) );
+  mypCRSLabel = new QLabel( mypWidget );
   mypCRSLabel->setGeometry( mypUserCrsToolButton->geometry() );
 
   mpUserCrsEdit = new QLineEdit( mypWidget );
@@ -134,15 +134,17 @@ void CoordinateCapture::initGui()
   mpTrackMouseButton->setCheckable( true );
   mpTrackMouseButton->setToolTip( tr( "Click to enable mouse tracking. Click the canvas to stop" ) );
   mpTrackMouseButton->setChecked( false );
-  mpTrackMouseButton->setIcon( QIcon( ":/coordinatecapture/tracking.png" ) );
 
   // Create the action for tool
   mpCaptureButton = new QPushButton( mypWidget );
   mpCaptureButton->setText( tr( "Start capture" ) );
   mpCaptureButton->setToolTip( tr( "Click to enable coordinate capture" ) );
-  mpCaptureButton->setIcon( QIcon( ":/coordinatecapture/coordinatecapture/coordinate_capture.png" ));
+  mpCaptureButton->setIcon( QIcon( ":/coordinate_capture/coordinate_capture.png" ));
   mpCaptureButton->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
+
+  // Set the icons
+  setCurrentTheme( "" );
 
   mypLayout->addWidget( mypUserCrsToolButton, 0, 0 );
   mypLayout->addWidget( mpUserCrsEdit, 0, 1 );
@@ -259,11 +261,40 @@ void CoordinateCapture::unload()
   delete mQActionPointer;
 }
 
-void CoordinateCapture::setCurrentTheme ( QString theThemeName )
+// Set icons to the current theme
+void CoordinateCapture::setCurrentTheme( QString theThemeName )
 {
-  qDebug (" Current theme changed \n\n\n\n\n" );
-  mQActionPointer->setIcon( QIcon());
+  mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
+  mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
+  mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
+  mypUserCrsToolButton->setIcon( QIcon( getIconPath( "geographic.png" ) ) );
+  mypCRSLabel->setPixmap( QPixmap( getIconPath( "transformed.png" ) ) );
 }
+
+// Get path to the best available icon file
+QString CoordinateCapture::getIconPath( const QString theName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/coordinate_capture/" + theName;
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/coordinate_capture/" + theName;
+  QString myQrcPath = ":/coordinate_capture/" + theName;
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    return myCurThemePath;
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    return myDefThemePath;
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    return myQrcPath;
+  }
+  else
+  {
+    return "";
+  }
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 //

@@ -24,6 +24,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "qgisinterface.h"
 #include "qgisgui.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
@@ -41,6 +42,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include <QFont>
 #include <QColor>
 #include <QMenu>
+#include <QFile>
 
 //non qt includes
 #include <cmath>
@@ -97,7 +99,8 @@ QgsScaleBarPlugin::~QgsScaleBarPlugin()
 void QgsScaleBarPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction( QIcon( ":/scale_bar.png" ), tr( "&Scale Bar" ), this );
+  myQActionPointer = new QAction( QIcon(), tr( "&Scale Bar" ), this );
+  setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a scale bar that is displayed on the map canvas" ) );
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
@@ -108,6 +111,8 @@ void QgsScaleBarPlugin::initGui()
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
+  // this is called when the icon theme is changed
+  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 void QgsScaleBarPlugin::projectRead()
@@ -589,6 +594,29 @@ void QgsScaleBarPlugin::setColour( QColor theQColor )
   QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColour.blue() );
 }
 
+//! Set icons to the current theme
+void QgsScaleBarPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/scale_bar.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/scale_bar.png";
+  QString myQrcPath = ":/scale_bar.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    myQActionPointer->setIcon( QIcon() );
+  }
+}
 
 /**
  * Required extern functions needed  for every plugin

@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/" >
-        <file>mIconAddWfsLayer.png</file>
+        <file>wfs.png</file>
     </qresource>
 </RCC>

@@ -119,7 +119,7 @@
          <string>...</string>
         </property>
         <property name="icon" >
-         <iconset resource="interpolator.qrc" >:/interpolator/options.png</iconset>
+         <iconset resource="interpolator.qrc" >:/options.png</iconset>
         </property>
        </widget>
       </item>

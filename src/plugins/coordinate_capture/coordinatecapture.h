@@ -53,6 +53,8 @@ class QToolButton;
 class QPushButton;
 class QDockWidget;
 class QLineEdit;
+class QIcon;
+class QLabel;
 
 class QgisInterface;
 class QgsPoint;
@@ -120,9 +122,15 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //!Our custom map tool to capture clicks
     CoordinateCaptureMapTool * mpMapTool;
 
-    //!A toolbutton to keep track whether mouse tracking is enabled
+    //!A two buttons to track and capture coordinates
     QToolButton * mpTrackMouseButton;
     QPushButton * mpCaptureButton;
+
+    //! A toolbutton to select crs to display the coordinates
+    QToolButton * mypUserCrsToolButton;
+
+    //! A label for coordinates in the project crs
+    QLabel * mypCRSLabel;
 
     //! transform object
     QgsCoordinateTransform mTransform;
@@ -135,6 +143,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
 
     //! user coordinate display precision
     int mUserCrsDisplayPrecision;
+
+    //! Get the path to the icon from the best available theme
+    QString getIconPath( const QString theName );
 
     ////////////////////////////////////////////////////////////////////
     //

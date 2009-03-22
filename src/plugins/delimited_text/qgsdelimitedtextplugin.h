@@ -68,6 +68,8 @@ class QgsDelimitedTextPlugin: public QObject, public QgisPlugin, private Ui::Qgs
     void unload();
     //! show the help document
     void help();
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
   private:
 
 

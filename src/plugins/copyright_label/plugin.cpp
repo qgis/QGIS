@@ -24,6 +24,7 @@ email                : tim@linfiniti.com
 
 #include "qgisinterface.h"
 #include "qgisgui.h"
+#include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -35,6 +36,7 @@ email                : tim@linfiniti.com
 #include <QDate>
 #include <QTextDocument>
 #include <QMatrix>
+#include <QFile>
 
 //non qt includes
 #include <cmath>
@@ -74,7 +76,8 @@ QgsCopyrightLabelPlugin::~QgsCopyrightLabelPlugin()
 void QgsCopyrightLabelPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction( QIcon( ":/copyright_label.png" ), tr( "&Copyright Label" ), this );
+  myQActionPointer = new QAction( QIcon(), tr( "&Copyright Label" ), this );
+  setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a copyright label that is displayed on the map canvas." ) );
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
@@ -82,6 +85,9 @@ void QgsCopyrightLabelPlugin::initGui()
   connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderLabel( QPainter * ) ) );
   //this resets this plugin up if a project is loaded
   connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+
+  // this is called when the icon theme is changed
+  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
@@ -251,9 +257,29 @@ void QgsCopyrightLabelPlugin::setEnable( bool theBool )
   refreshCanvas();
 }
 
-
-
-
+//! Set icons to the current theme
+void QgsCopyrightLabelPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/copyright_label.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/copyright_label.png";
+  QString myQrcPath = ":/copyright_label.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    myQActionPointer->setIcon( QIcon() );
+  }
+}
 
 /**
  * Required extern functions needed  for every plugin

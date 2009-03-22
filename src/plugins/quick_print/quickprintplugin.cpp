@@ -31,6 +31,7 @@
 //
 
 #include <QAction>
+#include <QFile>
 #include <QToolBar>
 
 
@@ -71,7 +72,9 @@ void QuickPrintPlugin::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/quickprint/quick_print.png" ), tr( "Quick Print" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "Quick Print" ), this );
+  // Set the icon
+  setCurrentTheme( "" );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Provides a way to quickly produce a map with minimal user input." ) );
   // Connect the action to the run
@@ -80,6 +83,8 @@ void QuickPrintPlugin::initGui()
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Quick Print" ), mQActionPointer );
 
+  // this is called when the icon theme is changed
+  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 //method defined in interface
 void QuickPrintPlugin::help()
@@ -111,6 +116,29 @@ void QuickPrintPlugin::unload()
   delete mQActionPointer;
 }
 
+//! Set icons to the current theme
+void QuickPrintPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/quick_print.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/quick_print.png";
+  QString myQrcPath = ":/quick_print.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mQActionPointer->setIcon( QIcon() );
+  }
+}
 
 //////////////////////////////////////////////////////////////////////////
 //

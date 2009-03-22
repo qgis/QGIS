@@ -70,7 +70,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     QPen & regionPen( void );
     //! Set Region Pen
     void setRegionPen( QPen & );
-    //! Get a plugin icon resource using the active theme
+    //! Get an icon from the active theme if possible
     static QIcon getThemeIcon( const QString theName );
 
   public slots:
@@ -118,6 +118,8 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     void saveMapset();
     //! Set edit action
     void setEditAction();
+    //! update plugin icons when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
   private:
     //! Name of the plugin
     QString pluginNameQString;

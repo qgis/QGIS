@@ -43,9 +43,12 @@
 //
 
 #include <qgisinterface.h>
+#include <qgsapplication.h>
 #include <qgsmaplayer.h>
 #include <qgsrasterlayer.h>
 #include "plugin.h"
+
+#include <QFile>
 
 //
 //the gui subclass
@@ -89,10 +92,14 @@ QgsGeorefPlugin::~QgsGeorefPlugin()
 void QgsGeorefPlugin::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/georeferencer.png" ), tr( "&Georeferencer" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "&Georeferencer" ), this );
+  setCurrentTheme( "" );
 
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+
+  // this is called when the icon theme is changed
+  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add to the toolbar & menu
   mQGisIface->addToolBarIcon( mQActionPointer );
@@ -154,6 +161,30 @@ void QgsGeorefPlugin::unload()
   mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mQActionPointer );
   mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
+}
+
+//! Set icons to the current theme
+void QgsGeorefPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/georeferencer.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/georeferencer.png";
+  QString myQrcPath = ":/georeferencer.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mQActionPointer->setIcon( QIcon() );
+  }
 }
 
 //////////////////////////////////////////////////////////////////////

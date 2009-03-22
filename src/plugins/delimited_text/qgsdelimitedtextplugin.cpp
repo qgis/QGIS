@@ -24,12 +24,14 @@ Functions:
 
 #include "qgisinterface.h"
 #include "qgisgui.h"
+#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsdelimitedtextplugin.h"
 
 
 #include <QMenu>
 #include <QAction>
+#include <QFile>
 
 //non qt includes
 #include <iostream>
@@ -96,8 +98,8 @@ void QgsDelimitedTextPlugin::help()
 void QgsDelimitedTextPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction( QIcon( ":/delimited_text.png" ), tr( "&Add Delimited Text Layer" ), this );
-
+  myQActionPointer = new QAction( QIcon(), tr( "&Add Delimited Text Layer" ), this );
+  setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Add a delimited text file as a map layer. "
                                       "The file must have a header row containing the field names. "
                                       "X and Y fields are required and must contain coordinates in decimal units." ) );
@@ -106,6 +108,8 @@ void QgsDelimitedTextPlugin::initGui()
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Delimited text" ), myQActionPointer );
+  // this is called when the icon theme is changed
+  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
 }
 
@@ -141,6 +145,31 @@ void QgsDelimitedTextPlugin::unload()
   qGisInterface->removeToolBarIcon( myQActionPointer );
   delete myQActionPointer;
 }
+
+//! Set icons to the current theme
+void QgsDelimitedTextPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/delimited_text.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/delimited_text.png";
+  QString myQrcPath = ":/delimited_text.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    myQActionPointer->setIcon( QIcon() );
+  }
+}
+
 /**
  * Required extern functions needed  for every plugin
  * These functions can be called prior to creating an instance

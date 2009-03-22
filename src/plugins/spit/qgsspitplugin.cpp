@@ -23,13 +23,13 @@
 #include <vector>
 
 #include <QAction>
+#include <QFile>
 #include <QMenu>
 
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
-// xpm for creating the toolbar icon
-#include "spiticon.xpm"
 
 
 static const char * const ident_ = "$Id$";
@@ -65,7 +65,8 @@ QgsSpitPlugin::~QgsSpitPlugin()
 void QgsSpitPlugin::initGui()
 {
   // Create the action for tool
-  spitAction = new QAction( QIcon( spitIcon ), tr( "&Import Shapefiles to PostgreSQL" ), this );
+  spitAction = new QAction( QIcon(), tr( "&Import Shapefiles to PostgreSQL" ), this );
+  setCurrentTheme( "" );
   spitAction->setWhatsThis( tr( "Import shapefiles into a PostGIS-enabled PostgreSQL database. "
                                 "The schema and field names can be customized on import" ) );
   // Connect the action to the spit slot
@@ -74,6 +75,8 @@ void QgsSpitPlugin::initGui()
   qI->addToolBarIcon( spitAction );
   qI->addPluginToMenu( tr( "&Spit" ), spitAction );
 
+  // this is called when the icon theme is changed
+  connect( qI, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 // Slot called when the shapefile to postgres menu item is triggered
@@ -92,6 +95,30 @@ void QgsSpitPlugin::unload()
   qI->removeToolBarIcon( spitAction );
   qI->removePluginMenu( tr( "&Spit" ), spitAction );
   delete spitAction;
+}
+
+//! Set icons to the current theme
+void QgsSpitPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/spit.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/spit.png";
+  QString myQrcPath = ":/spit.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    spitAction->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    spitAction->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    spitAction->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    spitAction->setIcon( QIcon() );
+  }
 }
 
 /**
