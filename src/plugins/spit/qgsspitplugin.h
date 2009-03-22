@@ -52,6 +52,8 @@ class QgsSpitPlugin: public QObject, public QgisPlugin
     void spit();
     //! unload the plugin
     void unload();
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
   private:
 //! Name of the plugin
     QString pName;

@@ -37,6 +37,7 @@ email                : tim@linfiniti.com
 #include <QPainter>
 #include <QMenu>
 #include <QDir>
+#include <QFile>
 
 //non qt includes
 #include <iostream>
@@ -91,7 +92,8 @@ QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
 void QgsNorthArrowPlugin::initGui()
 {
   // Create the action for tool
-  myQActionPointer = new QAction( QIcon( ":/north_arrow.png" ), tr( "&North Arrow" ), this );
+  myQActionPointer = new QAction( QIcon(), tr( "&North Arrow" ), this );
+  setCurrentTheme( "" );
   myQActionPointer->setWhatsThis( tr( "Creates a north arrow that is displayed on the map canvas" ) );
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( activated() ), this, SLOT( run() ) );
@@ -102,6 +104,8 @@ void QgsNorthArrowPlugin::initGui()
   // Add the icon to the toolbar & appropriate menu
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
+  // this is called when the icon theme is changed
+  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   projectRead();
   refreshCanvas();
@@ -391,9 +395,29 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
   return goodDirn;
 }
 
-
-
-
+//! Set icons to the current theme
+void QgsNorthArrowPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/north_arrow.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/north_arrow.png";
+  QString myQrcPath = ":/north_arrow.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    myQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    myQActionPointer->setIcon( QIcon() );
+  }
+}
 
 /**
  * Required extern functions needed  for every plugin

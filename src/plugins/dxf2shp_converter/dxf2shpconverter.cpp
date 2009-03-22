@@ -20,6 +20,7 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
+#include <qgsapplication.h>
 #include <qgsvectorlayer.h>
 
 #include "dxf2shpconverter.h"
@@ -30,6 +31,7 @@
 //
 
 #include <QAction>
+#include <QFile>
 #include <QToolBar>
 
 static const char *const sIdent =
@@ -66,7 +68,10 @@ dxf2shpConverter::~dxf2shpConverter()
 void dxf2shpConverter::initGui()
 {
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/dxf2shpconverter/dxf2shp_converter.png" ), "Dxf2Shp Converter", this );
+  mQActionPointer = new QAction( QIcon(), "Dxf2Shp Converter", this );
+
+  // Set the icon
+  setCurrentTheme( "" );
 
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Converts DXF files in Shapefile format" ) );
@@ -77,6 +82,9 @@ void dxf2shpConverter::initGui()
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+
+  // this is called when the icon theme is changed
+  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 //method defined in interface
@@ -113,6 +121,30 @@ void dxf2shpConverter::unload()
 void dxf2shpConverter::addMyLayer( QString myfname, QString mytitle )
 {
   mQGisIface->addVectorLayer( myfname, mytitle, "ogr" );
+}
+
+//! Set icons to the current theme
+void dxf2shpConverter::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/dxf2shp_converter.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/dxf2shp_converter.png";
+  QString myQrcPath = ":/dxf2shp_converter.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mQActionPointer->setIcon( QIcon() );
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////

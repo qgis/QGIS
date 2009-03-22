@@ -37,7 +37,6 @@
 #include "qgsvectorlayer.h"
 
 #include <QAction>
-#include <QDir>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QSettings>
@@ -123,21 +122,21 @@ void QgsGrassPlugin::initGui()
   mRegionBand = new QgsRubberBand( mCanvas, 1 );
   mRegionBand->setZValue( 20 );
 
-  // Create the action for tool
-  mOpenMapsetAction = new QAction( getThemeIcon( "grass_open_mapset.png" ), tr( "Open mapset" ), this );
-  mNewMapsetAction = new QAction( getThemeIcon( "grass_new_mapset.png" ), tr( "New mapset" ), this );
-  mCloseMapsetAction = new QAction( getThemeIcon( "grass_close_mapset.png" ), tr( "Close mapset" ), this );
+  // Create the action for tool (the icons are set later by calling setCurrentTheme)
+  mOpenMapsetAction = new QAction( QIcon(), tr( "Open mapset" ), this );
+  mNewMapsetAction = new QAction( QIcon(), tr( "New mapset" ), this );
+  mCloseMapsetAction = new QAction( QIcon(), tr( "Close mapset" ), this );
 
-  mAddVectorAction = new QAction( getThemeIcon( "grass_add_vector.png" ), tr( "Add GRASS vector layer" ), this );
-  mAddRasterAction = new QAction( getThemeIcon( "grass_add_raster.png" ), tr( "Add GRASS raster layer" ), this );
-  mOpenToolsAction = new QAction( getThemeIcon( "grass_tools.png" ), tr( "Open GRASS tools" ), this );
+  mAddVectorAction = new QAction( QIcon(), tr( "Add GRASS vector layer" ), this );
+  mAddRasterAction = new QAction( QIcon(), tr( "Add GRASS raster layer" ), this );
+  mOpenToolsAction = new QAction( QIcon(), tr( "Open GRASS tools" ), this );
 
-  mRegionAction = new QAction( getThemeIcon( "grass_region.png" ), tr( "Display Current Grass Region" ), this );
+  mRegionAction = new QAction( QIcon(), tr( "Display Current Grass Region" ), this );
   mRegionAction->setCheckable( true );
 
-  mEditRegionAction = new QAction( getThemeIcon( "grass_region_edit.png" ), tr( "Edit Current Grass Region" ), this );
-  mEditAction = new QAction( getThemeIcon( "grass_edit.png" ), tr( "Edit Grass Vector layer" ), this );
-  mNewVectorAction = new QAction( getThemeIcon( "grass_new_vector_layer.png" ), tr( "Create new Grass Vector" ), this );
+  mEditRegionAction = new QAction( QIcon(), tr( "Edit Current Grass Region" ), this );
+  mEditAction = new QAction( QIcon(), tr( "Edit Grass Vector layer" ), this );
+  mNewVectorAction = new QAction( QIcon(), tr( "Create new Grass Vector" ), this );
 
   mAddVectorAction->setWhatsThis( tr( "Adds a GRASS vector layer to the map canvas" ) );
   mAddRasterAction->setWhatsThis( tr( "Adds a GRASS raster layer to the map canvas" ) );
@@ -187,6 +186,11 @@ void QgsGrassPlugin::initGui()
   toolBarPointer->addAction( mOpenToolsAction );
   toolBarPointer->addAction( mRegionAction );
   toolBarPointer->addAction( mEditRegionAction );
+
+  // Set icons to current theme
+  setCurrentTheme( "" );
+  // Connect theme change signal
+  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Connect display region
   connect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
@@ -787,23 +791,49 @@ void QgsGrassPlugin::unload()
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
 }
+
+// Set icons to the current theme
+void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
+{
+  mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
+  mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
+  mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );
+
+  mAddVectorAction->setIcon( getThemeIcon( "grass_add_vector.png" ) );
+  mAddRasterAction->setIcon( getThemeIcon( "grass_add_raster.png" ) );
+  mOpenToolsAction->setIcon( getThemeIcon( "grass_tools.png" ) );
+
+  mRegionAction->setIcon( getThemeIcon( "grass_region.png" ) );
+
+  mEditRegionAction->setIcon( getThemeIcon( "grass_region_edit.png" ) );
+  mEditAction->setIcon( getThemeIcon( "grass_edit.png" ) );
+  mNewVectorAction->setIcon( getThemeIcon( "grass_new_vector_layer.png" ) );
+}
+
 // Note this code is duplicated from qgisapp.cpp because
 // I didnt want to make plugins dependent on qgsapplication
 // and because it needs grass specific path into
 // the GRASS plugin resource bundle [TS]
 QIcon QgsGrassPlugin::getThemeIcon( const QString theName )
 {
-  QString myPath = QgsApplication::activeThemePath() + QDir::separator() + "grass" + QDir::separator() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + "grass" + QDir::separator() + theName;
-  if ( QFile::exists( myPath ) )
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/grass/" + theName;
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/grass/" + theName;
+  QString myQrcPath = ":/default/grass/" + theName;
+  if ( QFile::exists( myCurThemePath ) )
   {
-    return QIcon( myPath );
+    return QIcon( myCurThemePath );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    return QIcon( myDefThemePath );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    return QIcon( myQrcPath );
   }
   else
   {
-    //could still return an empty icon if it
-    //doesnt exist in the default theme either!
-    return QIcon( myDefaultPath );
+    return QIcon();
   }
 }
 

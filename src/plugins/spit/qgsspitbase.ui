@@ -41,7 +41,7 @@
    <item rowspan="2" row="0" column="0" >
     <widget class="QLabel" name="pixmapLabel1" >
      <property name="pixmap" >
-      <pixmap resource="spit.qrc" >:/spit.png</pixmap>
+      <pixmap resource="spit.qrc" >:/spit_image.png</pixmap>
      </property>
      <property name="scaledContents" >
       <bool>true</bool>

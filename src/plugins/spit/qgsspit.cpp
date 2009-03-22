@@ -39,7 +39,6 @@
 #include "qgsnewconnection.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessageviewer.h"
-#include "spiticon.xpm"
 #include "qgslogger.h"
 
 // Qt implementation of alignment() + changed the numeric types to be shown on the left as well
@@ -60,9 +59,6 @@ int Q3TableItem::alignment() const
 QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 {
   setupUi( this );
-  QPixmap icon;
-  icon = QPixmap( spitIcon );
-  setWindowIcon( icon );
 
   // Set up the table column headers
   tblShapefiles->setColumnCount( 5 );

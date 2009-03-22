@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgswfssourceselect.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgswfsplugin.h"
 
+#include <QFile>
 #include <QToolBar>
 
 
@@ -46,10 +48,13 @@ void QgsWFSPlugin::initGui()
 {
   if ( mIface )
   {
-    mWfsDialogAction = new QAction( QIcon( ":/mIconAddWfsLayer.png" ), tr( "&Add WFS layer" ), 0 );
+    mWfsDialogAction = new QAction( QIcon(), tr( "&Add WFS layer" ), 0 );
+    setCurrentTheme( "" );
     QObject::connect( mWfsDialogAction, SIGNAL( triggered() ), this, SLOT( showSourceDialog() ) );
     mIface->fileToolBar()->addAction( mWfsDialogAction );
     mIface->addPluginToMenu( tr( "&Add WFS layer" ), mWfsDialogAction );
+    // this is called when the icon theme is changed
+    connect( mIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
 }
 
@@ -65,6 +70,30 @@ void QgsWFSPlugin::showSourceDialog()
 {
   QgsWFSSourceSelect serverDialog( 0, mIface );
   serverDialog.exec();
+}
+
+//! Set icons to the current theme
+void QgsWFSPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/wfs.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/wfs.png";
+  QString myQrcPath = ":/wfs.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mWfsDialogAction->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mWfsDialogAction->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mWfsDialogAction->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mWfsDialogAction->setIcon( QIcon() );
+  }
 }
 
 QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )

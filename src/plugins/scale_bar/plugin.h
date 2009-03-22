@@ -76,6 +76,8 @@ class QgsScaleBarPlugin: public QObject, public QgisPlugin
     void setStyle( int );
     //! set the scale bar colour
     void setColour( QColor );
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
 
   private:
 

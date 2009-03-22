@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsinterpolationplugin.h"
 #include "qgisinterface.h"
 #include "qgsinterpolationdialog.h"
+
+#include <QFile>
 
 static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
@@ -37,10 +40,13 @@ void QgsInterpolationPlugin::initGui()
 {
   if ( mIface )
   {
-    mInterpolationAction = new QAction( QIcon( ":/interpolator/interpolation.png" ), tr( "&Interpolation" ), 0 );
+    mInterpolationAction = new QAction( QIcon(), tr( "&Interpolation" ), 0 );
+    setCurrentTheme( "" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addToolBarIcon( mInterpolationAction );
     mIface->addPluginToMenu( tr( "&Interpolation" ), mInterpolationAction );
+    // this is called when the icon theme is changed
+    connect( mIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
 }
 
@@ -55,6 +61,30 @@ void QgsInterpolationPlugin::showInterpolationDialog()
 {
   QgsInterpolationDialog dialog( 0, mIface );
   dialog.exec();
+}
+
+//! Set icons to the current theme
+void QgsInterpolationPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/interpolation.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/interpolation.png";
+  QString myQrcPath = ":/interpolation.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mInterpolationAction->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mInterpolationAction->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mInterpolationAction->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mInterpolationAction->setIcon( QIcon() );
+  }
 }
 
 QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )

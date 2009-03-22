@@ -21,6 +21,7 @@
 
 #include "qgisinterface.h"
 #include "qgisgui.h"
+#include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -32,6 +33,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QAction>
+#include <QFile>
 #include <QToolBar>
 #include <QProcess>
 #include <QProgressDialog>
@@ -85,8 +87,9 @@ QgsGPSPlugin::~QgsGPSPlugin()
 void QgsGPSPlugin::initGui()
 {
   // add an action to the toolbar
-  mQActionPointer = new QAction( QIcon( ":/gps_importer.png" ), tr( "&Gps Tools" ), this );
-  mCreateGPXAction = new QAction( QIcon( ":/gps_importer.png" ), tr( "&Create new GPX layer" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "&Gps Tools" ), this );
+  mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
+  setCurrentTheme( "" );
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
@@ -96,6 +99,9 @@ void QgsGPSPlugin::initGui()
   mQGisInterface->fileToolBar()->addAction( mQActionPointer );
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
+
+  // this is called when the icon theme is changed
+  connect( mQGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 //method defined in interface
@@ -654,8 +660,33 @@ void QgsGPSPlugin::setupBabel()
   }
 }
 
-
-
+//! Set icons to the current theme
+void QgsGPSPlugin::setCurrentTheme( QString theThemeName )
+{
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer.png";
+  QString myQrcPath = ":/gps_importer.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
+    mCreateGPXAction->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myDefThemePath ) );
+    mCreateGPXAction->setIcon( QIcon( myDefThemePath ) );
+  }
+  else if ( QFile::exists( myQrcPath ) )
+  {
+    mQActionPointer->setIcon( QIcon( myQrcPath ) );
+    mCreateGPXAction->setIcon( QIcon( myQrcPath ) );
+  }
+  else
+  {
+    mQActionPointer->setIcon( QIcon() );
+    mCreateGPXAction->setIcon( QIcon() );
+  }
+}
 
 /**
  * Required extern functions needed  for every plugin

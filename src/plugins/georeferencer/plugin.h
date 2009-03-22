@@ -86,6 +86,8 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     void unload();
     //! show the help document
     void help();
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
 
     void about( );
     //////////////////////////////////////////////////////////////////////

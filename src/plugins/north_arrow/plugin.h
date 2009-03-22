@@ -72,6 +72,8 @@ class QgsNorthArrowPlugin: public QObject, public QgisPlugin
     // direction, the function returns false and leaves the rotation
     // variable as is.
     bool calculateNorthDirection();
+    //! update the plugins theme when the app tells us its theme is changed
+    void setCurrentTheme ( QString theThemeName );
 
   private:
 
