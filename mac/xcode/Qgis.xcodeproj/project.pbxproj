@@ -953,6 +953,19 @@
 		726FD9A20F6BF83F00D50560 /* delaunay.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A10F6BF83100D50560 /* delaunay.png */; };
 		726FD9A30F6BF83F00D50560 /* layer_extent.png in Copy - ftools-icons-gis */ = {isa = PBXBuildFile; fileRef = 726FD9A00F6BF83100D50560 /* layer_extent.png */; };
 		726FD9A50F6BF87300D50560 /* voronoi.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 726FD9A40F6BF86600D50560 /* voronoi.py */; };
+		72745A090F770319007F4218 /* copyright_label.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459F90F770252007F4218 /* copyright_label.png */; };
+		72745A0A0F770319007F4218 /* delimited_text.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FA0F770252007F4218 /* delimited_text.png */; };
+		72745A0B0F770319007F4218 /* dxf2shp_converter.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FB0F770252007F4218 /* dxf2shp_converter.png */; };
+		72745A0C0F770319007F4218 /* georeferencer.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FC0F770252007F4218 /* georeferencer.png */; };
+		72745A0D0F770319007F4218 /* gps_importer.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FD0F770252007F4218 /* gps_importer.png */; };
+		72745A0E0F770319007F4218 /* interpolation.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FE0F770252007F4218 /* interpolation.png */; };
+		72745A0F0F770319007F4218 /* north_arrow.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 727459FF0F770252007F4218 /* north_arrow.png */; };
+		72745A100F770319007F4218 /* ogr_converter.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A000F770252007F4218 /* ogr_converter.png */; };
+		72745A110F770319007F4218 /* quick_print.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A010F770252007F4218 /* quick_print.png */; };
+		72745A120F770319007F4218 /* scale_bar.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A020F770252007F4218 /* scale_bar.png */; };
+		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
+		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
+		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
 		7292873D0F71C0DF006D9489 /* qgssearchstringparser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CE0F39E57A003DC336 /* qgssearchstringparser.yy */; };
 		7292873E0F71C103006D9489 /* qgssearchstringlexer.ll in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CD0F39E57A003DC336 /* qgssearchstringlexer.ll */; };
 		729287430F71C2CB006D9489 /* qgsapplication.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6840F39E57A003DC336 /* qgsapplication.h */; };
@@ -4085,6 +4098,39 @@
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72745A080F7702EF007F4218 /* Copy - theme-gis-plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins";
+			dstSubfolderSpec = 0;
+			files = (
+				72745A090F770319007F4218 /* copyright_label.png in Copy - theme-gis-plugins */,
+				72745A0A0F770319007F4218 /* delimited_text.png in Copy - theme-gis-plugins */,
+				72745A0B0F770319007F4218 /* dxf2shp_converter.png in Copy - theme-gis-plugins */,
+				72745A0C0F770319007F4218 /* georeferencer.png in Copy - theme-gis-plugins */,
+				72745A0D0F770319007F4218 /* gps_importer.png in Copy - theme-gis-plugins */,
+				72745A0E0F770319007F4218 /* interpolation.png in Copy - theme-gis-plugins */,
+				72745A0F0F770319007F4218 /* north_arrow.png in Copy - theme-gis-plugins */,
+				72745A100F770319007F4218 /* ogr_converter.png in Copy - theme-gis-plugins */,
+				72745A110F770319007F4218 /* quick_print.png in Copy - theme-gis-plugins */,
+				72745A120F770319007F4218 /* scale_bar.png in Copy - theme-gis-plugins */,
+				72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */,
+				72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */,
+			);
+			name = "Copy - theme-gis-plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72745A1A0F770378007F4218 /* Copy - theme-gis-plug-cc */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins/coordinate_capture";
+			dstSubfolderSpec = 0;
+			files = (
+				72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */,
+			);
+			name = "Copy - theme-gis-plug-cc";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		72E707020F42685C00142011 /* Copy - qgis */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -6905,7 +6951,6 @@
 		7209EC280F39E57B003DC336 /* scale_bar.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = scale_bar.svg; path = ../../src/plugins/scale_bar/scale_bar.svg; sourceTree = SOURCE_ROOT; };
 		7209EC290F39E57B003DC336 /* scalebar_plugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = scalebar_plugin.qrc; path = ../../src/plugins/scale_bar/scalebar_plugin.qrc; sourceTree = SOURCE_ROOT; };
 		7209EC2C0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/spit/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EC2D0F39E57B003DC336 /* icon_spit.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = icon_spit.xpm; path = ../../src/plugins/spit/icon_spit.xpm; sourceTree = SOURCE_ROOT; };
 		7209EC2E0F39E57B003DC336 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/plugins/spit/main.cpp; sourceTree = SOURCE_ROOT; };
 		7209EC2F0F39E57B003DC336 /* qgsdbfbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdbfbase.h; path = ../../src/plugins/spit/qgsdbfbase.h; sourceTree = SOURCE_ROOT; };
 		7209EC300F39E57B003DC336 /* qgspgutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspgutil.cpp; path = ../../src/plugins/spit/qgspgutil.cpp; sourceTree = SOURCE_ROOT; };
@@ -6919,10 +6964,8 @@
 		7209EC380F39E57B003DC336 /* qgsspitplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspitplugin.h; path = ../../src/plugins/spit/qgsspitplugin.h; sourceTree = SOURCE_ROOT; };
 		7209EC390F39E57B003DC336 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../src/plugins/spit/spit.png; sourceTree = SOURCE_ROOT; };
 		7209EC3A0F39E57B003DC336 /* spit.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spit.qrc; path = ../../src/plugins/spit/spit.qrc; sourceTree = SOURCE_ROOT; };
-		7209EC3B0F39E57B003DC336 /* spit_icons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spit_icons.h; path = ../../src/plugins/spit/spit_icons.h; sourceTree = SOURCE_ROOT; };
-		7209EC3C0F39E57B003DC336 /* spiticon.xpm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = spiticon.xpm; path = ../../src/plugins/spit/spiticon.xpm; sourceTree = SOURCE_ROOT; };
 		7209EC3E0F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/wfs/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EC3F0F39E57B003DC336 /* mIconAddWfsLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconAddWfsLayer.png; path = ../../src/plugins/wfs/mIconAddWfsLayer.png; sourceTree = SOURCE_ROOT; };
+		7209EC3F0F39E57B003DC336 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../src/plugins/wfs/wfs.png; sourceTree = SOURCE_ROOT; };
 		7209EC400F39E57B003DC336 /* qgswfsplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgswfsplugin.cpp; path = ../../src/plugins/wfs/qgswfsplugin.cpp; sourceTree = SOURCE_ROOT; };
 		7209EC410F39E57B003DC336 /* qgswfsplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgswfsplugin.h; path = ../../src/plugins/wfs/qgswfsplugin.h; sourceTree = SOURCE_ROOT; };
 		7209EC420F39E57B003DC336 /* qgswfssourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgswfssourceselect.cpp; path = ../../src/plugins/wfs/qgswfssourceselect.cpp; sourceTree = SOURCE_ROOT; };
@@ -7878,6 +7921,23 @@
 		726FD9A00F6BF83100D50560 /* layer_extent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = layer_extent.png; path = ../../python/plugins/fTools/icons/gis/layer_extent.png; sourceTree = SOURCE_ROOT; };
 		726FD9A10F6BF83100D50560 /* delaunay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delaunay.png; path = ../../python/plugins/fTools/icons/gis/delaunay.png; sourceTree = SOURCE_ROOT; };
 		726FD9A40F6BF86600D50560 /* voronoi.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = voronoi.py; path = ../../python/plugins/fTools/tools/voronoi.py; sourceTree = SOURCE_ROOT; };
+		727459F10F7700C6007F4218 /* spit_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit_icon.png; path = ../../src/plugins/spit/spit_icon.png; sourceTree = SOURCE_ROOT; };
+		727459F20F7700C6007F4218 /* spit_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit_image.png; path = ../../src/plugins/spit/spit_image.png; sourceTree = SOURCE_ROOT; };
+		727459F50F770252007F4218 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../images/themes/gis/plugins/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		727459F70F770252007F4218 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../images/themes/gis/plugins/coordinate_capture/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		727459F80F770252007F4218 /* coordinate_capture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = coordinate_capture.png; path = ../../images/themes/gis/plugins/coordinate_capture/coordinate_capture.png; sourceTree = SOURCE_ROOT; };
+		727459F90F770252007F4218 /* copyright_label.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = copyright_label.png; path = ../../images/themes/gis/plugins/copyright_label.png; sourceTree = SOURCE_ROOT; };
+		727459FA0F770252007F4218 /* delimited_text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = delimited_text.png; path = ../../images/themes/gis/plugins/delimited_text.png; sourceTree = SOURCE_ROOT; };
+		727459FB0F770252007F4218 /* dxf2shp_converter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = dxf2shp_converter.png; path = ../../images/themes/gis/plugins/dxf2shp_converter.png; sourceTree = SOURCE_ROOT; };
+		727459FC0F770252007F4218 /* georeferencer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = georeferencer.png; path = ../../images/themes/gis/plugins/georeferencer.png; sourceTree = SOURCE_ROOT; };
+		727459FD0F770252007F4218 /* gps_importer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = gps_importer.png; path = ../../images/themes/gis/plugins/gps_importer.png; sourceTree = SOURCE_ROOT; };
+		727459FE0F770252007F4218 /* interpolation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = interpolation.png; path = ../../images/themes/gis/plugins/interpolation.png; sourceTree = SOURCE_ROOT; };
+		727459FF0F770252007F4218 /* north_arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = north_arrow.png; path = ../../images/themes/gis/plugins/north_arrow.png; sourceTree = SOURCE_ROOT; };
+		72745A000F770252007F4218 /* ogr_converter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ogr_converter.png; path = ../../images/themes/gis/plugins/ogr_converter.png; sourceTree = SOURCE_ROOT; };
+		72745A010F770252007F4218 /* quick_print.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = quick_print.png; path = ../../images/themes/gis/plugins/quick_print.png; sourceTree = SOURCE_ROOT; };
+		72745A020F770252007F4218 /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/gis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
+		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
+		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
 		729BBEFF0F40770B001BCB63 /* qgis_help.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = qgis_help.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		729BBF010F40770B001BCB63 /* qgis_help-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "qgis_help-Info.plist"; sourceTree = "<group>"; };
 		729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgispython.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10524,7 +10584,6 @@
 			isa = PBXGroup;
 			children = (
 				7209EC2C0F39E57B003DC336 /* CMakeLists.txt */,
-				7209EC2D0F39E57B003DC336 /* icon_spit.xpm */,
 				7209EC2E0F39E57B003DC336 /* main.cpp */,
 				7209EC2F0F39E57B003DC336 /* qgsdbfbase.h */,
 				7209EC300F39E57B003DC336 /* qgspgutil.cpp */,
@@ -10537,9 +10596,9 @@
 				7209EC370F39E57B003DC336 /* qgsspitplugin.cpp */,
 				7209EC380F39E57B003DC336 /* qgsspitplugin.h */,
 				7209EC390F39E57B003DC336 /* spit.png */,
+				727459F10F7700C6007F4218 /* spit_icon.png */,
+				727459F20F7700C6007F4218 /* spit_image.png */,
 				7209EC3A0F39E57B003DC336 /* spit.qrc */,
-				7209EC3B0F39E57B003DC336 /* spit_icons.h */,
-				7209EC3C0F39E57B003DC336 /* spiticon.xpm */,
 			);
 			name = spit;
 			path = ../../src/plugins/spit;
@@ -10549,7 +10608,7 @@
 			isa = PBXGroup;
 			children = (
 				7209EC3E0F39E57B003DC336 /* CMakeLists.txt */,
-				7209EC3F0F39E57B003DC336 /* mIconAddWfsLayer.png */,
+				7209EC3F0F39E57B003DC336 /* wfs.png */,
 				7209EC400F39E57B003DC336 /* qgswfsplugin.cpp */,
 				7209EC410F39E57B003DC336 /* qgswfsplugin.h */,
 				7209EC420F39E57B003DC336 /* qgswfssourceselect.cpp */,
@@ -11765,6 +11824,7 @@
 				7209EF940F39E5D9003DC336 /* mActionZoomOut.png */,
 				7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */,
 				7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */,
+				727459F40F770252007F4218 /* plugins */,
 			);
 			name = gis;
 			path = ../../images/themes/gis;
@@ -12012,6 +12072,38 @@
 			);
 			name = ogr;
 			path = ../../src/app/ogr;
+			sourceTree = SOURCE_ROOT;
+		};
+		727459F40F770252007F4218 /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				727459F50F770252007F4218 /* CMakeLists.txt */,
+				727459F60F770252007F4218 /* coordinate_capture */,
+				727459F90F770252007F4218 /* copyright_label.png */,
+				727459FA0F770252007F4218 /* delimited_text.png */,
+				727459FB0F770252007F4218 /* dxf2shp_converter.png */,
+				727459FC0F770252007F4218 /* georeferencer.png */,
+				727459FD0F770252007F4218 /* gps_importer.png */,
+				727459FE0F770252007F4218 /* interpolation.png */,
+				727459FF0F770252007F4218 /* north_arrow.png */,
+				72745A000F770252007F4218 /* ogr_converter.png */,
+				72745A010F770252007F4218 /* quick_print.png */,
+				72745A020F770252007F4218 /* scale_bar.png */,
+				72745A030F770252007F4218 /* spit.png */,
+				72745A040F770252007F4218 /* wfs.png */,
+			);
+			name = plugins;
+			path = ../../images/themes/gis/plugins;
+			sourceTree = SOURCE_ROOT;
+		};
+		727459F60F770252007F4218 /* coordinate_capture */ = {
+			isa = PBXGroup;
+			children = (
+				727459F70F770252007F4218 /* CMakeLists.txt */,
+				727459F80F770252007F4218 /* coordinate_capture.png */,
+			);
+			name = coordinate_capture;
+			path = ../../images/themes/gis/plugins/coordinate_capture;
 			sourceTree = SOURCE_ROOT;
 		};
 		72A239420F74A62200AFC35B /* attributetable */ = {
@@ -12970,6 +13062,8 @@
 				7256F3960F41C3AA0022BE1F /* Copy - theme-classic */,
 				7256F4210F41C4DA0022BE1F /* Copy - theme-default */,
 				7256F5310F41C5910022BE1F /* Copy - theme-gis */,
+				72745A080F7702EF007F4218 /* Copy - theme-gis-plugins */,
+				72745A1A0F770378007F4218 /* Copy - theme-gis-plug-cc */,
 				7256F5320F41C5910022BE1F /* Copy - theme-nkids */,
 				7256F53A0F41C5F40022BE1F /* Copy - resources */,
 				7256F57E0F41C66D0022BE1F /* Copy - context_help */,
