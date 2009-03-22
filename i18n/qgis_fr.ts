@@ -1,361 +1,291 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="fr_FR">
+<!DOCTYPE TS>
+<TS version="2.0" language="fr_FR">
 <context>
     <name>@default</name>
     <message>
-        <location filename="" line="0"/>
         <source>OGR Driver Manager</source>
         <translation type="obsolete">OGR Driver Manager</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>unable to get OGRDriverManager</source>
         <translation type="obsolete">Incapable d&apos;obtenir OGRDriverManager </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Open an OGR Supported Vector Layer</source>
         <translation type="obsolete">Ouvrez une couche de vecteur gérée par OGR </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>is not a valid or recognized data source</source>
         <translation type="obsolete">ce n&apos;est pas une source de données valide ou reconnue</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Invalid Data Source</source>
         <translation type="obsolete">source de données invalide</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Invalid Layer</source>
         <translation type="obsolete">Couche Invalide</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation type="obsolete">%1 est une couche invalide et ne peut être chargée.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Save As</source>
         <translation type="obsolete">Sauvegarder sous</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Choose a QGIS project file to open</source>
         <translation type="obsolete">Choisissez un fichier projet QGIS à ouvrir</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS Project Read Error</source>
         <translation type="obsolete">Erreur de lecture du Projet QGIS </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Try to find missing layers?</source>
         <translation type="obsolete">Essayer de trouver les couches manquantes? </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to open project</source>
         <translation type="obsolete">Impossible d&apos;ouvrir le projet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Choose a QGIS project file</source>
         <translation type="obsolete">Choisissez un fichier projet QGIS</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Saved project to:</source>
         <translation type="obsolete">Projet sauvegardé sous : </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to save project</source>
         <translation type="obsolete">Impossible de sauvegarder le projet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to save project to </source>
         <translation type="obsolete">Impossible de sauvegarder le projet sous</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to save project </source>
         <translation type="obsolete">Impossible de sauvegarder le projet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Choose a filename to save the QGIS project file as</source>
         <translation type="obsolete">Choisissez un nom de fichier pour sauvegarder le projet QGIS sous</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS: Unable to load project</source>
         <translation type="obsolete">QGIS: impossible de charger le projet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to load project </source>
         <translation type="obsolete">Impossible de charger le projet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Saved map image to</source>
         <translation type="obsolete">Carte sauvegardée sous</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>No Layer Selected</source>
         <translation type="obsolete">Aucune couche sélectionnée</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation type="obsolete">Pour effacer des données, vous devez sélectionner une couche vecteur dans la légende</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>No Vector Layer Selected</source>
         <translation type="obsolete">Aucune couche vecteur sélectionnée</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Deleting features only works on vector layers</source>
         <translation type="obsolete">L&apos;effacement des données ne peut s&apos;appliquer qu&apos;à des couches vectorielles</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Provider does not support deletion</source>
         <translation type="obsolete">Le fournisseur ne supporte pas l&apos;effacement</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Data provider does not support deleting features</source>
         <translation type="obsolete">Le fournisseur de données ne supporte pas l&apos;effacement des propriétés</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Layer not editable</source>
         <translation type="obsolete">Couche non éditable</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Problem deleting features</source>
         <translation type="obsolete">Problème lors de l&apos;effacement des données</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>A problem occured during deletion of features</source>
         <translation type="obsolete">Un problème est apparu lors de l&apos;effacement des données</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Error Loading Plugin</source>
         <translation type="obsolete">Erreur de chargement de Plugin</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>There was an error loading %1.</source>
         <translation type="obsolete">Il y a eu une erreur au chargement de %1.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>No MapLayer Plugins</source>
         <translation type="obsolete">Pas de plugins MapLayer</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>No MapLayer plugins in ../plugins/maplayer</source>
         <translation type="obsolete">Aucun plugin MapLayer dans ../plugins/maplayer</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
         <translation type="obsolete">Aucun plugin trouvé dans ../plugins. Pour tester les plugins, démarrez QGIS depuis le répertoire source</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Name</source>
         <translation type="obsolete">Nom</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Plugin %1 is named %2</source>
         <translation type="obsolete">Plugin %1 est nommé %2</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Plugin Information</source>
         <translation type="obsolete">Information sur le Plugin</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGis loaded the following plugin:</source>
         <translation type="obsolete">QGIS a chargé le plugin suivant:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Name: %1</source>
         <translation type="obsolete">Nom: %1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Version: %1</source>
         <translation type="obsolete">Version: %1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Description: %1</source>
         <translation type="obsolete">Description: %1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to Load Plugin</source>
         <translation type="obsolete">Impossible de charger le plugin</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS was unable to load the plugin from: %1</source>
         <translation type="obsolete">QGIS est incapable de charger le plugin à partir de : %1</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>There is a new version of QGIS available</source>
         <translation type="obsolete">Une nouvelle version de QGIS est disponible</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>You are running a development version of QGIS</source>
         <translation type="obsolete">Vous utilisez une version de développement de QGIS</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>You are running the current version of QGIS</source>
         <translation type="obsolete">Vous utilisez la version courante de QGIS</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Would you like more information?</source>
         <translation type="obsolete">Voulez-vous plus d&apos;information?</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS Version Information</source>
         <translation type="obsolete">Information de version de QGIS</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS - Changes in SVN Since Last Release</source>
         <translation type="obsolete">QGIS - Changement de SVN depuis la dernière sortie de version</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to get current version information from server</source>
         <translation type="obsolete">Impossible de récupérer la version courante depuis le serveur</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Connection refused - server may be down</source>
         <translation type="obsolete">Connection refusée - le serveur est peut-être indisponible</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS server was not found</source>
         <translation type="obsolete">Le serveur QGIS n&apos;a pas été trouvé</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>QGIS Browser Selection</source>
         <translation type="obsolete">Sélection du navigateur QGIS</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Enter the name of a web browser to use (eg. konqueror).
 </source>
         <translation type="obsolete">Écrivez le nom d&apos;un navigateur internet à utiliser (par exemple, konqueror). </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Enter the full path if the browser is not in your PATH.
 </source>
         <translation type="obsolete">Entrez le chemin complet si le navigateur n&apos;est pas dans votre PATH.</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
         <translation type="obsolete">Vous pouvez modifier cette option plus tard en sélectionnant Options dans le menu Préférences (dans l&apos;Aide).</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Layer is not valid</source>
         <translation type="obsolete">La couche n&apos;est pas valide</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation type="obsolete">La couche n&apos;est pas une couche valide et ne peut pas être ajoutée à la carte </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Save?</source>
         <translation type="obsolete">Sauvegarder ?</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Do you want to save the current project?</source>
         <translation type="obsolete">Voulez-vous sauvegarder le projet courant ?</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Extents: </source>
         <translation type="obsolete">Emprises:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Clipboard contents set to: </source>
         <translation type="obsolete"> Contenu du presse-papier réglé sur: </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation type="obsolete">Ouvrez des données raster gérées par GDAL</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source> is not a valid or recognized raster data source</source>
         <translation type="obsolete">n&apos;est pas une source raster valide ou identifiée  </translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source> is not a supported raster data source</source>
         <translation type="obsolete"> n&apos;est pas une source de données raster gérées</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unsupported Data Source</source>
         <translation type="obsolete">Source de données non gérée</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>New Bookmark</source>
         <translation type="obsolete">Nouveau signet</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Enter a name for the new bookmark:</source>
         <translation type="obsolete">Entrer un nom pour le nouveau signet:</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Error</source>
         <translation type="obsolete">Erreur</translation>
     </message>
     <message>
-        <location filename="" line="0"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation type="obsolete">Impossible de créer le signet.  Votre base de données utilisateur est peut-etre manquante ou corrompue</translation>
     </message>
@@ -380,12 +310,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="115"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Cliquez pour sélectionner le SRS à utiliser pour l&apos;affichage des coordonnées</translation>
+        <translation type="unfinished">Cliquez pour sélectionner le SCR à utiliser pour l&apos;affichage des coordonnées</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS</source>
-        <translation>Coordonnées dans votre SRS sélectionné</translation>
+        <translation type="unfinished">Coordonnées dans votre SCR sélectionné</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
@@ -2235,7 +2165,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="51"/>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>Saisir les coordonnées sous le curseur dans un SRS différent</translation>
+        <translation>Saisir les coordonnées sous le curseur dans un SCR différent</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="37"/>
@@ -2280,7 +2210,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="133"/>
         <source>CRS Exception</source>
-        <translation>Erreur SRS</translation>
+        <translation>Erreur SCR</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="134"/>
@@ -3167,7 +3097,7 @@ Le support Python va être désactivé.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="743"/>
         <source>Show Bookmarks</source>
-        <translation>Montre les signets</translation>
+        <translation type="unfinished">Montrer les signets</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="736"/>
@@ -3824,7 +3754,7 @@ Compilé avec Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1351"/>
         <source>Current map scale (formatted as x:y)</source>
-        <translation>L&apos;échelle actuelle de la carte (formattée x:y)</translation>
+        <translation>L&apos;échelle actuelle de la carte (formatée x:y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4698"/>
@@ -4056,7 +3986,7 @@ Veuillez contacter les développeurs.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="558"/>
         <source>&amp;Print Composer</source>
-        <translation type="unfinished">&amp;Paramétrage de l&apos;impression</translation>
+        <translation>&amp;Paramétrage de l&apos;impression</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="559"/>
@@ -4139,7 +4069,8 @@ Veuillez contacter les développeurs.
         <location filename="../src/app/qgisapp.cpp" line="702"/>
         <source>J</source>
         <comment>Measure an Area</comment>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Mesure une aire</translatorcomment>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="718"/>
@@ -4520,31 +4451,31 @@ Erreurs : %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1813"/>
         <source>Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Changements </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1812"/>
         <source>QGIS 1.0.2 is a bug fix release for the stable version of QGIS.A summary of the improvements can be found at https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.2</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS 1.0.2 est une version apportant des correctifs à la version stable de QGIS. Un résumé des améliorations peut être lu à https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1817"/>
         <source>QGIS 1.0.1 is a bug fix release for the stable version of QGIS.A summary of the improvements can be found at https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS 1.0.1 est une version apportant des correctifs à la version stable de QGIS. Un résumé des améliorations peut être lu à https://trac.osgeo.org/qgis/query?status=closed&amp;milestone=Version+1.0.1</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1821"/>
+        <source>The QGIS 1.0 release includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
+        <translation>Cette version d&apos;évaluation comporte plus de 265 correctifs de bogues et améliorations par rapport à la version 0.11.0 de QGIS. De plus les fonctionnalités suivantes ont été ajoutées :</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1854"/>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le gestionnaire d&apos;extension a été refondu totalement, la nouvelle version a beaucoup d&apos;améliorations, ce qui inclut la vérification que la version courante de QGIS supportera bien l&apos;extension en train d&apos;être installée.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1869"/>
         <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1821"/>
-        <source>The QGIS 1.0 release includes over 265 bug fixes and enhancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4648,7 +4579,7 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="116"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="199"/>
@@ -4663,27 +4594,27 @@ You can change this option later by selection Options from the Settings menu (He
     <message>
         <location filename="../src/app/qgsabout.cpp" line="114"/>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Les personnes suivantes ont assistés QGIS en contribuant financièrement au développement et aux autres coûts du projet&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Les personnes suivantes ont assistés QGIS en contribuant financièrement au développement et aux autres coûts du projet&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="117"/>
         <source>Website</source>
-        <translation type="unfinished">Site internet</translation>
+        <translation>Site internet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="170"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Plugins de fournisseurs de données disponibles pour QGIS</translation>
+        <translation>Extensions de fournisseurs de données disponibles pour QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="173"/>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Plugins de base de données disponibles pour QGIS</translation>
+        <translation>Extension de base de données disponibles pour QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="179"/>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Plugins d&apos;images disponibles pour QGIS</translation>
+        <translation>Extension d&apos;images disponibles pour QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="50"/>
@@ -5469,7 +5400,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="59"/>
         <source>&amp;Zoom to</source>
-        <translation>&amp;Zoomez à</translation>
+        <translation type="unfinished">&amp;Zoomez sur</translation>
     </message>
 </context>
 <context>
@@ -7360,17 +7291,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>La source de référence spatiale (SRS) n&apos;est pas valide</translation>
+        <translation>La source de référence spatiale (SCR) n&apos;est pas valide.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The coordinates can not be reprojected. The CRS is: </source>
-        <translation>Les coordonnées ne peuvent pas être reprojetées. Le SRS est : </translation>
+        <translation>Les coordonnées ne peuvent pas être reprojetées. Le SCR est : </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Le système de référence spatial (SRS) cible n&apos;est pas valide. </translation>
+        <translation>Le système de référence spatial (SCR) cible n&apos;est pas valide. </translation>
     </message>
 </context>
 <context>
@@ -7490,7 +7421,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="0"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;&#xa9; QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;© QGIS 2006&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -7516,7 +7447,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Saisissez votre étiquette de copyright ci-dessous. Ce plugin implémente un balisage HTML simple pour mettre en page l&apos;étiquette. Par exemple :&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Texte gras &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italique &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; donne le symbole copyright)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="0"/>
         <source>© QGIS 2008</source>
         <translation type="obsolete">© QGIS 2008</translation>
@@ -7534,7 +7465,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Ajouter votre étiquette de droit d&apos;auteur en-dessous. Ce plugin supporte les balises html simplespour formatter l&apos;étiquette. Par exemple :&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="158"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -7781,17 +7712,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="28"/>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation>Vous pouvez définir ici votre propre système de référence de coordonnées personnalisé (SRS). Cette définition doit se conformer au format proj4.</translation>
+        <translation type="unfinished">Vous pouvez définir ici votre propre système de coordonnées de référence personnalisé (SCR). Cette définition doit se conformer au format proj4.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="157"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Utilser les boîtes de texte ci-dessous pour tester le CRS que vous êtres en train de créer. Entrez une coordonnée dont la latitude et longitude ainsi que le résultat est connu (par exemple, en lisant une carte). Puis pressez le bouton de calcul pour vérifier si votre CRS est correct.</translation>
+        <translation type="unfinished">Utilser les boîtes de texte ci-dessous pour tester le SCR que vous êtres en train de créer. Entrez une coordonnée dont la latitude et longitude ainsi que le résultat est connu (par exemple, en lisant une carte). Puis pressez le bouton de calcul pour vérifier si votre CRS est correct.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="187"/>
         <source>Destination CRS        </source>
-        <translation>CRS de destination</translation>
+        <translation type="unfinished">SCR de destination</translation>
     </message>
 </context>
 <context>
@@ -12897,6 +12828,11 @@ p, li { white-space: pre-wrap; }
         <translation>Placement</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="0"/>
+        <source>°</source>
+        <translation type="obsolete">°</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="90"/>
         <source>Buffer</source>
         <translation>Buffer</translation>
@@ -12931,7 +12867,7 @@ p, li { white-space: pre-wrap; }
         <source>Source</source>
         <translation type="obsolete">Source</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="220"/>
         <source>°</source>
         <translation>°</translation>
@@ -13163,12 +13099,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="457"/>
         <source>Re&amp;name</source>
-        <translation>Re&amp;nommez</translation>
+        <translation type="unfinished">Re&amp;nommer</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="462"/>
         <source>&amp;Add group</source>
-        <translation>&amp;Ajoutez au groupe</translation>
+        <translation type="unfinished">&amp;Ajouter un groupe</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="463"/>
@@ -13236,7 +13172,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="488"/>
         <source>&amp;Show in overview</source>
-        <translation>&amp;Montrer dans la vignette</translation>
+        <translation type="unfinished">&amp;Montrer dans l&apos;aperçu</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="494"/>
@@ -14543,7 +14479,7 @@ Information supplémentaire sur l&apos;erreur :</translation>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="156"/>
         <source>Detected active locale on your system: </source>
-        <translation>Les paramètres de lieu (locales) suivants ont été trouvé sur votre système : </translation>
+        <translation type="unfinished">Les paramètres de lieu suivants ont été trouvé sur votre système : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="176"/>
@@ -14641,7 +14577,7 @@ Information supplémentaire sur l&apos;erreur :</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="212"/>
         <source>Hide splash screen at startup</source>
-        <translation>Cacher l&apos;écran de démarrage (splash screen)</translation>
+        <translation type="unfinished">Cacher l&apos;écran de démarrage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="0"/>
@@ -14711,7 +14647,7 @@ Information supplémentaire sur l&apos;erreur :</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="854"/>
         <source>Select Global Default ...</source>
-        <translation>Choisissez Global par défaut... </translation>
+        <translation>Sélectionner le Système de Coordonnées de Référence (SCR) par défaut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="0"/>
@@ -14863,17 +14799,17 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="358"/>
         <source>Continuously redraw the map when dragging the legend/map divider</source>
-        <translation>Rafraîchir en permanence lors du déplacement de la séparation table des matières/carte</translation>
+        <translation>Rafraîchir en permanence la table des matières/carte lors du déplacement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="382"/>
         <source>&amp;Map tools</source>
-        <translation>&amp;Outils cartographique</translation>
+        <translation>&amp;Outils cartographiques</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="580"/>
         <source>%</source>
-        <translation>%</translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="400"/>
@@ -14943,7 +14879,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="967"/>
         <source>Detected active locale on your system:</source>
-        <translation>Paramètres de lieu (locale) sur votre système : </translation>
+        <translation type="unfinished">Paramètres de lieu sur votre système : </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="0"/>
@@ -15038,7 +14974,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="79"/>
         <source>Selection color</source>
-        <translation>Sélection de la couleur</translation>
+        <translation type="unfinished">Couleur de la sélection</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="115"/>
@@ -15093,12 +15029,12 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="449"/>
         <source>Mouse wheel action</source>
-        <translation>Action roulette souris</translation>
+        <translation>Actions de la molette souris</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="519"/>
         <source>Rubberband color</source>
-        <translation>Couleur de l&apos;étirement</translation>
+        <translation type="unfinished">Couleur de la ligne d&apos;étirement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="529"/>
@@ -15208,17 +15144,17 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="823"/>
         <source>CRS</source>
-        <translation>SRS</translation>
+        <translation type="unfinished">SCR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="864"/>
         <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation>Quand on charge une couche qui n&apos;a aucune information de projection (CRS)</translation>
+        <translation type="unfinished">Quand on charge une couche qui n&apos;a aucune information de projection (SCR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="882"/>
         <source>Prompt for CRS</source>
-        <translation>Prompt pour la projection</translation>
+        <translation type="unfinished">Demander pour la projection</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="889"/>
@@ -15982,7 +15918,7 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="204"/>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="obsolete">Vous allez ajouter des dépôts d&apos;extension qui ne sont ni contrôlés ni supportés par l&apos;équipe de QGIS. Les auteurs font de leur mieux pour fournir des extensions stables et utiles, mais nous ne pouvons donner aucunes garanties. A vos risques et périls !</translation>
+        <translation>Vous allez ajouter des dépôts d&apos;extension qui ne sont ni contrôlés ni supportés par l&apos;équipe de QGIS. Les auteurs font de leur mieux pour fournir des extensions stables et utiles, mais nous ne pouvons donner aucunes garanties. A vos risques et périls !</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/i18n.cpp" line="216"/>
@@ -16088,16 +16024,11 @@ Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
         <translation>Extension python désinstallée.
 Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
     </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/i18n.cpp" line="204"/>
-        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="21"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="20"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>Installateur d&apos;extension python pour QGIS</translation>
     </message>
@@ -16107,247 +16038,169 @@ Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
         <translation type="obsolete">Installateur de plugin QGIS</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="70"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="36"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="73"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="39"/>
         <source>List of available and installed plugins</source>
         <translation>Liste des extensions disponibles et installés</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="84"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="50"/>
         <source>Filter:</source>
         <translation>Filtre :</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="97"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="63"/>
         <source>Display only plugins containing this word in their metadata</source>
         <translation>Afficher seulement les extensions contenant ce mot dans leur description</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="119"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="85"/>
         <source>Display only plugins from given repository</source>
         <translation>Afficher seulement les extensions d&apos;un dépôt donné</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="123"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="89"/>
         <source>all repositories</source>
         <translation>Tout les dépôts</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="143"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="109"/>
         <source>Display only plugins with matching status</source>
         <translation>Afficher seulement les extensions avec le statut suivant</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="276"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="242"/>
         <source>Status</source>
         <translation>Statut</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="281"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="247"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="178"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="144"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="183"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="149"/>
         <source>Description</source>
         <translation>Description</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="188"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="154"/>
         <source>Author</source>
         <translation>Auteur</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="193"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="159"/>
         <source>Repository</source>
         <translation>Dépôt</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="231"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="197"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
         <translation>Installer, réinstaller ou mettre à jour l&apos;extension sélectionnée</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="234"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="200"/>
         <source>Install/upgrade plugin</source>
         <translation>Installer/Mettre à jour l&apos;extension</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="247"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="213"/>
         <source>Uninstall the selected plugin</source>
         <translation>Désinstaller l&apos;extension sélectionné</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="250"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="216"/>
         <source>Uninstall plugin</source>
         <translation>Désinstaller l&apos;extension</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="260"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="226"/>
         <source>Repositories</source>
         <translation>Dépôts</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="263"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="229"/>
         <source>List of plugin repositories</source>
         <translation>Listes des dépôts d&apos;extension</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="286"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="252"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="266"/>
         <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
-        <translation type="obsolete">Autoriser l&apos;installateur à regarder au démarrage si des mises à jours et annonces sont disponibles dans les dépôts sélectionés</translation>
+        <translation>Autoriser l&apos;installateur à regarder au démarrage si des mises à jours et annonces sont disponibles dans les dépôts sélectionés</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="397"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="269"/>
         <source>Check for updates on startup</source>
         <translation>Chercher des mises à jours au démarrage</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="316"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="298"/>
         <source>Add third party plugin repositories to the list</source>
         <translation>Ajouter un dépôts-tiers d&apos;extension à la liste</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="319"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="301"/>
         <source>Add 3rd party repositories</source>
         <translation>Ajouter un dépôts-tiers d&apos;extension à la liste</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="342"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="324"/>
         <source>Add a new plugin repository</source>
         <translation>Ajouter un nouveau dépôts dextension</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="345"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="327"/>
         <source>Add...</source>
         <translation>Ajouter...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="355"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="337"/>
         <source>Edit the selected repository</source>
         <translation>Editer le dépôt sélectionné</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="358"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="340"/>
         <source>Edit...</source>
         <translation>Editer...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="368"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="350"/>
         <source>Remove the selected repository</source>
         <translation>Enlever le dépôt sélectionné</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="371"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="353"/>
         <source>Delete</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="32"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="369"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
         <translation>L&apos;extension va être installée dans ~/.qgis/python/plugins</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="48"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="385"/>
         <source>Close the Installer window</source>
         <translation>Fermer la fenêtre de l&apos;installateur</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="51"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="388"/>
         <source>Close</source>
         <translation>Fermer</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="379"/>
-        <source>Options</source>
-        <translation type="unfinished">Options</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
-        <source>Configuration of the plugin installer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="410"/>
-        <source>every time QGIS starts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="415"/>
-        <source>once a day</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="420"/>
-        <source>every 3 days</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="425"/>
-        <source>every week</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="430"/>
-        <source>every 2 weeks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="435"/>
-        <source>every month</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="488"/>
-        <source>Allowed plugins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="497"/>
-        <source>Only show plugins from the official repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="510"/>
-        <source>Show all plugins except those marked as experimental</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="523"/>
-        <source>Show all plugins, even those marked as experimental</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="542"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17448,7 +17301,7 @@ Veuillez installer PostGIS avec le support GEOS (http://geos.refractions.net)</t
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="282"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation>Système de coordonnées de référence (CRS)</translation>
+        <translation type="unfinished">Système de coordonnées de référence (SCR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="300"/>
@@ -19116,7 +18969,7 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1467"/>
         <source>Coordinate reference system</source>
-        <translation>Système de coordonnées de référence (CRS)</translation>
+        <translation type="unfinished">Système de coordonnées de référence (SCR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1476"/>
@@ -21351,7 +21204,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="170"/>
         <source>Change CRS</source>
-        <translation>Changement de CRS</translation>
+        <translation type="unfinished">Changement de SCR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="540"/>
@@ -21614,12 +21467,12 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1606"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>La demande contient un CRS non offert par le serveur pour une ou plusieurs des couches de la demande. </translation>
+        <translation type="unfinished">La demande contient un SCR non offert par le serveur pour une ou plusieurs des couches de la demande. </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1610"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>La demande contient un SRS non offert par le serveur pour une ou plusieurs des couches de la demande. </translation>
+        <translation type="unfinished">La demande contient un SCR non offert par le serveur pour une ou plusieurs des couches de la demande. </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1615"/>
@@ -22085,7 +21938,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="0"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Welcome to your automatically generated plugin!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentation:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You really need to read the QGIS API Documentation now at:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;In particular look at the following classes:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisIface is an abstract base class (ABC) that specifies what publicly available features of QGIS are exposed to third party code and plugins. QgisInterface is an concrete implementation of this ABC. The preferred way to carry out operations on QGIS is via the QGisInterface. An instance of the QgisInterface is passed to the plugin when it loads. Please consult the QGIS development team if there is functionality required in the QGisInterface that is not available.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;What are all the files in my generated plugin directory for?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the generated Makefile specification for your plugin. You will see that specifies c++ include paths (-I) and library linkages -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui and QGis Raster. You should add you application specific dependencies and source files to this Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltest.cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is an Abstract Base Class implemented in Qt4 fashion as a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.h &lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&quot;:/ShollTest/&quot;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This file contains the documentation you are reading now!&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Getting developer help:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * the QGIS developers mailing list, or&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Have fun and thank you for choosing QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The QGIS Team&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Bienvenu dans le plugin auto-généré!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ce n&apos;est que le début. Maintenant vous devez modifier le code pour qu&apos;il fasse quelque chose d&apos;utile....Poursuivez votre lecture pour plus d&apos;informations sur la façon de procéder.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentation:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Il vous faut lire la documentation de l&apos;API QGIS sur:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Regardez plus spécialement les classes suivantes :&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisInterface est une classe abstraite de base (abstract base class (ABC)) qui spécifie que les fonctionnalités publiques de QGIS sont ouvertes aux codes-tiers et aux plugins. QgisInterface est l&apos;implémentation concrète de cet ABC. La meilleure manière de mener des opération sous QGIS est de le faire au travers QGisInterface. Une instance de QgisInterface est présentée au plugin lors de son chargement. Veuillez consulter l&apos;équipe de développement de QGIS si des fonctionnalités requises par QGisInterface ne sont pas disponibles.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin est un ABC qui définit le comportement que doit adopter votre plugin. Voir plus bas pour davantage de détails.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;A quoi servent tous les fichiers dans mon répertoire Plugin?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Il s&apos;agit de spécifications générées par le Makefile pour votre plugin. Vous verrez qu&apos;il comprend des chemins vers des include c++ (-I) et des liens vers des librairies -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui et QGis Raster. Vous devez ajouter les dépendances propres à votre application et vos fichiers sources à ce Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltest.cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; C&apos;est une classe qui fournit &quot;l&apos;enduit&quot; entre la logique propre de votre application personnalisée et l&apos;application QGIS. Vous verrez que nombre de méthodes sont d&apos;ores et déjà implémentées pour vous - dont des exemples sur la façon d&apos;ajouter une couche raster ou vecteur à la fenêtre d&apos;affichage principale. Cette classe est une instance concrète de l&apos;interface du plugin QGIS qui définit le comportement requis pour le plugin. Plus spécialement, un plugin possède un nombre de méthodes statiques et d&apos;objets de base de manière à ce que QgsPluginManager et le chargeur de plugin puisse identifier chacun des plugins, créer une entrée appropriée pour chacun d&apos;eux, etc. Par défaut, une simple entrée de menu et un bouton de barre de tâches sont créés et pré-configurés pour appeler la méthode run() de cette classe quand elle est sélectionnée. Cette implémentation par défaut fournie pour vous par le constructeur de plugin est bien documentée, veuillez donc vous référer au code pour plus de conseils.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ceci est une Abstract Base Class implémentée à la manière Qt4 comme fichier de design d&apos;interface grahique Qt. Elle définie l&apos;apparence par défaut des boîtes de dialogue du plugin sans rien avoir à implémenter. Vous pouvez modifer ce formulaire en fonction de vos besoins ou le virer complètement si votre plugin n&apos;a pas besoin de présenter un formulaire à l&apos;utilisateur (comme par exemple pour des MapTools personnalisés).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.h &lt;span style=&quot; <byte value="x9"/>  font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Voici la classe concrète où vous devez ranger le dialogue mentionné plus haut. Ici le monde est à vous....&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Il s&apos;agit de fichiers de ressources Qt4 pour votre plugin. Le Makefile généré pour votre plugin est réglée pour compiler le fichier de ressources, de sorte que tout ce que vous avez besoin de faire est d&apos;ajouter vos propres icônes, etc. en utilisant le format xml. Veuillez noter que l&apos;espace de nom est utilisé pour l&apos;ensemble de vos ressources e.g. (&quot;:/ShollTest/&quot;). Il est important de conserver ce préfixe pour toutes vos ressources. Nous vous suggérons d&apos;inclure toutes autres images ou données de lancement dans ce même fichier ressources.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;C&apos;est l&apos;icône qui sera utilisée pour le menu d&apos;entrée du plugin et l&apos;icône de barre des tâches. Remplacez simplement cette icône avec la votre pour individualiser votre plugin.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ce fichier contient la doc que vous êtes en train de lire!&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Trouver l&apos;aide des développeurs:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pour les questions et commentaires concernant le constructeur de plugin et la création de vos propres fonctionnalités sous QGIS en utilisant l&apos;interface de plugin contactez nous à:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * the QGIS developers mailing list, or&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS est distribué sous Gnu Public License. Si vous créez un plugin utile, merci de songer à le partager avec la communauté.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Amusez-vous bien et merci d&apos;avoir choisi QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;L&apos;équipe QGIS&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Bienvenu dans le plugin auto-généré!&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ce n&apos;est que le début. Maintenant vous devez modifier le code pour qu&apos;il fasse quelque chose d&apos;utile....Poursuivez votre lecture pour plus d&apos;informations sur la façon de procéder.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Documentation:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Il vous faut lire la documentation de l&apos;API QGIS sur:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#0000ff;&quot;&gt;http://svn.qgis.org/api_doc/html/&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Regardez plus spécialement les classes suivantes :&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisInterface&lt;/span&gt; : http://svn.qgis.org/api_doc/html/classQgisInterface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QGisIface&lt;/span&gt;        :  http://svn.qgis.org/api_doc/html/classQgisIface.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsMapTool&lt;/span&gt;   : http://svn.qgis.org/api_doc/html/classQgsMapTool.html&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;QgsPlugin&lt;/span&gt;       : http://svn.qgis.org/api_doc/html/classQgisPlugin.html&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGisInterface est une classe abstraite de base (abstract base class (ABC)) qui spécifie que les fonctionnalités publiques de QGIS sont ouvertes aux codes-tiers et aux plugins. QgisInterface est l&apos;implémentation concrète de cet ABC. La meilleure manière de mener des opération sous QGIS est de le faire au travers QGisInterface. Une instance de QgisInterface est présentée au plugin lors de son chargement. Veuillez consulter l&apos;équipe de développement de QGIS si des fonctionnalités requises par QGisInterface ne sont pas disponibles.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QgsPlugin est un ABC qui définit le comportement que doit adopter votre plugin. Voir plus bas pour davantage de détails.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;A quoi servent tous les fichiers dans mon répertoire Plugin?&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;Makefile.am  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Il s&apos;agit de spécifications générées par le Makefile pour votre plugin. Vous verrez qu&apos;il comprend des chemins vers des include c++ (-I) et des liens vers des librairies -l) to Qt4, GDAL, GEOS, QGIS Core, QGIS Ui, QGIS Gui et QGis Raster. Vous devez ajouter les dépendances propres à votre application et vos fichiers sources à ce Makefile.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.h&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltest.cpp  &lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; C&apos;est une classe qui fournit &quot;l&apos;enduit&quot; entre la logique propre de votre application personnalisée et l&apos;application QGIS. Vous verrez que nombre de méthodes sont d&apos;ores et déjà implémentées pour vous - dont des exemples sur la façon d&apos;ajouter une couche raster ou vecteur à la fenêtre d&apos;affichage principale. Cette classe est une instance concrète de l&apos;interface du plugin QGIS qui définit le comportement requis pour le plugin. Plus spécialement, un plugin possède un nombre de méthodes statiques et d&apos;objets de base de manière à ce que QgsPluginManager et le chargeur de plugin puisse identifier chacun des plugins, créer une entrée appropriée pour chacun d&apos;eux, etc. Par défaut, une simple entrée de menu et un bouton de barre de tâches sont créés et pré-configurés pour appeler la méthode run() de cette classe quand elle est sélectionnée. Cette implémentation par défaut fournie pour vous par le constructeur de plugin est bien documentée, veuillez donc vous référer au code pour plus de conseils.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestguibase.ui.h&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ceci est une Abstract Base Class implémentée à la manière Qt4 comme fichier de design d&apos;interface grahique Qt. Elle définie l&apos;apparence par défaut des boîtes de dialogue du plugin sans rien avoir à implémenter. Vous pouvez modifer ce formulaire en fonction de vos besoins ou le virer complètement si votre plugin n&apos;a pas besoin de présenter un formulaire à l&apos;utilisateur (comme par exemple pour des MapTools personnalisés).&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.cpp  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;sholltestgui.h &lt;span style=&quot; 	  font-weight:400; color:#000000;&quot;&gt; &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Voici la classe concrète où vous devez ranger le dialogue mentionné plus haut. Ici le monde est à vous....&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.qrc  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;Il s&apos;agit de fichiers de ressources Qt4 pour votre plugin. Le Makefile généré pour votre plugin est réglée pour compiler le fichier de ressources, de sorte que tout ce que vous avez besoin de faire est d&apos;ajouter vos propres icônes, etc. en utilisant le format xml. Veuillez noter que l&apos;espace de nom est utilisé pour l&apos;ensemble de vos ressources e.g. (&quot;:/ShollTest/&quot;). Il est important de conserver ce préfixe pour toutes vos ressources. Nous vous suggérons d&apos;inclure toutes autres images ou données de lancement dans ce même fichier ressources.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;sholltest.png  &lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;span style=&quot; font-weight:400; color:#000000;&quot;&gt;C&apos;est l&apos;icône qui sera utilisée pour le menu d&apos;entrée du plugin et l&apos;icône de barre des tâches. Remplacez simplement cette icône avec la votre pour individualiser votre plugin.&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600; color:#dc143c;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600; color:#dc143c;&quot;&gt;README&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ce fichier contient la doc que vous êtes en train de lire!&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Trouver l&apos;aide des développeurs:&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pour les questions et commentaires concernant le constructeur de plugin et la création de vos propres fonctionnalités sous QGIS en utilisant l&apos;interface de plugin contactez nous à:&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * the QGIS developers mailing list, or&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; * IRC (#qgis on freenode.net)&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;QGIS est distribué sous Gnu Public License. Si vous créez un plugin utile, merci de songer à le partager avec la communauté.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Amusez-vous bien et merci d&apos;avoir choisi QGIS.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;L&apos;équipe QGIS&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-weight:600;&quot;&gt;2006&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
       </translation>
     </message>
 </context>
