@@ -1,3 +1,4 @@
+SUBDIRS (plugins)
 
 FILE (GLOB IMAGES *.png)
 
