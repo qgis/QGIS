@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.1.2	2009-3-19\
+\i \cf0 2.1.3	2009-3-22\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -174,9 +174,6 @@ See detailed dependency notes below.\
 \
 \ul Bundle options\ulnone  - Some libraries and programs can be bundled in the Qgis.app package for a more portable Qgis.app.  These are pretty straightforward - yes or no.  At some time I will add more checking logic, but for now be explicit.  Generally, you don't need to bundle frameworks or system libraries.  The only logic checks whether the dynamic library or program exists, so it automatically excludes static libraries and frameworks, but it doesn't check whether it's a system library, so you could end up bundling libsqlite from the system.\
 \
-Some of the bundle targets don't exist yet, but can easily be created as needed.  Lazyness again.\
-\
-\
 \ul Prefixes\ulnone  - If you have unix libraries installed in a location other than 
 \f1\fs20 /usr/local
 \f0\fs24 , the next section is where you can change those.  \ul Make sure to check these for any library forms\ulnone .\
@@ -195,7 +192,26 @@ Some of the bundle targets don't exist yet, but can easily be created as needed.
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Build Targets
+\b \cf0 Extra Bundling
+\b0 \
+\
+Other support items not needed by the standard Qgis build can be bundled for a custom Qgis build: extra plugins, libraries, frameworks, Python modules.  For example, some PyQt-based extra modules (ie Qwt5) are installed inside the PyQt folder, and these won't be found if they are not bundled with the Qgis copy of PyQt.\
+\
+Duplicate the file 
+\f1\fs20 bundle-template.sh
+\f0\fs24  with the name 
+\f1\fs20 bundle.sh
+\f0\fs24 .  Add needed copy and processing commands to this.  See the comments in 
+\f1\fs20 bundle.sh
+\f0\fs24  for details.  
+\f1\fs20 bundle.sh
+\f0\fs24  is meant to be reusable, just like 
+\f1\fs20 qgis_user.xcconfig
+\f0\fs24 .\
+\
+\
+
+\b Build Targets
 \b0 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
