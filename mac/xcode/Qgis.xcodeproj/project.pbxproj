@@ -15879,7 +15879,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 				);
-				PRODUCT_NAME = gpsimporter.so;
+				PRODUCT_NAME = gpsimporterplugin.so;
 				TARGET_PLUGINDIR = gps_importer;
 			};
 			name = Release;
