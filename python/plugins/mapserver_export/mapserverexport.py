@@ -34,7 +34,13 @@ class MapServerExport:
     # Save reference to the QGIS interface
     self.iface = iface
 
+  # ----------------------------------------- #
+  def setCurrentTheme(self, theThemeName):
+    # Set icons to the current theme
+    self.action.setIcon(self.getThemeIcon("mapserver_export.png"))
+
   def getThemeIcon(self, theName):
+    # get the icon from the best available theme
     myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
     myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
     myQrcPath = ":/plugins/mapserver_export/" + theName;
@@ -54,6 +60,7 @@ class MapServerExport:
     #self.action.setWhatsThis("Configuration for Zoom To Point plugin")
     # connect the action to the run method
     QObject.connect(self.action, SIGNAL("activated()"), self.run) 
+    QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
 
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)

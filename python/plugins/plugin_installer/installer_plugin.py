@@ -33,7 +33,14 @@ class InstallerPlugin():
 
 
   # ----------------------------------------- #
+  def setCurrentTheme(self, theThemeName):
+    """ Set icons to the current theme """
+    self.action.setIcon(self.getThemeIcon("plugin_installer.png"))
+
+
+  # ----------------------------------------- #
   def getThemeIcon(self, theName):
+    """ get the icon from the best available theme """
     myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
     myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
     myQrcPath = ":/plugins/installer/" + theName;
@@ -60,6 +67,7 @@ class InstallerPlugin():
       nextAction = self.mainWindow().menuBar().actions()[4].menu().actions()[1]
       self.mainWindow().menuBar().actions()[4].menu().insertAction(nextAction,self.action)
     QObject.connect(self.action, SIGNAL("activated()"), self.run)
+    QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     self.statusLabel = None
 
     repositories.load()
@@ -69,8 +77,6 @@ class InstallerPlugin():
       self.statusLabel = QLabel(QCoreApplication.translate("QgsPluginInstaller","Looking for new plugins..."), self.mainWindow().statusBar())
       self.mainWindow().statusBar().insertPermanentWidget(0,self.statusLabel)
       QObject.connect(self.statusLabel, SIGNAL("linkActivated (QString)"), self.preRun)
-
-
       QObject.connect(repositories, SIGNAL("checkingDone()"), self.checkingDone)
       for key in repositories.allEnabled():
         repositories.requestFetching(key)

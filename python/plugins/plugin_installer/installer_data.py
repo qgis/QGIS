@@ -572,7 +572,6 @@ class Plugins(QObject):
         self.mPlugins[key]["name"] = plugin["name"] # local name has higher priority
       self.mPlugins[key]["version_inst"] = plugin["version_inst"]
       self.mPlugins[key]["desc_local"] = plugin["desc_local"]
-      self.mPlugins[key]["experimental"] = False
     # set status
     #
     # installed   available   status
