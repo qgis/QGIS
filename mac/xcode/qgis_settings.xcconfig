@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.2
+CURRENT_PROJECT_VERSION = 2.1.3
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -200,6 +200,10 @@ QT_LIB_SQL = -framework QtSql
 QT_LIB_QT3 = -framework Qt3Support
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
+// list of Qt frameworks used
+QTLISTQG = Qt3Support QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
+// list of PyQt modules used
+PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
 
 // with a choice of system vs user unix libs, use full path to lib file
 // to avoid possible accidental linking to system lib (ie expat)
