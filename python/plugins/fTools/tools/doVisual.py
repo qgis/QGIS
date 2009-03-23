@@ -185,11 +185,16 @@ class visualThread( QThread ):
 			nElement += 1
 			self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
 		nVal= float( len( values ) )
-		meanVal = float( sumVal ) / nVal
-		for val in values:
-			stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
-		stdVal = math.sqrt( stdVal / nVal )
-		cvVal = stdVal / meanVal
+		print "to here"
+		if not nVal > 0.00:
+			print "then here"
+			meanVal = float( sumVal ) / nVal
+			if not meanVal == 0.00:
+				for val in values:
+					stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
+				print "finally here"
+				stdVal = math.sqrt( stdVal / nVal )
+				cvVal = stdVal / meanVal
 		lstStats = []
 		lstStats.append( "Mean    : " + unicode( meanVal ) )
 		lstStats.append( "StdDev : " + unicode( stdVal ) )
