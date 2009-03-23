@@ -397,7 +397,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       return True
     else:
       for i in ["name","version_inst","version_avail","desc_repo","desc_local","author","status","repository"]:
-        item = QString(plugin[i]) #.toUpper()
+        item = QString(plugin[i])
         if item != None:
           if item.contains(self.lineFilter.text(), Qt.CaseInsensitive):
             return True
