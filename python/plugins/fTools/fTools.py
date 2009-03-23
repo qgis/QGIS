@@ -66,6 +66,55 @@ class fToolsPlugin:
 			return QIcon( ":" + defaultPath )
 		else:
 			return QIcon()
+			
+	def updateThemeIcons( self, theme ):
+		self.analysisMenu.setIcon( QIcon( self.getThemeIcon( "analysis.png" ) ) )
+		self.distMatrix.setIcon( QIcon( self.getThemeIcon( "matrix.png" ) ) )
+		self.sumLines.setIcon( QIcon( self.getThemeIcon( "sum_lines.png" ) ) )
+		self.pointsPoly.setIcon( QIcon( self.getThemeIcon( "sum_points.png" ) ) )
+		self.compStats.setIcon( QIcon( self.getThemeIcon( "basic_statistics.png" ) ) )
+		self.listUnique.setIcon( QIcon( self.getThemeIcon( "unique.png" ) ) )
+		self.nearestNeigh.setIcon( QIcon( self.getThemeIcon( "neighbour.png" ) ) )
+		self.meanCoords.setIcon( QIcon( self.getThemeIcon( "mean.png" ) ) )
+		self.intLines.setIcon( QIcon( self.getThemeIcon( "intersections.png" ) ) ) 
+
+		self.researchMenu.setIcon( QIcon( self.getThemeIcon( "sampling.png" ) ) )
+		self.randSel.setIcon( QIcon( self.getThemeIcon( "random_selection.png" ) ) ) 
+		self.randSub.setIcon( QIcon( self.getThemeIcon( "sub_selection.png" ) ) ) 
+		self.randPoints.setIcon( QIcon( self.getThemeIcon( "random_points.png" ) ) ) 
+		self.regPoints.setIcon( QIcon( self.getThemeIcon( "regular_points.png" ) ) ) 
+		self.vectGrid.setIcon( QIcon( self.getThemeIcon( "vector_grid.png" ) ) )
+		self.selectLocation.setIcon( QIcon( self.getThemeIcon( "select_location.png" ) ) )
+		self.layerExtent.setIcon( QIcon( self.getThemeIcon( "layer_extent.png" ) ) )
+
+		self.geoMenu.setIcon( QIcon( self.getThemeIcon( "geoprocessing.png" ) ) )
+		self.minConvex.setIcon( QIcon( self.getThemeIcon( "convex_hull.png" ) ) )
+		self.dynaBuffer.setIcon( QIcon( self.getThemeIcon( "buffer.png" ) ) )
+		self.intersect.setIcon( QIcon( self.getThemeIcon( "intersect.png" ) ) )
+		self.union.setIcon( QIcon( self.getThemeIcon( "union.png" ) ) )
+		self.symDifference.setIcon( QIcon( self.getThemeIcon( "sym_difference.png" ) ) )
+		self.clip.setIcon( QIcon( self.getThemeIcon( "clip.png" ) ) )
+		self.dissolve.setIcon( QIcon( self.getThemeIcon( "dissolve.png" ) ) )
+		self.erase.setIcon( QIcon( self.getThemeIcon( "difference.png" ) ) )
+
+		self.conversionMenu.setIcon( QIcon( self.getThemeIcon( "geometry.png" ) ) )
+		self.compGeo.setIcon( QIcon( self.getThemeIcon( "export_geometry.png") ) )
+		self.checkGeom.setIcon( QIcon( self.getThemeIcon( "check_geometry.png") ) )
+		self.centroids.setIcon( QIcon( self.getThemeIcon( "centroids.png") ) )
+		self.delaunay.setIcon( QIcon( self.getThemeIcon( "delaunay.png") ) )
+		self.extNodes.setIcon( QIcon( self.getThemeIcon( "extract_nodes.png") ) )
+		self.simplify.setIcon( QIcon( self.getThemeIcon( "simplify.png") ) )
+		self.multiToSingle.setIcon( QIcon( self.getThemeIcon( "multi_to_single.png") ) )
+		self.singleToMulti.setIcon( QIcon( self.getThemeIcon( "single_to_multi.png") ) ) 
+		self.polysToLines.setIcon( QIcon( self.getThemeIcon( "to_lines.png") ) )
+		
+		self.dataManageMenu.setIcon( QIcon( self.getThemeIcon( "management.png") ) )
+		self.project.setIcon( QIcon( self.getThemeIcon( "export_projection.png") ) )
+		self.define.setIcon( QIcon( self.getThemeIcon( "define_projection.png" ) ) ) 
+		self.joinAttr.setIcon( QIcon( self.getThemeIcon( "join_attributes.png" ) ) ) 
+		self.spatJoin.setIcon( QIcon( self.getThemeIcon( "join_location.png" ) ) )
+		self.splitVect.setIcon( QIcon( self.getThemeIcon( "split_layer.png" ) ) )
+		self.ftools_aboot.setIcon( QIcon( self.getThemeIcon( "ftools_logo.png" ) ) )
 
 	def initGui( self ):
 		if int( self.QgisVersion ) < 1:
@@ -73,110 +122,68 @@ class fToolsPlugin:
 			QCoreApplication.translate( "fTools", "Quantum GIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
 			+ QCoreApplication.translate( "fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
 			return None
-		
+		QObject.connect( self.iface, SIGNAL( "currentThemeChanged ( QString )" ), self.updateThemeIcons )
 		self.menu = QMenu()
 		self.menu.setTitle( QCoreApplication.translate( "fTools", "&Tools" ) )
+		
 		self.analysisMenu = QMenu( QCoreApplication.translate( "fTools", "&Analysis Tools" ) )
-		self.analysisMenu.setIcon( QIcon( self.getThemeIcon( "analysis.png" ) ) )
-		self.distMatrix = QAction( QIcon( self.getThemeIcon( "matrix.png" ) ), 
-		QCoreApplication.translate( "fTools", "Distance matrix" ),self.iface.mainWindow( ) )
-		self.sumLines = QAction( QIcon( self.getThemeIcon( "sum_lines.png" ) ), 
-		QCoreApplication.translate( "fTools", "Sum line lengths" ), self.iface.mainWindow() )
-		self.pointsPoly = QAction( QIcon( self.getThemeIcon( "sum_points.png" ) ), 
-		QCoreApplication.translate( "fTools", "Points in polygon" ),self.iface.mainWindow() )
-		self.compStats = QAction( QIcon( self.getThemeIcon( "basic_statistics.png" ) ), 
-		QCoreApplication.translate( "fTools",  "Basic statistics" ),self.iface.mainWindow() )
-		self.listUnique = QAction( QIcon( self.getThemeIcon( "unique.png" ) ), 
-		QCoreApplication.translate( "fTools", "List unique values" ),self.iface.mainWindow() )
-		self.nearestNeigh = QAction( QIcon( self.getThemeIcon( "neighbour.png" ) ), 
-		QCoreApplication.translate( "fTools", "Nearest neighbour analysis" ),self.iface.mainWindow() )
-		self.meanCoords = QAction( QIcon( self.getThemeIcon( "mean.png" ) ), 
-		QCoreApplication.translate( "fTools", "Mean coordinate(s)" ),self.iface.mainWindow() )
-		self.intLines = QAction( QIcon( self.getThemeIcon( "intersections.png" ) ), 
-		QCoreApplication.translate( "fTools", "Line intersections" ) ,self.iface.mainWindow() )
+		self.distMatrix = QAction( QCoreApplication.translate( "fTools", "Distance matrix" ),self.iface.mainWindow( ) )
+		self.sumLines = QAction( QCoreApplication.translate( "fTools", "Sum line lengths" ), self.iface.mainWindow() )
+		self.pointsPoly = QAction( QCoreApplication.translate( "fTools", "Points in polygon" ),self.iface.mainWindow() )
+		self.compStats = QAction( QCoreApplication.translate( "fTools",  "Basic statistics" ),self.iface.mainWindow() )
+		self.listUnique = QAction( QCoreApplication.translate( "fTools", "List unique values" ),self.iface.mainWindow() )
+		self.nearestNeigh = QAction( QCoreApplication.translate( "fTools", "Nearest neighbour analysis" ), self.iface.mainWindow() )
+		self.meanCoords = QAction( QCoreApplication.translate( "fTools", "Mean coordinate(s)" ),self.iface.mainWindow() )
+		self.intLines = QAction( QCoreApplication.translate( "fTools", "Line intersections" ) ,self.iface.mainWindow() )
 		self.analysisMenu.addActions( [ self.distMatrix, self.sumLines, self.pointsPoly,
 		self.listUnique, self.compStats, self.nearestNeigh, self.meanCoords, self.intLines ] )
 
 		self.researchMenu = QMenu( QCoreApplication.translate( "fTools", "&Research Tools" ) )
-		self.researchMenu.setIcon( QIcon( self.getThemeIcon( "sampling.png" ) ) )
-		self.randSel = QAction( QIcon( self.getThemeIcon( "random_selection.png" ) ), 
-		QCoreApplication.translate( "fTools", "Random selection" ),self.iface.mainWindow() )
-		self.randSub = QAction( QIcon( self.getThemeIcon( "sub_selection.png" ) ), 
-		QCoreApplication.translate( "fTools", "Random selection within subsets" ),self.iface.mainWindow() )
-		self.randPoints = QAction( QIcon( self.getThemeIcon( "random_points.png" ) ), 
-		QCoreApplication.translate( "fTools", "Random points" ),self.iface.mainWindow() )
-		self.regPoints = QAction( QIcon( self.getThemeIcon( "regular_points.png" ) ), 
-		QCoreApplication.translate( "fTools", "Regular points" ), self.iface.mainWindow() )
-		self.vectGrid = QAction( QIcon( self.getThemeIcon( "vector_grid.png" ) ), 
-		QCoreApplication.translate( "fTools", "Vector grid" ), self.iface.mainWindow() )
-		self.selectLocation = QAction( QIcon( self.getThemeIcon( "select_location.png" ) ), 
-		QCoreApplication.translate( "fTools", "Select by location" ), self.iface.mainWindow() )
-		self.layerExtent = QAction( QIcon( self.getThemeIcon( "layer_extent.png" ) ), 
-		QCoreApplication.translate( "fTools", "Polygon from layer extent" ), self.iface.mainWindow() )
+		self.randSel = QAction( QCoreApplication.translate( "fTools", "Random selection" ),self.iface.mainWindow() )
+		self.randSub = QAction( QCoreApplication.translate( "fTools", "Random selection within subsets" ),self.iface.mainWindow() )
+		self.randPoints = QAction( QCoreApplication.translate( "fTools", "Random points" ),self.iface.mainWindow() )
+		self.regPoints = QAction( QCoreApplication.translate( "fTools", "Regular points" ), self.iface.mainWindow() )
+		self.vectGrid = QAction( QCoreApplication.translate( "fTools", "Vector grid" ), self.iface.mainWindow() )
+		self.selectLocation = QAction( QCoreApplication.translate( "fTools", "Select by location" ), self.iface.mainWindow() )
+		self.layerExtent = QAction( QCoreApplication.translate( "fTools", "Polygon from layer extent" ), self.iface.mainWindow() )
 		self.researchMenu.addActions( [ self.randSel, self.randSub, self.randPoints, 
 		self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent ] )
 
 		self.geoMenu = QMenu( QCoreApplication.translate( "fTools", "&Geoprocessing Tools" ) )
-		self.geoMenu.setIcon( QIcon( self.getThemeIcon( "geoprocessing.png" ) ) )
-		self.minConvex = QAction( QIcon( self.getThemeIcon( "convex_hull.png" ) ), 
-		QCoreApplication.translate( "fTools", "Convex hull(s)" ),self.iface.mainWindow() )
-		self.dynaBuffer = QAction( QIcon( self.getThemeIcon( "buffer.png" ) ), 
-		QCoreApplication.translate( "fTools", "Buffer(s)" ),self.iface.mainWindow() )
-		self.intersect = QAction( QIcon( self.getThemeIcon( "intersect.png" ) ), 
-		QCoreApplication.translate( "fTools", "Intersect" ),self.iface.mainWindow() )
-		self.union = QAction( QIcon( self.getThemeIcon( "union.png" ) ), 
-		QCoreApplication.translate( "fTools", "Union" ),self.iface.mainWindow() )
-		self.symDifference = QAction( QIcon( self.getThemeIcon( "sym_difference.png" ) ), 
-		QCoreApplication.translate( "fTools", "Symetrical difference" ),self.iface.mainWindow() )
-		self.clip = QAction( QIcon( self.getThemeIcon( "clip.png" ) ), 
-		QCoreApplication.translate( "fTools", "Clip" ),self.iface.mainWindow() )
-		self.dissolve = QAction( QIcon( self.getThemeIcon( "dissolve.png" ) ), 
-		QCoreApplication.translate( "fTools", "Dissolve" ),self.iface.mainWindow() )
-		self.erase = QAction( QIcon( self.getThemeIcon( "difference.png" ) ), 
-		QCoreApplication.translate( "fTools", "Difference" ),self.iface.mainWindow() )
+		self.minConvex = QAction( QCoreApplication.translate( "fTools", "Convex hull(s)" ),self.iface.mainWindow() )
+		self.dynaBuffer = QAction( QCoreApplication.translate( "fTools", "Buffer(s)" ),self.iface.mainWindow() )
+		self.intersect = QAction( QCoreApplication.translate( "fTools", "Intersect" ),self.iface.mainWindow() )
+		self.union = QAction( QCoreApplication.translate( "fTools", "Union" ),self.iface.mainWindow() )
+		self.symDifference = QAction( QCoreApplication.translate( "fTools", "Symetrical difference" ),self.iface.mainWindow() )
+		self.clip = QAction( QCoreApplication.translate( "fTools", "Clip" ),self.iface.mainWindow() )
+		self.dissolve = QAction( QCoreApplication.translate( "fTools", "Dissolve" ),self.iface.mainWindow() )
+		self.erase = QAction( QCoreApplication.translate( "fTools", "Difference" ),self.iface.mainWindow() )
 		self.geoMenu.addActions( [ self.minConvex, self.dynaBuffer, self.intersect, 
 		self.union, self.symDifference, self.clip, self.erase, self.dissolve ] )
 
 		self.conversionMenu = QMenu( QCoreApplication.translate( "fTools", "G&eometry Tools" ) )
-		self.conversionMenu.setIcon( QIcon( self.getThemeIcon( "geometry.png" ) ) )
-		self.compGeo = QAction( QIcon( self.getThemeIcon( "export_geometry.png") ), 
-		QCoreApplication.translate( "fTools", "Export/Add geometry columns" ),self.iface.mainWindow() )
-		self.checkGeom = QAction( QIcon( self.getThemeIcon( "check_geometry.png") ), 
-		QCoreApplication.translate( "fTools", "Check geometry validity" ),self.iface.mainWindow() )
-		self.centroids = QAction( QIcon( self.getThemeIcon( "centroids.png") ),  
-		QCoreApplication.translate( "fTools", "Polygon centroids" ),self.iface.mainWindow() )
-		self.delaunay = QAction( QIcon( self.getThemeIcon( "delaunay.png") ),  
-		QCoreApplication.translate( "fTools", "Delaunay triangulation" ),self.iface.mainWindow() )
-		self.extNodes = QAction( QIcon( self.getThemeIcon( "extract_nodes.png") ),  
-		QCoreApplication.translate( "fTools", "Extract nodes" ),self.iface.mainWindow() )
-		self.simplify = QAction( QIcon( self.getThemeIcon( "simplify.png") ),  
-		QCoreApplication.translate( "fTools", "Simplify geometries" ),self.iface.mainWindow() )
-		self.multiToSingle = QAction( QIcon( self.getThemeIcon( "multi_to_single.png") ),  
-		QCoreApplication.translate( "fTools", "Multipart to singleparts" ),self.iface.mainWindow() )
-		self.singleToMulti = QAction( QIcon( self.getThemeIcon( "single_to_multi.png") ),  
-		QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
-		self.polysToLines = QAction( QIcon( self.getThemeIcon( "to_lines.png") ),  
-		QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
+		self.compGeo = QAction( QCoreApplication.translate( "fTools", "Export/Add geometry columns" ),self.iface.mainWindow() )
+		self.checkGeom = QAction( QCoreApplication.translate( "fTools", "Check geometry validity" ),self.iface.mainWindow() )
+		self.centroids = QAction( QCoreApplication.translate( "fTools", "Polygon centroids" ),self.iface.mainWindow() )
+		self.delaunay = QAction( QCoreApplication.translate( "fTools", "Delaunay triangulation" ),self.iface.mainWindow() )
+		self.extNodes = QAction( QCoreApplication.translate( "fTools", "Extract nodes" ),self.iface.mainWindow() )
+		self.simplify = QAction( QCoreApplication.translate( "fTools", "Simplify geometries" ),self.iface.mainWindow() )
+		self.multiToSingle = QAction( QCoreApplication.translate( "fTools", "Multipart to singleparts" ),self.iface.mainWindow() )
+		self.singleToMulti = QAction( QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
+		self.polysToLines = QAction( QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
 		self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay, 
 		self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes] )
 
 		self.dataManageMenu = QMenu( QCoreApplication.translate( "fTools", "&Data Management Tools") )
-		self.dataManageMenu.setIcon( QIcon( self.getThemeIcon( "management.png") ) )
-		self.project = QAction( QIcon( self.getThemeIcon( "export_projection.png") ),  
-		QCoreApplication.translate( "fTools", "Export to new projection" ), self.iface.mainWindow() )
-		self.define = QAction( QIcon( self.getThemeIcon( "define_projection.png" ) ),  
-		QCoreApplication.translate( "fTools", "Define current projection" ), self.iface.mainWindow() )
-		self.joinAttr = QAction( QIcon( self.getThemeIcon( "join_attributes.png" ) ),  
-		QCoreApplication.translate( "fTools", "Join attributes" ), self.iface.mainWindow() )
-		self.spatJoin = QAction( QIcon( self.getThemeIcon( "join_location.png" ) ),  
-		QCoreApplication.translate( "fTools", "Join attributes by location" ), self.iface.mainWindow() )
-		self.splitVect = QAction( QIcon( self.getThemeIcon( "split_layer.png" ) ),  
-		QCoreApplication.translate( "fTools", "Split vector layer" ), self.iface.mainWindow() )
+		self.project = QAction( QCoreApplication.translate( "fTools", "Export to new projection" ), self.iface.mainWindow() )
+		self.define = QAction( QCoreApplication.translate( "fTools", "Define current projection" ), self.iface.mainWindow() )
+		self.joinAttr = QAction( QCoreApplication.translate( "fTools", "Join attributes" ), self.iface.mainWindow() )
+		self.spatJoin = QAction( QCoreApplication.translate( "fTools", "Join attributes by location" ), self.iface.mainWindow() )
+		self.splitVect = QAction( QCoreApplication.translate( "fTools", "Split vector layer" ), self.iface.mainWindow() )
 		self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect ] )
-
-		self.ftools_aboot = QAction( QIcon( self.getThemeIcon( "ftools_logo.png" ) ), 
-		QCoreApplication.translate( "fTools", "fTools Information" ), self.iface.mainWindow() )
-
+		self.ftools_aboot = QAction( QCoreApplication.translate( "fTools", "fTools Information" ), self.iface.mainWindow() )
+		self.updateThemeIcons( "theme" )
+		
 		self.menu.addMenu( self.analysisMenu )
 		self.menu.addMenu( self.researchMenu )
 		self.menu.addMenu( self.geoMenu )
