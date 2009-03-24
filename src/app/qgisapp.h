@@ -246,6 +246,7 @@ class QgisApp : public QMainWindow
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
+	QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionLayerSeparator1() { return mActionLayerSeparator1; }
     QAction *actionOpenTable() { return mActionOpenTable; }
@@ -369,6 +370,10 @@ class QgisApp : public QMainWindow
     //#ifdef HAVE_POSTGRESQL
     //! Add a databaselayer to the map
     void addDatabaseLayer();
+    //#endif
+	//#ifdef HAVE_SPATIALITE
+    //! Add a SpatiaLite layer to the map
+    void addSpatiaLiteLayer();
     //#endif
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();
@@ -717,6 +722,7 @@ class QgisApp : public QMainWindow
     QAction *mActionAddOgrLayer;
     QAction *mActionAddRasterLayer;
     QAction *mActionAddPgLayer;
+	QAction *mActionAddSpatiaLiteLayer;
     QAction *mActionAddWmsLayer;
     QAction *mActionLayerSeparator1;
     QAction *mActionOpenTable;
