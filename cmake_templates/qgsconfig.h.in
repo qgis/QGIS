@@ -25,6 +25,8 @@
 
 #cmakedefine HAVE_POSTGRESQL
 
+#cmakedefine HAVE_SPATIALITE
+
 #cmakedefine HAVE_PYTHON
 
 #endif

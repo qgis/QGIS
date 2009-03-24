@@ -175,6 +175,9 @@
 #ifdef HAVE_POSTGRESQL
 #include "qgsdbsourceselect.h"
 #endif
+#ifdef HAVE_SPATIALITE
+#include "qgsspatialitesourceselect.h"
+#endif
 
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
@@ -776,6 +779,18 @@ void QgisApp::createActions()
 //#endif
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
 
+  mActionAddSpatiaLiteLayer = new QAction( getThemeIcon( "mActionAddSpatiaLiteLayer.png" ), tr( "Add SpatiaLite Layer..." ), this );
+  mActionAddSpatiaLiteLayer->setShortcut( tr( "L", "Add a SpatiaLite Layer" ) );
+  mActionAddSpatiaLiteLayer->setStatusTip( tr( "Add a SpatiaLite Layer" ) );
+  connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
+//#ifdef HAVE_SPATIALITE
+  // QgsDebugMsg("HAVE_SPATIALITE is defined");
+//  assert(0);
+//#else
+  // QgsDebugMsg("HAVE_SPATIALITE not defined");
+//  assert(0);
+//#endif
+
   mActionAddWmsLayer = new QAction( getThemeIcon( "mActionAddWmsLayer.png" ), tr( "Add WMS Layer..." ), this );
   mActionAddWmsLayer->setShortcut( tr( "W", "Add a Web Mapping Server Layer" ) );
   mActionAddWmsLayer->setStatusTip( tr( "Add a Web Mapping Server Layer" ) );
@@ -1110,6 +1125,9 @@ void QgisApp::createMenus()
 #ifdef HAVE_POSTGRESQL
   mLayerMenu->addAction( mActionAddPgLayer );
 #endif
+#ifdef HAVE_SPATIALITE
+  mLayerMenu->addAction( mActionAddSpatiaLiteLayer );
+#endif
   mLayerMenu->addAction( mActionAddWmsLayer );
   mActionLayerSeparator1 = mLayerMenu->addSeparator();
 
@@ -1207,6 +1225,9 @@ void QgisApp::createToolBars()
   mFileToolBar->addAction( mActionAddRasterLayer );
 #ifdef HAVE_POSTGRESQL
   mFileToolBar->addAction( mActionAddPgLayer );
+#endif
+#ifdef HAVE_SPATIALITE
+  mFileToolBar->addAction( mActionAddSpatiaLiteLayer );
 #endif
   mFileToolBar->addAction( mActionAddWmsLayer );
   mToolbarMenu->addAction( mFileToolBar->toggleViewAction() );
@@ -1432,6 +1453,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddOgrLayer->setIcon( getThemeIcon( "/mActionAddOgrLayer.png" ) );
   mActionAddRasterLayer->setIcon( getThemeIcon( "/mActionAddRasterLayer.png" ) );
   mActionAddPgLayer->setIcon( getThemeIcon( "/mActionAddLayer.png" ) );
+  mActionAddSpatiaLiteLayer->setIcon( getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
   mActionRemoveLayer->setIcon( getThemeIcon( "/mActionRemoveLayer.png" ) );
   mActionNewVectorLayer->setIcon( getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddAllToOverview->setIcon( getThemeIcon( "/mActionAddAllToOverview.png" ) );
@@ -1794,6 +1816,13 @@ void QgisApp::about()
 #else
 
     versionString += tr( " This copy of QGIS has been built without PostgreSQL support." );
+#endif
+#ifdef HAVE_SPATIALITE
+
+    versionString += tr( "\nThis copy of QGIS has been built with SpatiaLite support." );
+#else
+
+    versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
 #endif
     versionString += tr( "\nThis binary was compiled against Qt %1,"
                          "and is currently running against Qt %2" )
@@ -2383,6 +2412,87 @@ void QgisApp::addDatabaseLayer()
 } // QgisApp::addDatabaseLayer()
 #endif
 
+
+#ifndef HAVE_SPATIALITE
+void QgisApp::addSpatiaLiteLayer() {}
+#else
+void QgisApp::addSpatiaLiteLayer()
+{
+  if(mMapCanvas && mMapCanvas->isDrawing())
+    {
+      return;
+    }
+
+  // show the SpatiaLite dialog
+
+  QgsSpatiaLiteSourceSelect *dbs = new QgsSpatiaLiteSourceSelect( this );
+
+  mMapCanvas->freeze();
+
+  if (dbs->exec())
+  {
+// Let render() do its own cursor management
+//    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+
+    // repaint the canvas if it was covered by the dialog
+
+    // add files to the map canvas
+    QStringList tables = dbs->selectedTables();
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    QString connectionInfo = dbs->connectionInfo();
+    // for each selected table, connect to the database and build a canvasitem for it
+    QStringList::Iterator it = tables.begin();
+    while (it != tables.end())
+    {
+
+      // normalizing the layer name
+	  QString layername = *it;
+	  layername = layername.mid(1);
+	  int idx = layername.indexOf( "\" (" );
+	  if (idx > 0)
+	    layername.truncate(idx);
+	  
+	  // create the layer
+      //qWarning("creating layer");
+      QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ")", layername, "spatialite" );
+      if ( layer->isValid() )
+      {
+        // register this layer with the central layers registry
+        QgsMapLayerRegistry::instance()->addMapLayer( layer );
+        // notify the project we've made a change
+        QgsProject::instance()->dirty( true );
+      }
+      else
+      {
+        QgsDebugMsg( (*it) + " is an invalid layer - not loaded" );
+        QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
+        delete layer;
+      }
+      //qWarning("incrementing iterator");
+      ++it;
+    }
+
+    QApplication::restoreOverrideCursor();
+
+    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+  }
+  delete dbs;
+  
+  // update UI
+  qApp->processEvents();
+  
+  // draw the map
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
+
+} // QgisApp::addSpatiaLiteLayer()
+#endif
 
 void QgisApp::addWmsLayer()
 {

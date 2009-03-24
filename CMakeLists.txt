@@ -50,6 +50,12 @@ IF (WITH_POSTGRESQL)
   SET (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
 ENDIF (WITH_POSTGRESQL)
 
+# try to configure and build SPATIALITE support
+SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built")
+IF (WITH_SPATIALITE)
+  SET (SPATIALITE_PREFIX "" CACHE PATH "Path to SPATIALITE base directory")
+ENDIF (WITH_SPATIALITE)
+
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 IF (WITH_BINDINGS)
@@ -118,6 +124,9 @@ FIND_PACKAGE(GSL)      # Georeferencer
 IF (WITH_GRASS)
   FIND_PACKAGE(GRASS)    # GRASS plugin
 ENDIF (WITH_GRASS)
+IF (WITH_SPATIALITE)
+  FIND_PACKAGE(SPATIALITE)    # SPATIALITE provider
+ENDIF (WITH_SPATIALITE)
 
 IF (WITH_BINDINGS)
   # python support:
@@ -136,6 +145,10 @@ IF (POSTGRES_FOUND)
   SET (HAVE_POSTGRESQL TRUE)
 ENDIF (POSTGRES_FOUND)
 
+IF (SPATIALITE_FOUND)
+  # following variable is used in qgsconfig.h
+  SET (HAVE_SPATIALITE TRUE)
+ENDIF (SPATIALITE_FOUND)
 
 #############################################################
 # search for Qt4

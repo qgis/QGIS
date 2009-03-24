@@ -15,6 +15,8 @@ SET(QGIS_APP_SRCS
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
+  qgsspatialitefilterproxymodel.cpp
+  qgsspatialitetablemodel.cpp
   qgsdelattrdialog.cpp
   qgsgeomtypedialog.cpp
   qgsgraduatedsymboldialog.cpp
@@ -135,6 +137,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgsdbtablemodel.h
+  qgsspatialitetablemodel.h
 
   composer/qgscomposer.h
   composer/qgscomposeritemwidget.h
@@ -174,6 +177,15 @@ IF (POSTGRES_FOUND)
     qgspgquerybuilder.h
     )
 ENDIF (POSTGRES_FOUND)
+
+IF (SPATIALITE_FOUND)
+  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
+    qgsspatialitesourceselect.cpp
+    )
+  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
+    qgsspatialitesourceselect.h
+    )
+ENDIF (SPATIALITE_FOUND)
 
 
 QT4_WRAP_CPP(QGIS_APP_MOC_SRCS ${QGIS_APP_MOC_HDRS})
@@ -227,6 +239,10 @@ IF (POSTGRES_FOUND)
   INCLUDE_DIRECTORIES(${POSTGRES_INCLUDE_DIR})
 ENDIF (POSTGRES_FOUND)
 
+IF (SPATIALITE_FOUND)
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+ENDIF (SPATIALITE_FOUND)
+
 #############
 
 IF (WIN32)
@@ -268,6 +284,10 @@ SET_TARGET_PROPERTIES(qgis PROPERTIES
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (qgis ${POSTGRES_LIBRARY})
 ENDIF (POSTGRES_FOUND)
+
+IF (SPATIALITE_FOUND)
+  TARGET_LINK_LIBRARIES (qgis ${SPATIALITE_LIBRARY})
+ENDIF (SPATIALITE_FOUND)
 
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
