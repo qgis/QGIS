@@ -4334,7 +4334,7 @@ bool QgsGeometry::exportGeosToWkb()
       int geometrySize = 1 + 2 * sizeof( int );
       for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
-        geometrySize += 1 + 2 * sizeof( int ) + 2 * sizeof( double );
+        geometrySize += 1 + sizeof( int ) + 2 * sizeof( double );
       }
 
       mGeometry = new unsigned char[geometrySize];
