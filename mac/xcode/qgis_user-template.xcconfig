@@ -39,6 +39,12 @@
 //GEOS_FORM = fw // fw or shared
 
 //SQLITE_FORM = fw // fw, system, static or shared
+// spatialite framework form is actually a part of sqlite fw
+//SPATIALITE_FORM = fw // fw, static or shared
+// whether spatialite is built with GEOS and PROJ
+// (must be same GEOS and PROJ used for Qgis)
+//SPATIALITE_GEOS = yes
+//SPATIALITE_PROJ = yes
 
 //GSL_FORM = shared // static or shared
 //PGSQL_FORM = shared // static or shared
@@ -72,6 +78,7 @@
 //BUNDLE_GEOS = YES
 //BUNDLE_PROJ = YES
 //BUNDLE_SQLITE = YES
+//BUNDLE_SPATIALITE = YES
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -103,6 +110,7 @@
 
 // unix SQLite defaults to system
 //SQLITE_PREFIX_shared = /usr
+//SPATIALITE_PREFIX = /usr/local
 
 //PGSQL_PREFIX = /usr/local/pgsql
 // used to link static libs
@@ -138,6 +146,10 @@
 
 //SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
 //SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
+
+//SPATIALITE_INC = $(SPATIALITE_INC_$(SPATIALITE_FORM))
+//SPATIALITE_LIB = $(SPATIALITE_LIB_$(SPATIALITE_FORM))
+//SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/Current
 //PYTHON_INC = $(PYTHON_PREFIX)/Headers

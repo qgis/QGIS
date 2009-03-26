@@ -68,6 +68,7 @@
 				7256F1940F411B110022BE1F /* PBXTargetDependency */,
 				7256F1920F411B110022BE1F /* PBXTargetDependency */,
 				7256F1900F411B110022BE1F /* PBXTargetDependency */,
+				7262EDA10F7A887F00498385 /* PBXTargetDependency */,
 				7256F1B30F411C120022BE1F /* PBXTargetDependency */,
 				7256F1B10F411C120022BE1F /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
@@ -943,6 +944,27 @@
 		7256F57A0F41C64F0022BE1F /* 995980174_de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7209ED7D0F39E5D9003DC336 /* 995980174_de_DE */; };
 		7256F57B0F41C64F0022BE1F /* 995980174_en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7209ED7E0F39E5D9003DC336 /* 995980174_en_US */; };
 		7256F57C0F41C64F0022BE1F /* 995980174_sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7209ED7F0F39E5D9003DC336 /* 995980174_sk_SK */; };
+		7262ED670F7A6E6F00498385 /* grass_add_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED610F7A6E0800498385 /* grass_add_vertex.png */; };
+		7262ED680F7A6E6F00498385 /* grass_close_edit.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5D0F7A6E0800498385 /* grass_close_edit.png */; };
+		7262ED690F7A6E6F00498385 /* grass_delete_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED630F7A6E0800498385 /* grass_delete_line.png */; };
+		7262ED6A0F7A6E6F00498385 /* grass_delete_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED640F7A6E0800498385 /* grass_delete_vertex.png */; };
+		7262ED6B0F7A6E6F00498385 /* grass_edit_attributes.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5C0F7A6E0800498385 /* grass_edit_attributes.png */; };
+		7262ED6C0F7A6E6F00498385 /* grass_move_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5E0F7A6E0800498385 /* grass_move_line.png */; };
+		7262ED6D0F7A6E6F00498385 /* grass_move_vertex.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5B0F7A6E0800498385 /* grass_move_vertex.png */; };
+		7262ED6E0F7A6E6F00498385 /* grass_new_boundary.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5A0F7A6E0800498385 /* grass_new_boundary.png */; };
+		7262ED6F0F7A6E6F00498385 /* grass_new_centroid.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED620F7A6E0800498385 /* grass_new_centroid.png */; };
+		7262ED700F7A6E6F00498385 /* grass_new_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED5F0F7A6E0800498385 /* grass_new_line.png */; };
+		7262ED710F7A6E6F00498385 /* grass_new_point.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED650F7A6E0800498385 /* grass_new_point.png */; };
+		7262ED720F7A6E6F00498385 /* grass_split_line.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7262ED600F7A6E0800498385 /* grass_split_line.png */; };
+		7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */; };
+		7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */; };
+		7262ED870F7A754100498385 /* qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED800F7A74B700498385 /* qgsspatialitesourceselect.cpp */; };
+		7262ED880F7A754100498385 /* qgsspatialitesourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED810F7A74B700498385 /* qgsspatialitesourceselect.h */; };
+		7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */; };
+		7262ED970F7A770300498385 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
+		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
+		7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */; };
 		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
 		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
 		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
@@ -2366,6 +2388,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
+		7262ED980F7A770300498385 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 		729286ED0F71BCE6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -3084,6 +3117,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D0C4E890486CD37000505A6;
 			remoteInfo = Qgis;
+		};
+		7262ED940F7A770300498385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7209F1D10F39E760003DC336;
+			remoteInfo = qgis_core;
+		};
+		7262EDA00F7A887F00498385 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7262ED920F7A770300498385;
+			remoteInfo = spatialiteprovider;
 		};
 		729287EC0F71E808006D9489 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -3876,6 +3923,7 @@
 				7256F4920F41C4DD0022BE1F /* tracking.png in Copy - theme-default */,
 				7256F4930F41C4DD0022BE1F /* transformed.png in Copy - theme-default */,
 				7256F4940F41C4DD0022BE1F /* user.png in Copy - theme-default */,
+				7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */,
 			);
 			name = "Copy - theme-default";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5102,6 +5150,18 @@
 				72EBC9880F49D8030016BA3C /* grass_region.png in Copy - theme-gis */,
 				72EBC9890F49D8030016BA3C /* grass_region_edit.png in Copy - theme-gis */,
 				72EBC98A0F49D8030016BA3C /* grass_tools.png in Copy - theme-gis */,
+				7262ED670F7A6E6F00498385 /* grass_add_vertex.png in Copy - theme-gis */,
+				7262ED680F7A6E6F00498385 /* grass_close_edit.png in Copy - theme-gis */,
+				7262ED690F7A6E6F00498385 /* grass_delete_line.png in Copy - theme-gis */,
+				7262ED6A0F7A6E6F00498385 /* grass_delete_vertex.png in Copy - theme-gis */,
+				7262ED6B0F7A6E6F00498385 /* grass_edit_attributes.png in Copy - theme-gis */,
+				7262ED6C0F7A6E6F00498385 /* grass_move_line.png in Copy - theme-gis */,
+				7262ED6D0F7A6E6F00498385 /* grass_move_vertex.png in Copy - theme-gis */,
+				7262ED6E0F7A6E6F00498385 /* grass_new_boundary.png in Copy - theme-gis */,
+				7262ED6F0F7A6E6F00498385 /* grass_new_centroid.png in Copy - theme-gis */,
+				7262ED700F7A6E6F00498385 /* grass_new_line.png in Copy - theme-gis */,
+				7262ED710F7A6E6F00498385 /* grass_new_point.png in Copy - theme-gis */,
+				7262ED720F7A6E6F00498385 /* grass_split_line.png in Copy - theme-gis */,
 			);
 			name = "Copy - theme-gis";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7907,6 +7967,31 @@
 		7256F2E30F4147890022BE1F /* CONTRIBUTORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CONTRIBUTORS; path = ../../CONTRIBUTORS; sourceTree = SOURCE_ROOT; };
 		7256F2E40F4147890022BE1F /* CODING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CODING; path = ../../CODING; sourceTree = SOURCE_ROOT; };
 		7256F2E50F4147890022BE1F /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AUTHORS; path = ../../AUTHORS; sourceTree = SOURCE_ROOT; };
+		7262ED5A0F7A6E0800498385 /* grass_new_boundary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_new_boundary.png; path = ../../src/plugins/grass/themes/gis/grass_new_boundary.png; sourceTree = SOURCE_ROOT; };
+		7262ED5B0F7A6E0800498385 /* grass_move_vertex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_move_vertex.png; path = ../../src/plugins/grass/themes/gis/grass_move_vertex.png; sourceTree = SOURCE_ROOT; };
+		7262ED5C0F7A6E0800498385 /* grass_edit_attributes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_edit_attributes.png; path = ../../src/plugins/grass/themes/gis/grass_edit_attributes.png; sourceTree = SOURCE_ROOT; };
+		7262ED5D0F7A6E0800498385 /* grass_close_edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_close_edit.png; path = ../../src/plugins/grass/themes/gis/grass_close_edit.png; sourceTree = SOURCE_ROOT; };
+		7262ED5E0F7A6E0800498385 /* grass_move_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_move_line.png; path = ../../src/plugins/grass/themes/gis/grass_move_line.png; sourceTree = SOURCE_ROOT; };
+		7262ED5F0F7A6E0800498385 /* grass_new_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_new_line.png; path = ../../src/plugins/grass/themes/gis/grass_new_line.png; sourceTree = SOURCE_ROOT; };
+		7262ED600F7A6E0800498385 /* grass_split_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_split_line.png; path = ../../src/plugins/grass/themes/gis/grass_split_line.png; sourceTree = SOURCE_ROOT; };
+		7262ED610F7A6E0800498385 /* grass_add_vertex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_add_vertex.png; path = ../../src/plugins/grass/themes/gis/grass_add_vertex.png; sourceTree = SOURCE_ROOT; };
+		7262ED620F7A6E0800498385 /* grass_new_centroid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_new_centroid.png; path = ../../src/plugins/grass/themes/gis/grass_new_centroid.png; sourceTree = SOURCE_ROOT; };
+		7262ED630F7A6E0800498385 /* grass_delete_line.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_delete_line.png; path = ../../src/plugins/grass/themes/gis/grass_delete_line.png; sourceTree = SOURCE_ROOT; };
+		7262ED640F7A6E0800498385 /* grass_delete_vertex.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_delete_vertex.png; path = ../../src/plugins/grass/themes/gis/grass_delete_vertex.png; sourceTree = SOURCE_ROOT; };
+		7262ED650F7A6E0800498385 /* grass_new_point.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = grass_new_point.png; path = ../../src/plugins/grass/themes/gis/grass_new_point.png; sourceTree = SOURCE_ROOT; };
+		7262ED7D0F7A74B700498385 /* qgsspatialitefilterproxymodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialitefilterproxymodel.h; path = ../../src/app/qgsspatialitefilterproxymodel.h; sourceTree = SOURCE_ROOT; };
+		7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialitefilterproxymodel.cpp; path = ../../src/app/qgsspatialitefilterproxymodel.cpp; sourceTree = SOURCE_ROOT; };
+		7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialitetablemodel.h; path = ../../src/app/qgsspatialitetablemodel.h; sourceTree = SOURCE_ROOT; };
+		7262ED800F7A74B700498385 /* qgsspatialitesourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialitesourceselect.cpp; path = ../../src/app/qgsspatialitesourceselect.cpp; sourceTree = SOURCE_ROOT; };
+		7262ED810F7A74B700498385 /* qgsspatialitesourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialitesourceselect.h; path = ../../src/app/qgsspatialitesourceselect.h; sourceTree = SOURCE_ROOT; };
+		7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialitetablemodel.cpp; path = ../../src/app/qgsspatialitetablemodel.cpp; sourceTree = SOURCE_ROOT; };
+		7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddSpatiaLiteLayer.png; path = ../../images/themes/default/mActionAddSpatiaLiteLayer.png; sourceTree = SOURCE_ROOT; };
+		7262ED8B0F7A763C00498385 /* qgsspatialitesourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsspatialitesourceselectbase.ui; path = ../../src/ui/qgsspatialitesourceselectbase.ui; sourceTree = SOURCE_ROOT; };
+		7262ED8D0F7A767400498385 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/providers/spatialite/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialiteprovider.cpp; path = ../../src/providers/spatialite/qgsspatialiteprovider.cpp; sourceTree = SOURCE_ROOT; };
+		7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialiteprovider.h; path = ../../src/providers/spatialite/qgsspatialiteprovider.h; sourceTree = SOURCE_ROOT; };
+		7262ED9C0F7A770300498385 /* libspatialiteprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libspatialiteprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7262EDB90F7A99CE00498385 /* FindSPATIALITE.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindSPATIALITE.cmake; path = ../../cmake/FindSPATIALITE.cmake; sourceTree = SOURCE_ROOT; };
 		726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewogrconnection.cpp; path = ../../src/app/ogr/qgsnewogrconnection.cpp; sourceTree = SOURCE_ROOT; };
 		726979A30F71369A00AFA402 /* qgsnewogrconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnewogrconnection.h; path = ../../src/app/ogr/qgsnewogrconnection.h; sourceTree = SOURCE_ROOT; };
 		726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsogrhelperfunctions.cpp; path = ../../src/app/ogr/qgsogrhelperfunctions.cpp; sourceTree = SOURCE_ROOT; };
@@ -8189,6 +8274,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				7209F3DF0F3A38BE003DC336 /* libqgis_core.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7262ED960F7A770300498385 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7262ED970F7A770300498385 /* libqgis_core.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8475,6 +8568,7 @@
 				729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */,
 				7256F29B0F4141240022BE1F /* core.so */,
 				7256F29C0F4141570022BE1F /* gui.so */,
+				7262ED9C0F7A770300498385 /* libspatialiteprovider.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8697,6 +8791,12 @@
 				7209E65D0F39E57A003DC336 /* qgsuniquevaluedialog.h */,
 				7209E65E0F39E57A003DC336 /* qgsvectorlayerproperties.cpp */,
 				7209E65F0F39E57A003DC336 /* qgsvectorlayerproperties.h */,
+				7262ED7D0F7A74B700498385 /* qgsspatialitefilterproxymodel.h */,
+				7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */,
+				7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */,
+				7262ED800F7A74B700498385 /* qgsspatialitesourceselect.cpp */,
+				7262ED810F7A74B700498385 /* qgsspatialitesourceselect.h */,
+				7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				7209E5D00F39E57A003DC336 /* legend */,
@@ -10634,6 +10734,7 @@
 				7209EC4E0F39E57B003DC336 /* gpx */,
 				7209EC740F39E57B003DC336 /* wfs */,
 				7209EC550F39E57B003DC336 /* grass */,
+				7262ED8C0F7A767400498385 /* spatialite */,
 			);
 			name = providers;
 			path = ../../src/providers;
@@ -10814,6 +10915,7 @@
 				72EBC9500F49D1DE0016BA3C /* qgsitempositiondialogbase.ui */,
 				726979C10F7138DB00AFA402 /* qgsnewogrconnectionbase.ui */,
 				726979C20F7138DB00AFA402 /* qgsopenvectorlayerdialogbase.ui */,
+				7262ED8B0F7A763C00498385 /* qgsspatialitesourceselectbase.ui */,
 			);
 			name = ui;
 			path = ../../src/ui;
@@ -11767,6 +11869,7 @@
 				7209EF600F39E5D9003DC336 /* user.png */,
 				7209EF610F39E5D9003DC336 /* user.svg */,
 				7209EF620F39E5D9003DC336 /* zoomMaster.svg */,
+				7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */,
 			);
 			name = default;
 			path = ../../images/themes/default;
@@ -11962,6 +12065,7 @@
 				7209F0080F39E5DA003DC336 /* FindPostgres.cmake */,
 				7209F0090F39E5DA003DC336 /* FindProj.cmake */,
 				7209F00A0F39E5DA003DC336 /* FindSqlite3.cmake */,
+				7262EDB90F7A99CE00498385 /* FindSPATIALITE.cmake */,
 				7209F00B0F39E5DA003DC336 /* Flex.cmake */,
 				7209F00C0F39E5DA003DC336 /* Python.cmake */,
 			);
@@ -12062,6 +12166,17 @@
 			path = ../../doc/plugins/geoprocessing/buffer;
 			sourceTree = SOURCE_ROOT;
 		};
+		7262ED8C0F7A767400498385 /* spatialite */ = {
+			isa = PBXGroup;
+			children = (
+				7262ED8D0F7A767400498385 /* CMakeLists.txt */,
+				7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */,
+				7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */,
+			);
+			name = spatialite;
+			path = ../../src/providers/spatialite;
+			sourceTree = SOURCE_ROOT;
+		};
 		726979A10F71369A00AFA402 /* ogr */ = {
 			isa = PBXGroup;
 			children = (
@@ -12136,6 +12251,18 @@
 				72EBC9750F49D6D90016BA3C /* grass_region.png */,
 				72EBC9760F49D6D90016BA3C /* grass_region_edit.png */,
 				72EBC9770F49D6D90016BA3C /* grass_tools.png */,
+				7262ED5A0F7A6E0800498385 /* grass_new_boundary.png */,
+				7262ED5B0F7A6E0800498385 /* grass_move_vertex.png */,
+				7262ED5C0F7A6E0800498385 /* grass_edit_attributes.png */,
+				7262ED5D0F7A6E0800498385 /* grass_close_edit.png */,
+				7262ED5E0F7A6E0800498385 /* grass_move_line.png */,
+				7262ED5F0F7A6E0800498385 /* grass_new_line.png */,
+				7262ED600F7A6E0800498385 /* grass_split_line.png */,
+				7262ED610F7A6E0800498385 /* grass_add_vertex.png */,
+				7262ED620F7A6E0800498385 /* grass_new_centroid.png */,
+				7262ED630F7A6E0800498385 /* grass_delete_line.png */,
+				7262ED640F7A6E0800498385 /* grass_delete_vertex.png */,
+				7262ED650F7A6E0800498385 /* grass_new_point.png */,
 			);
 			name = gis;
 			path = ../../src/plugins/grass/themes/gis;
@@ -12498,6 +12625,24 @@
 			productName = qgis_core;
 			productReference = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
+		};
+		7262ED920F7A770300498385 /* spatialiteprovider */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7262ED990F7A770300498385 /* Build configuration list for PBXNativeTarget "spatialiteprovider" */;
+			buildPhases = (
+				7262ED950F7A770300498385 /* Sources */,
+				7262ED960F7A770300498385 /* Frameworks */,
+			);
+			buildRules = (
+				7262ED980F7A770300498385 /* PBXBuildRule */,
+			);
+			dependencies = (
+				7262ED930F7A770300498385 /* PBXTargetDependency */,
+			);
+			name = spatialiteprovider;
+			productName = testprog;
+			productReference = 7262ED9C0F7A770300498385 /* libspatialiteprovider.so */;
+			productType = "com.apple.product-type.tool";
 		};
 		729BBEFE0F40770B001BCB63 /* qgis_help */ = {
 			isa = PBXNativeTarget;
@@ -13120,6 +13265,7 @@
 				72A07DA00F3BDFA3004FC2A4 /* wfsprovider */,
 				72A07E090F3BEE16004FC2A4 /* qgisgrass */,
 				72A07DAC0F3BDFA4004FC2A4 /* grassprovider */,
+				7262ED920F7A770300498385 /* spatialiteprovider */,
 				72A56D950F3CCAF700BA32A1 /* plugin template */,
 				72A07E570F3BF35F004FC2A4 /* copyrightlabelplugin */,
 				72A56B290F3C810600BA32A1 /* delimitedtextplugin */,
@@ -13184,7 +13330,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# sys/build cache - reset generated files when switching SDKSYS or build\n\nmkdir -p \"$CONFIGURATION_BUILD_DIR/include\"\n\n# just check if the files are generated, clean if need to regenerate\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] || [ ../../cmake_templates/qgsconfig.h.in -nt \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] ; then\necho \"Generating qgsconfig.h...\"\nsed -e \"s,\\${CPACK_PACKAGE_VERSION_MAJOR},$QGIS_VERSION_MAJOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_MINOR},$QGIS_VERSION_MINOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_PATCH},$QGIS_VERSION_PATCH,g\" \\\n\t-e \"s,\\${RELEASE_NAME},$QGIS_RELEASE_NAME,g\" \\\n\t-e \"s,\\${QGIS_VERSION_INT},$QGIS_VERSION_INT,g\" \\\n\t-e \"s,\\${QGIS_PLUGIN_SUBDIR},$QGIS_PLUGIN_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_DATA_SUBDIR},$QGIS_DATA_SUBDIR,g\" \\\n\t-e \"s,#cmakedefine,#define,g\" \\\n\t../../cmake_templates/qgsconfig.h.in > \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\"\nfi\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] || [ ../../cmake_templates/qgssvnversion.h.in_cmake -nt \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] ; then\necho \"Generating qgssvnversion.h...\"\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\nsed -e \"s,@MYVERSION@,$svnver,\" \\\n\t../../cmake_templates/qgssvnversion.h.in_cmake > \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\"\nfi\n\nexit 0";
+			shellScript = "mkdir -p \"$CONFIGURATION_BUILD_DIR/include\"\n\n# check if the files are generated, clean if need to regenerate\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] || [ ../../cmake_templates/qgsconfig.h.in -nt \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] ; then\necho \"Generating qgsconfig.h...\"\nsed -e \"s,\\${CPACK_PACKAGE_VERSION_MAJOR},$QGIS_VERSION_MAJOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_MINOR},$QGIS_VERSION_MINOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_PATCH},$QGIS_VERSION_PATCH,g\" \\\n\t-e \"s,\\${RELEASE_NAME},$QGIS_RELEASE_NAME,g\" \\\n\t-e \"s,\\${QGIS_VERSION_INT},$QGIS_VERSION_INT,g\" \\\n\t-e \"s,\\${QGIS_PLUGIN_SUBDIR},$QGIS_PLUGIN_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_DATA_SUBDIR},$QGIS_DATA_SUBDIR,g\" \\\n\t-e \"s,#cmakedefine,#define,g\" \\\n\t../../cmake_templates/qgsconfig.h.in > \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\"\nfi\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] || [ ../../cmake_templates/qgssvnversion.h.in_cmake -nt \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] ; then\necho \"Generating qgssvnversion.h...\"\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\nsed -e \"s,@MYVERSION@,$svnver,\" \\\n\t../../cmake_templates/qgssvnversion.h.in_cmake > \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\"\nfi\n\nexit 0";
 			showEnvVarsInLog = 0;
 		};
 		7256F1530F4105770022BE1F /* configure.py */ = {
@@ -13749,6 +13895,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7262ED950F7A770300498385 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */,
+				7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		729BBEFC0F40770B001BCB63 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -14259,6 +14414,11 @@
 				72A2394B0F74A64400AFC35B /* BeataView.cpp in Sources */,
 				72A2394C0F74A66400AFC35B /* BeataDialog.h in Sources */,
 				72A2394D0F74A66400AFC35B /* BeataModel.h in Sources */,
+				7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */,
+				7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */,
+				7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */,
+				7262ED870F7A754100498385 /* qgsspatialitesourceselect.cpp in Sources */,
+				7262ED880F7A754100498385 /* qgsspatialitesourceselect.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14429,6 +14589,16 @@
 			isa = PBXTargetDependency;
 			target = 8D0C4E890486CD37000505A6 /* Qgis */;
 			targetProxy = 7256F1D00F411D080022BE1F /* PBXContainerItemProxy */;
+		};
+		7262ED930F7A770300498385 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7209F1D10F39E760003DC336 /* qgis_core */;
+			targetProxy = 7262ED940F7A770300498385 /* PBXContainerItemProxy */;
+		};
+		7262EDA10F7A887F00498385 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7262ED920F7A770300498385 /* spatialiteprovider */;
+			targetProxy = 7262EDA00F7A887F00498385 /* PBXContainerItemProxy */;
 		};
 		729287ED0F71E808006D9489 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -14916,6 +15086,63 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				PRODUCT_NAME = "Optional Plugins";
 				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		7262ED9A0F7A770300498385 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/providers/provider,
+					../../src/core,
+					"$(SPATIALITE_INC)",
+					"$(PROJ_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_XML)",
+					"$(SPATIALITE_LIB)",
+				);
+				PRODUCT_NAME = spatialiteprovider.so;
+			};
+			name = Debug;
+		};
+		7262ED9B0F7A770300498385 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/providers/provider,
+					../../src/core,
+					"$(SPATIALITE_INC)",
+					"$(PROJ_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_XML)",
+					"$(SPATIALITE_LIB)",
+				);
+				PRODUCT_NAME = spatialiteprovider.so;
 			};
 			name = Release;
 		};
@@ -16678,6 +16905,7 @@
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
+					"$(SPATIALITE_INC)",
 					"$(PGSQL_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
@@ -16693,6 +16921,7 @@
 					"$(GDAL_LIB)",
 					"$(PROJ_LIB)",
 					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
 				);
@@ -16725,6 +16954,7 @@
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
+					"$(SPATIALITE_INC)",
 					"$(PGSQL_INC)",
 				);
 				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
@@ -16740,6 +16970,7 @@
 					"$(GDAL_LIB)",
 					"$(PROJ_LIB)",
 					"$(SQLITE_LIB)",
+					"$(SPATIALITE_LIB)",
 					"$(PGSQL_LIB)",
 					"$(QT_LIB)",
 				);
@@ -16832,6 +17063,15 @@
 			buildConfigurations = (
 				7256F1890F411AC90022BE1F /* Debug */,
 				7256F18A0F411AC90022BE1F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7262ED990F7A770300498385 /* Build configuration list for PBXNativeTarget "spatialiteprovider" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7262ED9A0F7A770300498385 /* Debug */,
+				7262ED9B0F7A770300498385 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

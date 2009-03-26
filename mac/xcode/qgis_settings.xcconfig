@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.3
+CURRENT_PROJECT_VERSION = 2.1.4
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -64,6 +64,12 @@ GEOS_FORM = fw // fw or shared
 
 // could also have source form for in-source copy  ***TODO***
 SQLITE_FORM = fw // fw, system, static or shared
+// spatialite framework form is actually a part of sqlite fw
+SPATIALITE_FORM = fw // fw, static or shared
+// whether spatialite is built with GEOS and PROJ
+// (must be same GEOS and PROJ used for Qgis)
+SPATIALITE_GEOS = yes
+SPATIALITE_PROJ = yes
 
 GSL_FORM = shared // static or shared
 PGSQL_FORM = shared // static or shared
@@ -98,6 +104,7 @@ BUNDLE_GDAL = YES
 BUNDLE_GEOS = YES
 BUNDLE_PROJ = YES
 BUNDLE_SQLITE = YES
+BUNDLE_SPATIALITE = YES
 
 //////////////////////////////////////////////////////////////////////
 // locations of user forms of dependencies
@@ -122,6 +129,7 @@ EXPAT_PREFIX = /usr/local // not used for system expat
 
 // unix SQLite defaults to system
 SQLITE_PREFIX_shared = /usr
+SPATIALITE_PREFIX = /usr/local
 
 PGSQL_PREFIX = /usr/local/pgsql
 // used to link static libs
@@ -273,6 +281,19 @@ SQLITE_LIB_fw = -framework SQLite3
 SQLITE_LIB_shared = $(SQLITE_PREFIX_shared)/lib/libsqlite3.dylib
 SQLITE_LIB_static = $(SQLITE_PREFIX_static)/lib/libsqlite3.a
 SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
+
+SPATIALITE_PREFIX_fw = $(SQLITE_PREFIX_fw)
+SPATIALITE_INC_fw = $(SPATIALITE_PREFIX_fw)/Headers
+SPATIALITE_INC_shared = $(SPATIALITE_PREFIX)/include
+SPATIALITE_INC_static = $(SPATIALITE_PREFIX)/include
+SPATIALITE_INC = $(SPATIALITE_INC_$(SPATIALITE_FORM))
+SPATIALITE_LIB_fw = $(SQLITE_LIB_fw)
+SPATIALITE_LIB_shared = $(SPATIALITE_PREFIX_shared)/lib/libspatialite.dylib
+SPATIALITE_LIB_static = $(SPATIALITE_PREFIX_static)/lib/libspatialite.a
+SPATIALITE_LIB = $(SPATIALITE_LIB_$(SPATIALITE_FORM))
+SPATIALITE_GEOS_yes = $(GEOS_LIB)
+SPATIALITE_PROJ_yes = $(PROJ_LIB)
+SPATIALITE_LIBADD = $(SPATIALITE_GEOS_$(SPATIALITE_GEOS)) $(SPATIALITE_PROJ_$(SPATIALITE_PROJ))
 
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
 PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
