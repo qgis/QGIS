@@ -447,29 +447,31 @@ class geometryThread( QThread ):
 						for h in k: 
 							for i in range(0, len(h) - 1):
 								j = (i + 1) % len(h)
-								factor = ((h[i].x()) * (h[j].y()) - (h[j].x()) * (h[i].y()))
-								cx = cx + ((h[i].x()) + (h[j].x())) * factor
-								cy = cy + ((h[i].y()) + (h[j].y())) * factor
+								factor = ((h[i].x()-xmin) * (h[j].y()-ymin) - (h[j].x()-xmin) * (h[i].y()-ymin))
+								cx = cx + ((h[i].x()-xmin) + (h[j].x()-xmin)) * factor
+								cy = cy + ((h[i].y()-ymin) + (h[j].y()-ymin)) * factor
 				else:
 					multi_geom = geom.asPolygon()
 					for k in multi_geom:
 						for i in range(0, len(k) - 1):
 							j = (i + 1) % len(k)
-							factor = (k[i].x()) * (k[j].y()) - (k[j].x()) * (k[i].y())
-							cx = cx + ((k[i].x()) + (k[j].x())) * factor
-							cy = cy + ((k[i].y()) + (k[j].y())) * factor
+							factor = (k[i].x()-xmin) * (k[j].y()-ymin) - (k[j].x()-xmin) * (k[i].y()-ymin)
+							cx = cx + ((k[i].x()-xmin) + (k[j].x()-xmin)) * factor
+							cy = cy + ((k[i].y()-ymin) + (k[j].y()-ymin)) * factor
 				A = A * 6
 				factor = 1/A
 				cx = cx * factor
 				cy = cy * factor
-				if cx < xmin:
-					cx = cx * -1
-				if cy < ymin:
-					cy = cy * -1
-				if cx > xmax:
-					cx = cx * -1
-				if cy > ymax:
-					cy = cy * -1
+#				if cx < xmin:
+#					cx = cx * -1
+#				if cy < ymin:
+#					cy = cy * -1
+#				if cx > xmax:
+#					cx = cx * -1
+#				if cy > ymax:
+#					cy = cy * -1
+				cx = cx + xmin
+				cy = cy + ymin
 				outfeat.setGeometry( QgsGeometry.fromPoint( QgsPoint( cx, cy ) ) )
 				atMap = inFeat.attributeMap()
 				outfeat.setAttributeMap( atMap )
