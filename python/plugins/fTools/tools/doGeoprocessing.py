@@ -605,8 +605,9 @@ class geoprocessingThread( QThread ):
 					try:
 						if geom.intersects( tmpGeom ):
 							found = True
-							diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+							diff_geom = QgsGeometry( geom.difference( tmpGeom ) )#
 							int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
+							print "found"
 							if int_geom.wkbType() == 7:
 								int_com = geom.combine( tmpGeom )
 								int_sym = geom.symDifference( tmpGeom )
