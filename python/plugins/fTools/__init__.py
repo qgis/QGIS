@@ -21,10 +21,10 @@ def description():
 	return "Tools for vector data analysis and management"
 
 def version():
-	return "0.5.6"
+	return "0.5.7"
   
 def qgisMinimumVersion():
-	return "1.0.0"
+	return "1"
 	
 def authorName():
 	return "Carson J. Q. Farmer"
