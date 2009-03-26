@@ -21,7 +21,7 @@ def description():
 	return "Tools for vector data analysis and management"
 
 def version():
-	return "0.5.7"
+	return "0.5.8"
   
 def qgisMinimumVersion():
 	return "1"
