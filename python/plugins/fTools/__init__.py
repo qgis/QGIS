@@ -24,7 +24,7 @@ def version():
 	return "0.5.8"
   
 def qgisMinimumVersion():
-	return "1"
+	return "1.0"
 	
 def authorName():
 	return "Carson J. Q. Farmer"
