@@ -56,23 +56,22 @@ private slots:
   void submit();
   void revert();
   void search();
-  void advancedSearch();
+  void on_mAdvancedSearchButton_clicked();
   void updateSelection();
   void updateSelectionFromLayer();
   void updateRowSelection(int index);
   void updateRowSelection(int first, int last, bool startNewSelection);
 
-  void clickedShowAll();
-  void clickedShowSelected();
+  void on_cbxShowSelectedOnly_toggled( bool theFlag );
+  void on_mCopySelectedRowsButton_clicked();
   
-  void startEditing();
-  void invertSelection();
-  void removeSelection();
-  void copySelectedRowsToClipboard();
-  void zoomMapToSelectedRows();
-  void selectedToTop();
+  void on_mToggleEditingButton_toggled();
+  void on_mInvertSelectionButton_clicked();
+  void on_mRemoveSelectionButton_clicked();
+  void on_mZoomMapToSelectedRowsButton_clicked();
+  void on_mSelectedToTopButton_clicked();
   void showAdvanced();
-  void toggleEditing();
+  void startEditing();
 
 signals:
   void editingToggled( QgsMapLayer * );

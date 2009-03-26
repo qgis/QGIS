@@ -79,38 +79,31 @@ BeataDialog::BeataDialog(QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFl
 
   setWindowTitle( tr( "Attribute table - %1" ).arg( mLayer->name() ) );
   
-  mMenuActions = new QMenu();
-  mMenuActions->addAction(tr("Advanced search"), this, SLOT(advancedSearch()));
-  mMenuActions->addSeparator();
-  mMenuActions->addAction(getThemeIcon( "/mActionCopySelected.png" ), tr("Copy selected rows"), this, SLOT(copySelectedRowsToClipboard()));
-  mMenuActions->addAction(getThemeIcon( "/mActionZoomToSelected.png" ), tr("Zoom to selected"), this, SLOT(zoomMapToSelectedRows()));
-  mMenuActions->addAction(getThemeIcon( "/mActionSelectedToTop.png" ), tr("Move selected to top"), this, SLOT(selectedToTop()));
-  mMenuActions->addAction(getThemeIcon( "/mActionUnselectAttributes.png" ), tr("Clear selection"), this, SLOT(removeSelection()));
-  mMenuActions->addAction(getThemeIcon( "/mActionInvertSelection.png" ), tr("Invert selection"), this, SLOT(invertSelection()));
-  mMenuActions->addSeparator();
-  
+  mRemoveSelectionButton->setIcon(getThemeIcon( "/mActionUnselectAttributes.png" ));
+  mSelectedToTopButton->setIcon(getThemeIcon( "/mActionSelectedToTop.png" ));
+  mCopySelectedRowsButton->setIcon(getThemeIcon( "/mActionCopySelected.png" ));
+  mZoomMapToSelectedRowsButton->setIcon(getThemeIcon( "/mActionZoomToSelected.png" ) );
+  mInvertSelectionButton->setIcon(getThemeIcon( "/mActionInvertSelection.png" ) );
+  mToggleEditingButton->setIcon(getThemeIcon( "/mActionToggleEditing.png" ) );
   // toggle editing
-  mActionToggleEditing = mMenuActions->addAction(getThemeIcon( "/mActionToggleEditing.png" ), tr("Toggle editing"), this, SLOT(toggleEditing()));
-  mActionToggleEditing->setCheckable( true );
-  mActionToggleEditing->setEnabled( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mToggleEditingButton->setCheckable( true );
+  mToggleEditingButton->setEnabled( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  
   // info from table to application
   connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   
-  connect(btnShowAll, SIGNAL(clicked()), this, SLOT(clickedShowAll()));
-  connect(btnShowSelected, SIGNAL(clicked()), this, SLOT(clickedShowSelected()));
-  
   connect(searchButton, SIGNAL(clicked()), this, SLOT(search()));
-  connect(actionsButton, SIGNAL(clicked()), this, SLOT(showAdvanced()));
 
   connect(mLayer, SIGNAL(selectionChanged()), this, SLOT(updateSelectionFromLayer()));
   connect(mLayer, SIGNAL(layerDeleted()), this, SLOT( close()));
   connect(mView->verticalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(updateRowSelection(int)));
   connect(mModel, SIGNAL(modelChanged()), this, SLOT(updateSelection()));
   
-  clickedShowAll(); // make sure the show all button is checked
+  //make sure to show all recs on first load
+  on_cbxShowSelectedOnly_toggled( false );
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel(mFilterModel);
@@ -160,7 +153,7 @@ void BeataDialog::showAdvanced()
   mMenuActions->exec(QCursor::pos());
 }
 
-void BeataDialog::selectedToTop()
+void BeataDialog::on_mSelectedToTopButton_clicked()
 {
   int freeIndex = 0;
 
@@ -200,52 +193,31 @@ void BeataDialog::selectedToTop()
   updateSelection();
 }
 
-void BeataDialog::copySelectedRowsToClipboard()
+void BeataDialog::on_mCopySelectedRowsButton_clicked()
 {
   QgisApp::instance()->editCopy(mLayer);
 }
 
-void BeataDialog::zoomMapToSelectedRows()
+void BeataDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
   QgisApp::instance()->zoomToSelected();
 }
 
-void BeataDialog::invertSelection()
+void BeataDialog::on_mInvertSelectionButton_clicked()
 {
   mLayer->invertSelection();
 }
 
-void BeataDialog::removeSelection()
+void BeataDialog::on_mRemoveSelectionButton_clicked()
 {
   mLayer->removeSelection();
 }
 
-void BeataDialog::clickedShowAll()
+void BeataDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
 {
-  // the button can't be unchecked by clicking it
-  // gets unchecked when show selected is clicked
-  if (!btnShowAll->isChecked())
-  {
-    btnShowAll->setChecked(true);
-  }
-  btnShowSelected->setChecked(false);
-  
-  mFilterModel->mHideUnselected = false;
+  mFilterModel->mHideUnselected = theFlag;
   mFilterModel->invalidate();
   //TODO: weird
-  //mModel->changeLayout();
-}
-
-void BeataDialog::clickedShowSelected()
-{
-  if (!btnShowSelected->isChecked())
-  {
-    btnShowSelected->setChecked(true);
-  }
-  btnShowAll->setChecked(false);
-  
-  mFilterModel->mHideUnselected = true;
-  mFilterModel->invalidate();
   //mModel->changeLayout();
 }
 
@@ -502,7 +474,7 @@ void BeataDialog::search()
   doSearch(str);
 }
 
-void BeataDialog::advancedSearch()
+void BeataDialog::on_mAdvancedSearchButton_clicked()
 {
   QgsSearchQueryBuilder dlg(mLayer, this);
   dlg.setSearchString(mQuery->displayText());
@@ -511,14 +483,14 @@ void BeataDialog::advancedSearch()
     doSearch(dlg.searchString());
 }
 
-void BeataDialog::toggleEditing()
+void BeataDialog::on_mToggleEditingButton_toggled()
 {
   emit editingToggled( mLayer );
 }
 
 void BeataDialog::editingToggled()
 {
-  mActionToggleEditing->setChecked( mLayer->isEditable() );
+  mToggleEditingButton->setChecked( mLayer->isEditable() );
   
   // (probably reload data if user stopped editing - possible revert)
   mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount(), mModel->columnCount()));
