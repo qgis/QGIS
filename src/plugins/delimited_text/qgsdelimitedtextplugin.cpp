@@ -109,7 +109,7 @@ void QgsDelimitedTextPlugin::initGui()
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Delimited text" ), myQActionPointer );
   // this is called when the icon theme is changed
-  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
 }
 

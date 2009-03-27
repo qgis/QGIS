@@ -90,13 +90,13 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     /**Move Content of item. Does nothing per default (but implemented in composer map)
        @param dx move in x-direction (canvas coordinates)
        @param dy move in y-direction(canvas coordinates)*/
-    virtual void moveContent( double dx, double dy ) { Q_UNUSED(dx); Q_UNUSED(dy); }
+    virtual void moveContent( double dx, double dy ) { Q_UNUSED( dx ); Q_UNUSED( dy ); }
 
     /**Zoom content of item. Does nothing per default (but implemented in composer map)
      @param delta value from wheel event that describes magnitude and direction (positive /negative number)
     @param x x-position of mouse cursor (in item coordinates)
     @param y y-position of mouse cursor (in item coordinates)*/
-    virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED(delta); Q_UNUSED(x); Q_UNUSED(y); }
+    virtual void zoomContent( int delta, double x, double y ) { Q_UNUSED( delta ); Q_UNUSED( x ); Q_UNUSED( y ); }
 
     /**Moves the item to a new position (in canvas coordinates)*/
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft );
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerItem: public QGraphicsRectItem
     void setFrame( bool drawFrame ) {mFrame = drawFrame;}
 
     /**Composite operations for item groups do nothing per default*/
-    virtual void addItem( QgsComposerItem* item ) { Q_UNUSED(item); }
+    virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
 
     const QgsComposition* composition() const {return mComposition;}

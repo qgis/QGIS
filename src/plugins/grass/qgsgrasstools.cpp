@@ -170,8 +170,9 @@ void QgsGrassTools::runModule( QString name )
 #endif
 
 #ifdef WIN32
-    if( !QProcess::startDetached( getenv("COMSPEC") ) ) {
-      QMessageBox::warning( 0, "Warning", tr("Cannot start command shell (%1)").arg( getenv("COMSPEC") ) );
+    if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
+    {
+      QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
     }
     return;
 #else

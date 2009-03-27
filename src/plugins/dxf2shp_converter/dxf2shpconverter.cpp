@@ -84,7 +84,7 @@ void dxf2shpConverter::initGui()
   mQGisIface->addPluginToMenu( tr( "&Dxf2Shp" ), mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 //method defined in interface

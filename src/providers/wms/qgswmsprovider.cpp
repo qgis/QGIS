@@ -2056,7 +2056,7 @@ QString QgsWmsProvider::metadata()
 
     // Layer Styles
     for ( int j = 0; j < layersSupported[i].style.size(); j++ )
-    {
+{
       myMetadataQString += "<tr><td bgcolor=\"gray\">";
       myMetadataQString += tr( "Available in style" );
       myMetadataQString += "</td>";

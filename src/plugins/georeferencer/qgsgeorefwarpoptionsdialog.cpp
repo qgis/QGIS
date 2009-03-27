@@ -17,7 +17,7 @@
 
 
 QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog( QWidget* parent )
-    : QDialog(parent) //QgsGeorefWarpOptionsDialogBase()
+    : QDialog( parent ) //QgsGeorefWarpOptionsDialogBase()
 {
   setupUi( this );
   QStringList compressionMethods;

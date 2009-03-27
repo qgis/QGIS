@@ -76,7 +76,7 @@ void QgsSpitPlugin::initGui()
   qI->addPluginToMenu( tr( "&Spit" ), spitAction );
 
   // this is called when the icon theme is changed
-  connect( qI, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qI, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 // Slot called when the shapefile to postgres menu item is triggered

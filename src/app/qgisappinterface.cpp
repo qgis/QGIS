@@ -144,15 +144,15 @@ QWidget * QgisAppInterface::mainWindow()
 QList<QgsComposerView*> QgisAppInterface::activeComposers()
 {
   QList<QgsComposerView*> composerViewList;
-  if(qgis)
+  if ( qgis )
   {
     QgsComposer* c = qgis->printComposer();
-    if(c)
+    if ( c )
     {
       QgsComposerView* v = c->view();
-      if(v)
+      if ( v )
       {
-        composerViewList.push_back(v);
+        composerViewList.push_back( v );
       }
     }
   }

@@ -45,7 +45,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperWidthLineEdit_editingFinished();
     void on_mPaperHeightLineEdit_editingFinished();
     void on_mResolutionLineEdit_textChanged( const QString& text );
-    void on_mPrintAsRasterCheckBox_stateChanged(int state);
+    void on_mPrintAsRasterCheckBox_stateChanged( int state );
 
     void on_mSnapToGridCheckBox_stateChanged( int state );
     void on_mResolutionSpinBox_valueChanged( double d );

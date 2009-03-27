@@ -46,7 +46,7 @@ void QgsInterpolationPlugin::initGui()
     mIface->addToolBarIcon( mInterpolationAction );
     mIface->addPluginToMenu( tr( "&Interpolation" ), mInterpolationAction );
     // this is called when the icon theme is changed
-    connect( mIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+    connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
 }
 

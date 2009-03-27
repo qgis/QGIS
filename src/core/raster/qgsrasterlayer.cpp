@@ -1537,24 +1537,24 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
     //Currently this is only done for WMS images, which should be small enough not to impact performance
 
-    if(mTransparencyLevel != 255) //improve performance if layer transparency not altered
+    if ( mTransparencyLevel != 255 ) //improve performance if layer transparency not altered
     {
-         QImage* transparentImageCopy = new QImage(*image); //copy image if there is user transparency
-         image = transparentImageCopy;
-        int myWidth = image->width();
-        int myHeight = image->height();
-        QRgb myRgb;
-        int newTransparency;
-        for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+      QImage* transparentImageCopy = new QImage( *image ); //copy image if there is user transparency
+      image = transparentImageCopy;
+      int myWidth = image->width();
+      int myHeight = image->height();
+      QRgb myRgb;
+      int newTransparency;
+      for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+      {
+        for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
         {
-          for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
-          {
-            myRgb = image->pixel( myWidthRunner, myHeightRunner );
-            //combine transparency from WMS and layer transparency
-            newTransparency =  (double) mTransparencyLevel / 255.0 * (double)(qAlpha(myRgb));
-            image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency ));
-          }
+          myRgb = image->pixel( myWidthRunner, myHeightRunner );
+          //combine transparency from WMS and layer transparency
+          newTransparency = ( double ) mTransparencyLevel / 255.0 * ( double )( qAlpha( myRgb ) );
+          image->setPixel( myWidthRunner, myHeightRunner, qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency ) );
         }
+      }
     }
 
     // Since GDAL's RasterIO can't handle floating point, we have to round to
@@ -1572,9 +1572,9 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
                             ),
                             *image );
 
-    if(mTransparencyLevel != 255)
+    if ( mTransparencyLevel != 255 )
     {
-        delete image;
+      delete image;
     }
 
   }
@@ -1839,7 +1839,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      theResults[ generateBandName( i ) ] = tr( "out of extent" );
+      theResults[ generateBandName( i )] = tr( "out of extent" );
     }
   }
   else
@@ -1884,7 +1884,7 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
         v.setNum( value );
       }
 
-     theResults[ generateBandName( i ) ] = v;
+      theResults[ generateBandName( i )] = v;
 
       CPLFree( data );
     }
@@ -4892,7 +4892,7 @@ void QgsRasterLayer::closeDataset()
 
 QString QgsRasterLayer::generateBandName( int theBandNumber )
 {
-  return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10( ( float ) bandCount() ), 10, QChar( '0' ) );
+  return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
 }
 
 /**

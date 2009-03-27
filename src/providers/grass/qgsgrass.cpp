@@ -90,7 +90,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   // or when set explicitly by the user.
   // This value should always take precedence.
 #if WIN32
-  QString gisBase = getenv( "WINGISBASE" ) ? getenv("WINGISBASE") : getenv("GISBASE");
+  QString gisBase = getenv( "WINGISBASE" ) ? getenv( "WINGISBASE" ) : getenv( "GISBASE" );
   gisBase = getShortPath( gisBase );
 #else
   QString gisBase = getenv( "GISBASE" );

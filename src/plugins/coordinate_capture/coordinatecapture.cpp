@@ -85,7 +85,7 @@ void CoordinateCapture::initGui()
   mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
 
   connect( mQGisIface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setSourceCrs() ) );
-  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   setSourceCrs(); //set up the source CRS
   mTransform.setDestCRS( mCrs ); // set the CRS in the transform
@@ -139,7 +139,7 @@ void CoordinateCapture::initGui()
   mpCaptureButton = new QPushButton( mypWidget );
   mpCaptureButton->setText( tr( "Start capture" ) );
   mpCaptureButton->setToolTip( tr( "Click to enable coordinate capture" ) );
-  mpCaptureButton->setIcon( QIcon( ":/coordinate_capture/coordinate_capture.png" ));
+  mpCaptureButton->setIcon( QIcon( ":/coordinate_capture/coordinate_capture.png" ) );
   mpCaptureButton->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   connect( mpCaptureButton, SIGNAL( clicked() ), this, SLOT( run() ) );
 

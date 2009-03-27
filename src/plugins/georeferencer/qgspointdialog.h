@@ -57,7 +57,7 @@ class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
     void on_pbnSaveGCPs_clicked();
     void on_pbnLoadGCPs_clicked();
     void on_cmbTransformType_currentIndexChanged( const QString& );
-    void on_leSelectModifiedRaster_textChanged(const QString &);
+    void on_leSelectModifiedRaster_textChanged( const QString & );
     void zoomIn();
     void zoomOut();
     void zoomToLayer();
@@ -71,7 +71,7 @@ class QgsPointDialog : public QDialog, private Ui::QgsPointDialogBase
     void initialize();
     bool generateWorldFileAndWarp();
     bool helmertWarp();
-	void loadGCPs(QString &);
+    void loadGCPs( QString & );
     void saveGCPs( std::vector<QgsPoint>, std::vector<QgsPoint> );
     QString guessWorldFileName( const QString& raster );
 

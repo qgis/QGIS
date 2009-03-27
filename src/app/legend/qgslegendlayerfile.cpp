@@ -220,8 +220,8 @@ void QgsLegendLayerFile::saveAsShapefile()
 
 void QgsLegendLayerFile::table()
 {
-  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>(mLyr.layer());
-  BeataDialog *mDialog = new BeataDialog(myLayer);
+  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
+  BeataDialog *mDialog = new BeataDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }

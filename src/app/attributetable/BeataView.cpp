@@ -1,7 +1,7 @@
 /***************************************************************************
      BeataView.cpp
      --------------------------------------
-    Date                 : Feb 2009 
+    Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
     Email                : weetya (at) gmail.com
  ***************************************************************************
@@ -31,114 +31,114 @@
 
 class BeataDelegate : public QItemDelegate
 {
-public:
-  BeataDelegate(QObject* parent = NULL) : QItemDelegate(parent) {}
+  public:
+    BeataDelegate( QObject* parent = NULL ) : QItemDelegate( parent ) {}
 
-  QWidget * createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
-  {
-    QWidget *editor = QItemDelegate::createEditor( parent, option, index );
-    
-    QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
-    if ( !le ) return editor;
-    
-    const BeataModel* m = dynamic_cast<const BeataModel*>(index.model());
-    if ( !m ) return editor;
-    
-    int col = index.column();
-    QVariant::Type type = m->layer()->dataProvider()->fields()[col].type();
-
-    if ( type == QVariant::Int )
+    QWidget * createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
     {
-      le->setValidator( new QIntValidator( le ) );
-    }
-    else if ( type == QVariant::Double )
-    {
-      le->setValidator( new QDoubleValidator( le ) );
+      QWidget *editor = QItemDelegate::createEditor( parent, option, index );
+
+      QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
+      if ( !le ) return editor;
+
+      const BeataModel* m = dynamic_cast<const BeataModel*>( index.model() );
+      if ( !m ) return editor;
+
+      int col = index.column();
+      QVariant::Type type = m->layer()->dataProvider()->fields()[col].type();
+
+      if ( type == QVariant::Int )
+      {
+        le->setValidator( new QIntValidator( le ) );
+      }
+      else if ( type == QVariant::Double )
+      {
+        le->setValidator( new QDoubleValidator( le ) );
+      }
+
+      return editor;
     }
 
-    return editor;
-  }
-  
-  
-  void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
-  {
-    QItemDelegate::paint(painter, option, index);
-    
-    if (option.state & QStyle::State_HasFocus)
-    {  
-      QRect r = option.rect.adjusted(1,1,-1,-1);
-      QPen p(QBrush(QColor(0,255,127)), 2);
-      painter->save();
-      painter->setPen(p);
-      painter->drawRect(r);
-      painter->restore();
+
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+    {
+      QItemDelegate::paint( painter, option, index );
+
+      if ( option.state & QStyle::State_HasFocus )
+      {
+        QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+        QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+        painter->save();
+        painter->setPen( p );
+        painter->drawRect( r );
+        painter->restore();
+      }
     }
-  }
 
 };
 
-BeataView::BeataView(QWidget* parent)
- : QTableView(parent)
+BeataView::BeataView( QWidget* parent )
+    : QTableView( parent )
 {
-  QSettings settings; 
-  restoreGeometry(settings.value("/BetterTable/geometry").toByteArray());
-  
-  verticalHeader()->setDefaultSectionSize(20);
-  horizontalHeader()->setHighlightSections(false);
-  
-  setItemDelegate(new BeataDelegate(this));
-	
-  setSelectionBehavior(QAbstractItemView::SelectRows);
-  setSelectionMode(QAbstractItemView::NoSelection);
-  setSortingEnabled(true);
+  QSettings settings;
+  restoreGeometry( settings.value( "/BetterTable/geometry" ).toByteArray() );
+
+  verticalHeader()->setDefaultSectionSize( 20 );
+  horizontalHeader()->setHighlightSections( false );
+
+  setItemDelegate( new BeataDelegate( this ) );
+
+  setSelectionBehavior( QAbstractItemView::SelectRows );
+  setSelectionMode( QAbstractItemView::NoSelection );
+  setSortingEnabled( true );
 
   shiftPressed = false;
   ctrlPressed = false;
 }
 
-void BeataView::setLayer(QgsVectorLayer* layer)
+void BeataView::setLayer( QgsVectorLayer* layer )
 {
   BeataModel *bModel;
- 
-  if (layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId)
-    bModel = new BeataModel(layer);
+
+  if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId )
+    bModel = new BeataModel( layer );
   else
-    bModel = new BeataMemModel(layer);
+    bModel = new BeataMemModel( layer );
 
-  BeataFilterModel* bfModel = new BeataFilterModel(layer);
-  bfModel->setSourceModel(bModel);
+  BeataFilterModel* bfModel = new BeataFilterModel( layer );
+  bfModel->setSourceModel( bModel );
 
-  setModel(bfModel);
+  setModel( bfModel );
 }
 
 BeataView::~BeataView()
 {
 }
 
-void BeataView::closeEvent(QCloseEvent *event)
+void BeataView::closeEvent( QCloseEvent *event )
 {
   QSettings settings;
-  settings.setValue("/BetterAttributeTable/geometry", QVariant(saveGeometry()));
+  settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
 }
 
-void BeataView::keyPressEvent(QKeyEvent *event)
+void BeataView::keyPressEvent( QKeyEvent *event )
 {
   // shift pressed
-  if (event->key() == Qt::Key_Shift)// && event->modifiers() & Qt::ShiftModifier)
+  if ( event->key() == Qt::Key_Shift )// && event->modifiers() & Qt::ShiftModifier)
     shiftPressed = true;
-  else if (event->key() == Qt::Key_Control)
+  else if ( event->key() == Qt::Key_Control )
     ctrlPressed = true;
   else
-    QTableView::keyPressEvent(event);
+    QTableView::keyPressEvent( event );
 }
 
-void BeataView::keyReleaseEvent(QKeyEvent *event)
+void BeataView::keyReleaseEvent( QKeyEvent *event )
 {
   // workaround for some Qt bug
-  if (event->key() == Qt::Key_Shift || event->key() == 0xffffffff)
-      shiftPressed = false;
-  else if (event->key() == Qt::Key_Control)
+  if ( event->key() == Qt::Key_Shift || event->key() == 0xffffffff )
+    shiftPressed = false;
+  else if ( event->key() == Qt::Key_Control )
     ctrlPressed = false;
   else
-    QTableView::keyReleaseEvent(event);
+    QTableView::keyReleaseEvent( event );
 }

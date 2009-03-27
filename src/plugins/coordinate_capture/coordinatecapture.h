@@ -107,7 +107,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! called when the project's CRS is changed
     void setSourceCrs();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme ( QString theThemeName );
+    void setCurrentTheme( QString theThemeName );
 
   private:
     //! Container for the coordinate info

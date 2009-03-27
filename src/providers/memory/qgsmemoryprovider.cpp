@@ -131,7 +131,7 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
     mSelectIterator++;
     feature.setValid( true );
   }
-  
+
   return hasFeature;
 }
 

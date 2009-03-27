@@ -73,13 +73,13 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QgsComposition* composition();
 
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLabel( QgsComposerLabel* label);
+    void addComposerLabel( QgsComposerLabel* label );
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map);
+    void addComposerMap( QgsComposerMap* map );
     /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerScaleBar( QgsComposerScaleBar* scaleBar);
+    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
     /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLegend( QgsComposerLegend* legend);
+    void addComposerLegend( QgsComposerLegend* legend );
     /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerPicture( QgsComposerPicture* picture );
 

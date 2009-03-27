@@ -37,15 +37,15 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ): QGraphicsScene( 0
 
   //mPrintAsRaster
   QSettings s;
-  mPrintAsRaster = s.value("/qgis/composerPrintAsRaster", false).toBool();
+  mPrintAsRaster = s.value( "/qgis/composerPrintAsRaster", false ).toBool();
 }
 
-QgsComposition::QgsComposition(): QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster(false), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 )
+QgsComposition::QgsComposition(): QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 )
 {
   loadGridAppearanceSettings();
   //mPrintAsRaster
   QSettings s;
-  mPrintAsRaster = s.value("/qgis/composerPrintAsRaster", false).toBool();
+  mPrintAsRaster = s.value( "/qgis/composerPrintAsRaster", false ).toBool();
 }
 
 QgsComposition::~QgsComposition()
@@ -704,11 +704,11 @@ void QgsComposition::setGridStyle( GridStyle s )
   saveGridAppearanceSettings();
 }
 
-void QgsComposition::setPrintAsRaster(bool enabled)
+void QgsComposition::setPrintAsRaster( bool enabled )
 {
   mPrintAsRaster = enabled;
   QSettings s;
-  s.setValue("/qgis/composerPrintAsRaster", QVariant(mPrintAsRaster));
+  s.setValue( "/qgis/composerPrintAsRaster", QVariant( mPrintAsRaster ) );
 }
 
 void QgsComposition::loadGridAppearanceSettings()

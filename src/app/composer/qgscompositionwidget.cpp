@@ -45,13 +45,13 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mResolutionLineEdit->setText( QString::number( mComposition->printResolution() ) );
 
     //print as raster
-    if(mComposition->printAsRaster())
+    if ( mComposition->printAsRaster() )
     {
-      mPrintAsRasterCheckBox->setCheckState(Qt::Checked);
+      mPrintAsRasterCheckBox->setCheckState( Qt::Checked );
     }
     else
     {
-      mPrintAsRasterCheckBox->setCheckState(Qt::Unchecked);
+      mPrintAsRasterCheckBox->setCheckState( Qt::Unchecked );
     }
 
     //snap grid
@@ -377,20 +377,20 @@ void QgsCompositionWidget::on_mResolutionLineEdit_textChanged( const QString& te
   }
 }
 
-void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged(int state)
+void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged( int state )
 {
-  if(!mComposition)
+  if ( !mComposition )
   {
     return;
   }
 
-  if(state == Qt::Checked)
+  if ( state == Qt::Checked )
   {
-    mComposition->setPrintAsRaster(true);
+    mComposition->setPrintAsRaster( true );
   }
   else
   {
-    mComposition->setPrintAsRaster(false);
+    mComposition->setPrintAsRaster( false );
   }
 }
 

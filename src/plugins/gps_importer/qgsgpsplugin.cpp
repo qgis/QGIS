@@ -101,7 +101,7 @@ void QgsGPSPlugin::initGui()
   mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
 
   // this is called when the icon theme is changed
-  connect( mQGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 //method defined in interface

@@ -1,5 +1,5 @@
 /***************************************************************************
-  BeataModel.h 
+  BeataModel.h
   BEtter Attribute TAble
   -------------------
          date                 : Feb 2009
@@ -30,112 +30,112 @@
 
 class idColumnPair
 {
-public:
-  int id;
-  QVariant columnItem;
+  public:
+    int id;
+    QVariant columnItem;
 
-  bool operator<(const idColumnPair &b) const;
+    bool operator<( const idColumnPair &b ) const;
 };
 
 class BeataFilterModel: public QSortFilterProxyModel
 {
-public:
-  BeataFilterModel(QgsVectorLayer* theLayer);
-  //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
-  //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
-  bool mHideUnselected;
-  virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
-protected:
-  bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
-private:
-  QgsVectorLayer* mLayer;
+  public:
+    BeataFilterModel( QgsVectorLayer* theLayer );
+    //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
+    //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
+    bool mHideUnselected;
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+  protected:
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+  private:
+    QgsVectorLayer* mLayer;
 };
 
 
 class BeataModel: public QAbstractTableModel
 {
-Q_OBJECT
+    Q_OBJECT
 
-public:
-  BeataModel(QgsVectorLayer *theLayer, QObject *parent = 0);
+  public:
+    BeataModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
 
-  int rowCount(const QModelIndex &parent = QModelIndex()) const;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
-  QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-  virtual QVariant data(const QModelIndex &index, int role) const;
-  virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
-  Qt::ItemFlags flags(const QModelIndex &index) const;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-  void reload(const QModelIndex &index1, const QModelIndex &index2);
-  void resetModel();
-  void changeLayout();
-  void incomingChangeLayout();
-  int idToRow(const int id) const;
-  int rowToId(const int id) const;
-  virtual void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
-  void swapRows(int a, int b);
-  
-  QgsVectorLayer* layer() const { return mLayer; }
+    void reload( const QModelIndex &index1, const QModelIndex &index2 );
+    void resetModel();
+    void changeLayout();
+    void incomingChangeLayout();
+    int idToRow( const int id ) const;
+    int rowToId( const int id ) const;
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    void swapRows( int a, int b );
 
-signals:
-  void modelChanged();
-  void setNumRows(int oldNum, int newNum);
+    QgsVectorLayer* layer() const { return mLayer; }
 
-private slots:
-  virtual void attributeAdded (int idx);
-  virtual void attributeDeleted (int idx);
-  virtual void attributeValueChanged (int fid, int idx, const QVariant &value);
-  virtual void layerModified(bool onlyGeometry);
+  signals:
+    void modelChanged();
+    void setNumRows( int oldNum, int newNum );
 
-protected slots:
-  virtual void featureDeleted(int fid);
-  virtual void featureAdded(int fid);
-  virtual void layerDeleted ();
+  private slots:
+    virtual void attributeAdded( int idx );
+    virtual void attributeDeleted( int idx );
+    virtual void attributeValueChanged( int fid, int idx, const QVariant &value );
+    virtual void layerModified( bool onlyGeometry );
 
-protected:
-  QgsVectorLayer *mLayer;
-  int mFeatureCount;
-  int mFieldCount;
-  mutable int mLastRowId;
-  mutable QgsFeature mFeat;
+  protected slots:
+    virtual void featureDeleted( int fid );
+    virtual void featureAdded( int fid );
+    virtual void layerDeleted();
 
-  mutable QgsAttributeMap *mLastRow;
-  QgsAttributeList mAttributes;
+  protected:
+    QgsVectorLayer *mLayer;
+    int mFeatureCount;
+    int mFieldCount;
+    mutable int mLastRowId;
+    mutable QgsFeature mFeat;
 
-  QList<idColumnPair> mSortList;
-  QMap<int, int> mIdRowMap;
-  QMap<int, int> mRowIdMap;
+    mutable QgsAttributeMap *mLastRow;
+    QgsAttributeList mAttributes;
 
-  void initIdMaps();
-  virtual void loadLayer();
+    QList<idColumnPair> mSortList;
+    QMap<int, int> mIdRowMap;
+    QMap<int, int> mRowIdMap;
+
+    void initIdMaps();
+    virtual void loadLayer();
 
 };
 
 class BeataMemModel: public BeataModel
 {
-Q_OBJECT
+    Q_OBJECT
 
-public:
-  BeataMemModel(QgsVectorLayer *theLayer);//, QObject *parent = 0);
+  public:
+    BeataMemModel( QgsVectorLayer *theLayer );//, QObject *parent = 0);
 
-protected slots:
-  virtual void featureDeleted(int fid);
-  virtual void featureAdded(int fid);
-  virtual void layerDeleted ();
+  protected slots:
+    virtual void featureDeleted( int fid );
+    virtual void featureAdded( int fid );
+    virtual void layerDeleted();
 
-private slots:
-  //virtual void attributeAdded (int idx);
-  //virtual void attributeDeleted (int idx);
-  virtual void attributeValueChanged (int fid, int idx, const QVariant &value);
-  //virtual void layerModified(bool onlyGeometry);
+  private slots:
+    //virtual void attributeAdded (int idx);
+    //virtual void attributeDeleted (int idx);
+    virtual void attributeValueChanged( int fid, int idx, const QVariant &value );
+    //virtual void layerModified(bool onlyGeometry);
 
-private:
-  virtual QVariant data(const QModelIndex &index, int role) const;
-  virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
-  virtual void loadLayer();
+  private:
+    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+    virtual void loadLayer();
 
-  QMap<int, QgsFeature> mFeatureMap;
+    QMap<int, QgsFeature> mFeatureMap;
 };
 
 #endif

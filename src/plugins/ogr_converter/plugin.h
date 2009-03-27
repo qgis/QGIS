@@ -76,7 +76,7 @@ class OgrPlugin : public QObject, public QgisPlugin
     void help();
 
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme ( QString theThemeName );
+    void setCurrentTheme( QString theThemeName );
 
   private:
 

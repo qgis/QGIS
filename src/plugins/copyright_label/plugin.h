@@ -71,7 +71,7 @@ class QgsCopyrightLabelPlugin: public QObject, public QgisPlugin
     //! set copyright label enabled
     void setEnable( bool );
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme ( QString theThemeName );
+    void setCurrentTheme( QString theThemeName );
 
 
 

@@ -414,7 +414,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   setFeatureAttributes( mLayerId, cat, &feature, mAttributesToFetch );
 
   feature.setValid( true );
-  
+
   return true;
 }
 

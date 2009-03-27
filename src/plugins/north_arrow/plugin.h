@@ -73,7 +73,7 @@ class QgsNorthArrowPlugin: public QObject, public QgisPlugin
     // variable as is.
     bool calculateNorthDirection();
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme ( QString theThemeName );
+    void setCurrentTheme( QString theThemeName );
 
   private:
 

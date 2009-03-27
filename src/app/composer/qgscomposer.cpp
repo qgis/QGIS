@@ -474,7 +474,7 @@ void QgsComposer::on_mActionPrint_activated( void )
 
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    if(mComposition->printAsRaster())
+    if ( mComposition->printAsRaster() )
     {
       //print out via QImage, code copied from on_mActionExportAsImage_activated
       int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
@@ -488,19 +488,19 @@ void QgsComposer::on_mActionPrint_activated( void )
       QRectF targetArea( 0, 0, width, height );
       mComposition->render( &imagePainter, targetArea, sourceArea );
       imagePainter.end();
-      p.drawImage(targetArea, image, targetArea);
+      p.drawImage( targetArea, image, targetArea );
     }
     else
     {
 #if QT_VERSION < 0x040400
-    QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-    QRect pageRect = printer.pageRect();
-    mComposition->render( &p, pageRect, paperRect );
+      QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+      QRect pageRect = printer.pageRect();
+      mComposition->render( &p, pageRect, paperRect );
 #else
-    //better in case of custom page size, but only possible with Qt>=4.4.0
-    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-    mComposition->render( &p, paperRectPixel, paperRectMM );
+      //better in case of custom page size, but only possible with Qt>=4.4.0
+      QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
+      QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+      mComposition->render( &p, paperRectPixel, paperRectMM );
 #endif
     }
     mComposition->setPlotStyle( savedPlotStyle );

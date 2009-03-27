@@ -93,19 +93,19 @@ int QgsWFSData::getWFSData()
 
   QgsHttpTransaction::applyProxySettings( mHttp, mUri );
 
-   //find out if there is a QGIS main window. If yes, display a progress dialog
+  //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog* progressDialog = 0;
   QWidget* mainWindow = findMainWindow();
 
-  if(mainWindow)
+  if ( mainWindow )
   {
-      progressDialog = new QProgressDialog(tr("Loading WFS data"), tr("Abort"), 0, 0, mainWindow);
-      progressDialog->setWindowModality(Qt::ApplicationModal);
-      connect(&mHttp, SIGNAL(dataReadProgress(int, int)), this, SLOT(handleProgressEvent(int, int)));
-      connect(this, SIGNAL(dataReadProgress(int)), progressDialog, SLOT(setValue(int)));
-      connect(this, SIGNAL(totalStepsUpdate(int)), progressDialog, SLOT(setMaximum(int)));
-      connect(progressDialog, SIGNAL(canceled()), &mHttp, SLOT(abort()));
-      progressDialog->show();
+    progressDialog = new QProgressDialog( tr( "Loading WFS data" ), tr( "Abort" ), 0, 0, mainWindow );
+    progressDialog->setWindowModality( Qt::ApplicationModal );
+    connect( &mHttp, SIGNAL( dataReadProgress( int, int ) ), this, SLOT( handleProgressEvent( int, int ) ) );
+    connect( this, SIGNAL( dataReadProgress( int ) ), progressDialog, SLOT( setValue( int ) ) );
+    connect( this, SIGNAL( totalStepsUpdate( int ) ), progressDialog, SLOT( setMaximum( int ) ) );
+    connect( progressDialog, SIGNAL( canceled() ), &mHttp, SLOT( abort() ) );
+    progressDialog->show();
   }
 
   //mHttp.get( mUri );
@@ -130,7 +130,7 @@ int QgsWFSData::getWFSData()
     qApp->processEvents();
   }
 
- delete progressDialog;
+  delete progressDialog;
 
   return 0; //soon
 }
@@ -149,10 +149,10 @@ void QgsWFSData::setFinished( bool error )
   mFinished = true;
 }
 
-void QgsWFSData::handleProgressEvent(int progress, int totalSteps)
+void QgsWFSData::handleProgressEvent( int progress, int totalSteps )
 {
-    emit dataReadProgress(progress);
-    emit totalStepsUpdate(totalSteps);
+  emit dataReadProgress( progress );
+  emit totalStepsUpdate( totalSteps );
 }
 
 void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
@@ -782,17 +782,17 @@ int QgsWFSData::totalWKBFragmentSize() const
 
 QWidget* QgsWFSData::findMainWindow() const
 {
-    QWidget* mainWindow = 0;
+  QWidget* mainWindow = 0;
 
-    QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-    QWidgetList::iterator it = topLevelWidgets.begin();
-    for ( ; it != topLevelWidgets.end(); ++it )
+  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  QWidgetList::iterator it = topLevelWidgets.begin();
+  for ( ; it != topLevelWidgets.end(); ++it )
+  {
+    if (( *it )->objectName() == "QgisApp" )
     {
-        if (( *it )->objectName() == "QgisApp" )
-        {
-        mainWindow = *it;
-        break;
-        }
+      mainWindow = *it;
+      break;
     }
-    return mainWindow;
+  }
+  return mainWindow;
 }

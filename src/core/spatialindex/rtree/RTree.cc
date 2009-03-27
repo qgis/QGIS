@@ -1177,7 +1177,7 @@ long SpatialIndex::RTree::RTree::writeNode( Node* n )
   }
   catch ( Tools::InvalidPageException& e )
   {
-    Q_UNUSED(e);	   
+    Q_UNUSED( e );
     delete[] buffer;
     QgsDebugMsg( e.what().c_str() );
     throw Tools::IllegalStateException( "writeNode: failed with Tools::InvalidPageException" );
@@ -1223,7 +1223,7 @@ SpatialIndex::RTree::NodePtr SpatialIndex::RTree::RTree::readNode( unsigned long
   }
   catch ( Tools::InvalidPageException& e )
   {
-    Q_UNUSED(e);	   
+    Q_UNUSED( e );
     QgsDebugMsg( e.what().c_str() );
     throw Tools::IllegalStateException( "readNode: failed with Tools::InvalidPageException" );
   }
@@ -1274,7 +1274,7 @@ void SpatialIndex::RTree::RTree::deleteNode( Node* n )
   }
   catch ( Tools::InvalidPageException& e )
   {
-    Q_UNUSED(e);	   
+    Q_UNUSED( e );
     QgsDebugMsg( e.what().c_str() );
     throw Tools::IllegalStateException( "deleteNode: failed with Tools::InvalidPageException" );
   }

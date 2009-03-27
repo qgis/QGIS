@@ -211,7 +211,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Cross" ) ) );
   }
-  else if (markerStyle == "None" )
+  else if ( markerStyle == "None" )
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "None" ) ) );
   }

@@ -430,11 +430,11 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       }
     }
   }
-  
+
   // if we failed to look up the projection in database, don't worry. we can still use it :)
-  if (!mIsValidFlag)
+  if ( !mIsValidFlag )
   {
-    setProj4String(theProj4String);
+    setProj4String( theProj4String );
   }
 
 

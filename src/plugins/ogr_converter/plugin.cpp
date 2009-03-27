@@ -72,7 +72,7 @@ void OgrPlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "OG&R Converter" ), mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 
 //method defined in interface

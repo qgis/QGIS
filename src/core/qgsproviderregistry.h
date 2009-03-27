@@ -87,18 +87,18 @@ class CORE_EXPORT QgsProviderRegistry
     */
     virtual QString fileVectorFilters() const;
     /** return a string containing the available database drivers
-	* @note this method was added in QGIS 1.1
-	*/
-	virtual QString databaseDrivers() const;
-	/** return a string containing the available directory drivers
-	* @note this method was added in QGIS 1.1
-	*/
+    * @note this method was added in QGIS 1.1
+    */
+    virtual QString databaseDrivers() const;
+    /** return a string containing the available directory drivers
+    * @note this method was added in QGIS 1.1
+    */
     virtual QString directoryDrivers() const;
-	/** return a string containing the available protocol drivers
-	* @note this method was added in QGIS 1.1
-	*/
+    /** return a string containing the available protocol drivers
+    * @note this method was added in QGIS 1.1
+    */
     virtual QString protocolDrivers() const;
-    
+
 
     /** open the given vector data source
 
@@ -151,24 +151,24 @@ class CORE_EXPORT QgsProviderRegistry
         one time.
      */
     QString mVectorFileFilters;
-	/** Available database drivers string for vector databases
-        
-		This is a string of form:
-		DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
-     */
-	QString mDatabaseDrivers;
-	/** Available directory drivers string for vector databases
-        
-		This is a string of form:
-		DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
-     */
-	QString mDirectoryDrivers;
-	/** Available protocol drivers string for vector databases
-        
-		This is a string of form:
-		DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
-     */
-	QString mProtocolDrivers;
+    /** Available database drivers string for vector databases
+
+     This is a string of form:
+     DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+        */
+    QString mDatabaseDrivers;
+    /** Available directory drivers string for vector databases
+
+     This is a string of form:
+     DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+        */
+    QString mDirectoryDrivers;
+    /** Available protocol drivers string for vector databases
+
+     This is a string of form:
+     DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
+        */
+    QString mProtocolDrivers;
 
 }; // class QgsProviderRegistry
 
