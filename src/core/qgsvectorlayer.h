@@ -377,7 +377,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Make layer editable */
     bool startEditing();
 
-    /** changed an attribute value (but does not commit it */
+    /** changed an attribute value (but does not commit it) */
     bool changeAttributeValue( int fid, int field, QVariant value, bool emitSignal = true );
 
     /** add an attribute field (but does not commit it)
