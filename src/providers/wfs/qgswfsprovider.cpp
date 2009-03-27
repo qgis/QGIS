@@ -66,7 +66,7 @@ QgsWFSProvider::~QgsWFSProvider()
 bool QgsWFSProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
-  
+
   while ( true ) //go through the loop until we find a feature in the filter
   {
     if ( mSelectedFeatures.size() == 0 || mFeatureIterator == mSelectedFeatures.end() )
@@ -279,8 +279,7 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QWidget* mainWindow = 0;
 
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-  QWidgetList::iterator it = topLevelWidgets.begin();
-  for ( ; it != topLevelWidgets.end(); ++it )
+  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
   {
     if (( *it )->objectName() == "QgisApp" )
     {
