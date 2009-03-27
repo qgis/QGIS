@@ -1,7 +1,7 @@
 /***************************************************************************
      BeataModel.cpp
      --------------------------------------
-    Date                 : Feb 2009 
+    Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
     Email                : weetya (at) gmail.com
  ***************************************************************************
@@ -23,18 +23,19 @@
 #include <QtGui>
 #include <QVariant>
 #include <QtAlgorithms>
+#include "qgslogger.h"
 
 //could be faster when type guessed before sorting
-bool idColumnPair::operator<(const idColumnPair &b) const
+bool idColumnPair::operator<( const idColumnPair &b ) const
 {
   //QVariat thinks gid is a string!
   QVariant::Type columnType = columnItem.type();
 
-  if (columnType == QVariant::Int || columnType == QVariant::UInt || columnType == QVariant::LongLong || columnType == QVariant::ULongLong)
+  if ( columnType == QVariant::Int || columnType == QVariant::UInt || columnType == QVariant::LongLong || columnType == QVariant::ULongLong )
     return columnItem.toLongLong() < b.columnItem.toLongLong();
 
-  if (columnType == QVariant::Double)
-	  return columnItem.toDouble() < b.columnItem.toDouble();
+  if ( columnType == QVariant::Double )
+    return columnItem.toDouble() < b.columnItem.toDouble();
 
   return columnItem.toString() < b.columnItem.toString();
 }
@@ -43,23 +44,23 @@ bool idColumnPair::operator<(const idColumnPair &b) const
 // Filter Model //
 //////////////////
 
-void BeataFilterModel::sort(int column, Qt::SortOrder order)
+void BeataFilterModel::sort( int column, Qt::SortOrder order )
 {
-	((BeataModel *)sourceModel())->sort(column, order);	
+  (( BeataModel * )sourceModel() )->sort( column, order );
 }
 
-BeataFilterModel::BeataFilterModel(QgsVectorLayer* theLayer)
+BeataFilterModel::BeataFilterModel( QgsVectorLayer* theLayer )
 {
   mLayer = theLayer;
   mHideUnselected = false;
-  setDynamicSortFilter(true);
+  setDynamicSortFilter( true );
 }
 
-bool BeataFilterModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool BeataFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  if(mHideUnselected)
-  // unreadable? yes, i agree :-)
-    return mLayer->selectedFeaturesIds().contains(((BeataModel *)sourceModel())->rowToId(sourceRow));
+  if ( mHideUnselected )
+    // unreadable? yes, i agree :-)
+    return mLayer->selectedFeaturesIds().contains((( BeataModel * )sourceModel() )->rowToId( sourceRow ) );
 
   return true;
 }
@@ -80,8 +81,9 @@ QModelIndex BeataFilterModel::mapToSource ( const QModelIndex& filterIndex ) con
 // BeataModel //
 ////////////////
 
-BeataModel::BeataModel(QgsVectorLayer *theLayer, QObject *parent)
-: QAbstractTableModel(parent) {
+BeataModel::BeataModel( QgsVectorLayer *theLayer, QObject *parent )
+    : QAbstractTableModel( parent )
+{
   mLastRowId = -1;
   mLastRow = NULL;
   mLayer = theLayer;
@@ -89,106 +91,107 @@ BeataModel::BeataModel(QgsVectorLayer *theLayer, QObject *parent)
   mFieldCount = mLayer->dataProvider()->fieldCount();
   mAttributes = mLayer->dataProvider()->attributeIndexes();
 
-  connect(mLayer, SIGNAL(layerModified(bool)), this, SLOT( layerModified(bool)));
+  connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   //connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT( attributeAdded(int)));
   //connect(mLayer, SIGNAL(attributeDeleted(int)), this, SLOT( attributeDeleted(int)));
   //connect(mLayer, SIGNAL(attributeValueChanged(int, int, const QVariant&)), this, SLOT( attributeValueChanged(int, int, const QVariant&)));
   //connect(mLayer, SIGNAL(featureDeleted(int)), this, SLOT( featureDeleted(int)));
   //connect(mLayer, SIGNAL(featureAdded(int)), this, SLOT( featureAdded(int)));
-  
+
   loadLayer();
 }
 
-void BeataModel::featureDeleted(int fid)
+void BeataModel::featureDeleted( int fid )
 {
-  std::cout << "BM feature deleted\n";
+  QgsDebugMsg( "entered." );
 
   int idx = mIdRowMap[fid];
-  std::cout << idx;
-  std::cout << fid;
+  QgsDebugMsg( idx );
+  QgsDebugMsg( fid );
 
-  /*--mFeatureCount;
-  mIdRowMap.remove(fid);
-  mRowIdMap.remove(idx);
-  
+#if 0
+  --mFeatureCount;
+  mIdRowMap.remove( fid );
+  mRowIdMap.remove( idx );
+
   // fill the hole in the view
-  if (idx != mFeatureCount)
+  if ( idx != mFeatureCount )
   {
-	  std::cout << "jo";
+    QgsDebugMsg( "jo" );
     //mRowIdMap[idx] = mRowIdMap[mFeatureCount];
     //mIdRowMap[mRowIdMap[idx]] = idx;
     int movedId = mRowIdMap[mFeatureCount];
-    mRowIdMap.remove(mFeatureCount);
-    mRowIdMap.insert(idx, movedId);
+    mRowIdMap.remove( mFeatureCount );
+    mRowIdMap.insert( idx, movedId );
     mIdRowMap[movedId] = idx;
     //mIdRowMap.remove(mRowIdMap[idx]);
     //mIdRowMap.insert(mRowIdMap[idx], idx);
   }
 
-  std::cout << "map sizes:" << mRowIdMap.size() << ", " << mIdRowMap.size();
+  QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
   emit layoutChanged();
   //reload(index(0,0), index(rowCount(), columnCount()));
-  std::cout << "\n";
-*/
-  std::cout << "id->row";
+#endif
+
+  QgsDebugMsg( "id->row" );
   QMap<int, int>::iterator it;
-  for (it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it)
-	  std::cout << it.key() << "->" << *it << "\n";
+  for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
+    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
-  std::cout << "row->id";
+  QgsDebugMsg( "row->id" );
 
-  for (it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it)
-	  std::cout << it.key() << "->" << *it << "\n";
+  for ( it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
+    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
 }
- 
-void BeataModel::featureAdded(int fid)
+
+void BeataModel::featureAdded( int fid )
 {
-  std::cout << "BM feature added\n";
+  QgsDebugMsg( "BM feature added" );
   ++mFeatureCount;
-  mIdRowMap.insert(fid, mFeatureCount - 1);
-  mRowIdMap.insert(mFeatureCount - 1, fid);
-  std::cout << "map sizes:" << mRowIdMap.size() << ", " << mIdRowMap.size() << "\n";;
-  reload(index(0,0), index(rowCount(), columnCount()));
+  mIdRowMap.insert( fid, mFeatureCount - 1 );
+  mRowIdMap.insert( mFeatureCount - 1, fid );
+  QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
- 
-void BeataModel::attributeAdded (int idx)
+
+void BeataModel::attributeAdded( int idx )
 {
-std::cout << "BM attribute added\n";
+  QgsDebugMsg( "BM attribute added" );
   loadLayer();
-  std::cout << "map sizes:" << mRowIdMap.size() << ", " << mIdRowMap.size() << "\n";;
-  reload(index(0,0), index(rowCount(), columnCount()));
+  QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
   emit modelChanged();
 }
- 
-void BeataModel::attributeDeleted (int idx)
+
+void BeataModel::attributeDeleted( int idx )
 {
-std::cout << "BM attribute deleted\n";
+  QgsDebugMsg( "BM attribute deleted" );
   loadLayer();
-  std::cout << "map sizes:" << mRowIdMap.size() << ", " << mIdRowMap.size() << "\n";;
-  reload(index(0,0), index(rowCount(), columnCount()));
+  QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
   emit modelChanged();
 }
- 
+
 void BeataModel::layerDeleted()
 {
-std::cout << "BM attribute deleted\n";
+  QgsDebugMsg( "entered." );
   mIdRowMap.clear();
   mRowIdMap.clear();
-  std::cout << "map sizes:" << mRowIdMap.size() << ", " << mIdRowMap.size() << "\n";;
-  reload(index(0,0), index(rowCount(), columnCount()));
-}
- 
-//TODO: check whether caching in data()/setData() doesn't cache old value
-void BeataModel::attributeValueChanged (int fid, int idx, const QVariant &value)
-{
-  std::cout << "BM attribute changed\n";
-  reload(index(0,0), index(rowCount(), columnCount()));
+  QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
 
-void BeataModel::layerModified(bool onlyGeometry)
+//TODO: check whether caching in data()/setData() doesn't cache old value
+void BeataModel::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
-  if (onlyGeometry)
+  QgsDebugMsg( "entered." );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
+}
+
+void BeataModel::layerModified( bool onlyGeometry )
+{
+  if ( onlyGeometry )
     return;
 
   loadLayer();
@@ -197,7 +200,7 @@ void BeataModel::layerModified(bool onlyGeometry)
 
 void BeataModel::loadLayer()
 {
-  std::cout << "BM loadlayer\n";
+  QgsDebugMsg( "entered." );
 
   QgsFeature f;
   bool ins = false, rm = false;
@@ -205,157 +208,157 @@ void BeataModel::loadLayer()
   mRowIdMap.clear();
   mIdRowMap.clear();
 
-  if (mFeatureCount < mLayer->pendingFeatureCount()) 
+  if ( mFeatureCount < mLayer->pendingFeatureCount() )
   {
-    std::cout<<"ins\n";
-    ins = true; 
-    beginInsertRows(QModelIndex(), mFeatureCount, mLayer->pendingFeatureCount() - 1);
-    //std::cout << mFeatureCount << ", " << mLayer->pendingFeatureCount() - 1 << "\n";
+    QgsDebugMsg( "ins" );
+    ins = true;
+    beginInsertRows( QModelIndex(), mFeatureCount, mLayer->pendingFeatureCount() - 1 );
+// QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() - 1));
   }
-  else if (mFeatureCount > mLayer->pendingFeatureCount()) 
+  else if ( mFeatureCount > mLayer->pendingFeatureCount() )
   {
-    std::cout<<"rm\n";
-    rm = true; 
-    beginRemoveRows(QModelIndex(), mLayer->pendingFeatureCount(), mFeatureCount - 1);
-    //std::cout << mFeatureCount << ", " << mLayer->pendingFeatureCount() -1 << "\n";
+    QgsDebugMsg( "rm" );
+    rm = true;
+    beginRemoveRows( QModelIndex(), mLayer->pendingFeatureCount(), mFeatureCount - 1 );
+// QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() -1));
   }
 
-  mLayer->select(QgsAttributeList(), QgsRectangle(), false);
+  mLayer->select( QgsAttributeList(), QgsRectangle(), false );
 
-  for (int i = 0; mLayer->nextFeature(f); ++i)
+  for ( int i = 0; mLayer->nextFeature( f ); ++i )
   {
-    mRowIdMap.insert(i, f.id());
-    mIdRowMap.insert(f.id(), i);
+    mRowIdMap.insert( i, f.id() );
+    mIdRowMap.insert( f.id(), i );
   }
 
   // not needed when we have featureAdded signal
   mFeatureCount = mLayer->pendingFeatureCount();
   mFieldCount = mLayer->dataProvider()->fieldCount();
 
-  if (ins)
+  if ( ins )
   {
     endInsertRows();
-    std::cout << "end ins\n";
+    QgsDebugMsg( "end ins" );
   }
-  else if (rm)
+  else if ( rm )
   {
     endRemoveRows();
-    std::cout << "end rm\n";
+    QgsDebugMsg( "end rm" );
   }
 
-/*  std::cout << "id->row";
+#if 0
+  QgsDebugMsg( "id->row" );
   QMap<int, int>::iterator it;
-  for (it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it)
-	  std::cout << it.key() << "->" << *it << "\n";
+  for ( it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
+    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
 
-  std::cout << "row->id";
+  QgsDebugMsg( "row->id" );
 
-  for (it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it)
-	  std::cout << it.key() << "->" << *it << "\n";*/
-
-
+  for ( it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
+    QgsDebugMsg( QString( "%1->%2" ).arg( it.key() ).arg( *it ) );
+#endif
 }
 
-void BeataModel::swapRows(int a, int b)
+void BeataModel::swapRows( int a, int b )
 {
-  if (a == b)
+  if ( a == b )
     return;
 
-  int rowA = idToRow(a);
-  int rowB = idToRow(b);
+  int rowA = idToRow( a );
+  int rowB = idToRow( b );
 
   //emit layoutAboutToBeChanged();
 
-  mRowIdMap.remove(rowA);
-  mRowIdMap.remove(rowB);
-  mRowIdMap.insert(rowA, b); 
-  mRowIdMap.insert(rowB, a); 
+  mRowIdMap.remove( rowA );
+  mRowIdMap.remove( rowB );
+  mRowIdMap.insert( rowA, b );
+  mRowIdMap.insert( rowB, a );
 
-  mIdRowMap.remove(a);
-  mIdRowMap.remove(b);
-  mIdRowMap.insert(a, rowB); 
-  mIdRowMap.insert(b, rowA); 
+  mIdRowMap.remove( a );
+  mIdRowMap.remove( b );
+  mIdRowMap.insert( a, rowB );
+  mIdRowMap.insert( b, rowA );
 
   //emit layoutChanged();
 }
 
-int BeataModel::idToRow(const int id) const
+int BeataModel::idToRow( const int id ) const
 {
-  if (!mIdRowMap.contains(id))
+  if ( !mIdRowMap.contains( id ) )
   {
-    std::cout << "idToRow: id " << id << " not in map\n";
+    QgsDebugMsg( QString( "idToRow: id %1 not in map" ).arg( id ) );
     return -1;
   }
 
   return mIdRowMap[id];
 }
 
-int BeataModel::rowToId(const int id) const
+int BeataModel::rowToId( const int id ) const
 {
-  if (!mRowIdMap.contains(id))
+  if ( !mRowIdMap.contains( id ) )
   {
-    std::cout << "rowToId: row " << id << " not in map\n";
+    QgsDebugMsg( QString( "rowToId: row %1 not in map" ).arg( id ) );
     return -1;
   }
 
   return mRowIdMap[id];
 }
 
-int BeataModel::rowCount(const QModelIndex &parent) const
+int BeataModel::rowCount( const QModelIndex &parent ) const
 {
   return mFeatureCount;
 }
 
-int BeataModel::columnCount(const QModelIndex &parent) const
+int BeataModel::columnCount( const QModelIndex &parent ) const
 {
   return mFieldCount;
 }
 
-QVariant BeataModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant BeataModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
-  if (role == Qt::DisplayRole)
+  if ( role == Qt::DisplayRole )
   {
-    if (orientation == Qt::Vertical) //row
+    if ( orientation == Qt::Vertical ) //row
     {
-      return QVariant(section);
+      return QVariant( section );
     }
     else
     {
       QgsField field = mLayer->dataProvider()->fields()[section]; //column
-      return QVariant(field.name());
+      return QVariant( field.name() );
     }
   }
   else return QVariant();
 }
 
-void BeataModel::sort(int column, Qt::SortOrder order)
+void BeataModel::sort( int column, Qt::SortOrder order )
 {
   QgsAttributeMap row;
   idColumnPair pair;
   QgsAttributeList attrs;
   QgsFeature f;
 
-  attrs.append(column);
+  attrs.append( column );
 
   emit layoutAboutToBeChanged();
-  //std::cout << "SORTing\n";
+// QgsDebugMsg("SORTing");
 
   mSortList.clear();
-  mLayer->select(attrs, QgsRectangle(), false);
-  while (mLayer->nextFeature(f))
+  mLayer->select( attrs, QgsRectangle(), false );
+  while ( mLayer->nextFeature( f ) )
   {
     row = f.attributeMap();
 
     pair.id = f.id();
     pair.columnItem = row[column];
 
-    mSortList.append(pair);
+    mSortList.append( pair );
   }
 
-  if (order == Qt::AscendingOrder)
-    qStableSort(mSortList.begin(), mSortList.end());
+  if ( order == Qt::AscendingOrder )
+    qStableSort( mSortList.begin(), mSortList.end() );
   else
-    qStableSort(mSortList.begin(), mSortList.end(), qGreater<idColumnPair>());
+    qStableSort( mSortList.begin(), mSortList.end(), qGreater<idColumnPair>() );
 
   // recalculate id<->row maps
   mRowIdMap.clear();
@@ -363,10 +366,10 @@ void BeataModel::sort(int column, Qt::SortOrder order)
 
   int i = 0;
   QList<idColumnPair>::Iterator it;
-  for (it = mSortList.begin(); it != mSortList.end(); ++it, ++i)
+  for ( it = mSortList.begin(); it != mSortList.end(); ++it, ++i )
   {
-    mRowIdMap.insert(i, it->id);
-    mIdRowMap.insert(it->id, i);
+    mRowIdMap.insert( i, it->id );
+    mIdRowMap.insert( it->id, i );
   }
 
   // restore selection
@@ -375,96 +378,97 @@ void BeataModel::sort(int column, Qt::SortOrder order)
   emit modelChanged();
 }
 
-QVariant BeataModel::data(const QModelIndex &index, int role) const
+QVariant BeataModel::data( const QModelIndex &index, int role ) const
 {
-  if (!index.isValid() || (role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole) )
+  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
   QVariant::Type fldType = mLayer->dataProvider()->fields()[index.column()].type();
-  bool fldNumeric = (fldType == QVariant::Int || fldType == QVariant::Double);
-  
-  if (role == Qt::TextAlignmentRole)
-  {
-    if (fldNumeric)
-      return QVariant(Qt::AlignRight);
-    else
-      return QVariant(Qt::AlignLeft);
-  }
-  
-  // if we don't have the row in current cache, load it from layer first
-  if (mLastRowId != rowToId(index.row()))
-  {
-    bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
+  bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
-    if (!res)
-      return QVariant("ERROR");
-    
-    mLastRowId = rowToId(index.row());
-    mLastRow = (QgsAttributeMap *)(&(mFeat.attributeMap()));
+  if ( role == Qt::TextAlignmentRole )
+  {
+    if ( fldNumeric )
+      return QVariant( Qt::AlignRight );
+    else
+      return QVariant( Qt::AlignLeft );
   }
-    
-  QVariant& val = (*mLastRow)[index.column()];
-  
-  if (val.isNull())
+
+  // if we don't have the row in current cache, load it from layer first
+  if ( mLastRowId != rowToId( index.row() ) )
+  {
+    bool res = mLayer->featureAtId( rowToId( index.row() ), mFeat, false, true );
+
+    if ( !res )
+      return QVariant( "ERROR" );
+
+    mLastRowId = rowToId( index.row() );
+    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
+  }
+
+  QVariant& val = ( *mLastRow )[index.column()];
+
+  if ( val.isNull() )
   {
     // if the value is NULL, show that in table, but don't show "NULL" text in editor
-    if (role == Qt::EditRole)
+    if ( role == Qt::EditRole )
       return QVariant();
     else
-      return QVariant("NULL");
+      return QVariant( "NULL" );
   }
-  
+
   // force also numeric data for EditRole to be strings
   // otherwise it creates spinboxes instead of line edits
   // (probably not what we do want)
-  if (fldNumeric && role == Qt::EditRole)
+  if ( fldNumeric && role == Qt::EditRole )
     return val.toString();
-  
+
   // convert to QString from some other representation
   // this prevents displaying greater numbers in exponential format
   return val.toString();
 }
 
-bool BeataModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool BeataModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if (!index.isValid() || role != Qt::EditRole)
+  if ( !index.isValid() || role != Qt::EditRole )
     return false;
 
-  if (!mLayer->isEditable())
+  if ( !mLayer->isEditable() )
     return false;
 
-  bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
+  bool res = mLayer->featureAtId( rowToId( index.row() ), mFeat, false, true );
 
-  if (res) {
-    mLastRowId = rowToId(index.row());
-    mLastRow = (QgsAttributeMap *)(&(mFeat.attributeMap()));
+  if ( res )
+  {
+    mLastRowId = rowToId( index.row() );
+    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
 
-    mLayer->changeAttributeValue(rowToId(index.row()), index.column(), value, true);
-  } 
+    mLayer->changeAttributeValue( rowToId( index.row() ), index.column(), value, true );
+  }
 
-  if (!mLayer->isModified())
+  if ( !mLayer->isModified() )
     return false;
 
-  emit dataChanged(index, index);
+  emit dataChanged( index, index );
   return true;
 }
 
-Qt::ItemFlags BeataModel::flags(const QModelIndex &index) const
+Qt::ItemFlags BeataModel::flags( const QModelIndex &index ) const
 {
-  if (!index.isValid())
+  if ( !index.isValid() )
     return Qt::ItemIsEnabled;
 
-  Qt::ItemFlags flags = QAbstractItemModel::flags(index);
-  
-  if (mLayer->isEditable())
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
+  if ( mLayer->isEditable() )
     flags |= Qt::ItemIsEditable;
-  
+
   return flags;
 }
 
-void BeataModel::reload(const QModelIndex &index1, const QModelIndex &index2)
+void BeataModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
-  emit dataChanged(index1, index2);
+  emit dataChanged( index1, index2 );
 }
 
 void BeataModel::resetModel()
@@ -489,142 +493,145 @@ void BeataModel::incomingChangeLayout()
 void BeataMemModel::loadLayer()
 {
   BeataModel::loadLayer();
-  mLayer->select(mLayer->pendingAllAttributesList(), QgsRectangle(), false);
+  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
 
   QgsFeature f;
-  while (mLayer->nextFeature(f))
-    mFeatureMap.insert(f.id(), f);
+  while ( mLayer->nextFeature( f ) )
+    mFeatureMap.insert( f.id(), f );
 }
 
 BeataMemModel::BeataMemModel
-(QgsVectorLayer *theLayer)
-: BeataModel(theLayer)
+( QgsVectorLayer *theLayer )
+    : BeataModel( theLayer )
 {
   loadLayer();
 }
 
-QVariant BeataMemModel::data(const QModelIndex &index, int role) const
+QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
 {
-  if (!index.isValid() || (role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole))
+  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
   QVariant::Type fldType = mLayer->dataProvider()->fields()[index.column()].type();
-  bool fldNumeric = (fldType == QVariant::Int || fldType == QVariant::Double);
-  
-  if (role == Qt::TextAlignmentRole)
+  bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
+
+  if ( role == Qt::TextAlignmentRole )
   {
-    if (fldNumeric)
-      return QVariant(Qt::AlignRight);
+    if ( fldNumeric )
+      return QVariant( Qt::AlignRight );
     else
-      return QVariant(Qt::AlignLeft);
+      return QVariant( Qt::AlignLeft );
   }
-  
+
   // if we don't have the row in current cache, load it from layer first
-  if (mLastRowId != rowToId(index.row()))
+  if ( mLastRowId != rowToId( index.row() ) )
   {
     //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-    bool res = mFeatureMap.contains(rowToId(index.row()));
+    bool res = mFeatureMap.contains( rowToId( index.row() ) );
 
-    if (!res)
-      return QVariant("ERROR");
-    
-    mLastRowId = rowToId(index.row());
-    mFeat = mFeatureMap[rowToId(index.row())];
-    mLastRow = (QgsAttributeMap *)(&(mFeat.attributeMap()));
+    if ( !res )
+      return QVariant( "ERROR" );
+
+    mLastRowId = rowToId( index.row() );
+    mFeat = mFeatureMap[rowToId( index.row() )];
+    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
   }
-    
-  QVariant& val = (*mLastRow)[index.column()];
 
-  if (val.isNull())
+  QVariant& val = ( *mLastRow )[index.column()];
+
+  if ( val.isNull() )
   {
     // if the value is NULL, show that in table, but don't show "NULL" text in editor
-    if (role == Qt::EditRole)
+    if ( role == Qt::EditRole )
       return QVariant();
     else
-      return QVariant("NULL");
+      return QVariant( "NULL" );
   }
-  
+
   // force also numeric data for EditRole to be strings
   // otherwise it creates spinboxes instead of line edits
   // (probably not what we do want)
-  if (fldNumeric && role == Qt::EditRole)
+  if ( fldNumeric && role == Qt::EditRole )
     return val.toString();
-  
+
   // convert to QString from some other representation
   // this prevents displaying greater numbers in exponential format
   return val.toString();
 }
 
-bool BeataMemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool BeataMemModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if (!index.isValid() || role != Qt::EditRole)
+  if ( !index.isValid() || role != Qt::EditRole )
     return false;
 
-  if (!mLayer->isEditable())
+  if ( !mLayer->isEditable() )
     return false;
 
   //bool res = mLayer->featureAtId(rowToId(index.row()), mFeat, false, true);
-  bool res = mFeatureMap.contains(rowToId(index.row()));
+  bool res = mFeatureMap.contains( rowToId( index.row() ) );
 
-  if (res) {
-    mLastRowId = rowToId(index.row());
-    mFeat = mFeatureMap[rowToId(index.row())];
-    mLastRow = (QgsAttributeMap *)(&(mFeat.attributeMap()));
+  if ( res )
+  {
+    mLastRowId = rowToId( index.row() );
+    mFeat = mFeatureMap[rowToId( index.row() )];
+    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
 
 
-    //std::cout << mFeatureMap[rowToId(index.row())].id();
-    mFeatureMap[rowToId(index.row())].changeAttribute(index.column(), value);
+// QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());
+    mFeatureMap[rowToId( index.row() )].changeAttribute( index.column(), value );
     // propagate back to the layer
-    mLayer->changeAttributeValue(rowToId(index.row()), index.column(), value, true);
+    mLayer->changeAttributeValue( rowToId( index.row() ), index.column(), value, true );
   }
 
-  if (!mLayer->isModified())
+  if ( !mLayer->isModified() )
     return false;
 
-  emit dataChanged(index, index);
+  emit dataChanged( index, index );
   return true;
 }
 
-void BeataMemModel::featureDeleted(int fid)
+void BeataMemModel::featureDeleted( int fid )
 {
-std::cout << "BMM feature deleted\n";
-  mFeatureMap.remove(fid);
-  BeataModel::featureDeleted(fid);
+  QgsDebugMsg( "entered." );
+  mFeatureMap.remove( fid );
+  BeataModel::featureDeleted( fid );
 }
- 
-void BeataMemModel::featureAdded(int fid)
+
+void BeataMemModel::featureAdded( int fid )
 {
-  std::cout << "BMM feature added\n";
+  QgsDebugMsg( "entered." );
   QgsFeature f;
-  mLayer->featureAtId(fid, f, false, true);
-  mFeatureMap.insert(fid, f);
-  BeataModel::featureAdded(fid);
+  mLayer->featureAtId( fid, f, false, true );
+  mFeatureMap.insert( fid, f );
+  BeataModel::featureAdded( fid );
 }
- 
-/*void BeataMemModel::attributeAdded (int idx)
+
+#if 0
+void BeataMemModel::attributeAdded( int idx )
 {
-	std::cout << "attribute added\n";
+  QgsDebugMsg( "entered." );
   loadLayer();
-  reload(index(0,0), index(rowCount(), columnCount()));
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
- 
-void BeataMemModel::attributeDeleted (int idx)
+
+void BeataMemModel::attributeDeleted( int idx )
 {
-	std::cout << "attribute deleted\n";
+  QgsDebugMsg( "entered." );
   loadLayer();
-  reload(index(0,0), index(rowCount(), columnCount()));
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
- */
-void BeataMemModel::layerDeleted ()
+#endif
+
+void BeataMemModel::layerDeleted()
 {
-  std::cout << "BMM layer del\n";
+  QgsDebugMsg( "entered." );
   mFeatureMap.clear();
   BeataModel::layerDeleted();
 }
- 
-void BeataMemModel::attributeValueChanged (int fid, int idx, const QVariant &value)
+
+void BeataMemModel::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
-  std::cout << "BMM attribute changed\n";
-  mFeatureMap[fid].changeAttribute(idx, value);
-  reload(index(0,0), index(rowCount(), columnCount()));
+  QgsDebugMsg( "entered." );
+  mFeatureMap[fid].changeAttribute( idx, value );
+  reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
