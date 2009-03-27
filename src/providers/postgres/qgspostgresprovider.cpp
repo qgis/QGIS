@@ -622,7 +622,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   feature.setAttributeMap( mFeatureQueue.front().attributeMap() );
 
   mFeatureQueue.pop();
-  
+
   feature.setValid( true );
   return true;
 }
@@ -1873,6 +1873,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
 
     connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     connectionRW->PQexecNR( "COMMIT" );
+
+    featuresCounted += flist.size();
   }
   catch ( PGException &e )
   {
@@ -1913,6 +1915,8 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
     }
 
     connectionRW->PQexecNR( "COMMIT" );
+
+    featuresCounted -= id.size();
   }
   catch ( PGException &e )
   {
