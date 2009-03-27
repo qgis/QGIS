@@ -88,8 +88,8 @@ BeataModel::BeataModel( QgsVectorLayer *theLayer, QObject *parent )
   mLastRow = NULL;
   mLayer = theLayer;
   mFeatureCount = mLayer->pendingFeatureCount();
-  mFieldCount = mLayer->dataProvider()->fieldCount();
-  mAttributes = mLayer->dataProvider()->attributeIndexes();
+  mFieldCount = mLayer->pendingFields().size();
+  mAttributes = mLayer->pendingAllAttributesList();
 
   connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   //connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT( attributeAdded(int)));
@@ -233,7 +233,7 @@ void BeataModel::loadLayer()
 
   // not needed when we have featureAdded signal
   mFeatureCount = mLayer->pendingFeatureCount();
-  mFieldCount = mLayer->dataProvider()->fieldCount();
+  mFieldCount = mLayer->pendingFields().size();
 
   if ( ins )
   {
@@ -324,7 +324,7 @@ QVariant BeataModel::headerData( int section, Qt::Orientation orientation, int r
     }
     else
     {
-      QgsField field = mLayer->dataProvider()->fields()[section]; //column
+      QgsField field = mLayer->pendingFields()[ mAttributes[section] ]; //column
       return QVariant( field.name() );
     }
   }
@@ -350,7 +350,7 @@ void BeataModel::sort( int column, Qt::SortOrder order )
     row = f.attributeMap();
 
     pair.id = f.id();
-    pair.columnItem = row[column];
+    pair.columnItem = row[ mAttributes[column] ];
 
     mSortList.append( pair );
   }
@@ -383,7 +383,7 @@ QVariant BeataModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
-  QVariant::Type fldType = mLayer->dataProvider()->fields()[index.column()].type();
+  QVariant::Type fldType = mLayer->pendingFields()[ mAttributes[index.column()] ].type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
   if ( role == Qt::TextAlignmentRole )
@@ -403,10 +403,10 @@ QVariant BeataModel::data( const QModelIndex &index, int role ) const
       return QVariant( "ERROR" );
 
     mLastRowId = rowToId( index.row() );
-    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
+    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
   }
 
-  QVariant& val = ( *mLastRow )[index.column()];
+  QVariant& val = ( *mLastRow )[ mAttributes[index.column()] ];
 
   if ( val.isNull() )
   {
@@ -512,7 +512,7 @@ QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
-  QVariant::Type fldType = mLayer->dataProvider()->fields()[index.column()].type();
+  QVariant::Type fldType = mLayer->pendingFields()[ mAttributes[index.column()] ].type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
   if ( role == Qt::TextAlignmentRole )
@@ -534,10 +534,10 @@ QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
 
     mLastRowId = rowToId( index.row() );
     mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * )( &( mFeat.attributeMap() ) );
+    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
   }
 
-  QVariant& val = ( *mLastRow )[index.column()];
+  QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
 
   if ( val.isNull() )
   {
