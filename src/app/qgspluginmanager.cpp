@@ -93,6 +93,16 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   connect( btnClearAll, SIGNAL( clicked() ), this, SLOT( clearAll() ) );
 
   qRegisterMetaType<QgsDetailedItemData>();
+  
+  // check for plugin installer
+  if (checkForPluginInstaller())
+  {
+    connect( btnPluginInstaller, SIGNAL( clicked() ), this, SLOT( showPluginInstaller() ));
+  }
+  else
+  {
+    btnPluginInstaller->setEnabled(false);
+  }
 }
 
 
@@ -499,4 +509,44 @@ void QgsPluginManager::on_leFilter_textChanged( QString theText )
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
   mModelProxy->setFilterRegExp( myRegExp );
+}
+
+bool QgsPluginManager::checkForPluginInstaller()
+{
+  // check whether python's enabled
+  if (!mPythonUtils)
+    return false;
+  
+  // check whether python installer is present
+  if (!mPythonUtils->pluginList().contains("plugin_installer"))
+    return false;
+  
+  QString res;
+  // check it's loaded and started
+  bool retval = mPythonUtils->evalString("plugins.has_key('plugin_installer')", res);
+  if (!retval || res != "True")
+  {
+    // TODO: try to load the plugin installer!
+    return false;
+  }
+  
+  return true;
+}
+
+void QgsPluginManager::showPluginInstaller()
+{
+  bool res;
+  QString cls, msg;
+  res = mPythonUtils->runStringUnsafe("_qgis_plugin_manager = wrapinstance( " + QString::number((unsigned long)this) + ", QtGui.QWidget )");
+  if (!res)
+  {
+    QgsDebugMsg("wrapinstance error: " + cls + " :: " + msg);
+  }
+  res = mPythonUtils->runStringUnsafe("plugins['plugin_installer'].run( _qgis_plugin_manager )");
+  if (!res)
+  {
+    mPythonUtils->getError(cls, msg);
+    QMessageBox::warning(this, tr("Error"), tr("Failed to open plugin installer!"));
+    mPythonUtils->runStringUnsafe("del _qgis_plugin_manager");
+  }
 }

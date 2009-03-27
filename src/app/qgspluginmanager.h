@@ -56,6 +56,8 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     void resizeColumnsToContents();
     //! Sort model by column ascending
     void sortModel( int );
+    //! Check whether plugin installer is available (and tries to load it if it's disabled)
+    bool checkForPluginInstaller();
   public slots:
     //! Enable disable checkbox
     void on_vwPlugins_clicked( const QModelIndex & );
@@ -67,6 +69,8 @@ class QgsPluginManager : public QDialog, private Ui::QgsPluginManagerBase
     void clearAll();
     //! Update the filter when user changes the filter expression
     void on_leFilter_textChanged( QString theText );
+    //! Show the plugin installer
+    void showPluginInstaller();
   private:
     QStandardItemModel *mModelPlugins;
     QSortFilterProxyModel * mModelProxy;

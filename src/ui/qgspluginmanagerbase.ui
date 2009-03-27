@@ -78,7 +78,14 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="3" >
+   <item row="4" column="0" colspan="2" >
+    <widget class="QPushButton" name="btnPluginInstaller" >
+     <property name="text" >
+      <string>Plugin Installer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
     <widget class="QDialogButtonBox" name="buttonBox" >
      <property name="standardButtons" >
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
@@ -91,6 +98,7 @@
  <tabstops>
   <tabstop>vwPlugins</tabstop>
   <tabstop>leFilter</tabstop>
+  <tabstop>btnPluginInstaller</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
