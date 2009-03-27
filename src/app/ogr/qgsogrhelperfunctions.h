@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsogrhelperfunctions.h  
+                          qgsogrhelperfunctions.h
     helper functions to create ogr uris for database and protocol drivers
                              -------------------
     begin                : Mon Jan 2 2009
@@ -19,5 +19,5 @@
 
 #include <QString>
 
-QString createDatabaseURI(QString connectionType, QString host, QString database, QString port, QString user, QString password);
-QString createProtocolURI(QString type, QString url);
+QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password );
+QString createProtocolURI( QString type, QString url );

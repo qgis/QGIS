@@ -54,7 +54,7 @@ void QgsWFSPlugin::initGui()
     mIface->fileToolBar()->addAction( mWfsDialogAction );
     mIface->addPluginToMenu( tr( "&Add WFS layer" ), mWfsDialogAction );
     // this is called when the icon theme is changed
-    connect( mIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+    connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
 }
 

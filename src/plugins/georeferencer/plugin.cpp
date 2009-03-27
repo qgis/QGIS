@@ -99,47 +99,47 @@ void QgsGeorefPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add to the toolbar & menu
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
 
   mQActionPointer = new QAction( QIcon( ":/about.png" ), tr( "&Georeferencer" ), this );
-  mQActionPointer = new QAction("About", this);
-  connect(mQActionPointer, SIGNAL(triggered()), SLOT(about()));
-  mQGisIface->addPluginToMenu(tr ("&Georeferencer"), mQActionPointer);
+  mQActionPointer = new QAction( "About", this );
+  connect( mQActionPointer, SIGNAL( triggered() ), SLOT( about() ) );
+  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
 
   mQActionPointer = new QAction( QIcon( ":/help.png" ), tr( "&Georeferencer" ), this );
-  mQActionPointer = new QAction("Help", this);
-  connect(mQActionPointer, SIGNAL(triggered()), SLOT(help()));
-  mQGisIface->addPluginToMenu(tr ("&Georeferencer"), mQActionPointer);
+  mQActionPointer = new QAction( "Help", this );
+  connect( mQActionPointer, SIGNAL( triggered() ), SLOT( help() ) );
+  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
 }
 //method defined in interface
 void QgsGeorefPlugin::help()
 {
-	QgsGeorefDescriptionDialog dlg( mQGisIface->mainWindow( ) );
-	dlg.exec();
+  QgsGeorefDescriptionDialog dlg( mQGisIface->mainWindow( ) );
+  dlg.exec();
 }
 
 void QgsGeorefPlugin::about( )
 {
-	QDialog dlg( mQGisIface->mainWindow( ) );
-	dlg.setWindowFlags( dlg.windowFlags( ) | Qt::MSWindowsFixedSizeDialogHint );
-	dlg.setWindowFlags( dlg.windowFlags( ) &~ Qt::WindowContextHelpButtonHint );
-	QVBoxLayout *lines = new QVBoxLayout( &dlg );
-	lines->addWidget( new QLabel( tr( "<b>Georeferencer GDAL</b>") ) );
-	lines->addWidget( new QLabel( tr( "    Based on original Georeferencer Plugin" ) ) );
-	lines->addWidget( new QLabel( tr( "<b>Developers:</b>" ) ) );
-	lines->addWidget( new QLabel( tr( "    Lars Luthman (original Georeferencer)" ) ) );
-	lines->addWidget( new QLabel( "    Lynx (lynx21.12.12@gmail.ru)" ));
-	lines->addWidget( new QLabel( "    Maxim Dubinin (sim@gis-lab.info)" ));
-	lines->addWidget( new QLabel( tr( "<b>Links:</b>" ) ) );
-	QLabel *link = new QLabel( "     <a href=\"http://gis-lab.info/qa/qgis-georef-new-eng.html\">http://gis-lab.info/qa/qgis-georef-new-eng.html</a>");
-	link->setOpenExternalLinks( true );
-	lines->addWidget( link );
+  QDialog dlg( mQGisIface->mainWindow( ) );
+  dlg.setWindowFlags( dlg.windowFlags( ) | Qt::MSWindowsFixedSizeDialogHint );
+  dlg.setWindowFlags( dlg.windowFlags( ) &~ Qt::WindowContextHelpButtonHint );
+  QVBoxLayout *lines = new QVBoxLayout( &dlg );
+  lines->addWidget( new QLabel( tr( "<b>Georeferencer GDAL</b>" ) ) );
+  lines->addWidget( new QLabel( tr( "    Based on original Georeferencer Plugin" ) ) );
+  lines->addWidget( new QLabel( tr( "<b>Developers:</b>" ) ) );
+  lines->addWidget( new QLabel( tr( "    Lars Luthman (original Georeferencer)" ) ) );
+  lines->addWidget( new QLabel( "    Lynx (lynx21.12.12@gmail.ru)" ) );
+  lines->addWidget( new QLabel( "    Maxim Dubinin (sim@gis-lab.info)" ) );
+  lines->addWidget( new QLabel( tr( "<b>Links:</b>" ) ) );
+  QLabel *link = new QLabel( "     <a href=\"http://gis-lab.info/qa/qgis-georef-new-eng.html\">http://gis-lab.info/qa/qgis-georef-new-eng.html</a>" );
+  link->setOpenExternalLinks( true );
+  lines->addWidget( link );
 
-	dlg.exec( );
+  dlg.exec( );
 }
 
 // Slot called when the buffer menu item is triggered
@@ -148,10 +148,10 @@ void QgsGeorefPlugin::run()
 //  QgsGeorefPluginGui *myPluginGui = new QgsGeorefPluginGui( mQGisIface, QgsGeorefPluginGui::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint);
 //  myPluginGui->show();
 //  myPluginGui->setFocus();
-    QgsPointDialog *myPlugin = new QgsPointDialog(mQGisIface, QgsPointDialog::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint);
-    myPlugin->move(0, 0);
-    myPlugin->show();
-    myPlugin->setFocus();
+  QgsPointDialog *myPlugin = new QgsPointDialog( mQGisIface, QgsPointDialog::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint );
+  myPlugin->move( 0, 0 );
+  myPlugin->show();
+  myPlugin->setFocus();
 }
 
 // Unload the plugin by cleaning up the GUI

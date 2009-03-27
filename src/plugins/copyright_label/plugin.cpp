@@ -87,7 +87,7 @@ void QgsCopyrightLabelPlugin::initGui()
   connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
 
   // this is called when the icon theme is changed
-  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add the icon to the toolbar
   qGisInterface->addToolBarIcon( myQActionPointer );

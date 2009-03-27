@@ -2,7 +2,7 @@
     qgserversourceselect.cpp  -  selector for WMS servers, etc.
                              -------------------
     begin                : 3 April 2005
-    copyright            : 
+    copyright            :
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
 
@@ -118,12 +118,12 @@ QgsServerSourceSelect::QgsServerSourceSelect( QWidget * parent, Qt::WFlags fl )
   //
   // For wms search tab
   //
-  tableWidgetWMSList->setColumnWidth(0, 250);
-  tableWidgetWMSList->setColumnWidth(1, 150);
-  tableWidgetWMSList->setColumnWidth(2, 250);
+  tableWidgetWMSList->setColumnWidth( 0, 250 );
+  tableWidgetWMSList->setColumnWidth( 1, 150 );
+  tableWidgetWMSList->setColumnWidth( 2, 250 );
   tableWidgetWMSList->verticalHeader()->hide();
 
-  connect(tableWidgetWMSList, SIGNAL(itemSelectionChanged()), this, SLOT(wmsSelectionChanged()));
+  connect( tableWidgetWMSList, SIGNAL( itemSelectionChanged() ), this, SLOT( wmsSelectionChanged() ) );
 }
 
 QgsServerSourceSelect::~QgsServerSourceSelect()
@@ -734,7 +734,7 @@ void QgsServerSourceSelect::addDefaultServers()
                             "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
 }
 
-bool QgsServerSourceSelect::retrieveSearchResults(const QString& searchTerm, QByteArray& httpResponse)
+bool QgsServerSourceSelect::retrieveSearchResults( const QString& searchTerm, QByteArray& httpResponse )
 {
   // TODO: test proxy
   // read proxy settings: code from QgsWmsProvider::retrieveUrl()
@@ -744,40 +744,40 @@ bool QgsServerSourceSelect::retrieveSearchResults(const QString& searchTerm, QBy
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
-  if(proxyEnabled)
+  if ( proxyEnabled )
   {
     proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
     proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
     proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
     proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
     QString proxyTypeString =  settings.value( "proxy/proxyType", "" ).toString();
-    if(proxyTypeString == "DefaultProxy")
+    if ( proxyTypeString == "DefaultProxy" )
     {
       proxyType = QNetworkProxy::DefaultProxy;
     }
-    else if(proxyTypeString == "Socks5Proxy")
+    else if ( proxyTypeString == "Socks5Proxy" )
     {
       proxyType = QNetworkProxy::Socks5Proxy;
     }
-    else if(proxyTypeString == "HttpProxy")
+    else if ( proxyTypeString == "HttpProxy" )
     {
       proxyType = QNetworkProxy::HttpProxy;
     }
 #if QT_VERSION >= 0x040400
-    else if(proxyTypeString == "HttpCachingProxy")
+    else if ( proxyTypeString == "HttpCachingProxy" )
     {
       proxyType = QNetworkProxy::HttpCachingProxy;
     }
-    else if(proxyTypeString == "FtpCachingProxy")
+    else if ( proxyTypeString == "FtpCachingProxy" )
     {
       proxyType = QNetworkProxy::FtpCachingProxy;
     }
 #endif
   }
 
-  QUrl url(QString("http://geopole.org/wms/search?search=%1&type=rss").arg(searchTerm));
-  QgsHttpTransaction http(url.toEncoded(),
-                          proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
+  QUrl url( QString( "http://geopole.org/wms/search?search=%1&type=rss" ).arg( searchTerm ) );
+  QgsHttpTransaction http( url.toEncoded(),
+                           proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
 
   bool httpOk = http.getSynchronously( httpResponse );
   if ( !httpOk )
@@ -791,24 +791,24 @@ bool QgsServerSourceSelect::retrieveSearchResults(const QString& searchTerm, QBy
   return true;
 }
 
-void QgsServerSourceSelect::addWMSListRow(const QDomElement& item, int row)
+void QgsServerSourceSelect::addWMSListRow( const QDomElement& item, int row )
 {
-  QDomElement title = item.firstChildElement("title");
-  addWMSListItem(title, row, 0);
-  QDomElement link = item.firstChildElement("link");
-  addWMSListItem(link, row, 1);
-  QDomElement description = item.firstChildElement("description");
-  addWMSListItem(description, row, 2);
+  QDomElement title = item.firstChildElement( "title" );
+  addWMSListItem( title, row, 0 );
+  QDomElement link = item.firstChildElement( "link" );
+  addWMSListItem( link, row, 1 );
+  QDomElement description = item.firstChildElement( "description" );
+  addWMSListItem( description, row, 2 );
 }
 
-void QgsServerSourceSelect::addWMSListItem(const QDomElement& el, int row, int column)
+void QgsServerSourceSelect::addWMSListItem( const QDomElement& el, int row, int column )
 {
-  if (!el.isNull())
+  if ( !el.isNull() )
   {
-    QTableWidgetItem* tableItem = new QTableWidgetItem(el.text());
+    QTableWidgetItem* tableItem = new QTableWidgetItem( el.text() );
     // TODO: add linebreaks to long tooltips?
-    tableItem->setToolTip(el.text());
-    tableWidgetWMSList->setItem(row, column, tableItem);
+    tableItem->setToolTip( el.text() );
+    tableWidgetWMSList->setItem( row, column, tableItem );
   }
 }
 
@@ -821,36 +821,36 @@ void QgsServerSourceSelect::on_btnSearch_clicked()
 {
   // clear results
   tableWidgetWMSList->clearContents();
-  tableWidgetWMSList->setRowCount(0);
+  tableWidgetWMSList->setRowCount( 0 );
 
   // disable Add WMS button
-  btnAddWMS->setEnabled(false);
+  btnAddWMS->setEnabled( false );
 
   // retrieve search results
   QByteArray httpResponse;
-  bool success = retrieveSearchResults(leSearchTerm->text(), httpResponse);
-  if (!success)
+  bool success = retrieveSearchResults( leSearchTerm->text(), httpResponse );
+  if ( !success )
   {
     // TODO: error handling
     return;
   }
 
   // parse results
-  QDomDocument doc("RSS");
-  if (!doc.setContent(httpResponse))
+  QDomDocument doc( "RSS" );
+  if ( !doc.setContent( httpResponse ) )
   {
     // TODO: error handling
     return;
   }
 
-  QDomNodeList list = doc.elementsByTagName("item");
-  tableWidgetWMSList->setRowCount(list.size());
-  for (int i=0;i<list.size();i++)
+  QDomNodeList list = doc.elementsByTagName( "item" );
+  tableWidgetWMSList->setRowCount( list.size() );
+  for ( int i = 0;i < list.size();i++ )
   {
-    if (list.item(i).isElement())
+    if ( list.item( i ).isElement() )
     {
-      QDomElement item = list.item(i).toElement();
-      addWMSListRow(item, i);
+      QDomElement item = list.item( i ).toElement();
+      addWMSListRow( item, i );
     }
   }
 }
@@ -861,18 +861,18 @@ void QgsServerSourceSelect::on_btnAddWMS_clicked()
   // TODO: remove from config on close?
 
   int selectedRow = tableWidgetWMSList->currentRow();
-  if (selectedRow == -1)
+  if ( selectedRow == -1 )
   {
     return;
   }
 
-  QString wmsTitle = tableWidgetWMSList->item(selectedRow, 0)->text();
-  QString wmsUrl = tableWidgetWMSList->item(selectedRow, 1)->text();
+  QString wmsTitle = tableWidgetWMSList->item( selectedRow, 0 )->text();
+  QString wmsUrl = tableWidgetWMSList->item( selectedRow, 1 )->text();
 
   QSettings settings;
-  if (settings.contains(QString("Qgis/connections-wms/%1/url").arg(wmsTitle)))
+  if ( settings.contains( QString( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ) ) )
   {
-    QString msg = tr("The %1 connection already exists. Do you want to overwrite it?").arg(wmsTitle);
+    QString msg = tr( "The %1 connection already exists. Do you want to overwrite it?" ).arg( wmsTitle );
     QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Overwrite" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
     if ( result != QMessageBox::Ok )
     {
@@ -881,15 +881,15 @@ void QgsServerSourceSelect::on_btnAddWMS_clicked()
   }
 
   // add selected WMS to config and mark as current
-  settings.setValue(QString("Qgis/connections-wms/%1/url").arg(wmsTitle), wmsUrl);
-  settings.setValue( "/Qgis/connections-wms/selected", wmsTitle);
+  settings.setValue( QString( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
+  settings.setValue( "/Qgis/connections-wms/selected", wmsTitle );
   populateConnectionList();
   tabWidget->setCurrentIndex( 0 );
 }
 
 void QgsServerSourceSelect::wmsSelectionChanged()
 {
-  btnAddWMS->setEnabled(tableWidgetWMSList->currentRow() != -1);
+  btnAddWMS->setEnabled( tableWidgetWMSList->currentRow() != -1 );
 }
 
 

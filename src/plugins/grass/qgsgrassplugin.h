@@ -119,7 +119,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     //! Set edit action
     void setEditAction();
     //! update plugin icons when the app tells us its theme is changed
-    void setCurrentTheme ( QString theThemeName );
+    void setCurrentTheme( QString theThemeName );
   private:
     //! Name of the plugin
     QString pluginNameQString;

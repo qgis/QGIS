@@ -84,7 +84,7 @@ void QuickPrintPlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "&Quick Print" ), mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
 //method defined in interface
 void QuickPrintPlugin::help()

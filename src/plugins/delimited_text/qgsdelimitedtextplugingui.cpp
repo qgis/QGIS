@@ -267,7 +267,7 @@ void QgsDelimitedTextPluginGui::on_txtDelimiter_textChanged( const QString & tex
 
 QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
 {
-  QString buffer("");
+  QString buffer( "" );
   QString c;
 
   // Strip leading newlines
@@ -278,7 +278,7 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
     // Reach end of file
     return buffer;
   }
-  while ( c == (char *)"\r" || c == (char *)"\n" )
+  while ( c == ( char * )"\r" || c == ( char * )"\n" )
   {
     c = stream.read( 1 );
     if ( c == NULL || c.size() == 0 )
@@ -287,7 +287,7 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
       return buffer;
     }
   }
-  
+
   // First non-newline character
   buffer.append( c );
 
@@ -297,11 +297,11 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream & stream )
     // Reach end of file
     return buffer;
   }
-    
-  while ( !( c == (char *)"\r" || c == (char *)"\n" ) )
+
+  while ( !( c == ( char * )"\r" || c == ( char * )"\n" ) )
   {
-    
-    buffer.append( c );    
+
+    buffer.append( c );
     c = stream.read( 1 );
     if ( c == NULL || c.size() == 0 )
     {

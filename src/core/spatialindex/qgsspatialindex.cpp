@@ -113,12 +113,12 @@ bool QgsSpatialIndex::insertFeature( QgsFeature& f )
   }
   catch ( Tools::Exception &e )
   {
-    Q_UNUSED(e);
+    Q_UNUSED( e );
     QgsDebugMsg( QString( "Tools::Exception caught: " ).arg( e.what().c_str() ) );
   }
   catch ( const std::exception &e )
   {
-    Q_UNUSED(e);
+    Q_UNUSED( e );
     QgsDebugMsg( QString( "std::exception caught: " ).arg( e.what() ) );
   }
   catch ( ... )

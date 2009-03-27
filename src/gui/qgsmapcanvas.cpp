@@ -732,11 +732,11 @@ void QgsMapCanvas::keyReleaseEvent( QKeyEvent * e )
 
     default:
       // Pass it on
-        if ( mMapTool )
-        {
-          mMapTool->keyReleaseEvent( e );
-        }
-      
+      if ( mMapTool )
+      {
+        mMapTool->keyReleaseEvent( e );
+      }
+
       e->ignore();
 
       QgsDebugMsg( "Ignoring key release: " + QString::number( e->key() ) );
@@ -768,7 +768,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
   }
 
   //use middle mouse button for panning, map tools won't receive any events in that case
-if(e->button() == Qt::MidButton)
+  if ( e->button() == Qt::MidButton )
   {
     mCanvasProperties->panSelectorDown = true;
     mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
@@ -800,7 +800,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
   }
 
   //use middle mouse button for panning, map tools won't receive any events in that case
-  if(e->button() == Qt::MidButton)
+  if ( e->button() == Qt::MidButton )
   {
     mCanvasProperties->panSelectorDown = false;
     panActionEnd( mCanvasProperties->mouseLastXY );
@@ -814,18 +814,18 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent * e )
       if ( e->button() == Qt::RightButton && mMapTool->isTransient() )
       {
         QgsDebugMsg( "Right click in map tool zoom or pan, last tool is " +
-                   QString( mLastNonZoomMapTool ? "not null." : "null." ) );
+                     QString( mLastNonZoomMapTool ? "not null." : "null." ) );
 
         // change to older non-zoom tool
         if ( mLastNonZoomMapTool )
         {
-         QgsMapTool* t = mLastNonZoomMapTool;
+          QgsMapTool* t = mLastNonZoomMapTool;
           mLastNonZoomMapTool = NULL;
-         setMapTool( t );
+          setMapTool( t );
         }
         return;
       }
-    mMapTool->canvasReleaseEvent( e );
+      mMapTool->canvasReleaseEvent( e );
     }
   }
 
@@ -998,9 +998,9 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
   }
   else
   {
-   // call handler of current map tool
+    // call handler of current map tool
     if ( mMapTool )
-    mMapTool->canvasMoveEvent( e );
+      mMapTool->canvasMoveEvent( e );
   }
 
   // show x y on status bar

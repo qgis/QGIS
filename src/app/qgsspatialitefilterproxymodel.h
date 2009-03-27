@@ -20,20 +20,20 @@
 
 #include <QSortFilterProxyModel>
 
-/**A class that implements a custom filter and can be used 
+/**A class that implements a custom filter and can be used
  as a proxy for QgsSpatiaLiteTableModel*/
-class QgsSpatiaLiteFilterProxyModel:public QSortFilterProxyModel
+class QgsSpatiaLiteFilterProxyModel: public QSortFilterProxyModel
 {
-public:
-  QgsSpatiaLiteFilterProxyModel(QObject * parent = 0);
-  ~QgsSpatiaLiteFilterProxyModel();
-  /**Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
-  void _setFilterWildcard(const QString & pattern);
-  /**Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
-  void _setFilterRegExp(const QString & pattern);
+  public:
+    QgsSpatiaLiteFilterProxyModel( QObject * parent = 0 );
+    ~QgsSpatiaLiteFilterProxyModel();
+    /**Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
+    void _setFilterWildcard( const QString & pattern );
+    /**Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
+    void _setFilterRegExp( const QString & pattern );
 
-protected:
-    virtual bool filterAcceptsRow(int row, const QModelIndex & source_parent) const;
+  protected:
+    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const;
 };
 
 #endif

@@ -1,7 +1,7 @@
 /***************************************************************************
                           qgsopenvectorlayerdialog.h
-	Dialog to select the type and source for ogr vectors, supports
-	file, database, directory and protocol sources.
+ Dialog to select the type and source for ogr vectors, supports
+ file, database, directory and protocol sources.
                              -------------------
     begin                : Mon Jan 2 2009
     copyright            : (C) 2009 by Godofredo Contreras Nava
@@ -24,9 +24,9 @@
 #include <ui_qgsopenvectorlayerdialogbase.h>
 #include <QDialog>
 
-/** 
+/**
  *  Class for a  dialog to select the type and source for ogr vectors, supports
- * 	file, database, directory and protocol sources.
+ *  file, database, directory and protocol sources.
  */
 class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerDialogBase
 {
@@ -36,28 +36,28 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QgsOpenVectorLayerDialog( QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QgsOpenVectorLayerDialog();
     //! Opens a dialog to select a file datasource*/
-	QStringList openFile();
-	//! Opens a dialog to select a directory datasource*/
-	QString openDirectory();
-	//! Returns a list of selected datasources*/
-	QStringList dataSources();	
-	//! Returns the encoding selected for user*/
-	QString encoding();
-	//! Display the context help
+    QStringList openFile();
+    //! Opens a dialog to select a directory datasource*/
+    QString openDirectory();
+    //! Returns a list of selected datasources*/
+    QStringList dataSources();
+    //! Returns the encoding selected for user*/
+    QString encoding();
+    //! Display the context help
     void helpInfo();
   private:
     //! Shows a dialog remembering the last directory and filter selected */
     void openFilesRememberingFilter( QString const &filterName,
-    QString const &filters, QStringList & selectedFiles, QString &title );
-	//! Stores the file vector filters */
-	QString mVectorFileFilter;
-	//! Stores the selected datasources */
-	QStringList mDataSources;	
-	//! Stores the user selected encoding 
-	QString mEnc;
+                                     QString const &filters, QStringList & selectedFiles, QString &title );
+    //! Stores the file vector filters */
+    QString mVectorFileFilter;
+    //! Stores the selected datasources */
+    QStringList mDataSources;
+    //! Stores the user selected encoding
+    QString mEnc;
 
-	static const int context_id = 348772824;
-	
+    static const int context_id = 348772824;
+
 
   private slots:
     //! Opens the create connection dialog to build a new connection
@@ -69,25 +69,25 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     //! Populate the connection list combo box
     void populateConnectionList();
     //! Sets the actual position in connection list
-	void setConnectionListPosition();
-	//! Sets the actual position in types connection list
-	void setConnectionTypeListPosition();
-	//! Sets the selected connection type
-	void setSelectedConnectionType();
-	//! Sets the selected connection
-	void setSelectedConnection();
+    void setConnectionListPosition();
+    //! Sets the actual position in types connection list
+    void setConnectionTypeListPosition();
+    //! Sets the selected connection type
+    void setSelectedConnectionType();
+    //! Sets the selected connection
+    void setSelectedConnection();
 
     void on_buttonBox_accepted();
-	void on_btnHelp_clicked();
-    void on_buttonSelectSrc_clicked();   
-	void on_radioSrcFile_toggled( bool checked );
+    void on_btnHelp_clicked();
+    void on_buttonSelectSrc_clicked();
+    void on_radioSrcFile_toggled( bool checked );
     void on_radioSrcDirectory_toggled( bool checked );
     void on_radioSrcDatabase_toggled( bool checked );
-	void on_radioSrcProtocol_toggled( bool checked );
-	void on_btnNew_clicked();
+    void on_radioSrcProtocol_toggled( bool checked );
+    void on_btnNew_clicked();
     void on_btnEdit_clicked();
     void on_btnDelete_clicked();
-	void on_cmbDatabaseTypes_currentIndexChanged( const QString & text );
+    void on_cmbDatabaseTypes_currentIndexChanged( const QString & text );
     void on_cmbConnections_currentIndexChanged( const QString & text );
 };
 

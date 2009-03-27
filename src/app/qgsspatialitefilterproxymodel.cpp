@@ -17,7 +17,7 @@
 
 #include "qgsspatialitefilterproxymodel.h"
 
-QgsSpatiaLiteFilterProxyModel::QgsSpatiaLiteFilterProxyModel(QObject * parent):QSortFilterProxyModel(parent)
+QgsSpatiaLiteFilterProxyModel::QgsSpatiaLiteFilterProxyModel( QObject * parent ): QSortFilterProxyModel( parent )
 {
 
 }
@@ -27,26 +27,26 @@ QgsSpatiaLiteFilterProxyModel::~QgsSpatiaLiteFilterProxyModel()
 
 }
 
-bool QgsSpatiaLiteFilterProxyModel::filterAcceptsRow(int row, const QModelIndex & source_parent) const
+bool QgsSpatiaLiteFilterProxyModel::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
 {
   //if parent is valid, we have a toplevel item that should be always shown
-  if (!source_parent.isValid())
-    {
-      return true;
-    }
+  if ( !source_parent.isValid() )
+  {
+    return true;
+  }
   //else we have a row that describes a table and that
   //should be tested using the given wildcard/regexp
-  return QSortFilterProxyModel::filterAcceptsRow(row, source_parent);
+  return QSortFilterProxyModel::filterAcceptsRow( row, source_parent );
 }
 
-void QgsSpatiaLiteFilterProxyModel::_setFilterWildcard(const QString & pattern)
+void QgsSpatiaLiteFilterProxyModel::_setFilterWildcard( const QString & pattern )
 {
-  QSortFilterProxyModel::setFilterWildcard(pattern);
+  QSortFilterProxyModel::setFilterWildcard( pattern );
   emit layoutChanged();
 }
 
-void QgsSpatiaLiteFilterProxyModel::_setFilterRegExp(const QString & pattern)
+void QgsSpatiaLiteFilterProxyModel::_setFilterRegExp( const QString & pattern )
 {
-  QSortFilterProxyModel::setFilterRegExp(pattern);
+  QSortFilterProxyModel::setFilterRegExp( pattern );
   emit layoutChanged();
 }

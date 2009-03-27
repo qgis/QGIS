@@ -1,7 +1,7 @@
 /***************************************************************************
      BeataView.h
      --------------------------------------
-    Date                 : Feb 2009 
+    Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
     Email                : weetya (at) gmail.com
  ***************************************************************************
@@ -24,21 +24,21 @@ class QgsVectorLayer;
 class BeataView: public QTableView
 {
 //private slots:
-  //void setRows(int rows);
+    //void setRows(int rows);
 
-public:
-  BeataView(QWidget* parent = NULL);
-  virtual ~BeataView();
+  public:
+    BeataView( QWidget* parent = NULL );
+    virtual ~BeataView();
 
-  void setLayer(QgsVectorLayer* layer);
+    void setLayer( QgsVectorLayer* layer );
 
-  void closeEvent(QCloseEvent *event);
-  void keyPressEvent(QKeyEvent *event);
-  void keyReleaseEvent(QKeyEvent *event);
+    void closeEvent( QCloseEvent *event );
+    void keyPressEvent( QKeyEvent *event );
+    void keyReleaseEvent( QKeyEvent *event );
 
-  //make those private
-  bool shiftPressed;
-  bool ctrlPressed;
+    //make those private
+    bool shiftPressed;
+    bool ctrlPressed;
 };
 
 #endif

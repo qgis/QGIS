@@ -182,10 +182,10 @@ class QgsServerSourceSelect : public QDialog, private Ui::QgsServerSourceSelectB
     //! The WMS provider that retrieves information for this dialog
     QgsWmsProvider * mWmsProvider;
 
-    
-    bool retrieveSearchResults(const QString& searchTerm, QByteArray& httpResponse);
-    void addWMSListRow(const QDomElement& item, int row);
-    void addWMSListItem(const QDomElement& el, int row, int column);
+
+    bool retrieveSearchResults( const QString& searchTerm, QByteArray& httpResponse );
+    void addWMSListRow( const QDomElement& item, int row );
+    void addWMSListItem( const QDomElement& el, int row, int column );
 
     static const int context_id = 710979116;
 

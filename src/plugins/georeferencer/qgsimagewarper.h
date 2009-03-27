@@ -35,21 +35,21 @@ class QgsImageWarper
 
 
     QgsImageWarper() { };
-    QgsImageWarper( double angle) : mAngle( angle ) { };
+    QgsImageWarper( double angle ) : mAngle( angle ) { };
 
     void warp( const QString& input, const QString& output,
                double& xOffset, double& yOffset,
-               ResamplingMethod resampling = Bilinear, 
-               bool useZeroAsTrans = true, 
+               ResamplingMethod resampling = Bilinear,
+               bool useZeroAsTrans = true,
                const QString& compression = "NONE" );
 
-      bool warpgcp( const QString& input, const QString& output,
-                    const char *worldExt,
-                    std::vector<QgsPoint> mapCoords,
-                    std::vector<QgsPoint> pixelCoords,
-                    const int nReqOrder = 1, ResamplingMethod resampling = Bilinear, 
-                    bool useZeroAsTrans = true, const QString& compression = "NONE",
-                    bool bUseTPS = false);
+    bool warpgcp( const QString& input, const QString& output,
+                  const char *worldExt,
+                  std::vector<QgsPoint> mapCoords,
+                  std::vector<QgsPoint> pixelCoords,
+                  const int nReqOrder = 1, ResamplingMethod resampling = Bilinear,
+                  bool useZeroAsTrans = true, const QString& compression = "NONE",
+                  bool bUseTPS = false );
 
   private:
 
@@ -60,9 +60,9 @@ class QgsImageWarper
       double y0;
     };
 
-      bool openSrcDSAndGetWarpOpt(const QString &input, const QString &output,
-                                  const ResamplingMethod &resampling, const GDALTransformerFunc &pfnTransform,
-                                  GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions);
+    bool openSrcDSAndGetWarpOpt( const QString &input, const QString &output,
+                                 const ResamplingMethod &resampling, const GDALTransformerFunc &pfnTransform,
+                                 GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions );
 
     static int transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
                           double *x, double *y, double *z, int *panSuccess );

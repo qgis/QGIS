@@ -1261,7 +1261,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
           continue;
 
         f.setFeatureId( fid );
-        f.setValid(true);
+        f.setValid( true );
 
         if ( mFetchGeometry )
           f.setGeometry( mFetchChangedGeomIt.value() );
@@ -1319,7 +1319,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
         continue;
 
       f.setFeatureId( fid );
-      f.setValid(true);
+      f.setValid( true );
 
       if ( mFetchGeometry )
         f.setGeometry( *mFetchAddedFeaturesIt->geometry() );
@@ -1364,7 +1364,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
   if ( fetchGeometries && mChangedGeometries.contains( featureId ) )
   {
     f.setFeatureId( featureId );
-    f.setValid(true);
+    f.setValid( true );
     f.setGeometry( mChangedGeometries[featureId] );
 
     if ( fetchAttributes )
@@ -1406,7 +1406,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
     if ( iter->id() == featureId )
     {
       f.setFeatureId( iter->id() );
-      f.setValid(true);
+      f.setValid( true );
       if ( fetchGeometries )
         f.setGeometry( *iter->geometry() );
 
@@ -1676,13 +1676,13 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   {
     QgsFeature f;
     QgsGeometry* fGeom = 0;
-    if(featureAtId( selectedFeatureId, f, true, false ))
+    if ( featureAtId( selectedFeatureId, f, true, false ) )
     {
       fGeom = f.geometryAndOwnership();
-      if(fGeom)
+      if ( fGeom )
       {
-        int errorCode = fGeom->addIsland(ring);
-        mChangedGeometries.insert( selectedFeatureId, *fGeom);
+        int errorCode = fGeom->addIsland( ring );
+        mChangedGeometries.insert( selectedFeatureId, *fGeom );
         setModified( true, true );
         delete fGeom;
         return errorCode;
@@ -3346,7 +3346,7 @@ void QgsVectorLayer::drawFeature( QPainter* p,
   // used in all cases of the statement (otherwise they may get
   // executed, but never used, in a bit of code where performance is
   // critical).
-  if (! fet.isValid() ) { return; }
+  if ( ! fet.isValid() ) { return; }
 #if defined(Q_WS_X11)
   bool needToTrim = false;
 #endif

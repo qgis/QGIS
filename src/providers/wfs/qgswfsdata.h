@@ -58,11 +58,11 @@ class QgsWFSData: public QObject
     void setFinished( bool error );
 
     /**Takes progress value and total steps and emit signals 'dataReadProgress' and 'totalStepUpdate'*/
-  void handleProgressEvent(int progress, int totalSteps);
+    void handleProgressEvent( int progress, int totalSteps );
 
   signals:
-  void dataReadProgress(int progress);
-  void totalStepsUpdate(int totalSteps);
+    void dataReadProgress( int progress );
+    void totalStepsUpdate( int totalSteps );
 
   private:
 
@@ -133,7 +133,7 @@ class QgsWFSData: public QObject
     /**Adds all the integers contained in mCurrentWKBFragmentSizes*/
     int totalWKBFragmentSize() const;
 
-     /**Returns pointer to main window or 0 if it does not exist*/
+    /**Returns pointer to main window or 0 if it does not exist*/
     QWidget* findMainWindow() const;
 
     QString mUri;

@@ -1861,7 +1861,7 @@ void QgsLegend::legendLayerAttributeTable()
 
   if ( vlayer )
   {
-    BeataDialog *mDialog = new BeataDialog(vlayer);
+    BeataDialog *mDialog = new BeataDialog( vlayer );
     mDialog->show();
     // the dialog will be deleted by itself on close
   }

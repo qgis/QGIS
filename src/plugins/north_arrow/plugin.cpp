@@ -105,7 +105,7 @@ void QgsNorthArrowPlugin::initGui()
   qGisInterface->addToolBarIcon( myQActionPointer );
   qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
   // this is called when the icon theme is changed
-  connect( qGisInterface, SIGNAL( currentThemeChanged ( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   projectRead();
   refreshCanvas();

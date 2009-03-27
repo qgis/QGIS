@@ -217,8 +217,8 @@ void TestQgsRasterLayer::registry()
   QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() );
 
-  QgsMapLayerRegistry::instance()->addMapLayer(mypLayer,false);
-  QgsMapLayerRegistry::instance()->removeMapLayer(mypLayer->getLayerID());
+  QgsMapLayerRegistry::instance()->addMapLayer( mypLayer, false );
+  QgsMapLayerRegistry::instance()->removeMapLayer( mypLayer->getLayerID() );
   //cleanup
   //delete mypLayer;
 }

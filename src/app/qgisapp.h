@@ -246,7 +246,7 @@ class QgisApp : public QMainWindow
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
-	QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
+    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionLayerSeparator1() { return mActionLayerSeparator1; }
     QAction *actionOpenTable() { return mActionOpenTable; }
@@ -347,7 +347,7 @@ class QgisApp : public QMainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
-    void loadOGRSublayers(QString layertype, QString uri, QStringList list );
+    void loadOGRSublayers( QString layertype, QString uri, QStringList list );
 
   protected:
 
@@ -371,7 +371,7 @@ class QgisApp : public QMainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
-	//#ifdef HAVE_SPATIALITE
+    //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
     //#endif
@@ -604,11 +604,11 @@ class QgisApp : public QMainWindow
     //! emitted when a new bookmark is added
     void bookmarkAdded();
 
-    /** Signal emitted when the current theme is changed so plugins 
+    /** Signal emitted when the current theme is changed so plugins
      * can change there tool button icons.
      * @note This was added in QGIS 1.1
      */
-    void currentThemeChanged ( QString );
+    void currentThemeChanged( QString );
 
   private:
     /** This method will open a dialog so the user can select the sublayers
@@ -722,7 +722,7 @@ class QgisApp : public QMainWindow
     QAction *mActionAddOgrLayer;
     QAction *mActionAddRasterLayer;
     QAction *mActionAddPgLayer;
-	QAction *mActionAddSpatiaLiteLayer;
+    QAction *mActionAddSpatiaLiteLayer;
     QAction *mActionAddWmsLayer;
     QAction *mActionLayerSeparator1;
     QAction *mActionOpenTable;

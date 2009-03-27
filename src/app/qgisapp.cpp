@@ -2153,19 +2153,19 @@ void QgisApp::addVectorLayer()
   }
   mMapCanvas->freeze();
   QgsOpenVectorLayerDialog *ovl = new QgsOpenVectorLayerDialog( this );
-  
+
   if ( ovl->exec() )
   {
-    QStringList selectedSources=ovl->dataSources();
-    QString enc=ovl->encoding();
+    QStringList selectedSources = ovl->dataSources();
+    QString enc = ovl->encoding();
     if ( selectedSources.isEmpty() )
-     {
+    {
       // no files were selected, so just bail
       mMapCanvas->freeze( false );
       return;
-     }
-	else
-     addVectorLayers( selectedSources, enc );
+    }
+    else
+      addVectorLayers( selectedSources, enc );
   }
 
   delete ovl;
@@ -2280,8 +2280,8 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
   if ( chooseSublayersDialog.exec() )
   {
     QString uri = layer->source();
-	//the separator char & was changed to | to be compatible
-	//with url for protocol drivers
+    //the separator char & was changed to | to be compatible
+    //with url for protocol drivers
     if ( uri.contains( '|', Qt::CaseSensitive ) )
     {
       // If we get here, there are some options added to the filename.
@@ -2290,9 +2290,9 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
       QStringList theURIParts = uri.split( "|" );
       uri = theURIParts.at( 0 );
     }
-    QgsDebugMsg("Layer type "+layertype);
+    QgsDebugMsg( "Layer type " + layertype );
     // the user has done his choice
-    loadOGRSublayers(layertype ,uri, chooseSublayersDialog.getSelection() );
+    loadOGRSublayers( layertype , uri, chooseSublayersDialog.getSelection() );
   }
 }
 
@@ -2301,7 +2301,7 @@ void QgisApp::askUserForSublayers( QgsVectorLayer *layer )
 // format of the ogrprovider so as to give precisions about which
 // sublayer to load into QGIS. It is normally triggered by the
 // sublayer selection dialog.
-void QgisApp::loadOGRSublayers(QString layertype, QString uri, QStringList list )
+void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list )
 {
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
@@ -2309,14 +2309,14 @@ void QgisApp::loadOGRSublayers(QString layertype, QString uri, QStringList list 
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
-    if(layertype!="GRASS")
-	{
+    if ( layertype != "GRASS" )
+    {
       composedURI = uri + "|layername=" + list.at( i );
-	}
-	else
-	{
+    }
+    else
+    {
       composedURI = uri + "|layerindex=" + list.at( i );
-	}
+    }
     addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
   }
 }
@@ -2418,10 +2418,10 @@ void QgisApp::addSpatiaLiteLayer() {}
 #else
 void QgisApp::addSpatiaLiteLayer()
 {
-  if(mMapCanvas && mMapCanvas->isDrawing())
-    {
-      return;
-    }
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
 
   // show the SpatiaLite dialog
 
@@ -2429,7 +2429,7 @@ void QgisApp::addSpatiaLiteLayer()
 
   mMapCanvas->freeze();
 
-  if (dbs->exec())
+  if ( dbs->exec() )
   {
 // Let render() do its own cursor management
 //    QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -2440,22 +2440,22 @@ void QgisApp::addSpatiaLiteLayer()
     // add files to the map canvas
     QStringList tables = dbs->selectedTables();
 
-    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::setOverrideCursor( Qt::WaitCursor );
 
     QString connectionInfo = dbs->connectionInfo();
     // for each selected table, connect to the database and build a canvasitem for it
     QStringList::Iterator it = tables.begin();
-    while (it != tables.end())
+    while ( it != tables.end() )
     {
 
       // normalizing the layer name
-	  QString layername = *it;
-	  layername = layername.mid(1);
-	  int idx = layername.indexOf( "\" (" );
-	  if (idx > 0)
-	    layername.truncate(idx);
-	  
-	  // create the layer
+      QString layername = *it;
+      layername = layername.mid( 1 );
+      int idx = layername.indexOf( "\" (" );
+      if ( idx > 0 )
+        layername.truncate( idx );
+
+      // create the layer
       //qWarning("creating layer");
       QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ")", layername, "spatialite" );
       if ( layer->isValid() )
@@ -2467,7 +2467,7 @@ void QgisApp::addSpatiaLiteLayer()
       }
       else
       {
-        QgsDebugMsg( (*it) + " is an invalid layer - not loaded" );
+        QgsDebugMsg(( *it ) + " is an invalid layer - not loaded" );
         QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
         delete layer;
       }
@@ -2480,10 +2480,10 @@ void QgisApp::addSpatiaLiteLayer()
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
   }
   delete dbs;
-  
+
   // update UI
   qApp->processEvents();
-  
+
   // draw the map
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
@@ -3828,8 +3828,8 @@ void QgisApp::attributeTable()
     return;
   }
 
-  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>(mMapLegend->currentLayer());
-  BeataDialog *mDialog = new BeataDialog(myLayer);
+  QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
+  BeataDialog *mDialog = new BeataDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }
