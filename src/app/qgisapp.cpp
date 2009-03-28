@@ -2509,7 +2509,7 @@ void QgisApp::addWmsLayer()
   {
 
     addRasterLayer( wmss->connectionInfo(),
-                    wmss->connName(),
+                    /*wmss->connName()*/wmss->selectedLayers().join("/"),
                     "wms",
                     wmss->selectedLayers(),
                     wmss->selectedStylesForSelectedLayers(),
