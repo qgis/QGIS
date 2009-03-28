@@ -22,10 +22,13 @@ IF(WIN32)
        "$ENV{LIB_DIR}/include/gdal"
        CACHE STRING INTERNAL
        )
-    SET (
-       GDAL_LIBRARY 
-       "$ENV{LIB_DIR}/lib/gdal.lib";odbc32;odbccp32 
-       CACHE STRING INTERNAL)
+    FIND_LIBRARY(GDAL_LIBRARY NAMES gdal gdal_i PATHS 
+      "$ENV{LIB_DIR}/lib" /usr/lib c:/msys/local/lib)
+    IF (GDAL_LIBRARY)
+      SET (
+         GDAL_LIBRARY;odbc32;odbccp32 
+         CACHE STRING INTERNAL)
+    ENDIF (GDAL_LIBRARY)
   ENDIF (MSVC)
   
   
