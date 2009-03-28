@@ -148,7 +148,7 @@ void QgsGeorefPlugin::run()
 //  QgsGeorefPluginGui *myPluginGui = new QgsGeorefPluginGui( mQGisIface, QgsGeorefPluginGui::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint);
 //  myPluginGui->show();
 //  myPluginGui->setFocus();
-  QgsPointDialog *myPlugin = new QgsPointDialog( mQGisIface, QgsPointDialog::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint );
+  QgsPointDialog *myPlugin = new QgsPointDialog( mQGisIface, QgsPointDialog::findMainWindow(), Qt::Window | Qt::WindowMinimizeButtonHint | Qt::WindowTitleHint );
   myPlugin->move( 0, 0 );
   myPlugin->show();
   myPlugin->setFocus();

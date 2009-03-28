@@ -82,7 +82,7 @@ QgsPointDialog::QgsPointDialog( QString layerPath, QgisInterface* theQgisInterfa
   openImageFile( layerPath );
 }
 
-QgsPointDialog::QgsPointDialog( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl ): QDialog( parent ), mLayer( 0 ), mIface( theQgisInterface ), mAcetateCounter( 0 )
+QgsPointDialog::QgsPointDialog( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl ): QDialog( parent, fl ), mLayer( 0 ), mIface( theQgisInterface ), mAcetateCounter( 0 )
 {
   initialize();
 }
