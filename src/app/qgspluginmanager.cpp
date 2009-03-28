@@ -40,6 +40,7 @@
 #include <qgsdetaileditemdata.h>
 
 #include <qgspythonutils.h>
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #define TESTLIB
@@ -93,6 +94,18 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   connect( btnClearAll, SIGNAL( clicked() ), this, SLOT( clearAll() ) );
 
   qRegisterMetaType<QgsDetailedItemData>();
+  
+  // add installer's icon
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/plugin_installer.png";
+  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/plugin_installer.png";
+  if ( QFile::exists( myCurThemePath ) )
+  {
+    btnPluginInstaller->setIcon( QIcon( myCurThemePath ) );
+  }
+  else if ( QFile::exists( myDefThemePath ) )
+  {
+    btnPluginInstaller->setIcon( QIcon( myDefThemePath ) );
+  }
   
   // check for plugin installer
   if (checkForPluginInstaller())
