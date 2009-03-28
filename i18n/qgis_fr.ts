@@ -4731,11 +4731,6 @@ Erreurs : %2
         <source>The QGIS 1.0 release includes over 265 bug fixes and enhancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3035"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>

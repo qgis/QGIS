@@ -4992,6 +4992,11 @@ Errors:  %2
         <source>Ctrl+?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3035"/>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>

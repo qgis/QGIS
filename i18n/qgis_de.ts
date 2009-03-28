@@ -3674,192 +3674,187 @@ Fehler: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="534"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="540"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished">Strg+O</translation>
+        <translation>Strg+O</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="546"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Strg+S</translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="552"/>
         <source>Shift+Ctrl+S</source>
-        <translation type="unfinished">Projekt unter anderem Namen speichern</translation>
+        <translation>Shift+Strg+S</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="558"/>
         <source>Ctrl+I</source>
-        <translation type="unfinished">Ctrl+I</translation>
+        <translation>Strg+I</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="564"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="570"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Strg+Q</translation>
+        <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="626"/>
         <source>.</source>
-        <translation type="unfinished">.</translation>
+        <translation>.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="633"/>
         <source>/</source>
-        <translation type="unfinished">/</translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>Ctrl+/</source>
-        <translation type="unfinished">Strg+/</translation>
+        <translation>Strg+/</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="693"/>
         <source>Ctrl++</source>
-        <translation type="unfinished">Strg++</translation>
+        <translation>Strg++</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="699"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished">Strg+-</translation>
+        <translation>Strg+-</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="710"/>
         <source>I</source>
-        <translation type="unfinished">I</translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="717"/>
         <source>M</source>
-        <translation type="unfinished">Linie messen</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="723"/>
         <source>J</source>
-        <translation type="unfinished">Fläche messen</translation>
+        <translation>J</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
         <source>F</source>
-        <translation type="unfinished">F</translation>
+        <translation>F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="741"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+J</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="763"/>
         <source>Ctrl+B</source>
-        <translation type="unfinished">Strg+B</translation>
+        <translation>Strg+B</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="769"/>
         <source>B</source>
-        <translation type="unfinished">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished">Strg+R</translation>
+        <translation>Strg+R</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="783"/>
         <source>N</source>
-        <translation type="unfinished">N</translation>
+        <translation>N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>V</source>
-        <translation type="unfinished">V</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="795"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="801"/>
         <source>D</source>
-        <translation type="unfinished">D</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="814"/>
         <source>W</source>
-        <translation type="unfinished">W</translation>
+        <translation>W</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="843"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished">Strg+D</translation>
+        <translation>Strg+D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="855"/>
         <source>O</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="862"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="868"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="874"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="880"/>
         <source>H</source>
-        <translation type="unfinished">H</translation>
+        <translation>H</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
         <source>Ctrl-F</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg-F</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>P</source>
-        <translation type="unfinished">P</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="925"/>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+M</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="946"/>
         <source>Ctrl+?</source>
-        <translation type="unfinished">Strg+?</translation>
+        <translation>Strg+?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>F1</source>
-        <translation type="unfinished">F1</translation>
+        <translation>F1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="956"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished">Strg+H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3035"/>
-        <source></source>
-        <translation type="unfinished"></translation>
+        <translation>Strg+H</translation>
     </message>
 </context>
 <context>
@@ -13590,7 +13585,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="266"/>
         <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
-        <translation type="unfinished">Dem Installer gestatten beim QGIS-Start nach Aktualisierungen und Neuigkeiten zu suchen</translation>
+        <translation>Dem Installer gestatten beim QGIS-Start nach Aktualisierungen und Neuigkeiten zu suchen</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="269"/>

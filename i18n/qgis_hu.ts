@@ -4035,11 +4035,6 @@ Hiba:  %2</translation>
         <source>Ctrl+H</source>
         <translation type="unfinished">Ctlr+H</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3035"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>

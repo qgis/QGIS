@@ -4003,11 +4003,6 @@ Kļūdas:  %2
         <source>Ctrl+H</source>
         <translation type="unfinished">Ctrl+H</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3035"/>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
