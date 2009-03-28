@@ -2166,6 +2166,7 @@
 		72E70A7E0F426DB700142011 /* mActionZoomOut.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF940F39E5D9003DC336 /* mActionZoomOut.png */; };
 		72E70A7F0F426DB700142011 /* mActionZoomToLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF950F39E5D9003DC336 /* mActionZoomToLayer.png */; };
 		72E70A800F426DB700142011 /* mActionZoomToSelected.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7209EF960F39E5D9003DC336 /* mActionZoomToSelected.png */; };
+		72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */ = {isa = PBXBuildFile; fileRef = 72EB12950F7E9B51002C38FA /* plugin_installer.png */; };
 		72EBC9430F49D0E20016BA3C /* qgspaperitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */; };
 		72EBC9630F49D41E0016BA3C /* qgsogrsublayersdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9620F49D4130016BA3C /* qgsogrsublayersdialog.cpp */; };
 		72EBC9660F49D4A20016BA3C /* qgsitempositiondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72EBC9640F49D49D0016BA3C /* qgsitempositiondialog.cpp */; };
@@ -5166,6 +5167,17 @@
 			name = "Copy - theme-gis";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72EB12980F7E9BB4002C38FA /* Copy - theme-dflt-plugins */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default/plugins";
+			dstSubfolderSpec = 0;
+			files = (
+				72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */,
+			);
+			name = "Copy - theme-dflt-plugins";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		72EBC9800F49D7F60016BA3C /* Copy - theme-default */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -8074,6 +8086,8 @@
 		72E9A3C50F5AE63500E78E3C /* qgscomposerpicture.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerpicture.sip; path = ../../python/core/qgscomposerpicture.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3C60F5AE63500E78E3C /* qgscomposerscalebar.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerscalebar.sip; path = ../../python/core/qgscomposerscalebar.sip; sourceTree = SOURCE_ROOT; };
 		72E9A3C70F5AE63500E78E3C /* qgscomposerlabel.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerlabel.sip; path = ../../python/core/qgscomposerlabel.sip; sourceTree = SOURCE_ROOT; };
+		72EB12930F7E9AED002C38FA /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../../python/plugins/fTools/LICENSE; sourceTree = SOURCE_ROOT; };
+		72EB12950F7E9B51002C38FA /* plugin_installer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plugin_installer.png; path = ../../images/themes/default/plugins/plugin_installer.png; sourceTree = SOURCE_ROOT; };
 		72EBC9410F49D0E20016BA3C /* qgspaperitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspaperitem.h; path = ../../src/core/composer/qgspaperitem.h; sourceTree = SOURCE_ROOT; };
 		72EBC9420F49D0E20016BA3C /* qgspaperitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspaperitem.cpp; path = ../../src/core/composer/qgspaperitem.cpp; sourceTree = SOURCE_ROOT; };
 		72EBC94F0F49D1DE0016BA3C /* qgsogrsublayersdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsogrsublayersdialogbase.ui; path = ../../src/ui/qgsogrsublayersdialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -11870,6 +11884,7 @@
 				7209EF610F39E5D9003DC336 /* user.svg */,
 				7209EF620F39E5D9003DC336 /* zoomMaster.svg */,
 				7262ED890F7A75FB00498385 /* mActionAddSpatiaLiteLayer.png */,
+				72EB12940F7E9B51002C38FA /* plugins */,
 			);
 			name = default;
 			path = ../../images/themes/default;
@@ -12237,6 +12252,15 @@
 			path = ../../src/app/attributetable;
 			sourceTree = SOURCE_ROOT;
 		};
+		72EB12940F7E9B51002C38FA /* plugins */ = {
+			isa = PBXGroup;
+			children = (
+				72EB12950F7E9B51002C38FA /* plugin_installer.png */,
+			);
+			name = plugins;
+			path = ../../images/themes/default/plugins;
+			sourceTree = SOURCE_ROOT;
+		};
 		72EBC96C0F49D6D90016BA3C /* gis */ = {
 			isa = PBXGroup;
 			children = (
@@ -12281,6 +12305,7 @@
 				72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */,
 				72EBC9CD0F49DC120016BA3C /* i18n.cpp */,
 				72EBC9CE0F49DC120016BA3C /* icons */,
+				72EB12930F7E9AED002C38FA /* LICENSE */,
 				72EBCA2D0F49DC130016BA3C /* resources.py */,
 				72EBCA2E0F49DC130016BA3C /* resources.qrc */,
 				72EBCA2F0F49DC130016BA3C /* tools */,
@@ -13208,6 +13233,7 @@
 				7256F3920F414B3E0022BE1F /* Copy - svg-symbol */,
 				7256F3960F41C3AA0022BE1F /* Copy - theme-classic */,
 				7256F4210F41C4DA0022BE1F /* Copy - theme-default */,
+				72EB12980F7E9BB4002C38FA /* Copy - theme-dflt-plugins */,
 				7256F5310F41C5910022BE1F /* Copy - theme-gis */,
 				72745A080F7702EF007F4218 /* Copy - theme-gis-plugins */,
 				72745A1A0F770378007F4218 /* Copy - theme-gis-plug-cc */,
