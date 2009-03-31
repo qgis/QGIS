@@ -23,7 +23,7 @@
 #else
 #include <math.h>
 #endif
-#ifdef _MSC_VER
+#ifdef WIN32
 #include <float.h>
 #define isnan(f) _isnan(f)
 #endif
