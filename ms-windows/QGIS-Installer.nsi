@@ -378,7 +378,7 @@ Section "Quantum GIS" SecQGIS
 	
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
 	
-	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\qgis.exe" ""\
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 	
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Web Site.lnk" "$INSTALL_DIR\QGIS-WebSite.url" ""\
@@ -514,11 +514,13 @@ Section "Uninstall"
 	Delete "$INSTDIR\QGIS-WebSite.url"
 		
 	Delete "$INSTDIR\*.dll"	
+	Delete "$INSTDIR\*.csv"	
 	
 	Delete "$INSTDIR\icons\QGIS.ico"
 	Delete "$INSTDIR\icons\QGIS_Web.ico"
 	
 	;remove folders
+	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\doc"
 	RMDir /r "$INSTDIR\grass"
 	RMDir /r "$INSTDIR\i18n"
