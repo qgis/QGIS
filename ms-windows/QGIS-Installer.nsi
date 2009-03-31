@@ -15,10 +15,10 @@
 
 ;Version variables
 
-!define RELEASE_VERSION_NUMBER "0.11.0"
-!define RELEASE_VERSION_NAME "Metis"
-!define RELEASE_SVN_REVISION "8811"
-!define RELEASE_BINARY_REVISION "2"
+!define RELEASE_VERSION_NUMBER "1.0.2"
+!define RELEASE_VERSION_NAME "Kore"
+!define RELEASE_SVN_REVISION "10455"
+!define RELEASE_BINARY_REVISION "0"
 
 !define DEV_VERSION_NUMBER ""
 !define DEV_VERSION_NAME ""
@@ -370,7 +370,7 @@ Section "Quantum GIS" SecQGIS
 	;Create the Desktop Shortcut
 	SetShellVarContext current
 	
-	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\qgis.exe" ""\
+	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
  
 	;Create the Windows Start Menu Shortcuts
