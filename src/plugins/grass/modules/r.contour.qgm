@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Create vector contour from rater at specified steps" module="r.contour">
+<qgisgrassmodule label="Create vector contour from raster at specified steps" module="r.contour">
 	<option key="input" />
 	<option key="step"/>
 	<option key="minlevel" answer="0" hidden="no"/>
