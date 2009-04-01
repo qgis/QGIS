@@ -2,6 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Set raster color table" module="r.colors">
-	<option key="map" update="yes" />
+	<option key="map" />
 	<option key="color" exclude="rules" />
 </qgisgrassmodule>
