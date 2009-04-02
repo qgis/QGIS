@@ -12,6 +12,7 @@ class QgsDataSourceURI
 %End
 
 public:
+  enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire };
 
   //! default constructor
   QgsDataSourceURI();
@@ -33,7 +34,8 @@ public:
                      const QString& aPort,
                      const QString& aDatabase,
                      const QString& aUsername,
-                     const QString& aPassword);
+                     const QString& aPassword,
+                     SSLmode sslmode );
   
   //! Set all data source related members at once
   void setDataSource(const QString& aSchema,

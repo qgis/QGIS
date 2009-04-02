@@ -61,6 +61,12 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
     // Ensure that cb_plublicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
 
+    cbxSSLmode->insertItem( QgsDataSourceURI::SSLprefer, tr("prefer") );
+    cbxSSLmode->insertItem( QgsDataSourceURI::SSLrequire, tr("require") );
+    cbxSSLmode->insertItem( QgsDataSourceURI::SSLallow, tr("allow") );
+    cbxSSLmode->insertItem( QgsDataSourceURI::SSLdisable, tr("disable") );
+    cbxSSLmode->setCurrentIndex( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+
     if ( settings.value( key + "/save" ).toString() == "true" )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
@@ -108,7 +114,7 @@ QgsNewConnection::~QgsNewConnection()
 void QgsNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
+  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), (QgsDataSourceURI::SSLmode) cbxSSLmode->currentIndex() );
 
   QgsLogger::debug( "PQconnectdb(" + uri.connectionInfo() + ");" );
 
@@ -142,6 +148,7 @@ void QgsNewConnection::saveConnection()
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
   accept();
 }
 
