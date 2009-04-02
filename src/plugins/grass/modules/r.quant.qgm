@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Craete quantization file for floating-point raster" module="r.quant">
+<qgisgrassmodule label="Create quantization file for floating-point raster" module="r.quant">
 	<option key="input" />
 	<option key="basemap" />
 	<option key="fprange" />
