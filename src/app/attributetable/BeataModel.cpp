@@ -340,7 +340,7 @@ void BeataModel::sort( int column, Qt::SortOrder order )
   QgsAttributeList attrs;
   QgsFeature f;
 
-  attrs.append( column );
+  attrs.append( mAttributes[column] );
 
   emit layoutAboutToBeChanged();
 // QgsDebugMsg("SORTing");
