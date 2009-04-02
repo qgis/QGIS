@@ -23,12 +23,12 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI()
+QgsDataSourceURI::QgsDataSourceURI() : mSSLmode(SSLprefer)
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri )
+QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode(SSLprefer)
 {
   int i = 0;
   while ( i < uri.length() )
@@ -146,7 +146,21 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else if ( pname == "sslmode" )
       {
-        QgsDebugMsg( "sslmode ignored" );
+        if( pval == "disable" )
+          mSSLmode = SSLdisable;
+        else if( pval == "allow" )
+          mSSLmode = SSLallow;
+        else if( pval == "prefer" )
+          mSSLmode = SSLprefer;
+        else if( pval == "require" )
+          mSSLmode = SSLrequire;
+      }
+      else if ( pname == "requiressl" )
+      {
+        if( pval == "0" )
+          mSSLmode = SSLdisable;         
+        else
+          mSSLmode = SSLprefer;
       }
       else if ( pname == "krbsrvname" )
       {
@@ -293,6 +307,15 @@ QString QgsDataSourceURI::connectionInfo() const
     }
   }
 
+  if ( mSSLmode == SSLdisable )
+    connectionInfo += " sslmode=disable";
+  else if ( mSSLmode == SSLallow )
+    connectionInfo += " sslmode=allow";
+  else if ( mSSLmode == SSLrequire )
+    connectionInfo += " sslmode=require";
+  else if ( mSSLmode == SSLprefer )
+    connectionInfo += " sslmode=prefer";
+
   return connectionInfo;
 }
 
@@ -317,13 +340,15 @@ void QgsDataSourceURI::setConnection( const QString &host,
                                       const QString &port,
                                       const QString &database,
                                       const QString &username,
-                                      const QString &password )
+                                      const QString &password,
+                                      SSLmode sslmode )
 {
   mHost = host;
   mDatabase = database;
   mPort = port;
   mUsername = username;
   mPassword = password;
+  mSSLmode = sslmode;
 }
 
 void QgsDataSourceURI::setDataSource( const QString &schema,

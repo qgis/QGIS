@@ -240,6 +240,7 @@ void QgsDbSourceSelect::deleteConnection()
     settings.remove( key + "/username" );
     settings.remove( key + "/password" );
     settings.remove( key + "/port" );
+    settings.remove( key + "/sslmode" );
     settings.remove( key + "/save" );
     settings.remove( key );
     //if(!success){
@@ -373,7 +374,10 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
                      settings.value( key + "/port" ).toString(),
                      database,
                      settings.value( key + "/username" ).toString(),
-                     password );
+                     password,
+                     (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+
+
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
@@ -410,7 +414,8 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
                          settings.value( key + "/port" ).toString(),
                          database,
                          settings.value( key + "/username" ).toString(),
-                         password );
+                         password,
+                         (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
       m_connectionInfo = uri.connectionInfo();
       PQfinish( pd );

@@ -29,8 +29,8 @@
  */
 class CORE_EXPORT QgsDataSourceURI
 {
-
   public:
+    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire };
 
     //! default constructor
     QgsDataSourceURI();
@@ -52,7 +52,8 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aPort,
                         const QString& aDatabase,
                         const QString& aUsername,
-                        const QString& aPassword );
+                        const QString& aPassword,
+                        SSLmode sslmode );
 
     //! Set all data source related members at once
     void setDataSource( const QString& aSchema,
@@ -60,11 +61,13 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aGeometryColumn,
                         const QString& aSql = QString() );
 
+
     QString username() const;
     QString schema() const;
     QString table() const;
     QString sql() const;
     QString geometryColumn() const;
+    enum SSLmode sslMode() const;
 
     void clearSchema();
     void setSql( QString sql );
@@ -93,6 +96,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString mUsername;
     //! password
     QString mPassword;
+    //! ssl mode
+    enum SSLmode mSSLmode;
 };
 
 #endif //QGSDATASOURCEURI_H

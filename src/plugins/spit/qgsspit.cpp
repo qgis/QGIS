@@ -413,7 +413,8 @@ void QgsSpit::dbConnect()
                        settings.value( key + "/port" ).toString(),
                        database,
                        settings.value( key + "/username" ).toString(),
-                       password );
+                       password,
+                       (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
     conn = PQconnectdb( uri.connectionInfo().toUtf8() );
   }
