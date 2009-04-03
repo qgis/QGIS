@@ -8083,10 +8083,6 @@ p, li { white-space: pre-wrap; }
         <source>Color</source>
         <translation type="unfinished">顏色</translation>
     </message>
-    <message encoding="UTF-8">
-        <source>© QGIS 2008</source>
-        <translation type="obsolete">© QGIS 2008</translation>
-    </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -13141,10 +13137,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Angle (deg):</source>
         <translation type="obsolete">角度(度):</translation>
-    </message>
-    <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
     </message>
     <message>
         <source>Use best judgement when labels collide</source>

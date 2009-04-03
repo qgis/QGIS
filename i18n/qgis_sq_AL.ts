@@ -10906,10 +10906,6 @@ p, li { white-space: pre-wrap; }
         <translation>Majtas Siper</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Angle (deg):</source>
         <translation type="obsolete">Kendi (grad):</translation>
     </message>

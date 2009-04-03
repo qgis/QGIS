@@ -14260,10 +14260,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Góc (độ):</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Use best judgement when labels collide</source>
         <translation type="obsolete">Dùng giải pháp tối ưu khi các nhãn đụng nhau</translation>
     </message>
