@@ -375,7 +375,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
                      database,
                      settings.value( key + "/username" ).toString(),
                      password,
-                     (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+                     ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
 
 
@@ -415,7 +415,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
                          database,
                          settings.value( key + "/username" ).toString(),
                          password,
-                         (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+                         ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
       m_connectionInfo = uri.connectionInfo();
       PQfinish( pd );

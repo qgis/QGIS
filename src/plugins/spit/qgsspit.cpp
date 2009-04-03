@@ -414,7 +414,7 @@ void QgsSpit::dbConnect()
                        database,
                        settings.value( key + "/username" ).toString(),
                        password,
-                       (QgsDataSourceURI::SSLmode) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+                       ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
     conn = PQconnectdb( uri.connectionInfo().toUtf8() );
   }

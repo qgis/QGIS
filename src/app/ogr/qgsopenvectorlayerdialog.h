@@ -45,8 +45,8 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QString encoding();
     //! Display the context help
     void helpInfo();
-	//! Returns the connection type
-	QString dataSourceType();
+    //! Returns the connection type
+    QString dataSourceType();
   private:
     //! Shows a dialog remembering the last directory and filter selected */
     void openFilesRememberingFilter( QString const &filterName,
@@ -57,8 +57,8 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     QStringList mDataSources;
     //! Stores the user selected encoding
     QString mEnc;
-    //! Stores the datasource type 
-	QString mDataSourceType; 
+    //! Stores the datasource type
+    QString mDataSourceType;
     static const int context_id = 348772824;
 
 

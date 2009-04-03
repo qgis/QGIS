@@ -113,8 +113,8 @@ QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-	QString safeName=QgsDataSourceURI::removePassword(mDataSource);  
-  return safeName; 
+  QString safeName = QgsDataSourceURI::removePassword( mDataSource );
+  return safeName;
 }
 
 QString const & QgsMapLayer::source() const

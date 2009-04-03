@@ -408,7 +408,7 @@ QVariant BeataModel::data( const QModelIndex &index, int role ) const
     mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
   }
 
-  if( !mLastRow )
+  if ( !mLastRow )
     return QVariant( "ERROR" );
 
   QVariant& val = ( *mLastRow )[ mAttributes[index.column()] ];
@@ -542,7 +542,7 @@ QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
     mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
   }
 
-  if( !mLastRow )
+  if ( !mLastRow )
     return QVariant( "ERROR" );
 
   QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
@@ -582,7 +582,7 @@ bool BeataMemModel::setData( const QModelIndex &index, const QVariant &value, in
   {
     mLastRowId = rowToId( index.row() );
     mFeat = mFeatureMap[rowToId( index.row() )];
-    mLastRow = ( QgsAttributeMap * ) &mFeat.attributeMap();
+    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
 
 
 // QgsDebugMsg(mFeatureMap[rowToId(index.row())].id());

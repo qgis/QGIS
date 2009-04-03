@@ -312,8 +312,8 @@ static GEOSGeometry *createGeosLineString( const QgsPolyline& polyline )
 static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
 {
   GEOSCoordSequence *coord = 0;
-  
-  if (polyline.count() == 0)
+
+  if ( polyline.count() == 0 )
     return 0;
 
   try

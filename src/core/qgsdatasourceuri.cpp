@@ -23,12 +23,12 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI() : mSSLmode(SSLprefer)
+QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer )
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode(SSLprefer)
+QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -146,19 +146,19 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode(SSLprefer)
       }
       else if ( pname == "sslmode" )
       {
-        if( pval == "disable" )
+        if ( pval == "disable" )
           mSSLmode = SSLdisable;
-        else if( pval == "allow" )
+        else if ( pval == "allow" )
           mSSLmode = SSLallow;
-        else if( pval == "prefer" )
+        else if ( pval == "prefer" )
           mSSLmode = SSLprefer;
-        else if( pval == "require" )
+        else if ( pval == "require" )
           mSSLmode = SSLrequire;
       }
       else if ( pname == "requiressl" )
       {
-        if( pval == "0" )
-          mSSLmode = SSLdisable;         
+        if ( pval == "0" )
+          mSSLmode = SSLdisable;
         else
           mSSLmode = SSLprefer;
       }
@@ -178,35 +178,35 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode(SSLprefer)
   }
 }
 
-QString QgsDataSourceURI::removePassword( const QString& aUri)
+QString QgsDataSourceURI::removePassword( const QString& aUri )
 {
   QRegExp regexp;
   regexp.setMinimal( true );
   QString safeName( aUri );
-  //this works for postgres, ingres, mysql, 
-  if((aUri.contains("PG:"))
-     ||(aUri.contains("driver=ingres")) 
-	 ||(aUri.contains("MySQL:"))) 
-    {
-       regexp.setPattern( " password=.* " );
-	   safeName.replace( regexp, " " );
-    }
-  else if (aUri.contains("IDB:"))
-    {
-       regexp.setPattern( " pass=.* " );
-	   safeName.replace( regexp, " " );
-    }
-  else if  ((aUri.contains("OCI:"))
-	   ||(aUri.contains("ODBC:")))
-    {
-       regexp.setPattern( "/.*@" );
-	   safeName.replace( regexp, "/@" );
-    }
-  else if  (aUri.contains("SDE:"))
-    {
-       QStringList strlist=aUri.split(",");
-	   safeName=strlist[0]+","+strlist[1]+","+strlist[2]+","+strlist[3];
-    } 
+  //this works for postgres, ingres, mysql,
+  if (( aUri.contains( "PG:" ) )
+      || ( aUri.contains( "driver=ingres" ) )
+      || ( aUri.contains( "MySQL:" ) ) )
+  {
+    regexp.setPattern( " password=.* " );
+    safeName.replace( regexp, " " );
+  }
+  else if ( aUri.contains( "IDB:" ) )
+  {
+    regexp.setPattern( " pass=.* " );
+    safeName.replace( regexp, " " );
+  }
+  else if (( aUri.contains( "OCI:" ) )
+           || ( aUri.contains( "ODBC:" ) ) )
+  {
+    regexp.setPattern( "/.*@" );
+    safeName.replace( regexp, "/@" );
+  }
+  else if ( aUri.contains( "SDE:" ) )
+  {
+    QStringList strlist = aUri.split( "," );
+    safeName = strlist[0] + "," + strlist[1] + "," + strlist[2] + "," + strlist[3];
+  }
   return safeName;
 }
 
