@@ -19,5 +19,8 @@
 
 #include <QString>
 
-QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password );
-QString createProtocolURI( QString type, QString url );
+/* Create database uri from connection parameters */
+QString createDatabaseURI(QString connectionType, QString host, QString database, QString port, QString user, QString password);
+
+/* Create protocol uri from connection parameters */
+QString createProtocolURI(QString type, QString url);

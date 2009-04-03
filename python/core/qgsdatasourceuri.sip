@@ -42,6 +42,11 @@ public:
                      const QString& aTable,
                      const QString& aGeometryColumn,
                      const QString& aSql = QString());
+
+  /** Removes password from uris 
+   * @note this method was added in QGIS 1.1
+  */
+  static QString removePassword( const QString& aUri);
   
   QString username() const;
   QString schema() const;
