@@ -26,6 +26,9 @@ class Dialog(QDialog, Ui_Dialog):
 	def updateUI(self):
 		self.label_5.setVisible(False)
 		self.lnField.setVisible(False)
+		self.outShape.setVisible(False)
+		self.toolOut.setVisible(False)
+		self.label_2.setVisible(False)
 		self.setWindowTitle("Select by location")
 		self.label_3.setText("Select features in:")
 		self.label_4.setText("that intersect features in:")
