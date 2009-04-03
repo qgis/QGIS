@@ -39,6 +39,7 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsdatasourceuri.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
@@ -112,10 +113,8 @@ QString QgsMapLayer::publicSource() const
 {
   // Redo this every time we're asked for it, as we don't know if
   // dataSource has changed.
-  static QRegExp regexp( " password=.* " );
-  regexp.setMinimal( true );
-  QString safeName( mDataSource );
-  return safeName.replace( regexp, " " );
+	QString safeName=QgsDataSourceURI::removePassword(mDataSource);  
+  return safeName; 
 }
 
 QString const & QgsMapLayer::source() const

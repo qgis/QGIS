@@ -83,9 +83,10 @@ class QgisApp : public QMainWindow
     /** \brief overloaded vesion of the privat addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
      @param enc encoding type for the layer
+	 @param dataSourceType type of ogr datasource
      @returns true if successfully added layer
      */
-    bool addVectorLayers( QStringList const & theLayerQStringList, const QString& enc );
+    bool addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType );
 
     /** overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting

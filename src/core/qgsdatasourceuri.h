@@ -61,6 +61,8 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aGeometryColumn,
                         const QString& aSql = QString() );
 
+	 //! Removes password element from uris
+    static QString removePassword( const QString& aUri);
 
     QString username() const;
     QString schema() const;

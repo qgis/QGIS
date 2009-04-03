@@ -2163,9 +2163,9 @@ void QgisApp::addVectorLayer()
       // no files were selected, so just bail
       mMapCanvas->freeze( false );
       return;
-    }
-    else
-      addVectorLayers( selectedSources, enc );
+     }
+	else
+     addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
   }
 
   delete ovl;
@@ -2174,15 +2174,29 @@ void QgisApp::addVectorLayer()
 }
 
 
-bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc )
+bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
-
+  
   for ( QStringList::ConstIterator it = theLayerQStringList.begin();
         it != theLayerQStringList.end();
         ++it )
   {
-    QFileInfo fi( *it );
-    QString base = fi.completeBaseName();
+    QString base;
+    if(dataSourceType=="file")
+	  {
+        QFileInfo fi( *it );
+        base = fi.completeBaseName();
+	  }
+	else if(dataSourceType=="database")
+	  {
+        base=*it;  
+	  }
+	else //directory //protocol
+	  {
+		QFileInfo fi( *it );
+        base = fi.completeBaseName();
+	  }
+
 
     QgsDebugMsg( "completeBaseName: " + base );
 
@@ -2317,7 +2331,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
     {
       composedURI = uri + "|layerindex=" + list.at( i );
     }
-    addVectorLayer( composedURI, fileName + ":" + list.at( i ), "ogr" );
+    addVectorLayer( composedURI,  list.at( i ), "ogr" );
   }
 }
 
@@ -3028,7 +3042,8 @@ void QgisApp::newVectorLayer()
   //then add the layer to the view
   QStringList fileNames;
   fileNames.append( fileName );
-  addVectorLayers( fileNames, enc );
+  //todo: the last parameter will change accordingly to layer type
+  addVectorLayers( fileNames, enc, "file" );
 }
 
 void QgisApp::fileOpen()

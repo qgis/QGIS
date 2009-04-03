@@ -178,6 +178,38 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode(SSLprefer)
   }
 }
 
+QString QgsDataSourceURI::removePassword( const QString& aUri)
+{
+  QRegExp regexp;
+  regexp.setMinimal( true );
+  QString safeName( aUri );
+  //this works for postgres, ingres, mysql, 
+  if((aUri.contains("PG:"))
+     ||(aUri.contains("driver=ingres")) 
+	 ||(aUri.contains("MySQL:"))) 
+    {
+       regexp.setPattern( " password=.* " );
+	   safeName.replace( regexp, " " );
+    }
+  else if (aUri.contains("IDB:"))
+    {
+       regexp.setPattern( " pass=.* " );
+	   safeName.replace( regexp, " " );
+    }
+  else if  ((aUri.contains("OCI:"))
+	   ||(aUri.contains("ODBC:")))
+    {
+       regexp.setPattern( "/.*@" );
+	   safeName.replace( regexp, "/@" );
+    }
+  else if  (aUri.contains("SDE:"))
+    {
+       QStringList strlist=aUri.split(",");
+	   safeName=strlist[0]+","+strlist[1]+","+strlist[2]+","+strlist[3];
+    } 
+  return safeName;
+}
+
 QString QgsDataSourceURI::username() const
 {
   return mUsername;

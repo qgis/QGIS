@@ -38,6 +38,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
+  mDataSourceType="file";
   //set encoding
   cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
 
@@ -131,6 +132,11 @@ QString QgsOpenVectorLayerDialog::encoding()
 void QgsOpenVectorLayerDialog::helpInfo()
 {
   QgsContextHelp::run( context_id );
+}
+
+QString QgsOpenVectorLayerDialog::dataSourceType()
+{
+  return mDataSourceType;
 }
 
 void QgsOpenVectorLayerDialog::addNewConnection()
@@ -368,6 +374,8 @@ void QgsOpenVectorLayerDialog::openFilesRememberingFilter( QString const &filter
 
 }   // openFilesRememberingFilter_
 
+
+
 //********************auto connected slots *****************/
 void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
 {
@@ -424,6 +432,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
+	mDataSourceType="file";
   }
 }
 
@@ -437,6 +446,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDirectory_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
+	mDataSourceType="directory";
   }
 }
 
@@ -453,6 +463,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDatabase_toggled( bool checked )
     setConnectionTypeListPosition();
     populateConnectionList();
     setConnectionListPosition();
+	mDataSourceType="database";
   }
 }
 
@@ -464,6 +475,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
+	mDataSourceType="protocol";
   }
 }
 
