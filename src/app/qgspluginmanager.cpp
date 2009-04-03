@@ -94,7 +94,7 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   connect( btnClearAll, SIGNAL( clicked() ), this, SLOT( clearAll() ) );
 
   qRegisterMetaType<QgsDetailedItemData>();
-  
+
   // add installer's icon
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/plugin_installer.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/plugin_installer.png";
@@ -106,15 +106,15 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   {
     btnPluginInstaller->setIcon( QIcon( myDefThemePath ) );
   }
-  
+
   // check for plugin installer
-  if (checkForPluginInstaller())
+  if ( checkForPluginInstaller() )
   {
-    connect( btnPluginInstaller, SIGNAL( clicked() ), this, SLOT( showPluginInstaller() ));
+    connect( btnPluginInstaller, SIGNAL( clicked() ), this, SLOT( showPluginInstaller() ) );
   }
   else
   {
-    btnPluginInstaller->setEnabled(false);
+    btnPluginInstaller->setEnabled( false );
   }
 }
 
@@ -527,22 +527,22 @@ void QgsPluginManager::on_leFilter_textChanged( QString theText )
 bool QgsPluginManager::checkForPluginInstaller()
 {
   // check whether python's enabled
-  if (!mPythonUtils)
+  if ( !mPythonUtils )
     return false;
-  
+
   // check whether python installer is present
-  if (!mPythonUtils->pluginList().contains("plugin_installer"))
+  if ( !mPythonUtils->pluginList().contains( "plugin_installer" ) )
     return false;
-  
+
   QString res;
   // check it's loaded and started
-  bool retval = mPythonUtils->evalString("plugins.has_key('plugin_installer')", res);
-  if (!retval || res != "True")
+  bool retval = mPythonUtils->evalString( "plugins.has_key('plugin_installer')", res );
+  if ( !retval || res != "True" )
   {
     // TODO: try to load the plugin installer!
     return false;
   }
-  
+
   return true;
 }
 
@@ -550,16 +550,16 @@ void QgsPluginManager::showPluginInstaller()
 {
   bool res;
   QString cls, msg;
-  res = mPythonUtils->runStringUnsafe("_qgis_plugin_manager = wrapinstance( " + QString::number((unsigned long)this) + ", QtGui.QWidget )");
-  if (!res)
+  res = mPythonUtils->runStringUnsafe( "_qgis_plugin_manager = wrapinstance( " + QString::number(( unsigned long )this ) + ", QtGui.QWidget )" );
+  if ( !res )
   {
-    QgsDebugMsg("wrapinstance error: " + cls + " :: " + msg);
+    QgsDebugMsg( "wrapinstance error: " + cls + " :: " + msg );
   }
-  res = mPythonUtils->runStringUnsafe("plugins['plugin_installer'].run( _qgis_plugin_manager )");
-  if (!res)
+  res = mPythonUtils->runStringUnsafe( "plugins['plugin_installer'].run( _qgis_plugin_manager )" );
+  if ( !res )
   {
-    mPythonUtils->getError(cls, msg);
-    QMessageBox::warning(this, tr("Error"), tr("Failed to open plugin installer!"));
-    mPythonUtils->runStringUnsafe("del _qgis_plugin_manager");
+    mPythonUtils->getError( cls, msg );
+    QMessageBox::warning( this, tr( "Error" ), tr( "Failed to open plugin installer!" ) );
+    mPythonUtils->runStringUnsafe( "del _qgis_plugin_manager" );
   }
 }

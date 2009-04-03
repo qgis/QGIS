@@ -2163,9 +2163,9 @@ void QgisApp::addVectorLayer()
       // no files were selected, so just bail
       mMapCanvas->freeze( false );
       return;
-     }
-	else
-     addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
+    }
+    else
+      addVectorLayers( selectedSources, enc, ovl->dataSourceType() );
   }
 
   delete ovl;
@@ -2176,26 +2176,26 @@ void QgisApp::addVectorLayer()
 
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
-  
+
   for ( QStringList::ConstIterator it = theLayerQStringList.begin();
         it != theLayerQStringList.end();
         ++it )
   {
     QString base;
-    if(dataSourceType=="file")
-	  {
-        QFileInfo fi( *it );
-        base = fi.completeBaseName();
-	  }
-	else if(dataSourceType=="database")
-	  {
-        base=*it;  
-	  }
-	else //directory //protocol
-	  {
-		QFileInfo fi( *it );
-        base = fi.completeBaseName();
-	  }
+    if ( dataSourceType == "file" )
+    {
+      QFileInfo fi( *it );
+      base = fi.completeBaseName();
+    }
+    else if ( dataSourceType == "database" )
+    {
+      base = *it;
+    }
+    else //directory //protocol
+    {
+      QFileInfo fi( *it );
+      base = fi.completeBaseName();
+    }
 
 
     QgsDebugMsg( "completeBaseName: " + base );
@@ -2523,7 +2523,7 @@ void QgisApp::addWmsLayer()
   {
 
     addRasterLayer( wmss->connectionInfo(),
-                    /*wmss->connName()*/wmss->selectedLayers().join("/"),
+                    /*wmss->connName()*/wmss->selectedLayers().join( "/" ),
                     "wms",
                     wmss->selectedLayers(),
                     wmss->selectedStylesForSelectedLayers(),

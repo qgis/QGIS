@@ -38,7 +38,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   cmbDatabaseTypes->blockSignals( true );
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
-  mDataSourceType="file";
+  mDataSourceType = "file";
   //set encoding
   cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
 
@@ -432,7 +432,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-	mDataSourceType="file";
+    mDataSourceType = "file";
   }
 }
 
@@ -446,7 +446,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDirectory_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->hide();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-	mDataSourceType="directory";
+    mDataSourceType = "directory";
   }
 }
 
@@ -463,7 +463,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcDatabase_toggled( bool checked )
     setConnectionTypeListPosition();
     populateConnectionList();
     setConnectionListPosition();
-	mDataSourceType="database";
+    mDataSourceType = "database";
   }
 }
 
@@ -475,7 +475,7 @@ void QgsOpenVectorLayerDialog::on_radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     layout()->setSizeConstraint( QLayout::SetFixedSize );
-	mDataSourceType="protocol";
+    mDataSourceType = "protocol";
   }
 }
 

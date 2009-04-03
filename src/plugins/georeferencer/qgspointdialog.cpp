@@ -516,23 +516,23 @@ bool QgsPointDialog::generateWorldFileAndWarp()
       return false;
     }
   }
-      else //MH: don't forget the linear transformation ;-)
-      {
-        double xOffset = 0;
-        double yOffset = 0;
-        QFile file( worldFileName );
-        if(!file.open(QIODevice::WriteOnly))
-        {
-          return false;
-        }
-        QTextStream stream(&file);
-        stream<<QString::number(pixelXSize, 'f', 15)<<endl
-        <<0<<endl
-        <<0<<endl
-        <<QString::number(-pixelYSize, 'f', 15)<<endl
-        <<QString::number((origin.x() - xOffset * pixelXSize), 'f', 15)<<endl
-        <<QString::number((origin.y() + yOffset * pixelYSize), 'f', 15)<<endl;
-      }
+  else //MH: don't forget the linear transformation ;-)
+  {
+    double xOffset = 0;
+    double yOffset = 0;
+    QFile file( worldFileName );
+    if ( !file.open( QIODevice::WriteOnly ) )
+    {
+      return false;
+    }
+    QTextStream stream( &file );
+    stream << QString::number( pixelXSize, 'f', 15 ) << endl
+    << 0 << endl
+    << 0 << endl
+    << QString::number( -pixelYSize, 'f', 15 ) << endl
+    << QString::number(( origin.x() - xOffset * pixelXSize ), 'f', 15 ) << endl
+    << QString::number(( origin.y() + yOffset * pixelYSize ), 'f', 15 ) << endl;
+  }
 
   // write the data points in case we need them later
 //  saveGCPs( mapCoords, pixelCoords );
