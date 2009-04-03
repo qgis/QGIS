@@ -6426,10 +6426,6 @@ p, li { white-space: pre-wrap; }
         <source>Enable Copyright Label</source>
         <translation>Szerzői jog cimke bekapcsolása</translation>
     </message>
-    <message encoding="UTF-8">
-        <source>© QGIS 2008</source>
-        <translation type="obsolete">(c) QGIS 2008</translation>
-    </message>
     <message>
         <source>Placement</source>
         <translation>Elhelyezés</translation>
@@ -11010,10 +11006,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Above Left</source>
         <translation>Bal felül</translation>
-    </message>
-    <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
     </message>
     <message>
         <source>Angle (deg):</source>

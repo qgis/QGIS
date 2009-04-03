@@ -12176,10 +12176,6 @@ p, li { white-space: pre-wrap; }
         <translation>Unités de décalage </translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Field containing label</source>
         <translation>Champ contenant une étiquette</translation>
     </message>

@@ -11309,10 +11309,6 @@ p, li { white-space: pre-wrap; }
         <translation>บนซ้าย</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Angle (deg):</source>
         <translation type="obsolete">มุม (องศา):</translation>
     </message>

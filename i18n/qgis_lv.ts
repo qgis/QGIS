@@ -6496,10 +6496,6 @@ p, li { white-space: pre-wrap; }
         <translation>Krāsa</translation>
     </message>
     <message>
-        <source>&#xa9; QGIS 2008</source>
-        <translation type="obsolete">© QGIS 2008</translation>
-    </message>
-    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -10965,10 +10961,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Angle (deg)</source>
         <translation>Leņķis (grādi)</translation>
-    </message>
-    <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
     </message>
     <message>
         <source>Buffer labels?</source>
