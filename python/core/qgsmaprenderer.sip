@@ -13,6 +13,14 @@ class QgsMapRenderer : QObject
       
   public:
     
+    /**Output units for pen width and point marker width/height*/
+    enum OutputUnits
+    {
+      Millimeters,
+      Pixels
+      //MAP_UNITS probably supported in future versions
+    };
+    
     //! constructor
     QgsMapRenderer();
     
@@ -26,11 +34,14 @@ class QgsMapRenderer : QObject
     bool setExtent(const QgsRectangle& extent);
     
     //! returns current extent
-    QgsRectangle extent();
+    QgsRectangle extent() const;
     
     const QgsMapToPixel* coordinateTransform();
     
     double scale() const;
+    /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
+     function is only used to force a preview scale (e.g. for print composer)*/
+    void setScale( double scale );
     double mapUnitsPerPixel() const;
 
     int width() const;
@@ -40,6 +51,7 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
+    QgsDistanceArea* distanceArea();
     QGis::UnitType mapUnits() const;
     void setMapUnits(QGis::UnitType u);
     
@@ -77,6 +89,10 @@ class QgsMapRenderer : QObject
     //! returns CRS ID of destination spatial reference system
     const QgsCoordinateReferenceSystem& destinationSrs();
 
+    void setOutputUnits( OutputUnits u );
+
+    OutputUnits outputUnits() const;
+    
     //! returns current extent of layer set
     QgsRectangle fullExtent();
     
@@ -95,9 +111,12 @@ class QgsMapRenderer : QObject
     //! write settings
     bool writeXML(QDomNode & theNode, QDomDocument & theDoc);
 
+    //! Accessor for render context
+    QgsRenderContext* rendererContext();
+
   signals:
     
-    void setProgress(int current, int total);
+    void drawingProgress(int current, int total);
     
     void hasCrsTransformEnabled(bool flag);
     
