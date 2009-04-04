@@ -301,6 +301,13 @@ Var /GLOBAL DOWNLOAD_MESSAGE_
 Section "Quantum GIS" SecQGIS
 
 	SectionIn RO
+
+        ;Added by Tim to set the reg key so we get default toolbar layout
+        !include ui.nsh
+        ;Added by Tim to set the reg key so we get default plugin loading 
+        !include plugins.nsh
+        ;Added by Tim to set the reg key so we get default python & py plugins
+        !include python_plugins.nsh
 	
 	;Set the INSTALL_DIR variable
 	Var /GLOBAL INSTALL_DIR
