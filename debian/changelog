@@ -1,3 +1,9 @@
+qgis (1.1.0-2) UNRELEASED; urgency=low
+
+  * change package names to reflect ABI (changes SONAME)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 05 Apr 2009 12:34:38 +0200
+
 qgis (1.1.0-1) UNRELEASED; urgency=low
 
   * allow build with GRASS 6.4rc3
