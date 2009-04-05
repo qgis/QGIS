@@ -65,6 +65,8 @@ public:
       double mTolerance;
       /**What snapping type to use (snap to segment or to vertex)*/
       QgsSnapper::SnappingType mSnapTo;
+      /**What unit is used for tolerance*/
+      QgsTolerance::UnitType mUnitType;
     };  
     
   QgsSnapper(QgsMapRenderer* mapRender);
