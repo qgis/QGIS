@@ -135,7 +135,7 @@ void BeataView::keyPressEvent( QKeyEvent *event )
 void BeataView::keyReleaseEvent( QKeyEvent *event )
 {
   // workaround for some Qt bug
-  if ( event->key() == Qt::Key_Shift || event->key() == 0xffffffff )
+  if ( event->key() == Qt::Key_Shift || event->key() == -1 )
     shiftPressed = false;
   else if ( event->key() == Qt::Key_Control )
     ctrlPressed = false;
