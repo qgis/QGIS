@@ -19,6 +19,7 @@
 #define QGSSNAPPER_H
 
 #include "qgspoint.h"
+#include "qgstolerance.h"
 #include <QList>
 #include <QMultiMap>
 
@@ -86,6 +87,8 @@ class CORE_EXPORT QgsSnapper
       double mTolerance;
       /**What snapping type to use (snap to segment or to vertex)*/
       QgsSnapper::SnappingType mSnapTo;
+      /**What unit is used for tolerance*/
+      QgsTolerance::UnitType mUnitType;
     };
 
     QgsSnapper( QgsMapRenderer* mapRender );

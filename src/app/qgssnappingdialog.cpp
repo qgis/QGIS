@@ -71,6 +71,12 @@ QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, 
           snappingToleranceEdit->setValidator( validator );
           mLayerTreeWidget->setItemWidget( newItem, 2, snappingToleranceEdit );
 
+          //snap to vertex/ snap to segment
+          QComboBox* toleranceUnitsComboBox = new QComboBox( mLayerTreeWidget );
+          toleranceUnitsComboBox->insertItem( 0, tr( "map units" ) );
+          toleranceUnitsComboBox->insertItem( 1, tr( "pixels" ) );
+          mLayerTreeWidget->setItemWidget( newItem, 3, toleranceUnitsComboBox );
+
           settingIt = settings.find( currentVectorLayer->getLayerID() );
           if ( settingIt != settings.constEnd() )
           {
@@ -89,6 +95,15 @@ QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, 
               index = snapToComboBox->findText( tr( "to vertex and segment" ) );
             }
             snapToComboBox->setCurrentIndex( index );
+	    if ( settingIt.value().toleranceUnit == 0 )//map units
+            {
+              index = toleranceUnitsComboBox->findText( tr( "map units" ) );
+	    } 
+            else
+            {
+              index = toleranceUnitsComboBox->findText( tr( "pixels" ) );
+            }
+            toleranceUnitsComboBox->setCurrentIndex( index );
             if ( settingIt.value().checked )
             {
               newItem->setCheckState( 0, Qt::Checked );
@@ -103,8 +118,9 @@ QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, 
       }
     }
     mLayerTreeWidget->resizeColumnToContents( 0 );
-    mLayerTreeWidget->setColumnWidth( 1, 300 );  //hardcoded for now
+    mLayerTreeWidget->setColumnWidth( 1, 200 );  //hardcoded for now
     mLayerTreeWidget->resizeColumnToContents( 2 );
+    mLayerTreeWidget->resizeColumnToContents( 3 );
   }
 }
 
@@ -127,7 +143,9 @@ void QgsSnappingDialog::layerSettings( QMap<QString, LayerEntry>& settings ) con
   QString layerId;
   QString layerName;
   QString snapToItemText;
+  QString toleranceItemText;
   int snapTo;
+  int toleranceUnit;
   double tolerance;
   bool checked = false;
 
@@ -144,6 +162,7 @@ void QgsSnappingDialog::layerSettings( QMap<QString, LayerEntry>& settings ) con
     layerId = mLayerIds.at( i );
     checked = ( currentItem->checkState( 0 ) == Qt::Checked );
     snapToItemText = (( QComboBox* )( mLayerTreeWidget->itemWidget( currentItem, 1 ) ) )->currentText();
+    toleranceItemText = (( QComboBox* )( mLayerTreeWidget->itemWidget( currentItem, 3 ) ) )->currentText();
     if ( snapToItemText == tr( "to vertex" ) )
     {
       snapTo = 0;
@@ -156,10 +175,18 @@ void QgsSnappingDialog::layerSettings( QMap<QString, LayerEntry>& settings ) con
     {
       snapTo = 2;
     }
+    if ( toleranceItemText == tr( "map units" ) )
+    {
+      toleranceUnit = 0;
+    }
+    else //to vertex and segment
+    {
+      toleranceUnit = 1;
+    }
     tolerance = (( QLineEdit* )( mLayerTreeWidget->itemWidget( currentItem, 2 ) ) )->text().toDouble();
     LayerEntry newEntry;
     newEntry.checked = checked; newEntry.snapTo = snapTo; newEntry.layerName = layerName;
-    newEntry.tolerance = tolerance;
+    newEntry.tolerance = tolerance; newEntry.toleranceUnit = toleranceUnit;
     settings.insert( layerId, newEntry );
   }
 }

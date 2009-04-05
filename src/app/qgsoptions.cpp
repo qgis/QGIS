@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgstolerance.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -196,6 +197,25 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
+  int index;
+  if (settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt() == QgsTolerance::MapUnits)
+  {
+    index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
+  } 
+  else
+  {
+    index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
+  }
+  mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
+  if (settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() == QgsTolerance::MapUnits)
+  {
+    index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
+  } 
+  else
+  {
+    index = mSearchRadiusVertexEditComboBox->findText( tr( "pixels" ) );
+  }
+  mSearchRadiusVertexEditComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() );
 
   //vertex marker
   mMarkerStyleComboBox->addItem( tr( "Semi transparent circle" ) );
@@ -374,6 +394,11 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/default_snap_mode", defaultSnapModeString );
   settings.setValue( "/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value() );
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value() );
+  settings.setValue( "/qgis/digitizing/default_snapping_tolerance_unit", 
+                        (mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+  settings.setValue( "/qgis/digitizing/search_radius_vertex_edit_unit", 
+                        (mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+
 
   QString markerComboText = mMarkerStyleComboBox->currentText();
   if ( markerComboText == tr( "Semi transparent circle" ) )

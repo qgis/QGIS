@@ -21,6 +21,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgstolerance.h"
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QSettings>
@@ -71,7 +72,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   //find first geometry under mouse cursor and store iterator to it
   QgsPoint layerCoords = toLayerCoordinates(( QgsMapLayer* )vlayer, e->pos() );
   QSettings settings;
-  double searchRadius = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
+  double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->mapUnitsPerPixel() );
   QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                            layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 

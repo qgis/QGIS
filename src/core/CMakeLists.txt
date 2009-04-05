@@ -43,6 +43,7 @@ SET(QGIS_CORE_SRCS
   qgssearchtreenode.cpp
   qgssnapper.cpp
   qgscoordinatereferencesystem.cpp
+  qgstolerance.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp

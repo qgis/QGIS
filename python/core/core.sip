@@ -64,6 +64,7 @@
 %Include qgscoordinatereferencesystem.sip
 %Include qgssymbol.sip
 %Include qgssymbologyutils.sip
+%Include qgstolerance.sip
 %Include qgsuniquevaluerenderer.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip

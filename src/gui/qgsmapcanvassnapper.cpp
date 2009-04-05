@@ -21,7 +21,9 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgstolerance.h"
 #include <QSettings>
+
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas ): mMapCanvas( canvas ), mSnapper( 0 )
 {
@@ -92,13 +94,14 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
     QgsSnapper::SnapLayer snapLayer;
     snapLayer.mLayer = vlayer;
     snapLayer.mSnapTo = snap_to;
+    snapLayer.mUnitType = QgsTolerance::MapUnits;
 
     QSettings settings;
 
     if ( snappingTol < 0 )
     {
       //use search tolerance for vertex editing
-      snapLayer.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 50 ).toDouble();
+      snapLayer.mTolerance = QgsTolerance::vertexSearchRadius(mMapCanvas->mapUnitsPerPixel());
     }
     else
     {
@@ -149,9 +152,10 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     }
     QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &ok );
     QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", &ok );
+    QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &ok );
     QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &ok );
 
-    if ( !( layerIdList.size() == enabledList.size() && layerIdList.size() == toleranceList.size() && layerIdList.size() == snapToList.size() ) )
+    if ( !( layerIdList.size() == enabledList.size() && layerIdList.size() == toleranceList.size() && layerIdList.size() == toleranceUnitList.size() && layerIdList.size() == snapToList.size() ) )
     {
       return 1; //lists must have the same size, otherwise something is wrong
     }
@@ -168,10 +172,11 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
       QStringList::const_iterator layerIt = layerIdList.constBegin();
       QStringList::const_iterator tolIt = toleranceList.constBegin();
+      QStringList::const_iterator tolUnitIt = toleranceUnitList.constBegin();
       QStringList::const_iterator snapIt = snapToList.constBegin();
       QStringList::const_iterator enabledIt = enabledList.constBegin();
 
-      for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++snapIt, ++enabledIt )
+      for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
       {
         if (( *enabledIt ) != "enabled" ) //skip layer if snapping is not enabled
         {
@@ -191,6 +196,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
         //tolerance
         snapLayer.mTolerance = tolIt->toDouble();
+        snapLayer.mUnitType = (QgsTolerance::UnitType) tolUnitIt->toInt();
 
         //segment or vertex
         if (( *snapIt ) == "to_vertex" )
@@ -241,8 +247,9 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
         snapLayer.mSnapTo = QgsSnapper::SnapToVertex;
       }
 
-      //default snapping tolerance
-      snapLayer.mTolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
+      //default snapping tolerance (returned in map units)
+      snapLayer.mTolerance = QgsTolerance::defaultTolerance(mMapCanvas->mapUnitsPerPixel());
+      snapLayer.mUnitType = QgsTolerance::MapUnits;
 
       snapLayers.append( snapLayer );
     }

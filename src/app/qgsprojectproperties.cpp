@@ -122,11 +122,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &ok );
   QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &ok );
   QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", &ok );
+  QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &ok );
   QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &ok );
 
   QStringList::const_iterator idIter = layerIdList.constBegin();
   QStringList::const_iterator enabledIter = enabledList.constBegin();
   QStringList::const_iterator tolIter = toleranceList.constBegin();
+  QStringList::const_iterator tolUnitIter = toleranceUnitList.constBegin();
   QStringList::const_iterator snapToIter = snapToList.constBegin();
 
   QgsMapLayer* currentLayer = 0;
@@ -160,6 +162,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
         newEntry.snapTo = 2;
       }
       newEntry.tolerance = tolIter->toDouble();
+      newEntry.toleranceUnit = tolUnitIter->toInt();
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
@@ -306,11 +309,13 @@ void QgsProjectProperties::apply()
   QStringList snapToList;
   QStringList toleranceList;
   QStringList enabledList;
+  QStringList toleranceUnitList;
 
   for ( layerEntryIt = mSnappingLayerSettings.constBegin(); layerEntryIt != mSnappingLayerSettings.constEnd(); ++layerEntryIt )
   {
     layerIdList << layerEntryIt.key();
     toleranceList << QString::number( layerEntryIt->tolerance, 'f' );
+    toleranceUnitList << QString::number( (int)layerEntryIt->toleranceUnit );
     if ( layerEntryIt->checked )
     {
       enabledList << "enabled";
@@ -338,6 +343,7 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnapToList", snapToList );
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
+    QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
     QgsProject::instance()->writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
   }
 
