@@ -31,8 +31,9 @@ email                : a.furieri@lqt.it
 #include <QHeaderView>
 #include <QStringList>
 
-#include <cassert>
-#include <iostream>
+#ifdef _MSC_VER
+#define strcasecmp(a,b) stricmp(a,b)
+#endif
 
 QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags fl ):
     QDialog( app, fl ), qgisApp( app )
@@ -491,7 +492,7 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   else
   {
     qDebug( "Unable to get list of spatially enabled tables from the database" );
-    qDebug( sqlite3_errmsg( handle ) );
+    qDebug( "%s", sqlite3_errmsg( handle ) );
   }
   closeSpatiaLiteDb( handle );
 
@@ -572,6 +573,7 @@ error:
   }
   QMessageBox::critical( this, tr( "SpatiaLite getTableInfo Error" ),
                          tr( "Failure exploring tables from: %1\n\n%2" ).arg( mSqlitePath ).arg( errCause ) );
+  return false;
 }
 
 void QgsSpatiaLiteSourceSelect::showHelp()
