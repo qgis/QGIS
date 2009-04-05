@@ -268,7 +268,7 @@ void QgsPluginManager::getPluginDescriptions()
     bool loaded = myLib->load();
     if ( !loaded )
     {
-      QgsDebugMsg( "Failed to load: " + myLib->fileName() );
+      QgsDebugMsg( QString( "Failed to load: %1 (%2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ) );
       delete myLib;
       continue;
     }
