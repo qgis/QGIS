@@ -50,10 +50,17 @@ IF (WITH_POSTGRESQL)
   SET (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
 ENDIF (WITH_POSTGRESQL)
 
-# try to configure and build SPATIALITE support
 SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built")
+
 IF (WITH_SPATIALITE)
-  SET (SPATIALITE_PREFIX "" CACHE PATH "Path to SPATIALITE base directory")
+  SET (WITH_INTERNAL_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
+  IF(WITH_INTERNAL_SPATIALITE)
+    SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
+    SET(HAVE_SPATIALITE TRUE)
+    IF(WIN32)
+      FIND_PACKAGE(Iconv REQUIRED)
+    ENDIF(WIN32)
+  ENDIF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_SPATIALITE)
 
 # try to configure and build python bindings by default
@@ -112,6 +119,7 @@ IF (NOT WITH_INTERNAL_SQLITE3)
     MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with sqlite3 internal)!")
   ENDIF (NOT SQLITE3_FOUND)
 ENDIF (NOT WITH_INTERNAL_SQLITE3)
+
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 
@@ -124,9 +132,9 @@ FIND_PACKAGE(GSL)      # Georeferencer
 IF (WITH_GRASS)
   FIND_PACKAGE(GRASS)    # GRASS plugin
 ENDIF (WITH_GRASS)
-IF (WITH_SPATIALITE)
-  FIND_PACKAGE(SPATIALITE)    # SPATIALITE provider
-ENDIF (WITH_SPATIALITE)
+IF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
+  FIND_PACKAGE(SPATIALITE)
+ENDIF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
 
 IF (WITH_BINDINGS)
   # python support:
@@ -180,7 +188,7 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 # enable warnings
 
 IF (PEDANTIC)
-  MESSAGE ("Pedantic compiler settings enabled")
+  MESSAGE ("-- Pedantic compiler settings enabled")
   IF(MSVC)
     ADD_DEFINITIONS( /W4 )
 
