@@ -2386,6 +2386,7 @@
 		72EBCB3B0F49E8240016BA3C /* favicon.ico in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0160F39E5DA003DC336 /* favicon.ico */; };
 		72EBCB3C0F49E8240016BA3C /* index.html in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F01B0F39E5DA003DC336 /* index.html */; };
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
+		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -8272,6 +8273,39 @@
 		72EBCA650F49DC130016BA3C /* frmVisual.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVisual.ui; path = ../../python/plugins/fTools/tools/frmVisual.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA660F49DC130016BA3C /* ftools_utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ftools_utils.py; path = ../../python/plugins/fTools/tools/ftools_utils.py; sourceTree = SOURCE_ROOT; };
 		72F117AB0F73DB1A00D68564 /* tsstat.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = tsstat.pl; path = ../../scripts/tsstat.pl; sourceTree = SOURCE_ROOT; };
+		72F8D9350F89234600D10CE5 /* FindIconv.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindIconv.cmake; path = ../../cmake/FindIconv.cmake; sourceTree = SOURCE_ROOT; };
+		72F8D9390F8924AE00D10CE5 /* qgstolerance.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstolerance.sip; path = ../../python/core/qgstolerance.sip; sourceTree = SOURCE_ROOT; };
+		72F8D9420F8924F100D10CE5 /* qgstolerance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstolerance.h; path = ../../src/core/qgstolerance.h; sourceTree = SOURCE_ROOT; };
+		72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstolerance.cpp; path = ../../src/core/qgstolerance.cpp; sourceTree = SOURCE_ROOT; };
+		72F8D9460F89264000D10CE5 /* qgis_he.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgis_he.ts; path = ../../i18n/qgis_he.ts; sourceTree = SOURCE_ROOT; };
+		72F8D9490F89268C00D10CE5 /* gaia_exif.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gaia_exif.c; path = ../../src/core/spatialite/gaiaexif/gaia_exif.c; sourceTree = SOURCE_ROOT; };
+		72F8D94B0F89268C00D10CE5 /* gg_advanced.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_advanced.c; path = ../../src/core/spatialite/gaiageo/gg_advanced.c; sourceTree = SOURCE_ROOT; };
+		72F8D94C0F89268C00D10CE5 /* gg_endian.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_endian.c; path = ../../src/core/spatialite/gaiageo/gg_endian.c; sourceTree = SOURCE_ROOT; };
+		72F8D94D0F89268C00D10CE5 /* gg_geometries.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_geometries.c; path = ../../src/core/spatialite/gaiageo/gg_geometries.c; sourceTree = SOURCE_ROOT; };
+		72F8D94E0F89268C00D10CE5 /* gg_relations.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_relations.c; path = ../../src/core/spatialite/gaiageo/gg_relations.c; sourceTree = SOURCE_ROOT; };
+		72F8D94F0F89268C00D10CE5 /* gg_shape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_shape.c; path = ../../src/core/spatialite/gaiageo/gg_shape.c; sourceTree = SOURCE_ROOT; };
+		72F8D9500F89268C00D10CE5 /* gg_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_transform.c; path = ../../src/core/spatialite/gaiageo/gg_transform.c; sourceTree = SOURCE_ROOT; };
+		72F8D9510F89268C00D10CE5 /* gg_wkb.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_wkb.c; path = ../../src/core/spatialite/gaiageo/gg_wkb.c; sourceTree = SOURCE_ROOT; };
+		72F8D9520F89268C00D10CE5 /* gg_wkt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_wkt.c; path = ../../src/core/spatialite/gaiageo/gg_wkt.c; sourceTree = SOURCE_ROOT; };
+		72F8D9550F89268C00D10CE5 /* gaiaaux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gaiaaux.h; path = ../../src/core/spatialite/headers/spatialite/gaiaaux.h; sourceTree = SOURCE_ROOT; };
+		72F8D9560F89268C00D10CE5 /* gaiaexif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gaiaexif.h; path = ../../src/core/spatialite/headers/spatialite/gaiaexif.h; sourceTree = SOURCE_ROOT; };
+		72F8D9570F89268C00D10CE5 /* gaiageo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gaiageo.h; path = ../../src/core/spatialite/headers/spatialite/gaiageo.h; sourceTree = SOURCE_ROOT; };
+		72F8D9580F89268C00D10CE5 /* spatialite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spatialite.h; path = ../../src/core/spatialite/headers/spatialite/spatialite.h; sourceTree = SOURCE_ROOT; };
+		72F8D9590F89268C00D10CE5 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3.h; sourceTree = SOURCE_ROOT; };
+		72F8D95A0F89268C00D10CE5 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3ext.h; sourceTree = SOURCE_ROOT; };
+		72F8D95B0F89268C00D10CE5 /* spatialite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spatialite.h; path = ../../src/core/spatialite/headers/spatialite.h; sourceTree = SOURCE_ROOT; };
+		72F8D95D0F89268C00D10CE5 /* mbrcache.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mbrcache.c; path = ../../src/core/spatialite/spatialite/mbrcache.c; sourceTree = SOURCE_ROOT; };
+		72F8D95E0F89268C00D10CE5 /* spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite.c; path = ../../src/core/spatialite/spatialite/spatialite.c; sourceTree = SOURCE_ROOT; };
+		72F8D95F0F89268C00D10CE5 /* virtualfdo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtualfdo.c; path = ../../src/core/spatialite/spatialite/virtualfdo.c; sourceTree = SOURCE_ROOT; };
+		72F8D9600F89268C00D10CE5 /* virtualnetwork.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtualnetwork.c; path = ../../src/core/spatialite/spatialite/virtualnetwork.c; sourceTree = SOURCE_ROOT; };
+		72F8D9610F89268C00D10CE5 /* virtualshape.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtualshape.c; path = ../../src/core/spatialite/spatialite/virtualshape.c; sourceTree = SOURCE_ROOT; };
+		72F8D9630F89268C00D10CE5 /* spatialite_c99.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite_c99.c; path = ../../src/core/spatialite/spatialite_c99/spatialite_c99.c; sourceTree = SOURCE_ROOT; };
+		72F8D9650F89268C00D10CE5 /* version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = version.c; path = ../../src/core/spatialite/versioninfo/version.c; sourceTree = SOURCE_ROOT; };
+		72F8D9680F89268C00D10CE5 /* gg_sqlaux.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_sqlaux.c; path = ../../src/core/spatialite/virtualtext/gaiaaux/gg_sqlaux.c; sourceTree = SOURCE_ROOT; };
+		72F8D9690F89268C00D10CE5 /* gg_utf8.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gg_utf8.c; path = ../../src/core/spatialite/virtualtext/gaiaaux/gg_utf8.c; sourceTree = SOURCE_ROOT; };
+		72F8D96B0F89268C00D10CE5 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../../src/core/spatialite/virtualtext/sqlite3/sqlite3.c; sourceTree = SOURCE_ROOT; };
+		72F8D96D0F89268C00D10CE5 /* version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = version.c; path = ../../src/core/spatialite/virtualtext/versiontext/version.c; sourceTree = SOURCE_ROOT; };
+		72F8D96F0F89268C00D10CE5 /* virtualtext.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtualtext.c; path = ../../src/core/spatialite/virtualtext/virtualtext/virtualtext.c; sourceTree = SOURCE_ROOT; };
 		8D0C4E960486CD37000505A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -8964,6 +8998,8 @@
 				7209E6D00F39E57A003DC336 /* qgssearchtreenode.h */,
 				7209E6D10F39E57A003DC336 /* qgssnapper.cpp */,
 				7209E6D20F39E57A003DC336 /* qgssnapper.h */,
+				72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */,
+				72F8D9420F8924F100D10CE5 /* qgstolerance.h */,
 				7209E6D30F39E57A003DC336 /* qgsvectordataprovider.cpp */,
 				7209E6D40F39E57A003DC336 /* qgsvectordataprovider.h */,
 				7209E6D50F39E57A003DC336 /* qgsvectorfilewriter.cpp */,
@@ -8974,6 +9010,7 @@
 				7209E6D90F39E57A003DC336 /* raster */,
 				7209E6F50F39E57A003DC336 /* renderer */,
 				7209E7000F39E57A003DC336 /* spatialindex */,
+				72F8D9470F89268C00D10CE5 /* spatialite */,
 				7209E7320F39E57A003DC336 /* sqlite3 */,
 				7209E7360F39E57A003DC336 /* symbology */,
 				7209E6620F39E57A003DC336 /* CMakeLists.txt */,
@@ -11288,6 +11325,7 @@
 				7209EDB60F39E5D9003DC336 /* qgsspatialindex.sip */,
 				7209EDB70F39E5D9003DC336 /* qgssymbol.sip */,
 				7209EDB80F39E5D9003DC336 /* qgssymbologyutils.sip */,
+				72F8D9390F8924AE00D10CE5 /* qgstolerance.sip */,
 				7209EDB90F39E5D9003DC336 /* qgsuniquevaluerenderer.sip */,
 				7209EDBA0F39E5D9003DC336 /* qgsvectordataprovider.sip */,
 				7209EDBB0F39E5D9003DC336 /* qgsvectorfilewriter.sip */,
@@ -12029,6 +12067,7 @@
 				7209EFDC0F39E5D9003DC336 /* qgis_el_GR.ts */,
 				7209EFDD0F39E5D9003DC336 /* qgis_es.ts */,
 				7209EFDE0F39E5D9003DC336 /* qgis_fr.ts */,
+				72F8D9460F89264000D10CE5 /* qgis_he.ts */,
 				7209EFDF0F39E5D9003DC336 /* qgis_hu.ts */,
 				7209EFE00F39E5D9003DC336 /* qgis_id.ts */,
 				7209EFE10F39E5D9003DC336 /* qgis_it.ts */,
@@ -12077,6 +12116,7 @@
 				7209F0050F39E5DA003DC336 /* FindGEOS.cmake */,
 				7209F0060F39E5DA003DC336 /* FindGRASS.cmake */,
 				7209F0070F39E5DA003DC336 /* FindGSL.cmake */,
+				72F8D9350F89234600D10CE5 /* FindIconv.cmake */,
 				7209F0080F39E5DA003DC336 /* FindPostgres.cmake */,
 				7209F0090F39E5DA003DC336 /* FindProj.cmake */,
 				7209F00A0F39E5DA003DC336 /* FindSqlite3.cmake */,
@@ -12498,6 +12538,150 @@
 			);
 			name = tools;
 			path = ../../python/plugins/fTools/tools;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9470F89268C00D10CE5 /* spatialite */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9480F89268C00D10CE5 /* gaiaexif */,
+				72F8D94A0F89268C00D10CE5 /* gaiageo */,
+				72F8D9530F89268C00D10CE5 /* headers */,
+				72F8D95C0F89268C00D10CE5 /* spatialite */,
+				72F8D9620F89268C00D10CE5 /* spatialite_c99 */,
+				72F8D9640F89268C00D10CE5 /* versioninfo */,
+				72F8D9660F89268C00D10CE5 /* virtualtext */,
+			);
+			name = spatialite;
+			path = ../../src/core/spatialite;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9480F89268C00D10CE5 /* gaiaexif */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9490F89268C00D10CE5 /* gaia_exif.c */,
+			);
+			name = gaiaexif;
+			path = ../../src/core/spatialite/gaiaexif;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D94A0F89268C00D10CE5 /* gaiageo */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D94B0F89268C00D10CE5 /* gg_advanced.c */,
+				72F8D94C0F89268C00D10CE5 /* gg_endian.c */,
+				72F8D94D0F89268C00D10CE5 /* gg_geometries.c */,
+				72F8D94E0F89268C00D10CE5 /* gg_relations.c */,
+				72F8D94F0F89268C00D10CE5 /* gg_shape.c */,
+				72F8D9500F89268C00D10CE5 /* gg_transform.c */,
+				72F8D9510F89268C00D10CE5 /* gg_wkb.c */,
+				72F8D9520F89268C00D10CE5 /* gg_wkt.c */,
+			);
+			name = gaiageo;
+			path = ../../src/core/spatialite/gaiageo;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9530F89268C00D10CE5 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9540F89268C00D10CE5 /* spatialite */,
+				72F8D95B0F89268C00D10CE5 /* spatialite.h */,
+			);
+			name = headers;
+			path = ../../src/core/spatialite/headers;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9540F89268C00D10CE5 /* spatialite */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9550F89268C00D10CE5 /* gaiaaux.h */,
+				72F8D9560F89268C00D10CE5 /* gaiaexif.h */,
+				72F8D9570F89268C00D10CE5 /* gaiageo.h */,
+				72F8D9580F89268C00D10CE5 /* spatialite.h */,
+				72F8D9590F89268C00D10CE5 /* sqlite3.h */,
+				72F8D95A0F89268C00D10CE5 /* sqlite3ext.h */,
+			);
+			name = spatialite;
+			path = ../../src/core/spatialite/headers/spatialite;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D95C0F89268C00D10CE5 /* spatialite */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D95D0F89268C00D10CE5 /* mbrcache.c */,
+				72F8D95E0F89268C00D10CE5 /* spatialite.c */,
+				72F8D95F0F89268C00D10CE5 /* virtualfdo.c */,
+				72F8D9600F89268C00D10CE5 /* virtualnetwork.c */,
+				72F8D9610F89268C00D10CE5 /* virtualshape.c */,
+			);
+			name = spatialite;
+			path = ../../src/core/spatialite/spatialite;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9620F89268C00D10CE5 /* spatialite_c99 */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9630F89268C00D10CE5 /* spatialite_c99.c */,
+			);
+			name = spatialite_c99;
+			path = ../../src/core/spatialite/spatialite_c99;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9640F89268C00D10CE5 /* versioninfo */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9650F89268C00D10CE5 /* version.c */,
+			);
+			name = versioninfo;
+			path = ../../src/core/spatialite/versioninfo;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9660F89268C00D10CE5 /* virtualtext */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9670F89268C00D10CE5 /* gaiaaux */,
+				72F8D96A0F89268C00D10CE5 /* sqlite3 */,
+				72F8D96C0F89268C00D10CE5 /* versiontext */,
+				72F8D96E0F89268C00D10CE5 /* virtualtext */,
+			);
+			name = virtualtext;
+			path = ../../src/core/spatialite/virtualtext;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D9670F89268C00D10CE5 /* gaiaaux */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D9680F89268C00D10CE5 /* gg_sqlaux.c */,
+				72F8D9690F89268C00D10CE5 /* gg_utf8.c */,
+			);
+			name = gaiaaux;
+			path = ../../src/core/spatialite/virtualtext/gaiaaux;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D96A0F89268C00D10CE5 /* sqlite3 */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D96B0F89268C00D10CE5 /* sqlite3.c */,
+			);
+			name = sqlite3;
+			path = ../../src/core/spatialite/virtualtext/sqlite3;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D96C0F89268C00D10CE5 /* versiontext */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D96D0F89268C00D10CE5 /* version.c */,
+			);
+			name = versiontext;
+			path = ../../src/core/spatialite/virtualtext/versiontext;
+			sourceTree = SOURCE_ROOT;
+		};
+		72F8D96E0F89268C00D10CE5 /* virtualtext */ = {
+			isa = PBXGroup;
+			children = (
+				72F8D96F0F89268C00D10CE5 /* virtualtext.c */,
+			);
+			name = virtualtext;
+			path = ../../src/core/spatialite/virtualtext/virtualtext;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
@@ -13873,6 +14057,7 @@
 				729287540F71C2CB006D9489 /* qgsrasterlayer.h in Sources */,
 				729287550F71C2CB006D9489 /* qgsrunprocess.h in Sources */,
 				729287560F71C2CB006D9489 /* qgsvectorlayer.h in Sources */,
+				72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
