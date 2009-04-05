@@ -450,9 +450,39 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
 {
   try
   {
-    int oid = *( int * )PQgetvalue( queryResult, row, 0 );
-    if ( swapEndian )
-      oid = ntohl( oid ); // convert oid to opposite endian
+    int oid;
+
+    if ( primaryKeyType != "tid" )
+    {
+      oid = *( int * )PQgetvalue( queryResult, row, 0 );
+      if ( swapEndian )
+        oid = ntohl( oid ); // convert oid to opposite endian
+    }
+    else if ( PQgetlength( queryResult, row, 0 ) == 6 )
+    {
+      char *data = PQgetvalue( queryResult, row, 0 );
+      int block = *( int * )data;
+      int offset = *( short * )( data + sizeof( int ) );
+
+      if ( swapEndian )
+      {
+        block = ntohl( block );
+        offset = ntohs( offset );
+      }
+
+      if ( block > 0xffff )
+      {
+        qWarning( "block number %x exceed 16 bit", block );
+        return false;
+      }
+
+      oid = ( block << 16 ) + offset;
+    }
+    else
+    {
+      qWarning( "expecting 6 bytes for tid (found %d bytes)", PQgetlength( queryResult, row, 0 ) );
+      return false;
+    }
 
     feature.setFeatureId( oid );
 
@@ -627,10 +657,23 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   return true;
 }
 
+QString QgsPostgresProvider::whereClause( int featureId ) const
+{
+  if ( primaryKeyType != "tid" )
+  {
+    return QString( "%1=%2" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId );
+  }
+  else
+  {
+    return QString( "%1='(%2,%3)'" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId >> 16 ).arg( featureId & 0xffff );
+  }
+}
+
 bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   QString cursorName = QString( "qgisfid%1" ).arg( providerId );
-  if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, QString( "%2=%3" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId ) ) )
+
+  if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause( featureId ) ) )
     return false;
 
   Result queryResult = connectionRO->PQexec( QString( "fetch forward 1 from %1" ).arg( cursorName ) );
@@ -640,7 +683,7 @@ bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool 
   int rows = PQntuples( queryResult );
   if ( rows == 0 )
   {
-    QgsDebugMsg( "feature " + QString::number( featureId ) + " not found" );
+    QgsDebugMsg( QString( "feature %1 not found" ).arg( featureId ) );
     connectionRO->closeCursor( cursorName );
     return false;
   }
@@ -917,11 +960,39 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       else
       {
+        sql = QString( "SELECT attname FROM pg_attribute WHERE attname='ctid' AND attrelid=regclass(%1)" )
+              .arg( quotedValue( mSchemaTableName ) );
+
+        Result ctidCheck = connectionRO->PQexec( sql );
+
+        if ( PQntuples( ctidCheck ) == 1 )
+        {
+          sql = QString( "SELECT max(substring(ctid::text from E'\\\\((\\\\d+),\\\\d+\\\\)')::integer) from %1" )
+                .arg( mSchemaTableName );
+
+          Result ctidCheck = connectionRO->PQexec( sql );
+          if ( PQntuples( ctidCheck ) == 1 )
+          {
+            int id = QString( PQgetvalue( ctidCheck, 0, 0 ) ).toInt();
+
+            if ( id < 0x10000 )
+            {
+              // fallback to ctid
+              primaryKey = "ctid";
+              primaryKeyType = "tid";
+            }
+          }
+        }
+      }
+
+      if ( primaryKey.isEmpty() )
+      {
         showMessageBox( tr( "No suitable key column in table" ),
                         tr( "The table has no column suitable for use as a key.\n\n"
                             "Qgis requires that the table either has a column of type\n"
                             "int4 with a unique constraint on it (which includes the\n"
-                            "primary key) or has a PostgreSQL oid column.\n" ) );
+                            "primary key), has a PostgreSQL oid column or has a ctid\n"
+                            "column with a 16bit block number.\n" ) );
       }
     }
     else if ( type == "v" ) // the relation is a view
@@ -1739,13 +1810,24 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
     connectionRW->PQexecNR( "BEGIN" );
 
     // Prepare the INSERT statement
-    QString insert = QString( "INSERT INTO %1(%2,%3" )
+    QString insert = QString( "INSERT INTO %1(%2" )
                      .arg( mSchemaTableName )
-                     .arg( quotedIdentifier( geometryColumn ) )
-                     .arg( quotedIdentifier( primaryKey ) ),
-                     values = QString( ") VALUES (GeomFromWKB($1%1,%2),$2" )
+                     .arg( quotedIdentifier( geometryColumn ) ),
+                     values = QString( ") VALUES (GeomFromWKB($1%1,%2)" )
                               .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
                               .arg( srid );
+
+    int offset;
+    if ( primaryKeyType != "tid" )
+    {
+      insert += "," + quotedIdentifier( primaryKey );
+      values += ",$2";
+      offset = 3;
+    }
+    else
+    {
+      offset = 2;
+    }
 
     const QgsAttributeMap &attributevec = flist[0].attributeMap();
 
@@ -1811,11 +1893,11 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
         // value is not unique => add parameter
         if ( fit->typeName() == "geometry" )
         {
-          values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + 3 );
+          values += QString( ",geomfromewkt($%1)" ).arg( defaultValues.size() + offset );
         }
         else
         {
-          values += QString( ",$%1" ).arg( defaultValues.size() + 3 );
+          values += QString( ",$%1" ).arg( defaultValues.size() + offset );
         }
         defaultValues.append( defVal );
         fieldId.append( it.key() );
@@ -1825,7 +1907,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
     insert += values + ")";
 
     QgsDebugMsg( QString( "prepare addfeatures: %1" ).arg( insert ) );
-    PGresult *stmt = connectionRW->PQprepare( "addfeatures", insert, fieldId.size() + 2, NULL );
+    PGresult *stmt = connectionRW->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, NULL );
     if ( stmt == 0 || PQresultStatus( stmt ) == PGRES_FATAL_ERROR )
       throw PGException( stmt );
     PQclear( stmt );
@@ -1846,17 +1928,20 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       QStringList params;
       params << geomParam;
 
-      if ( keyDefault.isNull() )
+      if ( primaryKeyType != "tid" )
       {
-        ++primaryKeyHighWater;
-        params << QString::number( primaryKeyHighWater );
-        newIds << primaryKeyHighWater;
-      }
-      else
-      {
-        QByteArray key = paramValue( keyDefault, keyDefault );
-        params << key;
-        newIds << key.toInt();
+        if ( keyDefault.isNull() )
+        {
+          ++primaryKeyHighWater;
+          params << QString::number( primaryKeyHighWater );
+          newIds << primaryKeyHighWater;
+        }
+        else
+        {
+          QByteArray key = paramValue( keyDefault, keyDefault );
+          params << key;
+          newIds << key.toInt();
+        }
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
@@ -1868,8 +1953,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList & flist )
       PQclear( result );
     }
 
-    for ( int i = 0; i < flist.size(); i++ )
-      flist[i].setFeatureId( newIds[i] );
+    if ( flist.size() == newIds.size() )
+      for ( int i = 0; i < flist.size(); i++ )
+        flist[i].setFeatureId( newIds[i] );
 
     connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     connectionRW->PQexecNR( "COMMIT" );
@@ -1901,10 +1987,8 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 
     for ( QgsFeatureIds::const_iterator it = id.begin();it != id.end();++it )
     {
-      QString sql = QString( "DELETE FROM %1 WHERE %2=%3" )
-                    .arg( mSchemaTableName )
-                    .arg( quotedIdentifier( primaryKey ) )
-                    .arg( *it );
+      QString sql = QString( "DELETE FROM %1 WHERE %2" )
+                    .arg( mSchemaTableName ).arg( whereClause( *it ) );
       QgsDebugMsg( "delete sql: " + sql );
 
       //send DELETE statement and do error handling
@@ -2059,9 +2143,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
         }
       }
 
-      sql += QString( " WHERE %1=%2" )
-             .arg( quotedIdentifier( primaryKey ) )
-             .arg( fid );
+      sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
       PGresult *result = connectionRW->PQexec( sql );
       if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
@@ -2137,7 +2219,14 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
         QStringList params;
         params << geomParam;
-        params << QString( "%1" ).arg( iter.key() );
+        if ( primaryKeyType != "tid" )
+        {
+          params << QString( "%1" ).arg( iter.key() );
+        }
+        else
+        {
+          params << QString( "(%1,%2)" ).arg( iter.key() >> 16 ).arg( iter.key() & 0xffff );
+        }
 
         PGresult *result = connectionRW->PQexecPrepared( "updatefeatures", params );
         if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )

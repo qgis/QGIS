@@ -322,6 +322,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
 
+    QString whereClause( int featureId ) const;
+
     const QgsField &field( int index ) const;
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
