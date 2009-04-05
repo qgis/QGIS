@@ -73,9 +73,6 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
-# Optionally allow embedding sqlite3 into the binary (sqlite amalgamation) as 
-# recommended by sqlite developer
-SET (WITH_INTERNAL_SQLITE3 FALSE CACHE BOOL "Compile sqlite3 support directly into the binary")
 # Compile flag. Make it posible to turn it off.
 SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
@@ -111,27 +108,26 @@ ENDIF (NOT BISON_EXECUTABLE)
 
 # required
 FIND_PACKAGE(Proj)
-
-#optional since we can use internal sqlite
-IF (NOT WITH_INTERNAL_SQLITE3)
-  FIND_PACKAGE(Sqlite3)
-  IF (NOT SQLITE3_FOUND)
-    MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with sqlite3 internal)!")
-  ENDIF (NOT SQLITE3_FOUND)
-ENDIF (NOT WITH_INTERNAL_SQLITE3)
-
+FIND_PACKAGE(Expat)    # GPS importer plugin
+FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
+
+IF (NOT WITH_INTERNAL_SPATIALITE)
+  FIND_PACKAGE(Sqlite3)
+  IF (NOT SQLITE3_FOUND)
+    MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with internal spatialite)!")
+  ENDIF (NOT SQLITE3_FOUND)
+ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 # optional
 IF (WITH_POSTGRESQL)
   FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 ENDIF (WITH_POSTGRESQL)
-FIND_PACKAGE(Expat)    # GPS importer plugin
-FIND_PACKAGE(GSL)      # Georeferencer
 IF (WITH_GRASS)
   FIND_PACKAGE(GRASS)    # GRASS plugin
 ENDIF (WITH_GRASS)
+
 IF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
   FIND_PACKAGE(SPATIALITE)
 ENDIF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
@@ -142,7 +138,6 @@ IF (WITH_BINDINGS)
   # - bindings
   INCLUDE (Python) # file cmake/Python.cmake
 ENDIF (WITH_BINDINGS)
-
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
