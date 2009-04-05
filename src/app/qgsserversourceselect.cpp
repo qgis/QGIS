@@ -740,7 +740,7 @@ bool QgsServerSourceSelect::retrieveSearchResults( const QString& searchTerm, QB
   // read proxy settings: code from QgsWmsProvider::retrieveUrl()
   QSettings settings;
   QString proxyHost, proxyUser, proxyPassword;
-  int proxyPort;
+  int proxyPort = 0;
   QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
 
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", "0" ).toBool();
