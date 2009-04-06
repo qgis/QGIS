@@ -86,7 +86,7 @@ class QgsPluginRegistry
 
     //! Returns metadata of all loaded plugins
     QList<QgsPluginMetadata*> pluginData();
-  
+
   protected:
     //! protected constructor
     QgsPluginRegistry();

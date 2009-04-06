@@ -17,13 +17,13 @@
 
 #include "qgsdiagramcategory.h"
 
-QgsDiagramCategory::QgsDiagramCategory(): mPen(Qt::NoPen), mGap(0)
+QgsDiagramCategory::QgsDiagramCategory(): mPen( Qt::NoPen ), mGap( 0 )
 {
-  
+
 }
 
 
 QgsDiagramCategory::~QgsDiagramCategory()
 {
-  
+
 }

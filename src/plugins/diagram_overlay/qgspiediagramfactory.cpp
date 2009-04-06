@@ -25,22 +25,22 @@ QgsPieDiagramFactory::QgsPieDiagramFactory(): QgsWKNDiagramFactory()
 
 QgsPieDiagramFactory::~QgsPieDiagramFactory()
 {
-  
+
 }
 
-QImage* QgsPieDiagramFactory::createDiagram(int size, const QgsFeature& f, const QgsRenderContext& renderContext) const
+QImage* QgsPieDiagramFactory::createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
   QgsAttributeMap dataValues = f.attributeMap();
-  double sizeScaleFactor = diagramSizeScaleFactor(renderContext);
-  
+  double sizeScaleFactor = diagramSizeScaleFactor( renderContext );
+
   //create transparent QImage
-    int imageSideLength = size * sizeScaleFactor * renderContext.rasterScaleFactor() + 2 * mMaximumPenWidth + 2 * mMaximumGap;
-  QImage* diagramImage = new QImage(QSize(imageSideLength, imageSideLength), QImage::Format_ARGB32_Premultiplied);
-  diagramImage->fill(qRgba(0, 0, 0, 0)); //transparent background
+  int imageSideLength = size * sizeScaleFactor * renderContext.rasterScaleFactor() + 2 * mMaximumPenWidth + 2 * mMaximumGap;
+  QImage* diagramImage = new QImage( QSize( imageSideLength, imageSideLength ), QImage::Format_ARGB32_Premultiplied );
+  diagramImage->fill( qRgba( 0, 0, 0, 0 ) ); //transparent background
   QPainter p;
-  p.begin(diagramImage);
-  p.setRenderHint(QPainter::Antialiasing);
-  p.setPen(Qt::NoPen);
+  p.begin( diagramImage );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setPen( Qt::NoPen );
 
   //calculate sum of data values
   double sum = 0;
@@ -48,22 +48,22 @@ QImage* QgsPieDiagramFactory::createDiagram(int size, const QgsFeature& f, const
 
   QgsAttributeMap::const_iterator value_it;
   QList<QgsDiagramCategory>::const_iterator it = mCategories.constBegin();
-  for(; it != mCategories.constEnd(); ++it)
+  for ( ; it != mCategories.constEnd(); ++it )
+  {
+    value_it = dataValues.find( it->propertyIndex() );
+    valueList.push_back( value_it->toDouble() );
+    if ( value_it != dataValues.constEnd() )
     {
-      value_it = dataValues.find(it->propertyIndex());
-      valueList.push_back(value_it->toDouble());
-      if(value_it != dataValues.constEnd())
-	{
-	  sum += value_it->toDouble();
-	}
+      sum += value_it->toDouble();
     }
+  }
 
-  if(sum - 0.0 < 0.000000000000001)
-    {
-      p.end();
-      delete diagramImage;
-      return 0;
-    }
+  if ( sum - 0.0 < 0.000000000000001 )
+  {
+    p.end();
+    delete diagramImage;
+    return 0;
+  }
 
   //draw pies
 
@@ -74,43 +74,43 @@ QImage* QgsPieDiagramFactory::createDiagram(int size, const QgsFeature& f, const
 
   QList<QgsDiagramCategory>::const_iterator category_it = mCategories.constBegin();
   QList<double>::const_iterator valueList_it = valueList.constBegin();
-  
-  for(; category_it != mCategories.constEnd() && valueList_it != valueList.constEnd(); ++category_it, ++valueList_it)
+
+  for ( ; category_it != mCategories.constEnd() && valueList_it != valueList.constEnd(); ++category_it, ++valueList_it )
+  {
+    p.setPen( category_it->pen() );
+    currentAngle = ( int )(( *valueList_it ) / sum * 360 * 16 );
+    p.setBrush( category_it->brush() );
+
+    xGapOffset = 0;
+    yGapOffset = 0;
+    currentGap = category_it->gap();
+    if ( currentGap != 0 )
     {
-      p.setPen(category_it->pen());
-      currentAngle = (int)((*valueList_it)/sum*360*16);
-      p.setBrush(category_it->brush());
-
-      xGapOffset = 0;
-      yGapOffset = 0;
-      currentGap = category_it->gap();
-      if(currentGap != 0)
-	{
-	  //qt angles are degrees*16 
-	  gapOffsetsForPieSlice(currentGap, totalAngle + currentAngle/2, xGapOffset, yGapOffset);
-	}
-
-        p.drawPie(mMaximumPenWidth * renderContext.rasterScaleFactor() + mMaximumGap + xGapOffset, mMaximumPenWidth * renderContext.rasterScaleFactor() + mMaximumGap - yGapOffset, sizeScaleFactor * renderContext.rasterScaleFactor() * size, sizeScaleFactor * renderContext.rasterScaleFactor() * size, totalAngle, currentAngle);
-      totalAngle += currentAngle;
+      //qt angles are degrees*16
+      gapOffsetsForPieSlice( currentGap, totalAngle + currentAngle / 2, xGapOffset, yGapOffset );
     }
+
+    p.drawPie( mMaximumPenWidth * renderContext.rasterScaleFactor() + mMaximumGap + xGapOffset, mMaximumPenWidth * renderContext.rasterScaleFactor() + mMaximumGap - yGapOffset, sizeScaleFactor * renderContext.rasterScaleFactor() * size, sizeScaleFactor * renderContext.rasterScaleFactor() * size, totalAngle, currentAngle );
+    totalAngle += currentAngle;
+  }
   p.end();
-  
+
   return diagramImage;
 }
 
-int QgsPieDiagramFactory::getDiagramDimensions(int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height) const
+int QgsPieDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height ) const
 {
-    double squareSide = size * diagramSizeScaleFactor(context) * context.rasterScaleFactor() + 2 * mMaximumPenWidth + 2 * mMaximumGap;
-    width = squareSide;
-    height = squareSide;
-    return 0;
+  double squareSide = size * diagramSizeScaleFactor( context ) * context.rasterScaleFactor() + 2 * mMaximumPenWidth + 2 * mMaximumGap;
+  width = squareSide;
+  height = squareSide;
+  return 0;
 }
 
-int QgsPieDiagramFactory::gapOffsetsForPieSlice(int gap, int angle, int& xOffset, int& yOffset) const
+int QgsPieDiagramFactory::gapOffsetsForPieSlice( int gap, int angle, int& xOffset, int& yOffset ) const
 {
-   double rad = angle/2880.0*M_PI;
-  xOffset = (int)(cos(rad) * gap);
-  yOffset = (int)(sin(rad) * gap);
-  
+  double rad = angle / 2880.0 * M_PI;
+  xOffset = ( int )( cos( rad ) * gap );
+  yOffset = ( int )( sin( rad ) * gap );
+
   return 0;
 }

@@ -56,31 +56,37 @@
 #define DESTROY_MUTEX(mutex) (CloseHandle(mutex))
 #endif
 
-namespace pal {
+namespace pal
+{
 
-    typedef THREAD_TYPE MUTEX_T;
+  typedef THREAD_TYPE MUTEX_T;
 
-    class SimpleMutex {
+  class SimpleMutex
+  {
     private:
-        MUTEX_T mutex;
+      MUTEX_T mutex;
 
     public:
-        SimpleMutex() {
-            CREATE_MUTEX (mutex);
-        }
+      SimpleMutex()
+      {
+        CREATE_MUTEX( mutex );
+      }
 
-        ~SimpleMutex() {
-            DESTROY_MUTEX (mutex);
-        }
+      ~SimpleMutex()
+      {
+        DESTROY_MUTEX( mutex );
+      }
 
-        void lock() {
-            LOCK (mutex);
-        }
+      void lock()
+      {
+        LOCK( mutex );
+      }
 
-        void unlock() {
-            UNLOCK (mutex);
-        }
-    };
+      void unlock()
+      {
+        UNLOCK( mutex );
+      }
+  };
 
 } // namespace
 

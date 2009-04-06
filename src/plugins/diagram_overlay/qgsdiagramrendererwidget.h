@@ -29,27 +29,27 @@ class QgsVectorLayer;
 given the classification attribute, the attributes involved in diagram creation and a set of colors for the attributes*/
 class QgsDiagramRendererWidget: public QWidget
 {
- public:
-  QgsDiagramRendererWidget(QgsVectorLayer* vl);
-  virtual ~QgsDiagramRendererWidget();
-  /**Returns a subclass of QgsDiagramRenderer or 0 in case of error
-   @param type diagram type (e.g. Pie, Bar)
-  @param classAttr index of the classification attribute
-  @param attributes list of all attribute indices involved in diagram generation
-  @param color color series for the attributes*/
-  virtual QgsDiagramRenderer* createRenderer(int classAttr, const QgsAttributeList& attributes) const = 0;
-  /**Applies the settings of an existing renderer*/
-  virtual void applySettings(const QgsDiagramRenderer* renderer) = 0;
-  /**Possibility to adapt the dialog to a new field*/
-  virtual void changeClassificationField(int newField){}
+  public:
+    QgsDiagramRendererWidget( QgsVectorLayer* vl );
+    virtual ~QgsDiagramRendererWidget();
+    /**Returns a subclass of QgsDiagramRenderer or 0 in case of error
+     @param type diagram type (e.g. Pie, Bar)
+    @param classAttr index of the classification attribute
+    @param attributes list of all attribute indices involved in diagram generation
+    @param color color series for the attributes*/
+    virtual QgsDiagramRenderer* createRenderer( int classAttr, const QgsAttributeList& attributes ) const = 0;
+    /**Applies the settings of an existing renderer*/
+    virtual void applySettings( const QgsDiagramRenderer* renderer ) = 0;
+    /**Possibility to adapt the dialog to a new field*/
+    virtual void changeClassificationField( int newField ) {}
 
-  virtual QgsDiagramFactory::SizeUnit sizeUnit() const {return QgsDiagramFactory::MM;}
-  
- private:
-  QgsDiagramRendererWidget();
+    virtual QgsDiagramFactory::SizeUnit sizeUnit() const {return QgsDiagramFactory::MM;}
 
- protected:
-  QgsVectorLayer* mVectorLayer;
+  private:
+    QgsDiagramRendererWidget();
+
+  protected:
+    QgsVectorLayer* mVectorLayer;
 };
 
 #endif

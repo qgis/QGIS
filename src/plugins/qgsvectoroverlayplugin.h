@@ -1,10 +1,10 @@
- /***************************************************************************
-                         qgsvectoroverlayplugin.h  -  description
-                         ------------------------
-    begin                : January 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
+/***************************************************************************
+                        qgsvectoroverlayplugin.h  -  description
+                        ------------------------
+   begin                : January 2007
+   copyright            : (C) 2007 by Marco Hugentobler
+   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -27,13 +27,13 @@ class QWidget;
 /**Interface class for vector overlay plugins*/
 class QgsVectorOverlayPlugin: public QgisPlugin
 {
- public:
-  QgsVectorOverlayPlugin(const QString& name, const QString& description, const QString& version): QgisPlugin(name, description, version, QgisPlugin::VECTOR_OVERLAY){}
+  public:
+    QgsVectorOverlayPlugin( const QString& name, const QString& description, const QString& version ): QgisPlugin( name, description, version, QgisPlugin::VECTOR_OVERLAY ) {}
 
-  virtual ~QgsVectorOverlayPlugin(){}
+    virtual ~QgsVectorOverlayPlugin() {}
 
-  /**Returns a dialog which can be embedded into the vector layer properties*/
-  virtual QgsApplyDialog* dialog(QgsVectorLayer* vl) const = 0;
+    /**Returns a dialog which can be embedded into the vector layer properties*/
+    virtual QgsApplyDialog* dialog( QgsVectorLayer* vl ) const = 0;
 };
 
 #endif

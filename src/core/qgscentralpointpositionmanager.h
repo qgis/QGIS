@@ -27,23 +27,23 @@ class QgsPoint;
 a feature. It does not consider conflicts in case of several overlay layers*/
 class QgsCentralPointPositionManager: public QgsOverlayObjectPositionManager
 {
- public:
-  QgsCentralPointPositionManager();
-  ~QgsCentralPointPositionManager();
-  void addLayer(QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays);
-  /**Removes all the overlays*/
-  void removeLayers();
-  void findObjectPositions(const QgsRenderContext& context, QGis::UnitType unitType);
+  public:
+    QgsCentralPointPositionManager();
+    ~QgsCentralPointPositionManager();
+    void addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays );
+    /**Removes all the overlays*/
+    void removeLayers();
+    void findObjectPositions( const QgsRenderContext& context, QGis::UnitType unitType );
 
- private:
-  /**Calculates the central point for points/lines/polygons. Returns 0 in case of success*/
-  int findObjectPosition(const unsigned char* wkb, QgsPoint& position) const;
-  /**Calculates the polygon centroid with the algorithm from Graphics gems IV: Centroid of a polygon.
-   @return 0 in case of success*/
-  int calculatePolygonCentroid(double x[], double y[], int numberOfPoints, double& centroidX, double& centroidY) const;
+  private:
+    /**Calculates the central point for points/lines/polygons. Returns 0 in case of success*/
+    int findObjectPosition( const unsigned char* wkb, QgsPoint& position ) const;
+    /**Calculates the polygon centroid with the algorithm from Graphics gems IV: Centroid of a polygon.
+     @return 0 in case of success*/
+    int calculatePolygonCentroid( double x[], double y[], int numberOfPoints, double& centroidX, double& centroidY ) const;
 
-  /**Stores all the overlay objects to retrieve all objects when positioning*/
-  QList<QgsVectorOverlay*> mOverlays;
+    /**Stores all the overlay objects to retrieve all objects when positioning*/
+    QList<QgsVectorOverlay*> mOverlays;
 };
 
 #endif

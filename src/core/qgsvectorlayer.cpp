@@ -2510,11 +2510,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
   //save vector overlays (e.g. diagrams)
   QList<QgsVectorOverlay*>::const_iterator overlay_it = mOverlays.constBegin();
-  for(; overlay_it != mOverlays.constEnd(); ++overlay_it)
+  for ( ; overlay_it != mOverlays.constEnd(); ++overlay_it )
   {
-    if(*overlay_it)
+    if ( *overlay_it )
     {
-      (*overlay_it)->writeXML(mapLayerNode, doc);
+      ( *overlay_it )->writeXML( mapLayerNode, doc );
     }
   }
 
@@ -3606,33 +3606,33 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
   return mRanges[ fields[idx].name()];
 }
 
-void QgsVectorLayer::addOverlay(QgsVectorOverlay* overlay)
+void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )
 {
-    mOverlays.push_back(overlay);
+  mOverlays.push_back( overlay );
 }
 
-void QgsVectorLayer::removeOverlay(const QString& typeName)
+void QgsVectorLayer::removeOverlay( const QString& typeName )
 {
-   for(int i = mOverlays.size() - 1; i >=0; --i)
+  for ( int i = mOverlays.size() - 1; i >= 0; --i )
+  {
+    if ( mOverlays.at( i )->typeName() == typeName )
     {
-      if(mOverlays.at(i)->typeName() == typeName)
-      {
-        mOverlays.removeAt(i);
-      }
+      mOverlays.removeAt( i );
     }
+  }
 }
 
-void QgsVectorLayer::vectorOverlays(QList<QgsVectorOverlay*>& overlayList)
+void QgsVectorLayer::vectorOverlays( QList<QgsVectorOverlay*>& overlayList )
 {
-    overlayList = mOverlays;
+  overlayList = mOverlays;
 }
 
-QgsVectorOverlay* QgsVectorLayer::findOverlayByType(const QString& typeName)
+QgsVectorOverlay* QgsVectorLayer::findOverlayByType( const QString& typeName )
 {
   QList<QgsVectorOverlay*>::iterator it = mOverlays.begin();
-  for(; it != mOverlays.end(); ++it)
+  for ( ; it != mOverlays.end(); ++it )
   {
-    if( (*it)->typeName() == typeName)
+    if (( *it )->typeName() == typeName )
     {
       return *it;
     }

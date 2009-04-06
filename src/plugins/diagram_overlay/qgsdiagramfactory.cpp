@@ -18,68 +18,68 @@
 #include "qgsdiagramfactory.h"
 #include "qgsrendercontext.h"
 
-QgsDiagramFactory::QgsDiagramFactory(): mSizeUnit(MM)
- {
-
- }
-
- QgsDiagramFactory::~QgsDiagramFactory()
- {
-
- }
-
- QgsDiagramFactory::SizeType QgsDiagramFactory::sizeType() const
- {
-     return QgsDiagramFactory::HEIGHT;
- }
-
- double QgsDiagramFactory::diagramSizeScaleFactor(const QgsRenderContext& context) const
- {
-     if(mSizeUnit == MM)
-     {
-        return context.scaleFactor();
-     }
-     else if(mSizeUnit == MapUnits)
-     {
-         return 1 / context.mapToPixel().mapUnitsPerPixel(); //pixel based devices
-     }
-
-     return 1.0;
- }
-
-bool QgsDiagramFactory::writeSizeUnits(QDomElement& factoryElem, QDomDocument& doc) const
+QgsDiagramFactory::QgsDiagramFactory(): mSizeUnit( MM )
 {
-    if(factoryElem.isNull())
-    {
-        return false;
-    }
 
-    if(mSizeUnit == MM)
-    {
-        factoryElem.setAttribute("sizeUnits", "MM");
-    }
-    else if(mSizeUnit == MapUnits)
-    {
-        factoryElem.setAttribute("sizeUnits", "MapUnits");
-    }
-    return true;
 }
 
-bool QgsDiagramFactory::readSizeUnits(const QDomElement& factoryElem)
+QgsDiagramFactory::~QgsDiagramFactory()
 {
-    if(factoryElem.isNull())
-    {
-        return false;
-    }
 
-    QString unitString = factoryElem.attribute("sizeUnits");
-    if(unitString == "MapUnits")
-    {
-        mSizeUnit = MapUnits;
-    }
-    else
-    {
-        mSizeUnit = MM;
-    }
-    return true;
+}
+
+QgsDiagramFactory::SizeType QgsDiagramFactory::sizeType() const
+{
+  return QgsDiagramFactory::HEIGHT;
+}
+
+double QgsDiagramFactory::diagramSizeScaleFactor( const QgsRenderContext& context ) const
+{
+  if ( mSizeUnit == MM )
+  {
+    return context.scaleFactor();
+  }
+  else if ( mSizeUnit == MapUnits )
+  {
+    return 1 / context.mapToPixel().mapUnitsPerPixel(); //pixel based devices
+  }
+
+  return 1.0;
+}
+
+bool QgsDiagramFactory::writeSizeUnits( QDomElement& factoryElem, QDomDocument& doc ) const
+{
+  if ( factoryElem.isNull() )
+  {
+    return false;
+  }
+
+  if ( mSizeUnit == MM )
+  {
+    factoryElem.setAttribute( "sizeUnits", "MM" );
+  }
+  else if ( mSizeUnit == MapUnits )
+  {
+    factoryElem.setAttribute( "sizeUnits", "MapUnits" );
+  }
+  return true;
+}
+
+bool QgsDiagramFactory::readSizeUnits( const QDomElement& factoryElem )
+{
+  if ( factoryElem.isNull() )
+  {
+    return false;
+  }
+
+  QString unitString = factoryElem.attribute( "sizeUnits" );
+  if ( unitString == "MapUnits" )
+  {
+    mSizeUnit = MapUnits;
+  }
+  else
+  {
+    mSizeUnit = MM;
+  }
+  return true;
 }

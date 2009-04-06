@@ -314,7 +314,7 @@ void QgsProjectProperties::apply()
   {
     layerIdList << layerEntryIt.key();
     toleranceList << QString::number( layerEntryIt->tolerance, 'f' );
-    toleranceUnitList << QString::number( (int)layerEntryIt->toleranceUnit );
+    toleranceUnitList << QString::number(( int )layerEntryIt->toleranceUnit );
     if ( layerEntryIt->checked )
     {
       enabledList << "enabled";

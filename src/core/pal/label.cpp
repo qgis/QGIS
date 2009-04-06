@@ -38,58 +38,70 @@
 #include <pal/label.h>
 #include <pal/palgeometry.h>
 
-namespace pal {
+namespace pal
+{
 
-    Label::Label (double x[4], double y[4], double alpha, const char *ftid, const char *lyrName, PalGeometry *userGeom) : a (alpha), userGeom (userGeom) {
+  Label::Label( double x[4], double y[4], double alpha, const char *ftid, const char *lyrName, PalGeometry *userGeom ) : a( alpha ), userGeom( userGeom )
+  {
 
-        for (int i = 0;i < 4;i++) {
-            this->x[i] = x[i];
-            this->y[i] = y[i];
-        }
-
-        featureId = new char[strlen (ftid) +1];
-        strcpy (featureId, ftid);
-
-        this->lyrName = new char[strlen (lyrName) +1];
-        strcpy (this->lyrName, lyrName);
+    for ( int i = 0;i < 4;i++ )
+    {
+      this->x[i] = x[i];
+      this->y[i] = y[i];
     }
 
-    Label::~Label() {
-        delete[] featureId;
-        delete[] lyrName;
-    }
+    featureId = new char[strlen( ftid ) +1];
+    strcpy( featureId, ftid );
 
-    double Label::getOrigX() {
-        return x[0];
-    }
+    this->lyrName = new char[strlen( lyrName ) +1];
+    strcpy( this->lyrName, lyrName );
+  }
 
-    double Label::getOrigY() {
-        return y[0];
-    }
+  Label::~Label()
+  {
+    delete[] featureId;
+    delete[] lyrName;
+  }
 
-    double Label::getX (size_t i) {
-        return (i < 4 ? x[i] : -1);
-    }
+  double Label::getOrigX()
+  {
+    return x[0];
+  }
 
-    double Label::getY (size_t i) {
-        return (i < 4 ? y[i] : -1);
-    }
+  double Label::getOrigY()
+  {
+    return y[0];
+  }
 
-    PalGeometry *Label::getGeometry() {
-        return userGeom;
-    }
+  double Label::getX( size_t i )
+  {
+    return ( i < 4 ? x[i] : -1 );
+  }
 
-    double Label::getRotation() {
-        return a;
-    }
+  double Label::getY( size_t i )
+  {
+    return ( i < 4 ? y[i] : -1 );
+  }
 
-    const char *Label::getLayerName() {
-        return lyrName;
-    }
+  PalGeometry *Label::getGeometry()
+  {
+    return userGeom;
+  }
 
-    const char *Label::getFeatureId() {
-        return featureId;
-    }
+  double Label::getRotation()
+  {
+    return a;
+  }
+
+  const char *Label::getLayerName()
+  {
+    return lyrName;
+  }
+
+  const char *Label::getFeatureId()
+  {
+    return featureId;
+  }
 
 } // end namespace
 

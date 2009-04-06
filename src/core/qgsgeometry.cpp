@@ -588,9 +588,9 @@ size_t QgsGeometry::wkbSize()
 
 GEOSGeometry* QgsGeometry::asGeos()
 {
-  if(mDirtyGeos)
+  if ( mDirtyGeos )
   {
-    if(!exportWkbToGeos())
+    if ( !exportWkbToGeos() )
     {
       return 0;
     }

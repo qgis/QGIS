@@ -27,27 +27,27 @@ class QgsVectorOverlay;
 /**Dialog to enter options for diagram symbolisation*/
 class QgsDiagramDialog: public QgsApplyDialog, private Ui::QgsDiagramDialogBase
 {
-  Q_OBJECT
- public:
-  QgsDiagramDialog(QgsVectorLayer* vl);
-  ~QgsDiagramDialog();
-  void apply() const;
+    Q_OBJECT
+  public:
+    QgsDiagramDialog( QgsVectorLayer* vl );
+    ~QgsDiagramDialog();
+    void apply() const;
 
   private slots:
-  void on_mClassificationTypeComboBox_currentIndexChanged(const QString& newType);
-  void on_mClassificationComboBox_currentIndexChanged(const QString& newAttribute);
-  void on_mDiagramTypeComboBox_currentIndexChanged(const QString& text);
-  void on_mDisplayDiagramsCheckBox_stateChanged(int state);
+    void on_mClassificationTypeComboBox_currentIndexChanged( const QString& newType );
+    void on_mClassificationComboBox_currentIndexChanged( const QString& newAttribute );
+    void on_mDiagramTypeComboBox_currentIndexChanged( const QString& text );
+    void on_mDisplayDiagramsCheckBox_stateChanged( int state );
 
 
- private:
-  QgsDiagramDialog();
-  /**Restores the dialog settings from an already existing overlay*/
-  void restoreSettings(const QgsVectorOverlay* overlay);
-  /**Vector layer containing the features to be symbolized with diagrams*/
-  QgsVectorLayer* mVectorLayer;
-  /**Activate / deactivate all the input elements of this dialog*/
-  void setGuiElementsEnabled(bool enabled);
+  private:
+    QgsDiagramDialog();
+    /**Restores the dialog settings from an already existing overlay*/
+    void restoreSettings( const QgsVectorOverlay* overlay );
+    /**Vector layer containing the features to be symbolized with diagrams*/
+    QgsVectorLayer* mVectorLayer;
+    /**Activate / deactivate all the input elements of this dialog*/
+    void setGuiElementsEnabled( bool enabled );
 };
 
 #endif

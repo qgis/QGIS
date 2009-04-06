@@ -1,10 +1,10 @@
- /***************************************************************************
-                         qgspalobjectpositionmanager.cpp  -  description
-                         ---------------------------------
-    begin                : October 2008
-    copyright            : (C) 2008 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
+/***************************************************************************
+                        qgspalobjectpositionmanager.cpp  -  description
+                        ---------------------------------
+   begin                : October 2008
+   copyright            : (C) 2008 by Marco Hugentobler
+   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -24,7 +24,7 @@
 #include "label.h"
 #include "layer.h"
 
-QgsPALObjectPositionManager::QgsPALObjectPositionManager(): mNumberOfLayers(0)
+QgsPALObjectPositionManager::QgsPALObjectPositionManager(): mNumberOfLayers( 0 )
 {
 
 }
@@ -34,17 +34,17 @@ QgsPALObjectPositionManager::~QgsPALObjectPositionManager()
 
 }
 
-void QgsPALObjectPositionManager::addLayer(QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays)
+void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays )
 {
-  if(overlays.size() < 1)
-    {
-      return;
-    }
+  if ( overlays.size() < 1 )
+  {
+    return;
+  }
 
   //set arrangement based on vector type
   pal::Arrangement labelArrangement;
-  switch(vl->geometryType())
-    {
+  switch ( vl->geometryType() )
+  {
     case QGis::Point:
       labelArrangement = pal::P_POINT;
       break;
@@ -56,43 +56,43 @@ void QgsPALObjectPositionManager::addLayer(QgsVectorLayer* vl, QList<QgsVectorOv
       break;
     default:
       return; //error
-    }
+  }
 
-  pal::Layer* positionLayer = mPositionEngine.addLayer(QString::number(mNumberOfLayers).toLocal8Bit().data(), 0, 1000000, labelArrangement, pal::PIXEL, 0.5, true, true, true);
+  pal::Layer* positionLayer = mPositionEngine.addLayer( QString::number( mNumberOfLayers ).toLocal8Bit().data(), 0, 1000000, labelArrangement, pal::PIXEL, 0.5, true, true, true );
   ++mNumberOfLayers;
 
-  if(!positionLayer)
-    {
-      return;
-    }
+  if ( !positionLayer )
+  {
+    return;
+  }
 
   //register the labeling objects in the layer
   QgsVectorOverlay* currentOverlay = 0;
   int objectNr = 0;
   QList<QgsVectorOverlay*>::const_iterator overlayIt = overlays.begin();
-  for(; overlayIt != overlays.end(); ++overlayIt)
+  for ( ; overlayIt != overlays.end(); ++overlayIt )
+  {
+    if ( !( *overlayIt ) )
     {
-      if(! (*overlayIt))
-      {
-        continue;
-      }
+      continue;
+    }
 
-      QMap<int, QgsOverlayObject*>* positionObjects = (*overlayIt)->overlayObjects();
-      if(!positionObjects)
-      {
-        continue;
-      }
+    QMap<int, QgsOverlayObject*>* positionObjects = ( *overlayIt )->overlayObjects();
+    if ( !positionObjects )
+    {
+      continue;
+    }
 
-      QMap<int, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
-      for(; objectIt != positionObjects->end(); ++objectIt)
-      {
-      positionLayer->registerFeature(strdup(QString::number(objectNr).toAscii().data()), objectIt.value(), objectIt.value()->width(), objectIt.value()->height());
+    QMap<int, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
+    for ( ; objectIt != positionObjects->end(); ++objectIt )
+    {
+      positionLayer->registerFeature( strdup( QString::number( objectNr ).toAscii().data() ), objectIt.value(), objectIt.value()->width(), objectIt.value()->height() );
       ++objectNr;
     }
   }
 }
 
-void QgsPALObjectPositionManager::findObjectPositions(const QgsRenderContext& renderContext, QGis::UnitType unitType)
+void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& renderContext, QGis::UnitType unitType )
 {
   //trigger label placement
   QgsRectangle viewExtent = renderContext.extent();
@@ -101,7 +101,7 @@ void QgsPALObjectPositionManager::findObjectPositions(const QgsRenderContext& re
 
   //set map units
   pal::Units mapUnits;
-  switch (unitType)
+  switch ( unitType )
   {
     case QGis::Meters:
       mapUnits = pal::METER;
@@ -115,74 +115,74 @@ void QgsPALObjectPositionManager::findObjectPositions(const QgsRenderContext& re
       mapUnits = pal::DEGREE;
       break;
   }
-  mPositionEngine.setMapUnit(mapUnits);
-  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller(renderContext.rendererScale(), bbox, &stat, true);
+  mPositionEngine.setMapUnit( mapUnits );
+  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, true );
   delete stat;
 
   //and read the positions back to the overlay objects
-  if(!resultLabelList)
-    {
-      return;
-    }
+  if ( !resultLabelList )
+  {
+    return;
+  }
 
   QgsOverlayObject* currentOverlayObject = 0;
 
   std::list<pal::Label*>::iterator labelIt = resultLabelList->begin();
-  for(; labelIt != resultLabelList->end(); ++labelIt)
-    {
-      currentOverlayObject = dynamic_cast<QgsOverlayObject*>((*labelIt)->getGeometry());
-      if(!currentOverlayObject)
+  for ( ; labelIt != resultLabelList->end(); ++labelIt )
+  {
+    currentOverlayObject = dynamic_cast<QgsOverlayObject*>(( *labelIt )->getGeometry() );
+    if ( !currentOverlayObject )
     {
       continue;
     }
 
-      //QGIS takes the coordinates of the middle points
-      double x = ((*labelIt)->getX(0) + (*labelIt)->getX(1) + (*labelIt)->getX(2) + (*labelIt)->getX(3)) / 4;
-      double y = ((*labelIt)->getY(0) + (*labelIt)->getY(1) + (*labelIt)->getY(2) + (*labelIt)->getY(3)) / 4;
-      currentOverlayObject->addPosition(QgsPoint(x, y));
-    }
+    //QGIS takes the coordinates of the middle points
+    double x = (( *labelIt )->getX( 0 ) + ( *labelIt )->getX( 1 ) + ( *labelIt )->getX( 2 ) + ( *labelIt )->getX( 3 ) ) / 4;
+    double y = (( *labelIt )->getY( 0 ) + ( *labelIt )->getY( 1 ) + ( *labelIt )->getY( 2 ) + ( *labelIt )->getY( 3 ) ) / 4;
+    currentOverlayObject->addPosition( QgsPoint( x, y ) );
+  }
 }
 
 void QgsPALObjectPositionManager::removeLayers()
 {
   std::list<pal::Layer*>* layerList = mPositionEngine.getLayers();
-  if(!layerList)
-    {
-      return;
-    }
+  if ( !layerList )
+  {
+    return;
+  }
 
   //Iterators get invalid if elements are deleted in a std::list
   //Therefore we have to get the layer pointers in a first step and remove them in a second
   QList<pal::Layer*> layersToRemove;
   std::list<pal::Layer*>::iterator layerIt = layerList->begin();
-  for(; layerIt != layerList->end(); ++layerIt)
-    {
-        layersToRemove.push_back(*layerIt);
-    }
+  for ( ; layerIt != layerList->end(); ++layerIt )
+  {
+    layersToRemove.push_back( *layerIt );
+  }
 
   QList<pal::Layer*>::iterator removeIt = layersToRemove.begin();
-  for(; removeIt != layersToRemove.end(); ++removeIt)
+  for ( ; removeIt != layersToRemove.end(); ++removeIt )
   {
-      mPositionEngine.removeLayer(*removeIt);
+    mPositionEngine.removeLayer( *removeIt );
   }
 }
 //Chain, Popmusic tabu chain, Popmusic tabu, Popmusic chain
-void QgsPALObjectPositionManager::setPlacementAlgorithm(const QString& algorithmName)
+void QgsPALObjectPositionManager::setPlacementAlgorithm( const QString& algorithmName )
 {
-  if(algorithmName == "Popmusic tabu chain")
+  if ( algorithmName == "Popmusic tabu chain" )
   {
-    mPositionEngine.setSearch(pal::POPMUSIC_TABU_CHAIN);
+    mPositionEngine.setSearch( pal::POPMUSIC_TABU_CHAIN );
   }
-  else if(algorithmName == "Popmusic tabu")
+  else if ( algorithmName == "Popmusic tabu" )
   {
-    mPositionEngine.setSearch(pal::POPMUSIC_TABU);
+    mPositionEngine.setSearch( pal::POPMUSIC_TABU );
   }
-  else if(algorithmName == "Popmusic chain")
+  else if ( algorithmName == "Popmusic chain" )
   {
-    mPositionEngine.setSearch(pal::POPMUSIC_CHAIN);
+    mPositionEngine.setSearch( pal::POPMUSIC_CHAIN );
   }
   else //default is "Chain"
   {
-    mPositionEngine.setSearch(pal::CHAIN);
+    mPositionEngine.setSearch( pal::CHAIN );
   }
 }

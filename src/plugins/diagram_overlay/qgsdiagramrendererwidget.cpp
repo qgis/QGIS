@@ -17,7 +17,7 @@
 
 #include "qgsdiagramrendererwidget.h"
 
-QgsDiagramRendererWidget::QgsDiagramRendererWidget(QgsVectorLayer* vl): QWidget(), mVectorLayer(vl)
+QgsDiagramRendererWidget::QgsDiagramRendererWidget( QgsVectorLayer* vl ): QWidget(), mVectorLayer( vl )
 {
 
 }

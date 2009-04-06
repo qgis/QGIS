@@ -129,13 +129,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QList<QgsVectorOverlayPlugin*> overlayPluginList = overlayPlugins();
   QList<QgsVectorOverlayPlugin*>::const_iterator it = overlayPluginList.constBegin();
 
-  for(; it != overlayPluginList.constEnd(); ++it)
-    {
-      QgsApplyDialog* d = (*it)->dialog(lyr);
-      position = tabWidget->addTab(d, (*it)->name());
-      tabWidget->setCurrentIndex(position); //ugly, but otherwise the properties dialog is a mess
-      mOverlayDialogs.push_back(d);
-    }
+  for ( ; it != overlayPluginList.constEnd(); ++it )
+  {
+    QgsApplyDialog* d = ( *it )->dialog( lyr );
+    position = tabWidget->addTab( d, ( *it )->name() );
+    tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
+    mOverlayDialogs.push_back( d );
+  }
 
   tabWidget->setCurrentIndex( 0 );
 } // QgsVectorLayerProperties ctor
@@ -616,10 +616,10 @@ void QgsVectorLayerProperties::apply()
   layer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
 
   //apply overlay dialogs
-  for(QList<QgsApplyDialog*>::iterator it = mOverlayDialogs.begin(); it != mOverlayDialogs.end(); ++it)
-    {
-      (*it)->apply();
-    }
+  for ( QList<QgsApplyDialog*>::iterator it = mOverlayDialogs.begin(); it != mOverlayDialogs.end(); ++it )
+  {
+    ( *it )->apply();
+  }
 
   // update symbology
   emit refreshLegend( layer->getLayerID(), false );
@@ -1058,21 +1058,21 @@ QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
   QgsVectorOverlayPlugin* theOverlayPlugin = 0;
 
   QList<QgsPluginMetadata*> pluginData = QgsPluginRegistry::instance()->pluginData();
-  for(QList<QgsPluginMetadata*>::iterator it = pluginData.begin(); it != pluginData.end(); ++it)
+  for ( QList<QgsPluginMetadata*>::iterator it = pluginData.begin(); it != pluginData.end(); ++it )
+  {
+    if ( *it )
     {
-      if(*it)
-    {
-      thePlugin = (*it)->plugin();
-      if(thePlugin && thePlugin->type() == QgisPlugin::VECTOR_OVERLAY)
+      thePlugin = ( *it )->plugin();
+      if ( thePlugin && thePlugin->type() == QgisPlugin::VECTOR_OVERLAY )
+      {
+        theOverlayPlugin = dynamic_cast<QgsVectorOverlayPlugin*>( thePlugin );
+        if ( theOverlayPlugin )
         {
-          theOverlayPlugin = dynamic_cast<QgsVectorOverlayPlugin*>(thePlugin);
-          if(theOverlayPlugin)
-        {
-          pluginList.push_back(theOverlayPlugin);
+          pluginList.push_back( theOverlayPlugin );
         }
-        }
+      }
     }
-    }
+  }
 
   return pluginList;
 }

@@ -37,67 +37,81 @@
 #include <exception>
 
 
-namespace pal {
+namespace pal
+{
 
-    /** \brief Various Exceptions
-     */
-    class PalException {
+  /** \brief Various Exceptions
+   */
+  class PalException
+  {
     public:
 
-        /** \brief Thrown when a feature is not yet implemented
-        */
-        class NotImplemented : public std::exception {
-            const char * what() const throw() {
-                return "Not yet implemented... sorry";
-            }
-        };
+      /** \brief Thrown when a feature is not yet implemented
+      */
+      class NotImplemented : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "Not yet implemented... sorry";
+          }
+      };
 
-        /** \brief Try to access an unknown feature
-        */
-        class UnknownFeature : public std::exception {
-            const char * what() const throw() {
-                return "Feature not found";
-            }
-        };
+      /** \brief Try to access an unknown feature
+      */
+      class UnknownFeature : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "Feature not found";
+          }
+      };
 
-        /** \brief Try to access an unknown layer
-        */
-        class UnknownLayer : public std::exception {
-            const char * what() const throw() {
-                return "Layer not found";
-            }
-        };
+      /** \brief Try to access an unknown layer
+      */
+      class UnknownLayer : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "Layer not found";
+          }
+      };
 
-        /** \brief layer already exists
-        */
-        class LayerExists : public std::exception {
-            const char * what() const throw() {
-                return "Layers names must be unique";
-            }
-        };
+      /** \brief layer already exists
+      */
+      class LayerExists : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "Layers names must be unique";
+          }
+      };
 
-        /** \brief features already exists
-        */
-        class FeatureExists : public std::exception {
-            const char * what() const throw() {
-                return "Features IDs must be unique within a layer";
-            }
-        };
+      /** \brief features already exists
+      */
+      class FeatureExists : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "Features IDs must be unique within a layer";
+          }
+      };
 
-        /** \brief thrown when a value is not in the valid scale range
-         *
-         *  It can be thrown by :
-         *
-         *    - pal::Layer::setFeatureLabelSize if either the height or the width of the label is < 0
-         *
-         *    - pal::Layer::setFeatureDistlabel is distlable < 0
-         */
-        class ValueNotInRange : public std::exception {
-            const char * what() const throw() {
-                return "value not allowed";
-            }
-        };
-    };
+      /** \brief thrown when a value is not in the valid scale range
+       *
+       *  It can be thrown by :
+       *
+       *    - pal::Layer::setFeatureLabelSize if either the height or the width of the label is < 0
+       *
+       *    - pal::Layer::setFeatureDistlabel is distlable < 0
+       */
+      class ValueNotInRange : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "value not allowed";
+          }
+      };
+  };
 
 } // namespace
 

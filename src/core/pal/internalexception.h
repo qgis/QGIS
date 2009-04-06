@@ -36,54 +36,66 @@
 
 #include <exception>
 
-namespace pal {
+namespace pal
+{
 
-    /** \brief Various Exceptions
-     */
-    class InternalException {
+  /** \brief Various Exceptions
+   */
+  class InternalException
+  {
     public:
 
-        /** \brief Thrown when something is added in a Full set
-        */
-        class Full : public std::exception {
-            const char* what() const throw() {
-                return "This set is full...";
-            }
-        };
+      /** \brief Thrown when something is added in a Full set
+      */
+      class Full : public std::exception
+      {
+          const char* what() const throw()
+          {
+            return "This set is full...";
+          }
+      };
 
-        /** \brief Thrown when trying to access an empty dada set
-        */
-        class Empty : public std::exception {
-            const char* what() const throw() {
-                return "This set is empty...";
-            }
-        };
+      /** \brief Thrown when trying to access an empty dada set
+      */
+      class Empty : public std::exception
+      {
+          const char* what() const throw()
+          {
+            return "This set is empty...";
+          }
+      };
 
-        /** \brief Thrown when a geometry type is not like expected
-        */
-        class WrongGeometry : public std::exception {
-            const char* what() const throw() {
-                return "GeometryTypeId is not expected...";
-            }
-        };
+      /** \brief Thrown when a geometry type is not like expected
+      */
+      class WrongGeometry : public std::exception
+      {
+          const char* what() const throw()
+          {
+            return "GeometryTypeId is not expected...";
+          }
+      };
 
-        /** \brief Thrown when a geometry type is not like expected
-        */
-        class UnknownGeometry : public std::exception {
-            const char* what() const throw() {
-                return "Geometry Type is unknow";
-            }
-        };
+      /** \brief Thrown when a geometry type is not like expected
+      */
+      class UnknownGeometry : public std::exception
+      {
+          const char* what() const throw()
+          {
+            return "Geometry Type is unknow";
+          }
+      };
 
 
-        /** \brief Throw an exception when it's impossible to compute labelPOsition
-        */
-        class NoLabelPosition : public std::exception {
-            const char * what() const throw() {
-                return "No way to compute positions";
-            }
-        };
-    };
+      /** \brief Throw an exception when it's impossible to compute labelPOsition
+      */
+      class NoLabelPosition : public std::exception
+      {
+          const char * what() const throw()
+          {
+            return "No way to compute positions";
+          }
+      };
+  };
 
 } // end namespace
 

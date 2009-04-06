@@ -34,63 +34,73 @@
 #include <iostream>
 #include <pal/palstat.h>
 
-namespace pal {
+namespace pal
+{
 
-    PalStat::PalStat() {
-        nbLayers = 0;
-        nbObjects = 0;
-        nbLabelledObjects = 0;
-        layersName = NULL;
-        layersNbObjects = NULL;
-        layersNbLabelledObjects = NULL;
+  PalStat::PalStat()
+  {
+    nbLayers = 0;
+    nbObjects = 0;
+    nbLabelledObjects = 0;
+    layersName = NULL;
+    layersNbObjects = NULL;
+    layersNbLabelledObjects = NULL;
+  }
+
+  PalStat::~PalStat()
+  {
+    int i;
+
+    for ( i = 0;i < nbLayers;i++ )
+    {
+      delete[] layersName[i];
     }
 
-    PalStat::~PalStat() {
-        int i;
+    delete[] layersName;
+    delete[] layersNbObjects;
+    delete[] layersNbLabelledObjects;
+  }
 
-        for (i = 0;i < nbLayers;i++) {
-            delete[] layersName[i];
-        }
+  int PalStat::getNbObjects()
+  {
+    return nbObjects;
+  }
 
-        delete[] layersName;
-        delete[] layersNbObjects;
-        delete[] layersNbLabelledObjects;
-    }
+  int PalStat::getNbLabelledObjects()
+  {
+    return nbLabelledObjects;
+  }
 
-    int PalStat::getNbObjects() {
-        return nbObjects;
-    }
+  int PalStat::getNbLayers()
+  {
+    return nbLayers;
+  }
 
-    int PalStat::getNbLabelledObjects() {
-        return nbLabelledObjects;
-    }
-
-    int PalStat::getNbLayers() {
-        return nbLayers;
-    }
-
-    const char * PalStat::getLayerName (int layerId) {
-        if (layerId >= 0 && layerId < nbLayers)
-            return layersName[layerId];
-        else
-            return NULL;
-    }
+  const char * PalStat::getLayerName( int layerId )
+  {
+    if ( layerId >= 0 && layerId < nbLayers )
+      return layersName[layerId];
+    else
+      return NULL;
+  }
 
 
-    int PalStat::getLayerNbObjects (int layerId) {
-        if (layerId >= 0 && layerId < nbLayers)
-            return layersNbObjects[layerId];
-        else
-            return -1;
-    }
+  int PalStat::getLayerNbObjects( int layerId )
+  {
+    if ( layerId >= 0 && layerId < nbLayers )
+      return layersNbObjects[layerId];
+    else
+      return -1;
+  }
 
 
-    int PalStat::getLayerNbLabelledObjects (int layerId) {
-        if (layerId >= 0 && layerId < nbLayers)
-            return layersNbLabelledObjects[layerId];
-        else
-            return -1;
-    }
+  int PalStat::getLayerNbLabelledObjects( int layerId )
+  {
+    if ( layerId >= 0 && layerId < nbLayers )
+      return layersNbLabelledObjects[layerId];
+    else
+      return -1;
+  }
 
 
 } // namespace

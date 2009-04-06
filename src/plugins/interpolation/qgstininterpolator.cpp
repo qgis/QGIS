@@ -65,18 +65,18 @@ void QgsTINInterpolator::initialize()
   DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( mCachedBaseData.size(), 0 );
   mTriangulation = theDualEdgeTriangulation;
 
-   //do some randomisation on the base data to have better results with regular structures
-    vertexData vertex1, vertex2;
+  //do some randomisation on the base data to have better results with regular structures
+  vertexData vertex1, vertex2;
 
-    for(int i = 0; i <= mCachedBaseData.size() / 2; ++i)
+  for ( int i = 0; i <= mCachedBaseData.size() / 2; ++i )
   {
-        vertex1 = mCachedBaseData[i];
-        Point3D* thePoint1 = new Point3D( vertex1.x, vertex1.y, vertex1.z );
-        mTriangulation->addPoint( thePoint1 );
-        vertex2 = mCachedBaseData[mCachedBaseData.size() - 1 - i];
-        Point3D* thePoint2 = new Point3D( vertex2.x, vertex2.y, vertex2.z );
-        mTriangulation->addPoint( thePoint2 );
-    }
+    vertex1 = mCachedBaseData[i];
+    Point3D* thePoint1 = new Point3D( vertex1.x, vertex1.y, vertex1.z );
+    mTriangulation->addPoint( thePoint1 );
+    vertex2 = mCachedBaseData[mCachedBaseData.size() - 1 - i];
+    Point3D* thePoint2 = new Point3D( vertex2.x, vertex2.y, vertex2.z );
+    mTriangulation->addPoint( thePoint2 );
+  }
 
 #if 0
   //add all the vertices to the triangulation

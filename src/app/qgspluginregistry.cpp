@@ -442,11 +442,11 @@ bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
 
 QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()
 {
-   QList<QgsPluginMetadata*> resultList;
-   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
-   for(; it != mPlugins.end(); ++it)
-   {
-      resultList.push_back(&(it.value()));
-   }
-   return resultList;
+  QList<QgsPluginMetadata*> resultList;
+  QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
+  for ( ; it != mPlugins.end(); ++it )
+  {
+    resultList.push_back( &( it.value() ) );
+  }
+  return resultList;
 }
