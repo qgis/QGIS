@@ -4367,8 +4367,6 @@ void QgisApp::loadPythonSupport()
   }
 }
 
-
-
 void QgisApp::checkQgisVersion()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );

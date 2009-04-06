@@ -43,6 +43,7 @@ class QgsLabel;
 class QgsRectangle;
 class QgsRenderer;
 class QgsVectorDataProvider;
+class QgsVectorOverlay;
 
 class QgsGeometry;
 class QgsRectangle;
@@ -426,6 +427,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**access range */
     RangeData &range( int idx );
 
+    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object*/
+    void addOverlay(QgsVectorOverlay* overlay);
+
+    /**Removes all overlays of a given type*/
+    void removeOverlay(const QString& typeName);
+
+    /**Returns pointers to the overlays of this layer*/
+    void vectorOverlays(QList<QgsVectorOverlay*>& overlayList);
+
+    /**Returns the (first) overlay of a type, e.g. diagram or label*/
+    QgsVectorOverlay* findOverlayByType(const QString& typeName);
+
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
@@ -627,6 +640,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Display labels */
     bool mLabelOn;
+
+    /**List of overlays. Vector overlays will be rendered on top of all maplayers*/
+    QList<QgsVectorOverlay*> mOverlays;
 
     QStringList mCommitErrors;
 

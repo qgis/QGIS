@@ -269,6 +269,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   {
     case QgisPlugin::RENDERER:
     case QgisPlugin::UI:
+    case QgisPlugin::VECTOR_OVERLAY:
     {
       // UI only -- doesn't use mapcanvas
       create_ui *cf = ( create_ui * ) cast_to_fptr( myLib.resolve( "classFactory" ) );
@@ -437,4 +438,15 @@ bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
     return false;
   }
   return true;
+}
+
+QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()
+{
+   QList<QgsPluginMetadata*> resultList;
+   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
+   for(; it != mPlugins.end(); ++it)
+   {
+      resultList.push_back(&(it.value()));
+   }
+   return resultList;
 }

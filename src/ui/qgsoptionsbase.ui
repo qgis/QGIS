@@ -22,6 +22,16 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
+   <item row="1" column="0" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" >
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
@@ -575,6 +585,59 @@
         </spacer>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="mOverlayTab" >
+      <attribute name="title" >
+       <string>Overlay</string>
+      </attribute>
+      <widget class="QGroupBox" name="mPositionGroupBox" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>801</width>
+         <height>111</height>
+        </rect>
+       </property>
+       <property name="title" >
+        <string>Position</string>
+       </property>
+       <widget class="QWidget" name="layoutWidget" >
+        <property name="geometry" >
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>761</width>
+          <height>42</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" >
+         <item>
+          <widget class="QLabel" name="mAlgorithmLabel" >
+           <property name="text" >
+            <string>Placement algorithm:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mOverlayAlgorithmComboBox" />
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>221</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabDigitizing" >
       <attribute name="title" >
@@ -1139,16 +1202,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
-     </property>
     </widget>
    </item>
   </layout>

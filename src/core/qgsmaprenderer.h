@@ -33,6 +33,7 @@ class QgsMapLayer;
 class QgsScaleCalculator;
 class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
+class QgsOverlayObjectPositionManager;
 
 /** \ingroup core
  * A non GUI class for rendering a map layer set onto a QPainter.
@@ -177,6 +178,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      * also sets the contents of the r2 parameter
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
+
+    /**Creates an overlay object position manager subclass according to the current settings*/
+    QgsOverlayObjectPositionManager* overlayManagerFromSettings();
 
   protected:
 

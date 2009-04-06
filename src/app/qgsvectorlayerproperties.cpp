@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
+#include "qgsapplydialog.h"
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
@@ -30,6 +31,8 @@
 #include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgspluginmetadata.h"
+#include "qgspluginregistry.h"
 #include "qgsproject.h"
 #include "qgssinglesymboldialog.h"
 #include "qgsuniquevaluedialog.h"
@@ -37,6 +40,7 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectoroverlayplugin.h"
 
 #ifdef HAVE_POSTGRESQL
 #include "qgspgquerybuilder.h"
@@ -119,6 +123,19 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leSpatialRefSys->setCursorPosition( 0 );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+
+  //for each overlay plugin create a new tab
+  int position;
+  QList<QgsVectorOverlayPlugin*> overlayPluginList = overlayPlugins();
+  QList<QgsVectorOverlayPlugin*>::const_iterator it = overlayPluginList.constBegin();
+
+  for(; it != overlayPluginList.constEnd(); ++it)
+    {
+      QgsApplyDialog* d = (*it)->dialog(lyr);
+      position = tabWidget->addTab(d, (*it)->name());
+      tabWidget->setCurrentIndex(position); //ugly, but otherwise the properties dialog is a mess
+      mOverlayDialogs.push_back(d);
+    }
 
   tabWidget->setCurrentIndex( 0 );
 } // QgsVectorLayerProperties ctor
@@ -598,6 +615,12 @@ void QgsVectorLayerProperties::apply()
   }
   layer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
 
+  //apply overlay dialogs
+  for(QList<QgsApplyDialog*>::iterator it = mOverlayDialogs.begin(); it != mOverlayDialogs.end(); ++it)
+    {
+      (*it)->apply();
+    }
+
   // update symbology
   emit refreshLegend( layer->getLayerID(), false );
 
@@ -1025,4 +1048,31 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 
     myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
   }
+}
+
+QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
+{
+  QList<QgsVectorOverlayPlugin*> pluginList;
+
+  QgisPlugin* thePlugin = 0;
+  QgsVectorOverlayPlugin* theOverlayPlugin = 0;
+
+  QList<QgsPluginMetadata*> pluginData = QgsPluginRegistry::instance()->pluginData();
+  for(QList<QgsPluginMetadata*>::iterator it = pluginData.begin(); it != pluginData.end(); ++it)
+    {
+      if(*it)
+    {
+      thePlugin = (*it)->plugin();
+      if(thePlugin && thePlugin->type() == QgisPlugin::VECTOR_OVERLAY)
+        {
+          theOverlayPlugin = dynamic_cast<QgsVectorOverlayPlugin*>(thePlugin);
+          if(theOverlayPlugin)
+        {
+          pluginList.push_back(theOverlayPlugin);
+        }
+        }
+    }
+    }
+
+  return pluginList;
 }

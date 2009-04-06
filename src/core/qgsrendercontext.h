@@ -98,7 +98,7 @@ class CORE_EXPORT QgsRenderContext
     /**Factor to scale rasters*/
     double mRasterScaleFactor;
 
-    /** renderer scale */
+    /**Map scale*/
     double mRendererScale;
 };
 
