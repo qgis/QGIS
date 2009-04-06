@@ -30,9 +30,9 @@ class QDomNode;
 class QImage;
 
 //structure that describes a renderer entry
-struct QgsDiagramItem
+class QgsDiagramItem
 {
-
+public:
   QVariant value;
   int size;
 };

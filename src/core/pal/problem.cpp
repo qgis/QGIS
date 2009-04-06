@@ -1317,7 +1317,7 @@ namespace pal {
             std::cout << "    Conflictual..." << std::endl;
 #endif
             int feat, rfeat;
-            bool sub = ctx->featWrap;
+            bool sub = ctx->featWrap!=NULL;
 
             feat = lp->probFeat;
             if (sub) {
@@ -1578,6 +1578,8 @@ namespace pal {
                 } catch (int i) {
 #ifdef _DEBUG_FULL_
                     std::cout << "catch int " << i << std::endl;
+#else
+                    i;
 #endif
                     while (conflicts->size() > 0)
                         conflicts->pop_front();
@@ -1838,6 +1840,8 @@ namespace pal {
                 } catch (int i) {
 #ifdef _DEBUG_FULL_
                     std::cout << "catch Cycle in chain" << std::endl;
+#else
+                    i;
 #endif
                     while (conflicts->size() > 0)
                         conflicts->pop_front();

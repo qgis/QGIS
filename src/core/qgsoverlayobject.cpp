@@ -40,6 +40,7 @@ QgsOverlayObject& QgsOverlayObject::operator=(const QgsOverlayObject& other)
   mPositions = other.positions();
   mRotation = other.rotation();
   mGeometry = new QgsGeometry(*(other.geometry()));
+  return *this;
 }
 
 GEOSGeometry* QgsOverlayObject::getGeosGeometry()

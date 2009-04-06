@@ -274,7 +274,7 @@ namespace pal {
     bool computeLineSegIntersection (double x1, double y1, double x2, double y2,  // 1st line
                                  double x3, double y3, double x4, double y4,  // 2nd segment
                                  double *x, double *y) {
-        double cp1, cp2, cp3, cp4;
+        double cp1, cp2;
         cp1 = cross_product (x1, y1, x2, y2, x3, y3);
         cp2 = cross_product (x1, y1, x2, y2, x4, y4);
 

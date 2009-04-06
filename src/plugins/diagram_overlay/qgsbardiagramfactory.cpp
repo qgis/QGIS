@@ -158,4 +158,5 @@ bool QgsBarDiagramFactory::_writeXML(QDomNode& factory_node, QDomDocument& doc) 
     QDomText barWidthText = doc.createTextNode(QString::number(mBarWidth));
     barWidthElem.appendChild(barWidthText);
     factory_node.appendChild(barWidthElem);
+    return true;
 }

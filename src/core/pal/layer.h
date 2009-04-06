@@ -53,7 +53,7 @@ namespace pal {
     class Pal;
     class SimpleMutex;
 
-    struct Feat;
+    class Feat;
 
     /**
      * \brief A layer of spacial entites

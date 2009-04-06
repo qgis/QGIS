@@ -40,6 +40,9 @@
 #include <list>
 #include <iostream>
 
+#ifdef _MSC_VER
+#include <time.h>
+#endif
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
