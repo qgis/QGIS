@@ -35,66 +35,68 @@
 #define _PALSTAT_H_
 
 
-namespace pal {
+namespace pal
+{
 
-    /**
-     * Summury of problem
-     */
-    class PalStat {
+  /**
+   * Summury of problem
+   */
+  class PalStat
+  {
 
-        friend class Pal;
-        friend class Problem;
+      friend class Pal;
+      friend class Problem;
 
     private:
-        int nbObjects;
-        int nbLabelledObjects;
+      int nbObjects;
+      int nbLabelledObjects;
 
-        int nbLayers;
+      int nbLayers;
 
-        char **layersName; //[nbLayers]
-        int *layersNbObjects; // [nbLayers]
-        int *layersNbLabelledObjects; // [nbLayers]
+      char **layersName; //[nbLayers]
+      int *layersNbObjects; // [nbLayers]
+      int *layersNbLabelledObjects; // [nbLayers]
 
-        PalStat();
+      PalStat();
 
     public:
 
-        /**
-         * \brief delete stats
-         */
-        ~PalStat();
+      /**
+       * \brief delete stats
+       */
+      ~PalStat();
 
 
-        /**
-         * \brief the number of object in problem
-         */
-        int getNbObjects();
+      /**
+       * \brief the number of object in problem
+       */
+      int getNbObjects();
 
-        /**
-         * \brief the number of objects which are labelled
-         */
-        int getNbLabelledObjects();
+      /**
+       * \brief the number of objects which are labelled
+       */
+      int getNbLabelledObjects();
 
-        /**
-         *  \brief how many layersare labelled ?
-         */
-        int getNbLayers();
+      /**
+       *  \brief how many layersare labelled ?
+       */
+      int getNbLayers();
 
-        /**
-         * \brief get a name of the labelled layer 'layerId'
-         */
-        const char * getLayerName (int layerId);
+      /**
+       * \brief get a name of the labelled layer 'layerId'
+       */
+      const char * getLayerName( int layerId );
 
-        /**
-         * \brief get the number of object in layer 'layerId'
-         */
-        int getLayerNbObjects (int layerId);
+      /**
+       * \brief get the number of object in layer 'layerId'
+       */
+      int getLayerNbObjects( int layerId );
 
-        /**
-         * \brief get the number of object in layer 'layerId' which are labelled
-         */
-        int getLayerNbLabelledObjects (int layerId);
-    };
+      /**
+       * \brief get the number of object in layer 'layerId' which are labelled
+       */
+      int getLayerNbLabelledObjects( int layerId );
+  };
 
 } // end namespace pal
 

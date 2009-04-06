@@ -25,13 +25,13 @@ class QgsDiagramFactory;
 /**Abstract factory for dialogs that display options to create a diagram factory*/
 class QgsDiagramFactoryWidget: public QWidget
 {
-    public:
+  public:
     QgsDiagramFactoryWidget();
     virtual ~QgsDiagramFactoryWidget();
     /**Creates a diagram factory object with the settings specified by the user*/
     virtual QgsDiagramFactory* createFactory() = 0;
     /**Sets the GUI element to the state of an existing diagram factory*/
-    virtual void setExistingFactory(const QgsDiagramFactory* f) = 0;
+    virtual void setExistingFactory( const QgsDiagramFactory* f ) = 0;
 };
 
 #endif

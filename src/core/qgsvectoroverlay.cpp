@@ -1,10 +1,10 @@
- /***************************************************************************
-                         qgsvectoroverlay.cpp  -  description
-                         --------------------
-    begin                : January 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
+/***************************************************************************
+                        qgsvectoroverlay.cpp  -  description
+                        --------------------
+   begin                : January 2007
+   copyright            : (C) 2007 by Marco Hugentobler
+   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -18,7 +18,7 @@
 #include "qgsvectoroverlay.h"
 #include "qgsoverlayobject.h"
 
-QgsVectorOverlay::QgsVectorOverlay(QgsVectorLayer* vl): mVectorLayer(vl), mDisplayFlag(true)
+QgsVectorOverlay::QgsVectorOverlay( QgsVectorLayer* vl ): mVectorLayer( vl ), mDisplayFlag( true )
 {
 
 }
@@ -30,10 +30,10 @@ QgsVectorOverlay::~QgsVectorOverlay()
 
 void QgsVectorOverlay::removeOverlayObjects()
 {
-   QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin();
-   for(; it != mOverlayObjects.end(); ++it)
-   {
-    delete (it.value());
-   }
-   mOverlayObjects.clear();
+  QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin();
+  for ( ; it != mOverlayObjects.end(); ++it )
+  {
+    delete( it.value() );
+  }
+  mOverlayObjects.clear();
 }

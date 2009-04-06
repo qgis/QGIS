@@ -95,10 +95,10 @@ QgsSnappingDialog::QgsSnappingDialog( QgsMapCanvas* canvas, const QMap<QString, 
               index = snapToComboBox->findText( tr( "to vertex and segment" ) );
             }
             snapToComboBox->setCurrentIndex( index );
-	    if ( settingIt.value().toleranceUnit == 0 )//map units
+            if ( settingIt.value().toleranceUnit == 0 )//map units
             {
               index = toleranceUnitsComboBox->findText( tr( "map units" ) );
-	    } 
+            }
             else
             {
               index = toleranceUnitsComboBox->findText( tr( "pixels" ) );

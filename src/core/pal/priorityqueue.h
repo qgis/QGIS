@@ -41,51 +41,53 @@
 #define PARENT(x) ((x-1)/2)
 
 
-namespace pal {
+namespace pal
+{
 
-    class PriorityQueue {
+  class PriorityQueue
+  {
     private:
-        int size;
-        int maxsize;
-        int maxId;
-        int *heap;
-        double *p;
-        int *pos;
+      int size;
+      int maxsize;
+      int maxId;
+      int *heap;
+      double *p;
+      int *pos;
 
-        bool (*greater) (double l, double r);
+      bool ( *greater )( double l, double r );
 
     public:
-        /** \brief Create a priority queue of max size n
-         * \@param n max size of the queuet
-         * \@param p external vector representing the priority
-         * \@param min best element has the smalest p when min is True ans has the biggest when min is false
-         */
-        PriorityQueue (int n, int maxId, bool min);
-        ~PriorityQueue();
+      /** \brief Create a priority queue of max size n
+       * \@param n max size of the queuet
+       * \@param p external vector representing the priority
+       * \@param min best element has the smalest p when min is True ans has the biggest when min is false
+       */
+      PriorityQueue( int n, int maxId, bool min );
+      ~PriorityQueue();
 
-        void print();
+      void print();
 
-        int getSize();
-        int getSizeByPos();
+      int getSize();
+      int getSizeByPos();
 
-        bool isIn (int key);
+      bool isIn( int key );
 
-        int getBest(); // O(log n)
+      int getBest(); // O(log n)
 
-        void remove (int key);
-        void insert (int key, double p);
+      void remove( int key );
+      void insert( int key, double p );
 
-        void sort(); // O(n log n)
+      void sort(); // O(n log n)
 
-        void downheap (int id);
-        void upheap (int key);
+      void downheap( int id );
+      void upheap( int key );
 
-        void decreaseKey (int key);
-        void setPriority (int key, double new_p);
+      void decreaseKey( int key );
+      void setPriority( int key, double new_p );
 
 
-        int getId (int key);
-    };
+      int getId( int key );
+  };
 
 } // namespace
 

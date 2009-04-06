@@ -21,36 +21,36 @@
 #include <QBrush>
 #include <QPen>
 
-/**Describes a diagram category that 
-can be displayed e.g. as a pie slice 
+/**Describes a diagram category that
+can be displayed e.g. as a pie slice
 or a bar pillar*/
 class QgsDiagramCategory
 {
- public:
-  QgsDiagramCategory();
-  ~QgsDiagramCategory();
+  public:
+    QgsDiagramCategory();
+    ~QgsDiagramCategory();
 
-  //getters
-  const QBrush& brush() const {return mBrush;}
-  const QPen& pen() const {return mPen;}
-  int propertyIndex() const {return mPropertyIndex;}
-  int gap() const {return mGap;}
+    //getters
+    const QBrush& brush() const {return mBrush;}
+    const QPen& pen() const {return mPen;}
+    int propertyIndex() const {return mPropertyIndex;}
+    int gap() const {return mGap;}
 
-  //setters
-  void setBrush(const QBrush& b) {mBrush = b;}
-  void setPen(const QPen& p) {mPen = p;}
-  void setPropertyIndex(int index){mPropertyIndex = index;}
-  void setGap(int g){mGap = g;}
+    //setters
+    void setBrush( const QBrush& b ) {mBrush = b;}
+    void setPen( const QPen& p ) {mPen = p;}
+    void setPropertyIndex( int index ) {mPropertyIndex = index;}
+    void setGap( int g ) {mGap = g;}
 
- private:
-  /**Outline to draw the category*/
-  QPen mPen;
-  /**Fill to draw the category*/
-  QBrush mBrush;
-  /**Index of the attribute represented by the category*/
-  int mPropertyIndex;
-  /**Gap to highlight the category (e.g. explode in pie)*/
-  int mGap;
+  private:
+    /**Outline to draw the category*/
+    QPen mPen;
+    /**Fill to draw the category*/
+    QBrush mBrush;
+    /**Index of the attribute represented by the category*/
+    int mPropertyIndex;
+    /**Gap to highlight the category (e.g. explode in pie)*/
+    int mGap;
 };
 
 #endif

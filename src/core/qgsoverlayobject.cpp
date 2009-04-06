@@ -18,60 +18,60 @@
 #include "qgsoverlayobject.h"
 #include "qgsgeometry.h"
 
-QgsOverlayObject::QgsOverlayObject(int width, int height, double rotation, QgsGeometry* geometry): mWidth(width), mHeight(height), mRotation(rotation), mGeometry(geometry)
+QgsOverlayObject::QgsOverlayObject( int width, int height, double rotation, QgsGeometry* geometry ): mWidth( width ), mHeight( height ), mRotation( rotation ), mGeometry( geometry )
 {
 
 }
 
 QgsOverlayObject::~QgsOverlayObject()
 {
-    delete mGeometry;
+  delete mGeometry;
 }
 
-QgsOverlayObject::QgsOverlayObject(const QgsOverlayObject& other): mWidth(other.width()), mHeight(other.height()), mPositions(other.positions()), mRotation(other.rotation())
+QgsOverlayObject::QgsOverlayObject( const QgsOverlayObject& other ): mWidth( other.width() ), mHeight( other.height() ), mPositions( other.positions() ), mRotation( other.rotation() )
 {
-  mGeometry = new QgsGeometry(*(other.geometry()));
+  mGeometry = new QgsGeometry( *( other.geometry() ) );
 }
 
-QgsOverlayObject& QgsOverlayObject::operator=(const QgsOverlayObject& other)
+QgsOverlayObject& QgsOverlayObject::operator=( const QgsOverlayObject & other )
 {
   mWidth = other.width();
   mHeight = other.height();
   mPositions = other.positions();
   mRotation = other.rotation();
-  mGeometry = new QgsGeometry(*(other.geometry()));
+  mGeometry = new QgsGeometry( *( other.geometry() ) );
   return *this;
 }
 
 GEOSGeometry* QgsOverlayObject::getGeosGeometry()
 {
-    if(!mGeometry)
-    {
-        return 0;
-    }
+  if ( !mGeometry )
+  {
+    return 0;
+  }
 
-    return mGeometry->asGeos();
+  return mGeometry->asGeos();
 }
 
-void QgsOverlayObject::addPosition(const QgsPoint& position)
+void QgsOverlayObject::addPosition( const QgsPoint& position )
 {
-    mPositions.push_back(position);
+  mPositions.push_back( position );
 }
 
-void QgsOverlayObject::setGeometry(QgsGeometry* g)
+void QgsOverlayObject::setGeometry( QgsGeometry* g )
 {
-    delete mGeometry;
-    mGeometry = g;
+  delete mGeometry;
+  mGeometry = g;
 }
 
 QgsPoint QgsOverlayObject::position() const
 {
-    if(mPositions.size() > 0)
-    {
-        return mPositions.at(0);
-    }
-    else
-    {
-        return QgsPoint(0.0, 0.0);
-    }
+  if ( mPositions.size() > 0 )
+  {
+    return mPositions.at( 0 );
+  }
+  else
+  {
+    return QgsPoint( 0.0, 0.0 );
+  }
 }

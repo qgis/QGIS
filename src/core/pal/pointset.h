@@ -43,198 +43,212 @@
 #include "rtree.hpp"
 #include "linkedlist.hpp"
 
-namespace pal {
+namespace pal
+{
 
-    class Pal;
-    class Feat;
-    class Feature;
-    class Projection;
-    class LabelPosition;
+  class Pal;
+  class Feat;
+  class Feature;
+  class Projection;
+  class LabelPosition;
 
-    typedef struct _cross {
-        int pt;
-        double d;
-        double x;
-        double y;
-        int seg;        // seg{0,1,2,3}
-        int nextCorner; // pt{0,1,2,3}
-        int way;
+  typedef struct _cross
+  {
+    int pt;
+    double d;
+    double x;
+    double y;
+    int seg;        // seg{0,1,2,3}
+    int nextCorner; // pt{0,1,2,3}
+    int way;
 
-    } Crossing;
+  } Crossing;
 
-    class PointSet;
+  class PointSet;
 
-    typedef struct _cHullBox {
-        double x[4];
-        double y[4];
+  typedef struct _cHullBox
+  {
+    double x[4];
+    double y[4];
 
-        double alpha;
+    double alpha;
 
-        double width;
-        double length;
-    } CHullBox;
-
-
-
-    inline bool ptrCrossingCompare (Crossing * a, Crossing * b) {
-        return a == b;
-    }
-
-    inline bool crossingDist (void *a, void *b) {
-        return ( (Crossing*) a)->d > ( (Crossing*) b)->d;
-    }
+    double width;
+    double length;
+  } CHullBox;
 
 
-    class PointSet {
-        friend class Feature;
-        friend class Pal;
-        friend class Layer;
-        friend class LabelPosition;
-        friend class PolygonCostCalculator;
-        friend class Problem;
-        friend bool pruneLabelPositionCallback (LabelPosition *lp, void *ctx);
-        //friend Feat *splitButterflyPolygon (Feat *f, int pt_a, int pt_b, double cx, double cy);
-        friend bool obstacleCallback (PointSet *feat, void *ctx);
-        friend bool extractFeatCallback (Feature*, void*);
-        friend void extractXYCoord (Feat *f);
-        friend LinkedList<Feat*> * splitGeom (GEOSGeometry *the_geom, const char *geom_id);
-        friend void releaseAllInIndex (RTree<PointSet*, double, 2, double> *obstacles);
-        friend bool releaseCallback (PointSet *pset, void *ctx);
-        friend bool filteringCallback (PointSet*, void*);
-    /*protected*/ 
-public:
-        int nbPoints;
-        double *x;
-        double *y;   // points order is counterclockwise
 
-        int *status;   // -1 means inside the bbox, +1 means outside and 0 is either in either out
-        int *cHull;
-        int cHullSize;
+  inline bool ptrCrossingCompare( Crossing * a, Crossing * b )
+  {
+    return a == b;
+  }
 
-        int type;
+  inline bool crossingDist( void *a, void *b )
+  {
+    return (( Crossing* ) a )->d > (( Crossing* ) b )->d;
+  }
 
-        //PointSet *parent;
 
-        PointSet* holeOf;
-        PointSet* parent;
+  class PointSet
+  {
+      friend class Feature;
+      friend class Pal;
+      friend class Layer;
+      friend class LabelPosition;
+      friend class PolygonCostCalculator;
+      friend class Problem;
+      friend bool pruneLabelPositionCallback( LabelPosition *lp, void *ctx );
+      //friend Feat *splitButterflyPolygon (Feat *f, int pt_a, int pt_b, double cx, double cy);
+      friend bool obstacleCallback( PointSet *feat, void *ctx );
+      friend bool extractFeatCallback( Feature*, void* );
+      friend void extractXYCoord( Feat *f );
+      friend LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
+      friend void releaseAllInIndex( RTree<PointSet*, double, 2, double> *obstacles );
+      friend bool releaseCallback( PointSet *pset, void *ctx );
+      friend bool filteringCallback( PointSet*, void* );
+      /*protected*/
+    public:
+      int nbPoints;
+      double *x;
+      double *y;   // points order is counterclockwise
 
-        PointSet (double x, double y);
+      int *status;   // -1 means inside the bbox, +1 means outside and 0 is either in either out
+      int *cHull;
+      int cHullSize;
 
-        PointSet (PointSet &ps);
+      int type;
+
+      //PointSet *parent;
+
+      PointSet* holeOf;
+      PointSet* parent;
+
+      PointSet( double x, double y );
+
+      PointSet( PointSet &ps );
 
 
 //public:
-        double xmin;
-        double xmax;
-        double ymin;
-        double ymax;
+      double xmin;
+      double xmax;
+      double ymin;
+      double ymax;
 
-        PointSet ();
-        PointSet (int nbPoints, double *x, double *y);
-        ~PointSet();
+      PointSet();
+      PointSet( int nbPoints, double *x, double *y );
+      ~PointSet();
 
-        int getPath (int start, int stop, int *path_val);
+      int getPath( int start, int stop, int *path_val );
 
-        PointSet *extractPath (int path, int nbPtPath, int nbBboxPt, double bbx[4], double bby[4], Crossing *start, Crossing *stop, int startPt);
+      PointSet *extractPath( int path, int nbPtPath, int nbBboxPt, double bbx[4], double bby[4], Crossing *start, Crossing *stop, int startPt );
 
-        PointSet* extractShape (int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty);
+      PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-        PointSet *createProblemSpecificPointSet (double bbx[4], double bby[4], bool *outside, bool *inside);
+      PointSet *createProblemSpecificPointSet( double bbx[4], double bby[4], bool *outside, bool *inside );
 
-        CHullBox * compute_chull_bbox ();
+      CHullBox * compute_chull_bbox();
 
-        /*
-         *  \brief Take each line in shape_toProcess and only keep inside bbox line parts
-         */
-        static void reduceLine (PointSet *line,
-                                LinkedList<PointSet*> *shapes_final,
-                                double bbx[4], double bby[4]);
-
-
-        /**
-         * \brief takes shapes from shapes_toProcess, compute intersection with bbox
-         * and puts new shapes into shapes_final
-         */
-        static void reducePolygon (PointSet* shape_toProcess,
-                                   LinkedList<PointSet*> *shapes_final,
-                                   double bbx[4], double bby[4]);
+      /*
+       *  \brief Take each line in shape_toProcess and only keep inside bbox line parts
+       */
+      static void reduceLine( PointSet *line,
+                              LinkedList<PointSet*> *shapes_final,
+                              double bbx[4], double bby[4] );
 
 
-        /*
-         * split a concave shape into several convex shapes
-         *
-         */
-        static void splitPolygons (LinkedList<PointSet*> *shapes_toProcess,
-                                   LinkedList<PointSet*> *shapes_final,
-                                   double xrm, double yrm, char *uid);
+      /**
+       * \brief takes shapes from shapes_toProcess, compute intersection with bbox
+       * and puts new shapes into shapes_final
+       */
+      static void reducePolygon( PointSet* shape_toProcess,
+                                 LinkedList<PointSet*> *shapes_final,
+                                 double bbx[4], double bby[4] );
 
 
-
-        /**
-         * \brief return the minimum distance bw this and the point (px,py)
-         *
-         * compute the minimum distance bw the point (px,py) and this.
-         * Optionnaly, store the nearest point in (rx,ry) 
-         *
-         * @param px x coordinate of the point
-         * @param py y coordinate of the points
-         * @param rx pointer to x coorinates of the nearest point (can be NULL)
-         * @param ry pointer to y coorinates of the nearest point (can be NULL)
-         */
-        double getDist(double px, double py, double *rx, double *ry);
+      /*
+       * split a concave shape into several convex shapes
+       *
+       */
+      static void splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
+                                 LinkedList<PointSet*> *shapes_final,
+                                 double xrm, double yrm, char *uid );
 
 
 
-        //double getDistInside(double px, double py);
+      /**
+       * \brief return the minimum distance bw this and the point (px,py)
+       *
+       * compute the minimum distance bw the point (px,py) and this.
+       * Optionnaly, store the nearest point in (rx,ry)
+       *
+       * @param px x coordinate of the point
+       * @param py y coordinate of the points
+       * @param rx pointer to x coorinates of the nearest point (can be NULL)
+       * @param ry pointer to y coorinates of the nearest point (can be NULL)
+       */
+      double getDist( double px, double py, double *rx, double *ry );
 
-        void getCentroid (double &px, double &py);
+
+
+      //double getDistInside(double px, double py);
+
+      void getCentroid( double &px, double &py );
 
 
 
 
-        /*
-         * Iterate on line by real step of dl on x,y points
-         * @param nbPoint # point in line
-         * @param x x coord
-         * @param y y coord
-         * @param d ??
-         * @param ad distance from pt0 to each point (ad0 = pt0->pt0)
-         * @param dl ??
-         * @param px current x coord on line
-         * @param py current y coord on line
-         */
-        inline void getPoint (double *d, double *ad, double dl,
-                              double *px, double *py) {
-            int i;
-            double dx, dy, di;
-            double distr;
+      /*
+       * Iterate on line by real step of dl on x,y points
+       * @param nbPoint # point in line
+       * @param x x coord
+       * @param y y coord
+       * @param d ??
+       * @param ad distance from pt0 to each point (ad0 = pt0->pt0)
+       * @param dl ??
+       * @param px current x coord on line
+       * @param py current y coord on line
+       */
+      inline void getPoint( double *d, double *ad, double dl,
+                            double *px, double *py )
+      {
+        int i;
+        double dx, dy, di;
+        double distr;
 
-            i = 0;
-            if (dl >= 0) {
-                while (i < nbPoints && ad[i] <= dl) i++;
-                i--;
-            }
-
-            if (i < nbPoints - 1) {
-                if (dl < 0) {
-                    dx = x[nbPoints-1] - x[0];
-                    dy = y[nbPoints-1] - y[0];
-                    di = sqrt (dx * dx + dy * dy);
-                } else {
-                    dx = x[i+1] - x[i];
-                    dy = y[i+1] - y[i];
-                    di = d[i];
-                }
-
-                distr = dl - ad[i];
-                *px = x[i] + dx * distr / di;
-                *py = y[i] + dy * distr / di;
-            } else {  // just select last point...
-                *px = x[i];
-                *py = y[i];
-            }
+        i = 0;
+        if ( dl >= 0 )
+        {
+          while ( i < nbPoints && ad[i] <= dl ) i++;
+          i--;
         }
-    };
+
+        if ( i < nbPoints - 1 )
+        {
+          if ( dl < 0 )
+          {
+            dx = x[nbPoints-1] - x[0];
+            dy = y[nbPoints-1] - y[0];
+            di = sqrt( dx * dx + dy * dy );
+          }
+          else
+          {
+            dx = x[i+1] - x[i];
+            dy = y[i+1] - y[i];
+            di = d[i];
+          }
+
+          distr = dl - ad[i];
+          *px = x[i] + dx * distr / di;
+          *py = y[i] + dy * distr / di;
+        }
+        else    // just select last point...
+        {
+          *px = x[i];
+          *py = y[i];
+        }
+      }
+  };
 
 } // namespace pal
 

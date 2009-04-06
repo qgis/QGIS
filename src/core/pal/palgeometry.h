@@ -34,53 +34,55 @@
 #include <pal/label.h>
 #include <geos_c.h>
 
-namespace pal {
+namespace pal
+{
 
-    /**
-     * \brief Interface that allow Pal to acces user's geometries
-     */
-    class PalGeometry {
+  /**
+   * \brief Interface that allow Pal to acces user's geometries
+   */
+  class PalGeometry
+  {
     public:
-        /*
-         * \brief get the geometry in WKB hexa format
-         * This method is called by Pal each time it needs a geom's coordinates
-         *
-         * @return WKB Hex buffer
-         */
-        //virtual char * getWkbHexBuffer() = 0;
+      /*
+       * \brief get the geometry in WKB hexa format
+       * This method is called by Pal each time it needs a geom's coordinates
+       *
+       * @return WKB Hex buffer
+       */
+      //virtual char * getWkbHexBuffer() = 0;
 
-        /**
-         * \brief get the GEOSGeometry of the feature
-         * This method is called by Pal each time it needs a geom's coordinates
-         *
-         * @return GEOSGeometry * a pointer the the geos geom
-         */
-        virtual GEOSGeometry* getGeosGeometry() = 0;
-
-
-        /**
-         * \brief Called by Pal when it doesn't need the coordinates anymore
-         * @param the_geom is the geoms geom  from PalGeometry::getfeomGeometry()
-         */
-        virtual void releaseGeosGeometry (GEOSGeometry *the_geom) = 0;
+      /**
+       * \brief get the GEOSGeometry of the feature
+       * This method is called by Pal each time it needs a geom's coordinates
+       *
+       * @return GEOSGeometry * a pointer the the geos geom
+       */
+      virtual GEOSGeometry* getGeosGeometry() = 0;
 
 
-        /*
-         * \brief Called by Pal when it doesn't need the coordinates anymore
-         * @param wkbBuffer is the WkbBuffer from PalGeometry::getWkbHexBuffer()
-         */
-        //virtual void releaseWkbHexBuffer(char *wkbBuffer) = 0;
+      /**
+       * \brief Called by Pal when it doesn't need the coordinates anymore
+       * @param the_geom is the geoms geom  from PalGeometry::getfeomGeometry()
+       */
+      virtual void releaseGeosGeometry( GEOSGeometry *the_geom ) = 0;
 
-        /*
-         * \brief Give back a label to display
-         * Pal call this method when label will no move anymore.
-         *
-         * @param label the label to disploy
-         */
-        //virtual void addLabel(Label *label) = 0;
 
-        virtual ~PalGeometry() {}
-    };
+      /*
+       * \brief Called by Pal when it doesn't need the coordinates anymore
+       * @param wkbBuffer is the WkbBuffer from PalGeometry::getWkbHexBuffer()
+       */
+      //virtual void releaseWkbHexBuffer(char *wkbBuffer) = 0;
+
+      /*
+       * \brief Give back a label to display
+       * Pal call this method when label will no move anymore.
+       *
+       * @param label the label to disploy
+       */
+      //virtual void addLabel(Label *label) = 0;
+
+      virtual ~PalGeometry() {}
+  };
 
 } // end namespace pal
 

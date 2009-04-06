@@ -29,19 +29,19 @@ class QgsApplyDialog;
 vector layer properties dialog and is able to create and configure a diagram overlay layer*/
 class QgsDiagramOverlayPlugin: public QObject, public QgsVectorOverlayPlugin
 {
- Q_OBJECT
- public:
-  QgsDiagramOverlayPlugin(QgisInterface* iface);
-  ~QgsDiagramOverlayPlugin();
-  QgsApplyDialog* dialog(QgsVectorLayer*) const;
-  void initGui(){}
-  void unload(){}
+    Q_OBJECT
+  public:
+    QgsDiagramOverlayPlugin( QgisInterface* iface );
+    ~QgsDiagramOverlayPlugin();
+    QgsApplyDialog* dialog( QgsVectorLayer* ) const;
+    void initGui() {}
+    void unload() {}
 
   public slots:
-  void projectRead();
+    void projectRead();
 
- private:
-  QgisInterface* mInterface;
+  private:
+    QgisInterface* mInterface;
 };
 
 #endif

@@ -21,12 +21,12 @@
 #include "qgsbardiagramfactory.h"
 #include "qgspiediagramfactory.h"
 
-QgsLinearlyScalingDialog::QgsLinearlyScalingDialog(QgsVectorLayer* vl): QgsDiagramRendererWidget(vl)
+QgsLinearlyScalingDialog::QgsLinearlyScalingDialog( QgsVectorLayer* vl ): QgsDiagramRendererWidget( vl )
 {
-  setupUi(this);
-  QObject::connect(mFindMaximumValueButton, SIGNAL(clicked()), this, SLOT(insertMaximumAttributeValue()));
-  mSizeUnitComboBox->addItem(tr("Millimeter"));
-  mSizeUnitComboBox->addItem(tr("Map units"));
+  setupUi( this );
+  QObject::connect( mFindMaximumValueButton, SIGNAL( clicked() ), this, SLOT( insertMaximumAttributeValue() ) );
+  mSizeUnitComboBox->addItem( tr( "Millimeter" ) );
+  mSizeUnitComboBox->addItem( tr( "Map units" ) );
 }
 
 QgsLinearlyScalingDialog::~QgsLinearlyScalingDialog()
@@ -34,73 +34,73 @@ QgsLinearlyScalingDialog::~QgsLinearlyScalingDialog()
 
 }
 
-QgsDiagramRenderer* QgsLinearlyScalingDialog::createRenderer(int classAttr, const QgsAttributeList& attributes) const
+QgsDiagramRenderer* QgsLinearlyScalingDialog::createRenderer( int classAttr, const QgsAttributeList& attributes ) const
 {
   //create a linearly scaling renderer
   QList<int> attributesList;
-  attributesList.push_back(classAttr);
-  QgsDiagramRenderer* renderer = new QgsDiagramRenderer(attributesList);
-  
+  attributesList.push_back( classAttr );
+  QgsDiagramRenderer* renderer = new QgsDiagramRenderer( attributesList );
+
   //and items of renderer
   QList<QgsDiagramItem> itemList;
-  QgsDiagramItem firstItem; firstItem.value = QVariant(0.0); firstItem.size = 0;
-  QgsDiagramItem secondItem; 
-  secondItem.value = QVariant(mValueLineEdit->text().toDouble());
+  QgsDiagramItem firstItem; firstItem.value = QVariant( 0.0 ); firstItem.size = 0;
+  QgsDiagramItem secondItem;
+  secondItem.value = QVariant( mValueLineEdit->text().toDouble() );
   secondItem.size = mSizeSpinBox->value();
-  itemList.push_back(firstItem);
-  itemList.push_back(secondItem);
-  renderer->setDiagramItems(itemList);
-  renderer->setItemInterpretation(QgsDiagramRenderer::LINEAR);
+  itemList.push_back( firstItem );
+  itemList.push_back( secondItem );
+  renderer->setDiagramItems( itemList );
+  renderer->setItemInterpretation( QgsDiagramRenderer::LINEAR );
 
-   return renderer;
+  return renderer;
 }
 
-void QgsLinearlyScalingDialog::applySettings(const QgsDiagramRenderer* renderer)
+void QgsLinearlyScalingDialog::applySettings( const QgsDiagramRenderer* renderer )
 {
-  const QgsDiagramRenderer* linearRenderer = dynamic_cast<const QgsDiagramRenderer*>(renderer);
-  if(linearRenderer)
-    {
-      QList<QgsDiagramItem> itemList = linearRenderer->diagramItems();
-      QgsDiagramItem theItem = itemList.at(1); //take the upper item
-      mValueLineEdit->setText(theItem.value.toString());
-      mSizeSpinBox->setValue(theItem.size);
+  const QgsDiagramRenderer* linearRenderer = dynamic_cast<const QgsDiagramRenderer*>( renderer );
+  if ( linearRenderer )
+  {
+    QList<QgsDiagramItem> itemList = linearRenderer->diagramItems();
+    QgsDiagramItem theItem = itemList.at( 1 ); //take the upper item
+    mValueLineEdit->setText( theItem.value.toString() );
+    mSizeSpinBox->setValue( theItem.size );
 
-      if(linearRenderer->factory())
+    if ( linearRenderer->factory() )
+    {
+      QgsDiagramFactory::SizeUnit sizeUnit = linearRenderer->factory()->sizeUnit();
+      if ( sizeUnit == QgsDiagramFactory::MM )
       {
-        QgsDiagramFactory::SizeUnit sizeUnit = linearRenderer->factory()->sizeUnit();
-        if(sizeUnit == QgsDiagramFactory::MM)
-        {
-            mSizeUnitComboBox->setCurrentIndex(mSizeUnitComboBox->findText(tr("Millimeter")));
-        }
-        else if(sizeUnit == QgsDiagramFactory::MapUnits)
-        {
-            mSizeUnitComboBox->setCurrentIndex(mSizeUnitComboBox->findText(tr("Map units")));
-        }
-       }
+        mSizeUnitComboBox->setCurrentIndex( mSizeUnitComboBox->findText( tr( "Millimeter" ) ) );
+      }
+      else if ( sizeUnit == QgsDiagramFactory::MapUnits )
+      {
+        mSizeUnitComboBox->setCurrentIndex( mSizeUnitComboBox->findText( tr( "Map units" ) ) );
+      }
     }
+  }
 }
 
 void QgsLinearlyScalingDialog::insertMaximumAttributeValue()
 {
   //find the maximum value for this attribute
-  if(mVectorLayer)
+  if ( mVectorLayer )
+  {
+    QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>( mVectorLayer->dataProvider() );
+    if ( provider )
     {
-      QgsVectorDataProvider *provider = dynamic_cast<QgsVectorDataProvider *>(mVectorLayer->dataProvider());
-      if(provider)
-	{
-            mValueLineEdit->setText(provider->maximumValue(mClassificationField).toString());
-	}
+      mValueLineEdit->setText( provider->maximumValue( mClassificationField ).toString() );
     }
+  }
 }
 
 QgsDiagramFactory::SizeUnit QgsLinearlyScalingDialog::sizeUnit() const
 {
-    if(mSizeUnitComboBox->currentText() == tr("Map units"))
-    {
-        return QgsDiagramFactory::MapUnits;
-    }
-    else
-    {
-        return QgsDiagramFactory::MM;
-    }
+  if ( mSizeUnitComboBox->currentText() == tr( "Map units" ) )
+  {
+    return QgsDiagramFactory::MapUnits;
+  }
+  else
+  {
+    return QgsDiagramFactory::MM;
+  }
 }

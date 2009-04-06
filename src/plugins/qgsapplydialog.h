@@ -23,8 +23,8 @@
 class QgsApplyDialog: public QDialog
 {
   public:
-    QgsApplyDialog(): QDialog(){}
-    ~QgsApplyDialog(){}
+    QgsApplyDialog(): QDialog() {}
+    ~QgsApplyDialog() {}
     virtual void apply() const = 0;
 };
 

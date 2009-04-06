@@ -22,15 +22,15 @@
 
 QgsSVGDiagramFactory::QgsSVGDiagramFactory(): QgsDiagramFactory()
 {
-  
+
 }
 
 QgsSVGDiagramFactory::~QgsSVGDiagramFactory()
 {
-  
+
 }
 
-QImage* QgsSVGDiagramFactory::createDiagram(int size, const QgsFeature& f, const QgsRenderContext& renderContext) const
+QImage* QgsSVGDiagramFactory::createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
   //check default size
   QSize defaultSize = mRenderer.defaultSize();
@@ -38,98 +38,98 @@ QImage* QgsSVGDiagramFactory::createDiagram(int size, const QgsFeature& f, const
   int imageWidth, imageHeight;
 
   //size parameter applies to maximum of width, height
-  if(defaultSize.width() >= defaultSize.height())
-    {
-      scaleFactor = ((double)size * diagramSizeScaleFactor(renderContext) * renderContext.rasterScaleFactor()) / defaultSize.width();
-    }
+  if ( defaultSize.width() >= defaultSize.height() )
+  {
+    scaleFactor = (( double )size * diagramSizeScaleFactor( renderContext ) * renderContext.rasterScaleFactor() ) / defaultSize.width();
+  }
   else
-    {
-      scaleFactor = ((double)size * diagramSizeScaleFactor(renderContext) * renderContext.rasterScaleFactor()) / defaultSize.height();
-    }
+  {
+    scaleFactor = (( double )size * diagramSizeScaleFactor( renderContext ) * renderContext.rasterScaleFactor() ) / defaultSize.height();
+  }
 
-  imageWidth = (int)(defaultSize.width() * scaleFactor);
-  imageHeight = (int)(defaultSize.height() * scaleFactor);
-  QImage* diagramImage = new QImage(QSize(imageWidth, imageHeight), QImage::Format_ARGB32_Premultiplied);
-  diagramImage->fill(qRgba(0, 0, 0, 0)); //transparent background
-  
+  imageWidth = ( int )( defaultSize.width() * scaleFactor );
+  imageHeight = ( int )( defaultSize.height() * scaleFactor );
+  QImage* diagramImage = new QImage( QSize( imageWidth, imageHeight ), QImage::Format_ARGB32_Premultiplied );
+  diagramImage->fill( qRgba( 0, 0, 0, 0 ) ); //transparent background
+
   QPainter p;
-  p.begin(diagramImage);
-  p.setRenderHint(QPainter::Antialiasing);
+  p.begin( diagramImage );
+  p.setRenderHint( QPainter::Antialiasing );
   //p.scale(scaleFactor, scaleFactor);
 
   //render image
-  mRenderer.render(&p);
+  mRenderer.render( &p );
 
   p.end();
   return diagramImage;
 }
 
-int QgsSVGDiagramFactory::getDiagramDimensions(int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height) const
+int QgsSVGDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height ) const
 {
   double scaleFactor;
   QSize defaultSize = mRenderer.defaultSize();
   //size parameter applies to maximum of width, height
-  if(defaultSize.width() >= defaultSize.height())
-    {
-      scaleFactor = ((double)size * diagramSizeScaleFactor(context) * context.rasterScaleFactor()) / defaultSize.width();
-    }
+  if ( defaultSize.width() >= defaultSize.height() )
+  {
+    scaleFactor = (( double )size * diagramSizeScaleFactor( context ) * context.rasterScaleFactor() ) / defaultSize.width();
+  }
   else
-    {
-      scaleFactor = ((double)size * diagramSizeScaleFactor(context) * context.rasterScaleFactor()) / defaultSize.height();
-    }
-    width = (int)(defaultSize.width() * scaleFactor);
-    height = (int)(defaultSize.height() * scaleFactor);
-    return 0;
+  {
+    scaleFactor = (( double )size * diagramSizeScaleFactor( context ) * context.rasterScaleFactor() ) / defaultSize.height();
+  }
+  width = ( int )( defaultSize.width() * scaleFactor );
+  height = ( int )( defaultSize.height() * scaleFactor );
+  return 0;
 }
 
-bool QgsSVGDiagramFactory::setSVGData(const QByteArray& data, const QString& filePath)
+bool QgsSVGDiagramFactory::setSVGData( const QByteArray& data, const QString& filePath )
 {
   mSvgFilePath = filePath;
-  return mRenderer.load(data);
+  return mRenderer.load( data );
 }
 
-bool QgsSVGDiagramFactory::writeXML(QDomNode& overlay_node, QDomDocument& doc) const
+bool QgsSVGDiagramFactory::writeXML( QDomNode& overlay_node, QDomDocument& doc ) const
 {
-    QDomElement factoryElem = doc.createElement("factory");
-    factoryElem.setAttribute("type", "svg");
-    //add size units as an attribute to the factory element
-    writeSizeUnits(factoryElem, doc);
+  QDomElement factoryElem = doc.createElement( "factory" );
+  factoryElem.setAttribute( "type", "svg" );
+  //add size units as an attribute to the factory element
+  writeSizeUnits( factoryElem, doc );
 
-    QDomElement svgPathElem = doc.createElement("svgPath");
-    QDomText svgPathText = doc.createTextNode(mSvgFilePath);
-    svgPathElem.appendChild(svgPathText);
-    factoryElem.appendChild(svgPathElem);
-    overlay_node.appendChild(factoryElem);
+  QDomElement svgPathElem = doc.createElement( "svgPath" );
+  QDomText svgPathText = doc.createTextNode( mSvgFilePath );
+  svgPathElem.appendChild( svgPathText );
+  factoryElem.appendChild( svgPathElem );
+  overlay_node.appendChild( factoryElem );
 
-    return true;
+  return true;
 }
 
-bool QgsSVGDiagramFactory::readXML(const QDomNode& factoryNode)
+bool QgsSVGDiagramFactory::readXML( const QDomNode& factoryNode )
 {
-    QDomElement factoryElem = factoryNode.toElement();
-    if(factoryElem.isNull())
-    {
-        return false;
-    }
+  QDomElement factoryElem = factoryNode.toElement();
+  if ( factoryElem.isNull() )
+  {
+    return false;
+  }
 
-    //size units
-    readSizeUnits(factoryElem);
+  //size units
+  readSizeUnits( factoryElem );
 
-    //get <svgPath> element
-    QDomElement svgPathElem = factoryElem.namedItem("svgPath").toElement();
-    if(svgPathElem.isNull())
-    {
-        return false;
-    }
+  //get <svgPath> element
+  QDomElement svgPathElem = factoryElem.namedItem( "svgPath" ).toElement();
+  if ( svgPathElem.isNull() )
+  {
+    return false;
+  }
 
-    QString svgFilePath = svgPathElem.text();
-    if(!mRenderer.load(svgFilePath))
-    {
-        return false;
-    }
-    mSvgFilePath = svgFilePath;
+  QString svgFilePath = svgPathElem.text();
+  if ( !mRenderer.load( svgFilePath ) )
+  {
+    return false;
+  }
+  mSvgFilePath = svgFilePath;
 
-    return true;
+  return true;
 }
 
 

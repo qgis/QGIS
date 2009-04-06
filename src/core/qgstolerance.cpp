@@ -17,9 +17,9 @@
 #include <QSettings>
 
 
-double QgsTolerance::toleranceInMapUnits(double tolerance, double mapUnitsPerPixel, UnitType units)
+double QgsTolerance::toleranceInMapUnits( double tolerance, double mapUnitsPerPixel, UnitType units )
 {
-  if (units == MapUnits)
+  if ( units == MapUnits )
   {
     return tolerance;
   }
@@ -30,14 +30,14 @@ double QgsTolerance::vertexSearchRadius( double mapUnitsPerPixel )
 {
   QSettings settings;
   double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = (QgsTolerance::UnitType) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt();
-  return toleranceInMapUnits(tolerance, mapUnitsPerPixel, units);
+  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt();
+  return toleranceInMapUnits( tolerance, mapUnitsPerPixel, units );
 }
 
 double QgsTolerance::defaultTolerance( double mapUnitsPerPixel )
 {
   QSettings settings;
   double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
-  UnitType units = (QgsTolerance::UnitType) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
-  return toleranceInMapUnits(tolerance, mapUnitsPerPixel, units);
+  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+  return toleranceInMapUnits( tolerance, mapUnitsPerPixel, units );
 }

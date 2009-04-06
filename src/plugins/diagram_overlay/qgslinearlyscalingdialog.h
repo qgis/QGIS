@@ -26,26 +26,26 @@ class QgsVectorLayer;
 
 class QgsLinearlyScalingDialog: public QgsDiagramRendererWidget, private Ui::QgsLinearlyScalingDialogBase
 {
-  Q_OBJECT
- public:
-  QgsLinearlyScalingDialog(QgsVectorLayer* vl);
-  ~QgsLinearlyScalingDialog();
-  QgsDiagramRenderer* createRenderer(int classAttr, const QgsAttributeList& attributes) const;
-  void applySettings(const QgsDiagramRenderer* renderer);
-  /**Is called from QgsDiagramDialog. Inserts new maximum value into the text widget*/
-  void changeClassificationField(int newField){mClassificationField = newField;}
-  void setWellKnownName(const QString& wkn);
+    Q_OBJECT
+  public:
+    QgsLinearlyScalingDialog( QgsVectorLayer* vl );
+    ~QgsLinearlyScalingDialog();
+    QgsDiagramRenderer* createRenderer( int classAttr, const QgsAttributeList& attributes ) const;
+    void applySettings( const QgsDiagramRenderer* renderer );
+    /**Is called from QgsDiagramDialog. Inserts new maximum value into the text widget*/
+    void changeClassificationField( int newField ) {mClassificationField = newField;}
+    void setWellKnownName( const QString& wkn );
 
-  QgsDiagramFactory::SizeUnit sizeUnit() const;
+    QgsDiagramFactory::SizeUnit sizeUnit() const;
 
- private:
-  QString mClassificationAttribute;
-  QString mWellKnownName;
-  int mClassificationField;
+  private:
+    QString mClassificationAttribute;
+    QString mWellKnownName;
+    int mClassificationField;
 
   private slots:
-  /**Calculates and inserts the maximum attribute value for the classification field*/
-  void insertMaximumAttributeValue();
+    /**Calculates and inserts the maximum attribute value for the classification field*/
+    void insertMaximumAttributeValue();
 };
 
 #endif

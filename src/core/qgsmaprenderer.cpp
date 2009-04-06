@@ -258,13 +258,13 @@ void QgsMapRenderer::render( QPainter* painter )
   bool placeOverlays = false;
   QgsOverlayObjectPositionManager* overlayManager = overlayManagerFromSettings();
   QList<QgsVectorOverlay*> allOverlayList; //list of all overlays, used to draw them after layers have been rendered
-  if(overlayManager)
+  if ( overlayManager )
   {
     placeOverlays = true;
   }
 
   //add map scale to render context
-  mRenderContext.setRendererScale(mScale);
+  mRenderContext.setRendererScale( mScale );
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
@@ -355,26 +355,26 @@ void QgsMapRenderer::render( QPainter* painter )
       }
 
       //create overlay objects for features within the view extent
-      if(ml->type() == QgsMapLayer::VectorLayer && overlayManager)
+      if ( ml->type() == QgsMapLayer::VectorLayer && overlayManager )
       {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>(ml);
-        if(vl)
+        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( ml );
+        if ( vl )
+        {
+          QList<QgsVectorOverlay*> thisLayerOverlayList;
+          vl->vectorOverlays( thisLayerOverlayList );
+
+          QList<QgsVectorOverlay*>::iterator overlayIt = thisLayerOverlayList.begin();
+          for ( ; overlayIt != thisLayerOverlayList.end(); ++overlayIt )
           {
-            QList<QgsVectorOverlay*> thisLayerOverlayList;
-            vl->vectorOverlays(thisLayerOverlayList);
-
-            QList<QgsVectorOverlay*>::iterator overlayIt = thisLayerOverlayList.begin();
-            for(; overlayIt != thisLayerOverlayList.end(); ++overlayIt)
+            if (( *overlayIt )->displayFlag() )
             {
-                if((*overlayIt)->displayFlag())
-                {
-                    (*overlayIt)->createOverlayObjects(mRenderContext);
-                    allOverlayList.push_back(*overlayIt);
-                }
+              ( *overlayIt )->createOverlayObjects( mRenderContext );
+              allOverlayList.push_back( *overlayIt );
             }
-
-        overlayManager->addLayer(vl, thisLayerOverlayList);
           }
+
+          overlayManager->addLayer( vl, thisLayerOverlayList );
+        }
       }
 
       if ( !ml->draw( mRenderContext ) )
@@ -459,14 +459,14 @@ void QgsMapRenderer::render( QPainter* painter )
   } // if (!mOverview)
 
   //find overlay positions and draw the vector overlays
-  if(overlayManager && allOverlayList.size() > 0)
+  if ( overlayManager && allOverlayList.size() > 0 )
   {
-    overlayManager->findObjectPositions(mRenderContext, mScaleCalculator->mapUnits());
+    overlayManager->findObjectPositions( mRenderContext, mScaleCalculator->mapUnits() );
     //draw all the overlays
     QList<QgsVectorOverlay*>::iterator allOverlayIt = allOverlayList.begin();
-    for(; allOverlayIt != allOverlayList.end(); ++allOverlayIt)
+    for ( ; allOverlayIt != allOverlayList.end(); ++allOverlayIt )
     {
-      (*allOverlayIt)->drawOverlayObjects(mRenderContext);
+      ( *allOverlayIt )->drawOverlayObjects( mRenderContext );
     }
     overlayManager->removeLayers();
     delete overlayManager;
@@ -769,28 +769,28 @@ QStringList& QgsMapRenderer::layerSet()
 QgsOverlayObjectPositionManager* QgsMapRenderer::overlayManagerFromSettings()
 {
   QSettings settings;
-  QString overlayAlgorithmQString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point").toString();
+  QString overlayAlgorithmQString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point" ).toString();
 
-QgsOverlayObjectPositionManager* result = 0;
+  QgsOverlayObjectPositionManager* result = 0;
 
-  if(overlayAlgorithmQString != "Central point")
+  if ( overlayAlgorithmQString != "Central point" )
   {
     QgsPALObjectPositionManager* palManager = new QgsPALObjectPositionManager();
-    if(overlayAlgorithmQString == "Chain")
+    if ( overlayAlgorithmQString == "Chain" )
     {
-      palManager->setPlacementAlgorithm("Chain");
+      palManager->setPlacementAlgorithm( "Chain" );
     }
-    else if(overlayAlgorithmQString == "Popmusic tabu chain")
+    else if ( overlayAlgorithmQString == "Popmusic tabu chain" )
     {
-      palManager->setPlacementAlgorithm("Popmusic tabu chain");
+      palManager->setPlacementAlgorithm( "Popmusic tabu chain" );
     }
-    else if(overlayAlgorithmQString == "Popmusic tabu")
+    else if ( overlayAlgorithmQString == "Popmusic tabu" )
     {
-      palManager->setPlacementAlgorithm("Popmusic tabu");
+      palManager->setPlacementAlgorithm( "Popmusic tabu" );
     }
-    else if(overlayAlgorithmQString == "Popmusic chain")
+    else if ( overlayAlgorithmQString == "Popmusic chain" )
     {
-      palManager->setPlacementAlgorithm("Popmusic chain");
+      palManager->setPlacementAlgorithm( "Popmusic chain" );
     }
     result = palManager;
   }

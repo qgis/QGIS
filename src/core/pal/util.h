@@ -44,230 +44,253 @@
 #include "rtree.hpp"
 #include "pointset.h"
 
-namespace pal {
+namespace pal
+{
 
-    class LabelPosition;
-    class Layer;
-    class Feature;
+  class LabelPosition;
+  class Layer;
+  class Feature;
 
-    inline bool ptrFeatureCompare (Feature * a, Feature * b) {
-        return a == b;
-    }
-
-
-    /**
-     * \brief For translating feature from GEOS to Pal
-     */
-    class Feat {
-      public:
-        const GEOSGeometry *geom;
-        const char *id;
-        int type;
-
-        int nbPoints;
-        double *x;
-        double *y;
-
-        double minmax[4]; // {xmin, ymin, xmax, ymax}
-
-        int nbHoles;
-        PointSet **holes;
-
-    };
+  inline bool ptrFeatureCompare( Feature * a, Feature * b )
+  {
+    return a == b;
+  }
 
 
-    /**
-     * \brief split GEOS geom (multilinestring, multipoint, multipolygon) => (point, linestring, polygone)
-     */
-    LinkedList<Feat*> * splitGeom (GEOSGeometry *the_geom, const char *geom_id);
+  /**
+   * \brief For translating feature from GEOS to Pal
+   */
+  class Feat
+  {
+    public:
+      const GEOSGeometry *geom;
+      const char *id;
+      int type;
 
-    typedef struct _feats {
-        Feature *feature;
-        PointSet *shape;
-        double priority;
-        int nblp;
-        LabelPosition **lPos;
-    } Feats;
+      int nbPoints;
+      double *x;
+      double *y;
+
+      double minmax[4]; // {xmin, ymin, xmax, ymax}
+
+      int nbHoles;
+      PointSet **holes;
+
+  };
 
 
-    typedef struct _elementary_transformation {
-        int feat;
-        int  old_label;
-        int  new_label;
-    } ElemTrans;
+  /**
+   * \brief split GEOS geom (multilinestring, multipoint, multipolygon) => (point, linestring, polygone)
+   */
+  LinkedList<Feat*> * splitGeom( GEOSGeometry *the_geom, const char *geom_id );
+
+  typedef struct _feats
+  {
+    Feature *feature;
+    PointSet *shape;
+    double priority;
+    int nblp;
+    LabelPosition **lPos;
+  } Feats;
+
+
+  typedef struct _elementary_transformation
+  {
+    int feat;
+    int  old_label;
+    int  new_label;
+  } ElemTrans;
 
 
 
 #define EPSILON 1e-9
 
 
-    inline int max (int a, int b)
-    {return (a > b ? a : b);}
+  inline int max( int a, int b )
+  {return( a > b ? a : b );}
 
-    inline double max (double a, double b)
-    {return (a > b ? a : b);}
+  inline double max( double a, double b )
+  {return( a > b ? a : b );}
 
-    inline int min (int a, int b)
-    {return (a < b ? a : b);}
+  inline int min( int a, int b )
+  {return( a < b ? a : b );}
 
-    inline double min (double a, double b)
-    {return (a < b ? a : b);}
+  inline double min( double a, double b )
+  {return( a < b ? a : b );}
 
-    inline double vabs (double x)
-    { return x >= 0 ? x : -x; }
+  inline double vabs( double x )
+  { return x >= 0 ? x : -x; }
 
 
 
-      
-    inline double degree2meter (double delta_deg){
-        double lat = delta_deg*0.5;
-        const static double rads = (4.0*atan(1.0))/180.0;
-        double a = cos(lat*rads);
-        a = a*a;
-        double c = 2.0*atan2(sqrt(a), sqrt(1.0 - a));
-        const static double ra = 6378000; // [m]
-        const static double e = 0.0810820288;
-        double radius = ra*(1.0 - e*e) / pow(1.0 - e*e*sin(lat*rads)*sin(lat*rads ), 1.5 );
-        double meters = (delta_deg) / 180.0 * radius * c; // [m]
 
-        return meters;
+  inline double degree2meter( double delta_deg )
+  {
+    double lat = delta_deg * 0.5;
+    const static double rads = ( 4.0 * atan( 1.0 ) ) / 180.0;
+    double a = cos( lat * rads );
+    a = a * a;
+    double c = 2.0 * atan2( sqrt( a ), sqrt( 1.0 - a ) );
+    const static double ra = 6378000; // [m]
+    const static double e = 0.0810820288;
+    double radius = ra * ( 1.0 - e * e ) / pow( 1.0 - e * e * sin( lat * rads ) * sin( lat * rads ), 1.5 );
+    double meters = ( delta_deg ) / 180.0 * radius * c; // [m]
+
+    return meters;
+  }
+
+  inline double unit_convert( double x, Units from, Units to, int dpi, double scale, double delta_canvas_width )
+  {
+    /* nothing to convert */
+    if ( from == to )
+    {
+      return x;
     }
 
-    inline double unit_convert (double x, Units from, Units to, int dpi, double scale, double delta_canvas_width)
-    { 
-        /* nothing to convert */
-        if (from == to){
-            return x;
+    switch ( from )
+    {
+      case pal::PIXEL:
+        switch ( to )
+        {
+          case pal::METER:
+            return (( x / double( dpi ) ) * 0.0254 ) * scale;
+          case pal::FOOT:
+            return (( x / double( dpi ) )*12 ) * scale;
+          case pal::DEGREE:
+            double iw = degree2meter( delta_canvas_width ) * 39.3700787;
+            return ( x * delta_canvas_width * scale ) / ( iw * dpi );
         }
-
-        switch (from){
-            case pal::PIXEL:
-                switch (to){
-                    case pal::METER:
-                        return ((x / double (dpi)) * 0.0254) * scale;
-                    case pal::FOOT:
-                        return ((x / double (dpi))*12) * scale;
-                    case pal::DEGREE:
-                        double iw = degree2meter(delta_canvas_width)*39.3700787;
-                        return (x * delta_canvas_width * scale) / (iw * dpi);
-                }
-                break;
-            case pal::METER:
-                switch (to){
-                    case pal::PIXEL:
-                        return (x*dpi)/(2.54*scale);
-                    case pal::FOOT:
-                        return x/0.3048;
-                    case pal::DEGREE:
-                        double mw = degree2meter(delta_canvas_width);
-                        return (x * delta_canvas_width) / mw;
-                }
-                break;
-            case pal::FOOT:
-                switch (to){
-                    case pal::PIXEL:
-                        return (x*dpi)/(12*scale);
-                    case pal::METER:
-                        return x*0.3048;
-                    case pal::DEGREE:
-                        double iw = degree2meter(delta_canvas_width)*39.3700787;
-                        return (x * delta_canvas_width) / iw;
-                }
-                break;
-            case pal::DEGREE:
-                switch (to){
-                    case pal::PIXEL:
-                        fprintf (stderr, "Degree to pixel not yet implemented");
-                        break;
-                    case pal::METER:
-                        fprintf (stderr, "Degree to meter not yet implemented");
-                        break;
-                    case pal::FOOT:
-                        fprintf (stderr, "Degree to foot not yet implemented");
-                        break;
-                }
-                break;
+        break;
+      case pal::METER:
+        switch ( to )
+        {
+          case pal::PIXEL:
+            return ( x*dpi ) / ( 2.54*scale );
+          case pal::FOOT:
+            return x / 0.3048;
+          case pal::DEGREE:
+            double mw = degree2meter( delta_canvas_width );
+            return ( x * delta_canvas_width ) / mw;
         }
-
-        fprintf (stderr, "Unable to convert. Unknown units");
-        return 0.0;
+        break;
+      case pal::FOOT:
+        switch ( to )
+        {
+          case pal::PIXEL:
+            return ( x*dpi ) / ( 12*scale );
+          case pal::METER:
+            return x*0.3048;
+          case pal::DEGREE:
+            double iw = degree2meter( delta_canvas_width ) * 39.3700787;
+            return ( x * delta_canvas_width ) / iw;
+        }
+        break;
+      case pal::DEGREE:
+        switch ( to )
+        {
+          case pal::PIXEL:
+            fprintf( stderr, "Degree to pixel not yet implemented" );
+            break;
+          case pal::METER:
+            fprintf( stderr, "Degree to meter not yet implemented" );
+            break;
+          case pal::FOOT:
+            fprintf( stderr, "Degree to foot not yet implemented" );
+            break;
+        }
+        break;
     }
 
-
-    /* From meters to PostScript Point */
-    inline void convert2pt (int *x, double scale, int dpi) {
-        *x = (int) ( ( (double) * x / scale) * 39.3700787402 * dpi + 0.5);
-    }
+    fprintf( stderr, "Unable to convert. Unknown units" );
+    return 0.0;
+  }
 
 
-    inline int convert2pt (double x, double scale, int dpi) {
-        return (int) ( (x / scale) * 39.3700787402 * dpi + 0.5);
-    }
+  /* From meters to PostScript Point */
+  inline void convert2pt( int *x, double scale, int dpi )
+  {
+    *x = ( int )((( double ) * x / scale ) * 39.3700787402 * dpi + 0.5 );
+  }
 
 
-    void sort (double* heap, int* x, int* y, int N);
+  inline int convert2pt( double x, double scale, int dpi )
+  {
+    return ( int )(( x / scale ) * 39.3700787402 * dpi + 0.5 );
+  }
 
 
-    inline bool intCompare (int a, int b) {
-        return a == b;
-    }
-
-    inline bool strCompare (char * a, char * b) {
-        return strcmp (a, b) == 0;
-    }
-
-    inline bool ptrLPosCompare (LabelPosition * a, LabelPosition * b) {
-        return a == b;
-    }
-
-    inline bool ptrPSetCompare (PointSet * a, PointSet * b) {
-        return a == b;
-    }
+  void sort( double* heap, int* x, int* y, int N );
 
 
-    inline bool ptrFeatCompare (Feat * a, Feat * b) {
-        return a == b;
-    }
+  inline bool intCompare( int a, int b )
+  {
+    return a == b;
+  }
 
-    inline bool ptrFeatsCompare (Feats * a, Feats * b) {
-        return a == b;
-    }
+  inline bool strCompare( char * a, char * b )
+  {
+    return strcmp( a, b ) == 0;
+  }
 
-    inline bool ptrLayerCompare (Layer * a, Layer * b) {
-        return a == b;
-    }
+  inline bool ptrLPosCompare( LabelPosition * a, LabelPosition * b )
+  {
+    return a == b;
+  }
 
-
-    inline bool ptrETCompare (ElemTrans * a, ElemTrans * b) {
-        return a == b;
-    }
-
-    /**
-     * \brief Sort an array of pointers
-     * \param items arays of pointers to sort
-     * \param N number of items
-     * \param greater function to compare two items
-     **/
-    void sort (void** items, int N, bool (*greater) (void *l, void *r));
-
-    void tabcpy (int n, const int* const x, const int* const y,
-                 const double* const prob, int *cx, int *cy, double *p);
+  inline bool ptrPSetCompare( PointSet * a, PointSet * b )
+  {
+    return a == b;
+  }
 
 
-    typedef struct {
-        LabelPosition *lp;
-        int *nbOv;
-        double *cost;
-        double *inactiveCost;
-        //int *feat;
-    } CountContext;
+  inline bool ptrFeatCompare( Feat * a, Feat * b )
+  {
+    return a == b;
+  }
 
-    /*
-     * count overlap, ctx = p_lp
-     */
-    bool countOverlapCallback (LabelPosition *lp, void *ctx);
+  inline bool ptrFeatsCompare( Feats * a, Feats * b )
+  {
+    return a == b;
+  }
 
-    bool countFullOverlapCallback (LabelPosition *lp, void *ctx);
+  inline bool ptrLayerCompare( Layer * a, Layer * b )
+  {
+    return a == b;
+  }
+
+
+  inline bool ptrETCompare( ElemTrans * a, ElemTrans * b )
+  {
+    return a == b;
+  }
+
+  /**
+   * \brief Sort an array of pointers
+   * \param items arays of pointers to sort
+   * \param N number of items
+   * \param greater function to compare two items
+   **/
+  void sort( void** items, int N, bool ( *greater )( void *l, void *r ) );
+
+  void tabcpy( int n, const int* const x, const int* const y,
+               const double* const prob, int *cx, int *cy, double *p );
+
+
+  typedef struct
+  {
+    LabelPosition *lp;
+    int *nbOv;
+    double *cost;
+    double *inactiveCost;
+    //int *feat;
+  } CountContext;
+
+  /*
+   * count overlap, ctx = p_lp
+   */
+  bool countOverlapCallback( LabelPosition *lp, void *ctx );
+
+  bool countFullOverlapCallback( LabelPosition *lp, void *ctx );
 
 } // namespace
 

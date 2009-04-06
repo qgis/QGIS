@@ -101,7 +101,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
     if ( snappingTol < 0 )
     {
       //use search tolerance for vertex editing
-      snapLayer.mTolerance = QgsTolerance::vertexSearchRadius(mMapCanvas->mapUnitsPerPixel());
+      snapLayer.mTolerance = QgsTolerance::vertexSearchRadius( mMapCanvas->mapUnitsPerPixel() );
     }
     else
     {
@@ -196,7 +196,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
         //tolerance
         snapLayer.mTolerance = tolIt->toDouble();
-        snapLayer.mUnitType = (QgsTolerance::UnitType) tolUnitIt->toInt();
+        snapLayer.mUnitType = ( QgsTolerance::UnitType ) tolUnitIt->toInt();
 
         //segment or vertex
         if (( *snapIt ) == "to_vertex" )
@@ -248,7 +248,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       }
 
       //default snapping tolerance (returned in map units)
-      snapLayer.mTolerance = QgsTolerance::defaultTolerance(mMapCanvas->mapUnitsPerPixel());
+      snapLayer.mTolerance = QgsTolerance::defaultTolerance( mMapCanvas->mapUnitsPerPixel() );
       snapLayer.mUnitType = QgsTolerance::MapUnits;
 
       snapLayers.append( snapLayer );

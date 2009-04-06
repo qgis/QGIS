@@ -198,19 +198,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
   int index;
-  if (settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt() == QgsTolerance::MapUnits)
+  if ( settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt() == QgsTolerance::MapUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
-  } 
+  }
   else
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  if (settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() == QgsTolerance::MapUnits)
+  if ( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() == QgsTolerance::MapUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
-  } 
+  }
   else
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "pixels" ) );
@@ -242,19 +242,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   groupBox_5->setEnabled( false );
 #endif //Q_WS_MAC
 
-   //overlay placement algorithm
-  mOverlayAlgorithmComboBox->insertItem(0, tr("Central point (fastest)"));
-  mOverlayAlgorithmComboBox->insertItem(1, tr("Chain (fast)"));
-  mOverlayAlgorithmComboBox->insertItem(2, tr("Popmusic tabu chain (slow)"));
-  mOverlayAlgorithmComboBox->insertItem(3, tr("Popmusic tabu (slow)"));
-  mOverlayAlgorithmComboBox->insertItem(4, tr("Popmusic chain (very slow)"));
+  //overlay placement algorithm
+  mOverlayAlgorithmComboBox->insertItem( 0, tr( "Central point (fastest)" ) );
+  mOverlayAlgorithmComboBox->insertItem( 1, tr( "Chain (fast)" ) );
+  mOverlayAlgorithmComboBox->insertItem( 2, tr( "Popmusic tabu chain (slow)" ) );
+  mOverlayAlgorithmComboBox->insertItem( 3, tr( "Popmusic tabu (slow)" ) );
+  mOverlayAlgorithmComboBox->insertItem( 4, tr( "Popmusic chain (very slow)" ) );
 
-  QString overlayAlgorithmString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point").toString();
-  if(overlayAlgorithmString == "Chain"){mOverlayAlgorithmComboBox->setCurrentIndex(1);}
-  else if(overlayAlgorithmString == "Popmusic tabu chain"){mOverlayAlgorithmComboBox->setCurrentIndex(2);}
-  else if(overlayAlgorithmString == "Popmusic tabu"){mOverlayAlgorithmComboBox->setCurrentIndex(3);}
-  else if(overlayAlgorithmString == "Popmusic chain"){mOverlayAlgorithmComboBox->setCurrentIndex(4);}
-  else{mOverlayAlgorithmComboBox->setCurrentIndex(0);} //default is central point
+  QString overlayAlgorithmString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point" ).toString();
+  if ( overlayAlgorithmString == "Chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 1 );}
+  else if ( overlayAlgorithmString == "Popmusic tabu chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 2 );}
+  else if ( overlayAlgorithmString == "Popmusic tabu" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 3 );}
+  else if ( overlayAlgorithmString == "Popmusic chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 4 );}
+  else {mOverlayAlgorithmComboBox->setCurrentIndex( 0 );} //default is central point
 }
 
 //! Destructor
@@ -346,25 +346,25 @@ void QgsOptions::saveOptions()
 
   //overlay placement method
   int overlayIndex = mOverlayAlgorithmComboBox->currentIndex();
-  if(overlayIndex == 1)
+  if ( overlayIndex == 1 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Chain");
+    settings.setValue( "qgis/overlayPlacementAlgorithm", "Chain" );
   }
-  else if(overlayIndex == 2)
+  else if ( overlayIndex == 2 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic tabu chain");
+    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic tabu chain" );
   }
-  else if(overlayIndex == 3)
+  else if ( overlayIndex == 3 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm",  "Popmusic tabu");
+    settings.setValue( "qgis/overlayPlacementAlgorithm",  "Popmusic tabu" );
   }
-  else if(overlayIndex == 4)
+  else if ( overlayIndex == 4 )
   {
-    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic chain");
+    settings.setValue( "qgis/overlayPlacementAlgorithm", "Popmusic chain" );
   }
   else
   {
-     settings.setValue( "qgis/overlayPlacementAlgorithm", "Central point" );
+    settings.setValue( "qgis/overlayPlacementAlgorithm", "Central point" );
   }
 
   if ( cmbTheme->currentText().length() == 0 )
@@ -431,10 +431,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/default_snap_mode", defaultSnapModeString );
   settings.setValue( "/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value() );
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value() );
-  settings.setValue( "/qgis/digitizing/default_snapping_tolerance_unit", 
-                        (mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
-  settings.setValue( "/qgis/digitizing/search_radius_vertex_edit_unit", 
-                        (mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+  settings.setValue( "/qgis/digitizing/default_snapping_tolerance_unit",
+                     ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+  settings.setValue( "/qgis/digitizing/search_radius_vertex_edit_unit",
+                     ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
 
 
   QString markerComboText = mMarkerStyleComboBox->currentText();

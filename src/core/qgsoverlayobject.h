@@ -30,19 +30,19 @@ class QgsGeometry;
 class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
 {
   public:
-    QgsOverlayObject(int width = 0, int height = 0, double rotation = 0, QgsGeometry* geometry = 0);
+    QgsOverlayObject( int width = 0, int height = 0, double rotation = 0, QgsGeometry* geometry = 0 );
     virtual ~QgsOverlayObject();
 
     //copy constructor and assignment operator necessary because of mGeometry
-    QgsOverlayObject(const QgsOverlayObject& other);
-    QgsOverlayObject& operator=(const QgsOverlayObject& other);
+    QgsOverlayObject( const QgsOverlayObject& other );
+    QgsOverlayObject& operator=( const QgsOverlayObject& other );
 
 
-   /**Returns the feature geometry in geos format. The calling function does _not_ take
-    ownership of the generated object*/
-   GEOSGeometry* getGeosGeometry();
-   /**Feature geometry is released when object is destructed so this function is empty*/
-    void releaseGeosGeometry(GEOSGeometry *the_geom) {}
+    /**Returns the feature geometry in geos format. The calling function does _not_ take
+     ownership of the generated object*/
+    GEOSGeometry* getGeosGeometry();
+    /**Feature geometry is released when object is destructed so this function is empty*/
+    void releaseGeosGeometry( GEOSGeometry *the_geom ) {}
 
     //getters
     int width() const {return mWidth;}
@@ -54,13 +54,13 @@ class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
     QList<QgsPoint> positions() const {return mPositions;}
 
     //setters
-    void setHeight(int height) {mHeight = height;}
-    void setWidth(int width) {mWidth = width;}
-    void setRotation(double rotation) {mRotation = rotation;}
+    void setHeight( int height ) {mHeight = height;}
+    void setWidth( int width ) {mWidth = width;}
+    void setRotation( double rotation ) {mRotation = rotation;}
     /**Set geometry. This class takes ownership of the object*/
-    void setGeometry(QgsGeometry* g);
+    void setGeometry( QgsGeometry* g );
     /**Adds a position in map coordinates*/
-    void addPosition(const QgsPoint& position);
+    void addPosition( const QgsPoint& position );
 
 
   private:

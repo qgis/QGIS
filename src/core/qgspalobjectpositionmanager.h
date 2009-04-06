@@ -1,10 +1,10 @@
- /***************************************************************************
-                         qgspalobjectpositionmanager.h  -  description
-                         ---------------------------------
-    begin                : October 2008
-    copyright            : (C) 2008 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
+/***************************************************************************
+                        qgspalobjectpositionmanager.h  -  description
+                        ---------------------------------
+   begin                : October 2008
+   copyright            : (C) 2008 by Marco Hugentobler
+   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+***************************************************************************/
 
 /***************************************************************************
  *                                                                         *
@@ -26,13 +26,13 @@ class QgsPALObjectPositionManager: public QgsOverlayObjectPositionManager
   public:
     QgsPALObjectPositionManager();
     ~QgsPALObjectPositionManager();
-    void addLayer(QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays);
-    void findObjectPositions(const QgsRenderContext& renderContext, QGis::UnitType unitType);
+    void addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays );
+    void findObjectPositions( const QgsRenderContext& renderContext, QGis::UnitType unitType );
     void removeLayers();
 
     /**Sets algorithm used for object placements. Possibilities are:
       Chain, Popmusic tabu chain, Popmusic tabu, Popmusic chain*/
-    void setPlacementAlgorithm(const QString& algorithmName);
+    void setPlacementAlgorithm( const QString& algorithmName );
 
   private:
     pal::Pal mPositionEngine;

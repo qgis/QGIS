@@ -35,12 +35,12 @@ static const QString pluginName = "diagram overlay";
 static const QString pluginDescription = "A plugin for placing diagrams on vector layers";
 static const QString pluginVersion = "Version 0.0.1";
 
-QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin(QgisInterface* iface): QObject(), QgsVectorOverlayPlugin(pluginName, pluginDescription, pluginVersion), mInterface(iface)
+QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgsVectorOverlayPlugin( pluginName, pluginDescription, pluginVersion ), mInterface( iface )
 {
-  if(iface && iface->mainWindow())
-    {
-      connect(iface->mainWindow(), SIGNAL(projectRead()), this, SLOT(projectRead()));
-    }
+  if ( iface && iface->mainWindow() )
+  {
+    connect( iface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
+  }
 }
 
 QgsDiagramOverlayPlugin::~QgsDiagramOverlayPlugin()
@@ -53,20 +53,20 @@ void QgsDiagramOverlayPlugin::projectRead()
   //for a test, print out the content of the project file
   QString projectFileName = QgsProject::instance()->fileName();
 
-  if(projectFileName.isEmpty())
-    {
-      return;
-    }
+  if ( projectFileName.isEmpty() )
+  {
+    return;
+  }
 
-  QFile projectFile(projectFileName);
+  QFile projectFile( projectFileName );
   QDomDocument projectDocument;
-  if(!projectDocument.setContent(&projectFile))
-    {
-      return;
-    }
+  if ( !projectDocument.setContent( &projectFile ) )
+  {
+    return;
+  }
 
   //iterate over all maplayers
-  QDomNodeList mapLayerList = projectDocument.documentElement().elementsByTagName("maplayer");
+  QDomNodeList mapLayerList = projectDocument.documentElement().elementsByTagName( "maplayer" );
   QDomElement mapLayerElem;
   QDomNodeList overlayList;
   QDomElement overlayElem;
@@ -77,57 +77,57 @@ void QgsDiagramOverlayPlugin::projectRead()
   QString layerId;
 
   //iterate through all maplayer elements
-  for(int i = 0; i < mapLayerList.size(); ++i)
+  for ( int i = 0; i < mapLayerList.size(); ++i )
+  {
+    mapLayerElem = mapLayerList.at( i ).toElement();
+    overlayList = mapLayerElem.elementsByTagName( "overlay" );
+
+    //find out layer id
+    idList = mapLayerElem.elementsByTagName( "id" );
+    if ( idList.size() < 1 )
     {
-      mapLayerElem = mapLayerList.at(i).toElement();
-      overlayList = mapLayerElem.elementsByTagName("overlay");
-
-      //find out layer id
-      idList = mapLayerElem.elementsByTagName("id");
-      if(idList.size() < 1)
-	{
-	  continue;
-	}
-      layerId = idList.at(0).toElement().text();
-
-      //iterate through all overlay elements
-      for(int j = 0; j < overlayList.size(); ++j)
-	{
-	  overlayElem = overlayList.at(j).toElement();
-	  if(overlayElem.attribute("type") == "diagram")
-	    {
-	      //get a pointer to the vector layer which owns the diagram overlay (use QgsMapLayerRegistry)
-	      currentVectorLayer = dynamic_cast<QgsVectorLayer*>(QgsMapLayerRegistry::instance()->mapLayer(layerId));
-	      if(!currentVectorLayer)
-		{
-		  continue;
-		}
-
-	      //create an overlay object
-	      newDiagramOverlay = new QgsDiagramOverlay(currentVectorLayer);
-	      newDiagramOverlay->readXML(overlayElem);
-
-	      //add the overlay to the vector layer
-	      currentVectorLayer->addOverlay(newDiagramOverlay);
-
-	      //notify the legend that the layer legend needs to be changed
-	      if(mInterface)
-		{
-		  mInterface->refreshLegend(currentVectorLayer);
-		}
-	    }
-	}
+      continue;
     }
+    layerId = idList.at( 0 ).toElement().text();
+
+    //iterate through all overlay elements
+    for ( int j = 0; j < overlayList.size(); ++j )
+    {
+      overlayElem = overlayList.at( j ).toElement();
+      if ( overlayElem.attribute( "type" ) == "diagram" )
+      {
+        //get a pointer to the vector layer which owns the diagram overlay (use QgsMapLayerRegistry)
+        currentVectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+        if ( !currentVectorLayer )
+        {
+          continue;
+        }
+
+        //create an overlay object
+        newDiagramOverlay = new QgsDiagramOverlay( currentVectorLayer );
+        newDiagramOverlay->readXML( overlayElem );
+
+        //add the overlay to the vector layer
+        currentVectorLayer->addOverlay( newDiagramOverlay );
+
+        //notify the legend that the layer legend needs to be changed
+        if ( mInterface )
+        {
+          mInterface->refreshLegend( currentVectorLayer );
+        }
+      }
+    }
+  }
 }
 
-QgsApplyDialog* QgsDiagramOverlayPlugin::dialog(QgsVectorLayer* vl) const
+QgsApplyDialog* QgsDiagramOverlayPlugin::dialog( QgsVectorLayer* vl ) const
 {
-  return new QgsDiagramDialog(vl);
+  return new QgsDiagramDialog( vl );
 }
 
-QGISEXTERN QgisPlugin* classFactory(QgisInterface* iface)
+QGISEXTERN QgisPlugin* classFactory( QgisInterface* iface )
 {
-  return new QgsDiagramOverlayPlugin(iface);
+  return new QgsDiagramOverlayPlugin( iface );
 }
 
 QGISEXTERN QString name()
@@ -150,7 +150,7 @@ QGISEXTERN int type()
   return QgisPlugin::VECTOR_OVERLAY;
 }
 
-QGISEXTERN void unload(QgisPlugin* theQgsDiagramOverlayPluginPointer)
+QGISEXTERN void unload( QgisPlugin* theQgsDiagramOverlayPluginPointer )
 {
   delete theQgsDiagramOverlayPluginPointer;
 }

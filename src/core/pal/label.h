@@ -34,96 +34,98 @@
 #ifndef _LABEL_H
 #define _LABEL_H
 
-namespace pal {
+namespace pal
+{
 
-    class LabelPosition;
-    class PalGeometry;
+  class LabelPosition;
+  class PalGeometry;
 
-    /**
-     * \brief Represent a label to be displayed
-     */
-    class Label {
+  /**
+   * \brief Represent a label to be displayed
+   */
+  class Label
+  {
 
-        friend class LabelPosition;
+      friend class LabelPosition;
     private:
-        double x[4];
-        double y[4];
+      double x[4];
+      double y[4];
 
-        double a;
+      double a;
 
-        char *featureId;
-        char *lyrName;
+      char *featureId;
+      char *lyrName;
 
-        PalGeometry *userGeom;
+      PalGeometry *userGeom;
 
-        /**
-         * \brief Create a new label
-         *
-         * @param x x coordinate of down-left label corner
-         * @param y y coordinate of down-left label corner
-         * @param alpha rotation to aplay to the text
-         * @param ftid id of the corresponding feature
-         * @param lyrName name of the corresponding layer
-         * @param userGeom PalGeometry of the feature
-         */
-        Label (double x[4], double y[4], double alpha, const char *ftid, const char *lyrName, PalGeometry *userGeom);
+      /**
+       * \brief Create a new label
+       *
+       * @param x x coordinate of down-left label corner
+       * @param y y coordinate of down-left label corner
+       * @param alpha rotation to aplay to the text
+       * @param ftid id of the corresponding feature
+       * @param lyrName name of the corresponding layer
+       * @param userGeom PalGeometry of the feature
+       */
+      Label( double x[4], double y[4], double alpha, const char *ftid, const char *lyrName, PalGeometry *userGeom );
 
     public:
-        /**
-         * \brief delete a label
-         */
-        ~Label();
+      /**
+       * \brief delete a label
+       */
+      ~Label();
 
-        /**
-         * \brief return the down-left x coordinate
-         * @return x coordinate
-         */
-        double getOrigX();
+      /**
+       * \brief return the down-left x coordinate
+       * @return x coordinate
+       */
+      double getOrigX();
 
-        /**
-         * \brief return the down-left y coordinate
-         * @return y coordinate
-         */
-        double getOrigY();
+      /**
+       * \brief return the down-left y coordinate
+       * @return y coordinate
+       */
+      double getOrigY();
 
-        /**
-         * \brief get a specific x coordinate
-         * @param i 0 => down-left, 1=>down-right, 2=>up-right 3=> up-left
-         * @return the i'th x coordinate
-         */
-        double getX (size_t i);
+      /**
+       * \brief get a specific x coordinate
+       * @param i 0 => down-left, 1=>down-right, 2=>up-right 3=> up-left
+       * @return the i'th x coordinate
+       */
+      double getX( size_t i );
 
-        /**
-         * \brief get a specific y coordinate
-         * @param i 0 => down-left, 1=>down-right, 2=>up-right 3=> up-left
-         * @return the i'th y coordinate
-         */
-        double getY (size_t i);
+      /**
+       * \brief get a specific y coordinate
+       * @param i 0 => down-left, 1=>down-right, 2=>up-right 3=> up-left
+       * @return the i'th y coordinate
+       */
+      double getY( size_t i );
 
-        /**
-         * \brief return the label orientation
-         * @return alpha in rad, couterclockwise
-         */
-        double getRotation();
+      /**
+       * \brief return the label orientation
+       * @return alpha in rad, couterclockwise
+       */
+      double getRotation();
 
-        /**
-         * \brief return the name of the layer wich contains the feature
-         * @return the layer's name
-         */
-        const char *getLayerName();
+      /**
+       * \brief return the name of the layer wich contains the feature
+       * @return the layer's name
+       */
+      const char *getLayerName();
 
-        /**
-         * \brief return the feature's unique id
-         * @return the feature's id
-         */
-        const char *getFeatureId();
+      /**
+       * \brief return the feature's unique id
+       * @return the feature's id
+       */
+      const char *getFeatureId();
 
-        /**
-         * \brief return user geometry (pal::Layer::registerFeature())
-         * @return pointer to the user geometry
-         */
-        PalGeometry * getGeometry();
-    };
+      /**
+       * \brief return user geometry (pal::Layer::registerFeature())
+       * @return pointer to the user geometry
+       */
+      PalGeometry * getGeometry();
+  };
 
 } // end namespace pal
 
