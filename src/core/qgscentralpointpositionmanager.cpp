@@ -182,8 +182,8 @@ int QgsCentralPointPositionManager::findObjectPosition(const unsigned char* wkb,
         }
         currentPosition+= sizeof(int);
 
-        double x[numberOfPoints];
-        double y[numberOfPoints];
+        double *x = new double[numberOfPoints];
+        double *y = new double[numberOfPoints];
 
         for(int i = 0; i < numberOfPoints; ++i)
           {
@@ -197,7 +197,11 @@ int QgsCentralPointPositionManager::findObjectPosition(const unsigned char* wkb,
               }
           }
         double centroidX, centroidY;
-        if(calculatePolygonCentroid(x, y, numberOfPoints, centroidX, centroidY) != 0)
+        int res = calculatePolygonCentroid(x, y, numberOfPoints, centroidX, centroidY);
+        delete [] x;
+        delete [] y;
+
+        if( res != 0)
           {
             return 1;
           }

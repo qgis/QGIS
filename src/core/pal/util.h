@@ -58,7 +58,8 @@ namespace pal {
     /**
      * \brief For translating feature from GEOS to Pal
      */
-    typedef struct Feat {
+    class Feat {
+      public:
         const GEOSGeometry *geom;
         const char *id;
         int type;
@@ -72,7 +73,7 @@ namespace pal {
         int nbHoles;
         PointSet **holes;
 
-    } Feat;
+    };
 
 
     /**

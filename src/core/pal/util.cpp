@@ -247,8 +247,6 @@ namespace pal {
     void extractXYCoord (Feat *f) {
         int i, j;
 
-        double phi, lambda;
-
         //Projection *proj = pal->proj;
 
         const GEOSCoordSequence *coordSeq;
