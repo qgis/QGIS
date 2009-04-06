@@ -586,6 +586,18 @@ size_t QgsGeometry::wkbSize()
   return mGeometrySize;
 }
 
+GEOSGeometry* QgsGeometry::asGeos()
+{
+  if(mDirtyGeos)
+  {
+    if(!exportWkbToGeos())
+    {
+      return 0;
+    }
+  }
+  return mGeos;
+}
+
 
 QGis::WkbType QgsGeometry::wkbType()
 {

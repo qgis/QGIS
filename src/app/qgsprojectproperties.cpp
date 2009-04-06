@@ -166,7 +166,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       mSnappingLayerSettings.insert( *idIter, newEntry );
     }
   }
-
 }
 
 QgsProjectProperties::~QgsProjectProperties()

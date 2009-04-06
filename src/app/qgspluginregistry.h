@@ -84,6 +84,9 @@ class QgsPluginRegistry
     //! Check whether plugin is compatible with current version of QGIS
     bool isPythonPluginCompatible( QString packageName );
 
+    //! Returns metadata of all loaded plugins
+    QList<QgsPluginMetadata*> pluginData();
+  
   protected:
     //! protected constructor
     QgsPluginRegistry();

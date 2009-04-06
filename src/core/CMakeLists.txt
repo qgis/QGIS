@@ -7,6 +7,7 @@ SET(QGIS_CORE_SRCS
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
@@ -25,6 +26,8 @@ SET(QGIS_CORE_SRCS
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
+  qgsoverlayobject.cpp
+  qgspalobjectpositionmanager.cpp
   qgspoint.cpp
   qgsproject.cpp
   qgsprojectfiletransform.cpp
@@ -47,6 +50,7 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectoroverlay.cpp
 
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemgroup.cpp
@@ -63,6 +67,21 @@ SET(QGIS_CORE_SRCS
   composer/qgssingleboxscalebarstyle.cpp
   composer/qgsticksscalebarstyle.cpp
   composer/qgscomposition.cpp
+
+  pal/feature.cpp
+  pal/geomfunction.cpp
+  pal/label.cpp
+  pal/labelposition.cpp
+  pal/layer.cpp
+  pal/pal.cpp
+  pal/palstat.cpp
+  pal/pointset.cpp
+  pal/priorityqueue.cpp
+  pal/problem.cpp
+  pal/util.cpp
+  pal/linkedlist.hpp
+  pal/hashtable.hpp
+  pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
   raster/qgscolorrampshader.cpp
@@ -188,6 +207,7 @@ QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   composer
+  pal
   raster 
   renderer 
   symbology
@@ -207,6 +227,13 @@ IF (WIN32)
   ELSE (MSVC)
     ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
   ENDIF (MSVC)
+ENDIF (WIN32)
+
+#for PAL classes
+IF (WIN32)
+    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
+ELSE (WIN32)
+    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
 ENDIF (WIN32)
 
 #############################################################
