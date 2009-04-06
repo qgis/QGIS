@@ -35,7 +35,7 @@ public:
                      const QString& aDatabase,
                      const QString& aUsername,
                      const QString& aPassword,
-                     SSLmode sslmode );
+                     SSLmode sslmode = SSLprefer );
   
   //! Set all data source related members at once
   void setDataSource(const QString& aSchema,
