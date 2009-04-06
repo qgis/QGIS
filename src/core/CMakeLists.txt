@@ -326,6 +326,7 @@ qgscoordinatereferencesystem.h
 qgsvectordataprovider.h
 qgsvectorfilewriter.h
 qgsvectorlayer.h
+qgstolerance.h
 
 raster/qgscliptominmaxenhancement.h
 raster/qgscolorrampshader.h
