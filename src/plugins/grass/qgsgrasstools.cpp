@@ -266,6 +266,8 @@ bool QgsGrassTools::loadConfig( QString filePath )
   // Go through the sections and modules and add them to the list view
   addModules( 0, modulesElem );
 
+  mModulesTree->topLevelItem( 0 )->setExpanded( true );
+
   file.close();
   return true;
 }
@@ -303,7 +305,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
         QString label = e.attribute( "label" );
         QgsDebugMsg( QString( "label = %1" ).arg( label ) );
         item->setText( 0, label );
-        item->setExpanded( true );
+        item->setExpanded( false );
 
         addModules( item, e );
 
