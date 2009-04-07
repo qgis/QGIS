@@ -267,7 +267,7 @@ bool QgsGrassTools::loadConfig( QString filePath )
   // Go through the sections and modules and add them to the list view
   addModules( 0, modulesElem );
 
-  mModules->topLevelItem( 0 )->setExpanded( true );
+  mModulesTree->topLevelItem( 0 )->setExpanded( true );
 
   file.close();
   return true;
