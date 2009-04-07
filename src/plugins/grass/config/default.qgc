@@ -72,9 +72,6 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Config">
 		<section label="Region">
 			<section label="Region settings">
@@ -102,9 +99,6 @@
 				<grass name="m.cogo"/>
 			</section>
 		</section>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Raster">
@@ -248,9 +242,6 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Vector">
 		<section label="Develop map">
 			<section label="Topology management">
@@ -377,9 +368,6 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Imagery">
 		<section label="Develop images and group">
 			<grass name="i.image.mosaic"/>
@@ -409,9 +397,6 @@
 			<grass name="r.kappa"/>
 			<grass name="i.oif"/>
 		</section>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Database">
@@ -445,14 +430,8 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="3d Visualization">
 		<grass name="nviz"/>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Help">
