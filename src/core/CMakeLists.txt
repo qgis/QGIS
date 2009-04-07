@@ -115,50 +115,13 @@ IF (WITH_INTERNAL_SPATIALITE)
   ENDIF (WIN32 OR APPLE)
   IF (WIN32)
     ADD_DEFINITIONS(-DDLL_EXPORT)
-    IF (MSVC)
-      ADD_DEFINITIONS("-DSQLITE_API=__declspec(dllexport)")
-    ELSE (MSVC)
-      ADD_DEFINITIONS("\"-DSQLITE_API=__declspec(dllexport)\"")
-    ENDIF (MSVC)
   ENDIF (WIN32)
 
   SET(QGIS_CORE_SRCS
     ${QGIS_CORE_SRCS}
-    spatialite/spatialite/mbrcache.c
-    spatialite/spatialite/spatialite.c
-    spatialite/spatialite/virtualfdo.c
-    spatialite/spatialite/virtualnetwork.c
-    spatialite/spatialite/virtualshape.c
-
-    spatialite/spatialite_c99/spatialite_c99.c
-
-    spatialite/gaiageo/gg_endian.c
-    spatialite/gaiageo/gg_geometries.c
-    spatialite/gaiageo/gg_advanced.c
-    spatialite/gaiageo/gg_wkb.c
-    spatialite/gaiageo/gg_wkt.c
-    spatialite/gaiageo/gg_transform.c
-    spatialite/gaiageo/gg_shape.c
-    spatialite/gaiageo/gg_relations.c
-
-    spatialite/virtualtext/gaiaaux/gg_sqlaux.c
-    spatialite/virtualtext/gaiaaux/gg_utf8.c
-
-    spatialite/virtualtext/sqlite3/sqlite3.c
-
-    spatialite/gaiaexif/gaia_exif.c
-
-    spatialite/virtualtext/virtualtext/virtualtext.c
-
-    spatialite/versioninfo/version.c
-
+    spatialite/sqlite3.c
+    spatialite/spatialite.c
     )
-
-  IF (NOT MSVC)
-    SET_SOURCE_FILES_PROPERTIES(
-                spatialite/spatialite_c99/spatialite_c99.c
-                PROPERTIES COMPILE_FLAGS -std=c99)
-  ENDIF (NOT MSVC)
 
   INCLUDE_DIRECTORIES(spatialite/headers)
 ENDIF (WITH_INTERNAL_SPATIALITE)
@@ -299,6 +262,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   IF (WIN32 OR APPLE)
     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
   ENDIF (WIN32 OR APPLE)
+  IF (UNIX)
+    TARGET_LINK_LIBRARIES(qgis_core pthread)
+  ENDIF (UNIX)
 ELSE (WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)
