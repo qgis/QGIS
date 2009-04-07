@@ -21,6 +21,9 @@
 #include "qgsoverlayobjectpositionmanager.h"
 #include "pal.h"
 
+/**A class that uses the PAL library for overlay object placement
+* \note This class has been added in version 1.1
+*/
 class QgsPALObjectPositionManager: public QgsOverlayObjectPositionManager
 {
   public:

@@ -427,16 +427,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**access range */
     RangeData &range( int idx );
 
-    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object*/
+    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
+    @note this method was added in version 1.1
+    */
     void addOverlay( QgsVectorOverlay* overlay );
 
-    /**Removes all overlays of a given type*/
+    /**Removes all overlays of a given type
+    @note this method was added in version 1.1
+    */
     void removeOverlay( const QString& typeName );
 
-    /**Returns pointers to the overlays of this layer*/
+    /**Returns pointers to the overlays of this layer
+    @note this method was added in version 1.1
+    */
     void vectorOverlays( QList<QgsVectorOverlay*>& overlayList );
 
-    /**Returns the (first) overlay of a type, e.g. diagram or label*/
+    /**Returns the (first) overlay of a type, e.g. diagram or label
+    @note this method was added in version 1.1
+    */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
   public slots:

@@ -118,7 +118,8 @@ class CORE_EXPORT QgsGeometry
     */
     size_t wkbSize();
 
-    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete this object!*/
+    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+        @note this method was added in version 1.1*/
     GEOSGeometry* asGeos();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */

@@ -25,8 +25,10 @@
 class QgsGeometry;
 
 /**An object that holds information about the position and bounding box size of
-    an overlay object. It stores a copy of the feature geometry as this information is commonly used
-    to calculate object placement*/
+*    an overlay object. It stores a copy of the feature geometry as this information is commonly used
+*    to calculate object placement
+* \note This class has been added in version 1.1
+*/
 class CORE_EXPORT QgsOverlayObject: public pal::PalGeometry
 {
   public:
