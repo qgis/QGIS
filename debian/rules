@@ -16,6 +16,7 @@ CMAKE_OPTS = \
 	-D CMAKE_INSTALL_PREFIX=/usr \
 	-D CMAKE_SKIP_RPATH=TRUE \
 	-D BINDINGS_GLOBAL_INSTALL=TRUE \
+	-D GRASS_PREFIX=/usr/lib/grass64 \
 	-D PEDANTIC=TRUE
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -110,7 +111,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass/lib dh_shlibdeps
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass64/lib dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
