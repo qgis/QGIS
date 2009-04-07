@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.4
+CURRENT_PROJECT_VERSION = 2.1.5
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -18,7 +18,7 @@ QGIS_RELEASE_NAME = Unstable-trunk
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 1
 QGIS_VERSION_PATCH = 0
-QGIS_VERSION_BUILD = 20090319
+QGIS_VERSION_BUILD = 20090407
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
 QGIS_VERSION_INT = 10100
 
