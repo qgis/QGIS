@@ -25,7 +25,9 @@ class QgsRenderContext;
 class QgsVectorLayer;
 class QgsVectorOverlay;
 
-/**Interface for classes that arrange overlay objects of different layers on the map*/
+/**Interface for classes that arrange overlay objects of different layers on the map
+* \note This class has been added in version 1.1
+*/
 class QgsOverlayObjectPositionManager
 {
   public:

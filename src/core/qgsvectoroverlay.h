@@ -25,7 +25,9 @@ class QgsOverlayObject;
 class QgsRect;
 class QgsRenderContext;
 
-/**Base class for vector layer overlays (e.g. Diagrams, labels, etc.). For each object, the position of the bounding box is stored in a QgsOberlayObject. The vector overlays are drawn on top of all layers*/
+/**Base class for vector layer overlays (e.g. Diagrams, labels, etc.). For each object, the position of the bounding box is *stored in a QgsOberlayObject. The vector overlays are drawn on top of all layers
+* \note This class has been added in version 1.1
+*/
 class CORE_EXPORT QgsVectorOverlay
 {
   public:

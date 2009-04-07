@@ -179,7 +179,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
 
-    /**Creates an overlay object position manager subclass according to the current settings*/
+    /**Creates an overlay object position manager subclass according to the current settings
+    @note this method was added in version 1.1*/
     QgsOverlayObjectPositionManager* overlayManagerFromSettings();
 
   protected:
