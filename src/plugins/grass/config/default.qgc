@@ -68,16 +68,14 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Config">
 		<section label="Region">
 			<section label="Region settings">
                                 <grass name="g.region.save"/> 
                                 <grass name="g.region.zoom"/> 
                                 <grass name="g.region.multiple.raster"/> 
-                                <grass name="g.region.multiple.vector"/> 			</section>
+                                <grass name="g.region.multiple.vector"/>
+			</section>
 			<section label="Projection management">
                                 <section label="Print projection information of the current location"> 					<grass name="g.proj.print"/>
 				</section>
@@ -96,9 +94,6 @@
 				<grass name="m.cogo"/>
 			</section>
 		</section>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Raster">
@@ -241,9 +236,6 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Vector">
 		<section label="Develop map">
 			<section label="Topology management">
@@ -370,9 +362,6 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="Imagery">
 		<section label="Develop images and group">
 			<grass name="i.image.mosaic"/>
@@ -402,9 +391,6 @@
 			<grass name="r.kappa"/>
 			<grass name="i.oif"/>
 		</section>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Database">
@@ -438,14 +424,8 @@
 		</section>
 	</section>
 
-	<section label=" ">
-	</section>
-
 	<section label="3d Visualization">
 		<grass name="nviz"/>
-	</section>
-
-	<section label=" ">
 	</section>
 
 	<section label="Help">
