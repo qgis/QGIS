@@ -12,6 +12,7 @@ class QgsDataSourceURI
 %End
 
 public:
+  //! \note enumeration added in version 1.1
   enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire };
 
   //! default constructor
@@ -30,6 +31,7 @@ public:
   QString quotedTablename() const;
   
   //! Set all connection related members at once
+  //! \note This optional sslmode parameter has been added in version 1.1
   void setConnection(const QString& aHost,
                      const QString& aPort,
                      const QString& aDatabase,
