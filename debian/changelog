@@ -1,3 +1,9 @@
+qgis (1.1.0-3) UNRELEASED; urgency=low
+
+  * include diagram overlays 
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 08 Apr 2009 16:30:57 +0200
+
 qgis (1.1.0-2) UNRELEASED; urgency=low
 
   * change package names to reflect ABI (changes SONAME)
