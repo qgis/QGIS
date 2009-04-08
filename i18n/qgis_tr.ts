@@ -10532,10 +10532,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Kaynak</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Size Units:</source>
         <translation type="obsolete">Ölçü Birimleri:</translation>
     </message>

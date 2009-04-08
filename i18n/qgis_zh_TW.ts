@@ -11950,10 +11950,6 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">角度(度):</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Use best judgement when labels collide</source>
         <translation type="obsolete">當標籤重疊時使用最佳判斷</translation>
     </message>

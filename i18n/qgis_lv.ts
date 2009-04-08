@@ -9460,10 +9460,6 @@ p, li { white-space: pre-wrap; }
         <translation>Leņķis (grādi)</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Buffer labels?</source>
         <translation>Veidot buferi ap birku?</translation>
     </message>

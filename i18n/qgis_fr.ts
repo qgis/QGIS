@@ -10593,10 +10593,6 @@ p, li { white-space: pre-wrap; }
         <translation>Placement</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
-        <translation type="obsolete">°</translation>
-    </message>
-    <message>
         <source>Buffer</source>
         <translation>Buffer</translation>
     </message>
