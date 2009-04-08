@@ -69,6 +69,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectoroverlay.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 
 #ifdef Q_WS_X11
 #include "qgsclipper.h"
@@ -2181,12 +2182,24 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       if ( mProviderKey == "postgres" )
       {
         QgsDebugMsg( "Beautifying layer name " + name() );
+
         // adjust the display name for postgres layers
-        QRegExp reg( "\"[^\"]+\"\\.\"([^\"]+)\"" );
+        QRegExp reg( "\"[^\"]+\"\\.\"([^\"]+)\" \\(([^)]+)\\)" );
         reg.indexIn( name() );
         QStringList stuff = reg.capturedTexts();
         QString lName = stuff[1];
-        if ( lName.length() == 0 ) // fallback
+        if ( lName.length() == 3 )
+        {
+          const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
+
+          QMap<QString, QgsMapLayer*>::const_iterator it;
+          for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; it++ )
+            ;
+
+          if ( it != layers.constEnd() )
+            lName += "." + stuff[2];
+        }
+        else if ( lName.length() == 0 ) // fallback
           lName = name();
         setLayerName( lName );
         QgsDebugMsg( "Beautifying layer name " + name() );
