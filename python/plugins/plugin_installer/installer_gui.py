@@ -592,11 +592,12 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       plugin = plugins.all()[key]
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
-          infoString = (self.tr("Plugin installed successfully"),
-          self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
+          if QGIS_VER[0:3] == "1.1":
+            infoString = (self.tr("QGIS Python Plugin Installer"), self.tr("Plugin installed successfully"))
+          else:
+            infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
-          infoString = (self.tr("Plugin reinstalled successfully"),
-          self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
+          infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
@@ -634,6 +635,12 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
               pass
             if not plugin["repository"]:
               plugins.remove(key)
+    if plugins.all().has_key(key) and not plugins.all()[key]["status"] in ["not installed", "new"]:
+      if previousStatus in ["not installed", "new"]:
+        history.markChange(key,'A')
+      else:
+        history.markChange(key,'R')
+
     self.populatePluginTree()
     if infoString[0]:
       QMessageBox.information(self, infoString[0], infoString[1])
@@ -678,6 +685,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         plugins.setPluginData(key, "error_details", "")
       self.populatePluginTree()
       QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely."))
+      history.markChange(key,'D')
 
 
   # ----------------------------------------- #
