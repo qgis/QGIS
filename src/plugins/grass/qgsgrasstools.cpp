@@ -431,7 +431,7 @@ void QgsGrassTools::closeTools()
 
 void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
 {
-  QgsDebugMsg( "PluginManager filter changed to :" + theText );
+  QgsDebugMsg( "GRASS modules filter changed to :" + theText );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
   Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
   QRegExp myRegExp( theText, myCaseSensitivity, mySyntax );
