@@ -480,12 +480,10 @@ class geometryThread( QThread ):
     fields, QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
     points = []
-    print "here"
     while vprovider.nextFeature( inFeat ):
       inGeom = QgsGeometry( inFeat.geometry() )
       point = inGeom.asPoint()
       points.append( point )
-    print "or here"
     vprovider.rewind()
     vprovider.select( allAttrs )
     triangles = voronoi.computeDelaunayTriangulation( points )
@@ -500,11 +498,11 @@ class geometryThread( QThread ):
       polygon = []
       step = 0
       for index in indicies:
-        vprovider.featureAtId( index, feat, True,  allAttrs )
-        geom = QgsGeometry( feat.geometry() )
+        vprovider.featureAtId( index, inFeat, True,  allAttrs )
+        geom = QgsGeometry( inFeat.geometry() )
         point = QgsPoint( geom.asPoint() )
         polygon.append( point )
-        feat.addAttribute( step, QVariant( index ) )
+        if step <= 3: feat.addAttribute( step, QVariant( index ) )
         step += 1
       geometry = QgsGeometry().fromPolygon( [ polygon ] )
       feat.setGeometry( geometry )      
