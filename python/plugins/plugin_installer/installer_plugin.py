@@ -41,6 +41,9 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def getThemeIcon(self, theName):
     """ get the icon from the best available theme """
+    if not QGIS_MAJOR_VER: # QGIS 0.x
+      return QIcon(":/plugins/installer/" + theName)
+
     myCurThemePath = QgsApplication.activeThemePath() + "/plugins/" + theName;
     myDefThemePath = QgsApplication.defaultThemePath() + "/plugins/" + theName;
     myQrcPath = ":/plugins/installer/" + theName;
@@ -160,3 +163,27 @@ class InstallerPlugin():
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
     self.guiDlg = QgsPluginInstallerDialog(parent,flags)
     self.guiDlg.show()
+
+
+  # ----------------------------------------- #
+  def newlyInstalledPlugins(self):
+    """ return the list of newly installed plugins for further loading """
+    return history.toList("A")
+
+
+  # ----------------------------------------- #
+  def newlyUninstalledPlugins(self):
+    """ return the list of newly uninstalled plugins for further unloading """
+    return history.toList("D")
+
+
+  # ----------------------------------------- #
+  def newlyReinstalledPlugins(self):
+    """ return the list of newly reinstalled plugins for further reloading """
+    return history.toList("R")
+
+
+  # ----------------------------------------- #
+  def resetNewlyProcessedPlugins(self):
+    """ clear the dict of newly processed plugins """
+    history.clear()

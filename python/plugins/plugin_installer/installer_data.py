@@ -87,6 +87,41 @@ authorRepos  = [("Carson Farmer's Repository", "http://www.ftools.ca/cfarmerQgis
                 ("GIS-Lab Repository", 		"http://gis-lab.info/programs/qgis/qgis-repo.xml", "")]
 
 
+
+# --- class History  ----------------------------------------------------------------------- #
+class History(dict):
+  """ Dictionary for keeping changes made duging the session - will be used to complete the (un/re)loading """
+
+  # ----------------------------------------- #
+  def markChange(self, plugin, change):
+    """ mark the status change: A-added, D-deleted, R-reinstalled """
+    if change == "A" and self.get(plugin) == "D":   # installation right after uninstallation
+      self.__setitem__(plugin, "R")
+    elif change == "A":                             # any other installation
+      self.__setitem__(plugin, "A")
+    elif change == "D" and self.get(plugin) == "A": # uninstallation right after installation
+      self.pop(plugin)
+    elif change == "D":                             # any other uninstallation
+      self.__setitem__(plugin, "D")
+    elif change == "R" and self.get(plugin) == "A": # reinstallation right after installation
+      self.__setitem__(plugin, "A")
+    elif change == "R":                             # any other reinstallation
+      self.__setitem__(plugin, "R")
+
+  # ----------------------------------------- #
+  def toList(self, change):
+    """ return a list of plugins matching the given change """
+    result = []
+    for i in self.items():
+      if i[1] == change:
+        result += [i[0]]
+    return result
+# --- /class History  ---------------------------------------------------------------------- #
+
+
+
+
+
 # --- class QPHttp  ----------------------------------------------------------------------- #
 # --- It's a temporary workaround for broken proxy handling in Qt ------------------------- #
 class QPHttp(QHttp):
@@ -664,8 +699,7 @@ class Plugins(QObject):
 
 
 
-
-
 # public members:
+history = History()
 repositories = Repositories()
 plugins = Plugins()
