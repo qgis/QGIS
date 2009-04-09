@@ -95,6 +95,9 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
 
   qRegisterMetaType<QgsDetailedItemData>();
 
+  // disable plugin installer button for now until we resolve some problems [MD]
+  btnPluginInstaller->hide();
+#if 0
   // add installer's icon
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/plugin_installer.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/plugin_installer.png";
@@ -116,6 +119,7 @@ QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * paren
   {
     btnPluginInstaller->setEnabled( false );
   }
+#endif
 }
 
 
