@@ -204,6 +204,16 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_3" >
+      <attribute name="title" >
+       <string>Translators</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <item row="0" column="0" >
+        <widget class="QTextBrowser" name="txtTranslators" />
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item row="1" column="0" >
