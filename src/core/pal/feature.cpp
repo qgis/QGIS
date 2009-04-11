@@ -558,7 +558,7 @@ namespace pal
       int it;
 
       double dlx, dly; // delta from label center and bottom-left corner
-      double alpha; // rotation for the label
+      double alpha = 0.0; // rotation for the label
       double px, py;
       double dx;
       double dy;

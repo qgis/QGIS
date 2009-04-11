@@ -1502,13 +1502,11 @@ gaiaConvertCharset (char **buf, const char *fromCs, const char *toCs)
     char utf8buf[65536];
 #if defined(__MINGW32__) || defined(_WIN32)
     const char *pBuf;
-    int len;
-    int utf8len;
 #else /* not MINGW32 - WIN32 */
     char *pBuf;
+#endif
     size_t len;
     size_t utf8len;
-#endif
     char *pUtf8buf;
     iconv_t cvt = iconv_open (toCs, fromCs);
     if (cvt == (iconv_t) - 1)
@@ -1554,13 +1552,11 @@ gaiaConvertToUTF8 (void *cvtCS, const char *buf, int buflen, int *err)
     char *utf8buf = 0;
 #if defined(__MINGW32__) || defined(_WIN32)
     const char *pBuf;
-    int len;
-    int utf8len;
 #else
     char *pBuf;
+#endif
     size_t len;
     size_t utf8len;
-#endif
     int maxlen = buflen * 4;
     char *pUtf8buf;
     *err = 0;
@@ -2727,10 +2723,10 @@ exifParseTag (const unsigned char *blob, unsigned int offset, int endian_mode,
     type = exifImportU16 (blob + offset + 2, endian_mode, endian_arch);
     count = exifImportU32 (blob + offset + 4, endian_mode, endian_arch);
     tag = malloc (sizeof (gaiaExifTag));
-    tag->Gps = gps;
+    tag->Gps = (char) gps;
     tag->TagId = tag_id;
     tag->Type = type;
-    tag->Count = count;
+    tag->Count = (unsigned short) count;
     memcpy (tag->TagOffset, blob + offset + 8, 4);
     tag->ByteValue = NULL;
     tag->StringValue = NULL;
@@ -4228,14 +4224,11 @@ gaiaMeasureLength (double *coords, int vert)
     double y;
     double dist;
     int ind;
-    for (ind = 0; ind < vert; ind++)
+
+    gaiaGetPoint (coords, 0, &xx1, &yy1);
+
+    for (ind = 1; ind < vert; ind++)
       {
-	  if (ind == 0)
-	    {
-		gaiaGetPoint (coords, ind, &xx1, &yy1);
-	    }
-	  else
-	    {
 		gaiaGetPoint (coords, ind, &xx2, &yy2);
 		x = xx1 - xx2;
 		y = yy1 - yy2;
@@ -4243,7 +4236,6 @@ gaiaMeasureLength (double *coords, int vert)
 		lung += dist;
 		xx1 = xx2;
 		yy1 = yy2;
-	    }
       }
     return lung;
 }
@@ -4371,10 +4363,6 @@ gaiaIsPointOnRingSurface (gaiaRingPtr ring, double pt_x, double pt_y)
 	  if (y > maxy)
 	      maxy = y;
       }
-    if (x < minx || x > maxx)
-	goto end;		/* outside the bounding box (x axis) */
-    if (y < miny || y > maxy)
-	goto end;		/* outside the bounding box (y axis) */
     for (i = 0, j = cnt - 1; i < cnt; j = i++)
       {
 /* The definitive reference is "Point in Polyon Strategies" by
@@ -4383,14 +4371,13 @@ gaiaIsPointOnRingSurface (gaiaRingPtr ring, double pt_x, double pt_y)
 /  incorrect.
 */
 	  if ((((vert_y[i] <= pt_y) && (pt_y < vert_y[j]))
-	       || ((vert_y[j] <= pt_y) && (y < vert_y[i])))
+	       || ((vert_y[j] <= pt_y) && (pt_y < vert_y[i])))
 	      && (pt_x <
 		  (vert_x[j] - vert_x[i]) * (pt_y - vert_y[i]) / (vert_y[j] -
 								  vert_y[i]) +
 		  vert_x[i]))
 	      isInternal = !isInternal;
       }
-  end:
     free (vert_x);
     free (vert_y);
     return isInternal;
@@ -6277,21 +6264,18 @@ gaiaIsEmpty (gaiaGeomCollPtr geom)
       {
 	  /* checks for points */
 	  return 0;
-	  point = point->Next;
       }
     line = geom->FirstLinestring;
     while (line)
       {
 	  /* checks for linestrings */
 	  return 0;
-	  line = line->Next;
       }
     polyg = geom->FirstPolygon;
     while (polyg)
       {
 	  /* checks for polygons */
 	  return 0;
-	  polyg = polyg->Next;
       }
     return 1;
 }
@@ -9514,8 +9498,8 @@ gaiaFlushShpHeaders (gaiaShapefilePtr shp)
     *(buf_shp + 2) = 1;
     *(buf_shp + 3) = 1;
     gaiaExport32 (buf_shp + 4, dbf_recno, GAIA_LITTLE_ENDIAN, endian_arch);	/* exports # records in this DBF */
-    gaiaExport16 (buf_shp + 8, dbf_size, GAIA_LITTLE_ENDIAN, endian_arch);	/* exports the file header size */
-    gaiaExport16 (buf_shp + 10, dbf_reclen, GAIA_LITTLE_ENDIAN, endian_arch);	/* exports the record length */
+    gaiaExport16 (buf_shp + 8, (short) dbf_size, GAIA_LITTLE_ENDIAN, endian_arch);	/* exports the file header size */
+    gaiaExport16 (buf_shp + 10, (short) dbf_reclen, GAIA_LITTLE_ENDIAN, endian_arch);	/* exports the record length */
     fwrite (buf_shp, 1, 32, fl_dbf);
 }
 
@@ -10531,8 +10515,8 @@ gaiaFromSpatiaLiteBlobWkb (const unsigned char *blob, unsigned int size)
     type = gaiaImport32 (blob + 39, little_endian, endian_arch);
     geo = gaiaAllocGeomColl ();
     geo->Srid = gaiaImport32 (blob + 2, little_endian, endian_arch);
-    geo->endian_arch = endian_arch;
-    geo->endian = little_endian;
+    geo->endian_arch = (char) endian_arch;
+    geo->endian = (char) little_endian;
     geo->blob = blob;
     geo->size = size;
     geo->offset = 43;
@@ -10956,8 +10940,8 @@ gaiaFromWkb (const unsigned char *blob, unsigned int size)
     type = gaiaImport32 (blob + 1, little_endian, endian_arch);
     geo = gaiaAllocGeomColl ();
     geo->Srid = -1;
-    geo->endian_arch = endian_arch;
-    geo->endian = little_endian;
+    geo->endian_arch = (char) endian_arch;
+    geo->endian = (char) little_endian;
     geo->blob = blob;
     geo->size = size;
     geo->offset = 5;
@@ -11360,7 +11344,7 @@ polygonFromFgf (gaiaGeomCollPtr geom, int endian_arch,
 		unsigned int *consumed)
 {
 /* decoding a POLYGON Geometry from FGF  */
-    gaiaPolygonPtr pg;
+    gaiaPolygonPtr pg = NULL;
     gaiaRingPtr rng;
     int rings;
     int ir;
@@ -13638,27 +13622,25 @@ SvgPathRelative (int points, double *coords, char **buffer, int *size,
     char buf[256];
     double x;
     double y;
-    double lastX;
-    double lastY;
+    double lastX = 0.0;
+    double lastY = 0.0;
     int iv;
     for (iv = 0; iv < points; iv++)
       {
 	  gaiaGetPoint (coords, iv, &x, &y);
 	  gaiaOutCheckBuffer (buffer, size);
+
+	  sprintf (buf_x, "%.*f", precision, x - lastX);
+	  gaiaOutClean (buf_x);
+	  sprintf (buf_y, "%.*f", precision, lastY - y);
+	  gaiaOutClean (buf_y);
+
 	  if (iv == 0)
 	    {
-		sprintf (buf_x, "%.*f", precision, x);
-		gaiaOutClean (buf_x);
-		sprintf (buf_y, "%.*f", precision, y * -1);
-		gaiaOutClean (buf_y);
 		sprintf (buf, "M %s %s l ", buf_x, buf_y);
 	    }
 	  else
 	    {
-		sprintf (buf_x, "%.*f", precision, (x - lastX));
-		gaiaOutClean (buf_x);
-		sprintf (buf_y, "%.*f", precision, (y - lastY) * -1);
-		gaiaOutClean (buf_y);
 		sprintf (buf, "%s %s ", buf_x, buf_y);
 	    }
 	  lastX = x;
@@ -14008,10 +13990,10 @@ fnct_GeometryConstraints (sqlite3_context * context, int argc,
     unsigned char *p_blob = NULL;
     int n_bytes = 0;
     int srid;
-    int geom_srid;
+    int geom_srid = -1;
     const unsigned char *type;
     int xtype;
-    int geom_type;
+    int geom_type = -1;
     int ret;
     if (sqlite3_value_type (argv[0]) == SQLITE_BLOB
 	|| sqlite3_value_type (argv[0]) == SQLITE_NULL)
@@ -14752,8 +14734,8 @@ updateGeometryTriggers (sqlite3 * sqlite, const unsigned char *table,
 	  len = strlen ((char *) colname);
 	  curr_idx->ColumnName = malloc (len + 1);
 	  strcpy (curr_idx->ColumnName, (char *) colname);
-	  curr_idx->ValidRtree = index;
-	  curr_idx->ValidCache = cached;
+	  curr_idx->ValidRtree = (char) index;
+	  curr_idx->ValidCache = (char) cached;
 	  curr_idx->Next = NULL;
 	  if (!first_idx)
 	      first_idx = curr_idx;
@@ -21133,8 +21115,10 @@ fnct_math_cot (sqlite3_context * context, int argc, sqlite3_value ** argv)
 	  int_value = sqlite3_value_int (argv[0]);
 	  x = int_value;
       }
-    else
+    else {
 	sqlite3_result_null (context);
+	return;
+    }
     tang = tan (x);
     if (tang == 0.0)
       {
@@ -21164,8 +21148,11 @@ fnct_math_degrees (sqlite3_context * context, int argc, sqlite3_value ** argv)
 	  x = int_value;
       }
     else
-	sqlite3_result_null (context);
-    x = x * 57.29577951308232;
+      {
+	  sqlite3_result_null (context);
+	  return;
+      }
+    x *= 57.29577951308232;
     sqlite3_result_double (context, x);
 }
 
@@ -21267,8 +21254,8 @@ fnct_math_logn2 (sqlite3_context * context, int argc, sqlite3_value ** argv)
 / or NULL if any error is encountered
 */
     int int_value;
-    double x;
-    double b;
+    double x = 0.0;
+    double b = 1.0;
     double log1;
     double log2;
     errno = 0;
@@ -22373,7 +22360,7 @@ void
 spatialite_init (int verbose)
 {
 /* used when SQLite initializes SpatiaLite via statically linked lib */
-    sqlite3_auto_extension ((void *) init_static_spatialite);
+    sqlite3_auto_extension ( (void (*)(void)) init_static_spatialite);
     if (verbose)
       {
 	  printf ("SpatiaLite version ..: %s", spatialite_version ());
@@ -22863,9 +22850,7 @@ SPATIALITE_DECLARE sqlite3_int64
 math_llabs (sqlite3_int64 value)
 {
 /* replacing the C99 llabs() function */
-    double dbl = value;
-    sqlite3_int64 int_value = fabs (dbl);
-    return (int_value);
+  return value<0 ? -value : value;
 }
 
 SPATIALITE_DECLARE double
@@ -24403,8 +24388,6 @@ vshp_create (sqlite3 * db, void *pAux, int argc, const char *const *argv,
 	    }
 	  *ppVTab = (sqlite3_vtab *) p_vt;
 	  return SQLITE_OK;
-	  *pzErr = sqlite3_mprintf ("%s", p_vt->Shp->LastError);
-	  return SQLITE_ERROR;
       }
     if (p_vt->Shp->
 	Shape == 3
@@ -25699,7 +25682,7 @@ network_block (NetworkPtr graph, const unsigned char *blob, int size)
     int ia;
     int index;
     char code[256];
-    int nodeId;
+    int nodeId = -1;
     int arcs;
     NetworkNodePtr pN;
     NetworkArcPtr pA;
@@ -27968,13 +27951,13 @@ text_parse (char *path, char *encoding, char first_line_titles,
 	  /* parsing the file, one char at each time */
 	  if (c == '\r' && !is_string)
 	    {
-		last = c;
+		last = (char) c;
 		continue;
 	    }
 	  if (c == field_separator && !is_string)
 	    {
 		/* insering a field into the fields tmp array */
-		last = c;
+		last = (char) c;
 		*p = '\0';
 		len = strlen (buffer);
 		if (len)
@@ -27993,7 +27976,7 @@ text_parse (char *path, char *encoding, char first_line_titles,
 		if (is_string)
 		  {
 		      is_string = 0;
-		      last = c;
+		      last = (char) c;
 		  }
 		else
 		  {
@@ -28003,7 +27986,7 @@ text_parse (char *path, char *encoding, char first_line_titles,
 		  }
 		continue;
 	    }
-	  last = c;
+	  last = (char) c;
 	  if (c == '\n' && !is_string)
 	    {
 		/* inserting the row into the text buffer */
@@ -28032,7 +28015,7 @@ text_parse (char *path, char *encoding, char first_line_titles,
 		fld = 0;
 		continue;
 	    }
-	  *p++ = c;
+	  *p++ = (char) c;
       }
     fclose (in);
 /* checking if the text file really seems to contain a table */
@@ -28207,7 +28190,7 @@ text_parse (char *path, char *encoding, char first_line_titles,
 	  return NULL;
       }
 /* ok, we can now go to prepare the rows array */
-    text->rows = malloc (sizeof (struct text_row *) * text->n_rows);
+    text->rows = malloc (sizeof (struct row_buffer *) * text->n_rows);
     ir = 0;
     row = text->first;
     while (row)

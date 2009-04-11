@@ -347,7 +347,7 @@ namespace pal
       double startX, startY;
       double stopX, stopY;
 
-      bool seg_complete;
+      bool seg_complete = false;
 
       Crossing *crossing;
       startX = x[0];
@@ -712,7 +712,8 @@ namespace pal
             b = tmp;
           }
           // split shape into two new shape
-          if (( newShape = shape->extractPath( path_a, nbPtPathA, nbBboxPoint, bbx, bby, b, a, ( b->pt + 1 ) % shape->nbPoints ) ) )
+	  newShape = shape->extractPath( path_a, nbPtPathA, nbBboxPoint, bbx, bby, b, a, ( b->pt + 1 ) % shape->nbPoints );
+          if ( newShape )
           {
             if ( path_a == -1 ) // new shape inside => push into shapes_final
             {
@@ -724,7 +725,8 @@ namespace pal
             }
           }
 
-          if (( newShape = shape->extractPath( path_b, nbPtPathB, nbBboxPoint, bbx, bby, a, b, ( a->pt + 1 ) % shape->nbPoints ) ) )
+          newShape = shape->extractPath( path_b, nbPtPathB, nbBboxPoint, bbx, bby, a, b, ( a->pt + 1 ) % shape->nbPoints );
+          if ( newShape )
           {
             if ( path_b == -1 )
             {
@@ -1052,7 +1054,7 @@ namespace pal
       // retainedPt = deppest point in hole
       // bestArea = area of triangle HoleS->holeE->retainedPoint
       bestArea = sqrt( bestArea );
-      double cx, cy, dx, dy, ex, ey, fx, fy, seg_length, ptx, pty, fptx = 0, fpty = 0;
+      double cx, cy, dx, dy, ex, ey, fx, fy, seg_length, ptx = 0, pty = 0, fptx = 0, fpty = 0;
       int ps = -1, pe = -1, fps = -1, fpe = -1;
       if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
       {

@@ -86,8 +86,6 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
       std::list<unsigned char*>::iterator bufferIt;
       std::list<int>::iterator sizeIt;
 
-      int multifeaturecounter = 0;
-
       while ( theProvider->nextFeature( currentFeature ) )
       {
         //todo: insert more objects for multipart features
@@ -195,7 +193,7 @@ bool QgsDiagramOverlay::readXML( const QDomNode& overlayNode )
   for ( int i = 0; i < classificationFieldList.size(); ++i )
   {
     bool conversionSuccess = false;
-    int classificationField = classificationFieldList.at( i ).toElement().text().toInt( &conversionSuccess );
+    classificationFieldList.at( i ).toElement().text().toInt( &conversionSuccess );
     if ( conversionSuccess )
     {
       classAttrList.push_back( classificationFieldList.at( i ).toElement().text().toInt() );
