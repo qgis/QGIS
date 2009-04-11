@@ -66,7 +66,9 @@ the terms of any one of the MPL, the GPL or the LGPL.
 #define LIBICONV_STATIC
 #include <iconv.h>
 #define LIBCHARSET_STATIC
+#ifndef _MSC_VER
 #include <localcharset.h>
+#endif
 #else /* not WINDOWS */
 #ifdef __APPLE__
 #include <iconv.h>
@@ -1480,6 +1482,7 @@ gaiaCleanSqlString (char *value)
 
 /* #include <spatialite/gaiaaux.h> */
 
+#ifndef _MSC_VER
 GAIAAUX_DECLARE const char *
 gaiaGetLocaleCharset ()
 {
@@ -1494,6 +1497,7 @@ gaiaGetLocaleCharset ()
 #endif
 #endif
 }
+#endif
 
 GAIAAUX_DECLARE int
 gaiaConvertCharset (char **buf, const char *fromCs, const char *toCs)
