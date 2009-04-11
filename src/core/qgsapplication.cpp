@@ -169,6 +169,14 @@ const QString QgsApplication::sponsorsFilePath()
   return mPkgDataPath + QString( "/doc/SPONSORS" );
 }
 /*!
+  Returns the path to the sponsors file.
+  @note Added in QGIS 1.1
+*/
+const QString QgsApplication::translatorsFilePath()
+{
+  return mPkgDataPath + QString( "/doc/TRANSLATORS" );
+}
+/*!
   Returns the path to the developer image directory.
 */
 const QString QgsApplication::developerPath()

@@ -1,0 +1,14 @@
+# The following are people who have contributed to QGIS 
+# by doing translation work.
+# --------------------------------------------------------
+# Please note that this file is parsed by the about box 
+# for the sponsors list, so names should be strictly 
+# in the format:
+# name|language
+# This list should be sorted by first name. The
+# website entry is optional.
+# -------------------------------------------------------
+#
+# ALWAYS USE UTF-8 WHEN WRITING THIS FILE!
+#
+Werner Macho|German

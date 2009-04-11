@@ -57,6 +57,12 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the sponsors file.
     static const QString sponsorsFilePath();
 
+    /**
+     * Returns the path to the sponsors file.
+     * @note This was added in QGIS 1.1
+     */
+    static const QString translatorsFilePath();
+
     //! Returns the path to the developer image directory.
     static const QString developerPath();
 

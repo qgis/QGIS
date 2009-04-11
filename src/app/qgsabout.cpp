@@ -104,6 +104,7 @@ void QgsAbout::init()
       listBox1->setCurrentRow( 0 );
   }
 
+
   // read the SPONSORS file and populate the text widget
   QFile sponsorFile( QgsApplication::sponsorsFilePath() );
 #ifdef QGISDEBUG
@@ -151,6 +152,56 @@ void QgsAbout::init()
     txtSponsors->setHtml( sponsorHTML );
     QgsDebugMsg( QString( "sponsorHTML:%1" ).arg( sponsorHTML.toAscii().constData() ) );
     QgsDebugMsg( QString( "txtSponsors:%1" ).arg( txtSponsors->toHtml().toAscii().constData() ) );
+  }
+
+
+  // read the TRANSLATORS file and populate the text widget
+  QFile translatorFile( QgsApplication::translatorsFilePath() );
+#ifdef QGISDEBUG
+  printf( "Reading translators file %s.............................................\n",
+          translatorFile.fileName().toLocal8Bit().constData() );
+#endif
+  if ( translatorFile.open( QIODevice::ReadOnly ) )
+  {
+    QString translatorHTML = ""
+                          + tr( "<p>The following have contributing to QGIS"
+                                " by translating the user interface or documentation</p>" )
+                          + "<hr>"
+                          "<table width='100%'>"
+                          "<tr><th>" + tr( "Name" ) + "</th>"
+                          "<th>" + tr( "Language" ) + "</th></tr>";
+    QString website;
+    QTextStream translatorStream( &translatorFile );
+    // Always use UTF-8
+    translatorStream.setCodec( "UTF-8" );
+    QString sline;
+    while ( !translatorStream.atEnd() )
+    {
+      sline = translatorStream.readLine(); // line of text excluding '\n'
+      //ignore the line if it starts with a hash....
+      if ( sline.left( 1 ) == "#" ) continue;
+      QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
+      if ( myTokens.size() > 1 )
+      {
+        website = myTokens[1];
+      }
+      else
+      {
+        website = "&nbsp;";
+      }
+      translatorHTML += "<tr>";
+      translatorHTML += "<td>" + myTokens[0] + "</td><td>" + website + "</td>";
+      // close the row
+      translatorHTML += "</tr>";
+    }
+    translatorHTML += "</table>";
+
+    QString myStyle = QgsApplication::reportStyleSheet();
+    txtTranslators->clear();
+    txtTranslators->document()->setDefaultStyleSheet( myStyle );
+    txtTranslators->setHtml( translatorHTML );
+    QgsDebugMsg( QString( "translatorHTML:%1" ).arg( translatorHTML.toAscii().constData() ) );
+    QgsDebugMsg( QString( "txtTranslators:%1" ).arg( txtTranslators->toHtml().toAscii().constData() ) );
   }
 }
 
