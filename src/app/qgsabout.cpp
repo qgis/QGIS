@@ -164,7 +164,7 @@ void QgsAbout::init()
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
     QString translatorHTML = ""
-                          + tr( "<p>The following have contributing to QGIS"
+                          + tr( "<p>The following have contributed to QGIS"
                                 " by translating the user interface or documentation</p>" )
                           + "<hr>"
                           "<table width='100%'>"
