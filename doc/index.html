@@ -10,7 +10,7 @@
   </td>
   <td valign="center">
     <span class="header">Quantum GIS Documentation</span><br>
-    <span class="subheader">Version 1.0.0 <i>Io</i></span><br>
+    <span class="subheader">Version 1.1.0 <i>Io</i></span><br>
     <span class="warning">Please read this entire document for important information about this release.</span>
   </td>
 </tr>
@@ -21,6 +21,90 @@
 -->
 <!-- This documentation describes the Quantum GIS (QGIS) application. More
 information on QGIS is available on the web page at http://qgis.org. -->
+<h2>Whats new in Version 1.1.0?</h2>
+<p>
+Please note that this is a release in our 'unstable' release series. As 
+such it contains new features and extends the programmatic interface over 
+QGIS 1.0.x. If stability and long term support is more important to you 
+then cool new and untested features, we recommend that you use a copy 
+of QGIS from our stable 1.0.x release series.
+</p>
+<p>
+This release includes over 265 bug fixes and enchancements 
+over the QGIS 1.1.0 release. In addition we have added 
+the following new features:
+</p>
+<ul>
+  <li>
+  Updates to translations.
+  </li>
+  <li>
+  Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.
+  </li>
+  <li>
+  Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.
+  </li>
+  <li>
+ Improvements to Debian packaging to better support Debian standard requirements.
+  </li>
+  <li>
+  Support usb: as a GPS device under Linux.
+  </li>
+  <li>
+  WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.
+  </li>
+  <li>
+   Added svg point symbols symbols from Matt Amos (with his permission).
+  </li>
+  <li>
+  Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.
+  </li>
+  <li>
+  Improvements the the PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.
+  </li>
+  <li>
+  Mapserver Export improvements for continuous color support.
+  </li>
+  <li>
+  Added tools menu - the fTools plugins are now part of the core QGIS plugins and will always be installed by default. We have also started building an analysis library that will be the basis on to which analytical tools may be incorporated into QGIS in the future.
+  </li>
+  <li>
+ Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.
+  </li>
+  <li>
+  When using File - Save as image, the saved image is now georeferenced.
+  </li>
+  <li>
+  Projection selector now includes quick selection of recently used CRS's.
+  </li>
+  <li>
+  Continuous color renderer supports point symbols now too.
+  </li>
+  <li>
+  Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.
+  </li>
+  <li>
+  Updates and cleanups to the GRASS toolbox.
+  </li>
+  <li>
+  Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.
+  </li>
+  <li>
+  The middle mouse button can now be used for panning. 
+  </li>
+  <li>
+  A new, faster attribute table implementation.
+  </li>
+  <li>
+  Numerous cleanups to the user interface.
+  </li>
+  <li>
+  A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.
+  </li>
+  <li>
+  Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.
+  </li>
+</ul>
 <h2>Whats new in Version 1.0.0?</h2>
 <p>
 </p>
@@ -93,7 +177,7 @@ the following new features:
     <li>Some internationalization (translation) files may be incomplete.
     <li>QGIS is not bug free - we make no assertions as to its fitness for
         use for any particular purpose. Use entirely at your own risk.
-  </ul>
+  yy</ul>
 
     </dd>
     <dd>
