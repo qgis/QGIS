@@ -2,7 +2,7 @@ SET(CPACK_PACKAGE_VERSION_MAJOR "1")
 SET(CPACK_PACKAGE_VERSION_MINOR "1")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-SET(RELEASE_NAME "Unstable-trunk")
+SET(RELEASE_NAME "Pan (Unstable)")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 SET(QGIS_VERSION_INT 10000)
@@ -333,8 +333,11 @@ ENDIF (UNIX)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/qgsconfig.h DESTINATION ${QGIS_INCLUDE_DIR})
-
 INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
+
+# Added by Jef to prevent python core and gui libs linking to other qgisCore and qgisGui libs
+# that may be in the same install prefix
+LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
 # create qgssvnversion.h
@@ -380,7 +383,7 @@ ENDIF (ENABLE_TESTS)
 #############################################################
 # install stuff
 
-INSTALL (FILES AUTHORS SPONSORS INSTALL CODING
+INSTALL (FILES AUTHORS SPONSORS TRANSLATORS INSTALL CODING
          DESTINATION ${QGIS_DATA_DIR}/doc)
 
 # manual page - makes sense only on unix systems
