@@ -5190,11 +5190,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSplitFeatures->setEnabled( false );
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
-          //don't enable vertex move for single point
-          if ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D )
-          {
             mActionMoveVertex->setEnabled( true );
-          }
         }
         return;
       }
