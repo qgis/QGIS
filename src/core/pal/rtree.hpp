@@ -1355,7 +1355,7 @@ namespace pal {
 
 // Search in an index tree or subtree for all data retangles that overlap the argument rectangle.
     RTREE_TEMPLATE
-    bool RTREE_QUAL::Search (Node* a_node, Rect* a_rect, int& a_foundCount, bool a_resultCallback (DATATYPE a_data, void* a_context), void* a_context) {
+    bool RTREE_QUAL::Search (Node* a_node, Rect* a_rect, int& a_foundCount, bool (*a_resultCallback)(DATATYPE a_data, void* a_context), void* a_context) {
         ASSERT (a_node);
         ASSERT (a_node->m_level >= 0);
         ASSERT (a_rect);
@@ -1374,7 +1374,7 @@ namespace pal {
                     DATATYPE& id = a_node->m_branch[index].m_data;
 
                     // NOTE: There are different ways to return results.  Here's where to modify
-                    if (&a_resultCallback) {
+                    if (a_resultCallback) {
                         ++a_foundCount;
                         if (!a_resultCallback (id, a_context)) {
                             return false; // Don't continue searching

@@ -59,7 +59,7 @@
 #include "util.h"
 #include "priorityqueue.h"
 
-
+#define UNUSED(x)	(void)x;
 
 namespace pal
 {
@@ -720,7 +720,6 @@ namespace pal
 
   bool subPartCallback( LabelPosition *lp, void *ctx )
   {
-    int lpid = lp->id;
     int *isIn = (( SubPartContext* ) ctx )->isIn;
     LinkedList<int> *queue = (( SubPartContext* ) ctx )->queue;
 
@@ -1749,7 +1748,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch int " << i << std::endl;
 #else
-          i;
+          UNUSED(i);
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -2053,7 +2052,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch Cycle in chain" << std::endl;
 #else
-          i;
+          UNUSED(i);
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -2197,7 +2196,8 @@ namespace pal
     {
       seed = ( it % probSize ) + borderSize;
 
-      if (( current_chain = chain( part, seed ) ) )
+      current_chain = chain( part, seed );
+      if ( current_chain )
       {
 
         /* we accept a modification only if the seed is not tabu or

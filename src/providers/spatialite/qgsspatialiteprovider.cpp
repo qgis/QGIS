@@ -42,7 +42,7 @@ const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
 QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >QgsSpatiaLiteProvider::SqliteHandles::handles;
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri ): QgsVectorDataProvider( uri ),
-    geomType( QGis::WKBUnknown ), mSrid( -1 ), spatialIndexRTree( false ), spatialIndexMbrCache( false ), sqliteHandle( NULL ), sqliteStatement( NULL )
+    geomType( QGis::WKBUnknown ), mSrid( -1 ), spatialIndexRTree( false ), sqliteHandle( NULL ), spatialIndexMbrCache( false ), sqliteStatement( NULL )
 {
   QgsDataSourceURI mUri = QgsDataSourceURI( uri );
 
@@ -346,7 +346,6 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
 
 bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
 {
-  char xSql[1024];
   char geomName[128];
 
   feature.setValid( false );

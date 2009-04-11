@@ -67,7 +67,6 @@ void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorO
   }
 
   //register the labeling objects in the layer
-  QgsVectorOverlay* currentOverlay = 0;
   int objectNr = 0;
   QList<QgsVectorOverlay*>::const_iterator overlayIt = overlays.begin();
   for ( ; overlayIt != overlays.end(); ++overlayIt )
@@ -114,6 +113,8 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
     case QGis::Degrees:
       mapUnits = pal::DEGREE;
       break;
+    default:
+      return;
   }
   mPositionEngine.setMapUnit( mapUnits );
   std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, true );
