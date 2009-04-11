@@ -132,7 +132,7 @@ IF (WITH_INTERNAL_SPATIALITE)
     spatialite/spatialite.c
     )
 
-  INCLUDE_DIRECTORIES(spatialite/headers/spatialite)
+  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
