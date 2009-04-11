@@ -168,8 +168,8 @@ void QgsAbout::init()
                                 " by translating the user interface or documentation</p>" )
                           + "<hr>"
                           "<table width='100%'>"
-                          "<tr><th>" + tr( "Name" ) + "</th>"
-                          "<th>" + tr( "Language" ) + "</th></tr>";
+                          "<tr><th>" + tr( "Language" ) + "</th>"
+                          "<th>" + tr( "Names" ) + "</th></tr>";
     QString website;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8

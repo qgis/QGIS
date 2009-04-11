@@ -4,11 +4,32 @@
 # Please note that this file is parsed by the about box 
 # for the sponsors list, so names should be strictly 
 # in the format:
-# name|language
-# This list should be sorted by first name. The
-# website entry is optional.
+# language|name
+# This list should be sorted by first language.
 # -------------------------------------------------------
 #
 # ALWAYS USE UTF-8 WHEN WRITING THIS FILE!
 #
-Werner Macho|German
+Arabic|Assem Kamal 
+Czech|Martin Landa
+Chinese|Zhang Jun
+Danish|Henriette Roued 
+French|Eve Rousseau, Marc Monnerat, Lionel Roubeyrie
+German|Jürgen E. Fischer, Stephan Holl
+Hungarian|Siki Zoltan
+Indonesian|Januar V. Simarmata
+Italian|Maurizio Napolitano
+Japanese|BABA Yoshihiko
+Lao|Anousak Souphavanh
+Latvian|Maris Nartiss
+Lithuanian|Kestas M
+Polish|Tomasz Paul, Mateusz Loskot
+Portuguese (Brazil)|Arthur Nanni, Christian Ferreira
+Romanian|Lonut Losifescu-Enescu
+Russian|Artem Popov
+Slovak|Lubos Balazovic
+Spanish|Carlos Dávila, Javier César Aldariz, Gabriela Awad
+Swedish|Lars Luthman, Magnus Homann
+Thai|Man Chao
+Turkish|Osman Yilmaz
+Vietnamese|Bùi Hữu Mạnh
