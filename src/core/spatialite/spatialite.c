@@ -7,7 +7,7 @@
 ** of 5% are more are commonly seen when SQLite is compiled as a single
 ** translation unit.
 **
-** This amalgamation was generated on 2009-04-06 09:20:53 +0200.
+** This amalgamation was generated on 2009-04-11 15:32:35 +0200.
 
 Author: Alessandro (Sandro) Furieri <a.furieri@lqt.it>
 
@@ -60,15 +60,13 @@ the terms of any one of the MPL, the GPL or the LGPL.
 #include <locale.h>
 #include <errno.h>
 
-#include "headers/spatialite/sqlite3ext.h"
+#include "sqlite3ext.h"
 
 #if defined(__MINGW32__) || defined(_WIN32)
 #define LIBICONV_STATIC
 #include <iconv.h>
 #define LIBCHARSET_STATIC
-#ifndef _MSC_VER
 #include <localcharset.h>
-#endif
 #else /* not WINDOWS */
 #ifdef __APPLE__
 #include <iconv.h>
@@ -1482,7 +1480,6 @@ gaiaCleanSqlString (char *value)
 
 /* #include <spatialite/gaiaaux.h> */
 
-#ifndef _MSC_VER
 GAIAAUX_DECLARE const char *
 gaiaGetLocaleCharset ()
 {
@@ -1497,7 +1494,6 @@ gaiaGetLocaleCharset ()
 #endif
 #endif
 }
-#endif
 
 GAIAAUX_DECLARE int
 gaiaConvertCharset (char **buf, const char *fromCs, const char *toCs)
@@ -14953,7 +14949,7 @@ updateGeometryTriggers (sqlite3 * sqlite, const unsigned char *table,
 	    {
 		/* building MbrCache SpatialIndex */
 		sprintf (trigger,
-			 "CREATE VIRTUAL TABLE \"cache_%s_%s\" USING MbrCache(\"%s\", \"%s\")\n",
+			 "CREATE VIRTUAL TABLE \"cache_%s_%s\" USING MbrCache(%s, %s)\n",
 			 curr_idx->TableName, curr_idx->ColumnName,
 			 curr_idx->TableName, curr_idx->ColumnName);
 		ret = sqlite3_exec (sqlite, trigger, NULL, NULL, &errMsg);
@@ -26642,7 +26638,7 @@ vfdo_insert_row (VirtualFDOPtr p_vt, sqlite3_int64 * rowid, int argc,
     int geom_done;
     int err_geom = 0;
     int geom_constraint_err = 0;
-    char prefix;
+    char prefix[16];
     const char *text;
     const unsigned char *blob;
     char *text_wkt;
@@ -26655,20 +26651,20 @@ vfdo_insert_row (VirtualFDOPtr p_vt, sqlite3_int64 * rowid, int argc,
     for (ic = 0; ic < p_vt->nColumns; ic++)
       {
 	  if (ic == 0)
-	      prefix = '(';
+	      strcpy(prefix, "(");
 	  else
-	      prefix = ',';
-	  sprintf (buf, "%c%s", prefix, *(p_vt->Column + ic));
+	      strcpy(prefix, ", ");
+	  sprintf (buf, "%s\"%s\"", prefix, *(p_vt->Column + ic));
 	  strcat (sql, buf);
       }
     strcat (sql, ") VALUES ");
     for (ic = 0; ic < p_vt->nColumns; ic++)
       {
 	  if (ic == 0)
-	      prefix = '(';
+	      strcpy(prefix, "(");
 	  else
-	      prefix = ',';
-	  sprintf (buf, "%c?", prefix);
+	      strcpy(prefix, ", ");
+	  sprintf (buf, "%s?", prefix);
 	  strcat (sql, buf);
       }
     strcat (sql, ")");
@@ -26828,7 +26824,7 @@ vfdo_update_row (VirtualFDOPtr p_vt, sqlite3_int64 rowid, int argc,
     int geom_done;
     int err_geom = 0;
     int geom_constraint_err = 0;
-    char prefix;
+    char prefix[16];
     const char *text;
     const unsigned char *blob;
     char *text_wkt;
@@ -26841,10 +26837,10 @@ vfdo_update_row (VirtualFDOPtr p_vt, sqlite3_int64 rowid, int argc,
     for (ic = 0; ic < p_vt->nColumns; ic++)
       {
 	  if (ic == 0)
-	      prefix = ' ';
+	      strcpy(prefix, " ");
 	  else
-	      prefix = ',';
-	  sprintf (buf, "\"%c%s\" = ?", prefix, *(p_vt->Column + ic));
+	      strcpy(prefix, ", ");
+	  sprintf (buf, "%s\"%s\" = ?", prefix, *(p_vt->Column + ic));
 	  strcat (sql, buf);
       }
 #if defined(_WIN32) || defined(__MINGW32__)
@@ -27258,7 +27254,7 @@ vfdo_create (sqlite3 * db, void *pAux, int argc, const char *const *argv,
     char **results;
     char sql[4096];
     char buf[256];
-    char prefix;
+    char prefix[16];
     VirtualFDOPtr p_vt = NULL;
 /* checking for table_name */
     if (argc == 4)
@@ -27388,10 +27384,10 @@ vfdo_create (sqlite3 * db, void *pAux, int argc, const char *const *argv,
     for (i = 0; i < p_vt->nColumns; i++)
       {
 	  if (i == 0)
-	      prefix = '(';
+	      strcpy(prefix, "(");
 	  else
-	      prefix = ',';
-	  sprintf (buf, "\"%c%s\" %s", prefix, *(p_vt->Column + i),
+	      strcpy(prefix, ", ");
+	  sprintf (buf, "%s\"%s\" %s", prefix, *(p_vt->Column + i),
 		   *(p_vt->Type + i));
 	  if (*(p_vt->NotNull + i))
 	      strcat (buf, " NOT NULL");
