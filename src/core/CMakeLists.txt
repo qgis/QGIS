@@ -117,6 +117,15 @@ IF (WITH_INTERNAL_SPATIALITE)
     ADD_DEFINITIONS(-DDLL_EXPORT)
   ENDIF (WIN32)
 
+#
+# sqlite3 requires some extraflags to be defined
+# in order to support:
+# - huge database > 2 GB
+# - RTree Spatial Index
+#
+  ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
+  ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
+
   SET(QGIS_CORE_SRCS
     ${QGIS_CORE_SRCS}
     spatialite/sqlite3.c
