@@ -31,7 +31,7 @@
 #define QGISEXTERN extern "C"
 #endif
 
-static const QString pluginName = "diagram overlay";
+static const QString pluginName = "Diagram Overlay";
 static const QString pluginDescription = "A plugin for placing diagrams on vector layers";
 static const QString pluginVersion = "Version 0.0.1";
 
