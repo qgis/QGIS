@@ -2116,11 +2116,14 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
     return false;
   }
 
-  //read provider encoding
-  QDomNode encodingNode = layer_node.namedItem( "encoding" );
-  if ( ! encodingNode.isNull() && mDataProvider )
+  QDomElement pkeyElem = pkeyNode.toElement();
+  if(!pkeyElem.isNull())
   {
-    mDataProvider->setEncoding( encodingNode.toElement().text() );
+    QString encodingString = pkeyElem.attribute("encoding");
+    if(!encodingString.isEmpty())
+    {
+       mDataProvider->setEncoding(encodingString);
+    }
   }
 
   QString errorMsg;
@@ -2252,10 +2255,14 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mapLayerNode.setAttribute( "geometry", QGis::qgisVectorGeometryType[geometryType()] );
 
   // add provider node
-  QDomElement provider  = document.createElement( "provider" );
-  QDomText providerText = document.createTextNode( providerType() );
-  provider.appendChild( providerText );
-  layer_node.appendChild( provider );
+  if(mDataProvider)
+    {
+        QDomElement provider  = document.createElement( "provider" );
+        provider.setAttribute("encoding", mDataProvider->encoding());
+        QDomText providerText = document.createTextNode( providerType() );
+        provider.appendChild( providerText );
+        layer_node.appendChild( provider );
+    }
 
   // renderer specific settings
 
