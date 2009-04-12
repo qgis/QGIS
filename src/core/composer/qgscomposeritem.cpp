@@ -237,6 +237,13 @@ void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
   mLastMouseEventPos = event->lastScenePos();
   mCurrentMouseMoveAction = mouseMoveActionForPosition( event->pos() );
 
+  //remove the old rubber band item if it is still there
+  if ( mBoundingResizeRectangle )
+  {
+    scene()->removeItem( mBoundingResizeRectangle );
+    delete mBoundingResizeRectangle;
+    mBoundingResizeRectangle = 0;
+  }
   //create and show bounding rectangle
   mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
   scene()->addItem( mBoundingResizeRectangle );
