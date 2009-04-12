@@ -35,10 +35,16 @@ class QgsSymbol
     /**Gets a reference to m_pen. Don't use the pen to change color/style  */
     virtual const QPen& pen() const;
 
+    /**Gets the path to the customs texture image*/
+    virtual QString customTexture() const;
+    /**Sets the path to the custom texture, and sets the brush to use TexturePattern */
+    virtual void setCustomTexture( QString path );
+
     /**Set the line (pen) style*/
     virtual void setLineStyle(Qt::PenStyle s);
     /**Set the fill (brush) style*/
     virtual void setFillStyle(Qt::BrushStyle s);
+    
     virtual void setLowerValue(QString value);
     virtual QString lowerValue() const;
     virtual void setUpperValue(QString value);
@@ -64,9 +70,14 @@ class QgsSymbol
     virtual QImage getPolygonSymbolAsImage();
     
     /** Get QImage representation of point symbol with current settings
-      */
-    virtual QImage getPointSymbolAsImage( double widthScale = 1, 
-	               bool selected = false, QColor selectionColor = Qt::yellow );
+     * and scaled (can be slow when scale != 1.0)
+     */
+    virtual QImage getPointSymbolAsImage( double widthScale = 1.,
+                                          bool selected = false,
+                                          QColor selectionColor = Qt::yellow,
+                                          double scale = 1.0,
+                                          double rotation = 0.0,
+                                          double rasterScaleFactor = 1.0 );
 
     /**Writes the contents of the symbol to a configuration file
      @ return true in case of success*/
@@ -76,6 +87,18 @@ class QgsSymbol
     virtual bool readXML( QDomNode & symbol, const QgsVectorLayer *vl );
     /**Returns if this symbol is point/ line or polygon*/
     QGis::GeometryType type() const;
+
+    /**Returns the number of the rotation classification field*/
+    int rotationClassificationField() const;
+    /**Sets the number of the rotation classicifation field
+    \param field the number of the field to classify for rotation*/
+    void setRotationClassificationField( int field );
+
+    /**Returns the number of the scale classification field*/
+    int scaleClassificationField() const;
+    /**Sets the number of the scale classicifation field
+    \param field the number of the field to classify for scale*/
+    void setScaleClassificationField( int field );
 
 };
 
