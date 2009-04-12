@@ -1893,7 +1893,7 @@ void QgisApp::about()
       + tr("Mapserver Export improvements for continuous color support.")
       + "</li>"
       + "<li>"
-      + tr("Added tools menu - the fTools plugins are now part of the core QGIS plugins and will always be installed by default. We have also started building an analysis library that will be the basis on to which analytical tools may be incorporated into QGIS in the future.")
+      + tr("Added tools menu - the fTools plugins are now part of the core QGIS plugins and will always be installed by default.")
       + "</li>"
       + "<li>" 
       + tr("Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.")
