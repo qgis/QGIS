@@ -32,9 +32,6 @@
 #include "qgsgenericprojectionselector.h"
 
 // attribute table
-#include "qgsattributetable.h"
-#include "qgsattributetabledisplay.h"
-
 #include "BeataDialog.h"
 
 

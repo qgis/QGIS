@@ -37,7 +37,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsattributetabledisplay.h"
 
 #include "BeataDialog.h"
 
