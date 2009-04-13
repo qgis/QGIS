@@ -89,7 +89,6 @@
 #include "qgisplugin.h"
 #include "qgsabout.h"
 #include "qgsapplication.h"
-#include "qgsattributetabledisplay.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
 #include "qgsclipboard.h"

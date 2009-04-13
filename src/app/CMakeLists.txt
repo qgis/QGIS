@@ -6,8 +6,6 @@ SET(QGIS_APP_SRCS
   qgsaddattrdialog.cpp
   qgsattributeactiondialog.cpp
   qgsattributedialog.cpp
-  qgsattributetable.cpp
-  qgsattributetabledisplay.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
   qgsclipboard.cpp
@@ -98,8 +96,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
-  qgsattributetabledisplay.h
-  qgsattributetable.h
   qgsbookmarks.h
   qgscontinuouscolordialog.h
   qgscustomprojectiondialog.h
