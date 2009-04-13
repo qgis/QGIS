@@ -85,7 +85,8 @@ QgsRunProcess::~QgsRunProcess()
 
 void QgsRunProcess::die()
 {
-  delete this;
+  // safe way to do "delete this" for QObjects
+  deleteLater();
 }
 
 void QgsRunProcess::stdoutAvailable()
