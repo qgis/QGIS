@@ -132,7 +132,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
-#include "BeataDialog.h"
+#include "qgsattributetabledialog.h"
 //
 // Gdal/Ogr includes
 //
@@ -3886,7 +3886,7 @@ void QgisApp::attributeTable()
   }
 
   QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mMapLegend->currentLayer() );
-  BeataDialog *mDialog = new BeataDialog( myLayer );
+  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }

@@ -1,6 +1,5 @@
 /***************************************************************************
-  BeataDialog.cpp
-  BEtter Attribute TAble
+  QgsAttributeTableDialog.cpp
   -------------------
          date                 : Feb 2009
          copyright            : Vita Cizek
@@ -17,9 +16,9 @@
 
 #include <QtGui>
 
-#include "BeataDialog.h"
-#include "BeataModel.h"
-#include "BeataView.h"
+#include "qgsattributetabledialog.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetableview.h"
 
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
@@ -32,10 +31,10 @@
 #include "qgslogger.h"
 
 
-class QBeataTableDock : public QDockWidget
+class QgsAttributeTableTableDock : public QDockWidget
 {
   public:
-    QBeataTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+    QgsAttributeTableTableDock( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
         : QDockWidget( title, parent, flags )
     {
       setObjectName( "AttributeTable" ); // set object name so the position can be saved
@@ -48,7 +47,7 @@ class QBeataTableDock : public QDockWidget
 };
 
 
-BeataDialog::BeataDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
+QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags ), mDock( NULL )
 {
   mLayer = theLayer;
@@ -61,8 +60,8 @@ BeataDialog::BeataDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowF
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
 
   mView->setLayer( mLayer );
-  mFilterModel = ( BeataFilterModel * ) mView->model();
-  mModel = ( BeataModel * )(( BeataFilterModel * )mView->model() )->sourceModel();
+  mFilterModel = ( QgsAttributeTableFilterModel * ) mView->model();
+  mModel = ( QgsAttributeTableModel * )(( QgsAttributeTableFilterModel * )mView->model() )->sourceModel();
 
   mQuery = query;
   mColumnBox = columnBox;
@@ -72,7 +71,7 @@ BeataDialog::BeataDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowF
   bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
-    mDock = new QBeataTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
+    mDock = new QgsAttributeTableTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
@@ -111,11 +110,11 @@ BeataDialog::BeataDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowF
   updateSelectionFromLayer();
 }
 
-BeataDialog::~BeataDialog()
+QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
 }
 
-void BeataDialog::closeEvent( QCloseEvent* event )
+void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
 {
   QDialog::closeEvent( event );
 
@@ -127,7 +126,7 @@ void BeataDialog::closeEvent( QCloseEvent* event )
 }
 
 
-QIcon BeataDialog::getThemeIcon( const QString theName )
+QIcon QgsAttributeTableDialog::getThemeIcon( const QString theName )
 {
   // copied from QgisApp::getThemeIcon. To be removed when merged to SVN
 
@@ -149,12 +148,12 @@ QIcon BeataDialog::getThemeIcon( const QString theName )
   }
 }
 
-void BeataDialog::showAdvanced()
+void QgsAttributeTableDialog::showAdvanced()
 {
   mMenuActions->exec( QCursor::pos() );
 }
 
-void BeataDialog::on_mSelectedToTopButton_clicked()
+void QgsAttributeTableDialog::on_mSelectedToTopButton_clicked()
 {
   int freeIndex = 0;
 
@@ -194,27 +193,27 @@ void BeataDialog::on_mSelectedToTopButton_clicked()
   updateSelection();
 }
 
-void BeataDialog::on_mCopySelectedRowsButton_clicked()
+void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 {
   QgisApp::instance()->editCopy( mLayer );
 }
 
-void BeataDialog::on_mZoomMapToSelectedRowsButton_clicked()
+void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
   QgisApp::instance()->zoomToSelected();
 }
 
-void BeataDialog::on_mInvertSelectionButton_clicked()
+void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
 {
   mLayer->invertSelection();
 }
 
-void BeataDialog::on_mRemoveSelectionButton_clicked()
+void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 {
   mLayer->removeSelection();
 }
 
-void BeataDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
+void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
 {
   mFilterModel->mHideUnselected = theFlag;
   mFilterModel->invalidate();
@@ -222,7 +221,7 @@ void BeataDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
   //mModel->changeLayout();
 }
 
-void BeataDialog::columnBoxInit()
+void QgsAttributeTableDialog::columnBoxInit()
 {
   QgsFieldMap fieldMap = mLayer->dataProvider()->fields();
   QgsFieldMap::Iterator it = fieldMap.begin();
@@ -231,7 +230,7 @@ void BeataDialog::columnBoxInit()
     mColumnBox->addItem( it.value().name() );
 }
 
-int BeataDialog::columnBoxColumnId()
+int QgsAttributeTableDialog::columnBoxColumnId()
 {
   QgsFieldMap fieldMap = mLayer->dataProvider()->fields();
   QgsFieldMap::Iterator it = fieldMap.begin();
@@ -243,7 +242,7 @@ int BeataDialog::columnBoxColumnId()
   return 0;
 }
 
-void BeataDialog::updateSelection()
+void QgsAttributeTableDialog::updateSelection()
 {
   QModelIndex index;
   mView->setSelectionMode( QAbstractItemView::MultiSelection );
@@ -272,7 +271,7 @@ void BeataDialog::updateSelection()
   */
 }
 
-void BeataDialog::updateRowSelection( int index )
+void QgsAttributeTableDialog::updateRowSelection( int index )
 {
   // map index to filter model
   //index = mFilterModel->mapFromSource(mModel->index(index, 0)).row();
@@ -326,7 +325,7 @@ void BeataDialog::updateRowSelection( int index )
 }
 
 // fast row deselection needed
-void BeataDialog::updateRowSelection( int first, int last, bool startNewSelection )
+void QgsAttributeTableDialog::updateRowSelection( int first, int last, bool startNewSelection )
 {
   disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
 
@@ -398,14 +397,14 @@ void BeataDialog::updateRowSelection( int first, int last, bool startNewSelectio
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
 }
 
-void BeataDialog::updateSelectionFromLayer()
+void QgsAttributeTableDialog::updateSelectionFromLayer()
 {
   QgsDebugMsg( "updateFromLayer" );
   mSelectedFeatures = mLayer->selectedFeaturesIds();
   updateSelection();
 }
 
-void BeataDialog::doSearch( QString searchString )
+void QgsAttributeTableDialog::doSearch( QString searchString )
 {
   // parse search string and build parsed tree
   QgsSearchString search;
@@ -462,7 +461,7 @@ void BeataDialog::doSearch( QString searchString )
   QMessageBox::information( this, tr( "Search results" ), str );
 }
 
-void BeataDialog::search()
+void QgsAttributeTableDialog::search()
 {
 
   QString str = mColumnBox->currentText();
@@ -483,7 +482,7 @@ void BeataDialog::search()
   doSearch( str );
 }
 
-void BeataDialog::on_mAdvancedSearchButton_clicked()
+void QgsAttributeTableDialog::on_mAdvancedSearchButton_clicked()
 {
   QgsSearchQueryBuilder dlg( mLayer, this );
   dlg.setSearchString( mQuery->displayText() );
@@ -492,12 +491,12 @@ void BeataDialog::on_mAdvancedSearchButton_clicked()
     doSearch( dlg.searchString() );
 }
 
-void BeataDialog::on_mToggleEditingButton_toggled()
+void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()
 {
   emit editingToggled( mLayer );
 }
 
-void BeataDialog::editingToggled()
+void QgsAttributeTableDialog::editingToggled()
 {
   mToggleEditingButton->setChecked( mLayer->isEditable() );
 
@@ -509,19 +508,19 @@ void BeataDialog::editingToggled()
 }
 
 // not used now
-void BeataDialog::startEditing()
+void QgsAttributeTableDialog::startEditing()
 {
   mLayer->startEditing();
 }
 
 // not used now
-void BeataDialog::submit()
+void QgsAttributeTableDialog::submit()
 {
   mLayer->commitChanges();
 }
 
 // not used now
-void BeataDialog::revert()
+void QgsAttributeTableDialog::revert()
 {
   mLayer->rollBack();
   mModel->revert();

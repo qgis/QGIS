@@ -32,7 +32,7 @@
 #include "qgsgenericprojectionselector.h"
 
 // attribute table
-#include "BeataDialog.h"
+#include "qgsattributetabledialog.h"
 
 
 #include "qgsencodingfiledialog.h"
@@ -218,7 +218,7 @@ void QgsLegendLayerFile::saveAsShapefile()
 void QgsLegendLayerFile::table()
 {
   QgsVectorLayer * myLayer = dynamic_cast<QgsVectorLayer *>( mLyr.layer() );
-  BeataDialog *mDialog = new BeataDialog( myLayer );
+  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }
