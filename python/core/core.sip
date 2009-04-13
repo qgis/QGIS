@@ -57,6 +57,7 @@
 %Include qgsrect.sip
 %Include qgsrendercontext.sip
 %Include qgsrenderer.sip
+%Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
 %Include qgssinglesymbolrenderer.sip
 %Include qgssnapper.sip
