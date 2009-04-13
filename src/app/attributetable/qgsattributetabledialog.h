@@ -1,6 +1,5 @@
 /***************************************************************************
-  BeataDialog.h
-  BEtter Attribute TAble
+  QgsAttributeTableDialog.h - dialog for attribute table
   -------------------
          date                 : Feb 2009
          copyright            : Vita Cizek
@@ -15,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BEATADIALOG_H_
-#define BEATADIALOG_H_
+#ifndef QGSATTRIBUTETABLEDIALOG_H_
+#define QGSATTRIBUTETABLEDIALOG_H_
 
 #include <QDialog>
 #include <QModelIndex>
 #include <QItemSelectionModel>
 #include <QMutex>
 
-#include "ui_BeataGui.h"
+#include "ui_qgsattributetabledialog.h"
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -37,17 +36,17 @@ class QComboBox;
 class QMenu;
 class QDockWidget;
 
-class BeataModel;
-class BeataFilterModel;
-class BeataView;
+class QgsAttributeTableModel;
+class QgsAttributeTableFilterModel;
+class QgsAttributeTableView;
 
-class BeataDialog : public QDialog, private Ui::BeataDialogGui
+class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
 {
     Q_OBJECT
 
   public:
-    BeataDialog( QgsVectorLayer *theLayer, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window );
-    ~BeataDialog();
+    QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window );
+    ~QgsAttributeTableDialog();
 
   public slots:
     void editingToggled();
@@ -93,8 +92,8 @@ class BeataDialog : public QDialog, private Ui::BeataDialogGui
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
-    BeataModel *mModel;
-    BeataFilterModel *mFilterModel;
+    QgsAttributeTableModel *mModel;
+    QgsAttributeTableFilterModel *mFilterModel;
     QgsVectorLayer *mLayer;
     QgsFeatureIds mSelectedFeatures;
 

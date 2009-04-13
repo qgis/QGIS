@@ -1,5 +1,5 @@
 /***************************************************************************
-     BeataView.cpp
+     QgsAttributeTableView.cpp
      --------------------------------------
     Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
@@ -21,18 +21,18 @@
 #include <QPainter>
 #include <QKeyEvent>
 
-#include "BeataView.h"
-#include "BeataModel.h"
+#include "qgsattributetableview.h"
+#include "qgsattributetablemodel.h"
 
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
 
-class BeataDelegate : public QItemDelegate
+class QgsAttributeTableDelegate : public QItemDelegate
 {
   public:
-    BeataDelegate( QObject* parent = NULL ) : QItemDelegate( parent ) {}
+    QgsAttributeTableDelegate( QObject* parent = NULL ) : QItemDelegate( parent ) {}
 
     QWidget * createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
     {
@@ -41,7 +41,7 @@ class BeataDelegate : public QItemDelegate
       QLineEdit *le = dynamic_cast<QLineEdit*>( editor );
       if ( !le ) return editor;
 
-      const BeataModel* m = dynamic_cast<const BeataModel*>( index.model() );
+      const QgsAttributeTableModel* m = dynamic_cast<const QgsAttributeTableModel*>( index.model() );
       if ( !m ) return editor;
 
       int col = index.column();
@@ -77,7 +77,7 @@ class BeataDelegate : public QItemDelegate
 
 };
 
-BeataView::BeataView( QWidget* parent )
+QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
     : QTableView( parent )
 {
   QSettings settings;
@@ -86,7 +86,7 @@ BeataView::BeataView( QWidget* parent )
   verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
 
-  setItemDelegate( new BeataDelegate( this ) );
+  setItemDelegate( new QgsAttributeTableDelegate( this ) );
 
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::NoSelection );
@@ -96,32 +96,32 @@ BeataView::BeataView( QWidget* parent )
   ctrlPressed = false;
 }
 
-void BeataView::setLayer( QgsVectorLayer* layer )
+void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
 {
-  BeataModel *bModel;
+  QgsAttributeTableModel *bModel;
 
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::RandomSelectGeometryAtId )
-    bModel = new BeataModel( layer );
+    bModel = new QgsAttributeTableModel( layer );
   else
-    bModel = new BeataMemModel( layer );
+    bModel = new QgsAttributeTableMemModel( layer );
 
-  BeataFilterModel* bfModel = new BeataFilterModel( layer );
+  QgsAttributeTableFilterModel* bfModel = new QgsAttributeTableFilterModel( layer );
   bfModel->setSourceModel( bModel );
 
   setModel( bfModel );
 }
 
-BeataView::~BeataView()
+QgsAttributeTableView::~QgsAttributeTableView()
 {
 }
 
-void BeataView::closeEvent( QCloseEvent *event )
+void QgsAttributeTableView::closeEvent( QCloseEvent *event )
 {
   QSettings settings;
   settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
 }
 
-void BeataView::keyPressEvent( QKeyEvent *event )
+void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
 {
   // shift pressed
   if ( event->key() == Qt::Key_Shift )// && event->modifiers() & Qt::ShiftModifier)
@@ -132,7 +132,7 @@ void BeataView::keyPressEvent( QKeyEvent *event )
     QTableView::keyPressEvent( event );
 }
 
-void BeataView::keyReleaseEvent( QKeyEvent *event )
+void QgsAttributeTableView::keyReleaseEvent( QKeyEvent *event )
 {
   // workaround for some Qt bug
   if ( event->key() == Qt::Key_Shift || event->key() == -1 )

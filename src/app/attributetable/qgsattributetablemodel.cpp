@@ -1,5 +1,5 @@
 /***************************************************************************
-     BeataModel.cpp
+     QgsAttributeTableModel.cpp
      --------------------------------------
     Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "BeataModel.h"
-#include "BeataView.h"
+#include "qgsattributetablemodel.h"
+//#include "qgsattributetableview.h"
 
 #include "qgsvectordataprovider.h"
 #include "qgsfield.h"
@@ -44,44 +44,44 @@ bool idColumnPair::operator<( const idColumnPair &b ) const
 // Filter Model //
 //////////////////
 
-void BeataFilterModel::sort( int column, Qt::SortOrder order )
+void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
 {
-  (( BeataModel * )sourceModel() )->sort( column, order );
+  (( QgsAttributeTableModel * )sourceModel() )->sort( column, order );
 }
 
-BeataFilterModel::BeataFilterModel( QgsVectorLayer* theLayer )
+QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer* theLayer )
 {
   mLayer = theLayer;
   mHideUnselected = false;
   setDynamicSortFilter( true );
 }
 
-bool BeataFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   if ( mHideUnselected )
     // unreadable? yes, i agree :-)
-    return mLayer->selectedFeaturesIds().contains((( BeataModel * )sourceModel() )->rowToId( sourceRow ) );
+    return mLayer->selectedFeaturesIds().contains((( QgsAttributeTableModel * )sourceModel() )->rowToId( sourceRow ) );
 
   return true;
 }
 
 /*
-QModelIndex BeataFilterModel::mapFromSource ( const QModelIndex& sourceIndex ) const
+QModelIndex QgsAttributeTableFilterModel::mapFromSource ( const QModelIndex& sourceIndex ) const
 {
   return sourceIndex;
 }
 
-QModelIndex BeataFilterModel::mapToSource ( const QModelIndex& filterIndex ) const
+QModelIndex QgsAttributeTableFilterModel::mapToSource ( const QModelIndex& filterIndex ) const
 {
   return filterIndex;
 }
 */
 
-////////////////
-// BeataModel //
-////////////////
+////////////////////////////
+// QgsAttributeTableModel //
+////////////////////////////
 
-BeataModel::BeataModel( QgsVectorLayer *theLayer, QObject *parent )
+QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
     : QAbstractTableModel( parent )
 {
   mLastRowId = -1;
@@ -101,7 +101,7 @@ BeataModel::BeataModel( QgsVectorLayer *theLayer, QObject *parent )
   loadLayer();
 }
 
-void BeataModel::featureDeleted( int fid )
+void QgsAttributeTableModel::featureDeleted( int fid )
 {
   QgsDebugMsg( "entered." );
 
@@ -147,7 +147,7 @@ void BeataModel::featureDeleted( int fid )
 
 }
 
-void BeataModel::featureAdded( int fid )
+void QgsAttributeTableModel::featureAdded( int fid )
 {
   QgsDebugMsg( "BM feature added" );
   ++mFeatureCount;
@@ -157,7 +157,7 @@ void BeataModel::featureAdded( int fid )
   reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
 
-void BeataModel::attributeAdded( int idx )
+void QgsAttributeTableModel::attributeAdded( int idx )
 {
   QgsDebugMsg( "BM attribute added" );
   loadLayer();
@@ -166,7 +166,7 @@ void BeataModel::attributeAdded( int idx )
   emit modelChanged();
 }
 
-void BeataModel::attributeDeleted( int idx )
+void QgsAttributeTableModel::attributeDeleted( int idx )
 {
   QgsDebugMsg( "BM attribute deleted" );
   loadLayer();
@@ -175,7 +175,7 @@ void BeataModel::attributeDeleted( int idx )
   emit modelChanged();
 }
 
-void BeataModel::layerDeleted()
+void QgsAttributeTableModel::layerDeleted()
 {
   QgsDebugMsg( "entered." );
   mIdRowMap.clear();
@@ -185,13 +185,13 @@ void BeataModel::layerDeleted()
 }
 
 //TODO: check whether caching in data()/setData() doesn't cache old value
-void BeataModel::attributeValueChanged( int fid, int idx, const QVariant &value )
+void QgsAttributeTableModel::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
   QgsDebugMsg( "entered." );
   reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
 
-void BeataModel::layerModified( bool onlyGeometry )
+void QgsAttributeTableModel::layerModified( bool onlyGeometry )
 {
   if ( onlyGeometry )
     return;
@@ -200,7 +200,7 @@ void BeataModel::layerModified( bool onlyGeometry )
   emit modelChanged();
 }
 
-void BeataModel::loadLayer()
+void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
 
@@ -261,7 +261,7 @@ void BeataModel::loadLayer()
 #endif
 }
 
-void BeataModel::swapRows( int a, int b )
+void QgsAttributeTableModel::swapRows( int a, int b )
 {
   if ( a == b )
     return;
@@ -284,7 +284,7 @@ void BeataModel::swapRows( int a, int b )
   //emit layoutChanged();
 }
 
-int BeataModel::idToRow( const int id ) const
+int QgsAttributeTableModel::idToRow( const int id ) const
 {
   if ( !mIdRowMap.contains( id ) )
   {
@@ -295,7 +295,7 @@ int BeataModel::idToRow( const int id ) const
   return mIdRowMap[id];
 }
 
-int BeataModel::rowToId( const int id ) const
+int QgsAttributeTableModel::rowToId( const int id ) const
 {
   if ( !mRowIdMap.contains( id ) )
   {
@@ -306,17 +306,17 @@ int BeataModel::rowToId( const int id ) const
   return mRowIdMap[id];
 }
 
-int BeataModel::rowCount( const QModelIndex &parent ) const
+int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
   return mFeatureCount;
 }
 
-int BeataModel::columnCount( const QModelIndex &parent ) const
+int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
   return mFieldCount;
 }
 
-QVariant BeataModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   if ( role == Qt::DisplayRole )
   {
@@ -333,7 +333,7 @@ QVariant BeataModel::headerData( int section, Qt::Orientation orientation, int r
   else return QVariant();
 }
 
-void BeataModel::sort( int column, Qt::SortOrder order )
+void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
   QgsAttributeMap row;
   idColumnPair pair;
@@ -380,7 +380,7 @@ void BeataModel::sort( int column, Qt::SortOrder order )
   emit modelChanged();
 }
 
-QVariant BeataModel::data( const QModelIndex &index, int role ) const
+QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
@@ -433,7 +433,7 @@ QVariant BeataModel::data( const QModelIndex &index, int role ) const
   return val.toString();
 }
 
-bool BeataModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
     return false;
@@ -458,7 +458,7 @@ bool BeataModel::setData( const QModelIndex &index, const QVariant &value, int r
   return true;
 }
 
-Qt::ItemFlags BeataModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
@@ -471,22 +471,22 @@ Qt::ItemFlags BeataModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
-void BeataModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
+void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
   emit dataChanged( index1, index2 );
 }
 
-void BeataModel::resetModel()
+void QgsAttributeTableModel::resetModel()
 {
   reset();
 }
 
-void BeataModel::changeLayout()
+void QgsAttributeTableModel::changeLayout()
 {
   emit layoutChanged();
 }
 
-void BeataModel::incomingChangeLayout()
+void QgsAttributeTableModel::incomingChangeLayout()
 {
   emit layoutAboutToBeChanged();
 }
@@ -495,9 +495,9 @@ void BeataModel::incomingChangeLayout()
 // In-Memory model //
 /////////////////////
 
-void BeataMemModel::loadLayer()
+void QgsAttributeTableMemModel::loadLayer()
 {
-  BeataModel::loadLayer();
+  QgsAttributeTableModel::loadLayer();
   mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
 
   QgsFeature f;
@@ -505,14 +505,14 @@ void BeataMemModel::loadLayer()
     mFeatureMap.insert( f.id(), f );
 }
 
-BeataMemModel::BeataMemModel
+QgsAttributeTableMemModel::QgsAttributeTableMemModel
 ( QgsVectorLayer *theLayer )
-    : BeataModel( theLayer )
+    : QgsAttributeTableModel( theLayer )
 {
   loadLayer();
 }
 
-QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
+QVariant QgsAttributeTableMemModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
@@ -567,7 +567,7 @@ QVariant BeataMemModel::data( const QModelIndex &index, int role ) const
   return val.toString();
 }
 
-bool BeataMemModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsAttributeTableMemModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
     return false;
@@ -598,31 +598,31 @@ bool BeataMemModel::setData( const QModelIndex &index, const QVariant &value, in
   return true;
 }
 
-void BeataMemModel::featureDeleted( int fid )
+void QgsAttributeTableMemModel::featureDeleted( int fid )
 {
   QgsDebugMsg( "entered." );
   mFeatureMap.remove( fid );
-  BeataModel::featureDeleted( fid );
+  QgsAttributeTableModel::featureDeleted( fid );
 }
 
-void BeataMemModel::featureAdded( int fid )
+void QgsAttributeTableMemModel::featureAdded( int fid )
 {
   QgsDebugMsg( "entered." );
   QgsFeature f;
   mLayer->featureAtId( fid, f, false, true );
   mFeatureMap.insert( fid, f );
-  BeataModel::featureAdded( fid );
+  QgsAttributeTableModel::featureAdded( fid );
 }
 
 #if 0
-void BeataMemModel::attributeAdded( int idx )
+void QgsAttributeTableMemModel::attributeAdded( int idx )
 {
   QgsDebugMsg( "entered." );
   loadLayer();
   reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
 
-void BeataMemModel::attributeDeleted( int idx )
+void QgsAttributeTableMemModel::attributeDeleted( int idx )
 {
   QgsDebugMsg( "entered." );
   loadLayer();
@@ -630,14 +630,14 @@ void BeataMemModel::attributeDeleted( int idx )
 }
 #endif
 
-void BeataMemModel::layerDeleted()
+void QgsAttributeTableMemModel::layerDeleted()
 {
   QgsDebugMsg( "entered." );
   mFeatureMap.clear();
-  BeataModel::layerDeleted();
+  QgsAttributeTableModel::layerDeleted();
 }
 
-void BeataMemModel::attributeValueChanged( int fid, int idx, const QVariant &value )
+void QgsAttributeTableMemModel::attributeValueChanged( int fid, int idx, const QVariant &value )
 {
   QgsDebugMsg( "entered." );
   mFeatureMap[fid].changeAttribute( idx, value );

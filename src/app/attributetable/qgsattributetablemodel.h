@@ -1,6 +1,5 @@
 /***************************************************************************
-  BeataModel.h
-  BEtter Attribute TAble
+  QgsAttributeTableModel.h - Models for attribute table
   -------------------
          date                 : Feb 2009
          copyright            : Vita Cizek
@@ -15,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BEATAMODEL_H
-#define BEATAMODEL_H
+#ifndef QGSATTRIBUTETABKEMODEL_H
+#define QGSATTRIBUTETABKEMODEL_H
 
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
@@ -37,10 +36,10 @@ class idColumnPair
     bool operator<( const idColumnPair &b ) const;
 };
 
-class BeataFilterModel: public QSortFilterProxyModel
+class QgsAttributeTableFilterModel: public QSortFilterProxyModel
 {
   public:
-    BeataFilterModel( QgsVectorLayer* theLayer );
+    QgsAttributeTableFilterModel( QgsVectorLayer* theLayer );
     //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
     //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
     bool mHideUnselected;
@@ -52,12 +51,12 @@ class BeataFilterModel: public QSortFilterProxyModel
 };
 
 
-class BeataModel: public QAbstractTableModel
+class QgsAttributeTableModel: public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
-    BeataModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
+    QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -112,12 +111,12 @@ class BeataModel: public QAbstractTableModel
 
 };
 
-class BeataMemModel: public BeataModel
+class QgsAttributeTableMemModel: public QgsAttributeTableModel
 {
     Q_OBJECT
 
   public:
-    BeataMemModel( QgsVectorLayer *theLayer );//, QObject *parent = 0);
+    QgsAttributeTableMemModel( QgsVectorLayer *theLayer );//, QObject *parent = 0);
 
   protected slots:
     virtual void featureDeleted( int fid );

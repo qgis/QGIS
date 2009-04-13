@@ -1,5 +1,5 @@
 /***************************************************************************
-     BeataView.h
+     QgsAttributeTableView.h
      --------------------------------------
     Date                 : Feb 2009
     Copyright            : (C) 2009 Vita Cizek
@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef BEATAVIEW_H_
-#define BEATAVIEW_H_
+#ifndef QGSATTRIBUTETABLEVIEW_H_
+#define QGSATTRIBUTETABLEVIEW_H_
 
 #include <QTableView>
 
 class QgsVectorLayer;
 
 
-class BeataView: public QTableView
+class QgsAttributeTableView: public QTableView
 {
 //private slots:
     //void setRows(int rows);
 
   public:
-    BeataView( QWidget* parent = NULL );
-    virtual ~BeataView();
+    QgsAttributeTableView( QWidget* parent = NULL );
+    virtual ~QgsAttributeTableView();
 
     void setLayer( QgsVectorLayer* layer );
 

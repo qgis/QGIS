@@ -38,7 +38,7 @@
 #include "qgsrasterlayerproperties.h"
 #include "qgsvectorlayerproperties.h"
 
-#include "BeataDialog.h"
+#include "qgsattributetabledialog.h"
 
 #include <cfloat>
 #include <iostream>
@@ -1860,7 +1860,7 @@ void QgsLegend::legendLayerAttributeTable()
 
   if ( vlayer )
   {
-    BeataDialog *mDialog = new BeataDialog( vlayer );
+    QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( vlayer );
     mDialog->show();
     // the dialog will be deleted by itself on close
   }
