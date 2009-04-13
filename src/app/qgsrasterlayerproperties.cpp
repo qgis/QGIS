@@ -1396,6 +1396,11 @@ void QgsRasterLayerProperties::apply()
             myColorRampItems.push_back( myNewColorRampItem );
             inserted = true;
           }
+          else if ( myColorRampItems[myCurrentIndex].value > myNewColorRampItem.value )
+          {
+            myColorRampItems.insert( myCurrentIndex, myNewColorRampItem );
+            inserted = true;
+          }
           else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
           {
             myColorRampItems.push_back( myNewColorRampItem );
@@ -1808,7 +1813,9 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 {
-  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), "/", tr( "Textfile (*.txt)" ) );
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile (*.txt)" ) );
   if ( !myFileName.isEmpty() )
   {
     if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
@@ -2266,7 +2273,9 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   int myLineCounter = 0;
   bool myImportError = false;
   QString myBadLines;
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), "/", tr( "Textfile (*.txt)" ) );
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile (*.txt)" ) );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
   {
@@ -2677,7 +2686,9 @@ void QgsRasterLayerProperties::on_pbtnAddColorMapEntry_clicked()
 
 void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
 {
-  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), "/", tr( "Textfile (*.txt)" ) );
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile (*.txt)" ) );
   if ( !myFileName.isEmpty() )
   {
     if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
@@ -2757,7 +2768,9 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
   int myLineCounter = 0;
   bool myImportError = false;
   QString myBadLines;
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), "/", tr( "Textfile (*.txt)" ) );
+  QSettings myQSettings;
+  QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile (*.txt)" ) );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
   {
@@ -2966,6 +2979,11 @@ void QgsRasterLayerProperties::on_pbtnSortColorMap_clicked()
       if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
       {
         myColorRampItems.push_back( myNewColorRampItem );
+        inserted = true;
+      }
+      else if ( myColorRampItems[myCurrentIndex].value > myNewColorRampItem.value )
+      {
+        myColorRampItems.insert( myCurrentIndex, myNewColorRampItem );
         inserted = true;
       }
       else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
