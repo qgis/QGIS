@@ -57,7 +57,7 @@ int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& s
     //transform point from map coordinates to layer coordinates
     layerCoordPoint = mMapRenderer->mapToLayerCoordinates( snapLayerIt->mLayer, mapCoordPoint );
 
-    double tolerance = QgsTolerance::toleranceInMapUnits( snapLayerIt->mTolerance, mMapRenderer->mapUnitsPerPixel(), snapLayerIt->mUnitType );
+    double tolerance = QgsTolerance::toleranceInMapUnits( snapLayerIt->mTolerance, snapLayerIt->mLayer, mMapRenderer, snapLayerIt->mUnitType );
     if ( snapLayerIt->mLayer->snapWithContext( layerCoordPoint, tolerance,
          currentResultList, snapLayerIt->mSnapTo ) != 0 )
     {
