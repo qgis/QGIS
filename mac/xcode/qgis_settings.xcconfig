@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.5
+CURRENT_PROJECT_VERSION = 2.1.6
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -14,7 +14,7 @@ ARCHS = $(NATIVE_ARCH)
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Unstable-trunk
+QGIS_RELEASE_NAME = Pan (Unstable)
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 1
 QGIS_VERSION_PATCH = 0
@@ -22,21 +22,15 @@ QGIS_VERSION_BUILD = 20090407
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_VERSION_BUILD)
 QGIS_VERSION_INT = 10100
 
-// library version - generally, keep in sync with qgis version
-LIBQGIS_VERSION_MAJOR = $(QGIS_VERSION_MAJOR)
-LIBQGIS_VERSION_MINOR = $(QGIS_VERSION_MINOR)
-LIBQGIS_VERSION_CURRENT = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
-LIBQGIS_VERSION_COMPAT = $(LIBQGIS_VERSION_MAJOR).0
-
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
 //////////////////////////////////////////////////////////////////////
 
 // ***TODO*** - detect current version, only used in bundle script
-QT_FWVER = 4 // the Versions/ folder name
 QT_MVER = 4 // the install_name version
+QT_FWVER = $(QT_MVER) // the Versions/ folder name, normally same as Qt ver
 
-QTDIR = /Developer/Applications/Qt
+QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 QTBIN = /Developer/Tools/Qt
 QTMOC = $(QTBIN)/moc
 QTUIC = $(QTBIN)/uic
@@ -44,8 +38,6 @@ QTRCC = $(QTBIN)/rcc
 QTLREL = $(QTBIN)/lrelease
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel
-SIP_system = /usr/local/bin/sip
-SIP_fw = $(PYTHON_PREFIX_fw)/bin/sip
 
 //////////////////////////////////////////////////////////////////////
 // forms of some libraries
@@ -125,15 +117,18 @@ GSL_PREFIX = /usr/local
 GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
 GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
 
+PYSITE_fw = $(PYTHON_PREFIX)/lib/python$(PYTHON_VERSION)/site-packages
+
 EXPAT_PREFIX = /usr/local // not used for system expat
 
 // unix SQLite defaults to system
 SQLITE_PREFIX_shared = /usr
+SQLITE_PREFIX_static = /usr/local
 SPATIALITE_PREFIX = /usr/local
 
 PGSQL_PREFIX = /usr/local/pgsql
-// used to link static libs
-PGSQL_LIBADD = -lssl -lcrypto -lpam -lkrb5
+// used to link static libs, defaults based on kyngchaos dist
+PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lreadline -lz
 
 //////////////////////////////////////////////////////////////////////
 // DO NOT CHANGE THESE
@@ -164,8 +159,8 @@ HEADER_SEARCH_PATHS = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/incl
 ALWAYS_SEARCH_USER_PATHS = NO
 USE_HEADERMAP = NO // else headers with same name cause confusion
 
-DYLIB_CURRENT_VERSION = $(LIBQGIS_VERSION_MAJOR).$(LIBQGIS_VERSION_MINOR)
-DYLIB_COMPATIBILITY_VERSION = $(LIBQGIS_VERSION_MAJOR).0
+DYLIB_CURRENT_VERSION = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR)
+DYLIB_COMPATIBILITY_VERSION = $(QGIS_VERSION_MAJOR).0
 MACOSX_DEPLOYMENT_TARGET_tig = 10.4
 MACOSX_DEPLOYMENT_TARGET_leo = 10.5
 MACOSX_DEPLOYMENT_TARGET = $(MACOSX_DEPLOYMENT_TARGET_$(SDKSYS))
@@ -264,7 +259,7 @@ GSL_LIB = $(GSL_LIB_$(GSL_FORM))
 
 PGSQL_INC = $(PGSQL_PREFIX)/include
 PGSQL_LIB_shared = -L$(PGSQL_PREFIX)/lib -lpq
-PGSQL_LIB_static = $(PGSQL_PREFIX)/lib/libpq.a $(PGSQL_LIBADD)
+PGSQL_LIB_static = -L$(PGSQL_PREFIX)/lib $(PGSQL_PREFIX)/lib/libpq.a $(PGSQL_LIBADD)
 PGSQL_LIB = $(PGSQL_LIB_$(PGSQL_FORM))
 PGSQL_HAVE_shared = -DHAVE_PGCONFIG=1
 PGSQL_HAVE_static = -DHAVE_PGCONFIG=1
@@ -297,9 +292,9 @@ SPATIALITE_LIBADD = $(SPATIALITE_GEOS_$(SPATIALITE_GEOS)) $(SPATIALITE_PROJ_$(SP
 
 PYTHON_PREFIX_fw = /Library/Frameworks/Python.framework
 PYTHON_PREFIX_system = /System/Library/Frameworks/Python.framework
-PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/Current
+PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
 PYTHON_INC = $(PYTHON_PREFIX)/Headers
-PYTHON_LIB = -framework Python
+PYTHON_LIB = -framework Python // must always be framework, full path will work
 PYTHON_HAVE_fw_tig = HAVE_PYTHON=1
 PYTHON_HAVE_fw_leo = HAVE_PYTHON=1
 PYTHON_HAVE_fw_ = HAVE_PYTHON=1
@@ -307,6 +302,8 @@ PYTHON_HAVE_system_tig =
 PYTHON_HAVE_system_leo = HAVE_PYTHON=1
 PYTHON_HAVE_system_ = 
 PYTHON_HAVE = $(PYTHON_HAVE_$(PYTHON_FORM)_$(SDKSYS))
+PYSITE_system = /Library/Python/$(PYTHON_VERSION)/site-packages
+PYSITE = $(PYSITE_$(PYTHON_FORM))
 PYTHON = $(PYTHON_PREFIX)/bin/python
 
 #include "qgis_user.xcconfig"

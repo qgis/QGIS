@@ -14,14 +14,13 @@
 // Qt and other support
 //////////////////////////////////////////////////////////////////////
 
-//QT_FWVER = 4 // the Versions/ folder name
 //QT_MVER = 4 // the install_name version
+//QT_FWVER = $(QT_MVER) // the Versions/ folder name, normally same as Qt ver
 
-//QTDIR = /Developer/Applications/Qt // Qt apps and plugins
+//QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
 //GPSBABEL = /usr/local/bin/gpsbabel
-//SIP_system = /usr/local/bin/sip
 
 //////////////////////////////////////////////////////////////////////
 // forms of some libraries
@@ -106,15 +105,18 @@
 //GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
 //GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
 
+//PYSITE_fw = $(PYTHON_PREFIX)/lib/python$(PYTHON_VERSION)/site-packages
+
 //EXPAT_PREFIX = /usr/local // not used for system expat
 
 // unix SQLite defaults to system
 //SQLITE_PREFIX_shared = /usr
+//SQLITE_PREFIX_static = /usr/local
 //SPATIALITE_PREFIX = /usr/local
 
 //PGSQL_PREFIX = /usr/local/pgsql
-// used to link static libs
-//PGSQL_LIBADD = -lssl -lcrypto -lpam -lkrb5
+// used to link static libs, defaults based on kyngchaos dist
+//PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lreadline -lz
 
 //////////////////////////////////////////////////////////////////////
 // do not change these unless you have a very odd layout for them
@@ -151,6 +153,8 @@
 //SPATIALITE_LIB = $(SPATIALITE_LIB_$(SPATIALITE_FORM))
 //SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
 
-//PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/Current
+//PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
 //PYTHON_INC = $(PYTHON_PREFIX)/Headers
-//PYTHON_LIB = -framework Python
+//PYTHON_LIB = -framework Python // must always be framework, full path will work
+//PYSITE = $(PYSITE_$(PYTHON_FORM))
+//PYTHON = $(PYTHON_PREFIX)/bin/python
