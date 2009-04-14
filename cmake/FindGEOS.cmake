@@ -53,7 +53,18 @@ ELSE(WIN32)
       )
     #MESSAGE("DBG GEOS_CONFIG ${GEOS_CONFIG}")
 
-    IF (GEOS_CONFIG) 
+    IF (GEOS_CONFIG)
+      
+      EXEC_PROGRAM(${GEOS_CONFIG}
+        ARGS --version
+        OUTPUT_VARIABLE GEOS_VERSION)
+      STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GEOS_VERSION_MAJOR "${GEOS_VERSION}")
+      STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GEOS_VERSION_MINOR "${GEOS_VERSION}")
+
+      IF (GEOS_VERSION_MAJOR LESS 3)
+          MESSAGE (FATAL_ERROR "GEOS version is too old (${GEOS_VERSION}). Use 3.0.0 or higher.")
+      ENDIF (GEOS_VERSION_MAJOR LESS 3)
+     
       # set INCLUDE_DIR to prefix+include
       EXEC_PROGRAM(${GEOS_CONFIG}
         ARGS --prefix
