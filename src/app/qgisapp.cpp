@@ -1929,13 +1929,11 @@ void QgisApp::about()
       + "</li>"
       + "<li>"
       + tr("Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.")
-      + "</li>";
-
+      + "</li>"
 //+ "<li>"
 //+ tr("X")
 //+ "</li>"
-                + "</ul></body></html>";
-
+      + "</ul></body></html>";
 
     abt->setWhatsNew( whatsNew );
 
