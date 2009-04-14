@@ -183,10 +183,7 @@ QString QgsDataSourceURI::removePassword( const QString& aUri )
   QRegExp regexp;
   regexp.setMinimal( true );
   QString safeName( aUri );
-  //this works for postgres, ingres, mysql,
-  if (( aUri.contains( "PG:" ) )
-      || ( aUri.contains( "driver=ingres" ) )
-      || ( aUri.contains( "MySQL:" ) ) )
+  if ( aUri.contains( " password=" ) )
   {
     regexp.setPattern( " password=.* " );
     safeName.replace( regexp, " " );
