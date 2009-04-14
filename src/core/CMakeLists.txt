@@ -290,6 +290,7 @@ SET(QGIS_CORE_HDRS
 qgis.h
 qgsapplication.h
 qgsattributeaction.h
+qgscentralpointpositionmanager.h
 qgsclipper.h
 qgscontexthelp.h
 qgscoordinatetransform.h
@@ -309,6 +310,8 @@ qgsmaplayerregistry.h
 qgsmaprenderer.h
 qgsmaptopixel.h
 qgsmessageoutput.h
+qgsoverlayobjectpositionmanager.h
+qgspalobjectpositionmanager.h
 qgspoint.h
 qgsproject.h
 qgsprojectfiletransform.h
@@ -330,6 +333,7 @@ qgscoordinatereferencesystem.h
 qgsvectordataprovider.h
 qgsvectorfilewriter.h
 qgsvectorlayer.h
+qgsvectoroverlay.h
 qgstolerance.h
 
 raster/qgscliptominmaxenhancement.h
