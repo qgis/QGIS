@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/oracleplugin/" >
+        <file>oracleplugin.png</file>
+    </qresource>
+</RCC>

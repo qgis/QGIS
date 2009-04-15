@@ -3,6 +3,7 @@ SUBDIRS (copyright_label
   interpolation 
   north_arrow 
   scale_bar
+  oracle_raster
   )
 
 IF (POSTGRES_FOUND)
