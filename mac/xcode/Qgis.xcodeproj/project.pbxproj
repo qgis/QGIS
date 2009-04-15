@@ -79,6 +79,7 @@
 				7256F1C10F411C7C0022BE1F /* PBXTargetDependency */,
 				7256F1BF0F411C7C0022BE1F /* PBXTargetDependency */,
 				720383870F8BA92B0083B883 /* PBXTargetDependency */,
+				7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */,
 			);
 			name = "Base Plugins";
 			productName = "Base Plugins";
@@ -502,6 +503,15 @@
 		721DDCEC0F6E97D4006DD13E /* v.in.ogr.qgis.loc.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE50F6E97C2006DD13E /* v.in.ogr.qgis.loc.2.png */; };
 		721DDCED0F6E97D4006DD13E /* v.in.ogr.qgis.loc.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE40F6E97C2006DD13E /* v.in.ogr.qgis.loc.qgm */; };
 		721DDCEE0F6E97D4006DD13E /* v.in.ogr.qgis.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE30F6E97C2006DD13E /* v.in.ogr.qgis.qgm */; };
+		7223B7860F96A96500D905B4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7223B7870F96A96500D905B4 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		7223B7980F96A99500D905B4 /* qgsoracle_plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7760F969A9D00D905B4 /* qgsoracle_plugin.cpp */; };
+		7223B7990F96A99500D905B4 /* qgsoracleconnect_ui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7780F969A9D00D905B4 /* qgsoracleconnect_ui.cpp */; };
+		7223B79A0F96A99500D905B4 /* qgsselectgeoraster_ui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77B0F969A9D00D905B4 /* qgsselectgeoraster_ui.cpp */; };
+		7223B79B0F96A9BF00D905B4 /* qgsoracle_plugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7770F969A9D00D905B4 /* qgsoracle_plugin.h */; };
+		7223B79C0F96A9BF00D905B4 /* qgsoracleconnect_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */; };
+		7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */; };
+		7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7750F969A9D00D905B4 /* oracleplugin.qrc */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -2455,6 +2465,28 @@
 			);
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
+		7223B7880F96A96500D905B4 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		7223B7890F96A96500D905B4 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -2981,6 +3013,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 7209F1D10F39E760003DC336;
 			remoteInfo = qgis_core;
+		};
+		7223B7800F96A96500D905B4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7209F1D10F39E760003DC336;
+			remoteInfo = qgis_core;
+		};
+		7223B7820F96A96500D905B4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7209F3120F3A2F2B003DC336;
+			remoteInfo = qgis_gui;
+		};
+		7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7223B77E0F96A96500D905B4 /* oracleplugin */;
+			remoteInfo = oracleplugin;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8125,6 +8178,18 @@
 		721DDCE60F6E97C2006DD13E /* v.in.ogr.qgis.loc.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.loc.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.loc.1.svg; sourceTree = SOURCE_ROOT; };
 		721DDCE70F6E97C2006DD13E /* v.in.ogr.qgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.2.png; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.2.png; sourceTree = SOURCE_ROOT; };
 		721DDCE80F6E97C2006DD13E /* v.in.ogr.qgis.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.1.svg; sourceTree = SOURCE_ROOT; };
+		7223B7730F969A9D00D905B4 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/oracle_raster/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		7223B7740F969A9D00D905B4 /* oracleplugin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = oracleplugin.png; path = ../../src/plugins/oracle_raster/oracleplugin.png; sourceTree = SOURCE_ROOT; };
+		7223B7750F969A9D00D905B4 /* oracleplugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = oracleplugin.qrc; path = ../../src/plugins/oracle_raster/oracleplugin.qrc; sourceTree = SOURCE_ROOT; };
+		7223B7760F969A9D00D905B4 /* qgsoracle_plugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsoracle_plugin.cpp; path = ../../src/plugins/oracle_raster/qgsoracle_plugin.cpp; sourceTree = SOURCE_ROOT; };
+		7223B7770F969A9D00D905B4 /* qgsoracle_plugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsoracle_plugin.h; path = ../../src/plugins/oracle_raster/qgsoracle_plugin.h; sourceTree = SOURCE_ROOT; };
+		7223B7780F969A9D00D905B4 /* qgsoracleconnect_ui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsoracleconnect_ui.cpp; path = ../../src/plugins/oracle_raster/qgsoracleconnect_ui.cpp; sourceTree = SOURCE_ROOT; };
+		7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsoracleconnect_ui.h; path = ../../src/plugins/oracle_raster/qgsoracleconnect_ui.h; sourceTree = SOURCE_ROOT; };
+		7223B77A0F969A9D00D905B4 /* qgsoracleconnectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoracleconnectbase.ui; path = ../../src/plugins/oracle_raster/qgsoracleconnectbase.ui; sourceTree = SOURCE_ROOT; };
+		7223B77B0F969A9D00D905B4 /* qgsselectgeoraster_ui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsselectgeoraster_ui.cpp; path = ../../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp; sourceTree = SOURCE_ROOT; };
+		7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsselectgeoraster_ui.h; path = ../../src/plugins/oracle_raster/qgsselectgeoraster_ui.h; sourceTree = SOURCE_ROOT; };
+		7223B77D0F969A9D00D905B4 /* qgsselectgeorasterbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsselectgeorasterbase.ui; path = ../../src/plugins/oracle_raster/qgsselectgeorasterbase.ui; sourceTree = SOURCE_ROOT; };
+		7223B78D0F96A96500D905B4 /* liboracleplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = liboracleplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		723043270F770E15009B5354 /* bundle-template.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "bundle-template.sh"; sourceTree = "<group>"; };
 		72331DFA0F8E2A2100398D2B /* qgsvectoroverlay.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsvectoroverlay.sip; path = ../../python/core/qgsvectoroverlay.sip; sourceTree = SOURCE_ROOT; };
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
@@ -8476,6 +8541,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7223B7850F96A96500D905B4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7223B7860F96A96500D905B4 /* libqgis_core.dylib in Frameworks */,
+				7223B7870F96A96500D905B4 /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7262ED960F7A770300498385 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -8767,6 +8841,7 @@
 				729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */,
 				7262ED9C0F7A770300498385 /* libspatialiteprovider.so */,
 				720383580F8B905D0083B883 /* libdiagramoverlayplugin.so */,
+				7223B78D0F96A96500D905B4 /* liboracleplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9617,6 +9692,7 @@
 				7209E7C60F39E57B003DC336 /* dxf2shp_converter */,
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
 				7209E7EA0F39E57B003DC336 /* geoprocessing */,
+				7223B7720F969A9D00D905B4 /* oracle_raster */,
 				7209EC070F39E57B003DC336 /* plugin_builder.py */,
 				7209EC080F39E57B003DC336 /* plugin_template */,
 				7209EC130F39E57B003DC336 /* qgisplugin.h */,
@@ -12452,6 +12528,25 @@
 			path = ../../doc/plugins/geoprocessing/buffer;
 			sourceTree = SOURCE_ROOT;
 		};
+		7223B7720F969A9D00D905B4 /* oracle_raster */ = {
+			isa = PBXGroup;
+			children = (
+				7223B7730F969A9D00D905B4 /* CMakeLists.txt */,
+				7223B7740F969A9D00D905B4 /* oracleplugin.png */,
+				7223B7750F969A9D00D905B4 /* oracleplugin.qrc */,
+				7223B7760F969A9D00D905B4 /* qgsoracle_plugin.cpp */,
+				7223B7770F969A9D00D905B4 /* qgsoracle_plugin.h */,
+				7223B7780F969A9D00D905B4 /* qgsoracleconnect_ui.cpp */,
+				7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */,
+				7223B77A0F969A9D00D905B4 /* qgsoracleconnectbase.ui */,
+				7223B77B0F969A9D00D905B4 /* qgsselectgeoraster_ui.cpp */,
+				7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */,
+				7223B77D0F969A9D00D905B4 /* qgsselectgeorasterbase.ui */,
+			);
+			name = oracle_raster;
+			path = ../../src/plugins/oracle_raster;
+			sourceTree = SOURCE_ROOT;
+		};
 		7262ED8C0F7A767400498385 /* spatialite */ = {
 			isa = PBXGroup;
 			children = (
@@ -12982,6 +13077,27 @@
 			productName = qgis_core;
 			productReference = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
+		};
+		7223B77E0F96A96500D905B4 /* oracleplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7223B78A0F96A96500D905B4 /* Build configuration list for PBXNativeTarget "oracleplugin" */;
+			buildPhases = (
+				7223B7830F96A96500D905B4 /* Script - ui */,
+				7223B7840F96A96500D905B4 /* Sources */,
+				7223B7850F96A96500D905B4 /* Frameworks */,
+			);
+			buildRules = (
+				7223B7880F96A96500D905B4 /* PBXBuildRule */,
+				7223B7890F96A96500D905B4 /* PBXBuildRule */,
+			);
+			dependencies = (
+				7223B77F0F96A96500D905B4 /* PBXTargetDependency */,
+				7223B7810F96A96500D905B4 /* PBXTargetDependency */,
+			);
+			name = oracleplugin;
+			productName = testprog;
+			productReference = 7223B78D0F96A96500D905B4 /* liboracleplugin.so */;
+			productType = "com.apple.product-type.tool";
 		};
 		7262ED920F7A770300498385 /* spatialiteprovider */ = {
 			isa = PBXNativeTarget;
@@ -13640,6 +13756,7 @@
 				72A56BFB0F3C887000BA32A1 /* dxf2shpconverterplugin */,
 				72A56C060F3C887300BA32A1 /* ogrconverterplugin */,
 				720383490F8B905D0083B883 /* diagramoverlayplugin */,
+				7223B77E0F96A96500D905B4 /* oracleplugin */,
 			);
 		};
 /* End PBXProject section */
@@ -13705,6 +13822,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "mkdir -p \"$CONFIGURATION_BUILD_DIR/include\"\n\n# check if the files are generated, clean if need to regenerate\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] || [ ../../cmake_templates/qgsconfig.h.in -nt \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\" ] ; then\necho \"Generating qgsconfig.h...\"\nsed -e \"s,\\${CPACK_PACKAGE_VERSION_MAJOR},$QGIS_VERSION_MAJOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_MINOR},$QGIS_VERSION_MINOR,g\" \\\n\t-e \"s,\\${CPACK_PACKAGE_VERSION_PATCH},$QGIS_VERSION_PATCH,g\" \\\n\t-e \"s,\\${RELEASE_NAME},$QGIS_RELEASE_NAME,g\" \\\n\t-e \"s,\\${QGIS_VERSION_INT},$QGIS_VERSION_INT,g\" \\\n\t-e \"s,\\${QGIS_PLUGIN_SUBDIR},$QGIS_PLUGIN_SUBDIR,g\" \\\n\t-e \"s,\\${QGIS_DATA_SUBDIR},$QGIS_DATA_SUBDIR,g\" \\\n\t-e \"s,#cmakedefine,#define,g\" \\\n\t../../cmake_templates/qgsconfig.h.in > \"$CONFIGURATION_BUILD_DIR/include/qgsconfig.h\"\nfi\n\nif [ ! -f \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] || [ ../../cmake_templates/qgssvnversion.h.in_cmake -nt \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\" ] ; then\necho \"Generating qgssvnversion.h...\"\nsvnv=`which svnversion`\nif [ \"$svnv\" ] ; then\n\tsvnver=`svnversion $SRCROOT`\nelse\n\tsvnver=\"unknown\"\nfi\nsed -e \"s,@MYVERSION@,$svnver,\" \\\n\t../../cmake_templates/qgssvnversion.h.in_cmake > \"$CONFIGURATION_BUILD_DIR/include/qgssvnversion.h\"\nfi\n\nexit 0";
+			showEnvVarsInLog = 0;
+		};
+		7223B7830F96A96500D905B4 /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		7256F1530F4105770022BE1F /* configure.py */ = {
@@ -14312,6 +14444,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7223B7840F96A96500D905B4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */,
+				7223B79B0F96A9BF00D905B4 /* qgsoracle_plugin.h in Sources */,
+				7223B79C0F96A9BF00D905B4 /* qgsoracleconnect_ui.h in Sources */,
+				7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */,
+				7223B7980F96A99500D905B4 /* qgsoracle_plugin.cpp in Sources */,
+				7223B7990F96A99500D905B4 /* qgsoracleconnect_ui.cpp in Sources */,
+				7223B79A0F96A99500D905B4 /* qgsselectgeoraster_ui.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7262ED950F7A770300498385 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -14857,6 +15003,21 @@
 			isa = PBXTargetDependency;
 			target = 7209F1D10F39E760003DC336 /* qgis_core */;
 			targetProxy = 7209F3F50F3A3C25003DC336 /* PBXContainerItemProxy */;
+		};
+		7223B77F0F96A96500D905B4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7209F1D10F39E760003DC336 /* qgis_core */;
+			targetProxy = 7223B7800F96A96500D905B4 /* PBXContainerItemProxy */;
+		};
+		7223B7810F96A96500D905B4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7209F3120F3A2F2B003DC336 /* qgis_gui */;
+			targetProxy = 7223B7820F96A96500D905B4 /* PBXContainerItemProxy */;
+		};
+		7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7223B77E0F96A96500D905B4 /* oracleplugin */;
+			targetProxy = 7223B7A50F96AA6C00D905B4 /* PBXContainerItemProxy */;
 		};
 		7256F1900F411B110022BE1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -15505,6 +15666,71 @@
 					"$(QT_LIB)",
 				);
 				PRODUCT_NAME = qgis_gui;
+			};
+			name = Release;
+		};
+		7223B78B0F96A96500D905B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GDAL_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GDAL_LIB)",
+				);
+				PRODUCT_NAME = oracleplugin.so;
+				TARGET_PLUGINDIR = oracle_raster;
+			};
+			name = Debug;
+		};
+		7223B78C0F96A96500D905B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(GDAL_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GDAL_LIB)",
+				);
+				PRODUCT_NAME = oracleplugin.so;
+				TARGET_PLUGINDIR = oracle_raster;
 			};
 			name = Release;
 		};
@@ -17537,6 +17763,15 @@
 			buildConfigurations = (
 				7209F38C0F3A2F2B003DC336 /* Debug */,
 				7209F38D0F3A2F2B003DC336 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7223B78A0F96A96500D905B4 /* Build configuration list for PBXNativeTarget "oracleplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7223B78B0F96A96500D905B4 /* Debug */,
+				7223B78C0F96A96500D905B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
