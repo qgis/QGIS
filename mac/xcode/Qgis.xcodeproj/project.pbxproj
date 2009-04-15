@@ -1002,6 +1002,10 @@
 		7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8E0F7A767400498385 /* qgsspatialiteprovider.cpp */; };
 		7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED8F0F7A767400498385 /* qgsspatialiteprovider.h */; };
 		7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7F0F7A74B700498385 /* qgsspatialitetablemodel.h */; };
+		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; };
+		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; };
+		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; };
+		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; };
 		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
 		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
 		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
@@ -8126,8 +8130,6 @@
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
 		72331DFC0F8E2A5D00398D2B /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = ../../src/core/spatialite/sqlite3.c; sourceTree = SOURCE_ROOT; };
 		72331DFD0F8E2A5D00398D2B /* spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = spatialite.c; path = ../../src/core/spatialite/spatialite.c; sourceTree = SOURCE_ROOT; };
-		7256F29B0F4141240022BE1F /* core.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = core.so; path = generated/python/python/core/core.so; sourceTree = SOURCE_ROOT; };
-		7256F29C0F4141570022BE1F /* gui.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; name = gui.so; path = generated/python/python/gui/gui.so; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -8763,8 +8765,6 @@
 				72A56DA30F3CCAF700BA32A1 /* libplugin.so */,
 				729BBEFF0F40770B001BCB63 /* qgis_help.app */,
 				729BBF3D0F407CBA001BCB63 /* libqgispython.dylib */,
-				7256F29B0F4141240022BE1F /* core.so */,
-				7256F29C0F4141570022BE1F /* gui.so */,
 				7262ED9C0F7A770300498385 /* libspatialiteprovider.so */,
 				720383580F8B905D0083B883 /* libdiagramoverlayplugin.so */,
 			);
@@ -12913,6 +12913,10 @@
 				7209F60C0F3A577C003DC336 /* qgsvectorlayer.h in Headers */,
 				7209F60D0F3A577C003DC336 /* qgsvertexmarker.h in Headers */,
 				720382E00F8B86070083B883 /* qgstolerance.h in Headers */,
+				7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */,
+				7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */,
+				7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */,
+				7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
