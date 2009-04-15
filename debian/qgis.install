@@ -20,6 +20,7 @@ usr/lib/qgis/libinterpolationplugin.so
 usr/lib/qgis/libogrconverterplugin.so
 usr/lib/qgis/libcoordinatecaptureplugin.so
 usr/lib/qgis/libspatialiteprovider.so
+usr/lib/qgis/liboracleplugin.so
 usr/lib/qgis/libdiagramoverlay.so 
 usr/share/pixmaps/qgis-icon.xpm
 usr/share/pixmaps/qgis-mime-icon.png
