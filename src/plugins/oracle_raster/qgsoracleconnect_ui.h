@@ -4,7 +4,7 @@
     begin                : Oracle Spatial Plugin
     copyright            : (C) Ivan Lucena
     email                : ivan.lucena@pmldnet.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,7 +15,7 @@
 /* $Id$ */
 
 #ifndef QgsOracleConnect_H
-#define	QgsOracleConnect_H
+#define QgsOracleConnect_H
 
 // Qt Designer Includes
 #include "ui_qgsoracleconnectbase.h"
@@ -27,19 +27,19 @@ class QgsOracleConnect : public QDialog, private Ui::OracleConnectGuiBase
 {
     Q_OBJECT
 
-public:
-    QgsOracleConnect(QWidget* parent = 0,
-            const QString& connName = QString::null,
-            Qt::WFlags fl = QgisGui::ModalDialogFlags);
+  public:
+    QgsOracleConnect( QWidget* parent = 0,
+                      const QString& connName = QString::null,
+                      Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsOracleConnect();
 
-private:
+  private:
     void saveConnection();
     void helpInfo();
 
-public slots:
+  public slots:
     void on_btnOk_clicked();
     void on_btnCancel_clicked();
 };
 
-#endif	/* _ORACLECONNECTGUI_H */
+#endif /* _ORACLECONNECTGUI_H */

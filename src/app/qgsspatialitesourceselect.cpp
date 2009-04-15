@@ -291,7 +291,7 @@ void QgsSpatiaLiteSourceSelect::populateConnectionList()
   {
     // retrieving the SQLite DB name and full path
     QString text = *it + tr( " @ " );
-    text += settings.value( *it + tr( "/sqlitepath" ), "###unknown###" ).toString();
+    text += settings.value( *it + "/sqlitepath", "###unknown###" ).toString();
 
     cmbConnections->addItem( text );
     ++it;
@@ -365,7 +365,7 @@ void QgsSpatiaLiteSourceSelect::deleteConnection()
     subKey.truncate( idx );
 
   QString key = "/SpatiaLite/connections/" + subKey;
-  QString msg = tr( "Are you sure you want to remove the " ) + subKey + tr( " connection and all associated settings?" );
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( subKey );
   QMessageBox::StandardButton result =
     QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )

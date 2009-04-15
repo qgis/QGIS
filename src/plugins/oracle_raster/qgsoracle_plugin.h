@@ -4,7 +4,7 @@
     begin                : Oracle Spatial Plugin
     copyright            : (C) Ivan Lucena
     email                : ivan.lucena@pmldnet.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -30,18 +30,18 @@ class QgsOraclePlugin : public QObject, public QgisPlugin
 {
     Q_OBJECT
 
-public:
+  public:
 
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
      * @param theInterface Pointer to the QgisInterface object.
      */
-    QgsOraclePlugin(QgisInterface * theInterface);
+    QgsOraclePlugin( QgisInterface * theInterface );
     //! Destructor
     virtual ~QgsOraclePlugin();
 
-public slots:
+  public slots:
 
     //! init the gui
     virtual void initGui();
@@ -52,7 +52,7 @@ public slots:
     //! show the help document
     void help();
 
-private:
+  private:
 
     int mPluginType;
     //! Pointer to the QGIS interface object

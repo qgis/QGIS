@@ -1853,87 +1853,87 @@ void QgisApp::about()
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" + tr( "Version" ) + " ";
     whatsNew += QGis::QGIS_VERSION;
-    whatsNew += "<h2>" + tr("Whats new in Version 1.1.0?") + "</h2>"
-    + "<p>"
-    + tr("Please note that this is a release in our 'unstable' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.")
-    + "</p>"
-    + "<p>"
-    + tr("This release includes many bug fixes and enchancements over the QGIS 1.1.0 release. In addition we have added the following new features:")
-    + "</p>"
-    + "<ul>"
-      + "<li>"
-      + tr("Updates to translations.")
-      + "</li>"
-      + "<li>"
-      + tr("Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.")
-      + "</li>"
-      + "<li>"
-      + tr("Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.")
-      + "</li>"
-      + "<li>"
-      + tr("Improvements to Debian packaging to better support Debian standard requirements.")
-      + "</li>"
-      + "<li>"
-      + tr("Support usb: as a GPS device under Linux.")
-      + "</li>"
-      + "<li>"
-      + tr("WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.")
-      + "</li>"
-      + "<li>"
-      + tr(" Added svg point symbols symbols from Matt Amos (with his permission).")
-      + "</li>"
-      + "<li>"
-      + tr("Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.")
-      + "</li>"
-      + "<li>"
-      + tr("Improvements the PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.")
-      + "</li>"
-      + "<li>"
-      + tr("Mapserver Export improvements for continuous color support.")
-      + "</li>"
-      + "<li>"
-      + tr("Added tools menu - the fTools plugins are now part of the core QGIS plugins and will always be installed by default.")
-      + "</li>"
-      + "<li>" 
-      + tr("Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.")
-      + "</li>"
-      + "<li>"
-      + tr("When using File - Save as image, the saved image is now georeferenced.")
-      + "</li>"
-      + "<li>"
-      + tr("Projection selector now includes quick selection of recently used CRS's.")
-      + "</li>"
-      + "<li>"
-      + tr("Continuous color renderer supports point symbols now too.")
-      + "</li>"
-      + "<li>"
-      + tr("Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.")
-      + "</li>"
-      + "<li>"
-      + tr("Updates and cleanups to the GRASS toolbox.")
-      + "</li>"
-      + "<li>"
-      + tr("Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.")
-      + "</li>"
-      + "<li>"
-      + tr("The middle mouse button can now be used for panning. ")
-      + "</li>"
-      + "<li>"
-      + tr("A new, faster attribute table implementation.")
-      + "</li>"
-      + "<li>"
-      + tr("Numerous cleanups to the user interface.")
-      + "</li>"
-      + "<li>"
-      + tr("A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.")
-      + "</li>"
-      + "<li>"
-      + tr("Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.")
-      + "</li>"
+    whatsNew += "<h2>" + tr( "Whats new in Version 1.1.0?" ) + "</h2>"
+                + "<p>"
+                + tr( "Please note that this is a release in our 'unstable' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series." )
+                + "</p>"
+                + "<p>"
+                + tr( "This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:" )
+                + "</p>"
+                + "<ul>"
+                + "<li>"
+                + tr( "Updates to translations." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements to Debian packaging to better support Debian standard requirements." )
+                + "</li>"
+                + "<li>"
+                + tr( "Support usb: as a GPS device under Linux." )
+                + "</li>"
+                + "<li>"
+                + tr( "WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers." )
+                + "</li>"
+                + "<li>"
+                + tr( "Added svg point symbols from Matt Amos (with his permission)." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)" )
+                + "</li>"
+                + "<li>"
+                + tr( "Mapserver Export improvements for continuous color support." )
+                + "</li>"
+                + "<li>"
+                + tr( "Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings." )
+                + "</li>"
+                + "<li>"
+                + tr( "When using File - Save as image, the saved image is now georeferenced." )
+                + "</li>"
+                + "<li>"
+                + tr( "Projection selector now includes quick selection of recently used CRS's." )
+                + "</li>"
+                + "<li>"
+                + tr( "Continuous color renderer supports point symbols now too." )
+                + "</li>"
+                + "<li>"
+                + tr( "Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX." )
+                + "</li>"
+                + "<li>"
+                + tr( "Updates and cleanups to the GRASS toolbox." )
+                + "</li>"
+                + "<li>"
+                + tr( "Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system." )
+                + "</li>"
+                + "<li>"
+                + tr( "The middle mouse button can now be used for panning. " )
+                + "</li>"
+                + "<li>"
+                + tr( "A new, faster attribute table implementation." )
+                + "</li>"
+                + "<li>"
+                + tr( "Numerous cleanups to the user interface." )
+                + "</li>"
+                + "<li>"
+                + tr( "A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database." )
+                + "</li>"
+                + "<li>"
+                + tr( "Vector overlay support that can draw pie and bar charts over vector layers based on attribute data." )
+                + "</li>"
 //+ "<li>"
 //+ tr("X")
 //+ "</li>"
-      + "</ul></body></html>";
+                + "</ul></body></html>";
 
     abt->setWhatsNew( whatsNew );
 
@@ -5213,7 +5213,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionSplitFeatures->setEnabled( false );
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
-            mActionMoveVertex->setEnabled( true );
+          mActionMoveVertex->setEnabled( true );
         }
         return;
       }
