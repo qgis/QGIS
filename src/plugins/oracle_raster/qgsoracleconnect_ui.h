@@ -40,7 +40,6 @@ private:
 public slots:
     void on_btnOk_clicked();
     void on_btnCancel_clicked();
-    void on_btnHelp_clicked();
 };
 
 #endif	/* _ORACLECONNECTGUI_H */
