@@ -4,7 +4,7 @@
     begin                : Oracle Spatial Plugin
     copyright            : (C) Ivan Lucena
     email                : ivan.lucena@pmldnet.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,9 +18,9 @@
 #include "qgsselectgeoraster_ui.h"
 
 static const char * const sIdent = "$Id: oracleplugin.cpp  $";
-static const QString sName = QObject::tr("Oracle Spatial GeoRaster");
-static const QString sDescription = QObject::tr("Access Oracle Spatial GeoRaster");
-static const QString sPluginVersion = QObject::tr("Version 0.1");
+static const QString sName = QObject::tr( "Oracle Spatial GeoRaster" );
+static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaster" );
+static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //////////////////////////////////////////////////////////////////////
@@ -34,9 +34,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-QgsOraclePlugin::QgsOraclePlugin(QgisInterface * theQgisInterface) :
-QgisPlugin(sName, sDescription, sPluginVersion, sPluginType),
-mQGisIface(theQgisInterface)
+QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface ) :
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    mQGisIface( theQgisInterface )
 {
 }
 
@@ -52,22 +52,22 @@ QgsOraclePlugin::~QgsOraclePlugin()
 void QgsOraclePlugin::initGui()
 {
 
-    // Create the action for tool
-    mQActionPointer = new QAction(QIcon(":/oracleplugin/oracleplugin.png"), tr("Select GeoRaster"), this);
-    // Set the what's this text
-    mQActionPointer->setWhatsThis(tr("Open a Oracle Spatial GeoRaster"));
-    // Connect the action to the run
-    connect(mQActionPointer, SIGNAL(triggered()), this, SLOT(run()));
-    // Add the icon to the toolbar
-    mQGisIface->addToolBarIcon(mQActionPointer);
-    mQGisIface->addPluginToMenu(tr("&Oracle Spatial"), mQActionPointer);
+  // Create the action for tool
+  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Select GeoRaster" ), this );
+  // Set the what's this text
+  mQActionPointer->setWhatsThis( tr( "Open a Oracle Spatial GeoRaster" ) );
+  // Connect the action to the run
+  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  // Add the icon to the toolbar
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Oracle Spatial" ), mQActionPointer );
 
 }
 //method defined in interface
 
 void QgsOraclePlugin::help()
 {
-    //implement me!
+  //implement me!
 }
 
 // Slot called when the menu item is triggered
@@ -77,20 +77,20 @@ void QgsOraclePlugin::help()
 
 void QgsOraclePlugin::run()
 {
-    QgsOracleSelectGeoraster *myPluginGui = new QgsOracleSelectGeoraster(mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags);
-    myPluginGui->setAttribute(Qt::WA_DeleteOnClose);
+  QgsOracleSelectGeoraster *myPluginGui = new QgsOracleSelectGeoraster( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
+  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
-    myPluginGui->show();
+  myPluginGui->show();
 }
 
 // Unload the plugin by cleaning up the GUI
 
 void QgsOraclePlugin::unload()
 {
-    // remove the GUI
-    mQGisIface->removePluginMenu("&Oracle Spatial", mQActionPointer);
-    mQGisIface->removeToolBarIcon(mQActionPointer);
-    delete mQActionPointer;
+  // remove the GUI
+  mQGisIface->removePluginMenu( "&Oracle Spatial", mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
+  delete mQActionPointer;
 }
 
 
@@ -112,42 +112,42 @@ void QgsOraclePlugin::unload()
  */
 // Class factory to return a new instance of the plugin class
 
-QGISEXTERN QgisPlugin * classFactory(QgisInterface * theQgisInterfacePointer)
+QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
-    return new QgsOraclePlugin(theQgisInterfacePointer);
+  return new QgsOraclePlugin( theQgisInterfacePointer );
 }
 // Return the name of the plugin - note that we do not user class members as
 // the class may not yet be insantiated when this method is called.
 
 QGISEXTERN QString name()
 {
-    return sName;
+  return sName;
 }
 
 // Return the description
 
 QGISEXTERN QString description()
 {
-    return sDescription;
+  return sDescription;
 }
 
 // Return the type (either UI or MapLayer plugin)
 
 QGISEXTERN int type()
 {
-    return sPluginType;
+  return sPluginType;
 }
 
 // Return the version number for the plugin
 
 QGISEXTERN QString version()
 {
-    return sPluginVersion;
+  return sPluginVersion;
 }
 
 // Delete ourself
 
-QGISEXTERN void unload(QgisPlugin * thePluginPointer)
+QGISEXTERN void unload( QgisPlugin * thePluginPointer )
 {
-    delete thePluginPointer;
+  delete thePluginPointer;
 }

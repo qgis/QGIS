@@ -4,7 +4,7 @@
     begin                : Oracle Spatial Plugin
     copyright            : (C) Ivan Lucena
     email                : ivan.lucena@pmldnet.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,31 +20,31 @@
 #include <QSettings>
 #include <QMessageBox>
 
-QgsOracleConnect::QgsOracleConnect(QWidget* parent,
-        const QString& connName,
-        Qt::WFlags fl) : QDialog(parent, fl)
+QgsOracleConnect::QgsOracleConnect( QWidget* parent,
+                                    const QString& connName,
+                                    Qt::WFlags fl ) : QDialog( parent, fl )
 {
-    setupUi(this);
+  setupUi( this );
 
-    if ( ! connName.isEmpty() )
+  if ( ! connName.isEmpty() )
+  {
+    // populate the dialog with the information stored for the connection
+    // populate the fields with the stored setting parameters
+
+    QSettings settings;
+
+    QString key = "/Oracle/connections/" + connName;
+
+    txtDatabase->setText( settings.value( key + "/database" ).toString() );
+    txtUsername->setText( settings.value( key + "/username" ).toString() );
+
+    if ( settings.value( key + "/savepass" ).toString() == "true" )
     {
-        // populate the dialog with the information stored for the connection
-        // populate the fields with the stored setting parameters
-
-        QSettings settings;
-
-        QString key = "/Oracle/connections/" + connName;
-
-        txtDatabase->setText( settings.value( key + "/database" ).toString() );
-        txtUsername->setText( settings.value( key + "/username" ).toString() );
-
-        if ( settings.value( key + "/savepass" ).toString() == "true" )
-        {
-            txtPassword->setText( settings.value( key + "/password" ).toString() );
-            chkStorePassword->setChecked( true );
-        }
-        txtName->setText( connName );
+      txtPassword->setText( settings.value( key + "/password" ).toString() );
+      chkStorePassword->setChecked( true );
     }
+    txtName->setText( connName );
+  }
 }
 
 QgsOracleConnect::~QgsOracleConnect()
@@ -53,36 +53,36 @@ QgsOracleConnect::~QgsOracleConnect()
 
 void QgsOracleConnect::on_btnCancel_clicked()
 {
-    helpInfo();
+  helpInfo();
 }
 
 void QgsOracleConnect::on_btnOk_clicked()
 {
-    saveConnection();
+  saveConnection();
 }
 
 void QgsOracleConnect::saveConnection()
 {
-    QSettings settings;
+  QSettings settings;
 
-    QString baseKey = "/Oracle/connections/";
+  QString baseKey = "/Oracle/connections/";
 
-    settings.setValue( baseKey + "selected", txtName->text() );
-    baseKey += txtName->text();
-    settings.setValue( baseKey + "/database", txtDatabase->text() );
-    settings.setValue( baseKey + "/username", txtUsername->text() );
-    settings.setValue( baseKey + "/password", txtPassword->text() );
-    settings.setValue( baseKey + "/savepass", chkStorePassword->isChecked() ? "true" : "false" );
-    settings.setValue( baseKey + "/subdtset", "GEOR:" +
-            txtUsername->text() + "/" +
-            txtPassword->text() + "@" +
-            txtDatabase->text() );
+  settings.setValue( baseKey + "selected", txtName->text() );
+  baseKey += txtName->text();
+  settings.setValue( baseKey + "/database", txtDatabase->text() );
+  settings.setValue( baseKey + "/username", txtUsername->text() );
+  settings.setValue( baseKey + "/password", txtPassword->text() );
+  settings.setValue( baseKey + "/savepass", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/subdtset", "GEOR:" +
+                     txtUsername->text() + "/" +
+                     txtPassword->text() + "@" +
+                     txtDatabase->text() );
 
-    accept();
+  accept();
 }
 
 void QgsOracleConnect::helpInfo()
 {
-    //  QgsContextHelp::run( context_id );
+  //  QgsContextHelp::run( context_id );
 }
 

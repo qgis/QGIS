@@ -4,7 +4,7 @@
     begin                : Oracle Spatial Plugin
     copyright            : (C) Ivan Lucena
     email                : ivan.lucena@pmldnet.com
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,15 +33,15 @@ class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
 {
     Q_OBJECT
 
-public:
-    QgsOracleSelectGeoraster(QWidget* parent, QgisInterface* iface, Qt::WFlags fl = 0);
+  public:
+    QgsOracleSelectGeoraster( QWidget* parent, QgisInterface* iface, Qt::WFlags fl = 0 );
     ~QgsOracleSelectGeoraster();
 
-private:
+  private:
     QgisInterface* mIface;
     QString mUri;
 
-private:
+  private:
     void addNewConnection();
     void editConnection();
     void deleteConnection();
@@ -51,43 +51,43 @@ private:
     void setConnectionListPosition();
     void showSelection( const QString & line );
 
-public slots:
+  public slots:
 
     void on_btnNew_clicked()
     {
-        addNewConnection();
+      addNewConnection();
     };
 
     void on_btnEdit_clicked()
     {
-        editConnection();
+      editConnection();
     };
 
     void on_btnDelete_clicked()
     {
-        deleteConnection();
+      deleteConnection();
     };
 
     void on_btnConnect_clicked()
     {
-        connectToServer();
+      connectToServer();
     };
 
     void on_listWidget_clicked( QModelIndex Index )
     {
-        if( lineEdit->text() == listWidget->currentItem()->text() )
-        {
-            showSelection( lineEdit->text() );
-        }
-        else
-        {
-            lineEdit->setText( listWidget->currentItem()->text() );
-        }
+      if ( lineEdit->text() == listWidget->currentItem()->text() )
+      {
+        showSelection( lineEdit->text() );
+      }
+      else
+      {
+        lineEdit->setText( listWidget->currentItem()->text() );
+      }
     }
 
     void on_btnAdd_clicked()
     {
-        showSelection( lineEdit->text() );
+      showSelection( lineEdit->text() );
     };
 
 };

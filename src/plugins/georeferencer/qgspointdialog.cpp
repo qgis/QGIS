@@ -302,9 +302,7 @@ bool QgsPointDialog::generateWorldFileAndWarp()
     if ( QFile::exists( worldFileName ) )
     {
       int r = QMessageBox::question( this, tr( "World file exists" ),
-                                     tr( "<p>The selected file already seems to have a " ) +
-                                     tr( "world file! Do you want to replace it with the " ) +
-                                     tr( "new world file?</p>" ),
+                                     tr( "<p>The selected file already seems to have a world file! Do you want to replace it with the new world file?</p>" ),
                                      QMessageBox::Yes | QMessageBox::Default,
                                      QMessageBox::No | QMessageBox::Escape );
       if ( r == QMessageBox::No )
@@ -438,9 +436,8 @@ bool QgsPointDialog::generateWorldFileAndWarp()
     else
     {
       QMessageBox::critical( this, tr( "Not implemented!" ),
-                             tr( "<p>The " ) +
-                             cmbTransformType->currentText() +
-                             tr( " transform is not yet supported.</p>" ) );
+                             tr( "<p>The %1 transform is not yet supported.</p>" )
+                             .arg( cmbTransformType->currentText() ) );
       return false;
     }
   }
@@ -480,7 +477,7 @@ bool QgsPointDialog::generateWorldFileAndWarp()
     if ( !file.open( QIODevice::WriteOnly ) )
     {
       QMessageBox::critical( this, tr( "Error" ),
-                             tr( "Could not write to " ) + worldFileName );
+                             tr( "Could not write to %1" ).arg( worldFileName ) );
       return false;
     }
     QTextStream stream( &file );
@@ -667,9 +664,7 @@ void QgsPointDialog::on_pbnSelectRaster_clicked()
     if ( QFile::exists( worldfile ) )
     {
       int r = QMessageBox::question( this, tr( "World file exists" ),
-                                     tr( "<p>The selected file already seems to have a " ) +
-                                     tr( "world file! Do you want to replace it with the " ) +
-                                     tr( "new world file?</p>" ),
+                                     tr( "<p>The selected file already seems to have a world file! Do you want to replace it with the new world file?</p>" ),
                                      QMessageBox::Yes | QMessageBox::Default,
                                      QMessageBox::No | QMessageBox::Escape );
       if ( r == QMessageBox::No )
