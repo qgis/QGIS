@@ -3180,7 +3180,6 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
         <translation type="unfinished">Verbesserungen an der PostGIS-Unterstützung.  Massive Geschwindigkeitsgewinne in der Anzeige von PostGIS-Layern können nun über die Abschaltung von SSL im Verbindungseditor erreicht werden. Unterstützung der Nutzung der ctid-Spalte als Primärschlüssel (weicht die Notwendigkeit von Integer-Primärschlüsseln auf).</translation>
     </message>
-    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
