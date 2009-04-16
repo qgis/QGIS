@@ -654,7 +654,20 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
   layer.nUsers = 1;
 
   // Open map
-  layer.mapId = openMap( gisdbase, location, mapset, mapName );
+  QgsGrass::init();
+  QgsGrass::resetError();
+  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  {
+    layer.mapId = openMap( gisdbase, location, mapset, mapName );
+  }
+  QgsGrass::clearErrorEnv();
+
+  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  {
+    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    return -1;
+  }
+
   if ( layer.mapId < 0 )
   {
     QgsDebugMsg( "Cannot open vector map" );
@@ -671,7 +684,7 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
   // Add new layer to layers
   mLayers.push_back( layer );
 
-  QgsDebugMsg( QString( "New layer successfully opened%1" ).arg( layer.nAttributes ) );
+  QgsDebugMsg( QString( "New layer successfully opened: %1" ).arg( layer.nAttributes ) );
 
   return mLayers.size() - 1;
 }
@@ -946,7 +959,7 @@ void QgsGrassProvider::closeLayer( int layerId )
     delete[] mLayers[layerId].minmax;
 
     // Field info
-    free( mLayers[layerId].fieldInfo );
+    G_free( mLayers[layerId].fieldInfo );
 
     closeMap( mLayers[layerId].mapId );
   }
