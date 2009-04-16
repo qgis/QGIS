@@ -26,6 +26,7 @@ back to QgsVectorLayer.
 
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QMessageBox>
 
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
@@ -178,32 +179,45 @@ void QgsAttributeActionDialog::insert()
 
 void QgsAttributeActionDialog::insert( int pos )
 {
-  // Get the action details and insert into the table at the given
-  // position. Name needs to be unique, so make it so if required.
+  // Check to see if the action name and the action have been specified
+  // before proceeding
 
-  // If the new action name is the same as the action name in the
-  // given pos, don't make the new name unique (because we're
-  // replacing it).
-
-  int numRows = attributeActionTable->rowCount();
-  QString name;
-  if ( pos < numRows && actionName->text() == attributeActionTable->item( pos, 0 )->text() )
-    name = actionName->text();
-  else
-    name = uniqueName( actionName->text() );
-
-  if ( pos >= numRows )
+  if ( actionName->text().isEmpty() || actionAction->text().isEmpty() )
   {
-    // Expand the table to have a row with index pos
-    insertRow( pos, name, actionAction->text(), captureCB->isChecked() );
+    QMessageBox::warning( this, tr( "Missing Information" ), 
+        tr( "To create an attribute action, you must provide both a name and the action to perform." ) );
+
   }
   else
   {
-    // Update existing row
-    attributeActionTable->item( pos, 0 )->setText( name );
-    attributeActionTable->item( pos, 1 )->setText( actionAction->text() );
-    attributeActionTable->item( pos, 2 )->setCheckState(
-      captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
+
+    // Get the action details and insert into the table at the given
+    // position. Name needs to be unique, so make it so if required.
+
+    // If the new action name is the same as the action name in the
+    // given pos, don't make the new name unique (because we're
+    // replacing it).
+
+    int numRows = attributeActionTable->rowCount();
+    QString name;
+    if ( pos < numRows && actionName->text() == attributeActionTable->item( pos, 0 )->text() )
+      name = actionName->text();
+    else
+      name = uniqueName( actionName->text() );
+
+    if ( pos >= numRows )
+    {
+      // Expand the table to have a row with index pos
+      insertRow( pos, name, actionAction->text(), captureCB->isChecked() );
+    }
+    else
+    {
+      // Update existing row
+      attributeActionTable->item( pos, 0 )->setText( name );
+      attributeActionTable->item( pos, 1 )->setText( actionAction->text() );
+      attributeActionTable->item( pos, 2 )->setCheckState(
+          captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
+    }
   }
 }
 
