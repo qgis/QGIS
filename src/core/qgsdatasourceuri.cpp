@@ -212,9 +212,29 @@ QString QgsDataSourceURI::username() const
   return mUsername;
 }
 
+QString QgsDataSourceURI::host() const
+{
+  return mHost;
+}
+
 QString QgsDataSourceURI::database() const
 {
   return mDatabase;
+}
+
+QString QgsDataSourceURI::password() const
+{
+  return mPassword;
+}
+
+QString QgsDataSourceURI::port() const
+{
+  return mPort;
+}
+
+QgsDataSourceURI::SSLmode QgsDataSourceURI::sslMode() const
+{
+  return mSSLmode;
 }
 
 QString QgsDataSourceURI::schema() const
