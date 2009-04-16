@@ -55,7 +55,13 @@ public:
   QString table() const;
   QString sql() const;
   QString geometryColumn() const;
-  QString database() const; // added in version 1.1
+
+  // added in 1.1
+  QString host() const;
+  QString database() const;
+  QString password() const;
+  QString port() const;
+  SSLmode sslMode() const;
 
   void setSql(QString sql);
 };
