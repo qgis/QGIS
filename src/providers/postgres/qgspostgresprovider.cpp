@@ -310,6 +310,17 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   QgsDebugMsg( "Connection to the database was successful" );
 
   Conn *conn = new Conn( pd );
+
+  /* Check to see if we have working PostGIS support */
+  if ( conn->postgisVersion().isNull() )
+  {
+    showMessageBox( tr( "No PostGIS Support!" ),
+                    tr( "Your database has no working PostGIS support.\n") );
+    conn->PQfinish();
+    delete conn;
+    return NULL;
+  }
+
   connections.insert( conninfo, conn );
 
   /* Check to see if we have GEOS support and if not, warn the user about
@@ -1732,6 +1743,12 @@ bool QgsPostgresProvider::Conn::hasGEOS()
 QString QgsPostgresProvider::Conn::postgisVersion()
 {
   Result result = PQexec( "select postgis_version()" );
+  if( PQntuples( result ) != 1 ) 
+  {
+    QgsDebugMsg( "Retrieval of postgis version failed" );
+    return QString::null;
+  }
+
   postgisVersionInfo = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
 
   QgsDebugMsg( "PostGIS version info: " + postgisVersionInfo );
@@ -1740,6 +1757,11 @@ QString QgsPostgresProvider::Conn::postgisVersion()
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( ".", QString::SkipEmptyParts );
+  if( postgisVersionParts.size() < 2 )
+  {
+    QgsDebugMsg( "Could not parse postgis version" );
+    return QString::null;
+  }
 
   postgisVersionMajor = postgisVersionParts[0].toInt();
   postgisVersionMinor = postgisVersionParts[1].toInt();
