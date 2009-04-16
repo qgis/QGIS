@@ -55,6 +55,7 @@ public:
   QString table() const;
   QString sql() const;
   QString geometryColumn() const;
+  QString database() const; // added in version 1.1
 
   void setSql(QString sql);
 };
