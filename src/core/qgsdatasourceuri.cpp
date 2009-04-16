@@ -212,6 +212,11 @@ QString QgsDataSourceURI::username() const
   return mUsername;
 }
 
+QString QgsDataSourceURI::database() const
+{
+  return mDatabase;
+}
+
 QString QgsDataSourceURI::schema() const
 {
   return mSchema;

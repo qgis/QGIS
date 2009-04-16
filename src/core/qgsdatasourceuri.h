@@ -71,6 +71,7 @@ class CORE_EXPORT QgsDataSourceURI
     QString table() const;
     QString sql() const;
     QString geometryColumn() const;
+    QString database() const;	// added in version 1.1
     enum SSLmode sslMode() const;
 
     void clearSchema();
