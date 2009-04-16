@@ -2191,7 +2191,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
         reg.indexIn( name() );
         QStringList stuff = reg.capturedTexts();
         QString lName = stuff[1];
-        if ( lName.length() == 3 )
+        if ( stuff.size() == 3 )
         {
           const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
 
