@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008 Borys Jurgiel
+Copyright (C) 2008-2009 Borys Jurgiel
 
 /***************************************************************************
  *                                                                         *
@@ -288,9 +288,10 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
 
   # ----------------------------------------- #
   def getAllAvailablePlugins(self):
-    """ repopulate the mPlugins dict """
+    """ fetch plugins from all repositories """
     repositories.load()
-    plugins.clear()
+    plugins.getAllInstalled()
+
     for key in repositories.allEnabled():
       repositories.requestFetching(key)
 
@@ -305,8 +306,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
         QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n" + repositories.all()[key]["error"])
-
-    plugins.getAllInstalled()
 
 
   # ----------------------------------------- #
@@ -388,10 +387,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if self.comboFilter2.currentIndex() == 2 and not plugin["status"] in ["installed","upgradeable","newer","orphan"]:
       return False
     if self.comboFilter2.currentIndex() == 3 and not plugin["status"] in ["upgradeable","new"]:
-      return False
-    if self.radioPluginType0.isChecked() and plugin["repository"] != officialRepo[0] and plugin["status"] in ["not installed","new"]:
-      return False
-    if self.radioPluginType1.isChecked() and plugin["experimental"] and plugin["status"] in ["not installed","new"]:
       return False
     if self.lineFilter.text() == "":
       return True
@@ -579,7 +574,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     elif not QDir(QDir.cleanPath(QgsApplication.qgisSettingsDirPath() + "/python/plugins/" + key)).exists():
       infoString = (self.tr("Plugin has disappeared"), self.tr("The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.\nPlease search the list of installed plugins. I'm nearly sure you'll find the plugin there, but I just can't determine which of them it is. It also means that I won't be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue."))
       QApplication.setOverrideCursor(Qt.WaitCursor)
-      self.getAllAvailablePlugins()
+      plugins.getAllInstalled()
+      plugins.rebuild()
       QApplication.restoreOverrideCursor()
     else:
       try:
@@ -588,14 +584,12 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         exec ("reload (%s)" % plugin["localdir"])
       except:
         pass
-      plugins.updatePlugin(key, False)
+      plugins.getAllInstalled()
+      plugins.rebuild()
       plugin = plugins.all()[key]
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
-          if QGIS_VER[0:3] == "1.1":
-            infoString = (self.tr("QGIS Python Plugin Installer"), self.tr("Plugin installed successfully"))
-          else:
-            infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
+          infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
           infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
       else:
@@ -612,11 +606,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         dlg.exec_()
         if dlg.result():
           # revert installation
-          plugins.setPluginData(key, "status", "not installed")
-          plugins.setPluginData(key, "version_inst", "")
-          plugins.setPluginData(key, "desc_local", "")
-          plugins.setPluginData(key, "error", "")
-          plugins.setPluginData(key, "error_details", "")
+          plugins.getAllInstalled()
+          plugins.rebuild()
           pluginDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/python/plugins/" + plugin["localdir"]
           removeDir(pluginDir)
           if QDir(pluginDir).exists():
@@ -627,14 +618,13 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
               exec ("reload (%s)" % plugin["localdir"])
             except:
               pass
-            plugins.updatePlugin(key, False)
           else:
             try:
               exec ("del sys.modules[%s]" % plugin["localdir"])
             except:
               pass
-            if not plugin["repository"]:
-              plugins.remove(key)
+          plugins.getAllInstalled()
+          plugins.rebuild()
     if plugins.all().has_key(key) and not plugins.all()[key]["status"] in ["not installed", "new"]:
       if previousStatus in ["not installed", "new"]:
         history.markChange(key,'A')
@@ -675,14 +665,8 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         exec ("del sys.modules[%s]" % plugin["localdir"])
       except:
         pass
-      if not plugin["repository"]:
-        plugins.remove(key)
-      else:
-        plugins.setPluginData(key, "status", "not installed")
-        plugins.setPluginData(key, "version_inst", "")
-        plugins.setPluginData(key, "desc_local", "")
-        plugins.setPluginData(key, "error", "")
-        plugins.setPluginData(key, "error_details", "")
+      plugins.getAllInstalled()
+      plugins.rebuild()
       self.populatePluginTree()
       QMessageBox.information(self, self.tr("Plugin uninstalled successfully"), self.tr("Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely."))
       history.markChange(key,'D')
@@ -728,6 +712,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       i = 3
     settings = QSettings()
     settings.setValue(settingsGroup+"/allowedPluginType", QVariant(i))
+    plugins.rebuild()
     self.populatePluginTree()
 
 
@@ -740,6 +725,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       # refresh lists and populate widgets
       QApplication.setOverrideCursor(Qt.WaitCursor)
       self.getAllAvailablePlugins()
+      plugins.rebuild()
       self.populateMostWidgets()
       self.populatePluginTree()
       QApplication.restoreOverrideCursor()
@@ -767,7 +753,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     settings.setValue(reposName+"/enabled", QVariant(bool(dlg.checkBoxEnabled.checkState())))
     # refresh lists and populate widgets
     QApplication.setOverrideCursor(Qt.WaitCursor)
+    plugins.removeRepository(reposName)
     self.getAllAvailablePlugins()
+    plugins.rebuild()
     self.populateMostWidgets()
     self.populatePluginTree()
     QApplication.restoreOverrideCursor()
@@ -813,7 +801,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       return # nothing else to do if only repository name was changed
     # refresh lists and populate widgets
     QApplication.setOverrideCursor(Qt.WaitCursor)
+    plugins.removeRepository(reposName)
     self.getAllAvailablePlugins()
+    plugins.rebuild()
     self.populateMostWidgets()
     self.populatePluginTree()
     QApplication.restoreOverrideCursor()
@@ -829,16 +819,15 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     if QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), warning , QMessageBox.Yes, QMessageBox.No) == QMessageBox.No:
       return
     reposName = current.text(1)
+    # delete from the settings, refresh data and repopulate all the widgets
     settings = QSettings()
     settings.beginGroup(self.reposGroup)
-    # delete from settings
     settings.remove(reposName)
-    # refresh lists and populate widgets
-    QApplication.setOverrideCursor(Qt.WaitCursor)
-    self.getAllAvailablePlugins()
+    repositories.remove(reposName)
+    plugins.removeRepository(reposName)
+    plugins.rebuild()
     self.populateMostWidgets()
     self.populatePluginTree()
-    QApplication.restoreOverrideCursor()
 
 
   # ----------------------------------------- #

@@ -1,6 +1,6 @@
 """
 Copyright (C) 2007-2008 Matthew Perry
-Copyright (C) 2008 Borys Jurgiel
+Copyright (C) 2008-2009 Borys Jurgiel
 
 /***************************************************************************
  *                                                                         *
@@ -74,7 +74,7 @@ class InstallerPlugin():
     self.statusLabel = None
 
     repositories.load()
-    plugins.clear()
+    plugins.getAllInstalled()
 
     if repositories.checkingOnStart() and repositories.timeForChecking() and repositories.allEnabled():
       self.statusLabel = QLabel(QCoreApplication.translate("QgsPluginInstaller","Looking for new plugins..."), self.mainWindow().statusBar())
@@ -86,6 +86,9 @@ class InstallerPlugin():
     else:
       for key in repositories.allEnabled():
         repositories.setRepositoryData(key,"state",3)
+
+    for i in plugins.obsoletePlugins:
+      QMessageBox.warning(self.mainWindow(), QCoreApplication.translate("QgsPluginInstaller","QGIS Plugin Conflict:")+" "+plugins.localCache[i]["name"], QCoreApplication.translate("QgsPluginInstaller","The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS."))
 
 
   # ----------------------------------------- #
@@ -157,8 +160,6 @@ class InstallerPlugin():
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
         QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + u' %s\n%s' % (key,repositories.all()[key]["error"]))
-
-    plugins.getAllInstalled()
 
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
     self.guiDlg = QgsPluginInstallerDialog(parent,flags)
