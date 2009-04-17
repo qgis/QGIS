@@ -1855,7 +1855,7 @@ void QgisApp::about()
     whatsNew += QGis::QGIS_VERSION;
     whatsNew += "<h2>" + tr( "Whats new in Version 1.1.0?" ) + "</h2>"
                 + "<p>"
-                + tr( "Please note that this is a release in our 'unstable' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series." )
+                + tr( "Please note that this is a release in our 'unstable' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series." )
                 + "</p>"
                 + "<p>"
                 + tr( "This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:" )
