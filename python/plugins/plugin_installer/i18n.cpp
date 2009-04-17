@@ -43,8 +43,10 @@ file: installer_plugin.py
 // InstallerPlugin::initGui
 translate( "QgsPluginInstaller", "Fetch Python Plugins..." )
 translate( "QgsPluginInstaller", "Install more plugins from remote repositories" )
-translate( "QgsPluginInstaller", "Install more plugins from remote repositories" )
 translate( "QgsPluginInstaller", "Looking for new plugins..." )
+translate( "QgsPluginInstaller", "QGIS Plugin Conflict:" )
+translate( "QgsPluginInstaller", "The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS." )
+
 
 // InstallerPlugin::checkingDone
 translate( "QgsPluginInstaller", "There is a new plugin available" )
