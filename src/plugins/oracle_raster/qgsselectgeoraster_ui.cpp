@@ -22,6 +22,8 @@
 #include "gdal.h"
 #include "ogr_api.h"
 #include "ogrsf_frmts.h"
+#include <cpl_string.h>
+
 #include "qgsvectorlayer.h"
 
 QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
