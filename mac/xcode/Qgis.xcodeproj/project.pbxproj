@@ -3032,7 +3032,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7223B77E0F96A96500D905B4 /* oracleplugin */;
+			remoteGlobalIDString = 7223B77E0F96A96500D905B4;
 			remoteInfo = oracleplugin;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
@@ -4291,7 +4291,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins";
-			dstSubfolderSpec = 0;
+			dstSubfolderSpec = 6;
 			files = (
 				72745A090F770319007F4218 /* copyright_label.png in Copy - theme-gis-plugins */,
 				72745A0A0F770319007F4218 /* delimited_text.png in Copy - theme-gis-plugins */,
@@ -4313,7 +4313,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis/plugins/coordinate_capture";
-			dstSubfolderSpec = 0;
+			dstSubfolderSpec = 6;
 			files = (
 				72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */,
 			);
@@ -5311,7 +5311,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default/plugins";
-			dstSubfolderSpec = 0;
+			dstSubfolderSpec = 6;
 			files = (
 				72EB129A0F7E9BCD002C38FA /* plugin_installer.png in Copy - theme-dflt-plugins */,
 			);
