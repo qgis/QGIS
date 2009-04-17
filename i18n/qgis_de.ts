@@ -3081,7 +3081,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <translation type="unfinished">Was ist in Version 1.1.0 neu?</translation>
     </message>
     <message>
-        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
         <translation type="unfinished">Bitte beachten Sie dies eine Version aus unserem &apos;Entwicklungszweig&apos; ist. Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x.  Wenn Stabilität und langfristiger Support Ihnen wichtiger sind als neue und ungetestete Funktionen, empfehlen wir Ihnen QGIS aus dem stabilen 1.0-Zweig.</translation>
     </message>
     <message>
@@ -3174,7 +3174,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <source>Added svg point symbols from Matt Amos (with his permission).</source>
-        <translation type="obsolete">SVG-Punktsymbole von Matt Amos hinzugefügt (mit seiner Erlaubnis).</translation>
+        <translation>SVG-Punktsymbole von Matt Amos hinzugefügt (mit seiner Erlaubnis).</translation>
     </message>
     <message>
         <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
