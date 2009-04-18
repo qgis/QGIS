@@ -47,6 +47,8 @@ class QgisAppInterface : public QgisInterface
     void zoomFull();
     //! Zoom map to previous extent
     void zoomToPrevious();
+    //! Zoom map to next extent
+    void zoomToNext();
     //! Zoom to active layer
     void zoomToActiveLayer();
 
@@ -183,6 +185,7 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionZoomToLayer();
     virtual QAction *actionZoomToSelected();
     virtual QAction *actionZoomLast();
+    virtual QAction *actionZoomNext();
     virtual QAction *actionZoomActualSize();
     virtual QAction *actionViewSeparator2();
     virtual QAction *actionMapTips();

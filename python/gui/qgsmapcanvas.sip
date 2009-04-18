@@ -90,6 +90,9 @@ class QgsMapCanvas : QGraphicsView
     //! Zoom to the previous extent (view)
     void zoomToPreviousExtent();
 
+    //! Zoom to the next extent (view)
+    void zoomToNextExtent();
+
     /**Zooms to the extend of the selected features*/
     void zoomToSelected();
 

@@ -29,6 +29,7 @@
 
 #include <QDomDocument>
 #include <QGraphicsView>
+#include <QtCore>
 
 class QWheelEvent;
 class QPixmap;
@@ -141,6 +142,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Zoom to the previous extent (view)
     void zoomToPreviousExtent();
+
+    //! Zoom to the Next extent (view)
+    void zoomToNextExtent();
 
     /**Zooms to the extend of the selected features*/
     void zoomToSelected();
@@ -412,7 +416,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsMapTool* mLastNonZoomMapTool;
 
     //! recently used extent
-    QgsRectangle mLastExtent;
+    QList <QgsRectangle> mLastExtent;
+    int mLastExtentIndex;
 
     //! Scale factor multiple for default zoom in/out
     double mWheelZoomFactor;

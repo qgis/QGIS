@@ -235,6 +235,7 @@ class QgisApp : public QMainWindow
     QAction *actionZoomToLayer() { return mActionZoomToLayer; }
     QAction *actionZoomToSelected() { return mActionZoomToSelected; }
     QAction *actionZoomLast() { return mActionZoomLast; }
+    QAction *actionZoomNext() { return mActionZoomNext; }
     QAction *actionZoomActualSize() { return mActionZoomActualSize; }
     QAction *actionViewSeparator2() { return mActionViewSeparator2; }
     QAction *actionMapTips() { return mActionMapTips; }
@@ -326,6 +327,8 @@ class QgisApp : public QMainWindow
     void zoomFull();
     //! Zoom to the previous extent
     void zoomToPrevious();
+    //! Zoom to the forward extent
+    void zoomToNext();
     //! Zoom to selected features
     void zoomToSelected();
 
@@ -711,6 +714,7 @@ class QgisApp : public QMainWindow
     QAction *mActionZoomToLayer;
     QAction *mActionZoomToSelected;
     QAction *mActionZoomLast;
+    QAction *mActionZoomNext;
     QAction *mActionZoomActualSize;
     QAction *mActionViewSeparator2;
     QAction *mActionMapTips;

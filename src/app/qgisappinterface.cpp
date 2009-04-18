@@ -55,6 +55,11 @@ void QgisAppInterface::zoomToPrevious()
   qgis->zoomToPrevious();
 }
 
+void QgisAppInterface::zoomToNext()
+{
+  qgis->zoomToNext();
+}
+
 void QgisAppInterface::zoomToActiveLayer()
 {
   qgis->zoomToLayerExtent();
@@ -245,6 +250,7 @@ QAction *QgisAppInterface::actionZoomFullExtent() { return qgis->actionZoomFullE
 QAction *QgisAppInterface::actionZoomToLayer() { return qgis->actionZoomToLayer(); }
 QAction *QgisAppInterface::actionZoomToSelected() { return qgis->actionZoomToSelected(); }
 QAction *QgisAppInterface::actionZoomLast() { return qgis->actionZoomLast(); }
+QAction *QgisAppInterface::actionZoomNext() { return qgis->actionZoomNext(); }
 QAction *QgisAppInterface::actionZoomActualSize() { return qgis->actionZoomActualSize(); }
 QAction *QgisAppInterface::actionViewSeparator2() { return qgis->actionViewSeparator2(); }
 QAction *QgisAppInterface::actionMapTips() { return qgis->actionMapTips(); }
