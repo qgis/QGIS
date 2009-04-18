@@ -32,6 +32,8 @@ class QgisInterface : QObject
     virtual void zoomFull()=0;
     //! Zoom to previous view extent
     virtual void zoomToPrevious()=0;
+    //! Zoom to next view extent
+    virtual void zoomToNext()=0;
     //! Zoome to extent of the active layer
     virtual void zoomToActiveLayer()=0;
 

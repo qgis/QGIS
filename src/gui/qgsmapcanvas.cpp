@@ -85,7 +85,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-
+  mLastExtentIndex=-1;
   mCurrentLayer = NULL;
   mMapOverview = NULL;
   mMapTool = NULL;
@@ -493,8 +493,17 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   updateScale();
   if ( mMapOverview )
     mMapOverview->drawExtentRect();
-  mLastExtent = current;
+  if (mLastExtent.size()>20) mLastExtent.removeAt(0);
 
+  //clear all extent items after current index
+  for (int i=mLastExtent.size()-1; i>mLastExtentIndex; i--)
+  {
+	  mLastExtent.removeAt(i);
+  }
+
+
+  mLastExtent.append(extent()) ;
+  mLastExtentIndex=mLastExtent.size()-1;
   // notify canvas items of change
   updateCanvasItemPositions();
 
@@ -541,16 +550,42 @@ void QgsMapCanvas::zoomToFullExtent()
 
 void QgsMapCanvas::zoomToPreviousExtent()
 {
-  if ( mDrawing )
-  {
-    return;
-  }
+	 if ( mDrawing )
+	 {
+    	return;
+	 }
 
-  QgsRectangle current = extent();
-  setExtent( mLastExtent );
-  mLastExtent = current;
+	if (mLastExtentIndex>1)
+	{
+		mLastExtentIndex--;
+		mMapRenderer->setExtent(mLastExtent[mLastExtentIndex]);
+		emit extentsChanged();
+		updateScale();
+		if ( mMapOverview )
+			 mMapOverview->drawExtentRect();
+	}
+
   refresh();
 } // zoomToPreviousExtent
+
+void QgsMapCanvas::zoomToNextExtent()
+{
+	if ( mDrawing )
+	{
+	    return;
+	}
+	if (mLastExtentIndex<mLastExtent.size()-1)
+	{
+		mLastExtentIndex++;
+		mMapRenderer->setExtent(mLastExtent[mLastExtentIndex]);
+		emit extentsChanged();
+		updateScale();
+		  if ( mMapOverview )
+		    mMapOverview->drawExtentRect();
+	}
+	refresh();
+}// zoomToNextExtent
+
 
 
 bool QgsMapCanvas::hasCrsTransformEnabled()

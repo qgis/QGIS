@@ -71,6 +71,9 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Zoom to previous view extent
     virtual void zoomToPrevious() = 0;
 
+    //! Zoom to next view extent
+    virtual void zoomToNext() = 0;
+
     //! Zoom to extent of the active layer
     virtual void zoomToActiveLayer() = 0;
 

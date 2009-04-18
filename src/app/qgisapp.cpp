@@ -724,6 +724,10 @@ void QgisApp::createActions()
   mActionZoomLast->setStatusTip( tr( "Zoom to Last Extent" ) );
   connect( mActionZoomLast, SIGNAL( triggered() ), this, SLOT( zoomToPrevious() ) );
 
+  mActionZoomNext = new QAction( getThemeIcon( "mActionZoomNext.png" ), tr( "Zoom Next" ), this );
+  mActionZoomNext->setStatusTip( tr( "Zoom to Forward Extent" ) );
+  connect( mActionZoomNext, SIGNAL( triggered() ), this, SLOT( zoomToNext() ) );
+
   mActionZoomActualSize = new QAction( tr( "Zoom Actual Size" ), this );
   mActionZoomActualSize->setStatusTip( tr( "Zoom to Actual Size" ) );
   connect( mActionZoomActualSize, SIGNAL( triggered() ), this, SLOT( zoomActualSize() ) );
@@ -1098,6 +1102,7 @@ void QgisApp::createMenus()
   mViewMenu->addAction( mActionZoomToLayer );
   mViewMenu->addAction( mActionZoomToSelected );
   mViewMenu->addAction( mActionZoomLast );
+  mViewMenu->addAction( mActionZoomNext );
   mViewMenu->addAction( mActionZoomActualSize );
   mActionViewSeparator2 = mViewMenu->addSeparator();
 
@@ -1274,6 +1279,7 @@ void QgisApp::createToolBars()
   mMapNavToolBar->addAction( mActionZoomToSelected );
   mMapNavToolBar->addAction( mActionZoomToLayer );
   mMapNavToolBar->addAction( mActionZoomLast );
+  mMapNavToolBar->addAction( mActionZoomNext );
   mMapNavToolBar->addAction( mActionDraw );
   mToolbarMenu->addAction( mMapNavToolBar->toggleViewAction() );
   //
@@ -1489,6 +1495,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomToSelected->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
   mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
   mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
+  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
   mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
   mActionIdentify->setIcon( getThemeIcon( "/mActionIdentify.png" ) );
   mActionSelect->setIcon( getThemeIcon( "/mActionSelect.png" ) );
@@ -3856,6 +3863,14 @@ void QgisApp::zoomToPrevious()
 
 }
 
+void QgisApp::zoomToNext()
+{
+  mMapCanvas->zoomToNextExtent();
+  // notify the project we've made a change
+  QgsProject::instance()->dirty( true );
+
+}
+
 void QgisApp::zoomActualSize()
 {
   mMapLegend->legendLayerZoomNative();
@@ -5807,4 +5822,3 @@ QPixmap QgisApp::getThemePixmap( const QString theName )
     return QPixmap( myDefaultPath );
   }
 }
-
