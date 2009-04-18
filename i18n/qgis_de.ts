@@ -2185,7 +2185,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Zoom Last</source>
-        <translation>Zur vorherigen Zoomeinstellung zurückkehren</translation>
+        <translation>Zoom zurück</translation>
     </message>
     <message>
         <source>Zoom to Last Extent</source>
@@ -3180,6 +3180,14 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
         <translation type="unfinished">Verbesserungen an der PostGIS-Unterstützung.  Massive Geschwindigkeitsgewinne in der Anzeige von PostGIS-Layern können nun über die Abschaltung von SSL im Verbindungseditor erreicht werden. Unterstützung der Nutzung der ctid-Spalte als Primärschlüssel (weicht die Notwendigkeit von Integer-Primärschlüsseln auf).</translation>
     </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation type="unfinished">Zoom vor</translation>
+    </message>
+    <message>
+        <source>Zoom to Forward Extent</source>
+        <translation type="unfinished">Zur nächsten Zoomeinstellung zurückkehren</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -3317,6 +3325,14 @@ p, li { white-space: pre-wrap; }
         <source>Select an action</source>
         <comment>File dialog window title</comment>
         <translation type="unfinished">Eine Aktion wählen</translation>
+    </message>
+    <message>
+        <source>Missing Information</source>
+        <translation type="unfinished">Fehlende Information</translation>
+    </message>
+    <message>
+        <source>To create an attribute action, you must provide both a name and the action to perform.</source>
+        <translation type="unfinished">Um eine Attributaktion zu erstellen, müssen Sie sowohl einen Namen als auch eine auszuführende Aktion angeben.</translation>
     </message>
 </context>
 <context>
@@ -11093,6 +11109,14 @@ p, li { white-space: pre-wrap; }
         <source>Check permissions or remove it manually</source>
         <translation type="unfinished">Überprüfen Sie die Zugriffsrechte oder entfernen Sie es manuell</translation>
     </message>
+    <message>
+        <source>QGIS Plugin Conflict:</source>
+        <translation type="unfinished">QGIS-Plugin-Konflikt:</translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
+        <translation type="unfinished">Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes verdeckt.  Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
+    </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
@@ -12237,6 +12261,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished">Diese PostGISinstallation hat keine GEOS-Unterstützung.
 Objektselektion und -identifizierung kann nicht sauber funktionieren.
 Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)</translation>
+    </message>
+    <message>
+        <source>No PostGIS Support!</source>
+        <translation type="unfinished">Keine PostGIS-Unterstützung!</translation>
+    </message>
+    <message>
+        <source>Your database has no working PostGIS support.
+</source>
+        <translation type="unfinished">Ihre Datenbank hat keine funktionsfähige PostGIS-Unterstützung.</translation>
     </message>
 </context>
 <context>
