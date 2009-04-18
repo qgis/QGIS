@@ -512,6 +512,10 @@
 		7223B79C0F96A9BF00D905B4 /* qgsoracleconnect_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7790F969A9D00D905B4 /* qgsoracleconnect_ui.h */; };
 		7223B79D0F96A9BF00D905B4 /* qgsselectgeoraster_ui.h in Sources */ = {isa = PBXBuildFile; fileRef = 7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */; };
 		7223B79E0F96AA2000D905B4 /* oracleplugin.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7750F969A9D00D905B4 /* oracleplugin.qrc */; };
+		72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */ = {isa = PBXBuildFile; fileRef = 72267A460F9A1CB400010C18 /* mActionZoomNext.png */; };
+		72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */; };
+		72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */; };
+		72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */ = {isa = PBXBuildFile; fileRef = 72267A500F9A1D3100010C18 /* mActionZoomNext.png */; };
 		7256F2D70F4146AC0022BE1F /* qgis_new_80pct.png in Copy - doc-images */ = {isa = PBXBuildFile; fileRef = 7209F0190F39E5DA003DC336 /* qgis_new_80pct.png */; };
 		7256F2FA0F4148FC0022BE1F /* Carl_Anderson.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */; };
 		7256F2FB0F4148FC0022BE1F /* Christoph_Spoerri.jpg in Copy - images-developers */ = {isa = PBXBuildFile; fileRef = 7209EE010F39E5D9003DC336 /* Christoph_Spoerri.jpg */; };
@@ -3843,6 +3847,7 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/classic";
 			dstSubfolderSpec = 6;
 			files = (
+				72267A470F9A1CC900010C18 /* mActionZoomNext.png in Copy - theme-classic */,
 				7256F3980F41C3E20022BE1F /* mAction.png in Copy - theme-classic */,
 				7256F3990F41C3E20022BE1F /* mActionAddAllToOverview.png in Copy - theme-classic */,
 				7256F39A0F41C3E20022BE1F /* mActionAddIsland.png in Copy - theme-classic */,
@@ -3943,6 +3948,7 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/default";
 			dstSubfolderSpec = 6;
 			files = (
+				72267A4B0F9A1CFD00010C18 /* mActionZoomNext.png in Copy - theme-default */,
 				7256F4220F41C4DD0022BE1F /* clearInput.png in Copy - theme-default */,
 				7256F4230F41C4DD0022BE1F /* extents.png in Copy - theme-default */,
 				7256F4240F41C4DD0022BE1F /* favourites.png in Copy - theme-default */,
@@ -4075,6 +4081,7 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/themes/gis";
 			dstSubfolderSpec = 6;
 			files = (
+				72267A4E0F9A1D1D00010C18 /* mActionZoomNext.png in Copy - theme-gis */,
 				7256F4C40F41C5510022BE1F /* mActionAddGPSLayer.png in Copy - theme-gis */,
 				7256F4C50F41C5510022BE1F /* mActionAddIsland.png in Copy - theme-gis */,
 				7256F4C60F41C5510022BE1F /* mActionAddLayer.png in Copy - theme-gis */,
@@ -4140,6 +4147,7 @@
 				7256F4F90F41C5720022BE1F /* gis_plain_cursor.png in Copy - theme-nkids */,
 				7256F4FA0F41C5720022BE1F /* inline_table.png in Copy - theme-nkids */,
 				7256F4FB0F41C5720022BE1F /* layers.png in Copy - theme-nkids */,
+				72267A510F9A1D3D00010C18 /* mActionZoomNext.png in Copy - theme-nkids */,
 				7256F4FC0F41C5720022BE1F /* mActionAddAllToOverview.png in Copy - theme-nkids */,
 				7256F4FD0F41C5720022BE1F /* mActionAddLayer.png in Copy - theme-nkids */,
 				7256F4FE0F41C5720022BE1F /* mActionAddNonDbLayer.png in Copy - theme-nkids */,
@@ -8190,6 +8198,10 @@
 		7223B77C0F969A9D00D905B4 /* qgsselectgeoraster_ui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsselectgeoraster_ui.h; path = ../../src/plugins/oracle_raster/qgsselectgeoraster_ui.h; sourceTree = SOURCE_ROOT; };
 		7223B77D0F969A9D00D905B4 /* qgsselectgeorasterbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsselectgeorasterbase.ui; path = ../../src/plugins/oracle_raster/qgsselectgeorasterbase.ui; sourceTree = SOURCE_ROOT; };
 		7223B78D0F96A96500D905B4 /* liboracleplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = liboracleplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		72267A460F9A1CB400010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/classic/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
+		72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/default/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
+		72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/gis/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
+		72267A500F9A1D3100010C18 /* mActionZoomNext.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionZoomNext.png; path = ../../images/themes/nkids/mActionZoomNext.png; sourceTree = SOURCE_ROOT; };
 		723043270F770E15009B5354 /* bundle-template.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "bundle-template.sh"; sourceTree = "<group>"; };
 		72331DFA0F8E2A2100398D2B /* qgsvectoroverlay.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsvectoroverlay.sip; path = ../../python/core/qgsvectoroverlay.sip; sourceTree = SOURCE_ROOT; };
 		72331DFB0F8E2A2100398D2B /* qgsoverlayobject.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsoverlayobject.sip; path = ../../python/core/qgsoverlayobject.sip; sourceTree = SOURCE_ROOT; };
@@ -12068,6 +12080,7 @@
 				7209EECB0F39E5D9003DC336 /* mActionZoomFullExtent.png */,
 				7209EECC0F39E5D9003DC336 /* mActionZoomIn.png */,
 				7209EECD0F39E5D9003DC336 /* mActionZoomLast.png */,
+				72267A460F9A1CB400010C18 /* mActionZoomNext.png */,
 				7209EECE0F39E5D9003DC336 /* mActionZoomOut.png */,
 				7209EECF0F39E5D9003DC336 /* mActionZoomToLayer.png */,
 				7209EED00F39E5D9003DC336 /* mActionZoomToSelected.png */,
@@ -12096,6 +12109,7 @@
 		7209EEE30F39E5D9003DC336 /* default */ = {
 			isa = PBXGroup;
 			children = (
+				72267A4A0F9A1CE800010C18 /* mActionZoomNext.png */,
 				7209EEE50F39E5D9003DC336 /* clear_input.svg */,
 				7209EEE60F39E5D9003DC336 /* clearInput.png */,
 				7209EEE70F39E5D9003DC336 /* CMakeLists.txt */,
@@ -12240,6 +12254,7 @@
 			children = (
 				7209EF640F39E5D9003DC336 /* CMakeLists.txt */,
 				7209EF650F39E5D9003DC336 /* LICENSE.TXT */,
+				72267A4D0F9A1D1400010C18 /* mActionZoomNext.png */,
 				7209EF660F39E5D9003DC336 /* mActionAddGPSLayer.png */,
 				7209EF670F39E5D9003DC336 /* mActionAddIsland.png */,
 				7209EF680F39E5D9003DC336 /* mActionAddLayer.png */,
@@ -12305,6 +12320,7 @@
 				7209EF9D0F39E5D9003DC336 /* gis_plain_cursor.png */,
 				7209EF9E0F39E5D9003DC336 /* inline_table.png */,
 				7209EF9F0F39E5D9003DC336 /* layers.png */,
+				72267A500F9A1D3100010C18 /* mActionZoomNext.png */,
 				7209EFA00F39E5D9003DC336 /* mActionAddAllToOverview.png */,
 				7209EFA10F39E5D9003DC336 /* mActionAddLayer.png */,
 				7209EFA20F39E5D9003DC336 /* mActionAddNonDbLayer.png */,
