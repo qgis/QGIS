@@ -47,9 +47,6 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     // inside the capture if() statement.
     connect( mProcess, SIGNAL( finished( int, QProcess::ExitStatus ) ), this, SLOT( processExit( int, QProcess::ExitStatus ) ) );
 
-    // start the process!
-    mProcess->start( action );
-
     // Use QgsMessageOutput for displaying output to user
     // It will delete itself when the dialog box is closed.
     mOutput = QgsMessageOutput::createMessageOutput();
@@ -64,6 +61,9 @@ QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     {
       connect( mOutputObj, SIGNAL( destroyed() ), this, SLOT( dialogGone() ) );
     }
+
+    // start the process!
+    mProcess->start( action );
   }
   else
   {
@@ -134,6 +134,8 @@ void QgsRunProcess::dialogGone()
   // class being called after it has been deleted (Qt seems not to be
   // disconnecting them itself)
 
+  mOutput = 0;
+
   disconnect( mProcess, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( processError( QProcess::ProcessError ) ) );
   disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( stdoutAvailable() ) );
   disconnect( mProcess, SIGNAL( readyReadStandardError() ), this, SLOT( stderrAvailable() ) );
@@ -146,7 +148,7 @@ void QgsRunProcess::processError( QProcess::ProcessError err )
 {
   if ( err == QProcess::FailedToStart )
   {
-    QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
+    QgsMessageOutput* output = mOutput ? mOutput : QgsMessageOutput::createMessageOutput();
     output->setMessage( tr( "Unable to run command" ) + mCommand, QgsMessageOutput::MessageText );
     // Didn't work, so no need to hang around
     die();
