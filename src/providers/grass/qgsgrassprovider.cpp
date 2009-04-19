@@ -1165,7 +1165,12 @@ void QgsGrassProvider::closeMap( int mapId )
 
     if ( mMaps[mapId].valid )
     {
+      bool mapsetunset = G__getenv( "MAPSET" )==NULL || *G__getenv( "MAPSET" )==0;
+      if( mapsetunset )
+        G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toAscii().data() );
       Vect_close( mMaps[mapId].map );
+      if( mapsetunset )
+        G__setenv(( char * )"MAPSET", "" );
     }
     mMaps[mapId].valid = false;
   }
@@ -1320,7 +1325,7 @@ QgsCoordinateReferenceSystem QgsGrassProvider::crs()
     struct Key_Value *projunits = G_get_projunits();
     char *wkt = GPJ_grass_to_wkt( projinfo, projunits,  0, 0 );
     Wkt = QString( wkt );
-    free( wkt );
+    G_free( wkt );
   }
 
   setlocale( LC_NUMERIC, oldlocale );
