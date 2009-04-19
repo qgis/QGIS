@@ -471,7 +471,7 @@ void QgsMapRenderer::render( QPainter* painter )
     overlayManager->removeLayers();
   }
 
-    delete overlayManager;
+  delete overlayManager;
   // make sure progress bar arrives at 100%!
   emit drawingProgress( 1, 1 );
 

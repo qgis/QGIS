@@ -315,7 +315,7 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   if ( conn->postgisVersion().isNull() )
   {
     showMessageBox( tr( "No PostGIS Support!" ),
-                    tr( "Your database has no working PostGIS support.\n") );
+                    tr( "Your database has no working PostGIS support.\n" ) );
     conn->PQfinish();
     delete conn;
     return NULL;
@@ -1743,7 +1743,7 @@ bool QgsPostgresProvider::Conn::hasGEOS()
 QString QgsPostgresProvider::Conn::postgisVersion()
 {
   Result result = PQexec( "select postgis_version()" );
-  if( PQntuples( result ) != 1 ) 
+  if ( PQntuples( result ) != 1 )
   {
     QgsDebugMsg( "Retrieval of postgis version failed" );
     return QString::null;
@@ -1757,7 +1757,7 @@ QString QgsPostgresProvider::Conn::postgisVersion()
 
   // Get major and minor version
   QStringList postgisVersionParts = postgisParts[0].split( ".", QString::SkipEmptyParts );
-  if( postgisVersionParts.size() < 2 )
+  if ( postgisVersionParts.size() < 2 )
   {
     QgsDebugMsg( "Could not parse postgis version" );
     return QString::null;

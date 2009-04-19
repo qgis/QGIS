@@ -99,20 +99,20 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
         //ignore the snapping results that are on features / segments already considered in mRecentSnappingResults
         QList<QgsSnappingResult> filteredSnapResults = snapResults;
         QList<QgsSnappingResult>::iterator recentIt = mRecentSnappingResults.begin();
-        for(; recentIt != mRecentSnappingResults.end(); ++recentIt)
+        for ( ; recentIt != mRecentSnappingResults.end(); ++recentIt )
         {
-            QList<QgsSnappingResult>::iterator filterIt = filteredSnapResults.begin();
-            for(; filterIt != filteredSnapResults.end(); ++filterIt)
+          QList<QgsSnappingResult>::iterator filterIt = filteredSnapResults.begin();
+          for ( ; filterIt != filteredSnapResults.end(); ++filterIt )
+          {
+            if ( filterIt->snappedAtGeometry == recentIt->snappedAtGeometry \
+                 && filterIt->snappedVertexNr == recentIt->snappedVertexNr \
+                 && filterIt->beforeVertexNr == recentIt->beforeVertexNr )
             {
-                if(filterIt->snappedAtGeometry == recentIt->snappedAtGeometry \
-                    && filterIt->snappedVertexNr == recentIt->snappedVertexNr \
-                    && filterIt->beforeVertexNr == recentIt->beforeVertexNr )
-                {
-                    filteredSnapResults.erase(filterIt);
-                    continue;
-                }
-
+              filteredSnapResults.erase( filterIt );
+              continue;
             }
+
+          }
         }
         insertSegmentVerticesForSnap( filteredSnapResults, vlayer );
       }

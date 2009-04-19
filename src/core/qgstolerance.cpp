@@ -60,19 +60,19 @@ double QgsTolerance::computeMapUnitPerPixel( QgsMapLayer* layer, QgsMapRenderer*
   // the layer is projected. Find out how many pixels are in one map unit - either horizontal and vertical direction
   // this check might not work correctly in some cases
   // (on a large area the pixels projected around "0,0" can have different properties from the actual point)
-  QgsPoint p1 = toLayerCoordinates(layer, renderer, QPoint(0,1));
-  QgsPoint p2 = toLayerCoordinates(layer, renderer, QPoint(0,2));
-  QgsPoint p3 = toLayerCoordinates(layer, renderer, QPoint(1,0));
-  QgsPoint p4 = toLayerCoordinates(layer, renderer, QPoint(2,0));
-  double x = p1.sqrDist(p2);
-  double y = p3.sqrDist(p4);
-  if (x > y) 
+  QgsPoint p1 = toLayerCoordinates( layer, renderer, QPoint( 0, 1 ) );
+  QgsPoint p2 = toLayerCoordinates( layer, renderer, QPoint( 0, 2 ) );
+  QgsPoint p3 = toLayerCoordinates( layer, renderer, QPoint( 1, 0 ) );
+  QgsPoint p4 = toLayerCoordinates( layer, renderer, QPoint( 2, 0 ) );
+  double x = p1.sqrDist( p2 );
+  double y = p3.sqrDist( p4 );
+  if ( x > y )
   {
-    return sqrt(x);
+    return sqrt( x );
   }
   else
   {
-    return sqrt(y);
+    return sqrt( y );
   }
 }
 

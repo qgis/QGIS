@@ -164,12 +164,12 @@ void QgsAbout::init()
   if ( translatorFile.open( QIODevice::ReadOnly ) )
   {
     QString translatorHTML = ""
-                          + tr( "<p>The following have contributed to QGIS"
-                                " by translating the user interface or documentation</p>" )
-                          + "<hr>"
-                          "<table width='100%'>"
-                          "<tr><th>" + tr( "Language" ) + "</th>"
-                          "<th>" + tr( "Names" ) + "</th></tr>";
+                             + tr( "<p>The following have contributed to QGIS"
+                                   " by translating the user interface or documentation</p>" )
+                             + "<hr>"
+                             "<table width='100%'>"
+                             "<tr><th>" + tr( "Language" ) + "</th>"
+                             "<th>" + tr( "Names" ) + "</th></tr>";
     QString website;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8

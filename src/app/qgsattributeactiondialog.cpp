@@ -184,8 +184,8 @@ void QgsAttributeActionDialog::insert( int pos )
 
   if ( actionName->text().isEmpty() || actionAction->text().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Missing Information" ), 
-        tr( "To create an attribute action, you must provide both a name and the action to perform." ) );
+    QMessageBox::warning( this, tr( "Missing Information" ),
+                          tr( "To create an attribute action, you must provide both a name and the action to perform." ) );
 
   }
   else
@@ -216,7 +216,7 @@ void QgsAttributeActionDialog::insert( int pos )
       attributeActionTable->item( pos, 0 )->setText( name );
       attributeActionTable->item( pos, 1 )->setText( actionAction->text() );
       attributeActionTable->item( pos, 2 )->setCheckState(
-          captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
+        captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
     }
   }
 }
