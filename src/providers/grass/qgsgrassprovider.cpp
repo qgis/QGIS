@@ -293,7 +293,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   int cat, type, id;
   unsigned char *wkb;
   int wkbsize;
-  
+
   QgsDebugMsgLevel( "entered.", 3 );
 
   if ( isEdited() || isFrozen() || !mValid )
@@ -318,7 +318,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   QgsDebugMsg( QString( "cat = %1 type = %2 id = %3" ).arg( cat ).arg( type ).arg( id ) );
 #endif
 
-  feature.setFeatureId(id);
+  feature.setFeatureId( id );
 
   // TODO int may be 64 bits (memcpy)
   if ( type & ( GV_POINTS | GV_LINES ) ) /* points or lines */
@@ -651,7 +651,20 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
   layer.nUsers = 1;
 
   // Open map
-  layer.mapId = openMap( gisdbase, location, mapset, mapName );
+  QgsGrass::init();
+  QgsGrass::resetError();
+  if ( setjmp( QgsGrass::fatalErrorEnv() ) == 0 )
+  {
+    layer.mapId = openMap( gisdbase, location, mapset, mapName );
+  }
+  QgsGrass::clearErrorEnv();
+
+  if ( QgsGrass::getError() == QgsGrass::FATAL )
+  {
+    QgsDebugMsg( QString( "Cannot open vector map: %1" ).arg( QgsGrass::getErrorMessage() ) );
+    return -1;
+  }
+
   if ( layer.mapId < 0 )
   {
     QgsDebugMsg( "Cannot open vector map" );
@@ -668,7 +681,7 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
   // Add new layer to layers
   mLayers.push_back( layer );
 
-  QgsDebugMsg( QString( "New layer successfully opened%1" ).arg( layer.nAttributes ) );
+  QgsDebugMsg( QString( "New layer successfully opened: %1" ).arg( layer.nAttributes ) );
 
   return mLayers.size() - 1;
 }
@@ -943,7 +956,7 @@ void QgsGrassProvider::closeLayer( int layerId )
     delete[] mLayers[layerId].minmax;
 
     // Field info
-    free( mLayers[layerId].fieldInfo );
+    G_free( mLayers[layerId].fieldInfo );
 
     closeMap( mLayers[layerId].mapId );
   }
@@ -1149,11 +1162,11 @@ void QgsGrassProvider::closeMap( int mapId )
 
     if ( mMaps[mapId].valid )
     {
-      bool mapsetunset = G__getenv( "MAPSET" )==NULL || *G__getenv( "MAPSET" )==0;
-      if( mapsetunset )
+      bool mapsetunset = G__getenv( "MAPSET" ) == NULL || *G__getenv( "MAPSET" ) == 0;
+      if ( mapsetunset )
         G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toAscii().data() );
       Vect_close( mMaps[mapId].map );
-      if( mapsetunset )
+      if ( mapsetunset )
         G__setenv(( char * )"MAPSET", "" );
     }
     mMaps[mapId].valid = false;
