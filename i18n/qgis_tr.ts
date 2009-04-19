@@ -1,9 +1,11 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="tr">
 <context>
     <name></name>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Coğrafi işlem</translation>
+        <translation type="unfinished">&amp;Coğrafi işlem</translation>
     </message>
 </context>
 <context>
@@ -312,7 +314,7 @@
     </message>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished">&amp;Coğrafi işlem</translation>
+        <translation type="obsolete">&amp;Coğrafi işlem</translation>
     </message>
 </context>
 <context>
@@ -331,19 +333,15 @@
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished">Arama tümcesi ayrıştırma hatası</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Arama tümcesi ayrıştırma hatası</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Boş araştırma dizgisi girdiniz.</translation>
+        <translation type="obsolete">Boş araştırma dizgisi girdiniz.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="unfinished">Aramada hata</translation>
+        <translation type="obsolete">Aramada hata</translation>
     </message>
     <message>
         <source>Found %d matching features.</source>
@@ -357,11 +355,7 @@
     </message>
     <message>
         <source>No matching features found.</source>
-        <translation type="unfinished">Eşleşen obje bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Eşleşen obje bulunamadı.</translation>
     </message>
 </context>
 <context>
@@ -372,83 +366,67 @@
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">içinde</translation>
+        <translation type="obsolete">içinde</translation>
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">Öznitelik Tablosu</translation>
+        <translation type="obsolete">Öznitelik Tablosu</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished">Seçimi kaldır</translation>
+        <translation type="obsolete">Seçimi kaldır</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished">Seçileni en üste taşı</translation>
+        <translation type="obsolete">Seçileni en üste taşı</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">Seçimi tersine çevir</translation>
+        <translation type="obsolete">Seçimi tersine çevir</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished">Ctrl+S</translation>
+        <translation type="obsolete">Ctrl+S</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Seçilen satırları panoya kopyala (Crtl+C)</translation>
+        <translation type="obsolete">Seçilen satırları panoya kopyala (Crtl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Seçilen satırları panoya kopyala</translation>
+        <translation type="obsolete">Seçilen satırları panoya kopyala</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">Seçilen satırları haritada  göster (Ctrl-F) </translation>
+        <translation type="obsolete">Seçilen satırları haritada  göster (Ctrl-F) </translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Haritada seçilen satırı göster</translation>
+        <translation type="obsolete">Haritada seçilen satırı göster</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Düzenlemeyi aç/kapa</translation>
+        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Tablo düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Look for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Tablo düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -1845,6 +1823,49 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>OracleConnectGuiBase</name>
+    <message>
+        <source>Create Oracle Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">TAMAM</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">İptal</translation>
+    </message>
+    <message>
+        <source>Connection Information</source>
+        <translation type="unfinished">Bağlantı bilgisi</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Ad</translation>
+    </message>
+    <message>
+        <source>Database instance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation type="unfinished">Kullanıcı adı</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Parola</translation>
+    </message>
+    <message>
+        <source>Name of the new connection</source>
+        <translation type="unfinished">Yeni bağlantının adı</translation>
+    </message>
+    <message>
+        <source>Save Password</source>
+        <translation type="unfinished">Parolayı Kaydet</translation>
+    </message>
+</context>
+<context>
     <name>QFileDialog</name>
     <message>
         <source>Save experiment report to portable document format (.pdf)</source>
@@ -2939,6 +2960,14 @@ Python desteği etkisizleştirilecek.</translation>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Access Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -3817,7 +3846,7 @@ Python desteği etkisizleştirilecek.</translation>
     </message>
     <message>
         <source>New features</source>
-        <translation>Yeni objeler</translation>
+        <translation type="obsolete">Yeni objeler</translation>
     </message>
     <message>
         <source>Unable to open project</source>
@@ -4536,74 +4565,6 @@ Please contact the developers.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Advanced topological editing of vector data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single click selection of vector features.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overhaul of the map composer for much improved printing support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Quantum GIS - %1 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -4684,11 +4645,13 @@ Errors: %2
         <source>Delete features</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -4712,6 +4675,118 @@ This copy of QGIS has been built with SpatiaLite support.</source>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to Forward Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats new in Version 1.1.0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates to translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support usb: as a GPS device under Linux.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added svg point symbols from Matt Amos (with his permission).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapserver Export improvements for continuous color support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When using File - Save as image, the saved image is now georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continuous color renderer supports point symbols now too.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates and cleanups to the GRASS toolbox.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The middle mouse button can now be used for panning. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new, faster attribute table implementation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerous cleanups to the user interface.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4790,11 +4865,11 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Ad</translation>
+        <translation type="unfinished">Ad</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation type="obsolete">Web sitesi</translation>
+        <translation type="unfinished">Web sitesi</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4814,15 +4889,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="obsolete">Mevcut QGIS Veri Sağlama Eklentileri</translation>
+        <translation type="unfinished">Mevcut QGIS Veri Sağlama Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="obsolete">Mevcut Qt Veritabanı Eklentileri</translation>
+        <translation type="unfinished">Mevcut Qt Veritabanı Eklentileri</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="obsolete">Mevcut Qt Görüntü Eklentileri</translation>
+        <translation type="unfinished">Mevcut Qt Görüntü Eklentileri</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4838,6 +4913,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Join our user mailing list</source>
         <translation>Kullanıcı posta listemize katılın</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translators</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4888,6 +4983,14 @@ p, li { white-space: pre-wrap; }
         <source>Select an action</source>
         <comment>File dialog window title</comment>
         <translation>Bir eylem seçin</translation>
+    </message>
+    <message>
+        <source>Missing Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To create an attribute action, you must provide both a name and the action to perform.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5087,15 +5190,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTable</name>
     <message>
         <source>Run action</source>
-        <translation>Eylemi çalıştır</translation>
-    </message>
-    <message>
-        <source>Updating selection...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Eylemi çalıştır</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Vazgeç</translation>
+        <translation type="obsolete">Vazgeç</translation>
     </message>
 </context>
 <context>
@@ -5230,34 +5329,147 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsAttributeTableDisplay</name>
+    <name>QgsAttributeTableDialog</name>
     <message>
-        <source>select</source>
-        <translation>Seç</translation>
-    </message>
-    <message>
-        <source>select and bring to top</source>
-        <translation>seç ve yukarı taşı</translation>
-    </message>
-    <message>
-        <source>show only matching</source>
-        <translation>Sadece eşleşenleri göster</translation>
+        <source>Attribute table - %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation>Arama tümcesi ayrıştırma hatası</translation>
+        <translation type="unfinished">Arama tümcesi ayrıştırma hatası</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation>Sonuçları araştır</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation>Boş araştırma dizgisi girdiniz.</translation>
+        <translation type="unfinished">Boş araştırma dizgisi girdiniz.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation>Aramada hata</translation>
+        <translation type="unfinished">Aramada hata</translation>
+    </message>
+    <message numerus="yes">
+        <source>Found %d matching features.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>No matching features found.</source>
+        <translation type="unfinished">Eşleşen obje bulunamadı.</translation>
+    </message>
+    <message>
+        <source>Attribute Table</source>
+        <translation type="unfinished">Öznitelik Tablosu</translation>
+    </message>
+    <message>
+        <source>Remove selection</source>
+        <translation type="unfinished">Seçimi kaldır</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation type="unfinished">Seçileni en üste taşı</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation type="unfinished">Ctrl+T</translation>
+    </message>
+    <message>
+        <source>Invert selection</source>
+        <translation type="unfinished">Seçimi tersine çevir</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Copy selected rows to clipboard (Ctrl+C)</source>
+        <translation type="unfinished">Seçilen satırları panoya kopyala (Crtl+C)</translation>
+    </message>
+    <message>
+        <source>Copies the selected rows to the clipboard</source>
+        <translation type="unfinished">Seçilen satırları panoya kopyala</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished">Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-J)</source>
+        <translation type="unfinished">Seçilen satırları haritada  göster (Ctrl-F) </translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished">Haritada seçilen satırı göster</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="unfinished">Düzenlemeyi aç/kapa</translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
+        <translation type="unfinished">Tablo düzenlemeyi aç/kapa</translation>
+    </message>
+    <message>
+        <source>Look for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation type="unfinished">içinde</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected records only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTableDisplay</name>
+    <message>
+        <source>select</source>
+        <translation type="obsolete">Seç</translation>
+    </message>
+    <message>
+        <source>select and bring to top</source>
+        <translation type="obsolete">seç ve yukarı taşı</translation>
+    </message>
+    <message>
+        <source>show only matching</source>
+        <translation type="obsolete">Sadece eşleşenleri göster</translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation type="obsolete">Arama tümcesi ayrıştırma hatası</translation>
+    </message>
+    <message>
+        <source>Search results</source>
+        <translation type="obsolete">Sonuçları araştır</translation>
+    </message>
+    <message>
+        <source>You&apos;ve supplied an empty search string.</source>
+        <translation type="obsolete">Boş araştırma dizgisi girdiniz.</translation>
+    </message>
+    <message>
+        <source>Error during search</source>
+        <translation type="obsolete">Aramada hata</translation>
     </message>
     <message>
         <source>Found %d matching features.</source>
@@ -5301,99 +5513,87 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS</source>
-        <translation>QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Dosya</translation>
+        <translation type="obsolete">Dosya</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Kapat</translation>
+        <translation type="obsolete">Kapat</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
+        <translation type="obsolete">Ctrl+W</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Düzenle</translation>
+        <translation type="obsolete">Düzenle</translation>
     </message>
     <message>
         <source>&amp;Undo</source>
-        <translation>&amp;Geri al</translation>
+        <translation type="obsolete">&amp;Geri al</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
-        <translation>Ctrl+Z</translation>
+        <translation type="obsolete">Ctrl+Z</translation>
     </message>
     <message>
         <source>Cu&amp;t</source>
-        <translation>Ke&amp;s</translation>
+        <translation type="obsolete">Ke&amp;s</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation>&amp;Kopyala</translation>
+        <translation type="obsolete">&amp;Kopyala</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation>&amp;Yapıştır</translation>
+        <translation type="obsolete">&amp;Yapıştır</translation>
     </message>
     <message>
         <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
+        <translation type="obsolete">Ctrl+V</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation>Sil</translation>
+        <translation type="obsolete">Sil</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation>Katman</translation>
+        <translation type="obsolete">Katman</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation>Seçime Yaklaştır</translation>
+        <translation type="obsolete">Seçime Yaklaştır</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle Editing</source>
-        <translation>Düzenlemeyi aç/kapa</translation>
+        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tablo</translation>
+        <translation type="obsolete">Tablo</translation>
     </message>
     <message>
         <source>Move to Top</source>
-        <translation>Üste taşı</translation>
+        <translation type="obsolete">Üste taşı</translation>
     </message>
     <message>
         <source>Invert</source>
-        <translation>Ters çevir</translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ters çevir</translation>
     </message>
     <message>
         <source>Found %n matching feature(s).</source>
@@ -7271,11 +7471,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8050,6 +8250,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Detail label</source>
         <translation>Detay etiketi</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDiagramDialog</name>
+    <message>
+        <source>Pie chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proportional SVG symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDiagramDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diyalog</translation>
+    </message>
+    <message>
+        <source>Display diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagram type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification attribute:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification type:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11662,12 +11900,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Closing down connection</source>
         <translation type="unfinished">Bağlantı kapatılıyor</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
 </context>
@@ -12184,7 +12424,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <source>°</source>
         <translation type="unfinished"></translation>
     </message>
@@ -12507,6 +12747,40 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsLinearlyScalingDialog</name>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation type="unfinished">Harita birimleri</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLinearlyScalingDialogBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>find maximum Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation type="unfinished">Boyut:</translation>
+    </message>
+    <message>
+        <source>Size unit: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapCanvas</name>
     <message>
         <source>Could not draw</source>
@@ -12799,11 +13073,13 @@ p, li { white-space: pre-wrap; }
         <source>No features were found in the active layer at the point you clicked</source>
         <translation type="unfinished">tıkladığınız noktada aktif katmanda hiç obje bulunamadı </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -13347,6 +13623,22 @@ Extended error information:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>prefer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>require</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>allow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disable</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsNewConnectionBase</name>
@@ -13436,6 +13728,10 @@ Extended error information:
     </message>
     <message>
         <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SSL mode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14089,6 +14385,34 @@ p, li { white-space: pre-wrap; }
         <source>None</source>
         <translation type="unfinished">Hiçbiri</translation>
     </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Central point (fastest)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chain (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic tabu chain (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic tabu (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic chain (very slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -14596,6 +14920,68 @@ p, li { white-space: pre-wrap; }
         <source>Remove</source>
         <translation type="unfinished">Kaldır</translation>
     </message>
+    <message>
+        <source>Overlay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished">Konum</translation>
+    </message>
+    <message>
+        <source>Placement algorithm:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOraclePlugin</name>
+    <message>
+        <source>Select GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open a Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Oracle Spatial</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleSelectGeoraster</name>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="unfinished">Silmeyi Onayla</translation>
+    </message>
+    <message>
+        <source>Password for %1/&lt;password&gt;@%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter your password:</source>
+        <translation type="unfinished">Lütfen parolanızı girin:</translation>
+    </message>
+    <message>
+        <source>Open failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
@@ -14833,11 +15219,13 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -15037,6 +15425,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Conflict:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15907,7 +16303,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"> dönüştürme henüz desteklenmiyor.&lt;/p&gt;</translation>
+        <translation type="obsolete"> dönüştürme henüz desteklenmiyor.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error</source>
@@ -15915,7 +16311,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to </source>
-        <translation type="unfinished">&apos;e yazılamıyor</translation>
+        <translation type="obsolete">&apos;e yazılamıyor</translation>
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
@@ -15959,16 +16355,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Koordinatlandırma dosyası mevcut</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>world file! Do you want to replace it with the </source>
-        <translation type="unfinished">Koordinatlandırma dosyası! Şununla değiştirmek istermisiniz</translation>
+        <translation type="obsolete">Koordinatlandırma dosyası! Şununla değiştirmek istermisiniz</translation>
     </message>
     <message>
         <source>new world file?&lt;/p&gt;</source>
-        <translation type="unfinished">Yeni coğrafi referans dosyası?&lt;/p&gt;</translation>
+        <translation type="obsolete">Yeni coğrafi referans dosyası?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Polynomial 1</source>
@@ -16003,10 +16395,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;p&gt;The </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16021,6 +16409,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The selected file is not a valid raster file.</source>
         <translation type="unfinished">Seçilen dosya geçerli raster dosya değil.</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The %1 transform is not yet supported.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16166,7 +16566,7 @@ Qgis requires that the table either has a column of type
 int4 with a unique constraint on it (which includes the
 primary key) or has a PostgreSQL oid column.
 </source>
-        <translation>Tablo anahtar olarak kullanılabilecek sütuna sahip değil.
+        <translation type="obsolete">Tablo anahtar olarak kullanılabilecek sütuna sahip değil.
 
 Qgis tablonun ya benzersiz kısıtlayıcıya (anahtar sütunu içeren) sahip int4 tipinde bir sütunu olmasına veya PostgreSQl oid sütununa sahip olmasına gereksinim duyar.
 </translation>
@@ -16416,6 +16816,16 @@ The view you selected has the following columns, none of which satisfy the above
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The table has no column suitable for use as a key.
+
+Qgis requires that the table either has a column of type
+int4 with a unique constraint on it (which includes the
+primary key), has a PostgreSQL oid column or has a ctid
+column with a 16bit block number.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
@@ -16430,6 +16840,15 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation>PostGIS kurulumunuzun GEOS desteği yok.
 Obje seçimi ve belirlenmesi doğru çalışmayacak.
 Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</translation>
+    </message>
+    <message>
+        <source>No PostGIS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your database has no working PostGIS support.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18135,6 +18554,48 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsSVGDiagramFactoryWidget</name>
+    <message>
+        <source>Select svg file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select new preview directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating icon for file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSVGDiagramFactoryWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <source>Search directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished">Ekle...</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished">Kaldır</translation>
+    </message>
+    <message>
+        <source>SVG Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished">Göz at...</translation>
+    </message>
+</context>
+<context>
     <name>QgsScaleBarPlugin</name>
     <message>
         <source> metres/km</source>
@@ -18362,11 +18823,13 @@ p, li { white-space: pre-wrap; }
         <source>Search query builder</source>
         <translation>Arama sorgusu oluşturucu</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
 </context>
@@ -18441,11 +18904,13 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -18841,6 +19306,14 @@ The error was:
         <source>to vertex and segment</source>
         <translation>kırıklık noktasına ve parçaya</translation>
     </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSnappingDialogBase</name>
@@ -18859,6 +19332,10 @@ The error was:
     <message>
         <source>Tolerance</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Units</source>
+        <translation type="unfinished">Birimler</translation>
     </message>
 </context>
 <context>
@@ -18932,20 +19409,16 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>/sqlitepath</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Are you sure you want to remove the </source>
-        <translation type="unfinished">Kaldırmak istediğinizden eminmisiniz</translation>
+        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
     </message>
     <message>
         <source> connection and all associated settings?</source>
-        <translation type="unfinished">bağlantı ve tüm ilgili ayarlar?</translation>
+        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -18967,6 +19440,10 @@ SQL: %2</source>
         <source>Failure exploring tables from: %1
 
 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -19638,88 +20115,112 @@ Should the existing classes be deleted before classification?</source>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -20352,6 +20853,29 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsWKNDiagramFactoryWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <source>Attributes:</source>
+        <translation type="unfinished">Öznitelikler:</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>Remove attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add attribute</source>
+        <translation type="unfinished">Öznitelik Ekle</translation>
+    </message>
+</context>
+<context>
     <name>QgsWmsProvider</name>
     <message>
         <source>HTTP Exception</source>
@@ -20702,6 +21226,73 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
+    <name>SelectGeoRasterBase</name>
+    <message>
+        <source>Select Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Connections</source>
+        <translation type="unfinished">Sunucu Bağlantıları</translation>
+    </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Sil</translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;Yeni</translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">Güncelle</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation type="unfinished">Hazır</translation>
+    </message>
+    <message>
+        <source>&amp;Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>Subdatasets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Yardım</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation type="unfinished">Alt+L</translation>
+    </message>
+</context>
+<context>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
@@ -20884,11 +21475,25 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="obsolete">Açmak için DXF dosyasını seçin</translation>
+        <translation type="unfinished">Açmak için DXF dosyasını seçin</translation>
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="obsolete">Kaydetmek için dosya adı seçiniz</translation>
+        <translation type="unfinished">Kaydetmek için dosya adı seçiniz</translation>
+    </message>
+    <message>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

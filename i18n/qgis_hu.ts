@@ -1,9 +1,11 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="hu">
 <context>
     <name></name>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Geoprocessing</translation>
+        <translation type="unfinished">&amp;Geoprocessing</translation>
     </message>
 </context>
 <context>
@@ -19,7 +21,7 @@
     </message>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished">&amp;Geoprocessing</translation>
+        <translation type="obsolete">&amp;Geoprocessing</translation>
     </message>
 </context>
 <context>
@@ -38,19 +40,19 @@
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished">Keresési minta hibás</translation>
+        <translation type="obsolete">Keresési minta hibás</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation type="unfinished">Keresés eredmények</translation>
+        <translation type="obsolete">Keresés eredmények</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Üres keresési mintát adtál meg.</translation>
+        <translation type="obsolete">Üres keresési mintát adtál meg.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="unfinished">Hiba a keresés közben</translation>
+        <translation type="obsolete">Hiba a keresés közben</translation>
     </message>
     <message>
         <source>Found %d matching features.</source>
@@ -60,11 +62,7 @@
     </message>
     <message>
         <source>No matching features found.</source>
-        <translation type="unfinished">Nem találtam megfelelő elemet.</translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nem találtam megfelelő elemet.</translation>
     </message>
 </context>
 <context>
@@ -75,83 +73,51 @@
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">ebben</translation>
+        <translation type="obsolete">ebben</translation>
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">Attribútum tábla</translation>
+        <translation type="obsolete">Attribútum tábla</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished">Szelekció megszüntetése</translation>
+        <translation type="obsolete">Szelekció megszüntetése</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished">Szelektált legfelülre mozgatása</translation>
+        <translation type="obsolete">Szelektált legfelülre mozgatása</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+T</translation>
+        <translation type="obsolete">Ctrl+T</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">Szelekció megfordítsa</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Szelekció megfordítsa</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Szelektált sorok másolása a vágólapra (Ctrl+C)</translation>
+        <translation type="obsolete">Szelektált sorok másolása a vágólapra (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Szelektált sorok másolása a vágólapra</translation>
+        <translation type="obsolete">Szelektált sorok másolása a vágólapra</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Térkép nagyítás a szelektált sorokra</translation>
+        <translation type="obsolete">Térkép nagyítás a szelektált sorokra</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Look for</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -1321,6 +1287,49 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
 </context>
 <context>
+    <name>OracleConnectGuiBase</name>
+    <message>
+        <source>Create Oracle Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Mégsem</translation>
+    </message>
+    <message>
+        <source>Connection Information</source>
+        <translation type="unfinished">Kapcsolat információk</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+    <message>
+        <source>Database instance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation type="unfinished">Felhasználó név</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Jelszó</translation>
+    </message>
+    <message>
+        <source>Name of the new connection</source>
+        <translation type="unfinished">Az új kapcsolat neve</translation>
+    </message>
+    <message>
+        <source>Save Password</source>
+        <translation type="unfinished">Jelszó mentése</translation>
+    </message>
+</context>
+<context>
     <name>QFileDialog</name>
     <message>
         <source>Load layer properties from style file (.qml)</source>
@@ -2363,6 +2372,14 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Access Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisApp</name>
@@ -3171,7 +3188,7 @@ Qt-vel fordítva </translation>
     </message>
     <message>
         <source>New features</source>
-        <translation>Új elemek</translation>
+        <translation type="obsolete">Új elemek</translation>
     </message>
     <message>
         <source>This release candidate includes over 40 bug fixes and enchancements over the QGIS 0.9.1 release. In addition we have added the following new features:</source>
@@ -3868,71 +3885,7 @@ Please contact the developers.
     </message>
     <message>
         <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished">Ez a kibocsátás elõtti verzió több mint 265 hibajavítást és bõvítéseket tartalmaz a QGIS 0.11.0 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
-    </message>
-    <message>
-        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Advanced topological editing of vector data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single click selection of vector features.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overhaul of the map composer for much improved printing support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ez a kibocsátás elõtti verzió több mint 265 hibajavítást és bõvítéseket tartalmaz a QGIS 0.11.0 verzióhoz képest. Emellett a következõ új funkciókat készítettük el:</translation>
     </message>
     <message>
         <source>Quantum GIS - %1 </source>
@@ -4015,11 +3968,13 @@ Errors: %2
         <source>Delete features</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -4043,6 +3998,118 @@ This copy of QGIS has been built with SpatiaLite support.</source>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to Forward Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whats new in Version 1.1.0?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates to translations.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Support usb: as a GPS device under Linux.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added svg point symbols from Matt Amos (with his permission).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapserver Export improvements for continuous color support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When using File - Save as image, the saved image is now georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continuous color renderer supports point symbols now too.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updates and cleanups to the GRASS toolbox.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The middle mouse button can now be used for panning. </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new, faster attribute table implementation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numerous cleanups to the user interface.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4077,11 +4144,11 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="obsolete">Név</translation>
+        <translation type="unfinished">Név</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation type="obsolete">Honlap</translation>
+        <translation type="unfinished">Honlap</translation>
     </message>
     <message>
         <source>QGIS Browser Selection</source>
@@ -4143,19 +4210,19 @@ You can change this option later by selection Options from the Settings menu (He
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;A következők pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
+        <translation type="unfinished">&lt;p&gt;A következők pénzzel támogatták a QGIS fejlesztését és más projekt költségeket&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="obsolete">Elérhető QGIS adat modulok</translation>
+        <translation type="unfinished">Elérhető QGIS adat modulok</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="obsolete">Elérhető QT adatbázis modulok</translation>
+        <translation type="unfinished">Elérhető QT adatbázis modulok</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="obsolete">Elérhető Qt kép modulok</translation>
+        <translation type="unfinished">Elérhető Qt kép modulok</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4174,6 +4241,22 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <source>Join our user mailing list</source>
         <translation>Csatlakozz a felhasználói levelező listához</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translators</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4224,6 +4307,14 @@ p, li { white-space: pre-wrap; }(new line)
         <source>Select an action</source>
         <comment>File dialog window title</comment>
         <translation>Válassz egy műveletet</translation>
+    </message>
+    <message>
+        <source>Missing Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To create an attribute action, you must provide both a name and the action to perform.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4419,15 +4510,11 @@ p, li { white-space: pre-wrap; }(new line)
     <name>QgsAttributeTable</name>
     <message>
         <source>Run action</source>
-        <translation>Művelet futtatása</translation>
-    </message>
-    <message>
-        <source>Updating selection...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Művelet futtatása</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Megszakít</translation>
+        <translation type="obsolete">Megszakít</translation>
     </message>
 </context>
 <context>
@@ -4562,18 +4649,131 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
 </context>
 <context>
+    <name>QgsAttributeTableDialog</name>
+    <message>
+        <source>Attribute table - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation type="unfinished">Keresési minta hibás</translation>
+    </message>
+    <message>
+        <source>Search results</source>
+        <translation type="unfinished">Keresés eredmények</translation>
+    </message>
+    <message>
+        <source>You&apos;ve supplied an empty search string.</source>
+        <translation type="unfinished">Üres keresési mintát adtál meg.</translation>
+    </message>
+    <message>
+        <source>Error during search</source>
+        <translation type="unfinished">Hiba a keresés közben</translation>
+    </message>
+    <message numerus="yes">
+        <source>Found %d matching features.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>No matching features found.</source>
+        <translation type="unfinished">Nem találtam megfelelő elemet.</translation>
+    </message>
+    <message>
+        <source>Attribute Table</source>
+        <translation type="unfinished">Attribútum tábla</translation>
+    </message>
+    <message>
+        <source>Remove selection</source>
+        <translation type="unfinished">Szelekció megszüntetése</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation type="unfinished">Szelektált legfelülre mozgatása</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation type="unfinished">Ctrl+T</translation>
+    </message>
+    <message>
+        <source>Invert selection</source>
+        <translation type="unfinished">Szelekció megfordítsa</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy selected rows to clipboard (Ctrl+C)</source>
+        <translation type="unfinished">Szelektált sorok másolása a vágólapra (Ctrl+C)</translation>
+    </message>
+    <message>
+        <source>Copies the selected rows to the clipboard</source>
+        <translation type="unfinished">Szelektált sorok másolása a vágólapra</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished">Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-J)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="unfinished">Térkép nagyítás a szelektált sorokra</translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished">Ctrl+J</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Look for</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation type="unfinished">ebben</translation>
+    </message>
+    <message>
+        <source>&amp;Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show selected records only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
     <name>QgsAttributeTableDisplay</name>
     <message>
         <source>select</source>
-        <translation>szelektál</translation>
+        <translation type="obsolete">szelektál</translation>
     </message>
     <message>
         <source>select and bring to top</source>
-        <translation>szelektál és előre hoz</translation>
+        <translation type="obsolete">szelektál és előre hoz</translation>
     </message>
     <message>
         <source>show only matching</source>
-        <translation>csak az egyezőket mutasd</translation>
+        <translation type="obsolete">csak az egyezőket mutasd</translation>
     </message>
     <message>
         <source>Name conflict</source>
@@ -4601,19 +4801,19 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation>Keresési minta hibás</translation>
+        <translation type="obsolete">Keresési minta hibás</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation>Keresés eredmények</translation>
+        <translation type="obsolete">Keresés eredmények</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation>Üres keresési mintát adtál meg.</translation>
+        <translation type="obsolete">Üres keresési mintát adtál meg.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation>Hiba a keresés közben</translation>
+        <translation type="obsolete">Hiba a keresés közben</translation>
     </message>
     <message>
         <source>Found %d matching features.</source>
@@ -4637,99 +4837,47 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation type="obsolete">QGIS</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fájl</translation>
+        <translation type="obsolete">Fájl</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Lezár</translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Lezár</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Szerkeszt</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Szerkeszt</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Réteg</translation>
-    </message>
-    <message>
-        <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Réteg</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle Editing</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tábla</translation>
-    </message>
-    <message>
-        <source>Move to Top</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Tábla</translation>
     </message>
     <message>
         <source>bad_alloc exception</source>
-        <translation type="unfinished">bad_alloc exception</translation>
+        <translation type="obsolete">bad_alloc exception</translation>
     </message>
     <message>
         <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="unfinished">Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Az attribútum tábla kitöltését magszakítottam, mert elfogyott a virtuális memória</translation>
     </message>
     <message>
         <source>Found %n matching feature(s).</source>
@@ -6470,11 +6618,11 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2008&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7134,6 +7282,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Detail label</source>
         <translation>Részlet cimke</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDiagramDialog</name>
+    <message>
+        <source>Pie chart</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar chart</source>
+        <translation type="unfinished">Oszlop diagramm</translation>
+    </message>
+    <message>
+        <source>Proportional SVG symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDiagramDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Párbeszédablak</translation>
+    </message>
+    <message>
+        <source>Display diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagram type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification attribute:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification type:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10713,12 +10899,14 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.
         <source>Closing down connection</source>
         <translation type="unfinished">Kapcsolat lezárása</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
 </context>
@@ -11231,7 +11419,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation type="unfinished">Maximális méretarány amikor a réteg megjelenik. </translation>
     </message>
-    <message encoding="UTF-8">
+    <message>
         <source>°</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11515,6 +11703,40 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>col</source>
         <translation type="obsolete">oszl</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLinearlyScalingDialog</name>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map units</source>
+        <translation type="unfinished">Térkép egységek</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLinearlyScalingDialogBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Űrlap</translation>
+    </message>
+    <message>
+        <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>find maximum Value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation type="unfinished">Méret:</translation>
+    </message>
+    <message>
+        <source>Size unit: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11828,11 +12050,13 @@ p, li { white-space: pre-wrap; }
         <source>No features were found in the active layer at the point you clicked</source>
         <translation type="unfinished">Az aktív rétegen a megadott pontban nem találtam elemeket</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -12337,6 +12561,22 @@ Extended error information:
 %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>prefer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>require</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>allow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disable</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsNewConnectionBase</name>
@@ -12427,6 +12667,10 @@ Extended error information:
     <message>
         <source>F1</source>
         <translation>F1</translation>
+    </message>
+    <message>
+        <source>SSL mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13047,6 +13291,34 @@ p, li { white-space: pre-wrap; }
         <source>None</source>
         <translation type="unfinished">Semmi</translation>
     </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Central point (fastest)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chain (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic tabu chain (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic tabu (slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Popmusic chain (very slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -13502,6 +13774,68 @@ p, li { white-space: pre-wrap; }
         <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Overlay</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position</source>
+        <translation type="unfinished">Pozició</translation>
+    </message>
+    <message>
+        <source>Placement algorithm:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOraclePlugin</name>
+    <message>
+        <source>Select GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open a Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Oracle Spatial</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleSelectGeoraster</name>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="unfinished">Törlés megerősítése</translation>
+    </message>
+    <message>
+        <source>Password for %1/&lt;password&gt;@%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter your password:</source>
+        <translation type="unfinished">Add meg a jelszavad:</translation>
+    </message>
+    <message>
+        <source>Open failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPasteTransformationsBase</name>
@@ -13718,11 +14052,13 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -13934,6 +14270,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS Plugin Conflict:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14736,11 +15080,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The </source>
-        <translation type="unfinished">&lt;p&gt;A(z) </translation>
+        <translation type="obsolete">&lt;p&gt;A(z) </translation>
     </message>
     <message>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished">transzformáció még nem támogatott&lt;/p&gt;</translation>
+        <translation type="obsolete">transzformáció még nem támogatott&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error</source>
@@ -14748,7 +15092,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to </source>
-        <translation type="unfinished">Nem tudok írni ide </translation>
+        <translation type="obsolete">Nem tudok írni ide </translation>
     </message>
     <message>
         <source>Zoom In</source>
@@ -14837,15 +15181,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="unfinished">&lt;p&gt;Úgy tűnik a  kiválasztott fájl már rendelkezik </translation>
+        <translation type="obsolete">&lt;p&gt;Úgy tűnik a  kiválasztott fájl már rendelkezik </translation>
     </message>
     <message>
         <source>world file! Do you want to replace it with the </source>
-        <translation type="unfinished">World fájllal! Le akarod cserélni az új</translation>
+        <translation type="obsolete">World fájllal! Le akarod cserélni az új</translation>
     </message>
     <message>
         <source>new world file?&lt;/p&gt;</source>
-        <translation type="unfinished">az új world fájllal?&lt;/p&gt;</translation>
+        <translation type="obsolete">az új world fájllal?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Polynomial 1</source>
@@ -14894,6 +15238,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The selected file is not a valid raster file.</source>
         <translation type="unfinished">A kiválaszott fájl nem megfelelő raszter fájl.</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The %1 transform is not yet supported.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15021,7 +15377,7 @@ Qgis requires that the table either has a column of type
 int4 with a unique constraint on it (which includes the
 primary key) or has a PostgreSQL oid column.
 </source>
-        <translation>A táblában nincs megfelelpõ oszlop ami kulcsként használható.
+        <translation type="obsolete">A táblában nincs megfelelpõ oszlop ami kulcsként használható.
 
 A QGIS-nek szüksége van egy int4 típusú oszlopra az egyediség korlátozásával 
 (amit az elsõdleges kulcs magában foglal) vagy egy PostgreSQL iod oszlopra.
@@ -15261,6 +15617,16 @@ The view you selected has the following columns, none of which satisfy the above
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The table has no column suitable for use as a key.
+
+Qgis requires that the table either has a column of type
+int4 with a unique constraint on it (which includes the
+primary key), has a PostgreSQL oid column or has a ctid
+column with a 16bit block number.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
@@ -15272,6 +15638,15 @@ The view you selected has the following columns, none of which satisfy the above
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No PostGIS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your database has no working PostGIS support.
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16851,6 +17226,48 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsSVGDiagramFactoryWidget</name>
+    <message>
+        <source>Select svg file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select new preview directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating icon for file %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSVGDiagramFactoryWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Űrlap</translation>
+    </message>
+    <message>
+        <source>Search directories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse...</source>
+        <translation type="unfinished">Tallóz...</translation>
+    </message>
+</context>
+<context>
     <name>QgsScaleBarPlugin</name>
     <message>
         <source>Bottom Left</source>
@@ -17061,11 +17478,13 @@ p, li { white-space: pre-wrap; }
         
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
 </context>
@@ -17135,11 +17554,13 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -17483,6 +17904,14 @@ The error was:
         <source>to vertex and segment</source>
         <translation>törésponthoz és szakaszhoz</translation>
     </message>
+    <message>
+        <source>map units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSnappingDialogBase</name>
@@ -17501,6 +17930,10 @@ The error was:
     <message>
         <source>Tolerance</source>
         <translation>Tolerancia</translation>
+    </message>
+    <message>
+        <source>Units</source>
+        <translation type="unfinished">Egységek</translation>
     </message>
 </context>
 <context>
@@ -17574,19 +18007,7 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>/sqlitepath</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -17609,6 +18030,10 @@ SQL: %2</source>
         <source>Failure exploring tables from: %1
 
 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -18277,88 +18702,112 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="obsolete">
+        <translation type="unfinished">
+            <numerusform>
         
+        </numerusform>
         </translation>
     </message>
     <message>
@@ -18943,6 +19392,29 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
     </message>
 </context>
 <context>
+    <name>QgsWKNDiagramFactoryWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Űrlap</translation>
+    </message>
+    <message>
+        <source>Attributes:</source>
+        <translation type="unfinished">Attribútumok:</translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished">1</translation>
+    </message>
+    <message>
+        <source>Remove attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsWmsProvider</name>
     <message>
         <source>Tried URL: </source>
@@ -19297,6 +19769,73 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
+    <name>SelectGeoRasterBase</name>
+    <message>
+        <source>Select Oracle Spatial GeoRaster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation type="unfinished">&amp;Kapcsolódás</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Szerkeszt</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;Új</translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">Aktualizálás</translation>
+    </message>
+    <message>
+        <source>Ready</source>
+        <translation type="unfinished">Kész</translation>
+    </message>
+    <message>
+        <source>&amp;Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <translation type="unfinished">Alt+H</translation>
+    </message>
+    <message>
+        <source>Subdatasets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Súgó</translation>
+    </message>
+    <message>
+        <source>F1</source>
+        <translation type="unfinished">F1</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation type="unfinished">&amp;Lezár</translation>
+    </message>
+    <message>
+        <source>Alt+L</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
@@ -19444,6 +19983,28 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export text labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a DXF file to open</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose a file name to save to</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
