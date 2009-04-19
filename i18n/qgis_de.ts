@@ -159,7 +159,7 @@
     </message>
     <message>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>Klicken um die Mausverfolgung zu aktivieren.  Zum Beenden in den Kartenbereich klicken</translation>
+        <translation>Klicken um die Mausverfolgung zu aktivieren. Zum Beenden in den Kartenbereich klicken</translation>
     </message>
     <message>
         <source>Start capture</source>
@@ -1242,7 +1242,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Adding projection info to rasters</source>
-        <translation type="obsolete">Fügt Projektionsinformationen zu Rasterdateien hinzu.</translation>
+        <translation type="obsolete">Rasterdaten über GDAL Projektionsinformationen hinzufügen.</translation>
     </message>
     <message>
         <source>GPS Tools</source>
@@ -1643,7 +1643,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation type="unfinished">Beim Laden eines Plugins trat ein Fehler auf.  Die folgenden Informationen könnten den QGIS-Entwicklern bei der Lösung des Problem helfen: %1.</translation>
+        <translation type="unfinished">Beim Laden eines Plugins trat ein Fehler auf. Die folgenden Informationen könnten den QGIS-Entwicklern bei der Lösung des Problem helfen: %1.</translation>
     </message>
     <message>
         <source>Where is &apos;%1&apos; (original location: %2)?</source>
@@ -1730,7 +1730,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation type="unfinished">Rasterdaten über GDAL-Projektionsinformationen hinzufügen</translation>
+        <translation type="unfinished">Rasterdaten über GDAL Projektionsinformationen hinzufügen.</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
@@ -2607,7 +2607,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">Kartenansicht.  Hier werden Raster- und Vektorlayer angezeigt, wenn sie der Karte hinzugefügt werden.</translation>
+        <translation type="unfinished">Kartenansicht. Hier werden Raster- und Vektorlayer angezeigt, wenn sie der Karte hinzugefügt werden.</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
@@ -2960,7 +2960,7 @@ Fehler: %2
     </message>
     <message>
         <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="obsolete">Das Plugin zur Installation von Python-Plugins wurde komplett überholt.  Die neue Version hat viele Verbesserungen, u.a. prüft es, ob die laufende QGIS-Version ein Plugin unterstützt, dass installiert werden soll.</translation>
+        <translation type="obsolete">Das Plugin zur Installation von Python-Plugins wurde komplett überholt. Die neue Version hat viele Verbesserungen, u.a. prüft es, ob die laufende QGIS-Version ein Plugin unterstützt, dass installiert werden soll.</translation>
     </message>
     <message>
         <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
@@ -3082,7 +3082,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished">Bitte beachten Sie dies eine Version aus unserem &apos;Entwicklungszweig&apos; ist. Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x.  Wenn Stabilität und langfristiger Support Ihnen wichtiger sind als neue und ungetestete Funktionen, empfehlen wir Ihnen QGIS aus dem stabilen 1.0-Zweig.</translation>
+        <translation type="unfinished">Bitte beachten Sie dies eine Version aus unserem &apos;Entwicklungszweig&apos; ist. Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstellen gegenüber QGIS 1.0.x. Wenn Stabilität und langfristiger Support Ihnen wichtiger sind als neue und ungetestete Funktionen, empfehlen wir Ihnen QGIS aus dem stabilen 1.0-Zweig.</translation>
     </message>
     <message>
         <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
@@ -3094,7 +3094,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
-        <translation type="unfinished">Verbesserung und Bereinigung des Python-Plugin-Installer.  Umstellung auf das neue offizielle QGIS-Repository.</translation>
+        <translation type="unfinished">Verbesserung und Bereinigung des Python-Plugin-Installer. Umstellung auf das neue offizielle QGIS-Repository.</translation>
     </message>
     <message>
         <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
@@ -3114,7 +3114,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
-        <translation type="unfinished">Verbesserungen an der Proxy-Unterstützung und Proxyunterstützung im WFS-Datenlieferant.  Der WFS-Datenlieferant verfügt nun außerdem über eine Fortschrittsanzeige während des Ladens von Daten.</translation>
+        <translation type="unfinished">Verbesserungen an der Proxy-Unterstützung und Proxyunterstützung im WFS-Datenlieferant. Der WFS-Datenlieferant verfügt nun außerdem über eine Fortschrittsanzeige während des Ladens von Daten.</translation>
     </message>
     <message>
         <source>Mapserver Export improvements for continuous color support.</source>
@@ -3150,7 +3150,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
     </message>
     <message>
         <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
-        <translation type="unfinished">Änderungen des Dialogs zum Öffnen von Vektorlayer, damit alle in OGR verfügbaren Treiber inkl. Datenbanken und Protokollen unterstützt werden.  Dies bringt Unterstützung für SDE, Oracle Spatial, ESRI-Personal-Geodatabase und viele von OGR unterstützte Datenspeichern. Beachten Sie das dies in einigen Fällen Software von Dritten auf Ihrem System voraussetzt.</translation>
+        <translation type="unfinished">Änderungen des Dialogs zum Öffnen von Vektorlayer, damit alle in OGR verfügbaren Treiber inkl. Datenbanken und Protokollen unterstützt werden. Dies bringt Unterstützung für SDE, Oracle Spatial, ESRI-Personal-Geodatabase und viele von OGR unterstützte Datenspeichern. Beachten Sie das dies in einigen Fällen Software von Dritten auf Ihrem System voraussetzt.</translation>
     </message>
     <message>
         <source>The middle mouse button can now be used for panning. </source>
@@ -3177,8 +3177,8 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <translation>SVG-Punktsymbole von Matt Amos hinzugefügt (mit seiner Erlaubnis).</translation>
     </message>
     <message>
-        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
-        <translation type="unfinished">Verbesserungen an der PostGIS-Unterstützung.  Massive Geschwindigkeitsgewinne in der Anzeige von PostGIS-Layern können nun über die Abschaltung von SSL im Verbindungseditor erreicht werden. Unterstützung der Nutzung der ctid-Spalte als Primärschlüssel (weicht die Notwendigkeit von Integer-Primärschlüsseln auf).</translation>
+        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor. Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
+        <translation type="unfinished">Verbesserungen an der PostGIS-Unterstützung. Massive Geschwindigkeitsgewinne in der Anzeige von PostGIS-Layern können nun über die Abschaltung von SSL im Verbindungseditor erreicht werden. Unterstützung der Nutzung der ctid-Spalte als Primärschlüssel (weicht die Notwendigkeit von Integer-Primärschlüsseln auf).</translation>
     </message>
     <message>
         <source>Zoom Next</source>
@@ -3419,7 +3419,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation type="unfinished">Geben Sie hier die Aktion ein. Dies kann jedes Programm, Skript oder Kommando sein, dass in Ihrem System verfügbar ist.  Wenn die Aktion ausgeführt wird jeder durch % eingeleiteter Feldname durch den Feldwert ersetzt.  Die besondere Zeichenfolge %% wird durch den Wert des gewählten Felds ersetzt.  Mit Anführungszeichen können mehrere Wörter zu einem Argument der Aktion zusammengefaßt werden. Für mit Backslash (\) eingeleitete Anführungszeichen gilt dies nicht.</translation>
+        <translation type="unfinished">Geben Sie hier die Aktion ein. Dies kann jedes Programm, Skript oder Kommando sein, dass in Ihrem System verfügbar ist. Wenn die Aktion ausgeführt wird jeder durch % eingeleiteter Feldname durch den Feldwert ersetzt. Die besondere Zeichenfolge %% wird durch den Wert des gewählten Felds ersetzt. Mit Anführungszeichen können mehrere Wörter zu einem Argument der Aktion zusammengefaßt werden. Für mit Backslash (\) eingeleitete Anführungszeichen gilt dies nicht.</translation>
     </message>
     <message>
         <source>Attribute Actions</source>
@@ -3986,7 +3986,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished">Einige WMS-Server (z.B. UMN Mapserver) haben Begrenzungen für die WIDTH- und HEIGHT-Parameter.  Falls diese Begrenzungen beim Ausdruck überschritten werden, werden diese WMS-Layer nicht gedruckt.</translation>
+        <translation type="unfinished">Einige WMS-Server (z.B. UMN Mapserver) haben Begrenzungen für die WIDTH- und HEIGHT-Parameter. Falls diese Begrenzungen beim Ausdruck überschritten werden, werden diese WMS-Layer nicht gedruckt.</translation>
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
@@ -8356,7 +8356,7 @@ in Zeile %2, Spalte %3</translation>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
-            <numerusform>Netzwerk-Timeout nach einer Sekunden Inaktivität.
+            <numerusform>Netzwerk-Timeout nach einer Sekunde Inaktivität.
 Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform>
             <numerusform>Netzwerk-Timeout nach %n Sekunden Inaktivität.
 Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform>
@@ -9084,7 +9084,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
-        <translation type="unfinished">FEHLER: Konnte die Datei %1 für den voreingestellten Stil nicht erzeugen.  Bitte überprüfen Sie die Zugriffrechte vor einem erneuten Versuch.</translation>
+        <translation type="unfinished">FEHLER: Konnte die Datei %1 für den voreingestellten Stil nicht erzeugen. Bitte überprüfen Sie die Zugriffrechte vor einem erneuten Versuch.</translation>
     </message>
 </context>
 <context>
@@ -9491,7 +9491,7 @@ Soll sie überschrieben werden?</translation>
     </message>
     <message>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile. It should be kept short.</source>
-        <translation>Präfix, der Name der GIF-Dateien für Karten, Maßstabsleiste und Legende, die mit diesem Mapfile erzeugt wurden.  Es sollte kurz gehalten werden.</translation>
+        <translation>Präfix, der Name der GIF-Dateien für Karten, Maßstabsleiste und Legende, die mit diesem Mapfile erzeugt wurden. Es sollte kurz gehalten werden.</translation>
     </message>
     <message>
         <source>Web Interface Definition</source>
@@ -10734,7 +10734,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation type="unfinished">Die Verbindung zu %1 schlug fehl.  Bitte überprüfen Sie die Verbindungsparameter und stellen Sie sicher, dass das GDAL-Geoaster-Plugin installiert ist.</translation>
+        <translation type="unfinished">Die Verbindung zu %1 schlug fehl. Bitte überprüfen Sie die Verbindungsparameter und stellen Sie sicher, dass das GDAL-Georaster-Plugin installiert ist.</translation>
     </message>
 </context>
 <context>
@@ -11115,7 +11115,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation type="unfinished">Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes verdeckt.  Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
+        <translation type="unfinished">Der Plugin-Installer hat ein veraltetes Plugin erkannt, das ein neueres, mit dieser QGIS-Version geliefertes verdeckt. Dies ist wahrscheinlich ein Überbleibsel einer ältereren QGIS-Installation. Bitte entfernen Sie es mit dem Plugin-Installer, um die mitgelieferte Ausgabe sichtbar zu machen.</translation>
     </message>
 </context>
 <context>
@@ -11286,8 +11286,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">Das Plugin scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden.  Wahrscheinlich enthielt das Plugin-Paket ein falsch benanntes Verzeichnis.
-Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserdem, dass es nicht möglich ist festzustellen, dass das Plugin installiert ist und ob es Updates gibt. Nichtdestotrotz könnte das Plugin funktionieren.  Bitte kontaktieren Sie den Plugin-Autor und setzen Ihn davon in Kenntnis.</translation>
+        <translation type="unfinished">Das Plugin scheint installiert worden zu sein, aber der Ort konnte nicht festgestellt werden. Wahrscheinlich enthielt das Plugin-Paket ein falsch benanntes Verzeichnis.
+Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserdem, dass es nicht möglich ist festzustellen, dass das Plugin installiert ist und ob es Updates gibt. Nichtdestotrotz könnte das Plugin funktionieren. Bitte kontaktieren Sie den Plugin-Autor und setzen Ihn davon in Kenntnis.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -11311,7 +11311,7 @@ Bitte durchsuchen Sie die Liste der installierten Plugins. Dies bedeutet ausserd
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="obsolete">Sie sind dabei Plugin-Repositorys hinzufügen, die zwar vom Quantum GIS-Team weder autorisiert noch unterstützt werden, aber von uns verbundenen Leuten zur Verfügung gestellt werden. Plugin-Autoren versuchen grundsätzlich ihre Arbeite nützlich und sicher zu machen, aber wir können uns auf deren Verantwortungsgefühl nicht verlassen.  Seien Sie gewarnt!</translation>
+        <translation type="obsolete">Sie sind dabei Plugin-Repositorys hinzufügen, die zwar vom Quantum GIS-Team weder autorisiert noch unterstützt werden, aber von uns verbundenen Leuten zur Verfügung gestellt werden. Plugin-Autoren versuchen grundsätzlich ihre Arbeite nützlich und sicher zu machen, aber wir können uns auf deren Verantwortungsgefühl nicht verlassen. Seien Sie gewarnt!</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
@@ -11355,7 +11355,7 @@ Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">Dieses Plugin ist für eine neuere Version von Quantum GIS bestimmt.  Die minimal erforderliche Version ist:</translation>
+        <translation type="unfinished">Dieses Plugin ist für eine neuere Version von Quantum GIS bestimmt. Die minimal erforderliche Version ist:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
@@ -11363,7 +11363,7 @@ Hier die Fehlermeldung:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">Das Plugin ist defekt.  Python meldete:</translation>
+        <translation type="unfinished">Das Plugin ist defekt. Python meldete:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -11385,11 +11385,11 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">Python-Plugin deinstalliert.  Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
+        <translation type="unfinished">Python-Plugin deinstalliert. Beachten Sie, dass Sie Quantum GIS u.U. neustarten müssen, um es komplett zu entfernen.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">Sie sind dabei meherere Plugin-Repositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden.  Plugin-Autoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist.  Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
+        <translation type="unfinished">Sie sind dabei mehrere Plugin-Repositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Plugin-Autoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
     </message>
 </context>
 <context>
@@ -11734,7 +11734,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation type="unfinished">Das Plugin scheint ungültig zu sein oder ihm fehlen Abhängigkeiten. Es wurde installiert, aber konnte nicht geladen werden. Wenn Sie das Plugin wirklich brauchen, kontaktieren Sie den Autor oder die &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS-Benutzergruppe&lt;/a&gt;, um das Problem zu lösen. Anderenfalls können Sie es einfach wieder deinstallieren.  Im folgenden die Fehlermeldung:</translation>
+        <translation type="unfinished">Das Plugin scheint ungültig zu sein oder ihm fehlen Abhängigkeiten. Es wurde installiert, aber konnte nicht geladen werden. Wenn Sie das Plugin wirklich brauchen, kontaktieren Sie den Autor oder die &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS-Benutzergruppe&lt;/a&gt;, um das Problem zu lösen. Anderenfalls können Sie es einfach wieder deinstallieren. Im folgenden die Fehlermeldung:</translation>
     </message>
     <message>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
@@ -12003,7 +12003,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished">GCP-Tranformation konnte nicht berechnet werden.  Die Transformation ist nicht lösbar.</translation>
+        <translation type="unfinished">GCP-Tranformation konnte nicht berechnet werden. Die Transformation ist nicht lösbar.</translation>
     </message>
     <message>
         <source>Choose a raster file</source>
@@ -12296,7 +12296,7 @@ Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)<
     </message>
     <message>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished">Konnte nicht in Datei %1 speichern. Das Projekt könnten auf der Festplatte defekt sein.  Bitte machen sie etwas Platz auf der Festplatte frei und überprüfen Sie die Zugriffsrechte bevor Sie es erneut versuchen.</translation>
+        <translation type="unfinished">Konnte nicht in Datei %1 speichern. Das Projekt könnten auf der Festplatte defekt sein. Bitte machen sie etwas Platz auf der Festplatte frei und überprüfen Sie die Zugriffsrechte bevor Sie es erneut versuchen.</translation>
     </message>
 </context>
 <context>
@@ -12937,7 +12937,7 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished">Die Datei war nicht beschreibbar. Einige Formate unterstützen Übersichtspyramiden nicht.  Gucken Sie im Zweifel in die GDAL-Dokumentation.</translation>
+        <translation type="unfinished">Die Datei war nicht beschreibbar. Einige Formate unterstützen Übersichtspyramiden nicht. Gucken Sie im Zweifel in die GDAL-Dokumentation.</translation>
     </message>
     <message>
         <source>Saved Style</source>
@@ -13777,9 +13777,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Es gibt kein Koordinatenbezugssystem für die ausgewählten Layer.</translation>
     </message>
     <message>
-        <source>Could not understand the response.  The %1 provider said:
+        <source>Could not understand the response. The %1 provider said:
 %2</source>
-        <translation type="unfinished">Antwort nicht verstanden.  Der %1-Provider sagte:
+        <translation type="unfinished">Antwort nicht verstanden. Der %1-Provider sagte:
 %2</translation>
     </message>
     <message>
@@ -13799,15 +13799,15 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>Could not understand the response.  The %1 provider said:
+        <source>Could not understand the response. The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished">Antwort nicht verstanden.  Der %1-Provider sagte:
+        <translation type="unfinished">Antwort nicht verstanden. Der %1-Provider sagte:
 %2</translation>
     </message>
     <message>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished">Die Verbindung %1 existiert bereits.  Wollen Sie sie überschreiben?</translation>
+        <translation type="unfinished">Die Verbindung %1 existiert bereits. Wollen Sie sie überschreiben?</translation>
     </message>
     <message>
         <source>Confirm Overwrite</source>
@@ -14698,7 +14698,7 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     </message>
     <message>
         <source>Import shapefiles into a PostGIS-enabled PostgreSQL database. The schema and field names can be customized on import</source>
-        <translation type="unfinished">Shapedatei in eine PostgreSQL-Datenbank mit PostGIS importieren.  Die Schema- und Feldname können beim Import beeinflußt werden</translation>
+        <translation type="unfinished">Shapedatei in eine PostgreSQL-Datenbank mit PostGIS importieren. Die Schema- und Feldname können beim Import beeinflußt werden</translation>
     </message>
     <message>
         <source>&amp;Spit</source>
