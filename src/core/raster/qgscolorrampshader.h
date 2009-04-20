@@ -44,6 +44,9 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       QString label;
       double value;
       QColor color;
+      
+      // compare operator for sorting
+      bool operator<(const ColorRampItem& other) const { return value < other.value; }
     };
 
     enum ColorRamp_TYPE
