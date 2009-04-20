@@ -1371,8 +1371,6 @@ void QgsRasterLayerProperties::apply()
       //iterate through mColormapTreeWidget and set colormap info of layer
       QList<QgsColorRampShader::ColorRampItem> myColorRampItems;
 
-      bool inserted = false;
-      int myCurrentIndex = 0;
       int myTopLevelItemCount = mColormapTreeWidget->topLevelItemCount();
       QTreeWidgetItem* myCurrentItem;
       for ( int i = 0; i < myTopLevelItemCount; ++i )
@@ -1386,35 +1384,13 @@ void QgsRasterLayerProperties::apply()
         myNewColorRampItem.value = myCurrentItem->text( 0 ).toDouble();
         myNewColorRampItem.color = myCurrentItem->background( 1 ).color();
         myNewColorRampItem.label = myCurrentItem->text( 2 );
-
-        //Simple insertion sort - speed is not a huge factor here
-        inserted = false;
-        myCurrentIndex = 0;
-        while ( !inserted )
-        {
-          if ( 0 == myColorRampItems.size() || myCurrentIndex == myColorRampItems.size() )
-          {
-            myColorRampItems.push_back( myNewColorRampItem );
-            inserted = true;
-          }
-          else if ( myColorRampItems[myCurrentIndex].value > myNewColorRampItem.value )
-          {
-            myColorRampItems.insert( myCurrentIndex, myNewColorRampItem );
-            inserted = true;
-          }
-          else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value  && myCurrentIndex == myColorRampItems.size() - 1 )
-          {
-            myColorRampItems.push_back( myNewColorRampItem );
-            inserted = true;
-          }
-          else if ( myColorRampItems[myCurrentIndex].value <= myNewColorRampItem.value && myColorRampItems[myCurrentIndex+1].value > myNewColorRampItem.value )
-          {
-            myColorRampItems.insert( myCurrentIndex + 1, myNewColorRampItem );
-            inserted = true;
-          }
-          myCurrentIndex++;
-        }
+        
+        myColorRampItems.append( myNewColorRampItem );
       }
+      
+      // sort the shader items
+      qSort(myColorRampItems);
+      
       myRasterShaderFunction->setColorRampItemList( myColorRampItems );
       //Reload table in GUI because it may have been sorted or contained invalid values
       populateColorMapTable( myColorRampItems );
