@@ -2188,11 +2188,11 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
         // adjust the display name for postgres layers
         QRegExp reg( "\"[^\"]+\"\\.\"([^\"]+)\" \\(([^)]+)\\)" );
-        reg.indexIn( name() );
-        QStringList stuff = reg.capturedTexts();
-        QString lName = stuff[1];
-        if ( stuff.size() == 3 )
+        if ( reg.indexIn( name() ) >= 0 )
         {
+          QStringList stuff = reg.capturedTexts();
+          QString lName = stuff[1];
+
           const QMap<QString, QgsMapLayer*> &layers = QgsMapLayerRegistry::instance()->mapLayers();
 
           QMap<QString, QgsMapLayer*>::const_iterator it;
@@ -2201,10 +2201,11 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 
           if ( it != layers.constEnd() )
             lName += "." + stuff[2];
+
+          if ( !lName.isEmpty() )
+            setLayerName( lName );
         }
-        else if ( lName.length() == 0 ) // fallback
-          lName = name();
-        setLayerName( lName );
+
         QgsDebugMsg( "Beautifying layer name " + name() );
 
         // deal with unnecessary schema qualification to make v.in.ogr happy
