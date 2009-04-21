@@ -32,7 +32,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.btnWeb, SIGNAL("clicked()"), self.openWeb)
 		QObject.connect(self.btnHelp, SIGNAL("clicked()"), self.openHelp)
 		self.fToolsLogo.setPixmap(QPixmap(":/icons/default/ftools_logo.png"))
-		self.label_3.setText("fTools 0.5.8")
+		self.label_3.setText("fTools 0.5.10")
 		self.textEdit.setText(self.getText())
 
 	def getText(self):
