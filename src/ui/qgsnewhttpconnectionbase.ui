@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
-    <height>159</height>
+    <width>512</width>
+    <height>254</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -38,7 +38,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
+      <item row="0" column="1" colspan="4" >
        <widget class="QLineEdit" name="txtName" >
         <property name="minimumSize" >
          <size>
@@ -67,10 +67,60 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
+      <item row="1" column="1" colspan="4" >
        <widget class="QLineEdit" name="txtUrl" >
         <property name="toolTip" >
          <string>HTTP address of the Web Map Server</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="5" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>If the WMS requires basic authentication, enter a user name and optional password</string>
+        </property>
+        <property name="textFormat" >
+         <enum>Qt::PlainText</enum>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>User name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" >
+       <widget class="QLineEdit" name="txtUserName" >
+        <property name="maximumSize" >
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Password</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4" >
+       <widget class="QLineEdit" name="txtPassword" >
+        <property name="maximumSize" >
+         <size>
+          <width>120</width>
+          <height>120</height>
+         </size>
+        </property>
+        <property name="echoMode" >
+         <enum>QLineEdit::Password</enum>
         </property>
        </widget>
       </item>

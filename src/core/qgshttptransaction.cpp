@@ -34,12 +34,18 @@
 static int NETWORK_TIMEOUT_MSEC = ( 120 * 1000 );  // 120 seconds
 static int HTTP_PORT_DEFAULT = 80;
 
+//XXX Set the connection name when creating the provider instance
+//XXX in qgswmsprovider. When creating a QgsHttpTransaction, pass
+//XXX the user/pass combination to the constructor. Then set the
+//XXX username and password using QHttp::setUser.
 QgsHttpTransaction::QgsHttpTransaction( QString uri,
                                         QString proxyHost,
                                         int     proxyPort,
                                         QString proxyUser,
                                         QString proxyPass,
-                                        QNetworkProxy::ProxyType proxyType )
+                                        QNetworkProxy::ProxyType proxyType,
+                                        QString userName,
+                                        QString password )
     : httpresponsecontenttype( 0 ),
     httpurl( uri ),
     httphost( proxyHost ),
@@ -53,6 +59,11 @@ QgsHttpTransaction::~QgsHttpTransaction()
 }
 
 
+void QgsHttpTransaction::setCredentials( const QString& username, const QString& password )
+{
+  mUserName = username;
+  mPassword = password;
+}
 void QgsHttpTransaction::getAsynchronously()
 {
 
@@ -67,6 +78,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
 
   QgsDebugMsg( "Entered." );
   QgsDebugMsg( "Using '" + httpurl + "'." );
+  QgsDebugMsg( "Creds: " + mUserName + "/" + mPassword );
 
   int httpport;
 
@@ -88,6 +100,12 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   header.setValue( "User-agent", QString( "Quantum GIS - " ) + VERSION );
   // Set the host in the QHttp object
   http->setHost( qurl.host(), qurl.port( HTTP_PORT_DEFAULT ) );
+  // Set the username and password if supplied for this connection
+  // If we have username and password set in header
+  if ( !mUserName.isEmpty() && !mPassword.isEmpty() )
+  {
+    http->setUser( mUserName, mPassword );
+  }
 
   if ( !QgsHttpTransaction::applyProxySettings( *http, httpurl ) )
   {

@@ -35,8 +35,12 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QSettings settings;
 
     QString key = mBaseKey + connName;
+    QString credentialsKey = "/Qgis/WMS/" + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
+    txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
+    txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+
   }
   connect( buttonBox, SIGNAL( helpRequested() ), this, SLOT( helpRequested() ) );
 }
@@ -49,13 +53,17 @@ void QgsNewHttpConnection::accept()
 {
   QSettings settings;
   QString key = mBaseKey + txtName->text();
+  QString credentialsKey = "/Qgis/WMS/" + txtName->text();
 
   //delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
+    settings.remove ( "/Qgis/WMS/" + mOriginalConnName );
   }
   settings.setValue( key + "/url", txtUrl->text().trimmed() );
+  settings.setValue( credentialsKey + "/username", txtUserName->text() );
+  settings.setValue( credentialsKey + "/password", txtPassword->text() );
 
   QDialog::accept();
 }

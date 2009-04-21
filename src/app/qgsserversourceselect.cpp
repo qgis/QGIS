@@ -39,6 +39,7 @@
 #include <QDomDocument>
 #include <QHeaderView>
 #include <QImageReader>
+#include <QInputDialog>
 #include <QMap>
 #include <QMessageBox>
 #include <QPicture>
@@ -363,6 +364,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
   QSettings settings;
 
   QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
+  QString credentialsKey = "/Qgis/WMS/" + cmbConnections->currentText();
 
   QStringList connStringParts;
   QString part;
@@ -371,6 +373,21 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
 
   m_connName = cmbConnections->currentText();
   m_connectionInfo = connStringParts.join( " " );
+
+  // Check for credentials and prepend to the connection info
+  QString username = settings.value( credentialsKey + "/username" ).toString();
+  QString password = settings.value( credentialsKey + "/password" ).toString();
+  if ( !username.isEmpty() )
+  {
+    // check for a password, if none prompt to get it
+    if ( password.isEmpty() )
+    {
+      password = QInputDialog::getText( this, tr( "WMS Password for " ) + m_connName, "Password", QLineEdit::Password ); 
+
+    }
+    m_connectionInfo = "username=" + username + ",password=" + password + ",url=" + m_connectionInfo;
+  }
+
 
   QgsDebugMsg( QString( "Connection info: '%1'." ).arg( m_connectionInfo ) );
 
@@ -774,6 +791,7 @@ bool QgsServerSourceSelect::retrieveSearchResults( const QString& searchTerm, QB
     }
 #endif
   }
+  // Get username/password from settings for protected WMS
 
   QUrl url( QString( "http://geopole.org/wms/search?search=%1&type=rss" ).arg( searchTerm ) );
   QgsHttpTransaction http( url.toEncoded(),

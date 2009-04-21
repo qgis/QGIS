@@ -42,13 +42,16 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
   public:
     /**
     * Constructor.
+    * \note userName and password added in 1.1
     */
     QgsHttpTransaction( QString uri,
                         QString proxyHost = QString(),
                         int     proxyPort = 80,
                         QString proxyUser = QString(),
                         QString proxyPass = QString(),
-                        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy );
+                        QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy,
+                        QString userName = QString(),
+                        QString password = QString() );
 
     //! Destructor
     virtual ~QgsHttpTransaction();
@@ -85,6 +88,13 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     /**Apply proxy settings from QSettings to a http object
     @param return true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp& http, const QString& url );
+
+    /**
+     * Set the credentials (username and password)
+     * \note added in 1.1
+     */
+
+    void setCredentials( const QString& username, const QString &password );
 
 
   public slots:
@@ -188,6 +198,15 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
      */
     QString mError;
 
+    /**
+     * User name
+     */
+    QString mUserName;
+
+    /**
+     * Password
+     */
+    QString mPassword;
 };
 
 #endif
