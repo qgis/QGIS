@@ -109,8 +109,8 @@ binary-arch: build install
 	dh_installmenu
 	dh_icons
 	dh_desktop
-	dh_installman -pqgis qgis.man
-	dh_installman -pqgis qgis_help.man
+	dh_installman -pqgis qgis.1
+	dh_installman -pqgis qgis_help.1
 	dh_installmime -pqgis
 	dh_link
 	if which dh_lintian >/dev/null; then dh_lintian; fi
