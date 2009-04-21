@@ -95,7 +95,7 @@
 					<grass name="g.proj.proj.new"/>
 				</section>
 			</section>
-			<section label="Converte coordinates">
+			<section label="Convert coordinates">
 				<grass name="m.cogo"/>
 			</section>
 		</section>
