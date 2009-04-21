@@ -422,6 +422,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     void setImageCrs( QString const & crs );
 
+    /**
+     * Set the name of the connection for use in authentication where required
+     * \note added in 1.1
+     */
+    void setConnectionName( QString const & connName);
+
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      *
@@ -687,6 +693,17 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool calculateExtent();
 
     /**
+     * \brief Check for authentication information contained in the uri,
+     * stripping and saving the username and password if present.
+     *
+     * \param uri uri to check
+     *
+     * \note added in 1.1
+     */
+
+    void setAuthentication( QString uri );
+
+    /**
      * \brief Prepare the URI so that we can later simply append param=value
      * \param uri uri to prepare
      * \retval prepared uri
@@ -695,6 +712,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! Data source URI of the WMS for this layer
     QString httpuri;
+
+    //! Name of the stored connection
+    QString connectionName;
 
     //! URL part of URI (httpuri)
     QString baseUrl;
@@ -822,6 +842,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int mLayerCount;
     QMap<int, int> mLayerParents;
     QMap<int, QStringList> mLayerParentNames;
+
+    //! Username for basic http authentication
+    QString mUserName;
+
+    //! Password for basic http authentication
+    QString mPassword;
 
 };
 

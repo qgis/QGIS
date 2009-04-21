@@ -62,8 +62,16 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
     extentDirty( TRUE ),
     mGetFeatureInfoUrlBase( 0 ),
     mLayerCount( -1 )
+
 {
-  QgsDebugMsg( "QgsWmsProvider: constructing with uri '" + uri + "'." );
+  // URL may contain username/password information for a WMS
+  // requiring authentication. In this case the URL is prefixed
+  // with username=user,password=pass,url=http://xxx.xxx.xx/yyy...
+  mUserName= "";
+  mPassword = "";
+  setAuthentication( httpuri );
+
+  QgsDebugMsg( "QgsWmsProvider: constructing with uri '" + httpuri + "'." );
 
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -100,6 +108,39 @@ QgsWmsProvider::QgsWmsProvider( QString const & uri )
   QgsDebugMsg( "QgsWmsProvider: exiting constructor." );
 }
 
+void QgsWmsProvider::setAuthentication( QString uri )
+{
+  // Strip off and store the user name and password (if they exist)
+  if ( ! uri.startsWith(" http:" ) )
+  {
+    // uri potentially contains username and password
+    QStringList parts = uri.split( "," );
+    QStringListIterator iter( parts );
+    while ( iter.hasNext() )
+    {
+      QString item = iter.next();
+      QgsDebugMsg( "QgsWmsProvider: Testing for creds: " + item );
+      if ( item.startsWith( "username=" ) )
+      {
+        mUserName = item.mid( 9 );
+        QgsDebugMsg( "QgsWmsProvider: Set username to " + mUserName );
+      }
+      else if ( item.startsWith( "password=" ) )
+      {
+        mPassword = item.mid( 9 );
+        QgsDebugMsg( "QgsWmsProvider: Set password to " + mPassword );
+      }
+      else if ( item.startsWith( "url=" ) )
+      {
+        // strip the authentication information from the front of the uri
+        httpuri = item.mid( 4 );
+        QgsDebugMsg( "QgsWmsProvider: Set httpuri to " + httpuri );
+      }
+    }
+
+  }
+
+}
 QString QgsWmsProvider::prepareUri( QString uri )
 {
   if ( !( uri.contains( "?" ) ) )
@@ -221,6 +262,10 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
   QgsDebugMsg( "Exiting." );
 }
 
+void QgsWmsProvider::setConnectionName( QString const &connName )
+{
+  connectionName = connName;
+}
 
 void QgsWmsProvider::setLayerOrder( QStringList const &layers )
 {
@@ -640,7 +685,9 @@ QByteArray QgsWmsProvider::retrieveUrl( QString url )
 {
   QgsDebugMsg( "WMS request Url: " + url );
   QgsHttpTransaction http( url );
-
+  QgsDebugMsg( "Setting creds: " + mUserName + "/" + mPassword );
+  http.setCredentials( mUserName, mPassword );
+  
   // Do a passthrough for the status bar text
   connect(
     &http, SIGNAL( statusChanged( QString ) ),
