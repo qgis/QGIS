@@ -11,7 +11,7 @@
 
 
 /*---------------------
-file: fToosl.py
+file: fTools.py
 ---------------------*/
 
 translate( "fTools", "Quantum GIS version detected: " )
@@ -22,7 +22,7 @@ translate( "fTools", "&Analysis Tools" )
 translate( "fTools", "Distance matrix" )
 translate( "fTools", "Sum line lengths" )
 translate( "fTools", "Points in polygon" )
-translate( "fTools",  "Basic statistics" )
+translate( "fTools", "Basic statistics" )
 translate( "fTools", "List unique values" )
 translate( "fTools", "Nearest neighbour analysis" )
 translate( "fTools", "Mean coordinate(s)" )
@@ -59,6 +59,12 @@ translate( "fTools", "Join attributes" )
 translate( "fTools", "Join attributes by location" )
 translate( "fTools", "Split vector layer" )
 translate( "fTools", "About fTools" )
+translate( "fTools", "&Research Tools" )
+translate( "fTools", "Delaunay triangulation" )
+translate( "fTools", "Polygon from layer extent" )
+translate( "fTools", "Input layer" )
+translate( "fTools", "Input point vector layer" )
+translate( "fTools", "Output polygon shapefile" )
 
 /*---------------------
 file: doGeoprocessing.py
