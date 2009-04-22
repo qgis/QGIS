@@ -143,7 +143,7 @@
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
-        <translation>Współrzędne w wybranym układzie</translation>
+        <translation>Współrzędne w wybranym układzie współrzędnych</translation>
     </message>
     <message>
         <source>Coordinate in map canvas coordinate reference system</source>
@@ -252,22 +252,25 @@
     </message>
     <message>
         <source>fTools About</source>
-        <translation type="unfinished"></translation>
+        <translation>O fTools</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>fTools</translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>Wersja x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Help</source>
@@ -275,7 +278,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Sieć</translation>
     </message>
     <message>
         <source>Close</source>
@@ -283,11 +286,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź węzły</translation>
     </message>
     <message>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejściowa linia lub poligon warstwy wektorowej</translation>
     </message>
     <message>
         <source>Tolerance</source>
@@ -295,15 +298,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna z unikalnym ID</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy shapefile (punkty)</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoprocesing</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -311,15 +314,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa iloczynu</translation>
     </message>
     <message>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielkość bufora</translation>
     </message>
     <message>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole wielkości bufora</translation>
     </message>
     <message>
         <source>Dissolve field</source>
@@ -331,19 +334,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Znajdź przecięcia linii</translation>
     </message>
     <message>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowa warstwa wektorowa (linia)</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
         <source>Intersect line layer</source>
@@ -355,115 +358,115 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atrybuty join</translation>
     </message>
     <message>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowa warstwa wektorowa</translation>
     </message>
     <message>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Docelowe pole join</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dane join</translation>
     </message>
     <message>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa wektorowa join</translation>
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabela dbf join</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole join</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabela wyjściowa</translation>
     </message>
     <message>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Zachowaj tylko pasujące rekordy</translation>
     </message>
     <message>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zachowaj wszystkie rekordy (wraz z niepasującymi)</translation>
     </message>
     <message>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Generuj centroidy</translation>
     </message>
     <message>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole wagi</translation>
     </message>
     <message>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba odchyleń standardowych</translation>
     </message>
     <message>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odchyl. Stand.</translation>
     </message>
     <message>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Stwórz macierz odległości</translation>
     </message>
     <message>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowa warstwa (punkty)</translation>
     </message>
     <message>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa docelowa (punkty)</translation>
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Docelowe pole z unikalnym ID</translation>
     </message>
     <message>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Typ macierzy wyjściowej</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Liniowa (N*k x 3) macierz odległości</translation>
     </message>
     <message>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standardowa (N x T) macierz odległości</translation>
     </message>
     <message>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zbiorcza macierz odległości (średnia, odchyl. stand., min., max.)</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Użyj tylko (k) najbliższe punkty docelowe:</translation>
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyjściowa macierz odległości</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Policz punkty w poligonach</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowa warstwa wektorowa (poligon)</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowa warstwa wektorowa (punkt)</translation>
     </message>
     <message>
         <source>Output count field name</source>
@@ -471,63 +474,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PNTCNT</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PNTCNT</translation>
     </message>
     <message>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj losowe punkty</translation>
     </message>
     <message>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejściowa warstwa granic</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna odległość pomiędzy punktami</translation>
     </message>
     <message>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmiar próbki</translation>
     </message>
     <message>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Proste próbkowanie (cała warstwa)</translation>
     </message>
     <message>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj tej liczby punktów</translation>
     </message>
     <message>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished"></translation>
+        <translation>Szczegółowe próbkowanie (poszczególne poligony)</translation>
     </message>
     <message>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj tej gęstości punktów</translation>
     </message>
     <message>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj wartości z pola wejściowego</translation>
     </message>
     <message>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzie losowego wyboru</translation>
     </message>
     <message>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejściowa warstwa wektorowa</translation>
     </message>
     <message>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz losowo</translation>
     </message>
     <message>
         <source>Number of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba obiektów</translation>
     </message>
     <message>
         <source>Percentage of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Procent obiektów</translation>
     </message>
     <message>
         <source>%</source>
@@ -535,67 +538,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zarządzanie odwzorowaniami</translation>
     </message>
     <message>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyjściowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wykorzystaj predefiniowany układ współrzędnych </translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz</translation>
     </message>
     <message>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importuj układ współrzędnych z istniejącej warstwy</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importuj układ współrzędnych:</translation>
     </message>
     <message>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Generuj regularne punkty</translation>
     </message>
     <message>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Podaj współrzędne</translation>
     </message>
     <message>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation>X Min</translation>
     </message>
     <message>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Min</translation>
     </message>
     <message>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation>X Max</translation>
     </message>
     <message>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Max</translation>
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Skok siatki</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj tego wyrówniania punktów</translation>
     </message>
     <message>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastosuj losowe wyrównanie punktów</translation>
     </message>
     <message>
         <source>Initial inset from corner (LH side)</source>
@@ -603,19 +606,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przestrzenne join</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Podsumowanie atrybutów</translation>
     </message>
     <message>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz atrybuty z pierwszego obiektu</translation>
     </message>
     <message>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz podsumowanie przecinających się obiektów</translation>
     </message>
     <message>
         <source>Mean</source>
@@ -635,7 +638,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy Shapefile:</translation>
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
@@ -647,31 +650,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Zsumuj długości linii w poligonach</translation>
     </message>
     <message>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole wyjściowej sumarycznej długości</translation>
     </message>
     <message>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DŁUGOŚĆ</translation>
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wejściowa warstwa wektorowa (linie)</translation>
     </message>
     <message>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Zasięg siatki</translation>
     </message>
     <message>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj zasięg z warstwy</translation>
     </message>
     <message>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizuj zasięg z obszaru mapy</translation>
     </message>
     <message>
         <source>Parameters</source>
@@ -683,7 +686,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blokuj proporcje 1:1</translation>
     </message>
     <message>
         <source>Y</source>
@@ -691,66 +694,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowa siatka jako poligony</translation>
     </message>
     <message>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowa siatka jako linie</translation>
     </message>
     <message>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Podział wektora</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartoteka wyjściowa</translation>
     </message>
     <message>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświel unikalne wartości</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>Docelowe pole</translation>
     </message>
     <message>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista unikalnych wartości</translation>
     </message>
     <message>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba unikalnych wartości</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz wszystko</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wejściową warstwę wektorową</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj prawidłowy zakres tolerancji</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj prawidłowe pole UID</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Stwórz wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
@@ -758,7 +761,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -766,19 +769,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź węzły</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligony na linie</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wejściowa warstwa wektorowa (poligony)</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj/dodaj kolumnę geometrii</translation>
     </message>
     <message>
         <source>Input vector layer</source>
@@ -786,35 +789,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprość geometrię</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroidy poligonów</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowy shapefile (punkty)</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd przy przetwarzaniu zadanej tolerancji!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz proszę większą tolerancję...</translation>
     </message>
     <message>
         <source>Function not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie znaleziono funkcji</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd zapisu do wyjściowego shapefile</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można usunąć istniejącej warstwy...</translation>
     </message>
 </context>
 <context>
@@ -825,15 +828,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj warstwę wejściową</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj warstwę różnicy/iloczynu/sumy</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj poprawną wartość bufora</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
@@ -841,35 +844,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wyjściowy plik shapefile</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można utworzyć wyniku geoprocesingu.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Twórz wyjściowy shapefile</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Czy chesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor(y)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Twórz pojedynczą minimalną otoczkę wypukłą</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Twórz otoczki wypukłe na bazie danych z pól</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Otoczka(i) wypukła(e)</translation>
     </message>
     <message>
         <source>Dissolve</source>
@@ -877,7 +880,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Erase layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść warstwę</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -885,19 +888,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa iloczynu</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Iloczyn</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa różnicy</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Różnica symetryczna</translation>
     </message>
     <message>
         <source>Clip layer</source>
@@ -909,11 +912,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa sumy</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Suma</translation>
     </message>
 </context>
 <context>
@@ -1088,7 +1091,7 @@ p, li { white-space: pre-wrap; }
     <name>OracleConnectGuiBase</name>
     <message>
         <source>Create Oracle Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz połączenie Oracle</translation>
     </message>
     <message>
         <source>OK</source>
@@ -1108,7 +1111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Instancja bazy danych</translation>
     </message>
     <message>
         <source>Username</source>
@@ -1552,7 +1555,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>PostgreSQL Geoprocessing</source>
-        <translation>PostgreSQL</translation>
+        <translation>PostgreSQL Geoprocesing</translation>
     </message>
     <message>
         <source>Quick Print</source>
@@ -1604,7 +1607,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>Przechwyć współrzędne myszy w innym układzie</translation>
+        <translation>Przechwyć współrzędne myszy w innym układzie współrzędnych</translation>
     </message>
     <message>
         <source>Dxf2Shp Converter</source>
@@ -1730,23 +1733,23 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     </message>
     <message>
         <source>Georeferencer GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Georeferencer GDAL</translation>
     </message>
     <message>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodawanie do rastrów informacji o odwzorowaniu używając GDAL</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite DB (*.sqlite);;Wszystkie pliki (*.*)</translation>
     </message>
     <message>
         <source>Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>Access Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostęp do Oracle Spatial GeoRaster</translation>
     </message>
 </context>
 <context>
@@ -3046,7 +3049,7 @@ Błędy:  %2
     </message>
     <message>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń obiekty</translation>
     </message>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
@@ -3059,138 +3062,140 @@ Błędy:  %2
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warstwę SpatiaLite...</translation>
     </message>
     <message>
         <source>L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>L</translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj warstwę SpatiaLite</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Ta wersja QGIS została skompilowana ze wsparciem SpatiaLite.</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     </message>
     <message>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Następny widok</translation>
     </message>
     <message>
         <source>Zoom to Forward Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Przejdź do następnego widoku</translation>
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Co nowego w wersji 1.1.0?</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zważ, że ta wersja należy do serii &apos;niestabilnej&apos;. Jako taka zawiera nowe fukcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x.</translation>
     </message>
     <message>
         <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>W tej wersji poprawiono wiele błędów i oraz wprowadzono udoskonalenia w porównaniu do wersji QGIS 1.0.0. Dodaliśmy przy tym następujące fukncje:</translation>
     </message>
     <message>
         <source>Updates to translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktualizacje tłumaczeń.</translation>
     </message>
     <message>
         <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie i ulepszenie instalatora wtyczek. Przejście na nowe, oficjalne repozytorium QGIS.</translation>
     </message>
     <message>
         <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenia w obsłudze motywów. Wtyczki i inne elementy GUI lepiej obsługują przełączanie motywów. Dodano też nowy motyw ikon GIS.</translation>
     </message>
     <message>
         <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie pakietów Debiana i lepsze wsparcie jego standardów.</translation>
     </message>
     <message>
         <source>Support usb: as a GPS device under Linux.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa usb: jako urządzenia GPS w Linuksie.</translation>
     </message>
     <message>
         <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wtyczka WMS obsługuje teraz sortowanie i prezenuje warstwy zagnieżdżone w postaci drzewa. Źródło danych WMS obsługuje również 24-bitowe obrazy png. Wtyczka WMS udostępnia też mechanizm wyszukiwania serwerów WMS.</translation>
     </message>
     <message>
         <source>Added svg point symbols from Matt Amos (with his permission).</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano symbole punktów SVG (za zgodą autora - Matt Amos).</translation>
     </message>
     <message>
         <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie obsługi proxy oraz proxy dla WFS. Źródło danych WFS pokazuje teraz również informacje o postępie pozyskiwania danych.</translation>
     </message>
     <message>
         <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie w działaniu klienta PostGIS. Znaczące przyspieszenie renderowania warstw PostGIS może być teraz osiągnięte przez wyłączenie SSL w edytorze połączeń. Obsługiwane jest użycie kolumny ctid jako klucza głównego (złagodzono wymóg użycia klucza głównego typu całkowitego)</translation>
     </message>
     <message>
         <source>Mapserver Export improvements for continuous color support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie obsługi koloru w eksporcie do Mapservera.</translation>
     </message>
     <message>
         <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano menu narzędzi - wtyczka fTools jest teraz częścią integralną wtyczek QGIS i będzie domyślnie instalowana.</translation>
     </message>
     <message>
         <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Udoskonalenie asystenta wydruku obejmujące opcje wyrównania obiektów. Możliwe jest teraz drukowanie map jako rastrów lub wektorów postscript. Dla potrzeb programowania, klasy asystenta są teraz dostępne z poziomu Pythona.</translation>
     </message>
     <message>
         <source>When using File - Save as image, the saved image is now georeferenced.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przy zapisie obrazów (Plik - Zapisz jako obraz), zapisywany obraz ma teraz georeferencję.</translation>
     </message>
     <message>
         <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór odzworowania zawiera teraz szybki wybór ostatnio używanych układów współrzędnych.</translation>
     </message>
     <message>
         <source>Continuous color renderer supports point symbols now too.</source>
-        <translation type="unfinished"></translation>
+        <translation>Renderowanie ciągłych kolorów obsługuje teraz również symbole punktowe.</translation>
     </message>
     <message>
         <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulepszona obsługa CMake do kompilacji z OSGEO4W (tylko Windows). Dodanie projektu XCode do kompilacji pod OSX.</translation>
     </message>
     <message>
         <source>Updates and cleanups to the GRASS toolbox.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uaktualnienie i uporządkowanie narzędzi GRASS.</translation>
     </message>
     <message>
         <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmiany w oknie dialogowym otwierania warstw wektorowych w celu wsparcia wszystkich dostępnych sterowników OGR włączając bazy danych i sterowniki protokołów. Obsługa SDE, Oracle Spatial, ERSI personal geodatabase i wielu innych formatów OGR. W niektórych przypadkach może to wymagać bibliotek firm trzecich dostępnych w systemie.</translation>
     </message>
     <message>
         <source>The middle mouse button can now be used for panning. </source>
-        <translation type="unfinished"></translation>
+        <translation>Środkowy klawisz myszy może być teraz używany do przesuwania widoku.</translation>
     </message>
     <message>
         <source>A new, faster attribute table implementation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowa, szybsza implementacja tabeli atrybutów.</translation>
     </message>
     <message>
         <source>Numerous cleanups to the user interface.</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczne usprawnienia interfejsu użytkownika.</translation>
     </message>
     <message>
         <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodano nowe źródło danych dla SpatiaLite - plikowej implementacji przestrzennej bazy danych bazującej na SQLite.</translation>
     </message>
     <message>
         <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa nakładanych warstw wektorowych do rysowania wykresów kołowych i słupkowych na podstawie atrybutów.</translation>
     </message>
 </context>
 <context>
@@ -3283,7 +3288,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Te osoby przyczyniły się do przetłumaczenia interfejsu użytkownika lub dokumentacji QGIS&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Language</source>
@@ -3291,7 +3296,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Osoby</translation>
     </message>
     <message>
         <source>Translators</source>
@@ -3329,11 +3334,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak informacji</translation>
     </message>
     <message>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby utworzyć akcję musisz podać zarówno nazwę jak i akcję do wykonania.</translation>
     </message>
 </context>
 <context>
@@ -4004,11 +4009,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kod SVG Qt4. W pliku SVG nie pojawia się tekst oraz występują problemy gdy granica mapy przecina inne obiekty takie jak legenda czy skala.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kod SVG Qt4. W szczególności są problemy z warstwami nie przyciętymi do granic mapy.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
@@ -4219,47 +4224,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do lewej</translation>
     </message>
     <message>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj wybrane obiekty do lewej</translation>
     </message>
     <message>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do środka</translation>
     </message>
     <message>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do środka w poziomie</translation>
     </message>
     <message>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do prawej</translation>
     </message>
     <message>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj wybrane obiekty do prawej</translation>
     </message>
     <message>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do góry</translation>
     </message>
     <message>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj wybrane obiekty do góry</translation>
     </message>
     <message>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do środka w pionie</translation>
     </message>
     <message>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj do dołu</translation>
     </message>
     <message>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyrównaj wybrane obiekty do dołu</translation>
     </message>
 </context>
 <context>
@@ -4510,11 +4515,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz nową kartotekę do podglądu</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzenie ikony dla pliku %1</translation>
     </message>
 </context>
 <context>
@@ -4541,7 +4546,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Szukaj w kartotekach</translation>
     </message>
     <message>
         <source>Add...</source>
@@ -4666,7 +4671,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Box</source>
-        <translation>Prostokąt</translation>
+        <translation>Pojemnik</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -4792,11 +4797,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dots</source>
-        <translation type="unfinished">Kropkowany</translation>
+        <translation>Kropkowany</translation>
     </message>
     <message>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatkowy</translation>
     </message>
 </context>
 <context>
@@ -8658,11 +8663,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsItemPositionDialogBase</name>
     <message>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustal pozycję obiektu</translation>
     </message>
     <message>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkt odniesienia obiektu</translation>
     </message>
     <message>
         <source>Coordinates</source>
@@ -8678,7 +8683,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustal pozycję</translation>
     </message>
     <message>
         <source>Close</source>
@@ -9103,7 +9108,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLinearlyScalingDialog</name>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Milimetr</translation>
     </message>
     <message>
         <source>Map units</source>
@@ -9118,7 +9123,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaluj liniowo pomiędzy 0 a daną wartością atrybutu/ rozmiarem diagramu:</translation>
     </message>
     <message>
         <source>find maximum Value:</source>
@@ -9827,19 +9832,19 @@ Rozszerzona informacja o błędzie:
     </message>
     <message>
         <source>prefer</source>
-        <translation type="unfinished"></translation>
+        <translation>preferuj</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type="unfinished"></translation>
+        <translation>wymagaj</translation>
     </message>
     <message>
         <source>allow</source>
-        <translation type="unfinished"></translation>
+        <translation>zezwól</translation>
     </message>
     <message>
         <source>disable</source>
-        <translation type="unfinished"></translation>
+        <translation>wyłącz</translation>
     </message>
 </context>
 <context>
@@ -10165,7 +10170,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sub layers list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista podwarstw</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -10176,7 +10181,14 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependant. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;To jest lista wszystkich warstw dostępnych w źródle danych aktywnej warstwy. Wybierz warstwy do wczytania. Warstwy zostaną wczytane po naciśnięciu &quot;OK&quot;.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Nazwa warstwy jest zależna od formatu. Sprawdź w dokumentacji OGR lub dokumentacji formatu Twoich danych format zawartych danych.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ostrożnie: &lt;/span&gt;wybierając już otwartą warstwę nie zostanie wyświetlony komunikat o błędzie a warstwa zostanie wczytana dwukrotnie!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>1</source>
@@ -10497,31 +10509,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>jednostki mapy</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>pikseli</translation>
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation type="unfinished"></translation>
+        <translation>Central point (najszybszy)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chain (szybki)</translation>
     </message>
     <message>
         <source>Popmusic tabu chain (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Popmusic tabu chain (wolny)</translation>
     </message>
     <message>
         <source>Popmusic tabu (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Popmusic tabu (wolny)</translation>
     </message>
     <message>
         <source>Popmusic chain (very slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Popmusic chain (bardzo wolny)</translation>
     </message>
 </context>
 <context>
@@ -10816,11 +10828,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź wartość atrybutu</translation>
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie pytaj o atrybuty po utworzeniu każdego obiektu</translation>
     </message>
     <message>
         <source>Proxy type</source>
@@ -10840,7 +10852,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Nakładki</translation>
     </message>
     <message>
         <source>Position</source>
@@ -10863,15 +10875,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsOraclePlugin</name>
     <message>
         <source>Select GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz GeoRaster</translation>
     </message>
     <message>
         <source>Open a Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>&amp;Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oracle Spatial</translation>
     </message>
 </context>
 <context>
@@ -10886,7 +10898,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Password for %1/&lt;password&gt;@%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasło dla %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
@@ -10894,11 +10906,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwarcie nie powiodło się</translation>
     </message>
     <message>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie do %1 nie powiodło się. Zweryfikuj parametry połączenia. Upewnij się, że masz zainstalowaną wtyczkę GDAL GeoRaster.</translation>
     </message>
 </context>
 <context>
@@ -12094,27 +12106,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select GCPs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik z punktami referencyjnymi</translation>
     </message>
     <message>
         <source>GCPs points (*.points)</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkty referencyjne (*.points)</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacja</translation>
     </message>
     <message>
         <source>GCPs was not loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie załadowano punktów referencyjnych.</translation>
     </message>
     <message>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd!</translation>
     </message>
     <message>
         <source>&lt;p&gt;Modified raster file exists! Overwrite it?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Zmodyfikowany plik rastrowy istnieje! Nadpisać go?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -12122,39 +12134,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Polynomial 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielomian 1</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Polynomial transform requires changing the raster layer.&lt;/p&gt;&lt;p&gt;The changed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Transformacja wielomianowa wymaga modyfikacji warstwy rastrowej.&lt;/p&gt;&lt;p&gt;Zmieniony raster zostanie zapisany w nowym pliku, do którego zostanie też wygenerowany plik world.&lt;/p&gt;&lt;p&gt;Czy na pewno chcesz wykonać tę operację?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Requires at least 3 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymaga przynajmniej 3 punktów</translation>
     </message>
     <message>
         <source>Polynomial 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielomian 2</translation>
     </message>
     <message>
         <source>Requires at least 6 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymaga przynajmniej 6 punktów</translation>
     </message>
     <message>
         <source>Polynomial 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielomian 3</translation>
     </message>
     <message>
         <source>Requires at least 10 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Wymaga przynajmniej 10 punktów</translation>
     </message>
     <message>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja cienkiej płytki (TPS)</translation>
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można obliczyć transformacji GCP: transformacja jest nierozwiązywalna.</translation>
     </message>
     <message>
         <source>Choose a raster file</source>
@@ -12237,11 +12249,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz punkty</translation>
     </message>
     <message>
         <source>Load GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>Wczytaj punkty</translation>
     </message>
 </context>
 <context>
@@ -12631,15 +12643,15 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>CRS ID : 100000</source>
-        <translation type="unfinished"></translation>
+        <translation>ID UW : 100000</translation>
     </message>
     <message>
         <source>CRS ID : 3344</source>
-        <translation type="unfinished"></translation>
+        <translation>ID UW : 3344</translation>
     </message>
     <message>
         <source>CRS ID : whatever</source>
-        <translation type="unfinished"></translation>
+        <translation>ID UW : cokolwiek</translation>
     </message>
 </context>
 <context>
@@ -12897,15 +12909,15 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     </message>
     <message>
         <source>Retrieving stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobieranie statystyk dla %1</translation>
     </message>
     <message>
         <source>Calculating stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Obliczanie statystyk dla %1</translation>
     </message>
     <message>
         <source>Retrieving using %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobieranie przy pomocy %1</translation>
     </message>
 </context>
 <context>
@@ -13149,17 +13161,17 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     <message>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uwagi o obrazowaniu multispektralnym&lt;/h3&gt;&lt;p&gt;To jest obraz multispektralny. Możesz wybrać renderowanie w skali szarości lub w kolorze (RGB). Dla obrazów kolorowych, możesz dowolnie powiązać kanały z kolorami. Mając na przykład siedem kanałów obrazu Landsat możesz zdefiniować renderowanie jako:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;niebieski (0.45 do 0.52 µm) - nie mapowany&lt;/li&gt;&lt;li&gt;zielony (0.52 do 0.60 µm) - nie mapowane&lt;/li&gt;&lt;/li&gt;czerwony (0.63 do 0.69 µm) - mapowany jako czerwony&lt;/li&gt;&lt;li&gt;bliska podczerwień (0.76 do 0.90 µm) - mapowany jako zielony&lt;/li&gt;&lt;li&gt;średnia podczerwień (1.55 do 1.75 µm) - nie mapowana&lt;/li&gt;&lt;li&gt;podczerwień termalna (10.4 do 12.5 µm) - nie mapowana&lt;/li&gt;&lt;li&gt;średnia podczerwień (2.08 do 2.35 µm) - mapowana jako niebieski&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uwagi o palecie obrazu&lt;/h3&gt; &lt;p&gt;Ten obraz używa stałej palety kolorów. Możesz przemapować te kolory na inne kombinacje, np.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;czerwony = niebieski na obrazie&lt;/li&gt;&lt;li&gt;zielony = niebieski na obrazie&lt;/li&gt;&lt;li&gt;niebieski = zielony na obrazie&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Uwagi o skali szarości&lt;/h3&gt; &lt;p&gt;Możesz przemapować skalę szarości na obraz w pseudokolorach używając automatycznej procedury.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Default R:%1 G:%2 B:%3</source>
@@ -13658,15 +13670,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsSVGDiagramFactoryWidget</name>
     <message>
         <source>Select svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik svg</translation>
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz nową kartotekę do podglądu</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tworzenie ikony dla pliku %1</translation>
     </message>
 </context>
 <context>
@@ -13677,7 +13689,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Szukaj w kartotekach</translation>
     </message>
     <message>
         <source>Add...</source>
@@ -13972,7 +13984,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Musisz najpierw wybrać co najmniej jedną warstwę podrzędną.</translation>
     </message>
     <message>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
@@ -14346,7 +14358,9 @@ SQL: %2</source>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd przy łączeniu z: %1
+
+%2</translation>
     </message>
 </context>
 <context>
@@ -14357,7 +14371,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="unfinished">RegExp</translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <source>All</source>
@@ -14377,21 +14391,23 @@ SQL: %2</source>
     </message>
     <message>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd otwarcia bazy SpatiaLite</translation>
     </message>
     <message>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane połączenie z: %1
+
+%2</translation>
     </message>
     <message>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="unfinished"></translation>
+        <translation>wydaje się być poprawną bazą SQLite, lecz nie bazą SpatiaLite ...</translation>
     </message>
     <message>
         <source>unknown error cause</source>
-        <translation type="unfinished"></translation>
+        <translation>nieznana przyczyna błędu</translation>
     </message>
     <message>
         <source> @ </source>
@@ -14399,7 +14415,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz bazę SpatiaLite/SQLite do otwarcia</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -14411,17 +14427,19 @@ SQL: %2</source>
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Musisz wybrać tabelę aby dodać warstwę.</translation>
     </message>
     <message>
         <source>SpatiaLite getTableInfo Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd SpatiaLite getTableInfo</translation>
     </message>
     <message>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieudane przeglądanie tabel z: %1
+
+%2</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
@@ -15074,7 +15092,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <source>Unknown renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany renderer</translation>
     </message>
 </context>
 <context>
@@ -15882,7 +15900,7 @@ Tried URL: %1</source>
     <name>SelectGeoRasterBase</name>
     <message>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>Server Connections</source>
@@ -15926,7 +15944,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Subdatasets</source>
-        <translation type="unfinished">Podzbiory danych</translation>
+        <translation>Podzbiory danych</translation>
     </message>
     <message>
         <source>Help</source>
@@ -15949,79 +15967,79 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wejściową warstwę wektorową</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj pole wejściowe</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdź poprawność geometrii</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędy geometrii</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Łącznie znalezionych błędów</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświel unikalne wartości</translation>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikalne wartości:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Łącznie unikalnych wartości:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Podstawowe statystyki</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydruk statystyk</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza najbliższego sąsiedztwa</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statystyki najbliższego sąsiedztwa</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Faktyczna średnia odległość:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Oczekiwana średnia odległość:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaźnik najbliższego sąsiedztwa:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished"></translation>
+        <translation>Obiekt %1 zawiera niepoprawny pierścień</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Obiekt %1 nie jest domknięty</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Obiekt %1 zawiera wewnętrzne przecięcia</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished"></translation>
+        <translation>Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
     </message>
 </context>
 <context>
@@ -16127,111 +16145,111 @@ For support send a mail to scala@itc.cnr.it
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Wykryta wersję Quantum GIS:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można włączyć wtyczki.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Narzędzia</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia &amp;analizy</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Macierz odległości</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
+        <translation>Łączna długość linii</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Punktów w poligonie</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Podstawowe statystyki</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświel unikalne wartości</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Analiza najbliższego sąsiedztwa</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Średnie współrzędne</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Przecięcia linii</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia &amp;próbkowania</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowy wybór</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowy wybór w podzbiorach</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowe punkty</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished"></translation>
+        <translation>Regularne punkty</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Siatka wektorowa</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybór przez lokalizację</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia &amp;geoprocesingu</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Otoczka wypukła</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor(y)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Iloczyn</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Suma</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Różnica symetryczna</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytnij</translation>
     </message>
     <message>
         <source>Dissolve</source>
@@ -16239,31 +16257,31 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Różnica</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia g&amp;eometrii</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuj/dodaj kolumny geometrii</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdź poprawność geometrii</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroidy poligonów</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Wydobądź węzły</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprość geometrię</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -16275,35 +16293,35 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligony na linie</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Narzędzia zarządzania &amp;danymi</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eksportuj do nowego odwzorowania</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zdefiniuj nowe odwzorowanie</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atrybuty join</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atrybuty join przez lokalizację</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Podziel warstwę wektorową</translation>
     </message>
     <message>
         <source>About fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>O fTools</translation>
     </message>
 </context>
 <context>
