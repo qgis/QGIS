@@ -302,7 +302,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation>Wyjściowy shapefile (punkty)</translation>
+        <translation>Wyjściowy Shapefile (punkty)</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
@@ -314,7 +314,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Warstwa iloczynu</translation>
+        <translation>Warstwa iloczynu</translation>
     </message>
     <message>
         <source>Buffer distance</source>
@@ -322,27 +322,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer distance field</source>
-        <translation type="unfinished">Pole wielkości bufora</translation>
+        <translation>Pole wielkości bufora</translation>
     </message>
     <message>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole agregacji</translation>
     </message>
     <message>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation>Agreguj wyjściowe bufory</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation>Wyjściowy shapefile</translation>
+        <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished">Znajdź przecięcia linii</translation>
+        <translation>Znajdź przecięcia linii</translation>
     </message>
     <message>
         <source>Input line layer</source>
-        <translation type="unfinished">Wejściowa warstwa wektorowa (linia)</translation>
+        <translation>Wejściowa warstwa wektorowa (linia)</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
@@ -358,7 +358,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation>Wyjściowy shapefile</translation>
+        <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
         <source>Join Attributes</source>
@@ -402,11 +402,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Generate Centroids</source>
-        <translation type="unfinished">Generuj centroidy</translation>
+        <translation>Generuj centroidy</translation>
     </message>
     <message>
         <source>Weight field</source>
-        <translation type="unfinished">Pole wagi</translation>
+        <translation>Pole wagi</translation>
     </message>
     <message>
         <source>Number of standard deviations</source>
@@ -418,63 +418,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished">Stwórz macierz odległości</translation>
+        <translation>Stwórz macierz odległości</translation>
     </message>
     <message>
         <source>Input point layer</source>
-        <translation type="unfinished">Wejściowa warstwa (punkty)</translation>
+        <translation>Wejściowa warstwa (punkty)</translation>
     </message>
     <message>
         <source>Target point layer</source>
-        <translation type="unfinished">Warstwa docelowa (punkty)</translation>
+        <translation>Warstwa docelowa (punkty)</translation>
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation type="unfinished">Docelowe pole z unikalnym ID</translation>
+        <translation>Docelowe pole z unikalnym ID</translation>
     </message>
     <message>
         <source>Output matrix type</source>
-        <translation type="unfinished">Typ macierzy wyjściowej</translation>
+        <translation>Typ macierzy wyjściowej</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished">Liniowa (N*k x 3) macierz odległości</translation>
+        <translation>Liniowa (N*k x 3) macierz odległości</translation>
     </message>
     <message>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished">Standardowa (N x T) macierz odległości</translation>
+        <translation>Standardowa (N x T) macierz odległości</translation>
     </message>
     <message>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished">Zbiorcza macierz odległości (średnia, odchyl. stand., min., max.)</translation>
+        <translation>Zbiorcza macierz odległości (średnia, odchyl. stand., min., max.)</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished">Użyj tylko (k) najbliższe punkty docelowe:</translation>
+        <translation>Użyj tylko (k) najbliższych punktów docelowych:</translation>
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation type="unfinished">Wyjściowa macierz odległości</translation>
+        <translation>Wyjściowa macierz odległości</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished">Policz punkty w poligonach</translation>
+        <translation>Policz punkty w poligonach</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Wejściowa warstwa wektorowa (poligon)</translation>
+        <translation>Wejściowa warstwa wektorowa (poligon)</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Wejściowa warstwa wektorowa (punkt)</translation>
+        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
     </message>
     <message>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyjściowe pole</translation>
     </message>
     <message>
         <source>PNTCNT</source>
-        <translation type="unfinished">PNTCNT</translation>
+        <translation>PNTCNT</translation>
     </message>
     <message>
         <source>Generate Random Points</source>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input Boundary Layer</source>
-        <translation>Wejściowa warstwa granic</translation>
+        <translation>Podaj warstwę z granicą</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
@@ -538,19 +538,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projection Management Tool</source>
-        <translation type="unfinished">Zarządzanie odwzorowaniami</translation>
+        <translation>Zarządzanie odwzorowaniami</translation>
     </message>
     <message>
         <source>Input spatial reference system</source>
-        <translation type="unfinished">Wejściowy układ współrzędnych</translation>
+        <translation>Wejściowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Output spatial reference system</source>
-        <translation type="unfinished">Wyjściowy układ współrzędnych</translation>
+        <translation>Wyjściowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished">Wykorzystaj predefiniowany układ współrzędnych </translation>
+        <translation>Wykorzystaj predefiniowany układ współrzędnych </translation>
     </message>
     <message>
         <source>Choose</source>
@@ -558,19 +558,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished">Importuj układ współrzędnych z istniejącej warstwy</translation>
+        <translation>Importuj układ współrzędnych z istniejącej warstwy</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished">Importuj układ współrzędnych:</translation>
+        <translation>Importuj układ współrzędnych:</translation>
     </message>
     <message>
         <source>Generate Regular Points</source>
-        <translation type="unfinished">Generuj regularne punkty</translation>
+        <translation>Generuj regularne punkty</translation>
     </message>
     <message>
         <source>Input Coordinates</source>
-        <translation type="unfinished">Podaj współrzędne</translation>
+        <translation>Podaj współrzędne</translation>
     </message>
     <message>
         <source>X Min</source>
@@ -594,7 +594,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use this point spacing</source>
-        <translation>Użyj tego wyrówniania punktów</translation>
+        <translation>Użyj tego odstępu</translation>
     </message>
     <message>
         <source>Apply random offset to point spacing</source>
@@ -602,7 +602,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+        <translation>Odstęp od l. g. rogu</translation>
     </message>
     <message>
         <source>Spatial Join</source>
@@ -642,7 +642,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowy wybór w podzbiorach</translation>
     </message>
     <message>
         <source>Input subset field (unique ID field)</source>
@@ -654,15 +654,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output summed length field name</source>
-        <translation type="unfinished">Pole wyjściowej sumarycznej długości</translation>
+        <translation>Wyjściowe pole sumarycznej długości</translation>
     </message>
     <message>
         <source>LENGTH</source>
-        <translation type="unfinished">DŁUGOŚĆ</translation>
+        <translation>DŁUGOŚĆ</translation>
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation type="unfinished">Wejściowa warstwa wektorowa (linie)</translation>
+        <translation>Wejściowa warstwa wektorowa (linie)</translation>
     </message>
     <message>
         <source>Grid extent</source>
@@ -686,7 +686,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished">Blokuj proporcje 1:1</translation>
+        <translation>Blokuj proporcje 1:1</translation>
     </message>
     <message>
         <source>Y</source>
@@ -702,7 +702,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vector Split</source>
-        <translation type="unfinished">Podział wektora</translation>
+        <translation>Podział wektora</translation>
     </message>
     <message>
         <source>Output folder</source>
@@ -737,7 +737,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Podaj wyjściowy shapefile</translation>
+        <translation>Podaj wyjściowy Shapefile</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
@@ -749,7 +749,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Stwórz wyjściowy shapefile</translation>
+        <translation>Stwórz wyjściowy Shapefile</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -761,7 +761,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation>Wyjściowy shapefile</translation>
+        <translation>Wyjściowy Shapefile</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -797,7 +797,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation>Wyjściowy shapefile (punkty)</translation>
+        <translation>Wyjściowy Shapefile (punkty)</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
@@ -813,7 +813,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation>Błąd zapisu do wyjściowego shapefile</translation>
+        <translation>Błąd zapisu do wyjściowego Shapefile</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
@@ -824,7 +824,7 @@ p, li { white-space: pre-wrap; }
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished"></translation>
+        <translation>Agreguj wszystko</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
@@ -840,11 +840,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz pole agregacji</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Podaj wyjściowy plik shapefile</translation>
+        <translation>Podaj wyjściowy plik Shapefile</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -852,7 +852,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Twórz wyjściowy shapefile</translation>
+        <translation>Utworzono plik Shapefile</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -864,19 +864,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Twórz pojedynczą minimalną otoczkę wypukłą</translation>
+        <translation>Twórz pojedynczą minimalną otoczkę wypukłą</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">Twórz otoczki wypukłe na bazie danych z pól</translation>
+        <translation>Twórz otoczki wypukłe na bazie atrybutów</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Otoczka(i) wypukła(e)</translation>
+        <translation>Otoczka(i) wypukła(e)</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Agreguj</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -884,7 +884,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Różnica</translation>
     </message>
     <message>
         <source>Intersect layer</source>
@@ -904,11 +904,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Maska przycięcia</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Przytnij</translation>
     </message>
     <message>
         <source>Union layer</source>
@@ -9968,6 +9968,18 @@ Rozszerzona informacja o błędzie:
         <source>Connection details</source>
         <translation>Szczegóły połączenia</translation>
     </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation>Jeśli serwer WMS wymaga uwierzytelnienia, wprowadź nazwę użytkownika i, opcjonalnie, hasło</translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation>Nazwa użytkownika</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Hasło</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewOgrConnection</name>
@@ -13994,6 +14006,10 @@ p, li { white-space: pre-wrap; }
         <source>Confirm Overwrite</source>
         <translation>Zatwierdź nadpisanie</translation>
     </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation>Hasło WMS dla %1</translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelectBase</name>
@@ -16253,7 +16269,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Agreguj</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -16297,15 +16313,15 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">Narzędzia zarządzania &amp;danymi</translation>
+        <translation>Narzędzia zarządzania &amp;danymi</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Eksportuj do nowego odwzorowania</translation>
+        <translation>Eksportuj do nowego układu współrzędnych</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Zdefiniuj nowe odwzorowanie</translation>
+        <translation>Zdefiniuj bieżący układ współrzędnych</translation>
     </message>
     <message>
         <source>Join attributes</source>
@@ -16317,11 +16333,35 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Podziel warstwę wektorową</translation>
+        <translation>Podziel warstwę wektorową</translation>
     </message>
     <message>
         <source>About fTools</source>
         <translation>O fTools</translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation>Poligon z zasięgu warstwy</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation>Warstwa wejściowa</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation>Wyjściowy Shapefile (poligony)</translation>
     </message>
 </context>
 <context>
