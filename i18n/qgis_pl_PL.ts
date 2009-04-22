@@ -199,7 +199,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation>Warstwa iloczynu</translation>
+        <translation>Warstwa do iloczynu</translation>
     </message>
     <message>
         <source>Buffer distance</source>
@@ -307,7 +307,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point layer</source>
-        <translation>Wejściowa warstwa (punkty)</translation>
+        <translation>Warstwa wyjściowa (punkty)</translation>
     </message>
     <message>
         <source>Target point layer</source>
@@ -315,7 +315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation>Docelowe pole z unikalnym ID</translation>
+        <translation>Unikalne pole warstwy docelowej</translation>
     </message>
     <message>
         <source>Output matrix type</source>
@@ -339,7 +339,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation>Wyjściowa macierz odległości</translation>
+        <translation>Zapisz wynik w pliku</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
@@ -773,7 +773,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation>Warstwa iloczynu</translation>
+        <translation>Warstwa do iloczynu</translation>
     </message>
     <message>
         <source>Intersect</source>
@@ -781,7 +781,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Warstwa różnicy</translation>
+        <translation>Warstwa do różnicy</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
@@ -2469,7 +2469,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>
-Wersj binarna została skompilowana w Qt %1, a bieżąca działa z  Qt %2</translation>
+Wersja binarna została skompilowana z Qt %1, a bieżąca działa z Qt %2</translation>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
@@ -2888,7 +2888,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation>Zważ, że ta wersja należy do serii &apos;niestabilnej&apos;. Jako taka zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x.</translation>
+        <translation>Zważ, że ta wersja należy do wydania &apos;niestabilne&apos;. Jako taka zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x.</translation>
     </message>
     <message>
         <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
@@ -4136,7 +4136,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Update preview</source>
-        <translation>Aktualizuj podgląd</translation>
+        <translation>Odśwież</translation>
     </message>
 </context>
 <context>
@@ -5771,7 +5771,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGPXProvider</name>
     <message>
         <source>Bad URI - you need to specify the feature type.</source>
-        <translation>Błąd - musisz określić typ danych.</translation>
+        <translation>Błąd URI - musisz określić typ danych.</translation>
     </message>
     <message>
         <source>GPS eXchange file</source>
@@ -10468,9 +10468,9 @@ Funkcje geoprocesingu są dostępne wyłącznie dla warstw PostgreSQL/PostGIS</t
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation>
-            <numerusform>Klauzula where zwróciła %n rekord.</numerusform>
-            <numerusform>Klauzula where zwróciła %n rekordy.</numerusform>
-            <numerusform>Klauzula where zwróciła %n rekordów.</numerusform>
+            <numerusform>Klauzula WHERE zwróciła %n rekord.</numerusform>
+            <numerusform>Klauzula WHERE zwróciła %n rekordy.</numerusform>
+            <numerusform>Klauzula WHERE zwróciła %n rekordów.</numerusform>
         </translation>
     </message>
     <message>
@@ -10580,7 +10580,7 @@ Funkcje geoprocesingu są dostępne wyłącznie dla warstw PostgreSQL/PostGIS</t
     </message>
     <message>
         <source>SQL where clause</source>
-        <translation>Klauzula where</translation>
+        <translation>Klauzula WHERE</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -15539,7 +15539,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation>Średnie współrzędne</translation>
+        <translation>Środek cieżkości</translation>
     </message>
     <message>
         <source>Line intersections</source>
