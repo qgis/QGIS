@@ -762,7 +762,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Cannot apply the 'capture point' tool on this vector layer</source>
-      <translation>No se puede aplicar la herramienta 'capturar punto' en esta capa vectorial</translation>
+      <translation>No se puede aplicar la herramienta 'Crear punto' en esta capa vectorial</translation>
     </message>
     <message>
       <source>Coordinate transform error</source>
@@ -774,11 +774,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Cannot apply the 'capture line' tool on this vector layer</source>
-      <translation>No se puede aplicar la herramienta 'capturar línea' en esta capa vectorial</translation>
+      <translation>No se puede aplicar la herramienta 'Crear línea' en esta capa vectorial</translation>
     </message>
     <message>
       <source>Cannot apply the 'capture polygon' tool on this vector layer</source>
-      <translation>No se puede aplicar la herramienta 'capturar polígono' en esta capa vectorial</translation>
+      <translation>No se puede aplicar la herramienta 'Crear polígono' en esta capa vectorial</translation>
     </message>
     <message>
       <source>Error</source>
@@ -1601,27 +1601,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
       <source>Capture Point</source>
-      <translation>Capturar punto</translation>
+      <translation>Crear punto</translation>
     </message>
     <message>
       <source>Capture Points</source>
-      <translation>Capturar puntos</translation>
+      <translation>Crear puntos</translation>
     </message>
     <message>
       <source>Capture Line</source>
-      <translation>Capturar línea</translation>
+      <translation>Crear línea</translation>
     </message>
     <message>
       <source>Capture Lines</source>
-      <translation>Capturar líneas</translation>
+      <translation>Crear líneas</translation>
     </message>
     <message>
       <source>Capture Polygon</source>
-      <translation>Capturar polígono</translation>
+      <translation>Crear polígono</translation>
     </message>
     <message>
       <source>Capture Polygons</source>
-      <translation>Capturar polígonos</translation>
+      <translation>Crear polígonos</translation>
     </message>
     <message>
       <source>Delete Selected</source>
@@ -2548,7 +2548,7 @@ Errores: %2</translation>
     </message>
     <message>
       <source>D</source>
-      <translation type="unfinished" >D</translation>
+      <translation>D</translation>
     </message>
     <message>
       <source>W</source>
@@ -2584,7 +2584,7 @@ Errores: %2</translation>
     </message>
     <message>
       <source>P</source>
-      <translation type="unfinished" >P</translation>
+      <translation>P</translation>
     </message>
     <message>
       <source>Ctrl+M</source>
@@ -2592,7 +2592,7 @@ Errores: %2</translation>
     </message>
     <message>
       <source>Ctrl+?</source>
-      <translation type="unfinished" >Ctrl+?</translation>
+      <translation>Ctrl+?</translation>
     </message>
     <message>
       <source>F1</source>
@@ -9972,7 +9972,7 @@ Tiene que reiniciar Quantum GIS para recargarlo.</translation>
     </message>
     <message>
       <source>Capture Points</source>
-      <translation>Capturar puntos</translation>
+      <translation>Crear puntos</translation>
     </message>
     <message>
       <source>Delete Point</source>
