@@ -5,21 +5,30 @@
     <name></name>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished">&amp;Обработка данных</translation>
-    </message>
-</context>
-<context>
-    <name>@default</name>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Обработка данных</translation>
+        <translation>&amp;Обработка данных</translation>
     </message>
 </context>
 <context>
     <name>BeataDialog</name>
     <message>
+        <source>Attribute table - %1</source>
+        <translation type="obsolete">Таблица атрибутов — %1</translation>
+    </message>
+    <message>
+        <source>Advanced search</source>
+        <translation type="obsolete">Расширенный поиск</translation>
+    </message>
+    <message>
+        <source>Copy selected rows</source>
+        <translation type="obsolete">Копировать выбранные строки</translation>
+    </message>
+    <message>
+        <source>Zoom to selected</source>
+        <translation type="obsolete">Увеличить до выделенного</translation>
+    </message>
+    <message>
         <source>Move selected to top</source>
-        <translation type="obsolete">Переместить выделенное в начало</translation>
+        <translation type="obsolete">Переместить выделение в начало</translation>
     </message>
     <message>
         <source>Invert selection</source>
@@ -28,6 +37,10 @@
     <message>
         <source>Toggle editing</source>
         <translation type="obsolete">Режим редактирования</translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation type="obsolete">Ошибка разбора поискового запроса</translation>
     </message>
     <message>
         <source>Search results</source>
@@ -39,12 +52,14 @@
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="obsolete">Ошибка во время поиска</translation>
+        <translation type="obsolete">Ошибка в процессе поиска</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Found %d matching features.</source>
-        <translation type="obsolete">Найдено %d подходящих объектов.
-        
+        <translation type="obsolete">
+            <numerusform>Найден %d подходящий объект.</numerusform>
+            <numerusform>Найдено %d подходящих объекта.</numerusform>
+            <numerusform>Найдено %d подходящих объектов.</numerusform>
         </translation>
     </message>
     <message>
@@ -55,24 +70,24 @@
 <context>
     <name>BeataDialogGui</name>
     <message>
-        <source>Search</source>
-        <translation type="obsolete">Поиск</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">в</translation>
-    </message>
-    <message>
         <source>Attribute Table</source>
         <translation type="obsolete">Таблица атрибутов</translation>
     </message>
     <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">Удалить выделение</translation>
+        <source>&amp;Search</source>
+        <translation type="obsolete">&amp;Поиск</translation>
     </message>
     <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Переместить выделенное в начало</translation>
+        <source>in</source>
+        <translation type="obsolete">в поле</translation>
+    </message>
+    <message>
+        <source>Actions...</source>
+        <translation type="obsolete">Действия...</translation>
+    </message>
+    <message>
+        <source>Remove selection</source>
+        <translation type="obsolete">Снять выделение</translation>
     </message>
     <message>
         <source>Invert selection</source>
@@ -101,6 +116,10 @@
     <message>
         <source>Click to toggle table editing</source>
         <translation type="obsolete">Переключить редактирование таблицы</translation>
+    </message>
+    <message>
+        <source>Advanced search</source>
+        <translation type="obsolete">Расширенный поиск</translation>
     </message>
     <message>
         <source>...</source>
@@ -143,11 +162,11 @@
     </message>
     <message>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Начать захват</translation>
     </message>
     <message>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажмите для включения режима захвата</translation>
     </message>
 </context>
 <context>
@@ -230,7 +249,7 @@
     </message>
     <message>
         <source>Coordinate Capture Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Захват координат</translation>
     </message>
 </context>
 <context>
@@ -312,644 +331,644 @@
     </message>
     <message>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось установить соединение с: «%1»</translation>
     </message>
     <message>
         <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой «%1» успешно преобразован</translation>
     </message>
     <message>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось преобразовать слой «%1»</translation>
     </message>
     <message>
         <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Успешное соединение с: «%1»</translation>
     </message>
     <message>
         <source>fTools About</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе fTools</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия: x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб-сайт</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечение узлов</translation>
     </message>
     <message>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный линейный или полигональный слой</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation type="unfinished">Порог</translation>
+        <translation>Порог</translation>
     </message>
     <message>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Признак классификации</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в точечный shape-файл</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Обработка</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Исходный векторный слой</translation>
+        <translation>Исходный векторный слой</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой пересечения</translation>
     </message>
     <message>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Буферная зона</translation>
     </message>
     <message>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле буферной зоны</translation>
     </message>
     <message>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Признак классификации</translation>
     </message>
     <message>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результат объединения по признаку</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в shape-файл</translation>
     </message>
     <message>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересечения линий</translation>
     </message>
     <message>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный линейный слой</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный признак классификации</translation>
     </message>
     <message>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейный слой пересечений</translation>
     </message>
     <message>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Признак классификации пересечений</translation>
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в shape-файл</translation>
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение атрибутов</translation>
     </message>
     <message>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевой векторный слой</translation>
     </message>
     <message>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевое поле объединения</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>Данные объединения</translation>
     </message>
     <message>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединить с векторным слоем</translation>
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединить с DBF-таблицей</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле для объединения</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Итоговая таблица</translation>
     </message>
     <message>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять только совпадающие записи</translation>
     </message>
     <message>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять все записи (включая не совпадающие)</translation>
     </message>
     <message>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание центроидов</translation>
     </message>
     <message>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле взвешивания</translation>
     </message>
     <message>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество стандартных отклонений</translation>
     </message>
     <message>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation>Стд. откл.</translation>
     </message>
     <message>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание матрицы расстояний</translation>
     </message>
     <message>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный точечный слой</translation>
     </message>
     <message>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевой точечный слой</translation>
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Признак классификации в целевом слое</translation>
     </message>
     <message>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип матрицы</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейная матрица расстояний (N*k x 3)</translation>
     </message>
     <message>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартная матрица расстояний (N x T)</translation>
     </message>
     <message>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation>Сводная матрица расстояний (среднее, стд. откл., мин., макс.)</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать только (k) ближайших точек:</translation>
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить матрицу расстояний в файл</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество точек в полигонах</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный полигональный слой</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный точечный слой</translation>
     </message>
     <message>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя поля суммарного количества</translation>
     </message>
     <message>
         <source>PNTCNT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайные точки</translation>
     </message>
     <message>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный слой границ</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
-        <translation type="unfinished"></translation>
+        <translation>Минимальное расстояние между точками</translation>
     </message>
     <message>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер выборки</translation>
     </message>
     <message>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайная выборка (слой целиком)</translation>
     </message>
     <message>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать количество точек</translation>
     </message>
     <message>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished"></translation>
+        <translation>Районированная выборка (отдельные полигоны)</translation>
     </message>
     <message>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать плотность точек</translation>
     </message>
     <message>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать значение из поля</translation>
     </message>
     <message>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайная выборка</translation>
     </message>
     <message>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный векторный слой</translation>
     </message>
     <message>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайно выбрать</translation>
     </message>
     <message>
         <source>Number of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество объектов</translation>
     </message>
     <message>
         <source>Percentage of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Часть объектов</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор системы координат</translation>
     </message>
     <message>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходная система координат</translation>
     </message>
     <message>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевая система координат</translation>
     </message>
     <message>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать предопределённую систему координат</translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать</translation>
     </message>
     <message>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать систему координат существующего слоя</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить систему координат:</translation>
     </message>
     <message>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярные точки</translation>
     </message>
     <message>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходные координаты</translation>
     </message>
     <message>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Мин. X</translation>
     </message>
     <message>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Мин. Y</translation>
     </message>
     <message>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. X</translation>
     </message>
     <message>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. Y</translation>
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Шаг сетки</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Указать шаг</translation>
     </message>
     <message>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Применить случайное искажение шага</translation>
     </message>
     <message>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение относительно нижнего левого угла</translation>
     </message>
     <message>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Пространственное объединение</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Сводка атрибутов</translation>
     </message>
     <message>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять атрибуты первого обнаруженного объекта</translation>
     </message>
     <message>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранять атрибуты пересекающихся объектов</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Среднее</translation>
+        <translation>Среднее</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Мин</translation>
+        <translation>Мин</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Макс</translation>
+        <translation>Макс</translation>
     </message>
     <message>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>Сумма</translation>
     </message>
     <message>
         <source>Output Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в shape-файл:</translation>
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайная выборка в подмножествах</translation>
     </message>
     <message>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходное поле подмножества (признак классификации)</translation>
     </message>
     <message>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Сумма расстояний в полигонах</translation>
     </message>
     <message>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя поля суммарного расстояния</translation>
     </message>
     <message>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный линейный слой</translation>
     </message>
     <message>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Границы сетки</translation>
     </message>
     <message>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить из слоя</translation>
     </message>
     <message>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить с карты</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Параметры</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Зафиксировать соотношение сторон 1:1</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать сетку как полигоны</translation>
     </message>
     <message>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать сетку как линии</translation>
     </message>
     <message>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Разбивка векторного слоя</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог выгрузки результатов</translation>
     </message>
     <message>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Список уникальных значений</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>Целевое поле</translation>
     </message>
     <message>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список уникальных значений</translation>
     </message>
     <message>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество уникальных значений</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished"></translation>
+        <translation>По всем полям</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите исходный векторный слой</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите целевой shape-файл</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите действительное значение порога</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите действительное поле классификации</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Создан новый shape-файл</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите добавить новый слой на карту?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединить полигоны в составные</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в shape-файл</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Разбить составные полигоны</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечение узлов</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразовать полигоны в линии</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный полигональный слой</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать/добавить поле геометрии</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Исходный векторный слой</translation>
+        <translation>Исходный векторный слой</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Упростить геометрию</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Центроиды полигонов</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить результат в точечный shape-файл</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при обработке указанного порога!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, выберите больший порог...</translation>
     </message>
     <message>
         <source>Function not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Функция не найдена</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при сохранении shape-файла</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить существующий слой...</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished"></translation>
+        <translation>По всем признакам</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите исходный слой</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите слой для выполнения разности/пересечения/объединения</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите действительное значение буферной зоны</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите действительное поле классификации</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите целевой shape-файл</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать результат обработки.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Создан новый shape-файл</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите добавить новый слой на карту?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Буферные зоны</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать минимально возможную выпуклую оболочку</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать выпуклые оболочки на основе поля классификации</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Выпуклые оболочки</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение по признаку</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -957,39 +976,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Разность</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой пересечения</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересечение</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой разности</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Симметричная разность</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Слой отсечения</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсечение</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединяемые слой</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение</translation>
     </message>
 </context>
 <context>
@@ -1164,43 +1183,43 @@ p, li { white-space: pre-wrap; }
     <name>OracleConnectGuiBase</name>
     <message>
         <source>Create Oracle Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать соединение Oracle</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished">Информация о соединении</translation>
+        <translation>Информация о соединении</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Экземпляр СУБД (SID)</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished">Имя пользователя</translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Имя нового соединения</translation>
+        <translation>Имя нового соединения</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished">Сохранить пароль</translation>
+        <translation>Сохранить пароль</translation>
     </message>
 </context>
 <context>
@@ -1215,7 +1234,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation>Сохранить свойства слоя в файл стиля (.qml)</translation>
+        <translation>Сохранить свойства слоя в файле стиля (.qml)</translation>
     </message>
 </context>
 <context>
@@ -1943,7 +1962,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>GISBASE is not set.</source>
-        <translation>GISBASE не задана.</translation>
+        <translation>Не задано значение GISBASE.</translation>
     </message>
     <message>
         <source> is not a GRASS mapset.</source>
@@ -1983,15 +2002,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Cannot read raster map region</source>
-        <translation>Не удаётся прочесть границы растровой карты</translation>
+        <translation>Не удалось прочесть границы растровой карты</translation>
     </message>
     <message>
         <source>Cannot read vector map region</source>
-        <translation>Не удаётся прочесть границы векторной карты</translation>
+        <translation>Не удалось прочесть границы векторной карты</translation>
     </message>
     <message>
         <source>Cannot read region</source>
-        <translation>Не удаётся прочесть регион</translation>
+        <translation>Не удалось прочесть регион</translation>
     </message>
     <message>
         <source>Where is &apos;</source>
@@ -2083,7 +2102,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>An error occured during execution of following code:</source>
-        <translation>Возникла ошибка при выполнении следующего кода:</translation>
+        <translation>При выполнении следующего кода возникла ошибка:</translation>
     </message>
     <message>
         <source>Legend</source>
@@ -2103,7 +2122,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Converts from dxf to shp file format</source>
-        <translation>Преобразование файлов формата dxf в shape-файлы</translation>
+        <translation>Преобразование файлов формата DXF в shape-файлы</translation>
     </message>
     <message>
         <source>Interpolating...</source>
@@ -2156,7 +2175,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>При загрузке модуля возникла ошибка. Нижеследующая информация может помочь разработчикам QGIS решить эту проблему:
+        <translation>При загрузке модуля возникла ошибка. Следующая информация может помочь разработчикам QGIS решить эту проблему:
 %1.</translation>
     </message>
     <message>
@@ -2165,97 +2184,99 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Where is &apos;%1&apos; (original location: %2)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Укажите местонахождение «%1» (ранее: %2)?</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения метаданных модуля %1</translation>
     </message>
     <message>
         <source>No QGIS data provider plugins found in:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Модули источников данных QGIS не были найдены в:
+%1
+</translation>
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Упоминаемое поле не найдено: %1</translation>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Район: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Район: %1&lt;br&gt;Набор: %2</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the data source: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть источник данных: %1</translation>
     </message>
     <message>
         <source>Parse error at line %1 : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка разбора в строке %1: %2</translation>
     </message>
     <message>
         <source>%1 is not a GRASS mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является набором GRASS.</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить %1/etc/lock</translation>
     </message>
     <message>
         <source>Temporary directory %1 exists but is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation>Права на запись в существующий временный каталог %1 отсутствуют</translation>
     </message>
     <message>
         <source>Cannot create temporary directory %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать временный каталог %1</translation>
     </message>
     <message>
         <source>Cannot create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать %1</translation>
     </message>
     <message>
         <source>Cannot remove mapset lock: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось снять блокировку набора: %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить модуль %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 при вызове его метода classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 при вызове его метода initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при выгрузке модуля %1</translation>
     </message>
     <message>
         <source>Georeferencer GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Привязка растров (GDAL)</translation>
     </message>
     <message>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Подключение данных о проекции к растрам посредством GDAL</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Базы данных SQLite (*.sqlite);;Все файлы (*.*)</translation>
     </message>
     <message>
         <source>Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Access Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Доступ к данным Oracle Spatial GeoRaster</translation>
     </message>
 </context>
 <context>
@@ -2346,19 +2367,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Для удаления объектов, следует выбрать в легенде векторный слой</translation>
+        <translation>Для удаления объектов необходимо выбрать в легенде векторный слой</translation>
     </message>
     <message>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation>Легенда карты, в которой перечислены все слои отображаемой карты. Щёлкните на флажке, чтобы переключить видимость соответствующего слоя. Дважды щёлкните на имени слоя, чтобы задать его отображение и другие свойства.</translation>
+        <translation>Легенда карты, в которой перечислены все слои отображаемой карты. Щёлкните на флажке, чтобы переключить видимость соответствующего слоя. Дважды щёлкните на имени слоя, чтобы изменить параметры его отображение и другие свойства.</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
-        <translation>Область обзора карты. Данная область используется для вывода обзорной карты, на которой виден текущий охват области карты QGIS в виде красного прямоугольника. Любой слой карты может быть добавлен в область обзора.</translation>
+        <translation>Область обзора карты. Данная область используется для вывода обзорной карты, на которой виден текущий охват видимой карты QGIS в виде красного прямоугольника. Любой слой карты может быть добавлен в область обзора.</translation>
     </message>
     <message>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation>Область карты. Вывод растровых и векторных слоёв осуществляется в данную область </translation>
+        <translation>Область карты. В данную область выполняется вывод растровых и векторных слоёв</translation>
     </message>
     <message>
         <source>&amp;Plugins</source>
@@ -2678,7 +2699,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation>Проверить, является ли ваша версия QGIS последней (требует доступ в Интернет)</translation>
+        <translation>Проверить, является ли ваша версия QGIS последней (требуется доступ в Интернет)</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -3018,7 +3039,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Network error while communicating with server</source>
-        <translation>Ошибка сети во время соединения с сервером</translation>
+        <translation>Ошибка сети во время обмена данными с сервером</translation>
     </message>
     <message>
         <source>Unknown network socket error</source>
@@ -3102,7 +3123,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Split Features</source>
-        <translation>Разделить объекты</translation>
+        <translation>Разбить объекты</translation>
     </message>
     <message>
         <source>Map Tips</source>
@@ -3110,7 +3131,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation>Показать информацию об объекте при перемещении над ним курсора мыши</translation>
+        <translation>Показать информацию об объектах при перемещении над ними курсора мыши</translation>
     </message>
     <message>
         <source>Current map scale</source>
@@ -3234,7 +3255,7 @@ Please contact the developers.
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation>Этот значок показывает, было ли включено преобразование координат «на лету». Щёлкните по значку, чтобы открыть диалог свойств проекта и изменить данный режим.</translation>
+        <translation>Этот значок показывает, было ли включено преобразование координат «на лету». Щёлкните здесь, чтобы открыть диалог свойств проекта и изменить данный режим.</translation>
     </message>
     <message>
         <source>CRS status - Click to open coordinate reference system dialog</source>
@@ -3563,228 +3584,235 @@ Errors:  %2
     </message>
     <message>
         <source>Quantum GIS - %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS — %1 </translation>
     </message>
     <message>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS — %1 («%2»)</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является действительным источником данных</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished">Файлы QGIS (*.qgs)</translation>
+        <translation>Файлы QGIS (*.qgs)</translation>
     </message>
     <message>
         <source>%1
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Попытаться найти недостающие слои?</translation>
     </message>
     <message>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Проект сохранён в: %1</translation>
     </message>
     <message>
         <source>Unable to save project to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить проект в %1</translation>
     </message>
     <message>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить проект %1</translation>
     </message>
     <message>
         <source>Unable to load project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить проект %1</translation>
     </message>
     <message>
         <source>Saved map image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение карты сохранено в %1</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
 
 Errors: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось внести изменения в слой %1
+
+Ошибки: %2
+</translation>
     </message>
     <message>
         <source>QGIS - Changes in SVN since last release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS — Изменения в SVN с момента последнего выпуска</translation>
     </message>
     <message>
         <source>Unable to communicate with QGIS Version server
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось связаться с сервером версии QGIS
+%1</translation>
     </message>
     <message>
         <source>Extents: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Границы: %1</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является допустимым (определяемым) источником растровых данных</translation>
     </message>
     <message>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является поддерживаемым источником растровых данных</translation>
     </message>
     <message>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Этот проект был создан с использованием устаревшей версии QGIS. При сохранении проекта, файл будет обновлён, что может повлечь за собой несовместимость с предыдущими версиями QGIS.&lt;p&gt;Несмотря на то, что разработчики QGIS стремятся к максимальной обратной совместимости, часть информации из старого проекта может быть потеряна. В этом случае рекомендуется отправить сообщение об ошибке по адресу: %3. Пожалуйста, приложите старый файл проекта и укажите версию QGIS, в которой была обнаружена ошибка.&lt;p&gt;Если вы не хотите получать это предупреждение в будущем, снимите флажок «%5» в меню «%4».&lt;p&gt;Версия файла проекта: %1&lt;br&gt;Текущая версия QGIS: %2</translation>
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Слои</translation>
+        <translation>Слои</translation>
     </message>
     <message>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Удаление объектов</translation>
     </message>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Удалить %n объект?</numerusform>
+            <numerusform>Удалить %n объекта?</numerusform>
+            <numerusform>Удалить %n объектов?</numerusform>
         </translation>
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить слой SpatiaLite...</translation>
     </message>
     <message>
         <source>L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить слой SpatiaLite</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Данная версия QGIS собрана с поддержкой SpatiaLite.</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to Forward Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Данная версия QGIS собрана без поддержки SpatiaLite.</translation>
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
-        <translation type="unfinished"></translation>
+        <translation>Что нового в версии 1.1.0?</translation>
     </message>
     <message>
         <source>Updates to translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновлены переводы.</translation>
     </message>
     <message>
         <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсистема установки модулей доработана и переведена на официальный репозиторий QGIS.</translation>
     </message>
     <message>
         <source>Improvements to themes so that plugins and other parts of the GUI are better supported when switching themes. Addition of the new GIS icon theme.</source>
-        <translation type="unfinished"></translation>
+        <translation>В темах значков появилась поддержка модулей и других элементов интерфейса. Добавлена новая тема значков — GIS.</translation>
     </message>
     <message>
         <source>Improvements to Debian packaging to better support Debian standard requirements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Улучшена совместимость со стандартами для пакетов Debian.</translation>
     </message>
     <message>
         <source>Support usb: as a GPS device under Linux.</source>
-        <translation type="unfinished"></translation>
+        <translation>В Linux добавлена поддержка GPS-устройства «usb:».</translation>
     </message>
     <message>
         <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added svg point symbols from Matt Amos (with his permission).</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль WMS теперь поддерживает сортировку и показывает вложенные слои в виде дерева. Кроме того, в источнике WMS реализована поддержка 24-битных PNG-изображений и добавлен интерфейс поиска WMS-серверов.</translation>
     </message>
     <message>
         <source>Improvements to proxy support and support of proxy in WFS provider. The WFS provider now also shows progress information as it is fetching data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>В источнике WFS улучшена поддержка доступа через прокси-сервер и добавлен индикатор прогресса загрузки данных.</translation>
     </message>
     <message>
         <source>Mapserver Export improvements for continuous color support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль выгрузки в MapServer теперь поддерживает непрерывный цвет.</translation>
     </message>
     <message>
         <source>Improvements to the print composer including object alignment options. It is also now possible to print maps as postcript raster or vector. For python programmers, the composer classes now have python bindings.</source>
-        <translation type="unfinished"></translation>
+        <translation>В компоновщике карт было добавлено выравнивание объектов. Кроме того, стала возможной печать карт в растровых и векторных форматах и формате PostScript. Классы компоновщика теперь присутствуют в библиотеках для Python.</translation>
     </message>
     <message>
         <source>When using File - Save as image, the saved image is now georeferenced.</source>
-        <translation type="unfinished"></translation>
+        <translation>Функция «Файл -&gt; Сохранить как изображение» сохраняет изображение с пространственной привязкой.</translation>
     </message>
     <message>
         <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
-        <translation type="unfinished"></translation>
+        <translation>Диалог выбора проекции включает быстрый доступ к недавно используемым системам координат.</translation>
     </message>
     <message>
         <source>Continuous color renderer supports point symbols now too.</source>
-        <translation type="unfinished"></translation>
+        <translation>В режиме отрисовки «непрерывный цвет» добавлена поддержка точечных условных знаков.</translation>
     </message>
     <message>
         <source>Improved CMake support for building against dependencies from OSGEO4W (Windows only). Addition of an XCode project of developers building under OSX.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для CMake улучшена совместимость для сборки с использованием зависимостей из OSGEO4W (Windows). Для сборки в среде OSX добавлен файл проекта XCode.</translation>
     </message>
     <message>
         <source>Updates and cleanups to the GRASS toolbox.</source>
-        <translation type="unfinished"></translation>
+        <translation>Доработано окно инструментария GRASS.</translation>
     </message>
     <message>
         <source>Changes in open vector dialog to support all drivers available in ogr including database and protocol drivers. This brings with it support for SDE, Oracle Spatial, ESRI personal geodatabase and many more OGR supported data stores. Note that in some cases accessing these may require third party libraries to be on your system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый диалог открытия векторного слоя с поддержкой всех доступных в OGR драйверов, включая драйвера доступа к базам данных и протоколам. Это делает возможной загрузку слоёв из SDE, Oracle Spatial, ESRI personal geodatabase и многих других поддерживаемых источников. Обратите внимание, что для доступа к некоторым из них могут потребоваться дополнительные библиотеки.</translation>
     </message>
     <message>
         <source>The middle mouse button can now be used for panning. </source>
-        <translation type="unfinished"></translation>
+        <translation>Средняя кнопка мыши теперь может использоваться для прокрутки карты.</translation>
     </message>
     <message>
         <source>A new, faster attribute table implementation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая, более быстрая реализация таблицы атрибутов.</translation>
     </message>
     <message>
         <source>Numerous cleanups to the user interface.</source>
-        <translation type="unfinished"></translation>
+        <translation>Множественные доработки пользовательского интерфейса.</translation>
     </message>
     <message>
         <source>A new provider was added for spatiallite - a geodatabase-in-a-file implementation based on the SQLITE database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавлен новый источник данных для доступа к SpatiaLite — реализации пространственной базы данных в одном файле, основанной на SQLite.</translation>
     </message>
     <message>
         <source>Vector overlay support that can draw pie and bar charts over vector layers based on attribute data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для векторных слоёв добавлена поддержка наложения диаграмм на основе значений атрибутов.</translation>
+    </message>
+    <message>
+        <source>Zoom Next</source>
+        <translation>Следующий охват</translation>
+    </message>
+    <message>
+        <source>Zoom to Forward Extent</source>
+        <translation>Увеличить до следующего охвата</translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
+        <translation>Обратите внимание, что данный выпуск относится к числу «нестабильных». Это означает, что он включает новые возможности и расширяет библиотечные интерфейсы в сравнении с версиями 1.0.x. Если для вас важна стабильность и долговременная поддержка, мы рекомендуем использовать версию из серии стабильных выпусков 1.0.x.</translation>
+    </message>
+    <message>
+        <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
+        <translation>Эта версия включает множество исправлений ошибок и других обновлений с момента выхода QGIS 1.0.0. Кроме того, мы добавили следующие возможности: </translation>
+    </message>
+    <message>
+        <source>Added svg point symbols from Matt Amos (with his permission).</source>
+        <translation>С разрешения автора, были добавлены условные знаки в формате SVG от Мэтта Амоса (Matt Amos).</translation>
+    </message>
+    <message>
+        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
+        <translation>Существенно улучшен клиент PostGIS. Вывод слоёв теперь может быть ускорен посредством отключения SSL в свойствах соединения. Поле ctid теперь может использоваться в качестве первичного ключа (что смягчает требование целочисленного типа для первичных ключей)</translation>
+    </message>
+    <message>
+        <source>Added tools menu - the fTools plugin is now part of the core QGIS plugins and will always be installed by default.</source>
+        <translation>Добавлено меню «Инструменты» — модуль fTools теперь входит в поставку QGIS и будет всегда устанавливаться по умолчанию.</translation>
     </message>
 </context>
 <context>
@@ -3838,7 +3866,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <source>Sponsors</source>
@@ -3846,23 +3874,23 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Website</source>
-        <translation type="unfinished">Веб-сайт</translation>
+        <translation>Веб-сайт</translation>
     </message>
     <message>
         <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p&gt;Спонсоры QGIS обеспечивают финансирование разработки и покрытие иных расходов проекта&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Спонсоры QGIS обеспечивают финансирование разработки и покрытие иных расходов проекта&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Доступные модули источников данных QGIS</translation>
+        <translation>Доступные модули источников данных QGIS</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Доступные модули источников данных Qt</translation>
+        <translation>Доступные модули источников данных Qt</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Доступные модули Qt для загрузки изображений</translation>
+        <translation>Доступные модули Qt для загрузки изображений</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -3877,19 +3905,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Перевод интерфейса и документации QGIS осуществили:&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Язык</translation>
     </message>
     <message>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Переводчики</translation>
     </message>
     <message>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевод</translation>
     </message>
 </context>
 <context>
@@ -3923,11 +3951,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствуют данные</translation>
     </message>
     <message>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для создания действия необходимо указать его имя и выполняемое действие.</translation>
     </message>
 </context>
 <context>
@@ -4102,10 +4130,109 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
+        <translation type="obsolete">Таблица атрибутов</translation>
+    </message>
+    <message>
+        <source>Invert selection</source>
+        <translation type="obsolete">Обратить выделение</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation type="obsolete">Переместить выделенное в начало</translation>
+    </message>
+    <message>
+        <source>Remove selection</source>
+        <translation type="obsolete">Снять выделение</translation>
+    </message>
+    <message>
+        <source>Copy selected rows to clipboard (Ctrl+C)</source>
+        <translation type="obsolete">Копировать выбранные строки в буфер обмена (Ctrl+C)</translation>
+    </message>
+    <message>
+        <source>Copies the selected rows to the clipboard</source>
+        <translation type="obsolete">Копирует выбранные строки в буфер обмена</translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation type="obsolete">в</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation type="obsolete">Поиск</translation>
+    </message>
+    <message>
+        <source>Adva&amp;nced...</source>
+        <translation type="obsolete">&amp;Дополнительно...</translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows</source>
+        <translation type="obsolete">Увеличить карту до выбранных строк</translation>
+    </message>
+    <message>
+        <source>Search for</source>
+        <translation type="obsolete">Искать</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="obsolete">Режим редактирования</translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
+        <translation type="obsolete">Переключить редактирование таблицы</translation>
+    </message>
+    <message>
+        <source>Zoom map to the selected rows (Ctrl-J)</source>
+        <translation type="obsolete">Увеличить карту до выбранных строк (Ctrl-J)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTableDialog</name>
+    <message>
+        <source>Attribute table - %1</source>
+        <translation>Таблица атрибутов — %1</translation>
+    </message>
+    <message>
+        <source>Search string parsing error</source>
+        <translation>Ошибка разбора поискового запроса</translation>
+    </message>
+    <message>
+        <source>Search results</source>
+        <translation>Результаты поиска</translation>
+    </message>
+    <message>
+        <source>You&apos;ve supplied an empty search string.</source>
+        <translation>Вы ввели пустой поисковый запрос.</translation>
+    </message>
+    <message>
+        <source>Error during search</source>
+        <translation>Ошибка в процессе поиска</translation>
+    </message>
+    <message numerus="yes">
+        <source>Found %d matching features.</source>
+        <translation>
+            <numerusform>Найден %n подходящий объект.</numerusform>
+            <numerusform>Найдено %n подходящих объекта.</numerusform>
+            <numerusform>Найдено %n подходящих объектов.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>No matching features found.</source>
+        <translation>Подходящих объектов не найдено.</translation>
+    </message>
+    <message>
+        <source>Attribute Table</source>
         <translation>Таблица атрибутов</translation>
     </message>
     <message>
-        <source>Ctrl+S</source>
+        <source>Remove selection</source>
+        <translation>Снять выделение</translation>
+    </message>
+    <message>
+        <source>Move selected to top</source>
+        <translation>Переместить выделение в начало</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
         <translation></translation>
     </message>
     <message>
@@ -4113,16 +4240,8 @@ p, li { white-space: pre-wrap; }
         <translation>Обратить выделение</translation>
     </message>
     <message>
-        <source>Ctrl+T</source>
+        <source>Ctrl+S</source>
         <translation></translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation>Переместить выделенное в начало</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation>Удалить выделение</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
@@ -4130,35 +4249,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Копирует выбранные строки в буфер обмена</translation>
+        <translation>Копировать выбранные строки в буфер обмена</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <source>in</source>
-        <translation>в</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation>Поиск</translation>
-    </message>
-    <message>
-        <source>Adva&amp;nced...</source>
-        <translation>&amp;Дополнительно...</translation>
-    </message>
-    <message>
-        <source>Alt+N</source>
-        <translation></translation>
+        <source>Zoom map to the selected rows (Ctrl-J)</source>
+        <translation>Увеличить карту до выбранных строк (Ctrl-J)</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
         <translation>Увеличить карту до выбранных строк</translation>
     </message>
     <message>
-        <source>Search for</source>
-        <translation>Искать</translation>
+        <source>Ctrl+J</source>
+        <translation></translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
@@ -4169,125 +4276,28 @@ p, li { white-space: pre-wrap; }
         <translation>Переключить редактирование таблицы</translation>
     </message>
     <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation>Увеличить карту до выбранных строк (Ctrl-J)</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation></translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableDialog</name>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="unfinished">Результаты поиска</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Вы ввели пустой поисковый запрос.</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="unfinished">Ошибка во время поиска</translation>
-    </message>
-    <message numerus="yes">
-        <source>Found %d matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="unfinished">Подходящих объектов не найдено.</translation>
-    </message>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="unfinished">Таблица атрибутов</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="unfinished">Удалить выделение</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="unfinished">Переместить выделенное в начало</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="unfinished">Обратить выделение</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Копировать выбранные строки в буфер обмена (Ctrl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Копирует выбранные строки в буфер обмена</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished">Увеличить карту до выбранных строк (Ctrl-J)</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Увеличить карту до выбранных строк</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="unfinished">Режим редактирования</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="unfinished">Переключить редактирование таблицы</translation>
-    </message>
-    <message>
         <source>Look for</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">в</translation>
+        <translation>в поле</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Поиск</translation>
     </message>
     <message>
         <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать только выбранные записи</translation>
     </message>
     <message>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Расширенный поиск</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4318,11 +4328,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="obsolete">Ошибка во время поиска</translation>
+        <translation type="obsolete">Ошибка в процессе поиска</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Found %d matching features.</source>
-        <translation type="obsolete">Найдено %d подходящих объектов.
+        <translation type="obsolete">
+            <numerusform>Найден %d подходящий объект.</numerusform>
+            <numerusform>Найдено %d подходящих объекта.</numerusform>
+            <numerusform>Найдено %d подходящих объектов.</numerusform>
         </translation>
     </message>
     <message>
@@ -4398,10 +4411,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Обратить</translation>
     </message>
     <message>
+        <source>Attribute table - %1</source>
+        <translation type="obsolete">Таблица атрибутов — %1</translation>
+    </message>
+    <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>search results</comment>
         <translation type="obsolete">
-        
+            <numerusform>Найден %n подходящий объект.</numerusform>
+            <numerusform>Найдено %n подходящих объекта.</numerusform>
+            <numerusform>Найдено %n подходящих объектов.</numerusform>
         </translation>
     </message>
 </context>
@@ -4443,12 +4462,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить закладку %1?</translation>
     </message>
     <message>
         <source>Failed to delete the %1 bookmark from the database. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить из базы данных закладку %1. Сообщение базы данных:
+%2</translation>
     </message>
 </context>
 <context>
@@ -4602,51 +4622,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 format (*.%2 *.%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат %1 (*.%2 *.%3)</translation>
     </message>
     <message>
         <source>Qt4 svg code. Of note, text does not appear in the SVG file and there are problems with the map bounding box clipping other items such as the legend or scale bar.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>коде поддержки SVG в Qt4. В частности, текст не сохраняется в SVG-файлах и существуют проблемы с рамкой карты, пересекающей другие элементы (легенду или масштабную линейку).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>коде поддержки SVG в Qt4. В частности, существуют проблемы со слоями, которые не отсекаются рамкой карты.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Для создания изображения размером %1x%2 потребуется около %3 МБ памяти</translation>
     </message>
     <message>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Если вам необходимо получить векторный вывод из QGIS, рекомендуется вывести карту в формате PostScript, если SVG-вывод не удовлетворяет вашим требованиям.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить шаблон</translation>
     </message>
     <message>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка сохранения</translation>
     </message>
     <message>
         <source>Error, could not save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка, не удалось сохранить файл</translation>
     </message>
     <message>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить шаблон</translation>
     </message>
     <message>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения</translation>
     </message>
     <message>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка, не удалось открыть файл</translation>
     </message>
     <message>
         <source>Content of template file is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверное содержимое файла шаблона</translation>
     </message>
 </context>
 <context>
@@ -4809,55 +4829,55 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Load From template</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить из шаблона</translation>
     </message>
     <message>
         <source>Save as template</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как шаблон</translation>
     </message>
     <message>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять по левым краям</translation>
     </message>
     <message>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять выбранные элементы по левым краям</translation>
     </message>
     <message>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Центрировать</translation>
     </message>
     <message>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Центрировать по горизонтали</translation>
     </message>
     <message>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять по правым краям</translation>
     </message>
     <message>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять выбранные элементы по правым краям</translation>
     </message>
     <message>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять по верхним краям</translation>
     </message>
     <message>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять выбранные элементы по верхним краям</translation>
     </message>
     <message>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Центрировать по вертикали</translation>
     </message>
     <message>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять по нижним краям</translation>
     </message>
     <message>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Выровнять выбранные элементы по нижним краям</translation>
     </message>
 </context>
 <context>
@@ -4896,7 +4916,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Position...</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение...</translation>
     </message>
 </context>
 <context>
@@ -4918,7 +4938,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerLegend</name>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Легенда</translation>
+        <translation>Легенда</translation>
     </message>
 </context>
 <context>
@@ -5027,7 +5047,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта %1</translation>
     </message>
 </context>
 <context>
@@ -5112,11 +5132,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите новый каталог изображений</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание миниатюры для %1</translation>
     </message>
 </context>
 <context>
@@ -5143,19 +5163,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в каталогах</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished">Добавить...</translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Предпросмотр</translation>
+        <translation>Предпросмотр</translation>
     </message>
 </context>
 <context>
@@ -5190,7 +5210,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Карта %1</translation>
     </message>
 </context>
 <context>
@@ -5394,15 +5414,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished">Сплошная</translation>
+        <translation>Линии</translation>
     </message>
     <message>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Точки</translation>
     </message>
     <message>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Перекрестия</translation>
     </message>
 </context>
 <context>
@@ -5441,39 +5461,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished">Прилипание</translation>
+        <translation>Прилипание</translation>
     </message>
     <message>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Прилипать к сетке</translation>
     </message>
     <message>
         <source>Grid resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешение сетки:</translation>
     </message>
     <message>
         <source>Offset x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение по X:</translation>
     </message>
     <message>
         <source>Offset y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Смещение по Y:</translation>
     </message>
     <message>
         <source>Pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина линии:</translation>
     </message>
     <message>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет сетки:</translation>
     </message>
     <message>
         <source>Grid style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип сетки:</translation>
     </message>
     <message>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Печатать как растр</translation>
     </message>
 </context>
 <context>
@@ -5531,7 +5551,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось спроецировать координаты. Система координат: %1</translation>
     </message>
 </context>
 <context>
@@ -5636,7 +5656,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5691,24 +5711,24 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> Please give the projection a name before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для сохранения проекции необходимо указать её наименование.</translation>
     </message>
     <message>
         <source> Please add the parameters before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для сохранения проекции необходимо добавить параметры.</translation>
     </message>
     <message>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для сохранения проекции необходимо добавить оператор «proj=».</translation>
     </message>
     <message>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Неверное определение эллипсоида proj4. Для сохранения проекции необходимо добавить оператор «ellips=».</translation>
     </message>
     <message>
         <source> Please correct before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Для успешного сохранения необходимо исправить эту ошибку.</translation>
     </message>
 </context>
 <context>
@@ -5895,11 +5915,11 @@ geometry.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для добавления слоя необходимо выбрать таблицу.</translation>
     </message>
     <message>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
@@ -5908,7 +5928,12 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться к %1 на %2. Вероятно, база данных недоступна или указаны неверные параметры.
+
+Проверьте имя пользователя и пароль и попытайтесь подключиться повторно.
+
+Сообщение базы данных:
+%3</translation>
     </message>
 </context>
 <context>
@@ -6052,7 +6077,7 @@ The database said:
     </message>
     <message>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить текстовый файл как слой на карте. Файл должен включать строку-заголовок, содержащую именя полей. Поля X и Y — обязательны и должны содержать координаты в десятичном формате.</translation>
     </message>
 </context>
 <context>
@@ -6236,38 +6261,38 @@ p, li { white-space: pre-wrap; }
     <name>QgsDiagramDialog</name>
     <message>
         <source>Pie chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Круговая</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished">Столбчатая</translation>
+        <translation>Столбчатая</translation>
     </message>
     <message>
         <source>Proportional SVG symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропорциональные знаки SVG</translation>
     </message>
 </context>
 <context>
     <name>QgsDiagramDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Display diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить диаграммы</translation>
     </message>
     <message>
         <source>Diagram type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип диаграммы:</translation>
     </message>
     <message>
         <source>Classification attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибут классификации:</translation>
     </message>
     <message>
         <source>Classification type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип классификации:</translation>
     </message>
 </context>
 <context>
@@ -6351,7 +6376,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This is the name of the device as it will appear in the lists</source>
-        <translation>Имя устройства, которое отображается в списке</translation>
+        <translation>Имя устройства, которое будет показано в списке</translation>
     </message>
     <message>
         <source>Update device</source>
@@ -6577,15 +6602,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть выбранный файл.
+Пожалуйста, выберите действительный файл.</translation>
     </message>
     <message>
         <source>This device does not support downloading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Это устройство не поддерживает загрузку данных типа %1.</translation>
     </message>
     <message>
         <source>This device does not support uploading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Это устройство не поддерживает выгрузку данных типа %1.</translation>
     </message>
 </context>
 <context>
@@ -6828,7 +6854,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Define this layer&apos;s coordinate reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор системы координат слоя:</translation>
     </message>
 </context>
 <context>
@@ -6839,7 +6865,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished">Выбор системы координат</translation>
+        <translation>Выбор системы координат</translation>
     </message>
 </context>
 <context>
@@ -6931,23 +6957,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Georeferencer GDAL&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Привязка растров (GDAL)&lt;/b&gt;</translation>
     </message>
     <message>
         <source>    Based on original Georeferencer Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>    Основан на оригинальном модуле привязки</translation>
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Разработчики:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>    Lars Luthman (original Georeferencer)</source>
-        <translation type="unfinished"></translation>
+        <translation>    Lars Luthman (оригинальный модуль)</translation>
     </message>
     <message>
         <source>&lt;b&gt;Links:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Ссылки:&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -7223,23 +7249,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось скопировать карту %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;команда: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось переименовать карту %1</translation>
     </message>
     <message>
         <source>Delete map &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить карту &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить карту %1</translation>
     </message>
 </context>
 <context>
@@ -7290,7 +7316,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split line</source>
-        <translation>Разделить линию</translation>
+        <translation>Разбить линию</translation>
     </message>
     <message>
         <source>Delete element</source>
@@ -7334,11 +7360,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation>В таблице атрибутов обнаружена изолированная запись. &lt;br/&gt;Удалить запись?</translation>
+        <translation>В таблице атрибутов обнаружена изолированная запись.&lt;br&gt;Удалить запись?</translation>
     </message>
     <message>
         <source>Cannot delete orphan record: </source>
-        <translation>Не удаётся удалить изолированную запись: </translation>
+        <translation>Не удалось удалить изолированную запись: </translation>
     </message>
     <message>
         <source>Cannot describe table for field </source>
@@ -7414,45 +7440,45 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot check orphan record: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось проверить изолированную запись: %1</translation>
     </message>
     <message>
         <source>Cannot describe table for field %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось описать таблицу для поля %1</translation>
     </message>
     <message>
         <source>Left: %1   </source>
-        <translation type="unfinished"></translation>
+        <translation>Левая: %1   </translation>
     </message>
     <message>
         <source>Middle: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Средняя: %1</translation>
     </message>
     <message>
         <source>Right: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Правая: %1</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditAddVertex</name>
     <message>
         <source>Select line segment</source>
-        <translation type="unfinished">Выбрать сегмент линии</translation>
+        <translation>Выбрать сегмент линии</translation>
     </message>
     <message>
         <source>New vertex position</source>
-        <translation type="unfinished">Новая позиция вершины</translation>
+        <translation>Новая позиция вершины</translation>
     </message>
     <message>
         <source>Release</source>
-        <translation type="unfinished">Освободить</translation>
+        <translation>Освободить</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditAttributes</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Выбрать элемент</translation>
+        <translation>Выбрать элемент</translation>
     </message>
 </context>
 <context>
@@ -7534,105 +7560,105 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassEditDeleteLine</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Выбрать элемент</translation>
+        <translation>Выбрать элемент</translation>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation type="unfinished">Удалить выделение / выбрать следующий</translation>
+        <translation>Удалить выделение / выбрать следующий</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="unfinished">Освободить выделение</translation>
+        <translation>Освободить выделение</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditDeleteVertex</name>
     <message>
         <source>Select vertex</source>
-        <translation type="unfinished">Выбрать вершину</translation>
+        <translation>Выбрать вершину</translation>
     </message>
     <message>
         <source>Delete vertex</source>
-        <translation type="unfinished">Удалить вершину</translation>
+        <translation>Удалить вершину</translation>
     </message>
     <message>
         <source>Release vertex</source>
-        <translation type="unfinished">Освободить вершину</translation>
+        <translation>Освободить вершину</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditMoveLine</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Выбрать элемент</translation>
+        <translation>Выбрать элемент</translation>
     </message>
     <message>
         <source>New location</source>
-        <translation type="unfinished">Новое положение</translation>
+        <translation>Новое положение</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="unfinished">Освободить выделение</translation>
+        <translation>Освободить выделение</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditMoveVertex</name>
     <message>
         <source>Select vertex</source>
-        <translation type="unfinished">Выбрать вершину</translation>
+        <translation>Выбрать вершину</translation>
     </message>
     <message>
         <source>Select new position</source>
-        <translation type="unfinished">Выбрать новую позицию</translation>
+        <translation>Выбрать новую позицию</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditNewLine</name>
     <message>
         <source>New vertex</source>
-        <translation type="unfinished">Новая вершина</translation>
+        <translation>Новая вершина</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished">Новая точка</translation>
+        <translation>Новая точка</translation>
     </message>
     <message>
         <source>Undo last point</source>
-        <translation type="unfinished">Отменить последнюю точку</translation>
+        <translation>Отменить последнюю точку</translation>
     </message>
     <message>
         <source>Close line</source>
-        <translation type="unfinished">Завершить линию</translation>
+        <translation>Завершить линию</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditNewPoint</name>
     <message>
         <source>New centroid</source>
-        <translation type="unfinished">Новый центроид</translation>
+        <translation>Новый центроид</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished">Новая точка</translation>
+        <translation>Новая точка</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditSplitLine</name>
     <message>
         <source>Select position on line</source>
-        <translation type="unfinished">Выбрать позицию на линии</translation>
+        <translation>Выбрать позицию на линии</translation>
     </message>
     <message>
         <source>Split the line</source>
-        <translation type="unfinished">Разделить линию</translation>
+        <translation>Разбить линию</translation>
     </message>
     <message>
         <source>Release the line</source>
-        <translation type="unfinished">Освободить линию</translation>
+        <translation>Освободить линию</translation>
     </message>
     <message>
         <source>Select point on line</source>
-        <translation type="unfinished">Выбрать точку на линии</translation>
+        <translation>Выбрать точку на линии</translation>
     </message>
 </context>
 <context>
@@ -7945,7 +7971,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open mapcalc file</source>
-        <translation>Не удаётся открыть файл mapcalc</translation>
+        <translation>Не удалось открыть файл mapcalc</translation>
     </message>
     <message>
         <source>The mapcalc schema (</source>
@@ -7979,33 +8005,35 @@ at line </source>
     </message>
     <message>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось проверить регион карты %1</translation>
     </message>
     <message>
         <source>Cannot get region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить регион карты %1</translation>
     </message>
     <message>
         <source>The file already exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл уже существует. Перезаписать?</translation>
     </message>
     <message>
         <source>The mapcalc schema (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Схема mapcalc (%1) не найдена.</translation>
     </message>
     <message>
         <source>Cannot open mapcalc schema (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть схему mapcalc (%1)</translation>
     </message>
     <message>
         <source>Cannot read mapcalc schema (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть схему mapcalc (%1):</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+в строке %2, столбце %3</translation>
     </message>
 </context>
 <context>
@@ -8091,7 +8119,7 @@ at line </source>
     </message>
     <message>
         <source>Cannot get input region</source>
-        <translation>Не удаётся получить исходный регион</translation>
+        <translation>Не удалось получить исходный регион</translation>
     </message>
     <message>
         <source>Use Input Region</source>
@@ -8127,61 +8155,63 @@ at line </source>
     </message>
     <message>
         <source>Module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль: %1</translation>
     </message>
     <message>
         <source>The module file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл модуля (%1) не найден.</translation>
     </message>
     <message>
         <source>Cannot open module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл модуля (%1)</translation>
     </message>
     <message>
         <source>Cannot read module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть файл модуля (%1)</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+в строке %2, столбце %3</translation>
     </message>
     <message>
         <source>Module %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль %1 не найден</translation>
     </message>
     <message>
         <source>Cannot find man page %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти страницу руководства %1</translation>
     </message>
     <message>
         <source>Not available, description not found (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль недоступен, описание не найдено (%1)</translation>
     </message>
     <message>
         <source>Not available, cannot open description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль недоступен, не удалось открыть описание (%1)</translation>
     </message>
     <message>
         <source>Not available, incorrect description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль недоступен, неверное описание (%1)</translation>
     </message>
     <message>
         <source>Input %1 outside current region!</source>
-        <translation type="unfinished"></translation>
+        <translation>Исходный файл %1 находится за границами текущего региона!</translation>
     </message>
     <message>
         <source>Output %1 exists! Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл вывода %1 уже существует. Перезаписать?</translation>
     </message>
     <message>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти модуль %1</translation>
     </message>
     <message>
         <source>Cannot start module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить модуль: %1</translation>
     </message>
 </context>
 <context>
@@ -8242,11 +8272,11 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;значение не задано</translation>
     </message>
     <message>
         <source>%1:&amp;nbsp;directory does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;каталог не существует</translation>
     </message>
 </context>
 <context>
@@ -8273,15 +8303,15 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти параметр слоя %1</translation>
     </message>
     <message>
         <source>Cannot find whereoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти параметр where %1</translation>
     </message>
     <message>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;параметр не задан</translation>
     </message>
 </context>
 <context>
@@ -8320,23 +8350,23 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Cannot find typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся найти параметр type %1</translation>
     </message>
     <message>
         <source>Cannot find values for typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся найти значения для параметра type %1</translation>
     </message>
     <message>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти параметр слоя %1</translation>
     </message>
     <message>
         <source>GRASS element %1 not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Элемент GRASS «%1» не поддерживается</translation>
     </message>
     <message>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;параметр не задан</translation>
     </message>
 </context>
 <context>
@@ -8347,7 +8377,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;значение не задано</translation>
     </message>
 </context>
 <context>
@@ -8417,41 +8447,43 @@ at line </source>
     </message>
     <message>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти модуль %1</translation>
     </message>
     <message>
         <source>Cannot start module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить модуль %1</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;команда: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot read module description (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть описание модуля (%1):</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+в строке %2, столбце %3</translation>
     </message>
     <message>
         <source>Cannot find key %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти ключ %1</translation>
     </message>
     <message>
         <source>Item with id %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Элемент %1 не найден</translation>
     </message>
     <message>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось проверить регион карты %1</translation>
     </message>
     <message>
         <source>Cannot set region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось задать регион карты %1</translation>
     </message>
 </context>
 <context>
@@ -8482,7 +8514,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>The directory doesn&apos;t exist!</source>
-        <translation>Каталог не существует!</translation>
+        <translation>Каталог не обнаружен!</translation>
     </message>
     <message>
         <source>No writable locations, the database not writable!</source>
@@ -8554,11 +8586,11 @@ at line </source>
     </message>
     <message>
         <source>Cannot reproject selected region.</source>
-        <translation>Не удаётся спроецировать выбранный регион.</translation>
+        <translation>Не удалось спроецировать выбранный регион.</translation>
     </message>
     <message>
         <source>Cannot reproject region</source>
-        <translation>Не удаётся спроецировать регион</translation>
+        <translation>Не удалось спроецировать регион</translation>
     </message>
     <message>
         <source>Enter mapset name.</source>
@@ -8618,37 +8650,39 @@ at line </source>
     </message>
     <message>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
-        <translation>Не удаётся создать объект QgsCoordinateReferenceSystem</translation>
+        <translation>Не удалось создать объект QgsCoordinateReferenceSystem</translation>
     </message>
     <message>
         <source>No writable locations, the database is not writable!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не найдено доступных для записи районов, нет прав доступа к базе данных!</translation>
     </message>
     <message>
         <source>Regions file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл регионов (%1) не найден.</translation>
     </message>
     <message>
         <source>Cannot open locations file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл районов (%1)</translation>
     </message>
     <message>
         <source>Cannot read locations file (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть файл районов (%1):</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+в строке %2, столбце %3</translation>
     </message>
     <message>
         <source>Cannot create new location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать новый район: %1</translation>
     </message>
     <message>
         <source>New mapset successfully created, but cannot be opened: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Набор успешно создан, но не может быть открыт: %1</translation>
     </message>
 </context>
 <context>
@@ -8971,35 +9005,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть векторный слой GRASS:
+%1</translation>
     </message>
     <message>
         <source>Cannot create new vector: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать новый векторный слой: %1</translation>
     </message>
     <message>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished">Не удалось открыть векторный слой для обновления.</translation>
+        <translation>Не удалось открыть векторный слой для обновления.</translation>
     </message>
     <message>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть текущий регион: %1</translation>
     </message>
     <message>
         <source>Cannot open the mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть набор. %1</translation>
     </message>
     <message>
         <source>Cannot close mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось закрыть набор. %1</translation>
     </message>
     <message>
         <source>Cannot close current mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось закрыть текущий набор. %1</translation>
     </message>
     <message>
         <source>Cannot open GRASS mapset. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть набор GRASS. %1</translation>
     </message>
 </context>
 <context>
@@ -9022,7 +9057,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot read current region: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть текущий регион: %1</translation>
     </message>
 </context>
 <context>
@@ -9104,7 +9139,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector on level 2 (topology not available).</source>
-        <translation>Не удаётся открыть вектор уровня 2 (топология недоступна).</translation>
+        <translation>Не удалось открыть вектор уровня 2 (топология недоступна).</translation>
     </message>
     <message>
         <source>Choose existing GISDBASE</source>
@@ -9243,29 +9278,31 @@ at line </source>
     </message>
     <message>
         <source>GRASS Tools: %1/%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Инструменты GRASS: %1/%2</translation>
     </message>
     <message>
         <source>The config file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл конфигурации (%1) не найден.</translation>
     </message>
     <message>
         <source>Cannot open config file (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть файл конфигурации (%1).</translation>
     </message>
     <message>
         <source>Cannot read config file (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочесть файл конфигурации (%1):</translation>
     </message>
     <message>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+в строке %2, столбце %3</translation>
     </message>
     <message>
         <source>Cannot start command shell (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить командную оболочку (%1)</translation>
     </message>
 </context>
 <context>
@@ -9420,16 +9457,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished"></translation>
+        <translation>Для вашего языка отсутствует файл справки: &lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Пожалуйста, свяжитесь с командой разработки QGIS, если вы хотели бы создать этот файл</translation>
     </message>
     <message>
         <source>Quantum GIS Help - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Справка Quantum GIS — %1</translation>
     </message>
     <message>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить текст справки из базы данных:
+  %1</translation>
     </message>
 </context>
 <context>
@@ -9481,11 +9519,16 @@ p, li { white-space: pre-wrap; }
         <source>HTTP response completed, however there was an error: %1</source>
         <translation>HTTP-ответ получен  с ошибкой: %1</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Network timed out after %1 seconds of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="obsolete">Соединение сброшено после %1 секунд бездействия.
-Возможно существует проблема в подключении к сети или на WMS-сервере.
+        <translation type="obsolete">
+            <numerusform>Соединение сброшено после %1 секунды бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
+            <numerusform>Соединение сброшено после %1 секунд бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
+            <numerusform>Соединение сброшено после %1 секунд бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
         </translation>
     </message>
     <message>
@@ -9494,48 +9537,51 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished">Получено %1 из %2 байт</translation>
+        <translation>Получено %1 из %2 байт</translation>
     </message>
     <message>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished">Получено %1 байт (размер неизвестен)</translation>
+        <translation>Получено %1 байт (размер неизвестен)</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished">Нет соединения</translation>
+        <translation>Нет соединения</translation>
     </message>
     <message>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished">Поиск «%1»</translation>
+        <translation>Поиск «%1»</translation>
     </message>
     <message>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished">Соединение с «%1»</translation>
+        <translation>Соединение с «%1»</translation>
     </message>
     <message>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished">Отправка запроса «%1»</translation>
+        <translation>Отправка запроса «%1»</translation>
     </message>
     <message>
         <source>Receiving reply</source>
-        <translation type="unfinished">Получение ответа</translation>
+        <translation>Получение ответа</translation>
     </message>
     <message>
         <source>Response is complete</source>
-        <translation type="unfinished">Ответ получен</translation>
+        <translation>Ответ получен</translation>
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation type="unfinished">Соединение закрыто</translation>
+        <translation>Закрытие соединения</translation>
     </message>
     <message numerus="yes">
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Соединение сброшено после %n секунды бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
+            <numerusform>Соединение сброшено после %n секунд бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
+            <numerusform>Соединение сброшено после %n секунд бездействия.
+Возможно существует проблема в подключении к сети или на WMS-сервере.</numerusform>
         </translation>
     </message>
 </context>
@@ -9586,7 +9632,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Identify Results - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Результат определения — %1</translation>
     </message>
 </context>
 <context>
@@ -9677,31 +9723,31 @@ p, li { white-space: pre-wrap; }
     <name>QgsItemPositionDialogBase</name>
     <message>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Положение элемента</translation>
     </message>
     <message>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Точка привязки</translation>
     </message>
     <message>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Координаты</translation>
     </message>
     <message>
         <source>x:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <source>y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
 </context>
 <context>
@@ -9815,6 +9861,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Below Left</source>
         <translation>Внизу слева</translation>
+    </message>
+    <message>
+        <source>°</source>
+        <translation></translation>
     </message>
     <message>
         <source>Font size units</source>
@@ -9951,10 +10001,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Максимальный масштаб, при котором виден данный слой. </translation>
-    </message>
-    <message>
-        <source>°</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10123,45 +10169,45 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите систему координат для сохраняемого файла. Координаты в новом файле будут преобразованы из текущей системы координат.</translation>
     </message>
     <message>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать shape-файл (%1)</translation>
     </message>
 </context>
 <context>
     <name>QgsLinearlyScalingDialog</name>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Миллиметры</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished">Единицы карты</translation>
+        <translation>Единицы карты</translation>
     </message>
 </context>
 <context>
     <name>QgsLinearlyScalingDialogBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Линейно масштабировать диаграммы между нулевым размером и следующим значением атрибута:</translation>
     </message>
     <message>
         <source>find maximum Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти максимальное значение:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished">Размер:</translation>
+        <translation>Размер:</translation>
     </message>
     <message>
         <source>Size unit: </source>
-        <translation type="unfinished"></translation>
+        <translation>Единицы размера: </translation>
     </message>
 </context>
 <context>
@@ -10178,12 +10224,14 @@ p, li { white-space: pre-wrap; }
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось отобразить %1 по причине:
+%2</translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось отобразить %1 по причине:
+%2</translation>
     </message>
 </context>
 <context>
@@ -10223,189 +10271,194 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Loading style file %1 failed because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить файл стиля %1 по причине:
+%2</translation>
     </message>
     <message>
         <source>Could not save symbology because:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить символику по причине:
+%1</translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished">Необходимы права на запись в каталог, содержащий ваши данные!</translation>
+        <translation>Необходимы права на запись в каталог, содержащий ваши данные!</translation>
     </message>
     <message>
         <source>Created default style file as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл стиля по умолчанию создан в %1</translation>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>ОШИБКА: Не удалось создать файл стиля по умолчанию в %1. Проверьте права доступа к файлу и попробуйте ещё раз.</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolAddFeature</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Слой не является векторным</translation>
+        <translation>Слой не является векторным</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Текущий слой не является векторным</translation>
+        <translation>Текущий слой не является векторным</translation>
     </message>
     <message>
         <source>2.5D shape type not supported</source>
-        <translation type="unfinished">2.5-мерные данные не поддерживаются</translation>
+        <translation>2.5-мерные данные не поддерживаются</translation>
     </message>
     <message>
         <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation type="unfinished">Добавление 2.5-мерных объектов в данный момент не поддерживается</translation>
+        <translation>Добавление 2.5-мерных объектов в не поддерживается в настоящий момент</translation>
     </message>
     <message>
         <source>Layer cannot be added to</source>
-        <translation type="unfinished">Слой не может быть добавлен в</translation>
+        <translation>Слой не может быть добавлен в</translation>
     </message>
     <message>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="unfinished">Источник данных для этого слоя не поддерживает добавление объектов.</translation>
+        <translation>Источник данных для этого слоя не поддерживает добавление объектов.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Нередактируемый слой</translation>
+        <translation>Нередактируемый слой</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
+        <translation>Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation type="unfinished">Неверный инструмент редактирования</translation>
+        <translation>Неверный инструмент редактирования</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation type="unfinished">Не удалось применить инструмент «создать точку» в этом векторном слое</translation>
+        <translation>Не удалось применить инструмент «создать точку» в этом векторном слое</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Ошибка преобразования координат</translation>
+        <translation>Ошибка преобразования координат</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Не удалось преобразовать точку в систему координат слоя</translation>
+        <translation>Не удалось преобразовать точку в систему координат слоя</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation type="unfinished">Не удалось применить инструмент «создать линию» в этом векторном слое</translation>
+        <translation>Не удалось применить инструмент «создать линию» в этом векторном слое</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation type="unfinished">Не удалось применить инструмент «создать полигон» в этом векторном слое</translation>
+        <translation>Не удалось применить инструмент «создать полигон» в этом векторном слое</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Cannot add feature. Unknown WKB type</source>
-        <translation type="unfinished">Не удалось добавить объект, неизвестный тип WKB</translation>
+        <translation>Не удалось добавить объект, неизвестный тип WKB</translation>
     </message>
     <message>
         <source>Could not remove polygon intersection</source>
-        <translation type="unfinished">Не удалось удалить пересечение полигонов</translation>
+        <translation>Не удалось удалить пересечение полигонов</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Слой не является векторным</translation>
+        <translation>Слой не является векторным</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Текущий слой не является векторным</translation>
+        <translation>Текущий слой не является векторным</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Нередактируемый слой</translation>
+        <translation>Нередактируемый слой</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
+        <translation>Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
     </message>
     <message>
         <source>Error, could not add island</source>
-        <translation type="unfinished">Ошибка, не удалось добавить остров</translation>
+        <translation>Ошибка, не удалось добавить остров</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Ошибка преобразования координат</translation>
+        <translation>Ошибка преобразования координат</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Не удалось преобразовать точку в систему координат слоя</translation>
+        <translation>Не удалось преобразовать точку в систему координат слоя</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolAddRing</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Слой не является векторным</translation>
+        <translation>Слой не является векторным</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Текущий слой не является векторным</translation>
+        <translation>Текущий слой не является векторным</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Нередактируемый слой</translation>
+        <translation>Нередактируемый слой</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
+        <translation>Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Ошибка преобразования координат</translation>
+        <translation>Ошибка преобразования координат</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Не удалось преобразовать точку в систему координат слоя</translation>
+        <translation>Не удалось преобразовать точку в систему координат слоя</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Ошибка типа геометрии</translation>
+        <translation>Ошибка типа геометрии</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">Вставляемое кольцо не замкнуто</translation>
+        <translation>Вставляемое кольцо не замкнуто</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">Вставляемое кольцо не является допустимой геометрией</translation>
+        <translation>Вставляемое кольцо не является допустимой геометрией</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">Вставляемое кольцо пересекает существующие кольца</translation>
+        <translation>Вставляемое кольцо пересекает существующие кольца</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">Вставляемое кольцо располагается вне границ объекта</translation>
+        <translation>Вставляемое кольцо располагается вне границ объекта</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Неизвестная ошибка</translation>
+        <translation>Неизвестная ошибка</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Ошибка, не удалось добавить кольцо</translation>
+        <translation>Ошибка, не удалось добавить кольцо</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolIdentify</name>
-    <message>
+    <message numerus="yes">
         <source>- %1 features found</source>
         <comment>Identify results window title</comment>
-        <translation type="obsolete">— найдено %1 объектов
+        <translation type="obsolete">
+            <numerusform>— найден %1 объект</numerusform>
+            <numerusform>— найдено %1 объекта</numerusform>
+            <numerusform>— найдено %1 объектов</numerusform>
         </translation>
     </message>
     <message>
@@ -10420,133 +10473,136 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">Нет активного слоя</translation>
+        <translation>Не выбран активный слой</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Чтобы определить объекты, следует выбрать активный слой щелчком на имени слоя в легенде</translation>
+        <translation>Для определения объектов, необходимо выбрать активный слой щелчком мыши на имени слоя в легенде</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">Канал</translation>
+        <translation>Канал</translation>
     </message>
     <message>
         <source>WMS identify result for %1:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Результат WMS-определения для %1
+%2</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Длина</translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished">Площадь</translation>
+        <translation>Площадь</translation>
     </message>
     <message>
         <source>action</source>
-        <translation type="unfinished">действие</translation>
+        <translation>действие</translation>
     </message>
     <message>
         <source>No features found</source>
-        <translation type="unfinished">Объектов не найдено</translation>
+        <translation>Объектов не найдено</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="unfinished">В активном слое не найдено объектов в точке, на которой был произведён щелчок</translation>
+        <translation>В активном слое не найдено объектов в точке, на которой был произведён щелчок</translation>
     </message>
     <message numerus="yes">
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>%1 — найден %n объект</numerusform>
+            <numerusform>%1 — найдено %n объекта</numerusform>
+            <numerusform>%1 — найдено %n объектов</numerusform>
         </translation>
     </message>
     <message>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось отобразить %1 по причине:
+%2</translation>
     </message>
     <message>
         <source>Could not identify objects on %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось определить объекты в %1 по причине:
+%2</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Нередактируемый слой</translation>
+        <translation>Нередактируемый слой</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
+        <translation>Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolSelect</name>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">Нет активного слоя</translation>
+        <translation>Не выбран активный слой</translation>
     </message>
     <message>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Для выделения объектов необходимо выбрать векторный слой щелчком мыши на его имени в легенде</translation>
+        <translation>Для выделения объектов необходимо выбрать векторный слой щелчком мыши на имени слоя в легенде</translation>
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation type="unfinished">CRS-исключение</translation>
+        <translation>CRS-исключение</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
-        <translation type="unfinished">Выделение выходит за границы координатной системы слоя.</translation>
+        <translation>Выделение выходит за границы системы координат слоя.</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolSplitFeatures</name>
     <message>
         <source>Split error</source>
-        <translation>Ошибка разделения</translation>
+        <translation>Ошибка разбивки</translation>
     </message>
     <message>
         <source>An error occured during feature splitting</source>
-        <translation>При разделении объектов возникла ошибка</translation>
+        <translation>При разбивке объектов возникла ошибка</translation>
     </message>
     <message>
         <source>No feature split done</source>
-        <translation>Разделение объектов не выполнено</translation>
+        <translation>Разбивка объектов не выполнена</translation>
     </message>
     <message>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation>Если есть выбранные объекты, инструмент разделения применяется только к ним. Если вы хотите разделить все объекты по линии разделения, следует очистить выделение</translation>
+        <translation>Если есть выбранные объекты, инструмент разбивки применяется только к ним. Если необходимо разбить все объекты по линии разбивки, следует предварительно очистить выделение</translation>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Слой не является векторным</translation>
+        <translation>Слой не является векторным</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Текущий слой не является векторным</translation>
+        <translation>Текущий слой не является векторным</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Нередактируемый слой</translation>
+        <translation>Нередактируемый слой</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
+        <translation>Не удалось внести изменения в векторный слой. Для редактирования слоя, щёлкните на его имени в легенде правой кнопкой мыши и выберите «Режим редактирования».</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Ошибка преобразования координат</translation>
+        <translation>Ошибка преобразования координат</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Не удалось преобразовать точку в систему координат слоя</translation>
+        <translation>Не удалось преобразовать точку в систему координат слоя</translation>
     </message>
 </context>
 <context>
@@ -10606,7 +10662,8 @@ Do you want to overwrite it?</source>
     <message>
         <source>%1 exists.
 Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 уже существует.
+Вы хотите перезаписать этот файл?</translation>
     </message>
 </context>
 <context>
@@ -10877,23 +10934,26 @@ Extended error information:
 
 Extended error information:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось соединиться — проверьте параметры и попробуйте ещё раз.
+
+Дополнительная информация:
+%1</translation>
     </message>
     <message>
         <source>prefer</source>
-        <translation type="unfinished"></translation>
+        <translation>предпочитать</translation>
     </message>
     <message>
         <source>require</source>
-        <translation type="unfinished"></translation>
+        <translation>требовать</translation>
     </message>
     <message>
         <source>allow</source>
-        <translation type="unfinished"></translation>
+        <translation>разрешить</translation>
     </message>
     <message>
         <source>disable</source>
-        <translation type="unfinished"></translation>
+        <translation>запретить</translation>
     </message>
 </context>
 <context>
@@ -10928,7 +10988,7 @@ Extended error information:
     </message>
     <message>
         <source>Username</source>
-        <translation>Имя пользователя</translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
         <source>Name</source>
@@ -10988,7 +11048,7 @@ Extended error information:
     </message>
     <message>
         <source>SSL mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим SSL</translation>
     </message>
 </context>
 <context>
@@ -11017,42 +11077,57 @@ Extended error information:
         <source>Connection details</source>
         <translation>Параметры соединения</translation>
     </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation>Если для доступа к WMS требуется авторизация, введите имя пользователя и пароль</translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation>Пользователь</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>Пароль</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
-        <translation type="unfinished">Проверка соединения</translation>
+        <translation>Проверка соединения</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again.
 
 Extended error information:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось соединиться — проверьте параметры и попробуйте ещё раз.
+
+Дополнительная информация:
+%1</translation>
     </message>
     <message>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished">Успешное соединение с %1</translation>
+        <translation>Успешное соединение с %1</translation>
     </message>
 </context>
 <context>
     <name>QgsNewOgrConnectionBase</name>
     <message>
         <source>Create a New OGR Database connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать новое OGR-соединение с базой данных</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished">Информация о соединении</translation>
+        <translation>Информация о соединении</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished">Сохранить пароль</translation>
+        <translation>Сохранить пароль</translation>
     </message>
     <message>
         <source>Test Connect</source>
-        <translation type="unfinished">Проверить соединение</translation>
+        <translation>Проверить соединение</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -11060,51 +11135,51 @@ Extended error information:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Имя</translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished">Узел</translation>
+        <translation>Узел</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">База данных</translation>
+        <translation>База данных</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">Порт</translation>
+        <translation>Порт</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished">Имя пользователя</translation>
+        <translation>Имя пользователя</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">Пароль</translation>
+        <translation>Пароль</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Имя нового соединения</translation>
+        <translation>Имя нового соединения</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -11212,11 +11287,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsOGRSublayersDialogBase</name>
     <message>
         <source>Select OGR layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите слои для загрузки</translation>
     </message>
     <message>
         <source>Sub layers list</source>
-        <translation type="unfinished"></translation>
+        <translation>Подчинённые слои</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -11227,281 +11302,288 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependant. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;В этом списке перечислены все слои, доступные в источнике данных выбранного слоя. Для загрузки может быть выбран один или несколько слоёв. Выбранные слои будут загружены после нажатия «OK».&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Имена слоёв зависят от исходного формата. Обратитесь к документации OGR или документации по формату данных для более подробного описания представленной информации.&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Внимание: &lt;/span&gt;выбор уже открытого слоя не является ошибкой и такой слой может быть загружен дважды!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>QgsOpenVectorLayerDialog</name>
     <message>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation type="unfinished">Открыть OGR-совместимый векторный слой</translation>
+        <translation>Открыть OGR-совместимый векторный слой</translation>
     </message>
     <message>
         <source>Open Directory</source>
-        <translation type="unfinished">Открыть каталог</translation>
+        <translation>Открыть каталог</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Подтвердите удаление</translation>
+        <translation>Подтвердите удаление</translation>
     </message>
     <message>
         <source>Password for </source>
-        <translation type="unfinished">Пароль для </translation>
+        <translation>Пароль для </translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Пожалуйста, введите ваш пароль:</translation>
+        <translation>Пожалуйста, введите ваш пароль:</translation>
     </message>
 </context>
 <context>
     <name>QgsOpenVectorLayerDialogBase</name>
     <message>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить векторный слой</translation>
     </message>
     <message>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип источника</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished">Каталог</translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">База данных</translation>
+        <translation>База данных</translation>
     </message>
     <message>
         <source>Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <source>Encoding :</source>
-        <translation type="unfinished"></translation>
+        <translation>Кодировка:</translation>
     </message>
     <message>
         <source>BIG5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>BIG5-HKSCS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>EUCJP</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>EUCKR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GB2312</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GBK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>GB18030</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>JIS7</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>SHIFT-JIS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>TSCII</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>UTF-16</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>KOI8-R</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>KOI8-U</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-6</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-7</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-8</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-8-I</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-9</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-10</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-11</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-12</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-13</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-14</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>ISO8859-15</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>IBM 850</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>IBM 866</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP874</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1250</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1251</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1252</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1253</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1254</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1255</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1256</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1257</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CP1258</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Apple Roman</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>TIS-620</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>URI</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Source</source>
-        <translation type="unfinished">Источник</translation>
+        <translation>Источник</translation>
     </message>
     <message>
         <source>Dataset</source>
-        <translation type="unfinished">Набор данных</translation>
+        <translation>Набор данных</translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Обзор</translation>
+        <translation>Обзор</translation>
     </message>
     <message>
         <source>Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединения</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
 </context>
 <context>
@@ -11544,39 +11626,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Detected active locale on your system: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Обнаруженный системный язык: %1</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Нулевая</translation>
+        <translation>Без маркера</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>единиц карты</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>пикселей</translation>
     </message>
     <message>
         <source>Central point (fastest)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Central point (быстрый)</translation>
     </message>
     <message>
         <source>Chain (fast)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Chain (менее быстрый)</translation>
     </message>
     <message>
         <source>Popmusic tabu chain (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Popmusic tabu chain (медленный)</translation>
     </message>
     <message>
         <source>Popmusic tabu (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Popmusic tabu (медленный)</translation>
     </message>
     <message>
         <source>Popmusic chain (very slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Popmusic chain (очень медленный)</translation>
     </message>
 </context>
 <context>
@@ -11871,89 +11953,89 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввод значений атрибутов</translation>
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Не показывать всплывающее окно ввода атрибутов для каждого создаваемого объекта</translation>
     </message>
     <message>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип прокси</translation>
     </message>
     <message>
         <source>Exclude URLs:</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнорируемые узлы:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Наложение</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished">Позиция</translation>
+        <translation>Позиционирование</translation>
     </message>
     <message>
         <source>Placement algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Алгоритм размещения:</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>единиц карты</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>пикселей</translation>
     </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
     <message>
         <source>Select GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Выбрать GeoRaster</translation>
     </message>
     <message>
         <source>Open a Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Открыть слой Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>&amp;Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Oracle Spatial</translation>
     </message>
 </context>
 <context>
     <name>QgsOracleSelectGeoraster</name>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Подтвердите удаление</translation>
+        <translation>Подтвердите удаление</translation>
     </message>
     <message>
         <source>Password for %1/&lt;password&gt;@%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль для %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Пожалуйста, введите ваш пароль:</translation>
+        <translation>Пожалуйста, введите ваш пароль:</translation>
     </message>
     <message>
         <source>Open failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия</translation>
     </message>
     <message>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось соединиться с %1. Пожалуйста, проверьте параметры соединения и убедитесь, что в системе установлен модуль GDAL «GeoRaster».</translation>
     </message>
 </context>
 <context>
@@ -12069,20 +12151,21 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create a buffer for a PostgreSQL layer. A new layer is created in the database with the buffered features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать слой буферных зон для слоя PostgreSQL. В базе данных будет создан новый слой, содержащий буферные зоны.</translation>
     </message>
     <message>
         <source>Unable to add geometry column to the output table %1-%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось добавить поле геометрии в выходную таблицу %1-%2</translation>
     </message>
     <message>
         <source>Failed to create the output table %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать выходную таблицу %1</translation>
     </message>
     <message>
         <source>%1 is not a PostgreSQL/PostGIS layer.
 Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является слоем PostgreSQL/PostGIS.
+Функции модуля обработки данных доступны только для слоёв PostgreSQL/PostGIS</translation>
     </message>
 </context>
 <context>
@@ -12150,25 +12233,27 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     <message>
         <source>Connection to the database failed:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться к базе данных:
+%1</translation>
     </message>
     <message>
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Ошибка получения образцов значений полей по SQL-запросу:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Получено сообщение об ошибке: %2&lt;/p&gt;</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>По условию WHERE получена %n строка.</numerusform>
+            <numerusform>По условию WHERE получено %n строки.</numerusform>
+            <numerusform>По условию WHERE получено %n строк.</numerusform>
         </translation>
     </message>
     <message>
         <source>An error occurred when executing the query:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>При выполнении запроса возникла ошибка:
+%1</translation>
     </message>
 </context>
 <context>
@@ -12362,7 +12447,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation>Удаление невозможно! Каталог модулей не существует:</translation>
+        <translation>Удаление невозможно! Каталог модулей не обнаружен:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -12374,11 +12459,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished"></translation>
+        <translation>Конфликт модулей QGIS:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обнаружен устаревший модуль, который делает невозможной загрузку модуля, поставляемого с этой версией QGIS. Возможно этот модуль остался после предыдущей установки QGIS. Используйте установщик модулей для его удаления, чтобы сделать возможной загрузку включенной в QGIS версии.</translation>
     </message>
 </context>
 <context>
@@ -12421,7 +12506,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation>Репозиторий заблокирован по причине несовместимости с вашей версией Quantum GIS</translation>
+        <translation>Репозиторий заблокирован ввиду несовместимости с вашей версией Quantum GIS</translation>
     </message>
     <message>
         <source>orphans</source>
@@ -12550,7 +12635,7 @@ p, li { white-space: pre-wrap; }
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
         <translation>Модуль был установлен, но не был обнаружен после установки. Вероятно, архив модуля содержал каталог с неверным именем.
-Пожалуйста, просмотрите список установленных модулей. Скорее всего, модуль будет в этом списке, но Quantum GIS не сможет определить, который из них. Кроме того, это означает что будет невозможно определить состояние модуля и наличие обновлений. Тем не менее, модуль может работать. Пожалуйста, свяжитесь с его автором и сообщите об этой ошибке.</translation>
+Пожалуйста, просмотрите список установленных модулей. Скорее всего, модуль будет в этом списке, но Quantum GIS не сможет определить, который из них. Кроме того, это означает что состояние модуля и наличие обновлений будет невозможно определить. Тем не менее, модуль может работать. Пожалуйста, свяжитесь с его автором и сообщите об этой ошибке.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -12652,7 +12737,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы собираетесь добавить один или несколько репозиториев, которые не поддерживаются командой Quantum GIS. Авторы модулей, как правило, стараются сделать свои программы полезными и безопасными, но мы не можем нести за них никакую ответственность.</translation>
     </message>
 </context>
 <context>
@@ -12795,35 +12880,35 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Параметры</translation>
+        <translation>Параметры</translation>
     </message>
     <message>
         <source>Configuration of the plugin installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры установки модулей</translation>
     </message>
     <message>
         <source>every time QGIS starts</source>
-        <translation type="unfinished"></translation>
+        <translation>при каждом запуске QGIS</translation>
     </message>
     <message>
         <source>once a day</source>
-        <translation type="unfinished"></translation>
+        <translation>ежедневно</translation>
     </message>
     <message>
         <source>every 3 days</source>
-        <translation type="unfinished"></translation>
+        <translation>каждые 3 дня</translation>
     </message>
     <message>
         <source>every week</source>
-        <translation type="unfinished"></translation>
+        <translation>еженедельно</translation>
     </message>
     <message>
         <source>every 2 weeks</source>
-        <translation type="unfinished"></translation>
+        <translation>каждые 2 недели</translation>
     </message>
     <message>
         <source>every month</source>
-        <translation type="unfinished"></translation>
+        <translation>ежемесячно</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -12831,23 +12916,27 @@ You need to restart Quantum GIS in order to reload it.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Внимание:&lt;/span&gt; При включении этой функции, Quantum GIS будет уведомлять вас о наличии новых и обновлённых модулей. В противном случае, обновление репозиториев будет производиться всякий раз при открытии окна установки модулей.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Allowed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешённые модули</translation>
     </message>
     <message>
         <source>Only show plugins from the official repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать модули только из официального репозитория</translation>
     </message>
     <message>
         <source>Show all plugins except those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать все модули, кроме помеченных как экспериментальные</translation>
     </message>
     <message>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать все модули, включая помеченные как экспериментальные</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -12855,7 +12944,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Внимание:&lt;/span&gt; Экспериментальные модули, как правило, непригодны для использования в работе. Эти модули находятся на ранних стадиях разработки и могут рассматриваться как «неполные» или «демонстрационные» инструменты. Такие модули не рекомендуется использовать в QGIS, за исключением тестирования.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -12952,7 +13045,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>Не удалось распаковать архив модуля. Возможно, файл повреждён или отсутствует в репозитории. Данная ошибка может возникать по причине отсутствия прав на запись в каталог модулей:</translation>
+        <translation>Не удалось распаковать архив модуля. Возможно, файл повреждён или отсутствует в репозитории. Данная ошибка также может возникать при отсутствии прав на запись в каталог модулей:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
@@ -12989,7 +13082,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>Модуль недействителен или имеет неудовлетворённые зависимости. Установка прошла успешно, но модуль не может быть загружен. Если вам действительно необходим данный модуль, вы можете связаться с его автором через &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;группу пользователей QGIS&lt;/a&gt; и попытаться разрешить проблему. Если нет, вы можете просто его удалить. Подробная информация об ошибке приведена ниже:</translation>
+        <translation>Модуль недействителен или имеет неудовлетворённые зависимости. Установка прошла успешно, но модуль не может быть загружен. Если вам действительно необходим этот модуль, вы можете связаться с его автором через &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;группу пользователей QGIS&lt;/a&gt; и попытаться разрешить проблему. Если нет, вы можете просто его удалить. Подробная информация об ошибке приведена ниже:</translation>
     </message>
     <message>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
@@ -13051,15 +13144,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No QGIS plugins found in %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Модули QGIS не найдены в %1</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Ошибка</translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <source>Failed to open plugin installer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть установщик модулей!</translation>
     </message>
 </context>
 <context>
@@ -13086,7 +13179,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugin Installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Установщик модулей</translation>
     </message>
 </context>
 <context>
@@ -13169,15 +13262,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Аффинное преобразование требует изменения оригинального растрового файла. В данный момент, эта функция не поддерживается.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Аффинное преобразование требует изменения оригинального растрового файла. Эта функция не поддерживается в настоящий момент.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The </source>
-        <translation type="obsolete">&lt;p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Преобразование </translation>
     </message>
     <message>
         <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="obsolete"> преобразование в настоящий момент не поддерживается.&lt;/p&gt;</translation>
+        <translation type="obsolete"> не поддерживается в настоящий момент.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error</source>
@@ -13185,11 +13278,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to </source>
-        <translation type="obsolete">Не удалось сохранить в </translation>
+        <translation type="obsolete">Не удалось произвести запись в </translation>
     </message>
     <message>
         <source>Currently all modified files will be written in TIFF format.</source>
-        <translation>В данный момент все изменённые файлы сохраняются в формате TIFF.</translation>
+        <translation>Изменённый файл будет сохранён в формате TIFF.</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Helmert transform requires modifications in the raster layer.&lt;/p&gt;&lt;p&gt;The modified raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
@@ -13202,31 +13295,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select GCPs file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите файл опорных точек</translation>
     </message>
     <message>
         <source>GCPs points (*.points)</source>
-        <translation type="unfinished"></translation>
+        <translation>Опорные точки (*.points)</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <source>GCPs was not loaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Опорные точки не были загружены.</translation>
     </message>
     <message>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка!</translation>
     </message>
     <message>
         <source>&lt;p&gt;Modified raster file exists! Overwrite it?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Изменённый растровый файл уже существует! Вы хотите перезаписать его?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>World file exists</source>
-        <translation type="unfinished">Файл привязки уже существует</translation>
+        <translation>Файл привязки уже существует</translation>
     </message>
     <message>
         <source>&lt;p&gt;The selected file already seems to have a </source>
@@ -13242,63 +13335,63 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Polynomial 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Полиномиальное 1</translation>
     </message>
     <message>
         <source>&lt;p&gt;A Polynomial transform requires changing the raster layer.&lt;/p&gt;&lt;p&gt;The changed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Полиномиальное преобразование требует изменения исходного слоя.&lt;/p&gt;&lt;p&gt;Изменённый растр будет сохранён в новом файле и файл привязки будет создан уже для нового файла.&lt;/p&gt;&lt;p&gt;Вы уверены, что хотите продолжить?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Requires at least 3 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Для этого типа преобразования необходимы как минимум 3 точки</translation>
     </message>
     <message>
         <source>Polynomial 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Полиномиальное 2</translation>
     </message>
     <message>
         <source>Requires at least 6 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Для этого типа преобразования необходимо как минимум 6 точек</translation>
     </message>
     <message>
         <source>Polynomial 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Полиномиальное 3</translation>
     </message>
     <message>
         <source>Requires at least 10 points</source>
-        <translation type="unfinished"></translation>
+        <translation>Для этого типа преобразования необходимо как минимум 10 точек</translation>
     </message>
     <message>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось расчитать преобразование. Это преобразование неразрешимо.</translation>
     </message>
     <message>
         <source>Choose a raster file</source>
-        <translation type="unfinished">Выберите растровый файл</translation>
+        <translation>Выберите растровый файл</translation>
     </message>
     <message>
         <source>Raster files (*.*)</source>
-        <translation type="unfinished">Растровые файлы (*.*)</translation>
+        <translation>Растровые файлы (*.*)</translation>
     </message>
     <message>
         <source>The selected file is not a valid raster file.</source>
-        <translation type="unfinished">Выбранный файл не является действительным растровым файлом.</translation>
+        <translation>Выбранный файл не является действительным растровым файлом.</translation>
     </message>
     <message>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Для выбранного файла уже существует файл привязки! Заменить его новым файлом привязки?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The %1 transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Преобразование «%1» не поддерживается в настоящий момент.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось произвести запись в %1</translation>
     </message>
 </context>
 <context>
@@ -13357,26 +13450,26 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster file:</source>
-        <translation type="unfinished">Растровый файл:</translation>
+        <translation>Растровый файл:</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <source>Save GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить точки</translation>
     </message>
     <message>
         <source>Load GCPs</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить точки</translation>
     </message>
 </context>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation>Не удаётся открыть реляцию</translation>
+        <translation>Не удалось открыть реляцию</translation>
     </message>
     <message>
         <source>Unable to access the </source>
@@ -13434,7 +13527,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>Unable to find a key column</source>
-        <translation>Не удаётся найти ключевое поле</translation>
+        <translation>Не удалось найти ключевое поле</translation>
     </message>
     <message>
         <source> derives from </source>
@@ -13442,7 +13535,7 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source>and is suitable.</source>
-        <translation>пригодно для работы.</translation>
+        <translation>и пригодно для работы.</translation>
     </message>
     <message>
         <source>and is not suitable </source>
@@ -13454,11 +13547,11 @@ primary key) or has a PostgreSQL oid column.
     </message>
     <message>
         <source> and has a suitable constraint)</source>
-        <translation> и есть подходящее ограничение)</translation>
+        <translation> и имеет подходящее ограничение)</translation>
     </message>
     <message>
         <source> and does not have a suitable constraint)</source>
-        <translation> и нет подходящего ограничения)</translation>
+        <translation> и не имеет подходящего ограничения)</translation>
     </message>
     <message>
         <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -13563,56 +13656,66 @@ primary key) or has a PostgreSQL oid column.
     <message>
         <source>Unable to access the %1 relation.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть реляцию %1.
+</translation>
     </message>
     <message>
         <source>The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение базы данных:
+%1.
+SQL: %2</translation>
     </message>
     <message>
         <source>Unable to determine table access privileges for the %1 relation.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось определить привилегии доступа к таблице для реляции %1.
+</translation>
     </message>
     <message>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Уникальный индекс по полю «%1» непригоден, поскольку QGIS в настоящее время не поддерживает ключевые поля, типом которых не является int4.
+</translation>
     </message>
     <message>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Уникальный индекс по полю «%1» непригоден, поскольку QGIS в настоящее время не поддерживает ключи из нескольких полей.
+</translation>
     </message>
     <message>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
-        <translation type="unfinished"></translation>
+        <translation>«%1» происходит от «%2.%3.%4» </translation>
     </message>
     <message>
         <source>and is not suitable (type is %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>и непригодно для работы (тип: %1)</translation>
     </message>
     <message>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Внимание: индекс %1 изначально определился как пригодный, но оказался непригодным, поскольку не содержит уникальных данных.
+</translation>
     </message>
     <message>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид «%1.%2» не имеет поля, пригодного в качестве уникального ключа.
+QGIS требует, чтобы вид имел поле, пригодное в качестве уникального ключа. Такое поле должно происходить от табличного поля типа int4 и являться первичным ключом, иметь ограничение уникальности или являться системным полем «oid». Для повышения производительности, поле также должно быть проиндексировано.
+Вид, который вы выбрали имеет следующие поля, не соответствующие этим требованиям:</translation>
     </message>
     <message>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле %1 в таблице %2 имеет неподдерживаемый тип геометрии — %3.</translation>
     </message>
     <message>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось определить тип и SRID поля %1 таблицы %2. Сообщение базы данных:
+</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key.
@@ -13622,7 +13725,12 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Таблица не имеет поля, подходящего в качестве ключевого.
+
+Для успешной работы QGIS требуется, чтобы в таблице имелось
+поле типа int4 с ограничением уникальности (которое включает
+первичный ключ), служебное поле «oid» или поле «ctid»
+с 16-битными блочными значениями.</translation>
     </message>
 </context>
 <context>
@@ -13641,39 +13749,40 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     </message>
     <message>
         <source>No PostGIS Support!</source>
-        <translation type="unfinished"></translation>
+        <translation>Поддержка PostGIS не установлена!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>В базе данных не установлена поддержка PostGIS.
+</translation>
     </message>
 </context>
 <context>
     <name>QgsProject</name>
     <message>
         <source>Unable to open %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть %1</translation>
     </message>
     <message>
         <source>Project file read error: %1 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения файла проекта: %1 в строке %2, столбце %3</translation>
     </message>
     <message>
         <source>%1 for file %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 в файле %2</translation>
     </message>
     <message>
         <source>Unable to save to file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить файл %1</translation>
     </message>
     <message>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 не является записываемым файлом. Пожалуйста, исправьте права доступа (если возможно) и попробуйте ещё раз.</translation>
     </message>
     <message>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить файл %1. Файл проекта на диске может быть испорчен. Попробуйте освободить дисковое пространство и проверить права доступа, прежде чем вы попытаетесь сохранить проект повторно.</translation>
     </message>
 </context>
 <context>
@@ -13846,15 +13955,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>CRS ID : 100000</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CRS ID : 3344</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>CRS ID : whatever</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -13925,7 +14034,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, подождите, пока файл будет сформирован</translation>
     </message>
 </context>
 <context>
@@ -14108,31 +14217,35 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>%1 and all other files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 и другие файлы (*)</translation>
+    </message>
+    <message>
+        <source>Band%1</source>
+        <translation type="obsolete">Канал%1</translation>
     </message>
     <message>
         <source>X: %1 Y: %2 Bands: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>X: %1 Y: %2 Каналы: %3</translation>
     </message>
     <message>
         <source>Project Spatial Reference System: </source>
-        <translation type="unfinished"></translation>
+        <translation>Система координат проекта: </translation>
     </message>
     <message>
         <source>QgsRasterLayer created</source>
-        <translation type="unfinished"></translation>
+        <translation>Создан QgsRasterLayer</translation>
     </message>
     <message>
         <source>Retrieving stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Получение статистики для %1</translation>
     </message>
     <message>
         <source>Calculating stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Расчёт статистики для %1</translation>
     </message>
     <message>
         <source>Retrieving using %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка с использованием %1</translation>
     </message>
 </context>
 <context>
@@ -14367,9 +14480,12 @@ Because of this the projection selector will not work...</source>
         <source>Load Color Map</source>
         <translation>Загрузка цветовой карты</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>The color map for Band %n failed to load</source>
-        <translation type="obsolete">Не удалось загрузить цветовую карту для канала %n
+        <translation type="obsolete">
+            <numerusform>Не удалось загрузить цветовую карту для канала %n</numerusform>
+            <numerusform>Не удалось загрузить цветовую карту для канала %n</numerusform>
+            <numerusform>Не удалось загрузить цветовую карту для канала %n</numerusform>
         </translation>
     </message>
     <message>
@@ -14401,37 +14517,39 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Default R:%1 G:%2 B:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>По умолчанию R:%1 G:%2 B:%3</translation>
     </message>
     <message>
         <source>Columns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Столбцов: %1</translation>
     </message>
     <message>
         <source>Rows: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Строк: %1</translation>
     </message>
     <message>
         <source>No-Data Value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Значение «нет данных»: %1</translation>
     </message>
     <message>
         <source>Write access denied. Adjust the file permissions and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрыт доступ на запись. Исправьте права доступа к файлу и попробуйте ещё раз.</translation>
     </message>
     <message>
         <source>The following lines contained errors
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующие строки содержат ошибки
+
+%1</translation>
     </message>
     <message>
         <source>The color map for band %1 failed to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить цветовую карту для канала %1</translation>
     </message>
     <message>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный формат стиля: %1</translation>
     </message>
 </context>
 <context>
@@ -14881,58 +14999,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Starting %1...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Запуск %1...&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Unable to run command
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось выполнить команду
+%1</translation>
     </message>
     <message>
         <source>Unable to run command %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось выполнить команду %1</translation>
     </message>
 </context>
 <context>
     <name>QgsSVGDiagramFactoryWidget</name>
     <message>
         <source>Select svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите SVG-файл</translation>
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите новый каталог изображений</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание миниатюры для %1</translation>
     </message>
 </context>
 <context>
     <name>QgsSVGDiagramFactoryWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в каталогах</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished">Добавить...</translation>
+        <translation>Добавить...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>SVG Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Предпросмотр SVG</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished">Обзор...</translation>
+        <translation>Обзор...</translation>
     </message>
 </context>
 <context>
@@ -15115,9 +15234,12 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsSearchQueryBuilder</name>
-    <message>
+    <message numerus="yes">
         <source>Found %d matching features.</source>
-        <translation type="obsolete">Найдено %d подходящих объектов.
+        <translation type="obsolete">
+            <numerusform>Найден %d подходящий объект.</numerusform>
+            <numerusform>Найдено %d подходящих объекта.</numerusform>
+            <numerusform>Найдено %d подходящих объектов.</numerusform>
         </translation>
     </message>
     <message>
@@ -15147,10 +15269,10 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Найден %n подходящий объект.</numerusform>
+            <numerusform>Найдено %n подходящих объекта.</numerusform>
+            <numerusform>Найдено %n подходящих объектов.</numerusform>
         </translation>
     </message>
 </context>
@@ -15184,9 +15306,12 @@ p, li { white-space: pre-wrap; }
         <source>You must select at least one layer first.</source>
         <translation type="obsolete">Для добавления следует выбрать хотя бы один слой.</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">Система координат (доступно %1)
+        <translation type="obsolete">
+            <numerusform>Система координат (доступна %1)</numerusform>
+            <numerusform>Система координат (доступно %1)</numerusform>
+            <numerusform>Система координат (доступно %1)</numerusform>
         </translation>
     </message>
     <message>
@@ -15215,39 +15340,49 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Система координат (доступна %n)</numerusform>
+            <numerusform>Система координат (доступно %n)</numerusform>
+            <numerusform>Система координат (доступно %n)</numerusform>
         </translation>
     </message>
     <message>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка обработки ответа. Сообщение источника %1:
+%2</translation>
     </message>
     <message>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка обработки ответа. Сообщение источника %1:
+%2</translation>
     </message>
     <message>
         <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Необходимо выбрать по крайней мере один подчинённый слой.</translation>
     </message>
     <message>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединение %1 уже существует. Вы хотите перезаписать его?</translation>
     </message>
     <message>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>Подтвердите перезапись</translation>
+    </message>
+    <message>
+        <source>WMS Password for </source>
+        <translation type="obsolete">Пароль WMS для </translation>
+    </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation>Пароль WMS для %1</translation>
     </message>
 </context>
 <context>
@@ -15346,27 +15481,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Серверы</translation>
     </message>
     <message>
         <source>Server Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск серверов</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished">Поиск</translation>
+        <translation>Поиск</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Описание</translation>
+        <translation>Описание</translation>
     </message>
     <message>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить выбранный сервер в список</translation>
     </message>
 </context>
 <context>
@@ -15394,13 +15529,19 @@ p, li { white-space: pre-wrap; }
 The error was:
 %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>База данных вернула ошибку при выполнении SQL-запроса:
+%1
+Сообщение об ошибке:
+%2
+</translation>
     </message>
     <message>
         <source>The error was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Сообщение об ошибке:
+%1
+</translation>
     </message>
 </context>
 <context>
@@ -15565,11 +15706,11 @@ The error was:
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>единиц карты</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>пикселей</translation>
     </message>
 </context>
 <context>
@@ -15592,20 +15733,18 @@ The error was:
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished">Единицы</translation>
+        <translation>Единицы</translation>
     </message>
 </context>
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
         <source>SQLite error: %1
 
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка SQLite: %1
+
+SQL: %2</translation>
     </message>
 </context>
 <context>
@@ -15614,60 +15753,64 @@ SQL: %2</source>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться к %1:
+
+%2</translation>
     </message>
 </context>
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
         <source>Wildcard</source>
-        <translation type="unfinished">Шаблон</translation>
+        <translation>Шаблон</translation>
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="unfinished">Рег. выражение</translation>
+        <translation>Рег. выражение</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished">Все</translation>
+        <translation>Все</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Таблица</translation>
+        <translation>Таблица</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Поле геометрии</translation>
+        <translation>Поле геометрии</translation>
     </message>
     <message>
         <source>SpatiaLite DB Open Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при загрузке базы SpatiaLite</translation>
     </message>
     <message>
         <source>Failure while connecting to: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подключиться к %1:
+
+%2</translation>
     </message>
     <message>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="unfinished"></translation>
+        <translation>является действительной базой SQLite, но не поддерживает SpatiaLite...</translation>
     </message>
     <message>
         <source>unknown error cause</source>
-        <translation type="unfinished"></translation>
+        <translation>причина ошибки не установлена</translation>
     </message>
     <message>
         <source> @ </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите базу данных SpatiaLite/SQLite</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the </source>
@@ -15679,123 +15822,125 @@ SQL: %2</source>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Подтвердите удаление</translation>
+        <translation>Подтвердите удаление</translation>
     </message>
     <message>
         <source>Select Table</source>
-        <translation type="unfinished">Выберите таблицу</translation>
+        <translation>Выберите таблицу</translation>
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
-        <translation type="unfinished">Для добавления слоя необходимо выбрать таблицу.</translation>
+        <translation>Для добавления слоя необходимо выбрать таблицу.</translation>
     </message>
     <message>
         <source>SpatiaLite getTableInfo Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка SpatiaLite getTableInfo</translation>
     </message>
     <message>
         <source>Failure exploring tables from: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка анализа таблиц из: %1
+
+%2</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
 </context>
 <context>
     <name>QgsSpatiaLiteSourceSelectBase</name>
     <message>
         <source>Add SpatiaLite Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить таблицы SpatiaLite</translation>
     </message>
     <message>
         <source>SpatiaLite DBs</source>
-        <translation type="unfinished"></translation>
+        <translation>Базы данных SpatiaLite</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать</translation>
     </message>
     <message>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Подключиться</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Добавить</translation>
+        <translation>Добавить</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <source>Search:</source>
-        <translation type="unfinished">Поиск:</translation>
+        <translation>Поиск:</translation>
     </message>
     <message>
         <source>Search mode:</source>
-        <translation type="unfinished">Режим поиска:</translation>
+        <translation>Режим поиска:</translation>
     </message>
     <message>
         <source>Search in columns:</source>
-        <translation type="unfinished">Искать в полях:</translation>
+        <translation>Искать в полях:</translation>
     </message>
     <message>
         <source>Search options...</source>
-        <translation type="unfinished">Поиск...</translation>
+        <translation>Поиск...</translation>
     </message>
 </context>
 <context>
     <name>QgsSpatiaLiteTableModel</name>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Таблица</translation>
+        <translation>Таблица</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Поле геометрии</translation>
+        <translation>Поле геометрии</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Точка</translation>
+        <translation>Точка</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="unfinished">Мультиточка</translation>
+        <translation>Мультиточка</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Линия</translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="unfinished">Мультилиния</translation>
+        <translation>Мультилиния</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Полигон</translation>
+        <translation>Полигон</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="unfinished">Мультиполигон</translation>
+        <translation>Мультиполигон</translation>
     </message>
 </context>
 <context>
@@ -16044,41 +16189,47 @@ SQL: %2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение [%1] и связанные с ним параметры?</translation>
     </message>
     <message>
         <source>[Global Schema] - set the schema for all files to be imported into</source>
-        <translation type="unfinished"></translation>
+        <translation>[Общая схема] — схема, в которую будут загружены все указанные файлы</translation>
     </message>
     <message>
         <source>Password for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль для %1</translation>
     </message>
     <message>
         <source>%1
 Invalid table name.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Неверное имя таблицы.</translation>
     </message>
     <message>
         <source>%1
 No fields detected.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Поля не выбраны.</translation>
     </message>
     <message>
         <source>%1
 The following fields are duplicates:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Следующие поля являются дубликатами:
+%2</translation>
     </message>
     <message>
         <source>Importing files
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт файлов
+%1</translation>
     </message>
     <message>
         <source>%1
 &lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;The database said:%3&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+&lt;p&gt;Ошибка при выполнении SQL:&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Сообщение базы данных:%3&lt;/p&gt;</translation>
     </message>
     <message>
         <source>The Shapefile:
@@ -16089,7 +16240,15 @@ To avoid data loss change the &quot;DB Relation Name&quot;
 for this Shapefile in the main dialog file list.
 
 Do you want to overwrite the [%2] relation?</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape-файл:
+%1
+будет загружен в реляцию [%2], которая
+уже существует и, возможно, содержит данные.
+Чтобы избежать потери данных, рекомендуется
+изменить параметр «Имя реляции БД» для этого
+файла в списке файлов диалога загрузки.
+
+Вы хотите перезаписать реляцию [%2]?</translation>
     </message>
 </context>
 <context>
@@ -16274,7 +16433,7 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsVectorLayer</name>
     <message>
         <source>ERROR: no provider</source>
-        <translation>ОШИБКА: отсутствует источник</translation>
+        <translation>ОШИБКА: источник отсутствует</translation>
     </message>
     <message>
         <source>ERROR: layer not editable</source>
@@ -16347,114 +16506,114 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: удалён %n атрибут.</numerusform>
+            <numerusform>.УСПЕХ: удалено %n атрибута.</numerusform>
+            <numerusform>УСПЕХ: удалено %n атрибутов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не удалён %n атрибут.</numerusform>
+            <numerusform>ОШИБКА: не удалены %n атрибута.</numerusform>
+            <numerusform>ОШИБКА: не удалено %n атрибутов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: добавлен %n атрибут.</numerusform>
+            <numerusform>УСПЕХ: добавлено %n атрибута.</numerusform>
+            <numerusform>УСПЕХ: добавлено %n атрибутов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не добавлен %n атрибут</numerusform>
+            <numerusform>ОШИБКА: не добавлено %n атрибута</numerusform>
+            <numerusform>ОШИБКА: не добавлено %n атрибутов</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: изменено %n значение атрибута.</numerusform>
+            <numerusform>УСПЕХ: изменено %n значения атрибутов.</numerusform>
+            <numerusform>УСПЕХ: изменено %n значений атрибутов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не применено %n изменение значения атрибута.</numerusform>
+            <numerusform>ОШИБКА: не применено %n изменения значений атрибутов.</numerusform>
+            <numerusform>ОШИБКА: не применено %n изменений значений атрибутов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: добавлен %n объект.</numerusform>
+            <numerusform>УСПЕХ: добавлено %n объекта.</numerusform>
+            <numerusform>УСПЕХ: добавлено %n объектов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не добавлен %n объект.</numerusform>
+            <numerusform>ОШИБКА: не добавлено %n объекта.</numerusform>
+            <numerusform>ОШИБКА: не добавлено %n объектов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: изменена %n геометрия.</numerusform>
+            <numerusform>УСПЕХ: изменено %n геометрии.</numerusform>
+            <numerusform>УСПЕХ: изменено %n геометрий.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не изменена %n геометрия.</numerusform>
+            <numerusform>ОШИБКА: не изменено %n геометрии.</numerusform>
+            <numerusform>ОШИБКА: не изменено %n геометрий.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>УСПЕХ: удалён %n объект.</numerusform>
+            <numerusform>УСПЕХ: удалено %n объекта.</numerusform>
+            <numerusform>УСПЕХ: удалено %n объектов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>ОШИБКА: не удалёно %n объект.</numerusform>
+            <numerusform>ОШИБКА: не удалено %n объекта.</numerusform>
+            <numerusform>ОШИБКА: не удалено %n объектов.</numerusform>
         </translation>
     </message>
     <message>
         <source>Unknown renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный объект отрисовки</translation>
     </message>
 </context>
 <context>
@@ -16485,7 +16644,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation>Этот запрос используется для ограничения доступа к объектам слоя. В данный момент поддерживаются только слои PostgreSQL. Для создания или изменения запроса кликните на кнопке «Конструктор запросов»</translation>
+        <translation>Этот запрос используется для ограничения доступа к объектам слоя. В настоящий момент поддерживаются только слои PostgreSQL. Для создания или изменения запроса кликните на кнопке «Конструктор запросов»</translation>
     </message>
     <message>
         <source>Spatial Index</source>
@@ -16653,7 +16812,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Creation of spatial index successful</source>
-        <translation> Пространственный индекс успешно создан</translation>
+        <translation>Пространственный индекс успешно создан</translation>
     </message>
     <message>
         <source>file name</source>
@@ -16661,55 +16820,55 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="unfinished"></translation>
+        <translation>Прозрачность: %1%</translation>
     </message>
     <message>
         <source>Layer comment: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Комментарий слоя: %1</translation>
     </message>
     <message>
         <source>Storage type of this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип хранилища слоя: %1</translation>
     </message>
     <message>
         <source>Source for this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Источник слоя: %1</translation>
     </message>
     <message>
         <source>Geometry type of the features in this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип геометрии объектов в слое: %1</translation>
     </message>
     <message>
         <source>The number of features in this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество объектов в слое: %1</translation>
     </message>
     <message>
         <source>Editing capabilities of this layer: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Возможности редактирования слоя: %1</translation>
     </message>
     <message>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
-        <translation type="unfinished"></translation>
+        <translation>Xмин,Yмин %1,%2 : Xмакс,Yмакс %3,%4</translation>
     </message>
     <message>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation type="unfinished"></translation>
+        <translation>Система координат проекта (целевая):</translation>
     </message>
     <message>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Ошибка преобразования границ слоя)</translation>
     </message>
     <message>
         <source>Load layer properties from style file (.qml)</source>
-        <translation type="unfinished">Загрузить свойства слоя из файла стиля (.qml)</translation>
+        <translation>Загрузить свойства слоя из файла стиля (.qml)</translation>
     </message>
     <message>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный формат стиля: %1</translation>
     </message>
     <message>
         <source>Save layer properties as style file (.qml)</source>
-        <translation type="unfinished">Сохранить свойства слоя в файл стиля (.qml)</translation>
+        <translation>Сохранить свойства слоя в файле стиля (.qml)</translation>
     </message>
 </context>
 <context>
@@ -16859,11 +17018,11 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsWFSData</name>
     <message>
         <source>Loading WFS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка данных WFS</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Отменить</translation>
+        <translation>Отменить</translation>
     </message>
 </context>
 <context>
@@ -16900,7 +17059,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы уверены, что хотите удалить соединение %1 и связанные с ним параметры?</translation>
     </message>
 </context>
 <context>
@@ -16954,23 +17113,23 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsWKNDiagramFactoryWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Attributes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибуты:</translation>
     </message>
     <message>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить атрибут</translation>
     </message>
     <message>
         <source>Add attribute</source>
-        <translation type="unfinished">Добавить атрибут</translation>
+        <translation>Добавить атрибут</translation>
     </message>
 </context>
 <context>
@@ -17185,7 +17344,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation>Не удаётся опросить слой.</translation>
+        <translation>Не удалось опросить слой.</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -17198,33 +17357,36 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>
 Tried URL: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Используемый URL: %1</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить возможности WMS: %1 в строке %2, столбце %3
+</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось получить возможности WMS в ожидаемом формате (DTD): %1 или %2 не найдены
+</translation>
     </message>
     <message>
         <source>(No error code was reported)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Код ошибки не был получен)</translation>
     </message>
     <message>
         <source>(Unknown error code)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Неизвестный код ошибки)</translation>
     </message>
     <message>
         <source>GetFeatureInfoUrl</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Layer Properties:</source>
-        <translation type="unfinished"></translation>
+        <translation>Свойства слоя:</translation>
     </message>
 </context>
 <context>
@@ -17243,7 +17405,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unknown format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неизвестный формат: %1</translation>
     </message>
 </context>
 <context>
@@ -17312,146 +17474,146 @@ Tried URL: %1</source>
     <name>SelectGeoRasterBase</name>
     <message>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>Server Connections</source>
-        <translation type="unfinished">Соединения с серверами</translation>
+        <translation>Соединения с серверами</translation>
     </message>
     <message>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">&amp;Подключить</translation>
+        <translation>&amp;Подключить</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Правка</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Удалить</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Создать</translation>
+        <translation>&amp;Создать</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделение</translation>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished">Обновить</translation>
+        <translation>Обновить</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished">Готово</translation>
+        <translation>Готово</translation>
     </message>
     <message>
         <source>&amp;Select</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выбрать</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+L</translation>
+        <translation></translation>
     </message>
     <message>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Подчинённые наборы данных</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
     <message>
         <source>Alt+L</source>
-        <translation type="unfinished">Alt+P</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, укажите исходный векторный слой</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста, заполните исходное поле</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка геометрии</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибки геометрии</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Всего найдено ошибок</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Список уникальных значений</translation>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Уникальные значения:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Всего уникальных значений:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Базовая статистика</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Анализ близости</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Статистика близости</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Наблюдаемое среднее расстояние:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="unfinished"></translation>
+        <translation>Ожидаемое среднее расстояние:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="unfinished"></translation>
+        <translation>Индекс ближайших соседей: </translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished"></translation>
+        <translation>Объект %1 включает кольцо, выходящее за его границы</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished"></translation>
+        <translation>Объект %1 не замкнут</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished"></translation>
+        <translation>Объект %1 пересекает сам себя</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished"></translation>
+        <translation>Объект %1 имеет неверный порядок узлов</translation>
     </message>
 </context>
 <context>
@@ -17469,7 +17631,7 @@ Tried URL: %1</source>
     <name>dxf2shpConverter</name>
     <message>
         <source>Converts DXF files in Shapefile format</source>
-        <translation>Преобразование файлов формата dxf в shape-файлы</translation>
+        <translation>Преобразование файлов формата DXF в shape-файлы</translation>
     </message>
     <message>
         <source>&amp;Dxf2Shp</source>
@@ -17480,15 +17642,15 @@ Tried URL: %1</source>
     <name>dxf2shpConverterGui</name>
     <message>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished">Выберите загружаемый DXF-файл</translation>
+        <translation>Выберите загружаемый DXF-файл</translation>
     </message>
     <message>
         <source>Dxf Importer</source>
-        <translation>Импорт Dxf</translation>
+        <translation>Импорт DXF</translation>
     </message>
     <message>
         <source>Input Dxf file</source>
-        <translation>Исходный Dxf-файл</translation>
+        <translation>Исходный DXF-файл</translation>
     </message>
     <message>
         <source>...</source>
@@ -17536,7 +17698,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished">Описание полей:
+        <translation>Описание полей:
 * Исходный DXF-файл: путь к загружаемому DXF-файлу
 * Выходной Shp-файл: желаемое имя создаваемого shape-файла
 * Тип выходного файла: указывает тип создаваемого shape-файла
@@ -17550,190 +17712,214 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     </message>
     <message>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished">Выберите имя сохраняемого файла</translation>
+        <translation>Выберите имя сохраняемого файла</translation>
     </message>
 </context>
 <context>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Обнаруженная версия Quantum GIS: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Эта версия fTools требует QGIS версии 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль не будет активирован.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Инструменты</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Анализ</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Матрица расстояний</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
+        <translation>Сумма расстояний в полигонах</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Количество точек в полигонах</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Базовая статистика</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Список уникальных значений</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Анализ близости</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Средние координаты</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересечения линий</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выборка</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайная выборка</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайная выборка в подмножествах</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайные точки</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулярные точки</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Векторная сетка</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Выделение по районам</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Обработка</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Выпуклые оболочки</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Буферные зоны</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Пересечение</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Симметричная разность</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсечение</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение по признаку</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Разность</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Обработка &amp;геометрии</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать/добавить поле геометрии</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверка геометрии</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Центроиды полигонов</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечение узлов</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Упростить геометрию</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Разбить составные полигоны</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединить полигоны в составные</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Преобразовать полигоны в линии</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Управление данными</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт в новую проекцию</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Задать текущую проекцию</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение атрибутов</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Объединение атрибутов по районам</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Разбить векторный слой</translation>
     </message>
     <message>
         <source>About fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>О программе</translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation>&amp;Выборка</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation>Триангуляция Делоне</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation>Полигон из границ слоя</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation>Исходный слой</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation>Исходный точечный слой</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation>Сохранить результат в полигональный shape-файл</translation>
     </message>
 </context>
 <context>
