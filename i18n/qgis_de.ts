@@ -3177,7 +3177,7 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <translation>SVG-Punktsymbole von Matt Amos hinzugefügt (mit seiner Erlaubnis).</translation>
     </message>
     <message>
-        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor. Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
+        <source>Improvements to PostGIS client support. Massive speedups in PostGIS layer rendering can now be achieved by disabling SSL in the connection editor.  Support for usage of ctid column as primary key (softens the requirement for integer primary keys)</source>
         <translation type="unfinished">Verbesserungen an der PostGIS-Unterstützung. Massive Geschwindigkeitsgewinne in der Anzeige von PostGIS-Layern können nun über die Abschaltung von SSL im Verbindungseditor erreicht werden. Unterstützung der Nutzung der ctid-Spalte als Primärschlüssel (weicht die Notwendigkeit von Integer-Primärschlüsseln auf).</translation>
     </message>
     <message>
@@ -9792,6 +9792,18 @@ Ausführliche Fehlerinformation:
         <source>Connection details</source>
         <translation type="unfinished">Verbindungsdetails</translation>
     </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation type="unfinished">Geben Sie einen Benutzernamen und ein optionales Paßwort ein, wenn der WMS Basic-Authentifikation erfordert.</translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation type="unfinished">Benutzername</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Paßwort</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewOgrConnection</name>
@@ -13777,7 +13789,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Es gibt kein Koordinatenbezugssystem für die ausgewählten Layer.</translation>
     </message>
     <message>
-        <source>Could not understand the response. The %1 provider said:
+        <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation type="unfinished">Antwort nicht verstanden. Der %1-Provider sagte:
 %2</translation>
@@ -13799,7 +13811,7 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>Could not understand the response. The %1 provider said:
+        <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished">Antwort nicht verstanden. Der %1-Provider sagte:
@@ -13812,6 +13824,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Confirm Overwrite</source>
         <translation type="unfinished">Überschreiben bestätigen</translation>
+    </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation type="unfinished">WMS-Paßwort für %1</translation>
     </message>
 </context>
 <context>
