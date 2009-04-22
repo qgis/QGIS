@@ -382,7 +382,7 @@ void QgsServerSourceSelect::on_btnConnect_clicked()
     // check for a password, if none prompt to get it
     if ( password.isEmpty() )
     {
-      password = QInputDialog::getText( this, tr( "WMS Password for " ) + m_connName, "Password", QLineEdit::Password ); 
+      password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( m_connName ), "Password", QLineEdit::Password ); 
 
     }
     m_connectionInfo = "username=" + username + ",password=" + password + ",url=" + m_connectionInfo;
