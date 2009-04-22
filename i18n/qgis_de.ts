@@ -16141,6 +16141,30 @@ p, li { white-space: pre-wrap; }
         <source>About fTools</source>
         <translation type="unfinished">Über fTools</translation>
     </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished">&amp;Forschungswerkzeuge</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished">Delaunay-Triangulation</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished">Polygon aus Layergrenzen</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Eingabelayer</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">Eingabepunktvektorlayer</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished">Ausgabepolygonlayer</translation>
+    </message>
 </context>
 <context>
     <name>pluginname</name>
