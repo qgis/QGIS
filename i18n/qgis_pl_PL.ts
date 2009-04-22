@@ -9,121 +9,6 @@
     </message>
 </context>
 <context>
-    <name>@default</name>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Geoprocesing</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialog</name>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Przesuń zaznaczone na górę</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">Odwróć zaznaczenie</translation>
-    </message>
-    <message>
-        <source>Toggle editing</source>
-        <translation type="obsolete">Tryb edycji</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">Błąd parsowania tekstu wyszukiwania</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">Rezultaty wyszukiwania</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">Podano pusty warunek wyszukiwania.</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">Błąd wyszukiwania</translation>
-    </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">
-        
-        </translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="obsolete">Tabela atrybutów - %1</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialogGui</name>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Szukaj</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete"> w</translation>
-    </message>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="obsolete">Tabela atrybutów</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">Usuń zaznaczenie</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Przesuń zaznaczone na górę</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">Odwróć zaznaczenie</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">Kopiuj zaznaczone wiersze do schowka (Ctrl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Kopiuje zaznaczone wiersze do schowka</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">Powiększ mapę do wybranych wierszy (Ctrl-J)</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Kadruj mapę do zasięgu wybranych wierszy</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">Przełącz tryb edycji</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
     <name>CoordinateCapture</name>
     <message>
         <source>Coordinate Capture</source>
@@ -212,7 +97,7 @@
     </message>
     <message>
         <source>Input OGR dataset is missing!</source>
-        <translation>Brak wejściowego dataset OGR!</translation>
+        <translation>Brak wejściowego zbioru danych OGR!</translation>
     </message>
     <message>
         <source>Input OGR layer name is missing!</source>
@@ -224,7 +109,7 @@
     </message>
     <message>
         <source>Output OGR dataset is missing!</source>
-        <translation>Brak wyjściowego dataset OGR!</translation>
+        <translation>Brak wyjściowego zbioru danych OGR!</translation>
     </message>
     <message>
         <source>Output OGR layer name is missing!</source>
@@ -290,7 +175,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input line or polygon vector layer</source>
-        <translation>Wejściowa linia lub poligon warstwy wektorowej</translation>
+        <translation>Wejściowa warstwa wektorowa (linie lub poligony)</translation>
     </message>
     <message>
         <source>Tolerance</source>
@@ -298,7 +183,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unique ID field</source>
-        <translation>Kolumna z unikalnym ID</translation>
+        <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
@@ -318,7 +203,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer distance</source>
-        <translation>Wielkość bufora</translation>
+        <translation>Stała wielkość bufora</translation>
     </message>
     <message>
         <source>Buffer distance field</source>
@@ -330,7 +215,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dissolve buffer results</source>
-        <translation>Agreguj wyjściowe bufory</translation>
+        <translation>Agreguj bufory</translation>
     </message>
     <message>
         <source>Output shapefile</source>
@@ -342,7 +227,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input line layer</source>
-        <translation>Wejściowa warstwa wektorowa (linia)</translation>
+        <translation>Wejściowa warstwa wektorowa (linie)</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
@@ -350,11 +235,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Warstwa przecinająca (linie)</translation>
     </message>
     <message>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
         <source>Output Shapefile</source>
@@ -362,31 +247,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation type="unfinished">Atrybuty join</translation>
+        <translation>Złącz atrybuty</translation>
     </message>
     <message>
         <source>Target vector layer</source>
-        <translation>Docelowa warstwa wektorowa</translation>
+        <translation>Warstwa wektorowa</translation>
     </message>
     <message>
         <source>Target join field</source>
-        <translation type="unfinished">Docelowe pole join</translation>
+        <translation>Pole złączenia (klucz)</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation type="unfinished">Dane join</translation>
+        <translation>Złącz z danymi</translation>
     </message>
     <message>
         <source>Join vector layer</source>
-        <translation type="unfinished">Warstwa wektorowa join</translation>
+        <translation>Złącz z warstwą wektorową</translation>
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation type="unfinished">Tabela dbf join</translation>
+        <translation>Złącz z tabelą dbf</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="unfinished">Pole join</translation>
+        <translation>Pole złączenia (klucz)</translation>
     </message>
     <message>
         <source>Output table</source>
@@ -474,7 +359,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PNTCNT</source>
-        <translation>PNTCNT</translation>
+        <translation>LICZBA</translation>
     </message>
     <message>
         <source>Generate Random Points</source>
@@ -606,7 +491,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Spatial Join</source>
-        <translation type="unfinished">Przestrzenne join</translation>
+        <translation>Złączenie przestrzenne</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
@@ -646,7 +531,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pole podzbioru (unikalny ID)</translation>
     </message>
     <message>
         <source>Sum Line Length In Polygons</source>
@@ -710,11 +595,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>List Unique Values</source>
-        <translation>Wyświel unikalne wartości</translation>
+        <translation>Wyświetl unikalne wartości</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation>Docelowe pole</translation>
+        <translation>Pole</translation>
     </message>
     <message>
         <source>Unique values list</source>
@@ -753,11 +638,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Czy chesz dodać wynikową warstwę do mapy?</translation>
+        <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz obiekty jednoczęściowe w wieloczęściowy</translation>
     </message>
     <message>
         <source>Output shapefile</source>
@@ -765,7 +650,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozbij obiekt wieloczęściowy na jednoczęściowe</translation>
     </message>
     <message>
         <source>Extract nodes</source>
@@ -1234,14 +1119,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <translation>Dodaj warstwę tekstową CSV</translation>
     </message>
     <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">Georeferencer</translation>
-    </message>
-    <message>
-        <source>Adding projection info to rasters</source>
-        <translation type="obsolete">Dodaje informację o odwzorowaniu do rastra</translation>
-    </message>
-    <message>
         <source>GPS Tools</source>
         <translation>Narzędzia GPS</translation>
     </message>
@@ -1256,14 +1133,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <source>GRASS layer</source>
         <translation>Warstwa GRASS</translation>
-    </message>
-    <message>
-        <source>Graticule Creator</source>
-        <translation type="obsolete">Generator siatki kartograficznej</translation>
-    </message>
-    <message>
-        <source>Builds a graticule</source>
-        <translation type="obsolete">Generuje siatkę kartograficzną</translation>
     </message>
     <message>
         <source>NorthArrow</source>
@@ -1871,10 +1740,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <translation>Przełącz renderowanie mapy</translation>
     </message>
     <message>
-        <source>Open an OGR Supported Vector Layer</source>
-        <translation type="obsolete">Otwórz warstwę wektorową OGR</translation>
-    </message>
-    <message>
         <source>Save As</source>
         <translation>Zapisz jako</translation>
     </message>
@@ -2394,10 +2259,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <translation>Gotowe</translation>
     </message>
     <message>
-        <source>New features</source>
-        <translation type="obsolete">Nowości</translation>
-    </message>
-    <message>
         <source>Unable to open project</source>
         <translation>Nie można otworzyć projektu</translation>
     </message>
@@ -2591,10 +2452,6 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <source>Overview</source>
         <translation>Podgląd</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">Legenda</translation>
     </message>
     <message>
         <source>You are using QGIS version %1 built against code revision %2.</source>
@@ -2898,74 +2755,6 @@ Prosimy o kontakt z autorami.
         <translation>Podpowiedzi mapy wymagają aktywnej warstwy</translation>
     </message>
     <message>
-        <source>This release candidate includes over 265 bug fixes and enchancements over the QGIS 0.11.0 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">W tej wersji dodano następujące funkcje i usprawnienia:</translation>
-    </message>
-    <message>
-        <source>HIG Compliance improvements for Windows / Mac OS X / KDE / Gnome</source>
-        <translation type="obsolete">Usprawnienia interfejsu użytkownika dla Windows / Mac OS X / KDE / Gnome</translation>
-    </message>
-    <message>
-        <source>Saving a vector layer or subset of that layer to disk with a different Coordinate Reference System to the original.</source>
-        <translation type="obsolete">Zapisanie warstwy wektorowej lub części tej warstwy na dysku w układzie współrzędnych innym niż oryginalny.</translation>
-    </message>
-    <message>
-        <source>Advanced topological editing of vector data.</source>
-        <translation type="obsolete">Zaawansowana edycja topologiczna danych wektorowych.</translation>
-    </message>
-    <message>
-        <source>Single click selection of vector features.</source>
-        <translation type="obsolete">Wybór obiektów wektorowych jednym kliknięciem.</translation>
-    </message>
-    <message>
-        <source>Many improvements to raster rendering and support for building pyramids external to the raster file.</source>
-        <translation type="obsolete">Liczne poprawki w renderingu rastrów i obsługa budowy zewnętrznych piramid plików rastrowych.</translation>
-    </message>
-    <message>
-        <source>Overhaul of the map composer for much improved printing support.</source>
-        <translation type="obsolete">Modernizacja asystenta wydruku dla lepszej obsługi wydruku.</translation>
-    </message>
-    <message>
-        <source>A new &apos;coordinate capture&apos; plugin was added that lets you click on the map and then cut &amp; paste the coordinates to and from the clipboard.</source>
-        <translation type="obsolete">Nowa wtyczka &apos;przechwytywanie współrzędnych&apos; pozwalająca pobierać współrzędne myszą i przenosić do schowka.</translation>
-    </message>
-    <message>
-        <source>A new plugin for converting between OGR supported formats was added.</source>
-        <translation type="obsolete">Nowa wtyczka do konwersji pomiędzy formatami obsługiwanymi przed OGR.</translation>
-    </message>
-    <message>
-        <source>A new plugin for converting from DXF files to shapefiles was added.</source>
-        <translation type="obsolete">Nowa wtyczka do importu plików DXF do Shapefile.</translation>
-    </message>
-    <message>
-        <source>A new plugin was added for interpolating point features into ASCII grid layers.</source>
-        <translation type="obsolete">Nowa wtyczka do interpolacji z obiektów punktowych.</translation>
-    </message>
-    <message>
-        <source>Plugin toolbar positions are now correctly saved when the application is closed.</source>
-        <translation type="obsolete">Pozycje pasków narzędziowych wtyczek są teraz poprawnie zapisywane przy zamykaniu aplikacji.</translation>
-    </message>
-    <message>
-        <source>In the WMS client, WMS standards support has been improved.</source>
-        <translation type="obsolete">Poprawiono obsługę klienta WMS.</translation>
-    </message>
-    <message>
-        <source>Complete API revision - we now have a stable API following well defined naming conventions.</source>
-        <translation type="obsolete">Gruntowna przebudowa API - mamy teraz stabilne API zgodne z jednoznaczną konwencją nazw.</translation>
-    </message>
-    <message>
-        <source>Ported all GDAL/OGR and GEOS usage to use C APIs only.</source>
-        <translation type="obsolete">Przeniesiono wykorzystanie bibliotek GDAL/OGR i GEOS wyłącznie przez API C.</translation>
-    </message>
-    <message>
-        <source>The python plugin installer was completely overhauled, the new version having many improvements, including checking that the version of QGIS running will support a plugin that is being installed.</source>
-        <translation type="obsolete">Instalator wtyczek został całkowicie zmodernizowany. Nowa wersja zawiera wiele usprawnień, w tym automatyczną aktualizację i kontrolę kompatybilności zainstalowanych wtyczek.</translation>
-    </message>
-    <message>
-        <source>Vector editing overhaul - handling of geometry and attribute edit transactions is now handled transparently in one place.</source>
-        <translation type="obsolete">Modernizacja edycji wektorów - zarządzanie edycją geometrii i atrybutów jest teraz obsługiwane wygodnie w jednym miejscu.</translation>
-    </message>
-    <message>
         <source>Quantum GIS - %1 </source>
         <translation>Quantum GIS - %1</translation>
     </message>
@@ -3099,11 +2888,11 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
-        <translation>Zważ, że ta wersja należy do serii &apos;niestabilnej&apos;. Jako taka zawiera nowe fukcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x.</translation>
+        <translation>Zważ, że ta wersja należy do serii &apos;niestabilnej&apos;. Jako taka zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x.</translation>
     </message>
     <message>
         <source>This release includes many bug fixes and enhancements over the QGIS 1.0.0 release. In addition we have added the following new features:</source>
-        <translation>W tej wersji poprawiono wiele błędów i oraz wprowadzono udoskonalenia w porównaniu do wersji QGIS 1.0.0. Dodaliśmy przy tym następujące fukncje:</translation>
+        <translation>W tej wersji poprawiono wiele błędów i oraz wprowadzono udoskonalenia w porównaniu do wersji QGIS 1.0.0. Dodaliśmy przy tym następujące funkcje:</translation>
     </message>
     <message>
         <source>Updates to translations.</source>
@@ -3127,7 +2916,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     </message>
     <message>
         <source>WMS plugin now supports sorting and shows nested layers as a tree. WMS provider also support 24bit png images now. The WMS plugin also now provides a search interface for finding WMS servers.</source>
-        <translation>Wtyczka WMS obsługuje teraz sortowanie i prezenuje warstwy zagnieżdżone w postaci drzewa. Źródło danych WMS obsługuje również 24-bitowe obrazy png. Wtyczka WMS udostępnia też mechanizm wyszukiwania serwerów WMS.</translation>
+        <translation>Wtyczka WMS obsługuje teraz sortowanie i prezentuje warstwy zagnieżdżone w postaci drzewa. Źródło danych WMS obsługuje również 24-bitowe obrazy png. Wtyczka WMS udostępnia też mechanizm wyszukiwania serwerów WMS.</translation>
     </message>
     <message>
         <source>Added svg point symbols from Matt Amos (with his permission).</source>
@@ -3159,7 +2948,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     </message>
     <message>
         <source>Projection selector now includes quick selection of recently used CRS&apos;s.</source>
-        <translation>Wybór odzworowania zawiera teraz szybki wybór ostatnio używanych układów współrzędnych.</translation>
+        <translation>Wybór odwzorowania zawiera teraz szybki wybór ostatnio używanych układów współrzędnych.</translation>
     </message>
     <message>
         <source>Continuous color renderer supports point symbols now too.</source>
@@ -3495,21 +3284,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsAttributeTable</name>
-    <message>
-        <source>Run action</source>
-        <translation type="obsolete">Uruchom akcję</translation>
-    </message>
-    <message>
-        <source>Updating selection...</source>
-        <translation type="obsolete">Aktualizuję wybór...</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">Przerwij</translation>
-    </message>
-</context>
-<context>
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
@@ -3704,140 +3478,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsAttributeTableDisplay</name>
-    <message>
-        <source>select</source>
-        <translation type="obsolete">zaznacz</translation>
-    </message>
-    <message>
-        <source>select and bring to top</source>
-        <translation type="obsolete">zaznacz i przenieś na górę</translation>
-    </message>
-    <message>
-        <source>show only matching</source>
-        <translation type="obsolete">pokaż tylko zaznaczone</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">Błąd parsowania tekstu wyszukiwania</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">Rezultaty wyszukiwania</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">Podano pusty warunek wyszukiwania.</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">Błąd wyszukiwania</translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Plik</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Zamknij</translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="obsolete">Ctrl+W</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Edytuj</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">&amp;Cofnij</translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="obsolete">Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">Wy&amp;tnij</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopiuj</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Wklej</translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="obsolete">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Usuń</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Warstwa</translation>
-    </message>
-    <message>
-        <source>Zoom to Selection</source>
-        <translation type="obsolete">Powiększ do zaznaczonych</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle Editing</source>
-        <translation type="obsolete">Tryb edycji</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">Tabela</translation>
-    </message>
-    <message>
-        <source>Move to Top</source>
-        <translation type="obsolete">Przesuń na górę</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Odwróć</translation>
-    </message>
-    <message>
-        <source>bad_alloc exception</source>
-        <translation type="obsolete">wyjątek bad_alloc</translation>
-    </message>
-    <message>
-        <source>Filling the attribute table has been stopped because there was no more virtual memory left</source>
-        <translation type="obsolete">Wypełnianie tabeli atrybutów zostało wstrzymane ponieważ zaczyna brakować pamięci wirtualnej</translation>
-    </message>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="obsolete">Tabela atrybutów - %1</translation>
-    </message>
-    <message>
-        <source>Found %n matching feature(s).</source>
-        <comment>search results</comment>
-        <translation type="obsolete">Znaleziono %n pasujących obiektów.
-        
-        </translation>
-    </message>
-</context>
-<context>
     <name>QgsBookmarks</name>
     <message>
         <source>Really Delete?</source>
@@ -4000,10 +3640,6 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;p&gt;Funkcja eksportu SVG napotkała problemy z powodu błędów i braków w </translation>
     </message>
     <message>
-        <source>To create image %1 x %2 required circa %3 MB of memory</source>
-        <translation type="obsolete">Dla stworzenia obrazu %1 x %2 potrzeba ok. %3 MB pamięci</translation>
-    </message>
-    <message>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>Format %1 (*.%2 *.%3)</translation>
     </message>
@@ -4014,10 +3650,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Kod SVG Qt4. W szczególności są problemy z warstwami nie przyciętymi do granic mapy.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Jeśli potrzebujesz obrazu wektorowego, a jakoś pliku SVG nie jest satysfakcjonująca, spróbuj wydrukować do pliku PostScript&lt;/p&gt;</translation>
     </message>
     <message>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
@@ -5074,7 +4706,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> Please add the parameters before pressing save.</source>
-        <translation>Proszę uzupełnić parametery przed zapisem.</translation>
+        <translation>Proszę uzupełnić parametry przed zapisem.</translation>
     </message>
     <message>
         <source> Please add a proj= clause before pressing save.</source>
@@ -5271,7 +4903,7 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation>Połącznenie z %1 na %2 nie powiodło się. Baza danych nie jest dostępna lub podano błędne ustawienia.
+        <translation>Połączenie z %1 na %2 nie powiodło się. Baza danych nie jest dostępna lub podano błędne ustawienia.
 Sprawdź nazwę użytkownika/hasło i spróbuj ponownie.
 
 Odpowiedź bazy danych: %3</translation>
@@ -5496,7 +5128,7 @@ Odpowiedź bazy danych: %3</translation>
     </message>
     <message>
         <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation>Pełna ścieżka do pliku tekstowego rozdzielanego separatorami. Aby poprawnie przetworzyć pola w pliku, separator musi być podany przed wybraniem pliku. Użyj przycisku Przeglądaj po prawej stronie tego pola abywybrać plik źródłowy.</translation>
+        <translation>Pełna ścieżka do pliku tekstowego rozdzielanego separatorami. Aby poprawnie przetworzyć pola w pliku, separator musi być podany przed wybraniem pliku. Użyj przycisku Przeglądaj po prawej stronie tego pola aby wybrać plik źródłowy.</translation>
     </message>
     <message>
         <source>Browse to find the delimited text file to be processed</source>
@@ -5821,7 +5453,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create a GPX file with the given name. </source>
-        <translation>Nie mogę utworzyć plku GPX z nadaną nazwą. </translation>
+        <translation>Nie mogę utworzyć pliku GPX ze wskazaną nazwą. </translation>
     </message>
     <message>
         <source>Try again with another name or in another </source>
@@ -6153,10 +5785,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGenericProjectionSelector</name>
     <message>
-        <source>Define this layer&apos;s projection:</source>
-        <translation type="obsolete">Zdefiniuj odwzorowanie tej warstwy:</translation>
-    </message>
-    <message>
         <source>This layer appears to have no projection specification.</source>
         <translation>Warstwa wydaje się nie posiadać deklaracji odwzorowania.</translation>
     </message>
@@ -6171,10 +5799,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsGenericProjectionSelectorBase</name>
-    <message>
-        <source>Projection Selector</source>
-        <translation type="obsolete">Wybór odwzorowania</translation>
-    </message>
     <message>
         <source>Coordinate Reference System Selector</source>
         <translation>Wybór układu współrzędnych</translation>
@@ -6286,60 +5910,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;b&gt;Links:&lt;/b&gt;</source>
         <translation>&lt;b&gt;Odnośniki:&lt;/b&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefPluginGui</name>
-    <message>
-        <source>Choose a raster file</source>
-        <translation type="obsolete">Wybierz plik rastrowy</translation>
-    </message>
-    <message>
-        <source>Raster files (*.*)</source>
-        <translation type="obsolete">Rastry (*.*)</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Błąd</translation>
-    </message>
-    <message>
-        <source>The selected file is not a valid raster file.</source>
-        <translation type="obsolete">Wybrany plik nie jest prawidłowym plikiem rastrowym.</translation>
-    </message>
-    <message>
-        <source>World file exists</source>
-        <translation type="obsolete">Plik wpasowania world już istnieje</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Wybrany plik już posiada plik wpasowania world! Czy chcesz go nadpisać nowym plikiem? &lt;/p&gt;</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefPluginGuiBase</name>
-    <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">Georeferencer</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Zamknij</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Raster file:</source>
-        <translation type="obsolete">Raster:</translation>
-    </message>
-    <message>
-        <source>Arrange plugin windows</source>
-        <translation type="obsolete">Rozmieść okna</translation>
-    </message>
-    <message>
-        <source>Description...</source>
-        <translation type="obsolete">Opis...</translation>
     </message>
 </context>
 <context>
@@ -7946,7 +7516,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Displays the current GRASS region as a rectangle on the map canvas</source>
-        <translation>Wyświetla aktulny region GRASSa jako prostokąt w obszarze mapy</translation>
+        <translation>Wyświetla aktualny region GRASSa jako prostokąt w obszarze mapy</translation>
     </message>
     <message>
         <source>Edit the current GRASS region</source>
@@ -8237,14 +7807,6 @@ p, li { white-space: pre-wrap; }
         <translation>Narzędzia GRASS: %1/%2</translation>
     </message>
     <message>
-        <source>Cannot find MSYS (%1)</source>
-        <translation type="obsolete">Nie można odnaleźć MSYS (%1)</translation>
-    </message>
-    <message>
-        <source>Cannot start MSYS (%1)</source>
-        <translation type="obsolete">Nie można uruchomić MSYS (%1)</translation>
-    </message>
-    <message>
         <source>The config file (%1) not found.</source>
         <translation>Nie znaleziono pliku konfiguracyjnego (%1).</translation>
     </message>
@@ -8286,115 +7848,6 @@ w wierszu %2 kolumnie %3</translation>
     <message>
         <source>Modules List</source>
         <translation>Lista modułów</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPlugin</name>
-    <message>
-        <source>&amp;Graticule Creator</source>
-        <translation type="obsolete">Kreator &amp;siatki kartograficznej</translation>
-    </message>
-    <message>
-        <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation type="obsolete">Tworzy siatkę kartograficzną i zapisuje wynik jako Shapefile</translation>
-    </message>
-    <message>
-        <source>&amp;Graticules</source>
-        <translation type="obsolete">Siatka &amp;kartograficzna</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGui</name>
-    <message>
-        <source>ESRI Shapefile (*.shp)</source>
-        <translation type="obsolete">Pliki ESRI Shapefile (*.shp)</translation>
-    </message>
-    <message>
-        <source>QGIS - Grid Maker</source>
-        <translation type="obsolete">Generator siatki QGIS</translation>
-    </message>
-    <message>
-        <source>Please enter the file name before pressing OK!</source>
-        <translation type="obsolete">Podaj nazwę pliku przed naciśnięciem OK!</translation>
-    </message>
-    <message>
-        <source>Please enter intervals before pressing OK!</source>
-        <translation type="obsolete">Podaj przedziały przed naciśnięciem OK!</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save under</source>
-        <translation type="obsolete">Podaj nazwę pliku</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGuiBase</name>
-    <message>
-        <source>Graticule Builder</source>
-        <translation type="obsolete">Generator siatki kartograficznej</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Punkt</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">Poligon</translation>
-    </message>
-    <message>
-        <source>Origin (lower left)</source>
-        <translation type="obsolete">Początek (lewy dół)</translation>
-    </message>
-    <message>
-        <source>End point (upper right)</source>
-        <translation type="obsolete">Koniec (prawa góra)</translation>
-    </message>
-    <message>
-        <source>Output (shape) file</source>
-        <translation type="obsolete">Wyjściowy plik Shapefile</translation>
-    </message>
-    <message>
-        <source>Save As...</source>
-        <translation type="obsolete">Zapisz jako...</translation>
-    </message>
-    <message>
-        <source>QGIS Graticule Creator</source>
-        <translation type="obsolete">Generator siatki kartograficznej QGIS</translation>
-    </message>
-    <message>
-        <source>Graticle size</source>
-        <translation type="obsolete">Rozmiar siatki</translation>
-    </message>
-    <message>
-        <source>Y Interval:</source>
-        <translation type="obsolete">odstęp Y:</translation>
-    </message>
-    <message>
-        <source>X Interval:</source>
-        <translation type="obsolete">odstęp X:</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;;&quot;&gt;Please enter all units in decimal degrees&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;; font-size:11pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Ta wtyczka pomoże Ci stworzyć plik Shapefile zawierający siatkę kartograficzną, którą można nałożyć jako warstwę w podglądzie mapy.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Arial&apos;;&quot;&gt;Wszystkie wartości podawaj w stopniach dziesiętnych&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -9532,33 +8985,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsMapserverExport</name>
     <message>
-        <source>Name for the map file</source>
-        <translation type="obsolete">Nazwa pliku mapy</translation>
-    </message>
-    <message>
-        <source>Choose the QGIS project file</source>
-        <translation type="obsolete">Podaj plik projektu QGIS</translation>
-    </message>
-    <message>
-        <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="obsolete">Plik projektu QGIS (*.qgs);;Wszystkie pliki (*.*)</translation>
-    </message>
-    <message>
         <source>Overwrite File?</source>
         <translation>Nadpisać plik?</translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files (*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="obsolete">Plik mapy MapServer (*.map);;Wszystkie pliki (*.*)</translation>
-    </message>
-    <message>
-        <source> exists. 
-Do you want to overwrite it?</source>
-        <comment>a fileName is prepended to this text, and appears in a dialog box</comment>
-        <translation type="obsolete"> istnieje. 
-Czy chcesz go nadpisać?</translation>
     </message>
     <message>
         <source>%1 exists.
@@ -9596,30 +9024,6 @@ Czy chcesz go nadpisać?</translation>
     <message>
         <source>Width</source>
         <translation>Szerokość</translation>
-    </message>
-    <message>
-        <source>dd</source>
-        <translation type="obsolete">stopnie</translation>
-    </message>
-    <message>
-        <source>feet</source>
-        <translation type="obsolete">stopy</translation>
-    </message>
-    <message>
-        <source>meters</source>
-        <translation type="obsolete">metry</translation>
-    </message>
-    <message>
-        <source>miles</source>
-        <translation type="obsolete">mile</translation>
-    </message>
-    <message>
-        <source>inches</source>
-        <translation type="obsolete">cale</translation>
-    </message>
-    <message>
-        <source>kilometers</source>
-        <translation type="obsolete">kilometry</translation>
     </message>
     <message>
         <source>Units</source>
@@ -10500,18 +9904,6 @@ p, li { white-space: pre-wrap; }
         <translation>Krzyż</translation>
     </message>
     <message>
-        <source>Show all features</source>
-        <translation type="obsolete">Pokaż wszystkie obiekty</translation>
-    </message>
-    <message>
-        <source>Show selected features</source>
-        <translation type="obsolete">Pokaż wybrane obiekty</translation>
-    </message>
-    <message>
-        <source>Show features in current canvas</source>
-        <translation type="obsolete">Pokaż obiekty w bieżącym oknie</translation>
-    </message>
-    <message>
         <source>Detected active locale on your system: %1</source>
         <translation>Wykryte ustawienia lokalne w twoim systemie: %1</translation>
     </message>
@@ -10593,10 +9985,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Fix problems with incorrectly filled polygons</source>
         <translation>Napraw problemy związane z nieprawidłowo wypełnionymi poligonami</translation>
-    </message>
-    <message>
-        <source>Continuously redraw the map when dragging the legend/map divider</source>
-        <translation type="obsolete">Płynne odświeżanie mapy w trakcie przeciągania legendy/mapy</translation>
     </message>
     <message>
         <source>&amp;Map tools</source>
@@ -10813,10 +10201,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Open attribute table in a dock window</source>
         <translation>Otwórz tabelę atrybutów w oknie dokowanym</translation>
-    </message>
-    <message>
-        <source>Attribute table behaviour</source>
-        <translation type="obsolete">Zachowanie tabeli atrybutów</translation>
     </message>
     <message>
         <source>CRS</source>
@@ -11488,10 +10872,6 @@ p, li { white-space: pre-wrap; }
         <translation>Na pewno chcesz odinstalować tę wtyczkę?</translation>
     </message>
     <message>
-        <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
-        <translation type="obsolete">Zamierzasz dodać repozytoria nieautoryzowane i niewspierane przez zespół Quantum GISa, jednak prowadzone przez ludzi związanych z nami. Autorzy generalnie dokładają starań, by ich wtyczki były użyteczne i bezpieczne, lecz nie możemy brać za nich żadnej odpowiedzialności. ZOSTAŁAŚ LUB ZOSTAŁEŚ OSTRZEŻONY!</translation>
-    </message>
-    <message>
         <source>Are you sure you want to remove the following repository?</source>
         <translation>Na pewno chcesz usunąć to repozytorium?</translation>
     </message>
@@ -11666,10 +11046,6 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
         <translation>URL</translation>
     </message>
     <message>
-        <source>Allow the Installer to look for updates and news in enabled repositories on QGIS startup</source>
-        <translation type="obsolete">Zezwól instalatorowi szukać aktualizacji i nowości podczas startu programu Quantum GIS</translation>
-    </message>
-    <message>
         <source>Check for updates on startup</source>
         <translation>Poszukuj aktualizacji przy starcie</translation>
     </message>
@@ -11755,7 +11131,7 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Uwaga:&lt;/span&gt; Jeśli ta funkcja jest włączona, Quantum GIS będzie informował Cię gdy tylko pojawi się nowa wtyczka lub uaktualnienie jednej z zainstalowanych. W przeciwnym wypadku, sprawdzanie repozytoriów będzie nastąpować dopiero przy otwieraniu Instalatora.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Uwaga:&lt;/span&gt; Jeśli ta funkcja jest włączona, Quantum GIS będzie informował Cię gdy tylko pojawi się nowa wtyczka lub uaktualnienie jednej z zainstalowanych. W przeciwnym wypadku, sprawdzanie repozytoriów będzie następować dopiero przy otwieraniu Instalatora.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Allowed plugins</source>
@@ -12277,20 +11653,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>No suitable key column in table</source>
         <translation>Niewłaściwa kolumna z kluczem w tabeli</translation>
-    </message>
-    <message>
-        <source>The table has no column suitable for use as a key.
-
-Qgis requires that the table either has a column of type
-int4 with a unique constraint on it (which includes the
-primary key) or has a PostgreSQL oid column.
-</source>
-        <translation type="obsolete">Tabela nie posiada kolumny odpowiedniej do użycia jako klucz.
-
-Qgis wymaga, aby tabela posiadała kolumnę typu 
-int4 z wymogiem unikalności (co obejmuje 
-klucz główny) lub kolumnę oid PostgreSQL.
-</translation>
     </message>
     <message>
         <source>and </source>
@@ -12902,10 +12264,6 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     <message>
         <source>%1 and all other files (*)</source>
         <translation>%1 i wszystkie inne pliki (*)</translation>
-    </message>
-    <message>
-        <source>Band%1</source>
-        <translation type="obsolete">Kanał%1</translation>
     </message>
     <message>
         <source>X: %1 Y: %2 Bands: %3</source>
@@ -13895,7 +13253,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ta wtyczka dodaje podziałkę do mapy. Rozmiar paska traktowany jest jako preferowany i może zostać zmieniony przez QGIS w zależności od powiększenia.  Rozmiar jest okreslony zgodnie z jednostkami mapy podanymi we właściwościach projektu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Ta wtyczka dodaje podziałkę do mapy. Rozmiar paska traktowany jest jako preferowany i może zostać zmieniony przez QGIS w zależności od powiększenia.  Rozmiar jest określony zgodnie z jednostkami mapy podanymi we właściwościach projektu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -13947,10 +13305,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select Layer</source>
         <translation>Wybierz warstwę</translation>
-    </message>
-    <message>
-        <source>You must select at least one layer first.</source>
-        <translation type="obsolete">Musisz najpierw wybrać co najmniej jedną warstwę.</translation>
     </message>
     <message>
         <source>WMS proxies</source>
@@ -14038,10 +13392,6 @@ p, li { white-space: pre-wrap; }
         <translation>Kodowanie obrazu</translation>
     </message>
     <message>
-        <source>Layers</source>
-        <translation type="obsolete">Warstwy</translation>
-    </message>
-    <message>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -14064,10 +13414,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Alt+A</source>
         <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">Połączenia z serwerem</translation>
     </message>
     <message>
         <source>&amp;New</source>
@@ -14470,7 +13816,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>SpatiaLite DBs</source>
-        <translation>Bazy danych SpataLite</translation>
+        <translation>Bazy danych SpatiaLite</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -15658,10 +15004,6 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
         <translation>Zapytanie zawiera operację opcjonalną, która nie jest obsługiwana przez serwer.</translation>
     </message>
     <message>
-        <source>(Unknown error code from a post-1.3 WMS server)</source>
-        <translation type="obsolete">(Nieznany kod błędu z serwera WMS)</translation>
-    </message>
-    <message>
         <source>The WMS vendor also reported: </source>
         <translation>Dostarczyciel WMS przekazuje również:</translation>
     </message>
@@ -15722,10 +15064,6 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
         <translation>Liczba warstw</translation>
     </message>
     <message>
-        <source>Layer Properties: </source>
-        <translation type="obsolete">Właściwości warstw:</translation>
-    </message>
-    <message>
         <source>Selected</source>
         <translation>Wybrane</translation>
     </message>
@@ -15780,10 +15118,6 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <source>WGS 84 Bounding Box</source>
         <translation>Obszar granicy WGS 84</translation>
-    </message>
-    <message>
-        <source>Available in CRS</source>
-        <translation type="obsolete">Dostępny w układzie współrzędnych</translation>
     </message>
     <message>
         <source>Available in style</source>
@@ -16185,11 +15519,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation>Łączna długość linii</translation>
+        <translation>Długość linii w poligonie</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Punktów w poligonie</translation>
+        <translation>Liczba punktów w poligonie</translation>
     </message>
     <message>
         <source>Basic statistics</source>
@@ -16301,11 +15635,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozbij obiekt wieloczęściowy na jednoczęściowe</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Połącz obiekty jednoczęściowe w wieloczęściowy</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
@@ -16325,11 +15659,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Atrybuty join</translation>
+        <translation>Złącz atrybuty</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Atrybuty join przez lokalizację</translation>
+        <translation>Złącz atrybuty według lokalizacji</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -16341,11 +15675,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Narzędzia &amp;badawcze</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Triangulacja Delone</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
