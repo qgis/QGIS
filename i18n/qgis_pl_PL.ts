@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="pl_PL">
+<!DOCTYPE TS>
+<TS version="2.0" language="pl_PL">
 <defaultcodec></defaultcodec>
 <context>
     <name></name>
@@ -694,7 +695,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function not found</source>
-        <translation>Nie znaleziono funkcji</translation>
+        <translation type="obsolete">Nie znaleziono funkcji</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -702,7 +703,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation>Nie można usunąć istniejącej warstwy...</translation>
+        <translation type="obsolete">Nie można usunąć istniejącej warstwy...</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
@@ -761,15 +762,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation>Nie można utworzyć wyniku geoprocesingu.</translation>
+        <translation type="obsolete">Nie można utworzyć wyniku geoprocesingu.</translation>
     </message>
     <message>
         <source>Created output shapefile.</source>
-        <translation>Utworzono plik Shapefile.</translation>
+        <translation type="obsolete">Utworzono plik Shapefile.</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
+        <translation type="obsolete">Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -793,7 +794,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Erase layer</source>
-        <translation>Wyczyść warstwę</translation>
+        <translation type="obsolete">Wyczyść warstwę</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -4737,7 +4738,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&#xa9; QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;￼p, li { white-space: pre-wrap; }￼&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;￼&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -8467,7 +8468,7 @@ p, li { white-space: pre-wrap; }
         <translation>Maksymalna skala, dla której warstwa będzie wyświetlana.</translation>
     </message>
     <message>
-        <source>&#xb0;</source>
+        <source>°</source>
         <translation>°</translation>
     </message>
 </context>
@@ -10710,7 +10711,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation>Nie mogę otworzyć katalogu wtyczek systemowych </translation>
+        <translation type="obsolete">Nie mogę otworzyć katalogu wtyczek systemowych </translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -10902,37 +10903,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation>niezainstalowane</translation>
+        <translation type="obsolete">niezainstalowane</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation>zainstalowane</translation>
+        <translation type="obsolete">zainstalowane</translation>
     </message>
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation>niezainstalowana</translation>
+        <translation type="obsolete">niezainstalowana</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation>zainstalowana</translation>
+        <translation type="obsolete">zainstalowana</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation>aktualizowalna</translation>
+        <translation type="obsolete">aktualizowalna</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation>nowość!</translation>
+        <translation type="obsolete">nowość!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation>niesprawna</translation>
+        <translation type="obsolete">niesprawna</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -11036,6 +11037,26 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
     <message>
         <source>at least</source>
         <translation>minimum</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">aktualizowalna</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">nowość!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">niesprawna</translation>
     </message>
 </context>
 <context>
@@ -12120,6 +12141,26 @@ Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
         <translation>Aby uzyskać dostęp do środowiska QGIS z tej konsoli użyj obiektu globalnego będącego instancją klasy QgisInterface. &lt;br&gt; Przykład użycia:  iface.zoomFull()</translation>
+    </message>
+    <message>
+        <source>&amp;Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15420,11 +15461,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation>Unikalne wartości:</translation>
+        <translation type="obsolete">Unikalne wartości:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation>Łącznie unikalnych wartości:</translation>
+        <translation type="obsolete">Łącznie unikalnych wartości:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -15444,31 +15485,39 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation>Faktyczna średnia odległość:</translation>
+        <translation type="obsolete">Faktyczna średnia odległość:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation>Oczekiwana średnia odległość:</translation>
+        <translation type="obsolete">Oczekiwana średnia odległość:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation>Wskaźnik najbliższego sąsiedztwa:</translation>
+        <translation type="obsolete">Wskaźnik najbliższego sąsiedztwa:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation>Obiekt %1 zawiera niepoprawny pierścień</translation>
+        <translation type="obsolete">Obiekt %1 zawiera niepoprawny pierścień</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation>Obiekt %1 nie jest domknięty</translation>
+        <translation type="obsolete">Obiekt %1 nie jest domknięty</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation>Obiekt %1 zawiera wewnętrzne przecięcia</translation>
+        <translation type="obsolete">Obiekt %1 zawiera wewnętrzne przecięcia</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation>Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
+        <translation type="obsolete">Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15578,11 +15627,11 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation>Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0</translation>
+        <translation type="obsolete">Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation>Nie można włączyć wtyczki.</translation>
+        <translation type="obsolete">Nie można włączyć wtyczki.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -15626,7 +15675,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation>Narzędzia &amp;próbkowania</translation>
+        <translation type="obsolete">Narzędzia &amp;próbkowania</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -15750,7 +15799,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>About fTools</source>
-        <translation>O fTools</translation>
+        <translation type="obsolete">O fTools</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
@@ -15766,15 +15815,15 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Input layer</source>
-        <translation>Warstwa wejściowa</translation>
+        <translation type="obsolete">Warstwa wejściowa</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Wejściowa warstwa wektorowa (punkty)</translation>
+        <translation type="obsolete">Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation>Wyjściowy Shapefile (poligony)</translation>
+        <translation type="obsolete">Wyjściowy Shapefile (poligony)</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0

@@ -841,7 +841,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Создан новый shape-файл</translation>
+        <translation type="obsolete">Создан новый shape-файл</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -901,15 +901,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function not found</source>
-        <translation>Функция не найдена</translation>
+        <translation type="obsolete">Функция не найдена</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation>Ошибка при сохранении shape-файла</translation>
+        <translation type="obsolete">Ошибка при сохранении shape-файла</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation>Не удалось удалить существующий слой...</translation>
+        <translation type="obsolete">Не удалось удалить существующий слой...</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished">Триангуляция Делоне</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">Исходный точечный слой</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished">Полигон из границ слоя</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Исходный слой</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished">Сохранить результат в полигональный shape-файл</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -940,15 +976,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation>Не удалось создать результат обработки.</translation>
+        <translation type="obsolete">Не удалось создать результат обработки.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Создан новый shape-файл</translation>
+        <translation type="obsolete">Создан новый shape-файл</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Вы хотите добавить новый слой на карту?</translation>
+        <translation type="obsolete">Вы хотите добавить новый слой на карту?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -969,10 +1005,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Dissolve</source>
         <translation>Объединение по признаку</translation>
-    </message>
-    <message>
-        <source>Erase layer</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Difference</source>
@@ -1009,6 +1041,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Union</source>
         <translation>Объединение</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4130,59 +4203,79 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableBase</name>
     <message>
         <source>Attribute Table</source>
-        <translation type="obsolete">Таблица атрибутов</translation>
+        <translation type="unfinished">Таблица атрибутов</translation>
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="obsolete">Обратить выделение</translation>
+        <translation type="unfinished">Обратить выделение</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="obsolete">Переместить выделенное в начало</translation>
+        <translation type="unfinished">Переместить выделенное в начало</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="obsolete">Снять выделение</translation>
+        <translation type="unfinished">Снять выделение</translation>
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">Копировать выбранные строки в буфер обмена (Ctrl+C)</translation>
+        <translation type="unfinished">Копировать выбранные строки в буфер обмена (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Копирует выбранные строки в буфер обмена</translation>
+        <translation type="unfinished">Копирует выбранные строки в буфер обмена</translation>
     </message>
     <message>
         <source>in</source>
-        <translation type="obsolete">в</translation>
+        <translation type="unfinished">в</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="obsolete">Поиск</translation>
+        <translation type="unfinished">Поиск</translation>
     </message>
     <message>
         <source>Adva&amp;nced...</source>
-        <translation type="obsolete">&amp;Дополнительно...</translation>
+        <translation type="unfinished">&amp;Дополнительно...</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Увеличить карту до выбранных строк</translation>
+        <translation type="unfinished">Увеличить карту до выбранных строк</translation>
     </message>
     <message>
         <source>Search for</source>
-        <translation type="obsolete">Искать</translation>
+        <translation type="unfinished">Искать</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="obsolete">Режим редактирования</translation>
+        <translation type="unfinished">Режим редактирования</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="obsolete">Переключить редактирование таблицы</translation>
+        <translation type="unfinished">Переключить редактирование таблицы</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">Увеличить карту до выбранных строк (Ctrl-J)</translation>
+        <translation type="unfinished">Увеличить карту до выбранных строк (Ctrl-J)</translation>
+    </message>
+    <message>
+        <source>Ctrl+T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+J</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+N</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12411,7 +12504,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation>Не удалось открыть системный каталог модулей</translation>
+        <translation type="obsolete">Не удалось открыть системный каталог модулей</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -12519,12 +12612,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation>не установленные</translation>
+        <translation type="obsolete">не установленные</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation>установленные</translation>
+        <translation type="obsolete">установленные</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
@@ -12557,27 +12650,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation>не установлен</translation>
+        <translation type="obsolete">не установлен</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation>установлен</translation>
+        <translation type="obsolete">установлен</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation>обновляем</translation>
+        <translation type="obsolete">обновляем</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation>новый!</translation>
+        <translation type="obsolete">новый!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation>недействительный</translation>
+        <translation type="obsolete">недействительный</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -12738,6 +12831,30 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation>Вы собираетесь добавить один или несколько репозиториев, которые не поддерживаются командой Quantum GIS. Авторы модулей, как правило, стараются сделать свои программы полезными и безопасными, но мы не можем нести за них никакую ответственность.</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">обновляем</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">новый!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">недействительный</translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13979,6 +14096,26 @@ Because of this the projection selector will not work...</source>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
         <translation>Для доступа к окружению Quantum GIS из консоли Python, используйте объект из глобального пространства имен, который является экземпляром класса QgisInterface.&lt;br&gt;Например: iface.zoomFull()</translation>
+    </message>
+    <message>
+        <source>&amp;Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17565,11 +17702,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation>Уникальные значения:</translation>
+        <translation type="obsolete">Уникальные значения:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation>Всего уникальных значений:</translation>
+        <translation type="obsolete">Всего уникальных значений:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -17589,31 +17726,39 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation>Наблюдаемое среднее расстояние:</translation>
+        <translation type="obsolete">Наблюдаемое среднее расстояние:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation>Ожидаемое среднее расстояние:</translation>
+        <translation type="obsolete">Ожидаемое среднее расстояние:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation>Индекс ближайших соседей: </translation>
+        <translation type="obsolete">Индекс ближайших соседей: </translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation>Объект %1 включает кольцо, выходящее за его границы</translation>
+        <translation type="obsolete">Объект %1 включает кольцо, выходящее за его границы</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation>Объект %1 не замкнут</translation>
+        <translation type="obsolete">Объект %1 не замкнут</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation>Объект %1 пересекает сам себя</translation>
+        <translation type="obsolete">Объект %1 пересекает сам себя</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation>Объект %1 имеет неверный порядок узлов</translation>
+        <translation type="obsolete">Объект %1 имеет неверный порядок узлов</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17723,11 +17868,11 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation>Эта версия fTools требует QGIS версии 1.0.0</translation>
+        <translation type="obsolete">Эта версия fTools требует QGIS версии 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation>Модуль не будет активирован.</translation>
+        <translation type="obsolete">Модуль не будет активирован.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -17771,7 +17916,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation>&amp;Выборка</translation>
+        <translation type="obsolete">&amp;Выборка</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -17895,7 +18040,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     </message>
     <message>
         <source>About fTools</source>
-        <translation>О программе</translation>
+        <translation type="obsolete">О программе</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
@@ -17911,15 +18056,24 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     </message>
     <message>
         <source>Input layer</source>
-        <translation>Исходный слой</translation>
+        <translation type="obsolete">Исходный слой</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Исходный точечный слой</translation>
+        <translation type="obsolete">Исходный точечный слой</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation>Сохранить результат в полигональный shape-файл</translation>
+        <translation type="obsolete">Сохранить результат в полигональный shape-файл</translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17935,6 +18089,37 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <source>Replace this with a short description of what the plugin does</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation type="unfinished">Наблюдаемое среднее расстояние:</translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation type="unfinished">Ожидаемое среднее расстояние:</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation type="unfinished">Индекс ближайших соседей: </translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished">Объект %1 включает кольцо, выходящее за его границы</translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished">Объект %1 не замкнут</translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished">Объект %1 пересекает сам себя</translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished">Объект %1 имеет неверный порядок узлов</translation>
     </message>
 </context>
 </TS>

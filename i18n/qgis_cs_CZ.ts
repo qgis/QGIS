@@ -1249,10 +1249,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Would you like to add the new layer to the TOC?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1309,15 +1305,39 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Function not found</source>
+        <source>Delaunay triangulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error writing output shapefile</source>
+        <source>Input point vector layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to delete existing layer...</source>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1371,18 +1391,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Buffer(s)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1400,10 +1408,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Erase layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1440,6 +1444,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5570,6 +5615,8 @@ Try to find missing layers?</source>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -7250,6 +7297,8 @@ Krátký přehled syntaxe:
     <message numerus="yes">
         <source>Found %d matching features.</source>
         <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -15187,6 +15236,8 @@ This may be a problem in your network connection or at the WMS server.</source>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -16568,6 +16619,8 @@ p, li { white-space: pre-wrap; }
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -17327,6 +17380,18 @@ Extended error information:
     <message>
         <source>Connection details</source>
         <translation>Podrobnosti spojení</translation>
+    </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Heslo</translation>
     </message>
 </context>
 <context>
@@ -18867,6 +18932,8 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -19034,7 +19101,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation>Nemůže být otevřen adresář systémového zásuvného modulu</translation>
+        <translation type="obsolete">Nemůže být otevřen adresář systémového zásuvného modulu</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -19142,12 +19209,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation>nejsou nainstalovány</translation>
+        <translation type="obsolete">nejsou nainstalovány</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation>nainstalovány</translation>
+        <translation type="obsolete">nainstalovány</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
@@ -19180,27 +19247,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation>není nainstalován</translation>
+        <translation type="obsolete">není nainstalován</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation>nainstalován</translation>
+        <translation type="obsolete">nainstalován</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation>aktualizovatelný</translation>
+        <translation type="obsolete">aktualizovatelný</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation>nové!</translation>
+        <translation type="obsolete">nové!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation>neplatný</translation>
+        <translation type="obsolete">neplatný</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -19371,6 +19438,30 @@ You need to restart Quantum GIS in order to reload it.</source>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">aktualizovatelný</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">nové!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">neplatný</translation>
+    </message>
+    <message>
+        <source>at least</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20912,6 +21003,26 @@ Because of this the projection selector will not work...</source>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
         <translation>Pro přístup do prostředí Quantum GIS z terminálu Pythonu použijte objekt globálního rozsahu, který je instancí třídy Qgisinterface.&lt;br&gt;Použití např.: iface.zoomFull()</translation>
+    </message>
+    <message>
+        <source>&amp;Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22810,6 +22921,8 @@ p, li { white-space: pre-wrap; }
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -22908,6 +23021,8 @@ p, li { white-space: pre-wrap; }
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -22927,6 +23042,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Confirm Overwrite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS Password for %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -24534,6 +24653,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24543,6 +24664,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24552,6 +24675,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24561,6 +24686,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24570,6 +24697,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24579,6 +24708,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24588,6 +24719,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24597,6 +24730,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24606,6 +24741,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24615,6 +24752,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24624,6 +24763,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24633,6 +24774,8 @@ Měly by být existující třídy před klasifikací smazány?</translation>
             <numerusform>
         
         </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -25862,14 +26005,6 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Basics statistics</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25886,31 +26021,11 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Observed mean distance : </source>
+        <source>Unique values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Expected mean distance : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index : </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 is not closed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 has incorrect node ordering</source>
+        <source>Total unique values</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26129,14 +26244,6 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Tools</source>
         <translation type="unfinished">&amp;Nástroje</translation>
     </message>
@@ -26174,10 +26281,6 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Sampling Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -26301,7 +26404,24 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>About fTools</source>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26333,6 +26453,37 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>Replace this with a short description of what the plugin does</source>
         <translation>Nahradit toto krátkým popisem toho co tento plugin dělá</translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

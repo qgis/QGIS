@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="nl">
+<!DOCTYPE TS>
+<TS version="2.0" language="nl">
 <defaultcodec></defaultcodec>
 <context>
     <name></name>
@@ -913,7 +914,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Uitvoerbestand (shape)</translation>
+        <translation type="obsolete">Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -973,15 +974,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function not found</source>
-        <translation>Functie niet gevonden</translation>
+        <translation type="obsolete">Functie niet gevonden</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation>Fout bij het maken van de shapefile</translation>
+        <translation type="obsolete">Fout bij het maken van de shapefile</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation>Fout bij het verwijderen van bestaande laag...</translation>
+        <translation type="obsolete">Fout bij het verwijderen van bestaande laag...</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">Invoer punt-vectorlaag</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1091,15 +1128,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation>Problemen bij het aanmaken van het resultaat.</translation>
+        <translation type="obsolete">Problemen bij het aanmaken van het resultaat.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation>Uitvoerbestand (shape)</translation>
+        <translation type="obsolete">Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>De nieuwe laag aan de TOC toevoegen?</translation>
+        <translation type="obsolete">De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -1123,7 +1160,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Erase layer</source>
-        <translation>Laag verwijderen</translation>
+        <translation type="obsolete">Laag verwijderen</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -1160,6 +1197,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Union</source>
         <translation>Union</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7119,7 +7197,7 @@ p, li { white-space: pre-wrap; }(new line)
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&#xa9; QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -11835,7 +11913,7 @@ p, li { white-space: pre-wrap; }
         <translation>Maximale schaal bij welke deze laag nog getoond zal worden. </translation>
     </message>
     <message>
-        <source>&#xb0;</source>
+        <source>°</source>
         <translation>°</translation>
     </message>
 </context>
@@ -13173,6 +13251,18 @@ Uitgebreide foutinformatie:
     <message>
         <source>Connection details</source>
         <translation>Verbindingseigenschappen</translation>
+    </message>
+    <message>
+        <source>If the WMS requires basic authentication, enter a user name and optional password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Wachtwoord</translation>
     </message>
 </context>
 <context>
@@ -14599,7 +14689,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation>De systeem pluginmap kan niet worden geopend</translation>
+        <translation type="obsolete">De systeem pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -14707,12 +14797,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation>Niet geïnstalleerd</translation>
+        <translation type="obsolete">Niet geïnstalleerd</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation>geïnstalleerd</translation>
+        <translation type="obsolete">geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
@@ -14745,27 +14835,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation>niet geïnstalleerd</translation>
+        <translation type="obsolete">niet geïnstalleerd</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation>geïnstalleerd</translation>
+        <translation type="obsolete">geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation>op te waarderen</translation>
+        <translation type="obsolete">op te waarderen</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation>Nieuw!</translation>
+        <translation type="obsolete">Nieuw!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation>ongeldig</translation>
+        <translation type="obsolete">ongeldig</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -14925,6 +15015,30 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation>U staat op het putn een paar plugin repositories toe te voegen dniet niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished">geïnstalleerd</translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">op te waarderen</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">Nieuw!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">ongeldig</translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16253,6 +16367,26 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
         <translation>Om de Quantum GIS omgeving te benaderen vanuit deze pythonconsole, gebruik het &apos;iface&apos;-object in de globale scope. Dit is een instantie van de QgisInterface-klasse.&lt;br&gt;Voorbeeld van gebruik: iface.zoomFull()</translation>
+    </message>
+    <message>
+        <source>&amp;Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Previous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17807,6 +17941,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Confirm Overwrite</source>
         <translation>Bevestig Overschrijven</translation>
+    </message>
+    <message>
+        <source>WMS Password for %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20282,11 +20420,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation>Unieke waarden:</translation>
+        <translation type="obsolete">Unieke waarden:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation>Totaal unieke waarden:</translation>
+        <translation type="obsolete">Totaal unieke waarden:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -20306,31 +20444,39 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation>Aangetroffen gemiddelde afstand:</translation>
+        <translation type="obsolete">Aangetroffen gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation>Verwachtte gemiddelde afstand:</translation>
+        <translation type="obsolete">Verwachtte gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation>&apos;Nearest neighbour&apos;-index:</translation>
+        <translation type="obsolete">&apos;Nearest neighbour&apos;-index:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation>Kaartobject %1 bevat een niet-genest gat</translation>
+        <translation type="obsolete">Kaartobject %1 bevat een niet-genest gat</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation>Kaartobject %1 is niet gesloten</translation>
+        <translation type="obsolete">Kaartobject %1 is niet gesloten</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation>Kaartobject %1 bevat en zelfdoorsnijding</translation>
+        <translation type="obsolete">Kaartobject %1 bevat en zelfdoorsnijding</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation>Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
+        <translation type="obsolete">Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20612,7 +20758,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation type="obsolete">Database Host</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation type="obsolete">Voer de hostnaam van de database in. Als de database zich op uw desktop bevindt, gebruik dan &quot;localhost&quot;. Als u &quot;MSAccess&quot; als database-type heeft gekozen zal deze optie niet beschikbaar zijn. </translation>
     </message>
@@ -20811,7 +20957,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation type="obsolete">Volgende</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="obsolete">Alle attribuutinformatie voor het punt van de foto wordt hier getoond. Als het gerefereerde bestandstype in het record geen afbeelding is, maar een als type zoals gedefinieerd onder de tab &quot;Externe Toepassingen Configureren&quot;, dan zal bij het dubbelklikken van de waarde de bijbehorende toepassing worden geopend om de inhoud van het bestand te bekijken of beluisteren. Als de extensie van het bestand wordt herkend zal de attribuutinformatie groen worden weergegeven.</translation>
     </message>
@@ -20846,7 +20992,7 @@ p, li { white-space: pre-wrap; }
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation type="obsolete">Gebruik de lijst om een veld met het pad naar de directory van de afbeelding te selecteren. Dit can een absoluut of een relatief pad zijn.</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
         <translation type="obsolete">Indien aangevinkt zal het pad naar de afbeelding worden opgebouwd uit de attribuutwaarde in het veld uit de &quot;Attribuut voor Pad naar Afbeelding&quot;-lijst en het &quot;Basispad&quot; zoals hieronder aangegeven.  </translation>
     </message>
@@ -20918,7 +21064,7 @@ p, li { white-space: pre-wrap; }
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="obsolete">Zet de kompatafwijking terug naar de standaardwaarde.</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="obsolete">Het basispad of url vanwaar afbeeldingen worden geladen kan relatief zijn</translation>
     </message>
@@ -20938,7 +21084,7 @@ p, li { white-space: pre-wrap; }
         <source>If checked, the Base Path will be saved for the next session.</source>
         <translation type="obsolete">Indien aangevinkt als het Basispad worden opgeslagen voor de volgende sessie.</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Enters the default “Base Path” which is the  path to the directory of the vector layer containing the image information.</source>
         <translation type="obsolete">Geeft het &quot;standaard&quot; Basispad wat het   pad is naar de directory van de vectorlaag met de afbeeldingsinformatie.</translation>
     </message>
@@ -20968,7 +21114,7 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="obsolete">Gebruik &apos;Pad naar Afbeeldings&apos;-regels bij het laden van bestanden in externe programma&apos;s</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="obsolete">Klikken op &apos;Opslaan&apos; zal de instellingen bewaren zonder het &apos;Opties&apos;-scherm te sluiten. Klokken op &apos;Terug naar Standaardinstellingen&apos; zal alle velden terug zetten naar de standaardwaarden. Het heeft hetzelfde effect als klikken op de &apos;Terug naar standaard&apos;-knoppen.</translation>
     </message>
@@ -21044,11 +21190,11 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation>Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS</translation>
+        <translation type="obsolete">Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation>Plugin zal niet worden ingeschakeld.</translation>
+        <translation type="obsolete">Plugin zal niet worden ingeschakeld.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -21092,7 +21238,7 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation>&amp;Sample gereedschap</translation>
+        <translation type="obsolete">&amp;Sample gereedschap</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -21216,7 +21362,28 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     </message>
     <message>
         <source>About fTools</source>
-        <translation>Info over fTools</translation>
+        <translation type="obsolete">Info over fTools</translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Research Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21239,6 +21406,37 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <source>Replace this with a short description of what the plugin does</source>
         <translation>Vervang dit door een korte beschrijving van de functie van de plugin </translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation type="unfinished">Aangetroffen gemiddelde afstand:</translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation type="unfinished">Verwachtte gemiddelde afstand:</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation type="unfinished">&apos;Nearest neighbour&apos;-index:</translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished">Kaartobject %1 bevat een niet-genest gat</translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished">Kaartobject %1 is niet gesloten</translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished">Kaartobject %1 bevat en zelfdoorsnijding</translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished">Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
     </message>
 </context>
 </TS>
