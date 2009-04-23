@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Update the translation files with strings used in QGIS
 # 1. create a clean Qt .pro file for the project
 # 2. run lupdate using the .pro file from step 1
@@ -14,10 +14,21 @@ PATH=$QTDIR/bin:$PATH
 echo Creating qt_ts.tar
 tar -cvf i18n/qt_ts.tar i18n/qt_*.ts
 rm i18n/qt_*.ts
+echo Updating python plugin translations
+P=$PWD
+for i in python/plugins/*/.; do
+	cd $i
+	pylupdate4 $(find . -name "*.py") -ts i18n.ts
+	perl $P/scripts/ts2cpp.pl i18n.ts i18n.cpp
+	rm i18n.ts
+	cd ../../..
+done
 echo Creating qmake project file
 qmake -project -o qgis_ts.pro
 echo Updating translation files
 lupdate -verbose qgis_ts.pro
+echo Removing temporary python plugin translation files
+rm python/plugins/*/i18n.cpp
 echo Removing qmake project file
 rm qgis_ts.pro
 echo Unpacking qt_ts.tar
