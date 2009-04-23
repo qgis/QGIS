@@ -37,11 +37,12 @@ class QgsPythonDialog : public QDialog, private Ui::QgsPythonDialog
 
   public slots:
 
-    void on_edtCmdLine_returnPressed();
+    void on_pbnPrev_clicked();
+    void on_pbnExecute_clicked();
+    void on_pbnNext_clicked();
 
   protected:
 
-    void keyPressEvent( QKeyEvent *event );
     void closeEvent( QCloseEvent *event );
     void showEvent( QShowEvent *event );
 

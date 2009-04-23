@@ -167,12 +167,12 @@ void QgsPythonUtilsImpl::uninstallConsoleHooks()
 }
 
 
-bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command )
+bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
 {
   // TODO: convert special characters from unicode strings u"..." to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
-  PyRun_String( command.toUtf8().data(), Py_single_input, mMainDict, mMainDict );
+  PyRun_String( command.toUtf8().data(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
   return ( PyErr_Occurred() == 0 );
 }
 
