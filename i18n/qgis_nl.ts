@@ -478,415 +478,415 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie van laag</translation>
     </message>
     <message>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufferafstand</translation>
     </message>
     <message>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld voor bufferafstand</translation>
     </message>
     <message>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld voor &apos;dissolve&apos;-aktie</translation>
     </message>
     <message>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation>Dissolve buffer resultaten</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Localiseer lijndoorsnijdingen</translation>
     </message>
     <message>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer lijnenlaag</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer unieke ID-veld</translation>
     </message>
     <message>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie lijnenlaag</translation>
     </message>
     <message>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie unieke ID-veld</translation>
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Join Attributen</translation>
     </message>
     <message>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Doel-vectorlaag</translation>
     </message>
     <message>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Doel-joinveld</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>Join data</translation>
     </message>
     <message>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Join vectorlaag</translation>
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation>Join dbf tabel</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Join veld</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer tabel</translation>
     </message>
     <message>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen passende rijen behouden</translation>
     </message>
     <message>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle rijen behouden (ook de niet passende doelrijen)</translation>
     </message>
     <message>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereer Centroiden</translation>
     </message>
     <message>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Gewicht-veld</translation>
     </message>
     <message>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal standaardafwijkingen</translation>
     </message>
     <message>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation>Std.Afw.</translation>
     </message>
     <message>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Afstands Matrix Aanmaken</translation>
     </message>
     <message>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer puntenlaag</translation>
     </message>
     <message>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Doel-puntenlaag</translation>
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Doel unieke ID-veld</translation>
     </message>
     <message>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer matrixtype</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineaire (N*k x 3) afstandsmatrix</translation>
     </message>
     <message>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard (N x T) afstands matrix</translation>
     </message>
     <message>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation>Samenvatting afstandsmatrix (gemiddeld, std.afw, min, max)</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen dichtstbijzijnde (k) doelpunten gebruiken:</translation>
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer afstandsmatrix</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Punten in Polygonen Tellen</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer polygon-vectorlaag</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer punt-vectorlaag</translation>
     </message>
     <message>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer tellen veldnaam</translation>
     </message>
     <message>
         <source>PNTCNT</source>
-        <translation type="unfinished"></translation>
+        <translation>PNTCNT</translation>
     </message>
     <message>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Random Punten Aanmaken</translation>
     </message>
     <message>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer GrensLaag</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimale afstand tussen punten</translation>
     </message>
     <message>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Voorbeeld Grootte</translation>
     </message>
     <message>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unstratified Sampling Design (Gehele laag)</translation>
     </message>
     <message>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik dit aantal punten</translation>
     </message>
     <message>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished"></translation>
+        <translation>Unstratified Sampling Design (Individuele polygonen)</translation>
     </message>
     <message>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik deze dichtheid voor punten</translation>
     </message>
     <message>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik de waarde van het invoerveld</translation>
     </message>
     <message>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige Selectie Gereedschap</translation>
     </message>
     <message>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer Vectorlaag</translation>
     </message>
     <message>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige Selectie</translation>
     </message>
     <message>
         <source>Number of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal Objecten</translation>
     </message>
     <message>
         <source>Percentage of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Percentage Objecten</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschap voor Projectiemanagement</translation>
     </message>
     <message>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijk Referentie Systeem input</translation>
     </message>
     <message>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijk Referentie Systeem uitvoer</translation>
     </message>
     <message>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik voorgedefineerd ruimtelijk referentie systeem</translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiezen</translation>
     </message>
     <message>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik ruimtelijk referentie systeem van bestaande laag</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik ruimtelijk referentie systeem:</translation>
     </message>
     <message>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereer Regelmatige Punten</translation>
     </message>
     <message>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer Coördinaten</translation>
     </message>
     <message>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation>X Min</translation>
     </message>
     <message>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Min</translation>
     </message>
     <message>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation>X Max</translation>
     </message>
     <message>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Max</translation>
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid Tussenruimte</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik deze tussenruimte voor punten</translation>
     </message>
     <message>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige verschuiving voor tussenruimte van punten</translation>
     </message>
     <message>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+        <translation>Beginwaarde voor hoek (LH kant)</translation>
     </message>
     <message>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijke Join</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribuut Samenvatting</translation>
     </message>
     <message>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributen gebruiken van eerst gevonden object</translation>
     </message>
     <message>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Samenvatting gebruiken van snijdende objecten</translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Gemiddelde</translation>
+        <translation>Gemiddelde</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>Som</translation>
     </message>
     <message>
         <source>Output Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand (shape):</translation>
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige selectie binnen subsets</translation>
     </message>
     <message>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer subset veld (unieke ID veld)</translation>
     </message>
     <message>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Som van lengte lijnen in Polygonen</translation>
     </message>
     <message>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer sommatie van lengteveld naam</translation>
     </message>
     <message>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation>LENGTE</translation>
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoer lijn-vectorlaag</translation>
     </message>
     <message>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid-extent</translation>
     </message>
     <message>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent opnieuw aanmaken o.b.v. laag</translation>
     </message>
     <message>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent opnieuw aanmaken o.b.v. kaartvenster</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parameters</translation>
+        <translation>Parameters</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>1:1 ratio vastzetten</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid als polygonen uitvoeren</translation>
     </message>
     <message>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid als lijnen uitvoeren</translation>
     </message>
     <message>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector Splitsen</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Map voor uitvoer</translation>
     </message>
     <message>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>Doelveld</translation>
     </message>
     <message>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal unieke waarden</translation>
     </message>
 </context>
 <context>
@@ -1067,95 +1067,95 @@ p, li { white-space: pre-wrap; }
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Dissolve&apos; alles</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een laag als input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een laag als &apos;difference/intersectie/union&apos;-laag</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een geldige bufferwaarde</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer het veld voor de &apos;dissolve&apos;-aktie</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer een vectorlaag voor uitvoer</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Problemen bij het aanmaken van het resultaat.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffer(s)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken &apos;single minimum convex hull&apos;</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken &apos;convex hull&apos; op basis van een invoerveld</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Dissolve</translation>
     </message>
     <message>
         <source>Erase layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Laag verwijderen</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Difference</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie van laag</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Difference laag</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Clip&apos; laag</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Union laag</translation>
     </message>
     <message>
         <source>Union</source>
@@ -2505,87 +2505,88 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>No QGIS data provider plugins found in:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Dataprovider-plugins gevonden in:
+%1</translation>
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijzende kolom is niet gevonden: %1</translation>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Locatie: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Locatie: %1&lt;br&gt; Mapset: %2</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the data source: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>De volgende databron kan niet worden geopend: %1</translation>
     </message>
     <message>
         <source>Parse error at line %1 : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Parseerfout op positie %1 : %2</translation>
     </message>
     <message>
         <source>%1 is not a GRASS mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 is geen GRASS-mapset.</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Starten mislukt van %1 /etc/lock</translation>
     </message>
     <message>
         <source>Temporary directory %1 exists but is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation>Tijdelijke map %1 bestaat, maar is niet schrijfbaar</translation>
     </message>
     <message>
         <source>Cannot create temporary directory %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan tijdelijke map %1 niet aanmaken </translation>
     </message>
     <message>
         <source>Cannot create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken %1 mislukt</translation>
     </message>
     <message>
         <source>Cannot remove mapset lock: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de mapset niet vrijkrijgen (&apos;locked&apos;): %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan plugin niet laden %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1door een fout bij het aanroepen van de classFactory()-methode</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 door een fout bij het aanroepen van de initGui()-methode</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij het uitschakelen van plugin %1</translation>
     </message>
     <message>
         <source>Georeferencer GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Georeferencer GDAL</translation>
     </message>
     <message>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Toevoegen projectie-informatie aan raster m.b.v GDAL</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite DB (*.sqlite);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <source>Access Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Toegang tot Oracle Spatial GeoRaster</translation>
     </message>
 </context>
 <context>
@@ -7107,12 +7108,12 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;(new line)
 p, li { white-space: pre-wrap; }(new line)
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Omschrijving&lt;/span&gt;&lt;/p&gt;(new line)
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Voer uw copyright-melding beneden in. Deze plugin ondersteunt eenvoudige html om het label te tonen. Bijvoorbeeld:&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Vette tekst &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Schuin &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;(new line)
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(opmerking: &amp;amp;copy; geeft het copyright symbool)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -14122,47 +14123,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer Attribuutwaarden in</translation>
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen attribuut-popups na het aanmaken van elk kaartobject tonen</translation>
     </message>
     <message>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy type</translation>
     </message>
     <message>
         <source>Exclude URLs:</source>
-        <translation type="unfinished"></translation>
+        <translation>URLs uitsluiten:</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished">Toevoegen</translation>
+        <translation>Toevoegen</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Verwijder</translation>
+        <translation>Verwijder</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Overlay</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished">Positie</translation>
+        <translation>Positie</translation>
     </message>
     <message>
         <source>Placement algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaatsings-algoritme:</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>kaart eenheden</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>pixels</translation>
     </message>
 </context>
 <context>
@@ -15106,7 +15107,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;Als ud dit instelt zal QGIS u op de hoogte stellen wanneer er een nieuwe plugin is of er een nieuwere versie van een plugin s. In het andere geval zal de informatie worden opgehaald tijdens het openen van de &apos;Plugin installer&apos;-dialoog.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Opmerking:&lt;/span&gt;Als u dit instelt zal QGIS u op de hoogte stellen wanneer er een nieuwe plugin is of er een nieuwere versie van een plugin is. In het andere geval zal de informatie worden opgehaald tijdens het openen van de &apos;Plugin installer&apos;-dialoog.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Allowed plugins</source>
@@ -15130,7 +15131,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimentele plugins zijn niet bruikbaar in een produktieomgeving. Het zijn eerste versies, en moeten gezien worden als &apos;nog niet af&apos; of &apos;probeersels&apos;. QGIS raad deze plugins niet aan, behalve als u iets wilt uittesten.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Opmerking:&lt;/span&gt; Experimentele plugins zijn niet bruikbaar in een produktieomgeving. Het zijn eerste versies, en moeten gezien worden als &apos;nog niet af&apos; of &apos;probeersels&apos;. QGIS raadt deze plugins niet aan, behalve als u iets wilt uittesten.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -16811,51 +16812,53 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     <message>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Multiband Images Opmerking&lt;/h3&gt;&lt;p&gt;Dit is een multiband image. U kunt deze laten renderen als grijswaarden of kleur (RGB) afbeelding. Voor kleurafbeeldingen kunt u de zelf kleuren aan banden toewijzen. Bijvoorbeeld bij een zevenbands landsat image, zou u kunnen kiezen voor:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Zichtbaar blauw (0.45 tot 0.52 microns) - niet zichtbaar&lt;/li&gt;&lt;li&gt;Zichtbaar groen (0.52 tot 0.60 microns) - niet zichtbaar&lt;/li&gt;&lt;/li&gt;Zichtbaar rood (0.63 tot 0.69 microns) - zichtbaar als rood in afbeelding&lt;/li&gt;&lt;li&gt;Bijna infrarood (0.76 tot 0.90 microns) - zichtbaar als groen in afbeelding&lt;/li&gt;&lt;li&gt;Midden Infrarood (1.55 tot 1.75 microns) - niet zichtbaar&lt;/li&gt;&lt;li&gt;Thermisch infrarood (10.4 tot 12.5 microns) - niet zichtbaar&lt;/li&gt;&lt;li&gt;Midden Infrarood (2.08 tot 2.35 microns) - zichtbaar als blauw in afbeelding.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Opmerking over kleuring&lt;/h3&gt; &lt;p&gt;Dit &apos;image&apos; gebruikt een vast kleurenpalet. U kunt deze kleuren verwisselen naar verschillende andere combinaties bijvoorbeeld:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Rood - blauw in afbeelding&lt;/li&gt;&lt;li&gt;Groen - rood in afbeelding&lt;/li&gt;&lt;li&gt;Blauw - groen in afbeelding&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Opmerking over grijswaardenkleuring&lt;/h3&gt; &lt;p&gt;U kunt de grijswaarden verwisselen of instellen tot een pseudokleurenafbeelding met behulp van een automatisch gegenereerd kleurenpalet.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Default R:%1 G:%2 B:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard R:%1 G:%2 B:%3</translation>
     </message>
     <message>
         <source>Columns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolommen: %1</translation>
     </message>
     <message>
         <source>Rows: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Rijen: %1</translation>
     </message>
     <message>
         <source>No-Data Value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarde voor &apos;geen data&apos;: %1</translation>
     </message>
     <message>
         <source>Write access denied. Adjust the file permissions and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijfrechten geweigerd. Pas de file-permissies aan en probeer opnieuw.</translation>
     </message>
     <message>
         <source>The following lines contained errors
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>De volgende regels bevatten fouten
+
+%1</translation>
     </message>
     <message>
         <source>The color map for band %1 failed to load</source>
-        <translation type="unfinished"></translation>
+        <translation>De kleur voor ban %1 kon niet worden geladen       </translation>
     </message>
     <message>
         <source>Unknown style format: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Onbekend stijlformaat: %1</translation>
     </message>
 </context>
 <context>
@@ -21037,183 +21040,183 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS versie gedetecteerd:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin zal niet worden ingeschakeld.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gereedschappen</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Analyse Gereedschappen</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance matrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijnlengtes sommeren</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Punt in polygoon</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisstatistieken</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Nearest neighbour&apos;-analyse</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gemiddelde coordinaten</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijn-intersectie</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sample gereedschap</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige selectie</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige selectie binnen subsets</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige punten</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished"></translation>
+        <translation>Regelmatige punten</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Vectorgrid</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteren op plaats</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geoprocessing Gereedschap</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Buffer(s)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Intersectie</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation>Union</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Dissolve</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Difference</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>G&amp;eometrie gereedschappen</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer/Toevoegen geometrie-kolommen</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished"></translation>
+        <translation>Check geometrie op geldigheid</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygoon-centroide</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraheer Knooppunten</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrien vereenvoudigen</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
+        <translation>Meervoudige objecten naar enkelvoudige</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelvoudige objecten naar meervoudige </translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygonen naar lijnen</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datamanagement Gereedschappen</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Naar nieuwe projectie exporteren</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Definieer huidige projectie</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Join attributen</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Join attributen op basis van plaats</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector laag splitsen</translation>
     </message>
     <message>
         <source>About fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>Info over fTools</translation>
     </message>
 </context>
 <context>
