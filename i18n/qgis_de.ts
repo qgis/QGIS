@@ -5157,7 +5157,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">COMMENTED OUT</translation>
     </message>
     <message>
         <source> Please correct before pressing save.</source>
@@ -10187,179 +10187,179 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>BIG5</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">BIG5</translation>
     </message>
     <message>
         <source>BIG5-HKSCS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">BIG5-HKSCS</translation>
     </message>
     <message>
         <source>EUCJP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">EUCJP</translation>
     </message>
     <message>
         <source>EUCKR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">EUCKR</translation>
     </message>
     <message>
         <source>GB2312</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GB2312</translation>
     </message>
     <message>
         <source>GBK</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GBK</translation>
     </message>
     <message>
         <source>GB18030</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GB18030</translation>
     </message>
     <message>
         <source>JIS7</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JIS7</translation>
     </message>
     <message>
         <source>SHIFT-JIS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SHIFT-JIS</translation>
     </message>
     <message>
         <source>TSCII</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TSCII</translation>
     </message>
     <message>
         <source>UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UTF-8</translation>
     </message>
     <message>
         <source>UTF-16</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UTF-16</translation>
     </message>
     <message>
         <source>KOI8-R</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">KOI8-R</translation>
     </message>
     <message>
         <source>KOI8-U</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">KOI8-U</translation>
     </message>
     <message>
         <source>ISO8859-1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-1</translation>
     </message>
     <message>
         <source>ISO8859-2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-2</translation>
     </message>
     <message>
         <source>ISO8859-3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-3</translation>
     </message>
     <message>
         <source>ISO8859-4</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-4</translation>
     </message>
     <message>
         <source>ISO8859-5</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-5</translation>
     </message>
     <message>
         <source>ISO8859-6</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-6</translation>
     </message>
     <message>
         <source>ISO8859-7</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-7</translation>
     </message>
     <message>
         <source>ISO8859-8</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-8</translation>
     </message>
     <message>
         <source>ISO8859-8-I</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-8-I</translation>
     </message>
     <message>
         <source>ISO8859-9</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-9</translation>
     </message>
     <message>
         <source>ISO8859-10</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-10</translation>
     </message>
     <message>
         <source>ISO8859-11</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-11</translation>
     </message>
     <message>
         <source>ISO8859-12</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-12</translation>
     </message>
     <message>
         <source>ISO8859-13</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-13</translation>
     </message>
     <message>
         <source>ISO8859-14</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-14</translation>
     </message>
     <message>
         <source>ISO8859-15</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ISO8859-15</translation>
     </message>
     <message>
         <source>IBM 850</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">IBM 850</translation>
     </message>
     <message>
         <source>IBM 866</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">IBM 866</translation>
     </message>
     <message>
         <source>CP874</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP874</translation>
     </message>
     <message>
         <source>CP1250</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1250</translation>
     </message>
     <message>
         <source>CP1251</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1251</translation>
     </message>
     <message>
         <source>CP1252</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1252</translation>
     </message>
     <message>
         <source>CP1253</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1253</translation>
     </message>
     <message>
         <source>CP1254</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1254</translation>
     </message>
     <message>
         <source>CP1255</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1255</translation>
     </message>
     <message>
         <source>CP1256</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1256</translation>
     </message>
     <message>
         <source>CP1257</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1257</translation>
     </message>
     <message>
         <source>CP1258</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CP1258</translation>
     </message>
     <message>
         <source>Apple Roman</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Apple Roman</translation>
     </message>
     <message>
         <source>TIS-620</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TIS-620</translation>
     </message>
     <message>
         <source>Type</source>
@@ -10367,7 +10367,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>URI</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">URI</translation>
     </message>
     <message>
         <source>Source</source>
@@ -11204,7 +11204,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Nichts zu entfernen! Pluginverzeichnis existiert nicht:</translation>
+        <translation type="unfinished">Nichts zu entfernen! Pluginverzeichnis existiert nicht:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -12677,7 +12677,7 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     <message>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">COMMENTED OUT</translation>
     </message>
 </context>
 <context>
@@ -13147,17 +13147,17 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     <message>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">COMMENTED OUT</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">COMMENTED OUT</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">COMMENTED OUT</translation>
     </message>
 </context>
 <context>
@@ -14364,7 +14364,7 @@ SQL: %2</translation>
     </message>
     <message>
         <source> @ </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> @ </translation>
     </message>
     <message>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
