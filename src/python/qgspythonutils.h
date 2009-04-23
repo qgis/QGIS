@@ -52,7 +52,7 @@ class PYTHON_EXPORT QgsPythonUtils
 
     //! run a statement, error reporting is not done
     //! @return true if no error occured
-    virtual bool runStringUnsafe( const QString& command ) = 0;
+    virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
 
     virtual bool evalString( const QString& command, QString& result ) = 0;
 

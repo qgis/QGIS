@@ -5,26 +5,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>541</width>
-    <height>338</height>
+    <width>709</width>
+    <height>265</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Python console</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
-   <item>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="3" column="3" >
+    <widget class="QPushButton" name="pbnExecute" >
+     <property name="text" >
+      <string>&amp;Execute</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" >
+    <widget class="QPushButton" name="pbnPrev" >
+     <property name="text" >
+      <string>&amp;Previous</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" >
+    <widget class="QPushButton" name="pbnNext" >
+     <property name="text" >
+      <string>&amp;Next</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3" >
     <widget class="QLabel" name="lblInfo" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>5</vsizetype>
+      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -37,37 +50,43 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0" colspan="4" >
     <widget class="QTextBrowser" name="txtHistory" >
      <property name="html" >
-      <string></string>
+      <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;">
+&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;/p>&lt;/body>&lt;/html></string>
      </property>
     </widget>
    </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
+   <item row="3" column="1" >
+    <widget class="QLabel" name="lblPrompt" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="spacing" >
-      <number>6</number>
+     <property name="text" >
+      <string>>>></string>
      </property>
-     <item>
-      <widget class="QLabel" name="lblPrompt" >
-       <property name="text" >
-        <string>>>></string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="edtCmdLine" />
-     </item>
-    </layout>
+    </widget>
+   </item>
+   <item rowspan="3" row="2" column="2" >
+    <widget class="QTextEdit" name="edtCmdLine" />
    </item>
   </layout>
+  <zorder>pbnExecute</zorder>
+  <zorder>pbnPrev</zorder>
+  <zorder>pbnNext</zorder>
+  <zorder>lblInfo</zorder>
+  <zorder>txtHistory</zorder>
+  <zorder>lblPrompt</zorder>
+  <zorder>edtCmdLine</zorder>
  </widget>
  <tabstops>
-  <tabstop>edtCmdLine</tabstop>
   <tabstop>txtHistory</tabstop>
  </tabstops>
  <resources/>

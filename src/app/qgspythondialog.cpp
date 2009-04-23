@@ -16,6 +16,7 @@
 
 #include "qgspythondialog.h"
 #include "qgspythonutils.h"
+#include "qgslogger.h"
 
 #include <QShowEvent>
 #include <QCloseEvent>
@@ -43,42 +44,34 @@ QString QgsPythonDialog::escapeHtml( QString text )
   return text.replace( "<", "&lt;" ).replace( ">", "&gt;" );
 }
 
-void QgsPythonDialog::keyPressEvent( QKeyEvent *ev )
+void QgsPythonDialog::on_pbnPrev_clicked()
 {
-  switch ( ev->key() )
+  if ( pos > 0 )
   {
-    case Qt::Key_Up:
-    {
-      if ( pos > 0 )
-      {
-        if ( pos == history.size() )
-          history << edtCmdLine->text();
-        else
-          history[pos] = edtCmdLine->text();
-        pos--;
-        edtCmdLine->setText( history[pos] );
-      }
-    }
-    break;
-    case Qt::Key_Down:
-    {
-      if ( pos < history.size() - 1 )
-      {
-        history[pos] = edtCmdLine->text();
-        pos++;
-        edtCmdLine->setText( history[pos] );
-      }
-    }
-    break;
-    default:
-      QWidget::keyPressEvent( ev );
-      break;
+    if ( pos == history.size() )
+      history << edtCmdLine->toPlainText();
+    else
+      history[pos] = edtCmdLine->toPlainText();
+    pos--;
+    edtCmdLine->setText( history[pos] );
   }
 }
 
-void QgsPythonDialog::on_edtCmdLine_returnPressed()
+void QgsPythonDialog::on_pbnNext_clicked()
 {
-  QString command = edtCmdLine->text();
+  if ( pos < history.size() - 1 )
+  {
+    history[pos] = edtCmdLine->toPlainText();
+    pos++;
+    edtCmdLine->setText( history[pos] );
+  }
+} 
+
+void QgsPythonDialog::on_pbnExecute_clicked()
+{
+  QString command = edtCmdLine->toPlainText();
+
+  QgsDebugMsg( QString("command: |%1|").arg( command ) );
 
   if ( !command.isEmpty() )
   {
@@ -90,7 +83,7 @@ void QgsPythonDialog::on_edtCmdLine_returnPressed()
 
   // when using Py_single_input the return value will be always null
   // we're using custom hooks for output and exceptions to show output in console
-  if ( mPythonUtils->runStringUnsafe( command ) )
+  if ( mPythonUtils->runStringUnsafe( command, false ) )
   {
     mPythonUtils->evalString( "sys.stdout.get_and_clean_data()", output );
     QString result = mPythonUtils->getResult();

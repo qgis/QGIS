@@ -57,7 +57,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     //! run a statement, error reporting is not done
     //! @return true if no error occured
-    bool runStringUnsafe( const QString& command );
+    bool runStringUnsafe( const QString& command, bool single = true );
 
     bool evalString( const QString& command, QString& result );
 
