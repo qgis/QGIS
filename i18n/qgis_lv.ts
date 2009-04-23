@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="lv">
+<!DOCTYPE TS><TS version="1.1" language="lv">
+<defaultcodec></defaultcodec>
 <context>
     <name></name>
     <message>
         <source>&amp;Geoprocessing</source>
-        <translation type="unfinished">Ģe&amp;oapstrāde</translation>
+        <translation>Ģe&amp;oapstrāde</translation>
     </message>
 </context>
 <context>
@@ -135,11 +135,11 @@
     </message>
     <message>
         <source>&amp;Coordinate Capture</source>
-        <translation>&amp;Koordinātu nolasīšana</translation>
+        <translation>&amp;Koordināšu nolasīšana</translation>
     </message>
     <message>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Klikšķini, lai izvēletos rādāmo koordinātu CRS</translation>
+        <translation>Klikšķini, lai izvēletos rādāmo koordināšu CRS</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -159,11 +159,11 @@
     </message>
     <message>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Sākt nolasīšanu</translation>
     </message>
     <message>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Klikšķini lai ieslēgtu koordināšu nolasīšanu</translation>
     </message>
 </context>
 <context>
@@ -218,7 +218,7 @@
     </message>
     <message>
         <source>Coordinate Capture Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordināšu nolasīšanas spraudnis</translation>
     </message>
 </context>
 <context>
@@ -412,31 +412,31 @@
     </message>
     <message>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar izveidot pieslēgumu ar: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Veiksmīgi pārkonvertēts slānis &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Slāņa, &apos;%1&apos;, konvertācija neveiksmīga</translation>
     </message>
     <message>
         <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Veiksmīgi pieslēdzies : &apos;%1&apos;</translation>
     </message>
     <message>
         <source>fTools About</source>
-        <translation type="unfinished"></translation>
+        <translation>fRīks Par</translation>
     </message>
     <message>
         <source>fTools</source>
-        <translation type="unfinished"></translation>
+        <translation>fRīks</translation>
     </message>
     <message>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>Versija x.x-xxxxxx</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -447,59 +447,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">Palīdzība</translation>
+        <translation>Palīdzība</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Web</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Aizvērt</translation>
+        <translation>Aizvērt</translation>
     </message>
     <message>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadi līniju vai poligonu vektoru slāni</translation>
     </message>
     <message>
         <source>Tolerance</source>
-        <translation type="unfinished">Tolerance</translation>
+        <translation>Pielaide</translation>
     </message>
     <message>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikālā ID lauks</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izejošais punktu shape fails</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Ģeoapstrāde</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Ievadīt vektordatu slāni</translation>
+        <translation>Ievadīt vektordatu slāni</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārklāt slāni</translation>
     </message>
     <message>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufera attālums</translation>
     </message>
     <message>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufera attāluma lauks</translation>
     </message>
     <message>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Šķirt lauku</translation>
     </message>
     <message>
         <source>Dissolve buffer results</source>
@@ -507,139 +507,139 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izejošais shape fails</translation>
     </message>
     <message>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrast līniju pārklāšanos</translation>
     </message>
     <message>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievada līniju slānis</translation>
     </message>
     <message>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievada unikālā ID lauks</translation>
     </message>
     <message>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārklāt līniju slāni</translation>
     </message>
     <message>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Krustot unikālo ID lauku </translation>
     </message>
     <message>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izejošais shape fails</translation>
     </message>
     <message>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērķa vektoru fails</translation>
     </message>
     <message>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērķa apvienojuma fails</translation>
     </message>
     <message>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>Savienot datus</translation>
     </message>
     <message>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Savienot vektoru slāni</translation>
     </message>
     <message>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation>Savienot dbf tabulu</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Savienojuma lauks</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvades tabula</translation>
     </message>
     <message>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt tikai atbilstošos ierakstus</translation>
     </message>
     <message>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Paturēt visus ierakstus (ieskaitot neatbilstošos ierakstus)</translation>
     </message>
     <message>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Ģenerēt centroīdus</translation>
     </message>
     <message>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Smaguma lauks</translation>
     </message>
     <message>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Standarta noviržu skaits</translation>
     </message>
     <message>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation>Standartnovirze</translation>
     </message>
     <message>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidot distanču matricu</translation>
     </message>
     <message>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievada punktu slānis</translation>
     </message>
     <message>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērķa punktu slānis</translation>
     </message>
     <message>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērķa unikālā ID lauks</translation>
     </message>
     <message>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvades matricas tips</translation>
     </message>
     <message>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Lineāra (N*k x 3) attāluma matrica</translation>
     </message>
     <message>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Standarta (N x T) attāluma matrica</translation>
     </message>
     <message>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation>Attāluma matricas kopsavilkums (vidējais skaitlis, standartnovirze, minimums, maksimums)</translation>
     </message>
     <message>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot tikai tuvākos (k) mērķa punktus</translation>
     </message>
     <message>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt attāluma matrici</translation>
     </message>
     <message>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaitīt punktus laukumos</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievades laukumu vektoru slānis</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievades punktu vektoru slānis</translation>
     </message>
     <message>
         <source>Output count field name</source>
@@ -651,19 +651,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Ģenerēt brīvi izvēlētus punktus</translation>
     </message>
     <message>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt robežu slāni</translation>
     </message>
     <message>
         <source>Minimum distance between points</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimālais attalums starp punktiem</translation>
     </message>
     <message>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Parauga izmērs</translation>
     </message>
     <message>
         <source>Unstratified Sampling Design (Entire layer)</source>
@@ -671,7 +671,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot šo punktu skaitu</translation>
     </message>
     <message>
         <source>Stratified Sampling Design (Individual polygons)</source>
@@ -679,139 +679,139 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot šo punktu blīvumu</translation>
     </message>
     <message>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot vērtību no ievades lauka</translation>
     </message>
     <message>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejaušas atlases rīks</translation>
     </message>
     <message>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt vektordatu slāni</translation>
     </message>
     <message>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejauši atlasīt</translation>
     </message>
     <message>
         <source>Number of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu skaits</translation>
     </message>
     <message>
         <source>Percentage of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu procents</translation>
     </message>
     <message>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekcijas pārvaldīšanas rīks</translation>
     </message>
     <message>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt telpisko norāžu sistēmu</translation>
     </message>
     <message>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt telpisko norāžu sistēmu</translation>
     </message>
     <message>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot iepriekš noteiktu telpisko norāžu sistēmu</translation>
     </message>
     <message>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlēties</translation>
     </message>
     <message>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importēt telpisko norāžu sistēmu no pašreizējā slāņa</translation>
     </message>
     <message>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Importēt telpisko norāžu sistēmu</translation>
     </message>
     <message>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Ģenerēt patstāvīgos punktus</translation>
     </message>
     <message>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt koordinātes</translation>
     </message>
     <message>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min</translation>
     </message>
     <message>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation>X maks</translation>
     </message>
     <message>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y maks</translation>
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīklu intervāls</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot šo punktu intervālu</translation>
     </message>
     <message>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Telpisks savienojums</translation>
     </message>
     <message>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribūtu kopsavilkums</translation>
     </message>
     <message>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Krustojošo objektu kopsavilkums </translation>
     </message>
     <message>
         <source>Mean</source>
-        <translation type="unfinished">Vidējā vērtība</translation>
+        <translation>Vidējā vērtība</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation type="unfinished">Maks</translation>
+        <translation>Maks</translation>
     </message>
     <message>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>Summa</translation>
     </message>
     <message>
         <source>Output Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Izejošais shape fails</translation>
     </message>
     <message>
         <source>Random Selection From Within Subsets</source>
@@ -823,27 +823,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Saskaitīt poligonā esošo līniju garumu</translation>
     </message>
     <message>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Saskaitīto garumu glabāšanas lauks</translation>
     </message>
     <message>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation>Garums</translation>
     </message>
     <message>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt līniju vektordatu slāni</translation>
     </message>
     <message>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkla apjoms</translation>
     </message>
     <message>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Atjaunot apjomus no slāņa</translation>
     </message>
     <message>
         <source>Update extents from canvas</source>
@@ -851,82 +851,82 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parametri</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>Slēgt 1:1 proporciju</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt tīklu kā poligonu</translation>
     </message>
     <message>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt tīklu kā līnijas</translation>
     </message>
     <message>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektoru dalīšana</translation>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvades mape</translation>
     </message>
     <message>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidot unikālo vērtību sarakstu</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērķa lauks</translation>
     </message>
     <message>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikālo vērtību saraksts</translation>
     </message>
     <message>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikālo vērtību skaits</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished"></translation>
+        <translation>Apvienot visu</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet ievades vektordatu slāni</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet izejošo shape failu</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizejiet derīgu pielaides vērtību</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet derīgu UID lauku</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidots izejošas shape fails</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai vēlies pievienot jauno slāni TOC</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
@@ -934,7 +934,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izejošais shape fails</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -942,98 +942,98 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārveidot poligonus līnijās</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievadīt laukumu vektoru slāni</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Ievadīt vektordatu slāni</translation>
+        <translation>Ievadīt vektordatu slāni</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligona centroīdi</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvadīt punktu shape failu</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished"></translation>
+        <translation>Notika kļūda formējot noteikto pielaidi!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu, izvēlaties lielāku pielaides vērtību</translation>
     </message>
     <message>
         <source>Function not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcija nav atrasta</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda rakstot izejošo shape failu</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams nodzēst pašreizējo slāni</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished"></translation>
+        <translation>Škirt visu</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet ievades slāni</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet starpības/pārklājošo/apvienoto slāni</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizejiet derīgu bufera vērtību</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet izplūdes lauku</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Lūdzu precizējiet izejošo shape failu</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams sagatavot ģeoapstrādes rezultātu.</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidots izejošas shape fails</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai vēlies pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Buferis</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
@@ -1049,47 +1049,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished"></translation>
+        <translation>Šķirt</translation>
     </message>
     <message>
         <source>Erase layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdzēst slāni</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Starpība</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārklājošais slāni</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārklāt</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Starpības slānis</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished"></translation>
+        <translation>Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Izgriezts slānis</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished"></translation>
+        <translation>Izgriezt</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Apvienots slānis</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished"></translation>
+        <translation>Apvienot</translation>
     </message>
 </context>
 <context>
@@ -1148,7 +1148,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This file contains the documentation you are reading now!</source>
-        <translation>Šis fails satur dokumentāciju, ko jūs šobrīd lasiet.</translation>
+        <translation>Šis fails satur dokumentāciju, kuru jūs šobrīd lasiet.</translation>
     </message>
     <message>
         <source>Getting developer help:</source>
@@ -1261,50 +1261,50 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="unfinished">Konvertē OGR bibliotēkas atbalstītos vektordatu slāņus</translation>
+        <translation>Konvertē OGR bibliotēkas atbalstītos vektordatu slāņus</translation>
     </message>
 </context>
 <context>
     <name>OracleConnectGuiBase</name>
     <message>
         <source>Create Oracle Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidot Oracle pieslēgumu</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished">Labi</translation>
+        <translation>Labi</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Atcelt</translation>
+        <translation>Atcelt</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished">Savienojuma informācija</translation>
+        <translation>Savienojuma informācija</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nosaukums</translation>
+        <translation>Nosaukums</translation>
     </message>
     <message>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Datubāzes instance</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished">Lietotājvārds</translation>
+        <translation>Lietotājvārds</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished">Parole</translation>
+        <translation>Parole</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Jaunā savienojuma nosaukums</translation>
+        <translation>Jaunā savienojuma nosaukums</translation>
     </message>
     <message>
         <source>Save Password</source>
-        <translation type="unfinished">Saglabāt paroli</translation>
+        <translation>Saglabāt paroli</translation>
     </message>
 </context>
 <context>
@@ -1527,11 +1527,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
-        <translation>Mēģinot transformēt punktu, tika konstatēts koordinātu transofmācijas sistēmas izņēmums. Nav iespējams noteikt līnijas garumu.</translation>
+        <translation>Mēģinot transformēt punktu, tika konstatēts koordināšu transofmācijas sistēmas izņēmums. Nav iespējams noteikt līnijas garumu.</translation>
     </message>
     <message>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
-        <translation>Mēģinot transformēt punktu, tika konstatēts koordinātu transofmācijas sistēmas izņēmums. Nav iespējams noteikt poligona laukumu.</translation>
+        <translation>Mēģinot transformēt punktu, tika konstatēts koordināšu transofmācijas sistēmas izņēmums. Nav iespējams noteikt poligona laukumu.</translation>
     </message>
     <message>
         <source>CopyrightLabel</source>
@@ -1731,7 +1731,7 @@ Python atbalsts tiks atslēgts.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="obsolete">Koordinātu pārreiķina kļūda</translation>
+        <translation type="obsolete">Koordināšu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
@@ -2229,7 +2229,7 @@ Python atbalsts tiks atslēgts.</translation>
     </message>
     <message>
         <source>Coordinate Capture</source>
-        <translation>Koordinātu nolasīšana</translation>
+        <translation>Koordināšu nolasīšana</translation>
     </message>
     <message>
         <source>Capture mouse coordinates in different CRS</source>
@@ -2253,7 +2253,7 @@ Python atbalsts tiks atslēgts.</translation>
     </message>
     <message>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolācijas spraudnis, kas bāzēts uz vektoru slāņu virsotnēm</translation>
     </message>
     <message>
         <source>OGR Layer Converter</source>
@@ -2265,12 +2265,13 @@ Python atbalsts tiks atslēgts.</translation>
     </message>
     <message>
         <source>Error Loading Plugin</source>
-        <translation type="unfinished">Kļūda ielādējot spraudni</translation>
+        <translation>Kļūda ielādējot spraudni</translation>
     </message>
     <message>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda ielādējot spraudni. Sekojošā diagnostikas informācija var palīdzēt QGIS izstradātājiem atrisināt šo problēmu:
+%1.</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin </source>
@@ -2278,97 +2279,99 @@ Python atbalsts tiks atslēgts.</translation>
     </message>
     <message>
         <source>Where is &apos;%1&apos; (original location: %2)?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kur ir &apos;%1&apos; (īstā atrašanās: %2 )?</translation>
     </message>
     <message>
         <source>Error when reading metadata of plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda nolasot %1 spraudņa metadatus</translation>
     </message>
     <message>
         <source>No QGIS data provider plugins found in:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nav atrasts QGIS datu sniedzēja spraudņis iekš: 
+%1
+</translation>
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Atskaites kolonna netika atrasta: %1</translation>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietojums: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Vieta: %1&lt;br&gt;Karšu kopa: %2</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the data source: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams atvērt datu avotu: %1</translation>
     </message>
     <message>
         <source>Parse error at line %1 : %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Parsēšanas kļūda līnijā %1 : %2</translation>
     </message>
     <message>
         <source>%1 is not a GRASS mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nav GRASS karšu kopa.</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar startēt %1/etc/lock</translation>
     </message>
     <message>
         <source>Temporary directory %1 exists but is not writable</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagaidu mape %1 eksistē, bet nav rakstāma</translation>
     </message>
     <message>
         <source>Cannot create temporary directory %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar izveidot pagaidu mapi %1</translation>
     </message>
     <message>
         <source>Cannot create %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar izveidot %1</translation>
     </message>
     <message>
         <source>Cannot remove mapset lock: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar noņemt mapset slēdzi: %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar pievienot spraudni %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation> %1 dēļ kļūdas izsaucot tā classFactory() metodi</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dēļ kļūdas izsaucot tā initGui() metodi</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda sparudņa atslēgšanā %1</translation>
     </message>
     <message>
         <source>Georeferencer GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL telpiskā piesaiste</translation>
     </message>
     <message>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievieno projekcijas informāciju rastra datiem izmantojot GDAL</translation>
     </message>
     <message>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Access Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3690,11 +3693,11 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuvināt faktisko lielumu</translation>
     </message>
     <message>
         <source>Zoom to Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuvināt līdz faktiskajam izmēram</translation>
     </message>
     <message>
         <source>Add Vector Layer...</source>
@@ -3767,7 +3770,7 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Manage custom coordinate reference systems</source>
-        <translation>Pārvaldīt pielāgotās koordinātu sistēmas</translation>
+        <translation>Pārvaldīt pielāgotās koordināšu sistēmas</translation>
     </message>
     <message>
         <source>Minimize</source>
@@ -3788,7 +3791,7 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Toggles between a predefined size and the window size set by the user</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Bring All to Front</source>
@@ -3816,15 +3819,15 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Toggle extents and mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šī ikona rāda vai tūlītēja projekciju maiņa ir ieslēgta vai nē. Klikšķiniet uz ikonas, lai mainītu projekta īpašības.</translation>
     </message>
     <message>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation>CRS statuss - Klikšķini lai atvērtu koordinātu sistēmu dialogu</translation>
+        <translation>CRS statuss - Klikšķini lai atvērtu koordināšu sistēmu dialogu</translation>
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
@@ -3836,7 +3839,7 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>Updated Spatial Reference System definitions</source>
-        <translation type="obsolete">Atjaunināt koordinātu sistēmu definīcijas</translation>
+        <translation type="obsolete">Atjaunināt koordināšu sistēmu definīcijas</translation>
     </message>
     <message>
         <source>QML Style support for rasters and database layers</source>
@@ -3898,72 +3901,77 @@ Kļūdas:  %2
     </message>
     <message>
         <source>Quantum GIS - %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS - %1</translation>
     </message>
     <message>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ir nederīgs vai neatpazīts datu avots</translation>
     </message>
     <message>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished">QGIS faili (*.qgs)</translation>
+        <translation>QGIS faili (*.qgs)</translation>
     </message>
     <message>
         <source>%1
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1
+Mēģini atrast trūkstošos slāņus?</translation>
     </message>
     <message>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt projektu iekš: %1</translation>
     </message>
     <message>
         <source>Unable to save project to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams saglabāt projektu uz %1</translation>
     </message>
     <message>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams saglabāt projektu %1</translation>
     </message>
     <message>
         <source>Unable to load project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams ielādēt projektu %1</translation>
     </message>
     <message>
         <source>Saved map image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt kartes attēlu uz %1</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
 
 Errors: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Nevarēja veikt izmaiņas slānim %1
+
+Kļūdas:  %2
+</translation>
     </message>
     <message>
         <source>QGIS - Changes in SVN since last release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - izmaiņas pašreizējas versijas sistēmā (SVN) kopš pēdējā laidiena</translation>
     </message>
     <message>
         <source>Unable to communicate with QGIS Version server
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams sazināties ar QGIS versijas serveri
+ %1</translation>
     </message>
     <message>
         <source>Extents: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Apjoms: %1</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ir nederīgs vai neatpazīts rastra datu avots</translation>
     </message>
     <message>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation> %1 ir neatbalstīts rastra datu avots</translation>
     </message>
     <message>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
@@ -3971,47 +3979,46 @@ Errors: %2
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Slāņi</translation>
+        <translation>Slāņi</translation>
     </message>
     <message>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Dzēst slāņus</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
-        </translation>
+        <translation>Dzēst %n elementu(s)?</translation>
     </message>
     <message>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot SpatiaLite slāni...</translation>
     </message>
     <message>
         <source>L</source>
         <comment>Add a SpatiaLite Layer</comment>
-        <translation type="unfinished"></translation>
+        <translation>L
+
+Pievienot SpatiaLite slāni</translation>
     </message>
     <message>
         <source>Add a SpatiaLite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot SpatiaLite slāni</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Šī QGIS versija ir sagatavota ar SpatiaLite atbalstu.</translation>
     </message>
     <message>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šī QGIS versija ir sagatavota bez SpatiaLite atbalsta.</translation>
     </message>
     <message>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Nākošais skats</translation>
     </message>
     <message>
         <source>Zoom to Forward Extent</source>
@@ -4019,7 +4026,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kas jauns 1.1.0 laidienā?</translation>
     </message>
     <message>
         <source>Please note that this is a release in our &apos;unstable&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x. If stability and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our stable 1.0.x release series.</source>
@@ -4031,7 +4038,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Updates to translations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulkojumu jauninājumi.</translation>
     </message>
     <message>
         <source>Improvements and polishing of the Python plugin installer. Switch to the new official QGIS repository.</source>
@@ -4193,7 +4200,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nosaukums</translation>
+        <translation>Nosaukums</translation>
     </message>
     <message>
         <source>Sponsors</source>
@@ -4209,7 +4216,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     </message>
     <message>
         <source>Website</source>
-        <translation type="unfinished">Mājaslapa</translation>
+        <translation>Mājaslapa</translation>
     </message>
     <message>
         <source>Enter the name of a web browser to use (eg. konqueror).
@@ -4225,15 +4232,15 @@ Ievadi pilno ceļu, ja pārlūks nav norādīts sitēmas PATH vērtībās.
     </message>
     <message>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation type="unfinished">Pieejamie QGIS datu piegādatāju spraudņi</translation>
+        <translation>Pieejamie QGIS datu piegādatāju spraudņi</translation>
     </message>
     <message>
         <source>Available Qt Database Plugins</source>
-        <translation type="unfinished">Pieejamie Qt datubāzes spraudņi</translation>
+        <translation>Pieejamie Qt datubāzes spraudņi</translation>
     </message>
     <message>
         <source>Available Qt Image Plugins</source>
-        <translation type="unfinished">Pieejamie Qt attēlu spraudņi</translation>
+        <translation>Pieejamie Qt attēlu spraudņi</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4244,7 +4251,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished">http://www.gnu.org/licenses</translation>
+        <translation>http://www.gnu.org/licenses</translation>
     </message>
     <message>
         <source>Join our user mailing list</source>
@@ -4260,15 +4267,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Valoda</translation>
     </message>
     <message>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Vārdi</translation>
     </message>
     <message>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulkotāji</translation>
     </message>
 </context>
 <context>
@@ -4298,7 +4305,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsApplication</name>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Izņēmums</translation>
     </message>
 </context>
 <context>
@@ -4322,7 +4329,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Missing Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Trūkst informācijas</translation>
     </message>
     <message>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
@@ -4649,7 +4656,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuvināt kartē līdz izvēlētajām rindām (Ctrl -J)</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
@@ -4668,45 +4675,44 @@ p, li { white-space: pre-wrap; }
     <name>QgsAttributeTableDialog</name>
     <message>
         <source>Attribute table - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribūtu tabula - %1</translation>
     </message>
     <message>
         <source>Search string parsing error</source>
-        <translation type="unfinished">Meklēšanas virknes parsēšanas kļūda</translation>
+        <translation>Meklēšanas virknes parsēšanas kļūda</translation>
     </message>
     <message>
         <source>Search results</source>
-        <translation type="unfinished">Meklēšanas rezultāti</translation>
+        <translation>Meklēšanas rezultāti</translation>
     </message>
     <message>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Jūs esat norādījis tukšu meklēšanas virkni.</translation>
+        <translation>Jūs esat norādījis tukšu meklēšanas virkni.</translation>
     </message>
     <message>
         <source>Error during search</source>
-        <translation type="unfinished">Meklēšanas kļūda</translation>
+        <translation>Meklēšanas kļūda</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Found %d matching features.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>Atrasti %d atbilstoši ieraksti.
         </translation>
     </message>
     <message>
         <source>No matching features found.</source>
-        <translation type="unfinished">Neviens atbilstošs objekts netika atrasts.</translation>
+        <translation>Neviens atbilstošs objekts netika atrasts.</translation>
     </message>
     <message>
         <source>Attribute Table</source>
-        <translation type="unfinished">Atribūtu tabula</translation>
+        <translation>Atribūtu tabula</translation>
     </message>
     <message>
         <source>Remove selection</source>
-        <translation type="unfinished">Aizvākt izvēli</translation>
+        <translation>Aizvākt izvēlēto</translation>
     </message>
     <message>
         <source>Move selected to top</source>
-        <translation type="unfinished">Pārvietot izvēli uz pašu augšu</translation>
+        <translation>Pārvietot izvēli uz pašu augšu</translation>
     </message>
     <message>
         <source>Ctrl+T</source>
@@ -4714,7 +4720,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invert selection</source>
-        <translation type="unfinished">Pretēja izvēle</translation>
+        <translation>Pretēja izvēle</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -4722,11 +4728,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="unfinished">Kopēt atlasītās rindas uz starpliktuvi (Ctrl+C)</translation>
+        <translation>Kopēt atlasītās rindas uz starpliktuvi (Ctrl+C)</translation>
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation type="unfinished">Kopē atlasītās rindas uz starpliktuvi</translation>
+        <translation>Kopē atlasītās rindas uz starpliktuvi</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -4734,47 +4740,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuvināt kartē līdz izvēlētajām rindām (Ctrl -J)</translation>
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation type="unfinished">Tuvināt kartes skatu uz izvēlētajiem ierakstiem</translation>
+        <translation>Tuvināt kartes skatu uz izvēlētajiem ierakstiem</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
-        <translation type="unfinished">Ctrl+J</translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">Labošanas režīms</translation>
+        <translation>Labošanas vide</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">Klikšķini, lai sāktu tabulas labošanu</translation>
+        <translation>Klikšķini, lai sāktu tabulas labošanu</translation>
     </message>
     <message>
         <source>Look for</source>
-        <translation type="unfinished"></translation>
+        <translation>Meklēt pēc</translation>
     </message>
     <message>
         <source>in</source>
-        <translation type="unfinished">iekš</translation>
+        <translation>iekš</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Meklēt</translation>
     </message>
     <message>
         <source>Show selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Rādīt tikai atlasītos ierakstus</translation>
     </message>
     <message>
         <source>Advanced search</source>
-        <translation type="unfinished"></translation>
+        <translation>Paplašinātā meklēšana</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -4985,12 +4991,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>Droši zini, ka gribi dzēst grāmatzīmi %1 ?</translation>
     </message>
     <message>
         <source>Failed to delete the %1 bookmark from the database. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Grāmatzīmes %1 dzēšana no datubāzes bija neveiksmīga. Datubāzes atbilde:
+%2</translation>
     </message>
 </context>
 <context>
@@ -5140,7 +5147,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished">&lt;p&gt;QGIS SVG eksportēšanas funkcijai ir vairākas kļūdas dēļ nepilnībām un kļūdām iekš </translation>
+        <translation>&lt;p&gt;QGIS SVG eksportēšanas funkcijai ir vairākas kļūdas dēļ nepilnībām un kļūdām iekš </translation>
     </message>
     <message>
         <source>Move Content</source>
@@ -5244,11 +5251,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekts satur WMS slāņus</translation>
     </message>
     <message>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS servisiem mēdz  būt augstuma un platuma ierobežojumi. Drukājot datus no šadiem servisiem var tikt parsniegts šis limits. Ja tas  ir šāds gadījums WMS slānis netiks izdrukāts</translation>
     </message>
     <message>
         <source>%1 format (*.%2 *.%3)</source>
@@ -5264,39 +5271,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Lai izveidotu attēlu %1 x %2 nepieciešamas %3 MB liels atmiņas apjoms</translation>
     </message>
     <message>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja ir drukas rezultāts ir nepieciešams vektoru formātā un SVG sniedz neapmierinošu rezultatu iesakām lietot PostScript formātu.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>save template</source>
-        <translation type="unfinished"></translation>
+        <translation>saglabāt paraugu</translation>
     </message>
     <message>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāšanas kļūda</translation>
     </message>
     <message>
         <source>Error, could not save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda, nevar saglabāt failu</translation>
     </message>
     <message>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot paraugu</translation>
     </message>
     <message>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>lasīšanas kļūda</translation>
     </message>
     <message>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda, nevar nolasīt failu</translation>
     </message>
     <message>
         <source>Content of template file is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Parauga faila saturs nav derīgs</translation>
     </message>
 </context>
 <context>
@@ -5427,111 +5434,111 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Move Content</source>
-        <translation type="unfinished">Pārvietot saturu</translation>
+        <translation>Pārvietot saturu</translation>
     </message>
     <message>
         <source>Move item content</source>
-        <translation type="unfinished">Pārvietot ieraksta saturu</translation>
+        <translation>Pārvietot ieraksta saturu</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">Grupa</translation>
+        <translation>Grupa</translation>
     </message>
     <message>
         <source>Group items</source>
-        <translation type="unfinished">Grupēt ierakstus</translation>
+        <translation>Grupēt ierakstus</translation>
     </message>
     <message>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Atgrupēt</translation>
     </message>
     <message>
         <source>Ungroup items</source>
-        <translation type="unfinished">Atgrupēt ierakstus</translation>
+        <translation>Atgrupēt ierakstus</translation>
     </message>
     <message>
         <source>Raise</source>
-        <translation type="unfinished">Pacelt</translation>
+        <translation>Pacelt</translation>
     </message>
     <message>
         <source>Raise selected items</source>
-        <translation type="unfinished">Pacelt izvēlētos ierakstus</translation>
+        <translation>Pacelt izvēlētos ierakstus</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation>Zemāk</translation>
     </message>
     <message>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Zemāk izvēlētās vienības</translation>
     </message>
     <message>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot uz priekšu</translation>
     </message>
     <message>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot izvēli uz pašu augšu</translation>
     </message>
     <message>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot uz aizmuguri</translation>
     </message>
     <message>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot izvēli uz pašu apakšu</translation>
     </message>
     <message>
         <source>Load From template</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot no parauga</translation>
     </message>
     <message>
         <source>Save as template</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt kā paraugu</translation>
     </message>
     <message>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot pa kreisi</translation>
     </message>
     <message>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot izvēletās vienības pa kreisi</translation>
     </message>
     <message>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot centrā</translation>
     </message>
     <message>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot centrā horizontāli</translation>
     </message>
     <message>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot pa labi</translation>
     </message>
     <message>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot izvēletās vienības pa labi</translation>
     </message>
     <message>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot augšā</translation>
     </message>
     <message>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot izvēletās vienības augšā</translation>
     </message>
     <message>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot centrā vertikāli</translation>
     </message>
     <message>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot apakšā</translation>
     </message>
     <message>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietot izvēletās vienības apakšā</translation>
     </message>
 </context>
 <context>
@@ -5542,7 +5549,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Composer item properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Drukas salicēja iestatījumi</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -5570,7 +5577,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Position...</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietojums...</translation>
     </message>
 </context>
 <context>
@@ -5607,7 +5614,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerLegend</name>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Leģenda</translation>
+        <translation>Leģenda</translation>
     </message>
 </context>
 <context>
@@ -5708,7 +5715,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsComposerMap</name>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">Karte %1</translation>
+        <translation>Karte %1</translation>
     </message>
     <message>
         <source>Extent (calculate scale)</source>
@@ -5930,11 +5937,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select new preview directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlēties jaunu priekšskata mapi</translation>
     </message>
     <message>
         <source>Creating icon for file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidot ikonu failam %1</translation>
     </message>
 </context>
 <context>
@@ -5961,19 +5968,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Search directories</source>
-        <translation type="unfinished"></translation>
+        <translation>Meklēt mapes</translation>
     </message>
     <message>
         <source>Add...</source>
-        <translation type="unfinished">Pievienot</translation>
+        <translation>Pievieno...</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Noņemt</translation>
+        <translation>Noņemt</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished">Priekšapskate</translation>
+        <translation>Priekšapskate</translation>
     </message>
 </context>
 <context>
@@ -6023,7 +6030,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">Karte %1</translation>
+        <translation>Karte %1</translation>
     </message>
 </context>
 <context>
@@ -6396,15 +6403,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Solid</source>
-        <translation type="unfinished">Vienlaidus</translation>
+        <translation>Vienlaidus</translation>
     </message>
     <message>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkti</translation>
     </message>
     <message>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation>Krusti</translation>
     </message>
 </context>
 <context>
@@ -6443,39 +6450,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Snapping</source>
-        <translation type="unfinished">Pielipšana</translation>
+        <translation>Pielipšana</translation>
     </message>
     <message>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Pielipt pie tīkla</translation>
     </message>
     <message>
         <source>Grid resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkla izšķirtspēja:</translation>
     </message>
     <message>
         <source>Offset x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nobīde x:</translation>
     </message>
     <message>
         <source>Offset y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nobīde y:</translation>
     </message>
     <message>
         <source>Pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Zīmuļa platums:</translation>
     </message>
     <message>
         <source>Grid color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkla krāsa:</translation>
     </message>
     <message>
         <source>Grid style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkla stils:</translation>
     </message>
     <message>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Drukāt kā attēlu</translation>
     </message>
 </context>
 <context>
@@ -6603,7 +6610,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The coordinates can not be reprojected. The SRS is: </source>
-        <translation type="obsolete">Koordinātu sistēma nevar tikt pārprojecēta. SRS ir: </translation>
+        <translation type="obsolete">Koordināšu sistēma nevar tikt pārprojecēta. SRS ir: </translation>
     </message>
     <message>
         <source>The destination spatial reference system (SRS) is not valid. </source>
@@ -6611,7 +6618,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>Resursa koordinātu sistēma (CRS) ir nederīga:</translation>
+        <translation>Resursa koordināšu sistēma (CRS) ir nederīga:</translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
@@ -6619,11 +6626,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Mērķa koordinātu sistēma (CRS) nav derīga.</translation>
+        <translation>Mērķa koordināšu sistēma (CRS) nav derīga.</translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinātes nav iespējams pārprojicēt. CRS ir: %1</translation>
     </message>
 </context>
 <context>
@@ -6719,7 +6726,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&#xa9; QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6779,24 +6786,24 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> Please give the projection a name before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Pirms saglabāšanas lūgums norādīt projekcijas nosaukumu.</translation>
     </message>
     <message>
         <source> Please add the parameters before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Pirms saglabāsanas lūgums norādīt parametrus.</translation>
     </message>
     <message>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Pirms sagalabāšanas lūgums norādīt proj= nosacījumus.</translation>
     </message>
     <message>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished">Šī proj4 elipsoīda definīcija nav pareiza. Lūdzu pievienjiet ellips= sadaļu pirms saglabāšanas.</translation>
+        <translation>Šī proj4 elipsoīda definīcija nav pareiza. Lūdzu pievienjiet ellips= sadaļu pirms saglabāšanas.</translation>
     </message>
     <message>
         <source> Please correct before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Lūgums izlabot pirms saglabāsanas.</translation>
     </message>
 </context>
 <context>
@@ -6887,7 +6894,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projected Coordinate System</source>
-        <translation type="obsolete">Projecēta koordinātu sistēma</translation>
+        <translation type="obsolete">Projecēta koordināšu sistēma</translation>
     </message>
     <message>
         <source>Name</source>
@@ -6903,7 +6910,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <source>X</source>
@@ -6919,7 +6926,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Custom Coordinate Reference System Definition</source>
-        <translation>Pielāgotas koordinātu sistēmas definīcija</translation>
+        <translation>Pielāgotas koordināšu sistēmas definīcija</translation>
     </message>
     <message>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
@@ -6931,7 +6938,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Destination CRS        </source>
-        <translation>Mērķa koordinātu sistēma</translation>
+        <translation>Mērķa koordināšu sistēma</translation>
     </message>
 </context>
 <context>
@@ -6951,6 +6958,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select Table</source>
         <translation>Izvēlieties tabulu</translation>
+
     </message>
     <message>
         <source>You must select a table in order to add a Layer.</source>
@@ -7034,7 +7042,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai tiešām vēlies dzēst %1 pieslēgumu un visuss siatītos iestatījumus?</translation>
     </message>
     <message>
         <source>You must select a table in order to add a layer.</source>
@@ -7199,7 +7207,7 @@ The database said:
     </message>
     <message>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot atdalīta teksta failu kā kartes slāni. Faila sākumam ir jāsatur pirmā rinda ar X un Y laukiem un jasatur koordinātes decimālskaitļos.</translation>
     </message>
 </context>
 <context>
@@ -7382,38 +7390,38 @@ p, li { white-space: pre-wrap; }
     <name>QgsDiagramDialog</name>
     <message>
         <source>Pie chart</source>
-        <translation type="unfinished"></translation>
+        <translation>Apaļa diagramma</translation>
     </message>
     <message>
         <source>Bar chart</source>
-        <translation type="unfinished">Stabiņu</translation>
+        <translation>Stabiņu diagramma</translation>
     </message>
     <message>
         <source>Proportional SVG symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcionāli SVG simboli</translation>
     </message>
 </context>
 <context>
     <name>QgsDiagramDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogs</translation>
+        <translation>Dialogs</translation>
     </message>
     <message>
         <source>Display diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Rādīt diagrammas</translation>
     </message>
     <message>
         <source>Diagram type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Diagrammas tips:</translation>
     </message>
     <message>
         <source>Classification attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasifikācijas atribūts:</translation>
     </message>
     <message>
         <source>Classification type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasifikācijas tips:</translation>
     </message>
 </context>
 <context>
@@ -7755,15 +7763,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams nolasīt izvēlēto faili.
+Lūdzu izvēlēties derīgu.</translation>
     </message>
     <message>
         <source>This device does not support downloading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šī iekarta neatbalsta %1 lejuplādi.</translation>
     </message>
     <message>
         <source>This device does not support uploading of %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šī iekarta neatbalsta %1 augšuplādi.</translation>
     </message>
 </context>
 <context>
@@ -7850,7 +7859,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Visi failu formāti nespēj saglabāt waypoints,routes un maršrutus, kārezultātā daži objektu tipi var tikt atslēgti atsevišķien failu formātiem.</translation>
     </message>
     <message>
         <source>Choose a file name to save under</source>
@@ -8016,15 +8025,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This layer appears to have no projection specification.</source>
-        <translation>Izskatās, ka šim slānim nav definēta koordinātu sistēma.</translation>
+        <translation>Izskatās, ka šim slānim nav definēta koordināšu sistēma.</translation>
     </message>
     <message>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation>Pēs noklusējuma šim slānim tiek lietota projekta koordinātu sistēma, taču jūs to varat mainīt definējot slāņa koordinātu sistēmu.</translation>
+        <translation>Pēs noklusējuma šim slānim tiek lietota projekta koordināšu sistēma, taču jūs to varat mainīt definējot slāņa koordināšu sistēmu.</translation>
     </message>
     <message>
         <source>Define this layer&apos;s coordinate reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Norādi šī slāņa koordināšu atskaites sistēmu:</translation>
     </message>
 </context>
 <context>
@@ -8035,7 +8044,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation type="unfinished">Koordinātu atskaites sistēmu izvēle</translation>
+        <translation>Koordināšu atskaites sistēmu izvēle</translation>
     </message>
 </context>
 <context>
@@ -8151,15 +8160,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Georeferencer GDAL&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;GDAL telpiskās piesaistes rīks&lt;/b&gt;</translation>
     </message>
     <message>
         <source>    Based on original Georeferencer Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>    Bāzēts uz standarta telpiskās piesaistes spraudni</translation>
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Izstrādātāji:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>    Lars Luthman (original Georeferencer)</source>
@@ -8167,7 +8176,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;b&gt;Links:&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Saites:&lt;/b&gt;</translation>
     </message>
 </context>
 <context>
@@ -8462,23 +8471,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar kopēt karti %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;komanda: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar pārsaukt karti %1</translation>
     </message>
     <message>
         <source>Delete map &lt;b&gt;%1&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Dzēst karti &lt;b&gt;%1&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar dzēst karti %1</translation>
     </message>
 </context>
 <context>
@@ -8718,7 +8727,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassEditAttributes</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Izvēlieties elementu</translation>
+        <translation>Izvēlieties elementu</translation>
     </message>
 </context>
 <context>
@@ -8804,105 +8813,105 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassEditDeleteLine</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Izvēlieties elementu</translation>
+        <translation>Izvēlieties elementu</translation>
     </message>
     <message>
         <source>Delete selected / select next</source>
-        <translation type="unfinished">Dzēst izvēlēto / izvēlēties nākamo</translation>
+        <translation>Dzēst izvēlēto / izvēlēties nākamo</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="unfinished">Atlaist izvēlēto</translation>
+        <translation>Atlaist izvēlēto</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditDeleteVertex</name>
     <message>
         <source>Select vertex</source>
-        <translation type="unfinished">Izvēlieties virsotni</translation>
+        <translation>Izvēlieties virsotni</translation>
     </message>
     <message>
         <source>Delete vertex</source>
-        <translation type="unfinished">Dzēst virsotni</translation>
+        <translation>Dzēst virsotni</translation>
     </message>
     <message>
         <source>Release vertex</source>
-        <translation type="unfinished">Atlaist virsotni</translation>
+        <translation>Atlaist virsotni</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditMoveLine</name>
     <message>
         <source>Select element</source>
-        <translation type="unfinished">Izvēlieties elementu</translation>
+        <translation>Izvēlieties elementu</translation>
     </message>
     <message>
         <source>New location</source>
-        <translation type="unfinished">Jauns novietojums</translation>
+        <translation>Jauns novietojums</translation>
     </message>
     <message>
         <source>Release selected</source>
-        <translation type="unfinished">Atlaist izvēlēto</translation>
+        <translation>Atlaist izvēlēto</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditMoveVertex</name>
     <message>
         <source>Select vertex</source>
-        <translation type="unfinished">Izvēlieties virsotni</translation>
+        <translation>Izvēlieties virsotni</translation>
     </message>
     <message>
         <source>Select new position</source>
-        <translation type="unfinished">Izvēlieties jaunu novietojumu</translation>
+        <translation>Izvēlieties jaunu novietojumu</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditNewLine</name>
     <message>
         <source>New vertex</source>
-        <translation type="unfinished">Jauna virsotne</translation>
+        <translation>Jauna virsotne</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished">Jauns punkts</translation>
+        <translation>Jauns punkts</translation>
     </message>
     <message>
         <source>Undo last point</source>
-        <translation type="unfinished">Atcelt pēdējo punktu</translation>
+        <translation>Atcelt pēdējo punktu</translation>
     </message>
     <message>
         <source>Close line</source>
-        <translation type="unfinished">Noslēgt līniju</translation>
+        <translation>Noslēgt līniju</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditNewPoint</name>
     <message>
         <source>New centroid</source>
-        <translation type="unfinished">Jauns centroīds</translation>
+        <translation>Jauns centroīds</translation>
     </message>
     <message>
         <source>New point</source>
-        <translation type="unfinished">Jauns punkts</translation>
+        <translation>Jauns punkts</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassEditSplitLine</name>
     <message>
         <source>Select position on line</source>
-        <translation type="unfinished">Izvēlieties novietojumu uz līnijas</translation>
+        <translation>Izvēlieties novietojumu uz līnijas</translation>
     </message>
     <message>
         <source>Split the line</source>
-        <translation type="unfinished">Sadalīt līniju</translation>
+        <translation>Sadalīt līniju</translation>
     </message>
     <message>
         <source>Release the line</source>
-        <translation type="unfinished">Atlaist līniju</translation>
+        <translation>Atlaist līniju</translation>
     </message>
     <message>
         <source>Select point on line</source>
-        <translation type="unfinished">Izvēlēties punktu uz līnijas</translation>
+        <translation>Izvēlēties punktu uz līnijas</translation>
     </message>
 </context>
 <context>
@@ -9249,27 +9258,27 @@ rindā </translation>
     </message>
     <message>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar parbaudīt reģionu kartei %1</translation>
     </message>
     <message>
         <source>Cannot get region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar iegūt reģionu kartei %1</translation>
     </message>
     <message>
         <source>The file already exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fails jau eksistē. Pārrakstīt?</translation>
     </message>
     <message>
         <source>The mapcalc schema (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapcalc shēma (%1) nav atrasta.</translation>
     </message>
     <message>
         <source>Cannot open mapcalc schema (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar atvērt mapcalc shēmu (%1)</translation>
     </message>
     <message>
         <source>Cannot read mapcalc schema (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar nolasīt mapcalc shēmu (%1):</translation>
     </message>
     <message>
         <source>
@@ -9401,7 +9410,7 @@ rindā </translation>
     </message>
     <message>
         <source>Module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulis: %1</translation>
     </message>
     <message>
         <source>The module file (%1) not found.</source>
@@ -9516,11 +9525,11 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;trūkst vērtība</translation>
     </message>
     <message>
         <source>%1:&amp;nbsp;directory does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp;mape neeksistē</translation>
     </message>
 </context>
 <context>
@@ -10021,7 +10030,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Coordinate system</source>
-        <translation>Koordinātu sistēma</translation>
+        <translation>Koordināšu sistēma</translation>
     </message>
     <message>
         <source>Projection</source>
@@ -10754,7 +10763,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Quantum GIS Help - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS palīdzība - %1</translation>
     </message>
     <message>
         <source>Failed to get the help text from the database:
@@ -10828,48 +10837,47 @@ Tā var būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
     </message>
     <message>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished">Saņemti %1 no %2 baitiem</translation>
+        <translation>Saņemti %1 no %2 baitiem</translation>
     </message>
     <message>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished">Saņemti %1 baiti (kopējais apjoms nezināms)</translation>
+        <translation>Saņemti %1 baiti (kopējais apjoms nezināms)</translation>
     </message>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished">Nav pieslēdzies</translation>
+        <translation>Nav pieslēdzies</translation>
     </message>
     <message>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished">Meklē &apos;%1&apos;</translation>
+        <translation>Meklē &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished">Pieslēdzas &apos;%1&apos;</translation>
+        <translation>Pieslēdzas &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished">Sūta pieprasījumu &apos;%1&apos;</translation>
+        <translation>Sūta pieprasījumu &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Receiving reply</source>
-        <translation type="unfinished">Saņem atbildi</translation>
+        <translation>Saņem atbildi</translation>
     </message>
     <message>
         <source>Response is complete</source>
-        <translation type="unfinished">Atbildes process ir pabeigts</translation>
+        <translation>Atbildes process ir pabeigts</translation>
     </message>
     <message>
         <source>Closing down connection</source>
-        <translation type="unfinished">Savienojums tiek slēgts</translation>
+        <translation>Savienojums tiek slēgts</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
 </context>
@@ -10916,7 +10924,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Identify Results - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificēt rezultātus - %1</translation>
     </message>
 </context>
 <context>
@@ -11007,31 +11015,31 @@ p, li { white-space: pre-wrap; }
     <name>QgsItemPositionDialogBase</name>
     <message>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Noteikt objekta pozīciju</translation>
     </message>
     <message>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekta atskaites punkts</translation>
     </message>
     <message>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinātes</translation>
     </message>
     <message>
         <source>x:</source>
-        <translation type="unfinished"></translation>
+        <translation>x:</translation>
     </message>
     <message>
         <source>y:</source>
-        <translation type="unfinished"></translation>
+        <translation>y:</translation>
     </message>
     <message>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Noteikt pozīciju</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Aizvērt</translation>
+        <translation>Aizvērt</translation>
     </message>
 </context>
 <context>
@@ -11065,7 +11073,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsLabelDialog</name>
     <message>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
 </context>
 <context>
@@ -11268,30 +11276,30 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Vispārējs</translation>
     </message>
     <message>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished">Izmantot no mēroga atkarīgu renderēšanu</translation>
+        <translation>Izmantot no mēroga atkarīgu renderēšanu</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">Maksimālais</translation>
+        <translation>Maksimālais</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">Minimālais</translation>
+        <translation>Minimālais</translation>
     </message>
     <message>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="unfinished"></translation>
+        <translation>Minimālais mērogs pie kāda šis slānis tiks rādīts.  </translation>
     </message>
     <message>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="unfinished">Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
+        <translation>Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
     </message>
     <message>
-        <source>°</source>
+        <source>&#xb0;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11303,11 +11311,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This layer appears to have no projection specification.</source>
-        <translation type="obsolete">Izskatās, ka šim slānim nav definēta koordinātu sistēma.</translation>
+        <translation type="obsolete">Izskatās, ka šim slānim nav definēta koordināšu sistēma.</translation>
     </message>
     <message>
         <source>By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.</source>
-        <translation type="obsolete">Pēs noklusējuma šim slānim tiek lietota projekta koordinātu sistēma, taču jūs to varat mainīt šeit definējot slāņa koordinātu sistēmu.</translation>
+        <translation type="obsolete">Pēs noklusējuma šim slānim tiek lietota projekta koordināšu sistēma, taču jūs to varat mainīt šeit definējot slāņa koordināšu sistēmu.</translation>
     </message>
 </context>
 <context>
@@ -11531,11 +11539,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlies saglabāta shapefile kordināšu atskaites sistēmu. Datu punkti tiks transformēti no slāņa koordināšu atskaites sistēmas.</translation>
     </message>
     <message>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>ShapeFile nebija iespējams izveidot (%1)</translation>
     </message>
 </context>
 <context>
@@ -11588,34 +11596,34 @@ p, li { white-space: pre-wrap; }
     <name>QgsLinearlyScalingDialog</name>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Milimetri</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartes vienībās</translation>
     </message>
 </context>
 <context>
     <name>QgsLinearlyScalingDialogBase</name>
     <message>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērogot lineāri starp 0 un sekojošo atribūta vērtību/ diagrammas izmēru:</translation>
     </message>
     <message>
         <source>find maximum Value:</source>
-        <translation type="unfinished"></translation>
+        <translation>atrast maksimālo vērtību:</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation type="unfinished">Izmērs:</translation>
+        <translation>Izmērs:</translation>
     </message>
     <message>
         <source>Size unit: </source>
-        <translation type="unfinished"></translation>
+        <translation>Izmēra vienība: </translation>
     </message>
 </context>
 <context>
@@ -11637,7 +11645,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Could not draw %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevarēja uzzīmēt %1 jo:
+%2</translation>
     </message>
 </context>
 <context>
@@ -11681,20 +11690,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Loading style file %1 failed because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Stila faila %1 pievienošana izgāzās dēļ:
+%2</translation>
     </message>
     <message>
         <source>Could not save symbology because:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevarēja saglabat simboloģioju dēļ:
+%1</translation>
     </message>
     <message>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished">Mapei, kurā atrodas jūsu datu kopas, ir jābūt ar rakstīšanas iespēju!</translation>
+        <translation>Mapei, kurā atrodas jūsu datu kopas, ir jābūt ar rakstīšanas iespēju!</translation>
     </message>
     <message>
         <source>Created default style file as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Izveidoti nolusētie stila faili kā %1</translation>
     </message>
     <message>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
@@ -11705,164 +11716,164 @@ p, li { white-space: pre-wrap; }
     <name>QgsMapToolAddFeature</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav vektoru slānis</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Pašreizējais slānis nav vektoru slānis</translation>
+        <translation>Pašreizējais slānis nav vektoru slānis</translation>
     </message>
     <message>
         <source>2.5D shape type not supported</source>
-        <translation type="unfinished">2.5D datu tips nav atbalstīts</translation>
+        <translation>2.5D datu tips nav atbalstīts</translation>
     </message>
     <message>
         <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation type="unfinished">Objektu pievienošana 2.5D datu formātam vēl netiek atbalstīta</translation>
+        <translation>Objektu pievienošana 2.5D datu formātam vēl netiek atbalstīta</translation>
     </message>
     <message>
         <source>Layer cannot be added to</source>
-        <translation type="unfinished">Nav iespējams pievienot slāni</translation>
+        <translation>Nav iespējams pievienot slāni</translation>
     </message>
     <message>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="unfinished">Slāņa datu sniedzējs neatbalsta objektu pievienošanu.</translation>
+        <translation>Slāņa datu sniedzējs neatbalsta objektu pievienošanu.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Slānis nav rediģējams</translation>
+        <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
+        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation type="unfinished">Nepareizs labošanas rīks</translation>
+        <translation>Nepareizs labošanas rīks</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation type="unfinished">Nevar pielietot &apos;punkta tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation>Nevar pielietot &apos;punkta tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārreiķina kļūda</translation>
+        <translation>Koordināšu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
+        <translation>Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation type="unfinished">Nevar pielietot &apos;līnijas tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation>Nevar pielietot &apos;līnijas tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation type="unfinished">Nevar pielietot &apos;poligonu tveršanas&apos; rīku šim vektoru slānim</translation>
+        <translation>Nevar pielietot &apos;poligonu tveršanas&apos; rīku šim vektoru slānim</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Kļūda</translation>
+        <translation>Kļūda</translation>
     </message>
     <message>
         <source>Cannot add feature. Unknown WKB type</source>
-        <translation type="unfinished">Nevar pievienot objektu. Nezināms WKB tips</translation>
+        <translation>Nevar pievienot objektu. Nezināms WKB tips</translation>
     </message>
     <message>
         <source>Could not remove polygon intersection</source>
-        <translation type="unfinished">Nebija iespējams aizvākt poligonu pārklāšanos</translation>
+        <translation>Nebija iespējams aizvākt poligonu pārklāšanos</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav vektoru slānis</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Pašreizējais slānis nav vektoru slānis</translation>
+        <translation>Pašreizējais slānis nav vektoru slānis</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Slānis nav rediģējams</translation>
+        <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
+        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Error, could not add island</source>
-        <translation type="unfinished">Kļūda, nevarēja pievienot salu</translation>
+        <translation>Kļūda, nevarēja pievienot salu</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārreiķina kļūda</translation>
+        <translation>Koordināšu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
+        <translation>Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolAddRing</name>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav vektoru slānis</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Pašreizējais slānis nav vektoru slānis</translation>
+        <translation>Pašreizējais slānis nav vektoru slānis</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Slānis nav rediģējams</translation>
+        <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
+        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārreiķina kļūda</translation>
+        <translation>Koordināšu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
+        <translation>Nebija iespējams pārrēķināt punkta koordinātes uz slāņa koodrināšu sistēmu</translation>
     </message>
     <message>
         <source>A problem with geometry type occured</source>
-        <translation type="unfinished">Gadījās problēma ar ģeometrijas tipu</translation>
+        <translation>Gadījās problēma ar ģeometrijas tipu</translation>
     </message>
     <message>
         <source>The inserted Ring is not closed</source>
-        <translation type="unfinished">Ievietotais aplis nav noslēgts</translation>
+        <translation>Ievietotais aplis nav noslēgts</translation>
     </message>
     <message>
         <source>The inserted Ring is not a valid geometry</source>
-        <translation type="unfinished">Ievietotais aplis nav derīga ģeometrija</translation>
+        <translation>Ievietotais aplis nav derīga ģeometrija</translation>
     </message>
     <message>
         <source>The inserted Ring crosses existing rings</source>
-        <translation type="unfinished">Ievietotais aplis šķēso eksistējošu apli</translation>
+        <translation>Ievietotais aplis šķēso eksistējošu apli</translation>
     </message>
     <message>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">Ievietotais aplis neatrodas objektā</translation>
+        <translation>Ievietotais aplis neatrodas objektā</translation>
     </message>
     <message>
         <source>An unknown error occured</source>
-        <translation type="unfinished">Konstatēta neatpazīta kļūda</translation>
+        <translation>Konstatēta neatpazīta kļūda</translation>
     </message>
     <message>
         <source>Error, could not add ring</source>
-        <translation type="unfinished">Kļūda, nevar pievienot apli</translation>
+        <translation>Kļūda, nevar pievienot apli</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
         <source>No features found</source>
-        <translation type="unfinished">Neviens objekts nav atrasts</translation>
+        <translation>Neviens objekts nav atrasts</translation>
     </message>
     <message>
         <source>&lt;p&gt;No features were found within the search radius. Note that it is currently not possible to use the identify tool on unsaved features.&lt;/p&gt;</source>
@@ -11896,15 +11907,15 @@ Identify results window title</comment>
     </message>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">Nav aktīvā slāņa</translation>
+        <translation>Nav aktīvā slāņa</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Lai identificētu objektus, jums ir jāizvēlas aktīvais slānis, noklikšķinot uz tā nosaukuma</translation>
+        <translation>Lai identificētu objektus, jums ir jāizvēlas aktīvais slānis, noklikšķinot uz tā nosaukuma leģendā</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">Kanāls</translation>
+        <translation>Kanāls</translation>
     </message>
     <message>
         <source>WMS identify result for %1:
@@ -11913,27 +11924,26 @@ Identify results window title</comment>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Garums</translation>
+        <translation>Garums</translation>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished">Platība</translation>
+        <translation>Platība</translation>
     </message>
     <message>
         <source>action</source>
-        <translation type="unfinished">darbība</translation>
+        <translation>darbība</translation>
     </message>
     <message>
         <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="unfinished">Vietā, kur Jūs norādījāt, aktīvajā slānī nekas netika atrasts</translation>
+        <translation>Vietā, kur Jūs norādījāt, aktīvajā slānī nekas netika atrasts</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%1 - %n feature(s) found</source>
         <comment>Identify results window title</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
     <message>
@@ -11952,26 +11962,26 @@ Identify results window title</comment>
     <name>QgsMapToolMoveFeature</name>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Slānis nav rediģējams</translation>
+        <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
+        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolSelect</name>
     <message>
         <source>No active layer</source>
-        <translation type="unfinished">Nav aktīvā slāņa</translation>
+        <translation>Nav aktīvā slāņa</translation>
     </message>
     <message>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="unfinished">Lai izvēlētos objektus, jums vispirms ir jāzivēlas vektoru slānis uzklikšķinot uz tā nosaukuma</translation>
+        <translation>Lai izvēlētos objektus, jums vispirms ir jāzivēlas vektoru slānis uzklikšķinot uz tā nosaukuma leģendā</translation>
     </message>
     <message>
         <source>CRS Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS izņēmums</translation>
     </message>
     <message>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
@@ -11998,27 +12008,27 @@ Identify results window title</comment>
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav vektoru slānis</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Pašreizējais slānis nav vektoru slānis</translation>
+        <translation>Pašreizējais slānis nav vektoru slānis</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation type="unfinished">Slānis nav rediģējams</translation>
+        <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
+        <translation>Nav iespējams rediģēt vektoru slāni. Lai to padarītu rediģējamu, noklikšķiniet ar peles labo pogu un izvēlieties \&quot;Atļaut rediģēt\&quot;.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinātu pārreiķina kļūda</translation>
+        <translation>Koordināšu pārrēķina kļūda</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
+        <translation>Nebija iespējams pārrēķināt punkta koordinātas uz slāņa koodrinātu sistēmu</translation>
     </message>
 </context>
 <context>
@@ -12342,7 +12352,7 @@ Do you want to overwrite it?</source>
     </message>
     <message>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
-        <translation>&lt;p&gt;Šī karte ir definēta ģeogrāfiskā koordinātu sistēmā (garums/platums), bet, spriežot pēc kartes apjoma, karte ir projecētā koordinātu sistēmā (piem. Merkatora). Ja tas ir tā, tad attāluma un platības mērījumi būs nepareizi.&lt;/p&gt;&lt;p&gt;Lai šo izlabotu, iestatiet pareizu projekta koordinātu sistēmu iekš &lt;tt&gt;Iestatījumi &gt; Projekta īpašības&lt;/tt&gt;.</translation>
+        <translation>&lt;p&gt;Šī karte ir definēta ģeogrāfiskā koordināšu sistēmā (garums/platums), bet, spriežot pēc kartes apjoma, karte ir projecētā koordināšu sistēmā (piem. Merkatora). Ja tas ir tā, tad attāluma un platības mērījumi būs nepareizi.&lt;/p&gt;&lt;p&gt;Lai šo izlabotu, iestatiet pareizu projekta koordināšu sistēmu iekš &lt;tt&gt;Iestatījumi &gt; Projekta īpašības&lt;/tt&gt;.</translation>
     </message>
 </context>
 <context>
@@ -13602,15 +13612,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Prompt for CRS</source>
-        <translation>Vaicāt koordinātu sistēmu</translation>
+        <translation>Vaicāt koordināšu sistēmu</translation>
     </message>
     <message>
         <source>Project wide default CRS will be used</source>
-        <translation>Tiks lietota projekta noklusējuma koordinātu sistēma</translation>
+        <translation>Tiks lietota projekta noklusējuma koordināšu sistēma</translation>
     </message>
     <message>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>&amp;Tiks lietota globālā noklusējuma koordinātu sistēma, kas ir parādīta zemāk</translation>
+        <translation>&amp;Tiks lietota globālā noklusējuma koordināšu sistēma, kas ir parādīta zemāk</translation>
     </message>
     <message>
         <source>Enter attribute values</source>
@@ -13917,13 +13927,12 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
     <message>
@@ -15645,7 +15654,7 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     </message>
     <message>
         <source>Coordinate Reference System (CRS)</source>
-        <translation>Koordinātu atskaites sistēma (CRS)</translation>
+        <translation>Koordināšu atskaites sistēma (CRS)</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
@@ -15664,15 +15673,15 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
     </message>
     <message>
         <source>User Defined Coordinate Systems</source>
-        <translation>Lietotāja definēta koordinātu sistēma</translation>
+        <translation>Lietotāja definēta koordināšu sistēma</translation>
     </message>
     <message>
         <source>Geographic Coordinate Systems</source>
-        <translation>Ģeogrāfiskās koordinātu sistēmas</translation>
+        <translation>Ģeogrāfiskās koordināšu sistēmas</translation>
     </message>
     <message>
         <source>Projected Coordinate Systems</source>
-        <translation>Projicētās koordinātu sistēmas</translation>
+        <translation>Projicētās koordināšu sistēmas</translation>
     </message>
     <message>
         <source>Resource Location Error</source>
@@ -15684,7 +15693,7 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
 Because of this the projection selector will not work...</source>
         <translation>Kļūda nolasot datubāzes failu no:
 %1
-Šīs kļūdas dēļ koordinātu sistēmas izvēle nestrādās...</translation>
+Šīs kļūdas dēļ koordināšu sistēmas izvēle nestrādās...</translation>
     </message>
 </context>
 <context>
@@ -15731,11 +15740,11 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate Reference System Selector</source>
-        <translation>Koordinātu atskaites sistēmu izvēle</translation>
+        <translation>Koordināšu atskaites sistēmu izvēle</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>Koordinātu atskaites sistēma</translation>
+        <translation>Koordināšu atskaites sistēma</translation>
     </message>
     <message>
         <source>EPSG</source>
@@ -17003,7 +17012,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate reference system</source>
-        <translation>Koordinātu atskaites sistēma</translation>
+        <translation>Koordināšu atskaites sistēma</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -17362,13 +17371,12 @@ p, li { white-space: pre-wrap; }
         <source>Search query builder</source>
         <translation>Meklēšanas pieprasījuma veidotājs</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
 </context>
@@ -17404,7 +17412,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">Koordinātu atskaites sistēma (%1 pieejamas)
+        <translation type="obsolete">Koordināšu atskaites sistēma (%1 pieejamas)
         
         
         
@@ -17429,11 +17437,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>Koordinātu atskaites sistēma</translation>
+        <translation>Koordināšu atskaites sistēma</translation>
     </message>
     <message>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation>Izvēlētajiem slāņiem koordinātu atskaites stitēma nav pieejama.</translation>
+        <translation>Izvēlētajiem slāņiem koordināšu atskaites stitēma nav pieejama.</translation>
     </message>
     <message>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
@@ -17443,13 +17451,12 @@ p, li { white-space: pre-wrap; }
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
     <message>
@@ -17556,7 +17563,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>Koordinātu atskaites sistēma</translation>
+        <translation>Koordināšu atskaites sistēma</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -18601,112 +18608,100 @@ Should the existing classes be deleted before classification?</source>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
-            <numerusform>
         
-        </numerusform>
+        
         </translation>
     </message>
     <message>
@@ -19195,11 +19190,11 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsWFSData</name>
     <message>
         <source>Loading WFS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Augšuplādē WFS datus</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Atcelt</translation>
+        <translation>Atcelt</translation>
     </message>
 </context>
 <context>
@@ -19255,7 +19250,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Coordinate Reference System</source>
-        <translation>Koordinātu atskaites sistēma</translation>
+        <translation>Koordināšu atskaites sistēma</translation>
     </message>
     <message>
         <source>Change ...</source>
