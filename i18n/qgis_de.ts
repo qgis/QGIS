@@ -753,7 +753,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished">Shapedatei erzeugt</translation>
+        <translation type="obsolete">Shapedatei erzeugt</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -813,15 +813,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Function not found</source>
-        <translation type="unfinished">Funktion nicht gefunden</translation>
+        <translation type="obsolete">Funktion nicht gefunden</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
-        <translation type="unfinished">Fehler beim Schreiben der Shapedatei</translation>
+        <translation type="obsolete">Fehler beim Schreiben der Shapedatei</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
-        <translation type="unfinished">Vorhandener Layer konnte nicht gelöscht werden</translation>
+        <translation type="obsolete">Vorhandener Layer konnte nicht gelöscht werden</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished">Delaunay-Triangulation</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">Eingabepunktvektorlayer</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished">Polygon aus Layergrenzen</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Eingabelayer</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished">Ausgabepolygonlayer</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished">Konnte vorhandene Shapedatei nicht löschen.</translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished">Konnte unvollständige Shapedatei nicht löschen.</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished">Erzeugte Ausgabeshapedatei:</translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished">Fehler beim Schreiben der Ausgabeshapedatei.</translation>
     </message>
 </context>
 <context>
@@ -852,15 +888,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
-        <translation type="unfinished">Verarbeitungsergebnis konnte nicht erstellt werden</translation>
+        <translation type="obsolete">Verarbeitungsergebnis konnte nicht erstellt werden</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
-        <translation type="unfinished">Ausgabeshapedatei erzeugt</translation>
+        <translation type="obsolete">Ausgabeshapedatei erzeugt</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
+        <translation type="obsolete">Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -884,7 +920,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Erase layer</source>
-        <translation type="unfinished">Layer löschen</translation>
+        <translation type="obsolete">Layer löschen</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -921,6 +957,56 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Union</source>
         <translation type="unfinished">Vereinigen</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished">Konnte vorhandene Shapedatei nicht löschen.</translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished">
+Warnungen:</translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished">
+Einige Ausgabegeometrien könnten fehlen oder ungültig sein.
+
+Möchten Sie den neuen Layer trotzdem hinzufügen?</translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished">
+
+Möchten Sie den neuen Layer der Legende hinzufügen?</translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished">
+Eingabe-KBS-Fehler: Unterschiedliche Eingabekoordinatenbezugssystem wurden festgestellt, dies könnte zu unerwarteten Ergebnissen geführt haben.</translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished">
+Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometrie wurden ignoriert.</translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished">
+GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished">Erzeugte Ausgabeshapedatei:</translation>
     </message>
 </context>
 <context>
@@ -8185,6 +8271,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassShell</name>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Schließen</translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassShellBase</name>
     <message>
         <source>GRASS Shell</source>
@@ -11075,7 +11168,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
-        <translation type="unfinished">Konnte Systempluginverzeichnis nicht öffnen</translation>
+        <translation type="obsolete">Konnte Systempluginverzeichnis nicht öffnen</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -11111,7 +11204,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Nichts zu entfernen! Pluginverzeichnis existiert nicht:</translation>
+        <translation type="obsolete">Nichts zu entfernen! Pluginverzeichnis existiert nicht:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -11183,12 +11276,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>plural</comment>
-        <translation type="unfinished">nicht installiert</translation>
+        <translation type="obsolete">nicht installiert</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>plural</comment>
-        <translation type="unfinished">installiert</translation>
+        <translation type="obsolete">installiert</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
@@ -11221,27 +11314,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>not installed</source>
         <comment>singular</comment>
-        <translation type="unfinished">nicht installiert</translation>
+        <translation type="obsolete">nicht installiert</translation>
     </message>
     <message>
         <source>installed</source>
         <comment>singular</comment>
-        <translation type="unfinished">installiert</translation>
+        <translation type="obsolete">installiert</translation>
     </message>
     <message>
         <source>upgradeable</source>
         <comment>singular</comment>
-        <translation type="unfinished">aktualisierbar</translation>
+        <translation type="obsolete">aktualisierbar</translation>
     </message>
     <message>
         <source>new!</source>
         <comment>singular</comment>
-        <translation type="unfinished">neu!</translation>
+        <translation type="obsolete">neu!</translation>
     </message>
     <message>
         <source>invalid</source>
         <comment>singular</comment>
-        <translation type="unfinished">ungültig</translation>
+        <translation type="obsolete">ungültig</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -11402,6 +11495,30 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation type="unfinished">Sie sind dabei mehrere Plugin-Repositories hinzuzufügen, die vom Quantum GIS-Team weder autorisiert noch unterstützt werden. Plugin-Autoren sind grundsätzlich bemüht, das ihre Arbeit nützlich und sicher ist. Allerdings können wird keine Verantwortung dafür übernehmen.</translation>
+    </message>
+    <message>
+        <source>not installed</source>
+        <translation type="unfinished">nicht installiert</translation>
+    </message>
+    <message>
+        <source>installed</source>
+        <translation type="unfinished">installiert</translation>
+    </message>
+    <message>
+        <source>upgradeable</source>
+        <translation type="unfinished">aktualisierbar</translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">neu!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished">ungültig</translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished">mindestens</translation>
     </message>
 </context>
 <context>
@@ -15809,11 +15926,11 @@ URL %1 versucht</translation>
     </message>
     <message>
         <source>Unique values:</source>
-        <translation type="unfinished">Eindeutige Werte:</translation>
+        <translation type="obsolete">Eindeutige Werte:</translation>
     </message>
     <message>
         <source>Total unique values:</source>
-        <translation type="unfinished">Gesamtzahl eindeutiger Werte:</translation>
+        <translation type="obsolete">Gesamtzahl eindeutiger Werte:</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -15833,31 +15950,39 @@ URL %1 versucht</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
-        <translation type="unfinished">Beobachteter mittlerer Abstand : </translation>
+        <translation type="obsolete">Beobachteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Expected mean distance : </source>
-        <translation type="unfinished">Erwarteter mittlerer Abstand : </translation>
+        <translation type="obsolete">Erwarteter mittlerer Abstand : </translation>
     </message>
     <message>
         <source>Nearest neighbour index : </source>
-        <translation type="unfinished">Nächster Nachbarindex : </translation>
+        <translation type="obsolete">Nächster Nachbarindex : </translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">Objekt %1 enthält ein Loch außerhalb des Polygons</translation>
+        <translation type="obsolete">Objekt %1 enthält ein Loch außerhalb des Polygons</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Objekt %1 ist nicht geschlossen</translation>
+        <translation type="obsolete">Objekt %1 ist nicht geschlossen</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Objekt %1 schneidet sich selbst</translation>
+        <translation type="obsolete">Objekt %1 schneidet sich selbst</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Die Knoten des Objekt %1 sind nicht in der richtigen Reihenfolge</translation>
+        <translation type="obsolete">Die Knoten des Objekt %1 sind nicht in der richtigen Reihenfolge</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished">Eindeutige Werte</translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished">Gesamtzahl eindeutiger Werte</translation>
     </message>
 </context>
 <context>
@@ -15967,11 +16092,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
-        <translation type="unfinished">Diese fTools-Version benötigt mindestens QGIS Version 1.0.0</translation>
+        <translation type="obsolete">Diese fTools-Version benötigt mindestens QGIS Version 1.0.0</translation>
     </message>
     <message>
         <source>Plugin will not be enabled.</source>
-        <translation type="unfinished">Plugin wird nicht aktiviert.</translation>
+        <translation type="obsolete">Plugin wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -16015,7 +16140,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
-        <translation type="unfinished">&amp;Stichproben-Werkzeuge</translation>
+        <translation type="obsolete">&amp;Stichproben-Werkzeuge</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -16139,7 +16264,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>About fTools</source>
-        <translation type="unfinished">Über fTools</translation>
+        <translation type="obsolete">Über fTools</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
@@ -16155,15 +16280,25 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Eingabelayer</translation>
+        <translation type="obsolete">Eingabelayer</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Eingabepunktvektorlayer</translation>
+        <translation type="obsolete">Eingabepunktvektorlayer</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">Ausgabepolygonlayer</translation>
+        <translation type="obsolete">Ausgabepolygonlayer</translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished">Diese fTools-Version erfordert mindestens QGIS Version 1.0.0
+Plugin wird nicht aktiviert.</translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation type="unfinished">fTools-Information</translation>
     </message>
 </context>
 <context>
@@ -16179,6 +16314,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&amp;[menuname]</source>
         <translation type="unfinished">&amp;[menuname]</translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation type="unfinished">Beobachteter mittlerer Abstand : </translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation type="unfinished">Erwarteter mittlerer Abstand : </translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation type="unfinished">Nächster Nachbarindex : </translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished">Objekt %1 enthält ein Loch außerhalb des Polygons</translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished">Objekt %1 ist nicht geschlossen</translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished">Objekt %1 schneidet sich selbst</translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation type="unfinished">Die Knoten des Objekt %1 sind nicht in der richtigen Reihenfolge</translation>
     </message>
 </context>
 </TS>
