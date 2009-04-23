@@ -347,11 +347,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation>Wejściowa warstwa wektorowa (poligon)</translation>
+        <translation>Wejściowa warstwa wektorowa (poligony)</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
+        <translation>Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
         <source>Output count field name</source>
@@ -710,7 +710,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
+        <translation>Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -15770,7 +15770,7 @@ For support send a mail to scala@itc.cnr.it
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
+        <translation>Wejściowa warstwa wektorowa (punkty)</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
@@ -15784,7 +15784,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation>Informacja o fTools</translation>
+        <translation>Informacje o fTools</translation>
     </message>
 </context>
 <context>
