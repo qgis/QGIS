@@ -633,8 +633,8 @@ p, li { white-space: pre-wrap; }
         <translation>Podaj prawidłowe pole UID</translation>
     </message>
     <message>
-        <source>Created output shapefile</source>
-        <translation>Stwórz wyjściowy Shapefile</translation>
+        <source>Created output shapefile:</source>
+        <translation>Utworzono plik Shapefile:</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -697,12 +697,40 @@ p, li { white-space: pre-wrap; }
         <translation>Nie znaleziono funkcji</translation>
     </message>
     <message>
-        <source>Error writing output shapefile</source>
-        <translation>Błąd zapisu do wyjściowego Shapefile</translation>
+        <source>Error writing output shapefile.</source>
+        <translation>Błąd zapisu wyjściowego Shapefile.</translation>
     </message>
     <message>
         <source>Unable to delete existing layer...</source>
         <translation>Nie można usunąć istniejącej warstwy...</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation>Triangulacja Delone</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation>Wejściowa warstwa wektorowa (punkt)</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation>Poligon z zasięgu warstwy</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation>Warstwa wejściowa</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation>Wyjściowy Shapefile (poligony)</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation>Nie można usunąć istniejącego Shapefile.</translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation>Błąd usuwania niekompletnego Shapefile.</translation>
     </message>
 </context>
 <context>
@@ -736,12 +764,12 @@ p, li { white-space: pre-wrap; }
         <translation>Nie można utworzyć wyniku geoprocesingu.</translation>
     </message>
     <message>
-        <source>Created output shapefile</source>
-        <translation>Utworzono plik Shapefile</translation>
+        <source>Created output shapefile.</source>
+        <translation>Utworzono plik Shapefile.</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Czy chesz dodać wynikową warstwę do mapy?</translation>
+        <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -802,6 +830,53 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Union</source>
         <translation>Suma</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation>Nie można usunąć istniejącego Shapefile.</translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation>
+Uwagi:</translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation>Części geometrii może brakować lub mogą być uszkodzone.
+
+Czy mimo to chcesz dodać utworzoną warstwę do mapy?</translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Czy chcesz dodać wynikową warstwę do mapy?</translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation>
+Niezgodność układów współrzędnych: Warstwy posiadają inne układy współrzędnych, wyniki mogą być błędne.</translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation>
+Błąd geometrii obiektu: Odrzucono jeden lub więcej wejściowych obiektów z powodu błędnej geometrii.</translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation>
+Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną geometrię.</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation>Utworzono plik Shapefile:</translation>
     </message>
 </context>
 <context>
@@ -10958,6 +11033,10 @@ Musisz włączyć ponownie Quantum GISa, żeby ją przeładować.</translation>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
         <translation>Zamierzasz dodać repozytoria nieautoryzowane i niewspierane przez zespół Quantum GISa. Autorzy generalnie dokładają starań, by ich wtyczki były użyteczne i bezpieczne, lecz nie możemy brać za nich oczywiście żadnej odpowiedzialności.</translation>
     </message>
+    <message>
+        <source>at least</source>
+        <translation>minimum</translation>
+    </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialogBase</name>
@@ -15697,6 +15776,16 @@ For support send a mail to scala@itc.cnr.it
         <source>Output polygon shapefile</source>
         <translation>Wyjściowy Shapefile (poligony)</translation>
     </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation>Ta wersja fTools wymaga przynajmniej QGIS w wersji 1.0.0
+Wtyczka nie zostanie włączona.</translation>
+    </message>
+    <message>
+        <source>fTools Information</source>
+        <translation>Informacja o fTools</translation>
+    </message>
 </context>
 <context>
     <name>pluginname</name>
@@ -15711,6 +15800,37 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>Replace this with a short description of what the plugin does</source>
         <translation>Zamień ten tekst na krótki opis działania wtyczki</translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Observed mean distance : </source>
+        <translation>Faktyczna średnia odległość:</translation>
+    </message>
+    <message>
+        <source>Expected mean distance : </source>
+        <translation>Oczekiwana średnia odległość:</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index : </source>
+        <translation>Wskaźnik najbliższego sąsiedztwa:</translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation>Obiekt %1 zawiera niepoprawny pierścień</translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation>Obiekt %1 nie jest domknięty</translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation>Obiekt %1 zawiera wewnętrzne przecięcia</translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
+        <translation>Obiekt %1 posiada niepoprawną kolejność węzłów</translation>
     </message>
 </context>
 </TS>
