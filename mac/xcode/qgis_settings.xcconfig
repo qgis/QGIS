@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.1.6
+CURRENT_PROJECT_VERSION = 2.1.7
 
 // SDK not required for native universal build, but recommended,
 // and allows building multiple SDK builds side-by-side
@@ -117,7 +117,7 @@ GSL_PREFIX = /usr/local
 GRASS_PREFIX_app = /Applications/GRASS-$(GRASS_VERSION).app/Contents/MacOS
 GRASS_PREFIX_unix = /usr/local/grass-$(GRASS_VERSION)
 
-PYSITE_fw = $(PYTHON_PREFIX)/lib/python$(PYTHON_VERSION)/site-packages
+PYSITE_fw = $(PYTHON_PREFIX_fw)/Versions/$(PYTHON_VERSION)/lib/python$(PYTHON_VERSION)/site-packages
 
 EXPAT_PREFIX = /usr/local // not used for system expat
 

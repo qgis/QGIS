@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.1.4	2009-3-25\
+\i \cf0 2.1.7	2009-4-22\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -39,7 +39,7 @@ See the Qgis installation document for details on obtaining the requirements.\
 \
 \ul QGIS source\ulnone \
 \
-\ul Qt 4.4 frameworks\ulnone \
+\ul Qt 4.4+ frameworks\ulnone  - install debug version if desired (may require a separate installer download)\
 \
 \ul GDAL library or framework\ulnone  - a universal GDAL.framework is available.\
 \
@@ -216,14 +216,14 @@ Duplicate the file
 \b Build Targets
 \b0 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
-\cf0 \ul Full QGIS\ulnone   will build Qgis with Python support and all default and optional plugins.\
+The \ul Full QGIS\ulnone   target will build Qgis with Python support and all default and optional plugins.\
 \
 Xcode doesn't have a way to conditionally build targets, just code within sources (with standard macro switches).  It 
 \i will
 \i0  try to keep building as much as it can after errors.  The last target built is the Qgis application itself, which has all the bundling and cleanup steps.  So, if a dependency is missing for a plugin, it will have errors and fail to build, then the app bundling and cleanup will work with what succeeded.\
 \
-\ul Cleaning\ulnone  - to clean the project 
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \ul Cleaning\ulnone  - to clean the project 
 \b Clean All
 \b0 .  This actually leaves qgsconfig.h and qgssvnversion.h in the build folder.\
 \
@@ -239,6 +239,26 @@ For a complete clean, trash the build folder from the project folder (NOT from t
 When finished building, The final \ul Qgis.app\ulnone  is put in the 
 \f1\fs20 mac/xcode/build/[SDKSYS/]Release
 \f0\fs24  folder.\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\b \cf0 Debugging\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\b0 \cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 There are 2 "configurations" - \ul Release\ulnone  and \ul Debug\ulnone .  Use the Release configuration unless you have a need to debug Qgis.\
+\
+The Debug configuration will use the debug version of Qt, if installed, but that is not required.  To use the debug Qt frameworks, you must change a setting before starting the debugger: in the 
+\b Executables
+\b0  section of the left pane of the main project window, select the Qgis item and 
+\b Get Info
+\b0 .  In the 
+\b General
+\b0  tab of the info window, select \ul Use debug suffix when loading frameworks\ulnone .\
+\
+See the Xcode documentation for more info on using the debugger.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
