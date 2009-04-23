@@ -9,7 +9,6 @@ frmAbout.ui
 fTools.py
 doAbout.py
 ftools_help.xml
-i18n.cpp
 resources.py
 )
 INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/fTools)
