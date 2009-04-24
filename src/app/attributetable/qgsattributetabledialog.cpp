@@ -498,7 +498,9 @@ void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()
 
 void QgsAttributeTableDialog::editingToggled()
 {
+  mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
+  mToggleEditingButton->blockSignals( false );
 
   // (probably reload data if user stopped editing - possible revert)
   mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
