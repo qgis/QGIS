@@ -15,11 +15,10 @@ echo Creating qt_ts.tar
 tar -cvf i18n/qt_ts.tar i18n/qt_*.ts
 rm i18n/qt_*.ts
 echo Updating python plugin translations
-P=$PWD
 for i in python/plugins/*/.; do
 	cd $i
 	pylupdate4 $(find . -name "*.py") -ts i18n.ts
-	perl $P/scripts/ts2cpp.pl i18n.ts i18n.cpp
+	perl ../../../scripts/ts2cpp.pl i18n.ts i18n.cpp
 	rm i18n.ts
 	cd ../../..
 done

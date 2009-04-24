@@ -27,7 +27,16 @@ foreach my $context ( @{ $xml->{context} } ) {
 		$message->{source}->[0] =~ s/"/\\"/g;
 		$message->{source}->[0] =~ s/\n/\\n/g;
 
-		print F "translate( \"$context->{name}->[0]\", \"$message->{source}->[0]\");\n";
+		print F "translate( \"$context->{name}->[0]\", \"$message->{source}->[0]\"";
+
+		if( exists $message->{comment} && $message->{comment}->[0] ne "") {
+			$message->{comment}->[0] =~ s/"/\\"/g;
+			$message->{comment}->[0] =~ s/\n/\\n/g;
+
+			print F ",\"$context->{comment}->[0]\"";
+		}
+
+		print F ");\n";
 	}
 }
 
