@@ -491,6 +491,7 @@
 		720FC8E50F3D5A430069492F /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFB0F39E57B003DC336 /* dialog.cpp */; };
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
+		7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */ = {isa = PBXBuildFile; fileRef = 7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */; };
 		721DDCDC0F6E979C006DD13E /* r.in.gdal.qgis.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCDB0F6E9787006DD13E /* r.in.gdal.qgis.1.png */; };
 		721DDCDD0F6E979C006DD13E /* r.in.gdal.qgis.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCDA0F6E9787006DD13E /* r.in.gdal.qgis.2.png */; };
 		721DDCDE0F6E979C006DD13E /* r.in.gdal.qgis.loc.1.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCD90F6E9787006DD13E /* r.in.gdal.qgis.loc.1.png */; };
@@ -2294,7 +2295,6 @@
 		72EBCA710F49DDC00016BA3C /* fTools.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CA0F49DC120016BA3C /* fTools.py */; };
 		72EBCA720F49DDC00016BA3C /* ftools_help.xml in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CB0F49DC120016BA3C /* ftools_help.xml */; };
 		72EBCA730F49DDC00016BA3C /* ftools_help.xsl in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */; };
-		72EBCA740F49DDC00016BA3C /* i18n.cpp in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBC9CD0F49DC120016BA3C /* i18n.cpp */; };
 		72EBCA750F49DDC00016BA3C /* resources.py in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBCA2D0F49DC130016BA3C /* resources.py */; };
 		72EBCA760F49DDC00016BA3C /* resources.qrc in Copy - fTools */ = {isa = PBXBuildFile; fileRef = 72EBCA2E0F49DC130016BA3C /* resources.qrc */; };
 		72EBCA790F49DDF80016BA3C /* doDefineProj.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 72EBCA310F49DC130016BA3C /* doDefineProj.py */; };
@@ -4088,6 +4088,7 @@
 				7256F4C70F41C5510022BE1F /* mActionAddOgrLayer.png in Copy - theme-gis */,
 				7256F4C80F41C5510022BE1F /* mActionAddRasterLayer.png in Copy - theme-gis */,
 				7256F4C90F41C5510022BE1F /* mActionAddRing.png in Copy - theme-gis */,
+				7214353F0FA15C1C00B0B7BC /* mActionAddSpatiaLiteLayer.png in Copy - theme-gis */,
 				7256F4CA0F41C5510022BE1F /* mActionAddVertex.png in Copy - theme-gis */,
 				7256F4CB0F41C5510022BE1F /* mActionAddWfsLayer.png in Copy - theme-gis */,
 				7256F4CC0F41C5510022BE1F /* mActionAddWmsLayer.png in Copy - theme-gis */,
@@ -5393,7 +5394,6 @@
 				72EBCA710F49DDC00016BA3C /* fTools.py in Copy - fTools */,
 				72EBCA720F49DDC00016BA3C /* ftools_help.xml in Copy - fTools */,
 				72EBCA730F49DDC00016BA3C /* ftools_help.xsl in Copy - fTools */,
-				72EBCA740F49DDC00016BA3C /* i18n.cpp in Copy - fTools */,
 				72EBCA750F49DDC00016BA3C /* resources.py in Copy - fTools */,
 				72EBCA760F49DDC00016BA3C /* resources.qrc in Copy - fTools */,
 			);
@@ -7618,7 +7618,6 @@
 		7209EDDC0F39E5D9003DC336 /* ui_mapserverexport.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ui_mapserverexport.py; path = ../../python/plugins/mapserver_export/ui_mapserverexport.py; sourceTree = SOURCE_ROOT; };
 		7209EDDE0F39E5D9003DC336 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/plugin_installer/__init__.py; sourceTree = SOURCE_ROOT; };
 		7209EDDF0F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/plugin_installer/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209EDE00F39E5D9003DC336 /* i18n.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = i18n.cpp; path = ../../python/plugins/plugin_installer/i18n.cpp; sourceTree = SOURCE_ROOT; };
 		7209EDE10F39E5D9003DC336 /* installer_data.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = installer_data.py; path = ../../python/plugins/plugin_installer/installer_data.py; sourceTree = SOURCE_ROOT; };
 		7209EDE20F39E5D9003DC336 /* installer_gui.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = installer_gui.py; path = ../../python/plugins/plugin_installer/installer_gui.py; sourceTree = SOURCE_ROOT; };
 		7209EDE30F39E5D9003DC336 /* installer_plugin.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = installer_plugin.py; path = ../../python/plugins/plugin_installer/installer_plugin.py; sourceTree = SOURCE_ROOT; };
@@ -8174,6 +8173,7 @@
 		7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgis_gui.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7209F4B80F3A5434003DC336 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		7209F4B90F3A5434003DC336 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddSpatiaLiteLayer.png; path = ../../images/themes/gis/mActionAddSpatiaLiteLayer.png; sourceTree = SOURCE_ROOT; };
 		721DDCD60F6E9787006DD13E /* r.in.gdal.qgis.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.gdal.qgis.qgm; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.qgm; sourceTree = SOURCE_ROOT; };
 		721DDCD70F6E9787006DD13E /* r.in.gdal.qgis.loc.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.in.gdal.qgis.loc.qgm; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.loc.qgm; sourceTree = SOURCE_ROOT; };
 		721DDCD80F6E9787006DD13E /* r.in.gdal.qgis.loc.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.gdal.qgis.loc.2.png; path = ../../src/plugins/grass/modules/r.in.gdal.qgis.loc.2.png; sourceTree = SOURCE_ROOT; };
@@ -8320,6 +8320,7 @@
 		72B4DDC60F9F4C0D009351FE /* Exception_to_GPL_for_Qt.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Exception_to_GPL_for_Qt.txt; path = ../../Exception_to_GPL_for_Qt.txt; sourceTree = SOURCE_ROOT; };
 		72B4DDC70F9F4C0D009351FE /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../Doxyfile; sourceTree = SOURCE_ROOT; };
 		72B4DDC80F9F4C0D009351FE /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ChangeLog; path = ../../ChangeLog; sourceTree = SOURCE_ROOT; };
+		72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = ts2cpp.pl; path = ../../scripts/ts2cpp.pl; sourceTree = SOURCE_ROOT; };
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
@@ -8368,7 +8369,6 @@
 		72EBC9CA0F49DC120016BA3C /* fTools.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = fTools.py; path = ../../python/plugins/fTools/fTools.py; sourceTree = SOURCE_ROOT; };
 		72EBC9CB0F49DC120016BA3C /* ftools_help.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = ftools_help.xml; path = ../../python/plugins/fTools/ftools_help.xml; sourceTree = SOURCE_ROOT; };
 		72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = ftools_help.xsl; path = ../../python/plugins/fTools/ftools_help.xsl; sourceTree = SOURCE_ROOT; };
-		72EBC9CD0F49DC120016BA3C /* i18n.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = i18n.cpp; path = ../../python/plugins/fTools/i18n.cpp; sourceTree = SOURCE_ROOT; };
 		72EBC9CF0F49DC120016BA3C /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/plugins/fTools/icons/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		72EBC9D10F49DC120016BA3C /* analysis.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = analysis.png; path = ../../python/plugins/fTools/icons/default/analysis.png; sourceTree = SOURCE_ROOT; };
 		72EBC9D20F49DC120016BA3C /* basic_statistics.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = basic_statistics.png; path = ../../python/plugins/fTools/icons/default/basic_statistics.png; sourceTree = SOURCE_ROOT; };
@@ -11488,6 +11488,7 @@
 				7209ED350F39E5D9003DC336 /* qgsloggermig.pl */,
 				7209ED360F39E5D9003DC336 /* remove_non_svn_files.sh */,
 				7209ED370F39E5D9003DC336 /* remove_svn_conflict_files.sh */,
+				72B602A80FA0CB4100E00BC9 /* ts2cpp.pl */,
 				72F117AB0F73DB1A00D68564 /* tsstat.pl */,
 				7209ED380F39E5D9003DC336 /* update-indent.sh */,
 				7209ED390F39E5D9003DC336 /* update_translations.bat */,
@@ -11738,7 +11739,6 @@
 			children = (
 				7209EDDE0F39E5D9003DC336 /* __init__.py */,
 				7209EDDF0F39E5D9003DC336 /* CMakeLists.txt */,
-				7209EDE00F39E5D9003DC336 /* i18n.cpp */,
 				7209EDE10F39E5D9003DC336 /* installer_data.py */,
 				7209EDE20F39E5D9003DC336 /* installer_gui.py */,
 				7209EDE30F39E5D9003DC336 /* installer_plugin.py */,
@@ -12273,6 +12273,7 @@
 				7209EF690F39E5D9003DC336 /* mActionAddOgrLayer.png */,
 				7209EF6A0F39E5D9003DC336 /* mActionAddRasterLayer.png */,
 				7209EF6B0F39E5D9003DC336 /* mActionAddRing.png */,
+				7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */,
 				7209EF6C0F39E5D9003DC336 /* mActionAddVertex.png */,
 				7209EF6D0F39E5D9003DC336 /* mActionAddWfsLayer.png */,
 				7209EF6E0F39E5D9003DC336 /* mActionAddWmsLayer.png */,
@@ -12697,7 +12698,6 @@
 				72EBC9CA0F49DC120016BA3C /* fTools.py */,
 				72EBC9CB0F49DC120016BA3C /* ftools_help.xml */,
 				72EBC9CC0F49DC120016BA3C /* ftools_help.xsl */,
-				72EBC9CD0F49DC120016BA3C /* i18n.cpp */,
 				72EBC9CE0F49DC120016BA3C /* icons */,
 				72EB12930F7E9AED002C38FA /* LICENSE */,
 				72EBCA2D0F49DC130016BA3C /* resources.py */,
