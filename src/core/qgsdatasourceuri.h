@@ -61,7 +61,8 @@ class CORE_EXPORT QgsDataSourceURI
     void setDataSource( const QString& aSchema,
                         const QString& aTable,
                         const QString& aGeometryColumn,
-                        const QString& aSql = QString() );
+                        const QString& aSql = QString(),
+                        const QString& aKeyColumn = QString() );
 
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
@@ -81,6 +82,10 @@ class CORE_EXPORT QgsDataSourceURI
     QString port() const;
     QString password() const;
     enum SSLmode sslMode() const;
+
+    // added in version 1.2
+    QString keyColumn() const;
+    void setKeyColumn( QString column );
 
   private:
     void skipBlanks( const QString &uri, int &i );
@@ -108,6 +113,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString mPassword;
     //! ssl mode
     enum SSLmode mSSLmode;
+    //! key column
+    QString mKeyColumn;
 };
 
 #endif //QGSDATASOURCEURI_H

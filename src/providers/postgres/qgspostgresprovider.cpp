@@ -74,6 +74,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mTableName = mUri.table();
   geometryColumn = mUri.geometryColumn();
   sqlWhereClause = mUri.sql();
+  primaryKey = mUri.keyColumn();
 
   // Keep a schema qualified table name for convenience later on.
   mSchemaTableName = mUri.quotedTablename();
@@ -483,7 +484,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
 
       if ( block > 0xffff )
       {
-        qWarning( "block number %x exceed 16 bit", block );
+        QgsDebugMsg( QString( "block number %1 exceeds 16 bit" ).arg( block ) );
         return false;
       }
 
@@ -491,7 +492,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
     }
     else
     {
-      qWarning( "expecting 6 bytes for tid (found %d bytes)", PQgetlength( queryResult, row, 0 ) );
+      QgsDebugMsg( QString( "expecting 6 bytes for tid (found %1 bytes)" ).arg( PQgetlength( queryResult, row, 0 ) ) );
       return false;
     }
 
@@ -623,7 +624,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
     QString fetch = QString( "fetch forward %1 from %2" ).arg( mFeatureQueueSize ).arg( cursorName );
     if ( connectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
-      qWarning( "PQsendQuery failed (1)" );
+      QgsDebugMsg( "PQsendQuery failed (1)" );
     }
 
     Result queryResult;
@@ -948,11 +949,11 @@ QString QgsPostgresProvider::getPrimaryKey()
     Result tableType = connectionRO->PQexec( sql );
     QString type = QString::fromUtf8( PQgetvalue( tableType, 0, 0 ) );
 
-    primaryKey = "";
-
     if ( type == "r" ) // the relation is a table
     {
       QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
+
+      primaryKey = "";
 
       // If there is an oid on the table, use that instead,
       // otherwise give up
@@ -1008,15 +1009,40 @@ QString QgsPostgresProvider::getPrimaryKey()
     }
     else if ( type == "v" ) // the relation is a view
     {
-      // Have a poke around the view to see if any of the columns
-      // could be used as the primary key.
-      tableCols cols;
-      // Given a schema.view, populate the cols variable with the
-      // schema.table.column's that underly the view columns.
-      findColumns( cols );
-      // From the view columns, choose one for which the underlying
-      // column is suitable for use as a key into the view.
-      primaryKey = chooseViewColumn( cols );
+      if ( !primaryKey.isEmpty() )
+      {
+        // check last used candidate
+        sql = QString( "select pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attname=%1 and attrelid=regclass(%2)" )
+              .arg( quotedValue( primaryKey ) ).arg( quotedValue( mSchemaTableName ) );
+
+        QgsDebugMsg( "checking candidate: " + sql );
+
+        Result result = connectionRO->PQexec( sql );
+
+        if ( PQresultStatus( result ) != PGRES_TUPLES_OK ||
+             PQntuples( result ) != 1 ||
+             QString( PQgetvalue( result, 0, 0 ) ) != "int4" ||
+             !uniqueData( mSchemaName, mTableName, primaryKey ) )
+        {
+          primaryKey = "";
+        }
+      }
+
+      if ( primaryKey.isEmpty() )
+      {
+        // Have a poke around the view to see if any of the columns
+        // could be used as the primary key.
+        tableCols cols;
+        // Given a schema.view, populate the cols variable with the
+        // schema.table.column's that underly the view columns.
+        findColumns( cols );
+        // From the view columns, choose one for which the underlying
+        // column is suitable for use as a key into the view.
+        primaryKey = chooseViewColumn( cols );
+
+        mUri.setKeyColumn( primaryKey );
+        setDataSourceUri( mUri.uri() );
+      }
     }
     else
       QgsDebugMsg( "Unexpected relation type of '" + type + "'." );
