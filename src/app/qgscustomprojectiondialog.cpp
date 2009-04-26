@@ -987,7 +987,7 @@ QString QgsCustomProjectionDialog::getProjFromParameters()
   myStart = myProjRegExp.indexIn( myProj4String, myStart );
   if ( myStart == -1 )
   {
-    qDebug( "proj string supplied has no +proj argument!" );
+    QgsDebugMsg( "proj string supplied has no +proj argument!" );
     return NULL;
   }
   else
@@ -1000,7 +1000,7 @@ QString QgsCustomProjectionDialog::getProjFromParameters()
 
 QString QgsCustomProjectionDialog::getEllipseFromParameters()
 {
-  QgsLogger::debug( "QgsCustomProjectionDialog::getEllipseFromParameters()" );
+  QgsDebugMsg( "entered." );
   QString myProj4String = leParameters->text();
   QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z0-9\\-_]*" );
   int myStart = 0;

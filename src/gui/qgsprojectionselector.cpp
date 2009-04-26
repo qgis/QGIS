@@ -945,7 +945,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   myFileInfo.setFile( myDatabaseFileName );
   if ( !myFileInfo.exists( ) ) //its not critical if this happens
   {
-    qDebug( "%s\nUser db does not exist", myDatabaseFileName.toUtf8().constData() );
+    QgsDebugMsg( QString( "%1\nUser db does not exist" ).arg( myDatabaseFileName ) );
     return ;
   }
   myResult = sqlite3_open( myDatabaseFileName.toUtf8().data(), &myDatabase );

@@ -83,12 +83,12 @@ void QgsQuickPrint::setNorthArrow( QString theFileName )
 void QgsQuickPrint::setLogo1( QString theFileName )
 {
   mLogo1File = theFileName;
-  qDebug( "Logo1 set to: %s", mLogo1File.toLocal8Bit().constData() );
+  QgsDebugMsg( QString( "Logo1 set to: %1" ).arg( mLogo1File ) );
 }
 void QgsQuickPrint::setLogo2( QString theFileName )
 {
   mLogo2File = theFileName;
-  qDebug( "Logo2 set to: %s", mLogo2File.toLocal8Bit().constData() );
+  QgsDebugMsg( QString( "Logo2 set to: %1" ).arg( mLogo2File ) );
 }
 void QgsQuickPrint::setOutputPdf( QString theFileName )
 {
@@ -140,7 +140,7 @@ void QgsQuickPrint::printMap()
   int myPrintResolutionDpi = 300;
   myPrinter.setResolution( myPrintResolutionDpi );
   myPrinter.setOutputFormat( QPrinter::PdfFormat );
-  qDebug( "Printing to page size %s", pageSizeToString( mPageSize ).toLocal8Bit().constData() );
+  QgsDebugMsg( QString( "Printing to page size %1" ).arg( pageSizeToString( mPageSize ) ) );
   myPrinter.setPageSize( mPageSize );
   myPrinter.setOutputFileName( mOutputFileName );
   myPrinter.setOrientation( QPrinter::Landscape );
@@ -588,7 +588,7 @@ void QgsQuickPrint::printMap()
   int myLogoXDim = ( myDrawableWidth / 100 ) * myLogoWidthPercent;
   int myLogoYDim = ( myDrawableHeight / 100 ) * myLogoHeightPercent;
   QPixmap myLogo1;
-  qDebug( "Logo1: %s", mLogo1File.toLocal8Bit().constData() );
+  QgsDebugMsg( QString( "Logo1: %1" ).arg( mLogo1File ) );
   myLogo1.fill( Qt::white );
   myLogo1.load( mLogo1File );
   myLogo1 = myLogo1.scaled( myLogoXDim, myLogoYDim, Qt::KeepAspectRatio );

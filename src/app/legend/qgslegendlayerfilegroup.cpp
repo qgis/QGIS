@@ -20,6 +20,7 @@
 #include "qgslegendlayerfile.h"
 #include "qgslegendsymbologygroup.h"
 #include "qgsmaplayer.h"
+#include "qgslogger.h"
 
 QgsLegendLayerFileGroup::QgsLegendLayerFileGroup( QTreeWidgetItem* theItem, QString theString ): QgsLegendItem( theItem, theString )
 {
@@ -41,9 +42,7 @@ QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( LEGEND_ITEM_TYPE typ
 
 QgsLegendItem::DRAG_ACTION QgsLegendLayerFileGroup::accept( const QgsLegendItem* li ) const
 {
-#ifdef QGISDEBUG
-  qWarning( "in QgsLegendLayerFileGroup::accept" );
-#endif
+  QgsDebugMsg( "entered." );
   if ( li )
   {
     LEGEND_ITEM_TYPE type = li->type();
@@ -146,9 +145,7 @@ void QgsLegendLayerFileGroup::receive( QgsLegendItem* newChild )
 
 void QgsLegendLayerFileGroup::release( QgsLegendItem* formerChild )
 {
-#ifdef QGISDEBUG
-  qWarning( "In QgsLegendLayerFileGroup::release" );
-#endif
+  QgsDebugMsg( "entered." );
   if ( formerChild->type() == LEGEND_LAYER_FILE )
   {
     QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer*>( parent() );

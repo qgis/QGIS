@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprojectproperty.h"
+#include "qgslogger.h"
 
 #include <QDomDocument>
 #include <QStringList>
@@ -34,12 +35,12 @@ void QgsPropertyValue::dump( size_t tabs ) const
 
     for ( QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i )
     {
-      qDebug( "%s[%s] ", tabString.toLocal8Bit().constData(), ( *i ).toLocal8Bit().constData() );
+      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString ).arg( *i ) );
     }
   }
   else
   {
-    qDebug( "%s%s", tabString.toLocal8Bit().constData(), value_.toString().toLocal8Bit().constData() );
+    QgsDebugMsg( QString( "%1%2" ).arg( tabString ).arg( value_.toString() ) );
   }
 } // QgsPropertyValue::dump()
 
@@ -55,8 +56,7 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
 
   if ( QString::null == typeString )
   {
-    qDebug( "%s:%d null ``type'' attribute for %s", __FILE__, __LINE__,
-            keyNode.nodeName().toUtf8().constData() );
+    QgsDebugMsg( QString( "null ``type'' attribute for %1" ).arg( keyNode.nodeName() ) );
 
     return false;
   }
@@ -78,26 +78,16 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
   switch ( type )
   {
     case QVariant::Invalid:
-      qDebug( "%s:%d invalid value type %s .. ", __FILE__, __LINE__,
-              typeString.toUtf8().constData() );
-
+      QgsDebugMsg( QString( "invalid value type %1 .. " ).arg( typeString ) );
       return false;
-
-      break;
 
     case QVariant::Map:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Map", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Map" );
       return false;
-
-      break;
 
     case QVariant::List:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::List", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::List" );
       return false;
-
-      break;
 
     case QVariant::String:
       value_ = subkeyElement.text();  // no translating necessary
@@ -119,155 +109,100 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
         }
         else
         {
-          qDebug
-          ( "qgsproject.cpp:%d non <value> element ``%s'' in string list",
-            __LINE__, values.item( i ).nodeName().toUtf8().constData() );
+          QgsDebugMsg( QString( "non <value> element ``%1'' in string list" ).arg( values.item( i ).nodeName() ) );
         }
 
         ++i;
       }
 
       value_ = valueStringList;
-
       break;
     }
+
     case QVariant::Font:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Font", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Font" );
       return false;
-
-      break;
 
     case QVariant::Pixmap:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Pixmap", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Pixmap" );
       return false;
-
-      break;
 
     case QVariant::Brush:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Brush", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Brush" );
       return false;
-
-      break;
 
     case QVariant::Rect:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Rect", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Rect" );
       return false;
-
-      break;
 
     case QVariant::Size:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Size", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Size" );
       return false;
-
-      break;
 
     case QVariant::Color:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Color", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Color" );
       return false;
-
-      break;
 
     case QVariant::Palette:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Palette", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Palette" );
       return false;
-
-      break;
 
     case QVariant::Point:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Point", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Point" );
       return false;
-
-      break;
 
     case QVariant::Image:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Image", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Image" );
       return false;
-
-      break;
 
     case QVariant::Int:
       value_ = QVariant( subkeyElement.text() ).toInt();
-
       break;
 
     case QVariant::UInt:
       value_ = QVariant( subkeyElement.text() ).toUInt();
-
       break;
 
     case QVariant::Bool:
       value_ = QVariant( subkeyElement.text() ).toBool();
-
       break;
 
     case QVariant::Double:
       value_ = QVariant( subkeyElement.text() ).toDouble();
-
       break;
 
     case QVariant::ByteArray:
       value_ = QVariant( subkeyElement.text() ).toByteArray();
-
       break;
 
     case QVariant::Polygon:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Polygon",
-              __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Polygon" );
       return false;
-
-      break;
 
     case QVariant::Region:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Region", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Region" );
       return false;
-
-      break;
 
     case QVariant::Bitmap:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Bitmap", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Bitmap" );
       return false;
-
-      break;
-
 
     case QVariant::Cursor:
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Cursor", __LINE__ );
+      QgsDebugMsg( "no support for QVariant::Cursor" );
       return false;
-
-      break;
 
     case QVariant::BitArray :
-      qDebug( "qgsproject.cpp:%d add support for QVariant::BitArray", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::BitArray" );
       return false;
-
-      break;
 
     case QVariant::KeySequence :
-      qDebug( "qgsproject.cpp:%d add support for QVariant::KeySequence", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::KeySequence" );
       return false;
-
-      break;
 
     case QVariant::Pen :
-      qDebug( "qgsproject.cpp:%d add support for QVariant::Pen", __LINE__ );
-
+      QgsDebugMsg( "no support for QVariant::Pen" );
       return false;
 
-      break;
       //
       // QGIS DIES NOT SUPPORT THESE VARIANT TYPES IN VERSION 3.1 DISABLING FOR NOW
       //
@@ -281,8 +216,7 @@ bool QgsPropertyValue::readXML( QDomNode & keyNode )
         break;
       */
     default :
-      qDebug( "%s:%d unsupported value type %s .. not propertly translated to QVariant in qgsproject.cpp",
-              __FILE__, __LINE__, typeString.toUtf8().constData() );
+      QgsDebugMsg( QString( "unsupported value type %1 .. not propertly translated to QVariant" ).arg( typeString ) );
   }
 
   return true;
@@ -355,7 +289,7 @@ QVariant QgsPropertyKey::value() const
   }
   else
   {
-    qDebug( "%s:%d QgsPropertyKey has null child", __FILE__, __LINE__ );
+    QgsDebugMsg( "key has null child" );
 
     return QVariant();     // just return an QVariant::Invalid
   }
@@ -368,7 +302,7 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
   tabString.fill( '\t', tabs );
 
-  qDebug( "%sname: %s", tabString.toLocal8Bit().constData(), name().toLocal8Bit().constData() );
+  QgsDebugMsg( QString( "%1name: %2" ).arg( tabString ).arg( name() ) );
 
   tabs++;
   tabString.fill( '\t', tabs );
@@ -385,27 +319,20 @@ void QgsPropertyKey::dump( size_t tabs ) const
 
         if ( QVariant::StringList == propertyValue->value().type() )
         {
-          qDebug( "%skey: <%s>  value:",
-                  tabString.toLocal8Bit().constData(),
-                  i.key().toLocal8Bit().constData() );
-
+          QgsDebugMsg( QString( "%1key: <%2>  value:" ).arg( tabString ).arg( i.key() ) );
           propertyValue->dump( tabs + 1 );
         }
         else
         {
-          qDebug( "%skey: <%s>  value: %s",
-                  tabString.toLocal8Bit().constData(),
-                  i.key().toLocal8Bit().constData(),
-                  propertyValue->value().toString().toLocal8Bit().constData() );
+          QgsDebugMsg( QString( "%1key: <%2>  value: %3" ).arg( tabString ).arg( i.key() ).arg( propertyValue->value().toString() ) );
         }
       }
       else
       {
-        qDebug( "%skey: <%s>  subkey: <%s>",
-                tabString.toLocal8Bit().constData(),
-                i.key().toLocal8Bit().constData(),
-                dynamic_cast<QgsPropertyKey*>( i.value() )->name().toLocal8Bit().data() );
-
+        QgsDebugMsg( QString( "%1key: <%2>  subkey: <%3>" )
+                     .arg( tabString )
+                     .arg( i.key() )
+                     .arg( dynamic_cast<QgsPropertyKey*>( i.value() )->name() ) );
         i.value()->dump( tabs + 1 );
       }
 
@@ -448,8 +375,7 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
 
       if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
       {
-        qDebug( "%s:%d unable to parse key value %s", __FILE__, __LINE__,
-                subkeys.item( i ).nodeName().toUtf8().constData() );
+        QgsDebugMsg( QString( "unable to parse key value %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
     else             // otherwise it's a subkey, so just
@@ -461,8 +387,7 @@ bool QgsPropertyKey::readXML( QDomNode & keyNode )
 
       if ( !mProperties[subkeys.item( i ).nodeName()]->readXML( subkey ) )
       {
-        qDebug( "%s:%d unable to parse subkey %s", __FILE__, __LINE__,
-                subkeys.item( i ).nodeName().toUtf8().constData() );
+        QgsDebugMsg( QString( "unable to parse subkey %1" ).arg( subkeys.item( i ).nodeName() ) );
       }
     }
 

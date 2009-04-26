@@ -351,7 +351,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
         s << ( quint8 )0; // 0 is for big-endian
         break;
       default :
-        qDebug( "%s:%d unknown endian", __FILE__, __LINE__ );
+        QgsDebugMsg( "unknown endian" );
         //delete [] geometry;
         return false;
     }

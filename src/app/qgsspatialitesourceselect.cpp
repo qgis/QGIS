@@ -3,7 +3,7 @@
        Dialog to select SpatiaLite layer(s) and add it to the map canvas
                               -------------------
 begin                : Dec 2008
-copyright            : (C) 2008 bySandro Furieri
+copyright            : (C) 2008 by Sandro Furieri
 email                : a.furieri@lqt.it
  ***************************************************************************/
 
@@ -217,7 +217,7 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
     }
   }
   sqlite3_free_table( results );
-  if ( tableName == true && geomColumn == true && type == true && coordDims == true && gcSrid == true && spatialIndex == true )
+  if ( tableName && geomColumn && type && coordDims && gcSrid && spatialIndex )
     gcSpatiaLite = true;
 
   // checking if table SPATIAL_REF_SYS exists and has the expected layout
@@ -244,11 +244,11 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( const char *path )
     }
   }
   sqlite3_free_table( results );
-  if ( srsSrid == true && authName == true && authSrid == true && refSysName == true && proj4text == true )
+  if ( srsSrid && authName && authSrid && refSysName && proj4text )
     rsSpatiaLite = true;
 
   // OK, this one seems to be a valid SpatiaLite DB
-  if ( gcSpatiaLite == true && rsSpatiaLite == true )
+  if ( gcSpatiaLite && rsSpatiaLite )
     return handle;
 
   // this one cannot be a valid SpatiaLite DB - no Spatial MetaData where found
@@ -487,12 +487,9 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   // get the list of suitable tables and columns and populate the UI
   geomCol details;
 
-  if ( getTableInfo( handle ) == true )
-    ;
-  else
+  if ( !getTableInfo( handle ) )
   {
-    qDebug( "Unable to get list of spatially enabled tables from the database" );
-    qDebug( "%s", sqlite3_errmsg( handle ) );
+    QgsDebugMsg( QString( "Unable to get list of spatially enabled tables from the database\n%1" ).arg( sqlite3_errmsg( handle ) ) );
   }
   closeSpatiaLiteDb( handle );
 

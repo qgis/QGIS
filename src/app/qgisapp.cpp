@@ -2024,7 +2024,7 @@ static void buildSupportedVectorFileFilter_( QString & fileFilters )
 
     if ( !driver )
     {
-      qWarning( "unable to get driver %d", i );
+      QgsDebugMsg( QString( "unable to get driver %1" ).arg( i ) );
       continue;
     }
 

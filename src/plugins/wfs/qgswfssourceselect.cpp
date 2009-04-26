@@ -23,6 +23,7 @@
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -213,8 +214,7 @@ int QgsWFSSourceSelect::getCapabilitiesGET( QString uri, std::list<QString>& typ
 
 
   //print out result for a test
-  QString resultString( result );
-  qWarning( "%s", resultString.toUtf8().constData() );
+  QgsDebugMsg( result );
 
   return 0;
 }
@@ -269,7 +269,7 @@ void QgsWFSSourceSelect::connectToServer()
   QSettings settings;
   QString key = "/Qgis/connections-wfs/" + cmbConnections->currentText() + "/url";
   mUri = settings.value( key ).toString();
-  qWarning( "url is: %s", mUri.toUtf8().constData() );
+  QgsDebugMsg( QString( "url is: %1" ).arg( mUri ) );
 
   //make a GetCapabilities request
   std::list<QString> typenames;
@@ -289,7 +289,7 @@ void QgsWFSSourceSelect::connectToServer()
 
   if ( getCapabilities( mUri, QgsWFSSourceSelect::GET, typenames, crsList, titles, abstracts ) != 0 )
   {
-    qWarning( "error during GetCapabilities request" );
+    QgsDebugMsg( "error during GetCapabilities request" );
   }
 
   //insert the available CRS into mAvailableCRS
@@ -330,8 +330,6 @@ void QgsWFSSourceSelect::connectToServer()
   {
     btnAdd->setEnabled( false );
   }
-
-
 }
 
 void QgsWFSSourceSelect::addLayer()
@@ -349,7 +347,7 @@ void QgsWFSSourceSelect::addLayer()
   {
     uri.append( "?" );
   }
-  qWarning( "%sSERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=%s", uri.toUtf8().constData(), typeName.toUtf8().constData() );
+  QgsDebugMsg( QString( "%1SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=%2" ).arg( uri ).arg( typeName ) );
 
   //get CRS
   QString crsString;
@@ -385,7 +383,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
   if ( currentTreeItem )
   {
     QString currentTypename = currentTreeItem->text( 1 );
-    qWarning( "the current typename is: %s", currentTypename.toUtf8().constData() );
+    QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
     std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
     if ( crsIterator != mAvailableCRS.end() )

@@ -33,9 +33,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
     : QDialog(), mVectorLayer( layer )
 {
   setupUi( this );
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsContinuousColorDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 
   QObject::connect( btnMinValue, SIGNAL( clicked() ), this, SLOT( selectMinimumColor() ) );
   QObject::connect( btnMaxValue, SIGNAL( clicked() ), this, SLOT( selectMaximumColor() ) );
@@ -63,7 +61,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   }
   else
   {
-    qWarning( "Warning, data provider is null in QgsContinuousColorDialog::QgsContinuousColorDialog(...)" );
+    QgsDebugMsg( "data provider is null" );
     return;
   }
 
@@ -139,16 +137,12 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
 QgsContinuousColorDialog::QgsContinuousColorDialog()
 {
   setupUi( this );
-#ifdef QGISDEBUG
-  qWarning( "constructor QgsContinuousColorDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 QgsContinuousColorDialog::~QgsContinuousColorDialog()
 {
-#ifdef QGISDEBUG
-  qWarning( "destructor QgsContinuousColorDialog" );
-#endif
+  QgsDebugMsg( "entered." );
 }
 
 void QgsContinuousColorDialog::apply()

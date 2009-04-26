@@ -19,6 +19,7 @@
 #include "qgsgeomtypedialog.h"
 #include "qgsapplication.h"
 #include "qgisapp.h" // <- for theme icons
+#include "qgslogger.h"
 #include <QPushButton>
 
 QgsGeomTypeDialog::QgsGeomTypeDialog( QWidget *parent, Qt::WFlags fl )
@@ -95,9 +96,7 @@ void QgsGeomTypeDialog::attributes( std::list<std::pair<QString, QString> >& at 
   {
     QTreeWidgetItem *item = *it;
     at.push_back( std::make_pair( item->text( 0 ), item->text( 1 ) ) );
-#ifdef QGISDEBUG
-    qWarning( "appending %s//%s", item->text( 0 ).toLocal8Bit().constData(), item->text( 1 ).toLocal8Bit().constData() );
-#endif
+    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( item->text( 1 ) ) );
     ++it;
   }
 }

@@ -31,6 +31,7 @@
 #include "qgsrendercontext.h"
 #include "qgssymbologyutils.h"
 #include "qgsvectordataprovider.h"
+#include "qgslogger.h"
 #include <QPainter>
 
 QgsDiagramOverlay::QgsDiagramOverlay( QgsVectorLayer* vl ): QgsVectorOverlay( vl ), mDiagramRenderer( 0 )
@@ -125,7 +126,7 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
         currentDiagramImage = mDiagramRenderer->renderDiagram( currentFeature, context );
         if ( !currentDiagramImage )
         {
-          qWarning( "diagram image is 0" );
+          QgsDebugMsg( "diagram image is 0" );
           continue;
         }
         //search for overlay object in the map
