@@ -43,7 +43,8 @@ public:
   void setDataSource(const QString& aSchema,
                      const QString& aTable,
                      const QString& aGeometryColumn,
-                     const QString& aSql = QString());
+                     const QString& aSql = QString(),
+                     const QString& aKeyColumn = QString());
 
   /** Removes password from uris 
    * @note this method was added in QGIS 1.1
@@ -64,4 +65,8 @@ public:
   SSLmode sslMode() const;
 
   void setSql(QString sql);
+
+  // added in 1.2
+  QString keyColumn() const;
+  void setKeyColumn(QString column);
 };

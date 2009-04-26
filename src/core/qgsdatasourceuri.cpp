@@ -23,12 +23,12 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer )
+QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer ), mKeyColumn( "" )
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer )
+QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyColumn( "" )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -103,6 +103,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer )
 
           i++;
         }
+      }
+      else if ( pname == "key" )
+      {
+        mKeyColumn = pval;
       }
       else if ( pname == "service" )
       {
@@ -257,6 +261,16 @@ QString QgsDataSourceURI::geometryColumn() const
   return mGeometryColumn;
 }
 
+QString QgsDataSourceURI::keyColumn() const
+{
+  return mKeyColumn;
+}
+
+void QgsDataSourceURI::setKeyColumn( QString column )
+{
+  mKeyColumn = column;
+}
+
 void QgsDataSourceURI::setSql( QString sql )
 {
   mSql = sql;
@@ -376,7 +390,8 @@ QString QgsDataSourceURI::connectionInfo() const
 QString QgsDataSourceURI::uri() const
 {
   return connectionInfo()
-         + QString( " table=%1 (%2) sql=%3" )
+         + QString( " key='%1' table=%2 (%3) sql=%4" )
+         .arg( keyColumn() )
          .arg( quotedTablename() )
          .arg( mGeometryColumn )
          .arg( mSql );
@@ -408,10 +423,12 @@ void QgsDataSourceURI::setConnection( const QString &host,
 void QgsDataSourceURI::setDataSource( const QString &schema,
                                       const QString &table,
                                       const QString &geometryColumn,
+                                      const QString &keyColumn,
                                       const QString &sql )
 {
   mSchema = schema;
   mTable = table;
   mGeometryColumn = geometryColumn;
+  mKeyColumn = keyColumn;
   mSql = sql;
 }
