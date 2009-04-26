@@ -985,17 +985,11 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
       case QGis::WKBMultiPolygon25D:
         return QGis::Polygon;
     }
-#ifdef QGISDEBUG
-    QgsLogger::debug( "Warning: Data Provider Geometry type is not recognised, is", type, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
-
+    QgsDebugMsg( QString( "Data Provider Geometry type is not recognised, is %1" ).arg( type ) );
   }
   else
   {
-#ifdef QGISDEBUG
-    qWarning( "warning, pointer to mDataProvider is null in QgsVectorLayer::type()" );
-#endif
-
+    QgsDebugMsg( "pointer to mDataProvider is null" );
   }
 
   // We shouldn't get here, and if we have, other things are likely to

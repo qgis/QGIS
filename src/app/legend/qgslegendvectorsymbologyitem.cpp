@@ -30,9 +30,6 @@ void QgsLegendVectorSymbologyItem::addSymbol( QgsSymbol* s )
 
 void QgsLegendVectorSymbologyItem::handleDoubleClickEvent()
 {
-#ifdef QGISDEBUG
-  qWarning( "in QgsLegendVectorSymbologyItem::handleDoubleClickEvent" );
-#endif
   //todo: show the dialog
   //QgsSiSyDialog d(0);
   //std::list<QgsSymbol*>::iterator iter = mSymbols.begin();

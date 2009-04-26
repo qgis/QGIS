@@ -447,7 +447,7 @@ void QgsDbSourceSelect::on_btnConnect_clicked()
     }
     else
     {
-      qDebug( "Unable to get list of spatially enabled tables from the database\n%s", PQerrorMessage( pd ) );
+      QgsDebugMsg( QString( "Unable to get list of spatially enabled tables from the database\n%1" ).arg( PQerrorMessage( pd ) ) );
     }
     // BEGIN CHANGES ECOS
     if ( cmbConnections->count() > 0 )
@@ -494,7 +494,7 @@ void QgsDbSourceSelect::setSql( const QModelIndex& index )
 {
   if ( !index.parent().isValid() )
   {
-    qWarning( "schema item found" );
+    QgsDebugMsg( "schema item found" );
     return;
   }
 
@@ -514,7 +514,7 @@ void QgsDbSourceSelect::setSql( const QModelIndex& index )
   QString schemaName = mTableModel.itemFromIndex( mProxyModel.mapToSource( schemaSibling ) )->text();
   QString tableName = mTableModel.itemFromIndex( mProxyModel.mapToSource( tableSibling ) )->text();
   QString tableString = "\"" + schemaName + "\".\"" + tableName + "\"";
-  qWarning( "%s", tableString.toUtf8().constData() );
+  QgsDebugMsg( tableString );
 
   QString currentSql;
   QModelIndex sqlSibling = index.sibling( index.row(), 4 );

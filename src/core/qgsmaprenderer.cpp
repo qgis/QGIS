@@ -614,7 +614,7 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what() );
+      QgsDebugMsg( QString( "Transform error caught: " ).arg( cse.what() ) );
     }
   }
   else
@@ -636,7 +636,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what() );
+      QgsDebugMsg( QString( "Transform error caught:%s" ).arg( cse.what() ) );
     }
   }
   else
@@ -657,7 +657,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what() );
+      QgsDebugMsg( QString( "Transform error caught: %s" ).arg( cse.what() ) );
       throw cse; //let client classes know there was a transformation error
     }
   }
@@ -679,7 +679,7 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      qDebug( "Transform error caught in %s line %d:\n%s", __FILE__, __LINE__, cse.what() );
+      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
       throw cse; //let client classes know there was a transformation error
     }
   }

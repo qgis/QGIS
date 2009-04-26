@@ -16,6 +16,7 @@
  ***************************************************************************/
 /* $Id$ */
 #include "qgssymbologyutils.h"
+#include "qgslogger.h"
 #include <QPixmap>
 
 static const char *solidLineData[] =
@@ -800,7 +801,7 @@ QString QgsSymbologyUtils::brushStyle2QString( Qt::BrushStyle brushstyle )
   }
   else                        //return a null string
   {
-    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2QString" );
+    QgsDebugMsg( "no matching pattern found" );
     return " ";
   }
 }
@@ -873,7 +874,7 @@ Qt::BrushStyle QgsSymbologyUtils::qString2BrushStyle( QString brushString )
   }
   else                        //return a null string
   {
-    qWarning( "Brush style \"%s\" not found in qString2BrushStyle", brushString.toUtf8().constData() );
+    QgsDebugMsg( QString( "Brush style \"%1\" not found" ).arg( brushString ) );
     return Qt::NoBrush;
   }
 }
@@ -980,7 +981,7 @@ QPixmap QgsSymbologyUtils::qString2PatternPixmap( QString patternString )
   }
   else                        //return a null patternString
   {
-    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::qString2PatternPixmap" );
+    QgsDebugMsg( "no matching pattern found" );
     return QPixmap();
   }
 }
@@ -1127,7 +1128,7 @@ QPixmap QgsSymbologyUtils::char2LinePixmap( const char *c )
 
   else
   {
-    qWarning( "Warning, no matching style found in QgsSymbologyUtils::char2LinePixmap" );
+    QgsDebugMsg( "no matching style found" );
     return QPixmap();
   }
 }
@@ -1200,7 +1201,7 @@ QPixmap QgsSymbologyUtils::char2PatternPixmap( const char *c )
   }
   else
   {
-    qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::char2PatternPixmap" );
+    QgsDebugMsg( "no matching pattern found" );
     return QPixmap();
   }
 
@@ -1238,7 +1239,7 @@ Qt::PenStyle QgsSymbologyUtils::char2PenStyle( const char *c )
   }
   else
   {
-    qWarning( "Warning, no matching pen style found in QgsSymbologyUtils::char2PenStyle" );
+    QgsDebugMsg( "no matching pen style found" );
     return Qt::NoPen;
   }
 }
@@ -1311,7 +1312,7 @@ Qt::BrushStyle QgsSymbologyUtils::char2BrushStyle( const char *c )
   }
   else                        //return a null string
   {
-    qWarning( "Warning, no matching brush style found in QgsSymbologyUtils::char2BrushStyle" );
+    QgsDebugMsg( "no matching brush style found" );
     return Qt::NoBrush;
   }
 }
@@ -1339,7 +1340,7 @@ QPixmap QgsSymbologyUtils::penStyle2Pixmap( Qt::PenStyle penstyle )
       return QPixmap( noPenLineData );
       break;
     default:
-      qWarning( "Warning, no matching pen style found in QgsSymbologyUtils::penStyle2Pixmap" );
+      QgsDebugMsg( "no matching pen style found" );
       return QPixmap();
   }
 }
@@ -1396,7 +1397,7 @@ QPixmap QgsSymbologyUtils::brushStyle2Pixmap( Qt::BrushStyle brushstyle )
     case( Qt::NoBrush ):
       return QPixmap( nobrush );
     default:
-      qWarning( "Warning, no matching pattern found in QgsSymbologyUtils::brushStyle2Pixmap" );
+      QgsDebugMsg( "no matching pattern found" );
   }
 
   return QPixmap();             // XXX I hope returning a blank one is ok

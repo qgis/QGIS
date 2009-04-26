@@ -295,12 +295,12 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
 
   if ( dataReader.getWFSData() != 0 )
   {
-    qWarning( "getWFSData returned with error" );
+    QgsDebugMsg( "getWFSData returned with error" );
     return 1;
   }
 
-  qWarning( "feature count after request is: %d", mFeatures.size() );
-  qWarning( "mExtent after request is: %s",  mExtent.toString().toLocal8Bit().data() );
+  QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
+  QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
 
   for ( QList<QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
   {

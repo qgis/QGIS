@@ -18,6 +18,7 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 #include "qgspaperitem.h"
+#include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
@@ -239,7 +240,7 @@ void QgsComposition::addItemToZList( QgsComposerItem* item )
     return;
   }
   mItemZList.push_back( item );
-  qWarning( "%d", mItemZList.size() );
+  QgsDebugMsg( QString::number( mItemZList.size() ) );
   item->setZValue( mItemZList.size() );
 }
 
@@ -522,7 +523,7 @@ void QgsComposition::updateZValues()
     currentItem = *it;
     if ( currentItem )
     {
-      qWarning( "%d", counter );
+      QgsDebugMsg( QString::number( counter ) );
       currentItem->setZValue( counter );
     }
     ++counter;
@@ -531,13 +532,15 @@ void QgsComposition::updateZValues()
 
 void QgsComposition::sortZList()
 {
+#ifdef QGISDEBUG
   //debug: list before sorting
-  qWarning( "before sorting" );
+  QgsDebugMsg( "before sorting" );
   QLinkedList<QgsComposerItem*>::iterator before_it = mItemZList.begin();
   for ( ; before_it != mItemZList.end(); ++before_it )
   {
-    qWarning( "%lf", ( *before_it )->zValue() );
+    QgsDebugMsg( QString( "%1" ).arg(( *before_it )->zValue() ) );
   }
+#endif
 
   QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
   int previousZ, afterZ; //z values of items before and after
@@ -584,14 +587,16 @@ void QgsComposition::sortZList()
     }
   }
 
+#ifdef QGISDEBUG
   //debug: list after sorting
   //debug: list before sorting
-  qWarning( "after sorting" );
+  QgsDebugMsg( "after sorting" );
   QLinkedList<QgsComposerItem*>::iterator after_it = mItemZList.begin();
   for ( ; after_it != mItemZList.end(); ++after_it )
   {
-    qWarning( "%lf", ( *after_it )->zValue() );
+    QgsDebugMsg( QString( "%1" ).arg(( *after_it )->zValue() ) );
   }
+#endif
 }
 
 QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const

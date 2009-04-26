@@ -47,7 +47,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
   }
   else
   {
-    qWarning( "Warning, data provider is null in QgsUniqueValueDialog::QgsUniqueValueDialog" );
+    QgsDebugMsg( "data provider is null" );
     return;
   }
 

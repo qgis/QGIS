@@ -19,8 +19,6 @@
 
 #include <deque>
 #include <memory>
-#include <cassert>
-#include <iostream>
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
@@ -421,7 +419,7 @@ QString QgsProject::fileName() const
 /// basically a debugging tool to dump property list values
 static void dump_( QgsPropertyKey const & topQgsPropertyKey )
 {
-  qDebug( "current properties:" );
+  QgsDebugMsg( "current properties:" );
 
   topQgsPropertyKey.dump();
 } // dump_
@@ -464,7 +462,7 @@ _getProperties( QDomDocument const &doc, QgsPropertyKey & project_properties )
 
   if ( properties.count() > 1 )
   {
-    qDebug( "there appears to be more than one ``properties'' XML tag ... bailing" );
+    QgsDebugMsg( "there appears to be more than one ``properties'' XML tag ... bailing" );
     return;
   }
   else if ( properties.count() < 1 )  // no properties found, so we're done
@@ -478,7 +476,7 @@ _getProperties( QDomDocument const &doc, QgsPropertyKey & project_properties )
 
   if ( scopes.count() < 1 )
   {
-    qDebug( "empty ``properties'' XML tag ... bailing" );
+    QgsDebugMsg( "empty ``properties'' XML tag ... bailing" );
     return;
   }
 
@@ -486,7 +484,7 @@ _getProperties( QDomDocument const &doc, QgsPropertyKey & project_properties )
 
   if ( ! project_properties.readXML( propertyNode ) )
   {
-    qDebug( "Project_properties.readXML() failed" );
+    QgsDebugMsg( "Project_properties.readXML() failed" );
   }
 
 // DEPRECATED as functionality has been shoved down to QgsProperyKey::readXML()
@@ -548,7 +546,7 @@ static void _getTitle( QDomDocument const &doc, QString & title )
 
   if ( !nl.count() )
   {
-    qDebug( "%s : %d %s", __FILE__, __LINE__, " unable to find title element\n" );
+    QgsDebugMsg( "unable to find title element" );
     return;
   }
 
@@ -556,7 +554,7 @@ static void _getTitle( QDomDocument const &doc, QString & title )
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
-    qDebug( "%s : %d %s", __FILE__, __LINE__, " unable to find title element\n" );
+    QgsDebugMsg( "unable to find title element" );
     return;
   }
 
@@ -564,7 +562,7 @@ static void _getTitle( QDomDocument const &doc, QString & title )
 
   if ( !titleTextNode.isText() )
   {
-    qDebug( "%s : %d %s", __FILE__, __LINE__, " unable to find title element\n" );
+    QgsDebugMsg( "unable to find title element" );
     return;
   }
 
@@ -769,7 +767,7 @@ bool QgsProject::read()
     QString errorString = tr( "Project file read error: %1 at line %2 column %3" )
                           .arg( errorMsg ).arg( line ).arg( column );
 
-    qDebug( "%s", errorString.toUtf8().constData() );
+    QgsDebugMsg( errorString );
 
     imp_->file.close();
 
@@ -991,7 +989,7 @@ bool QgsProject::write()
 
   dump_( imp_->properties_ );
 
-  qDebug( "there are %d property scopes", static_cast<int>( imp_->properties_.count() ) );
+  QgsDebugMsg( QString( "there are %1 property scopes" ).arg( static_cast<int>( imp_->properties_.count() ) ) );
 
   if ( !imp_->properties_.isEmpty() ) // only worry about properties if we
     // actually have any properties

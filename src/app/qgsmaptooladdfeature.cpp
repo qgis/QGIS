@@ -180,7 +180,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
       if ( isDisabledAttributeValuesDlg )
       {
-        qDebug( "Adding feature to layer" );
+        QgsDebugMsg( "Adding feature to layer" );
         vlayer->addFeature( *f );
       }
       else
@@ -188,12 +188,12 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         QgsAttributeDialog * mypDialog = new QgsAttributeDialog( vlayer, f );
         if ( mypDialog->exec() )
         {
-          qDebug( "Adding feature to layer" );
+          QgsDebugMsg( "Adding feature to layer" );
           vlayer->addFeature( *f );
         }
         else
         {
-          qDebug( "Adding feature to layer failed" );
+          QgsDebugMsg( "Adding feature to layer failed" );
           delete f;
         }
         delete mypDialog;

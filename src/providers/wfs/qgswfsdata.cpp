@@ -16,6 +16,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgshttptransaction.h"
+#include "qgslogger.h"
 #include <QBuffer>
 #include <QUrl>
 #include <QList>
@@ -58,7 +59,7 @@ QgsWFSData::QgsWFSData(
     if ( it->startsWith( "TYPENAME", Qt::CaseInsensitive ) )
     {
       mTypeName = it->section( "=", 1, 1 );
-      qWarning( "mTypeName is: %s", mTypeName.toLocal8Bit().constData() );
+      QgsDebugMsg( QString( "mTypeName is: %1" ).arg( mTypeName ) );
     }
   }
 
@@ -115,7 +116,7 @@ int QgsWFSData::getWFSData()
   //loop to read the data
   QByteArray readData;
   int atEnd = 0;
-  qWarning( "Entering loop" );
+  QgsDebugMsg( "Entering loop" );
   while ( !mFinished || mHttp.bytesAvailable() > 0 )
   {
     if ( mFinished )
@@ -186,14 +187,14 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
     int epsgNr;
     if ( readEpsgFromAttribute( epsgNr, attr ) != 0 )
     {
-      qWarning( "error, could not get epsg id" );
+      QgsDebugMsg( "error, could not get epsg id" );
     }
     //qWarning(("epsg id is: " + QString::number(epsgNr)).toLocal8Bit().data());
     if ( mSrs )
     {
       if ( !mSrs->createFromEpsg( epsgNr ) )
       {
-        qWarning( "Creation of srs from epsg failed" );
+        QgsDebugMsg( "Creation of srs from epsg failed" );
       }
     }
   }
@@ -268,7 +269,7 @@ void QgsWFSData::endElement( const XML_Char* el )
     //create bounding box from mStringCash
     if ( createBBoxFromCoordinateString( mExtent, mStringCash ) != 0 )
     {
-      qWarning( "creation of bounding box failed" );
+      QgsDebugMsg( "creation of bounding box failed" );
     }
 
     if ( !mParseModeStack.empty() )

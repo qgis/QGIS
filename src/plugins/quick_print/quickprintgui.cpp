@@ -13,6 +13,7 @@
 #include <qgsquickprint.h>
 #include "qgscontexthelp.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 //qt includes
 #include <QMessageBox>
@@ -146,7 +147,7 @@ void QuickPrintGui::on_buttonBox_accepted()
       myQuickPrint.setOutputPdf( myOutputFileName );
       QString myPageSizeString = cboPageSize->itemData( cboPageSize->currentIndex() ).toString();
       myQuickPrint.setPageSize( QgsQuickPrint::stringToPageSize( myPageSizeString ) );
-      qDebug( "Page size : %s", myPageSizeString.toLocal8Bit().constData() );
+      QgsDebugMsg( QString( "Page size : %1" ).arg( myPageSizeString ) );
       myQuickPrint.printMap();
     }
     else
