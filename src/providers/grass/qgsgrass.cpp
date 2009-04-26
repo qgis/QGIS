@@ -95,16 +95,12 @@ void GRASS_EXPORT QgsGrass::init( void )
 #else
   QString gisBase = getenv( "GISBASE" );
 #endif
-#ifdef QGISDEBUG
-  qDebug( "%s:%d GRASS gisBase from GISBASE env var is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
-#endif
+  QgsDebugMsg( QString( "GRASS gisBase from GISBASE env var is: %1" ).arg( gisBase ) );
   if ( !isValidGrassBaseDir( gisBase ) )
   {
     // Look for gisbase in QSettings
     gisBase = settings.value( "/GRASS/gisbase", "" ).toString();
-#ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from QSettings is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
-#endif
+    QgsDebugMsg( QString( "GRASS gisBase from QSettings is: %1" ).arg( gisBase ) );
   }
 
   if ( !isValidGrassBaseDir( gisBase ) )
@@ -119,10 +115,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 #else
     // Use the location specified --with-grass during configure
     gisBase = GRASS_BASE;
-#ifdef QGISDEBUG
-    qDebug( "%s:%d GRASS gisBase from configure is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
-#endif
-
+    QgsDebugMsg( QString( "GRASS gisBase from configure is: %1" ).arg( gisBase ) );
 #endif
   }
 
@@ -173,9 +166,7 @@ void GRASS_EXPORT QgsGrass::init( void )
     settings.setValue( "/GRASS/gisbase", gisBase );
   }
 
-#ifdef QGISDEBUG
-  qDebug( "%s:%d Valid GRASS gisBase is: %s", __FILE__, __LINE__, gisBase.toAscii().constData() );
-#endif
+  QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
   QString gisBaseEnv = "GISBASE=" + gisBase;
   /* _Correct_ putenv() implementation is not making copy! */
   char *gisBaseEnvChar = new char[gisBaseEnv.length()+1];
