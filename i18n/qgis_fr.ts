@@ -20202,7 +20202,7 @@ SQL : %2</translation>
     </message>
     <message>
         <source>Shapefiles (*.shp);;All files (*.*)</source>
-        <translation>Shapefiles (*.shp); Tous les fichiers (*.*)</translation>
+        <translation>Shapefiles (*.shp);;Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <source>PostGIS not available</source>
