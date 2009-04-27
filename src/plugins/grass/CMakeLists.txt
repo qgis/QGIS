@@ -16,9 +16,9 @@ IF (NOT MSVC)
 ENDIF (NOT MSVC)
 
 IF (WIN32)
-  ADD_DEFINITIONS("\"-DHAVE_GETPT -DGRASS_EXPORT=__declspec(dllimport)\"")
+  ADD_DEFINITIONS(-DHAVE_GETPT "-DGRASS_EXPORT=__declspec(dllimport)")
 ELSE (WIN32)
-  ADD_DEFINITIONS("-DHAVE_POSIX_OPENPT -DGRASS_EXPORT=")
+  ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT -DGRASS_EXPORT=)
 ENDIF (WIN32)
 
 ########################################################
@@ -35,29 +35,11 @@ SET (GRASS_PLUGIN_SRCS
      qgsgrassmapcalc.cpp
      qgsgrassmodule.cpp
      qgsgrassnewmapset.cpp
-     qgsgrassshell.cpp
      qgsgrassattributes.cpp
      qgsgrassregion.cpp
      qgsgrassutils.cpp
-     qtermwidget/BlockArray.cpp
-     qtermwidget/Emulation.cpp
-     qtermwidget/Filter.cpp
-     qtermwidget/History.cpp
-     qtermwidget/KeyboardTranslator.cpp
-     qtermwidget/Pty.cpp
-     qtermwidget/Screen.cpp
-     qtermwidget/ScreenWindow.cpp
-     qtermwidget/Session.cpp
-     qtermwidget/ShellCommand.cpp
-     qtermwidget/TerminalCharacterDecoder.cpp
-     qtermwidget/TerminalDisplay.cpp
-     qtermwidget/Vt102Emulation.cpp
-     qtermwidget/k3process.cpp
-     qtermwidget/k3processcontroller.cpp
-     qtermwidget/konsole_wcwidth.cpp
-     qtermwidget/kpty.cpp
-     qtermwidget/qtermwidget.cpp
 )
+
 
 SET (GRASS_PLUGIN_UIS
      qgsgrasstoolsbase.ui
@@ -81,22 +63,49 @@ SET (GRASS_PLUGIN_MOC_HDRS
      qgsgrassmapcalc.h
      qgsgrassmodule.h
      qgsgrassnewmapset.h
-     qgsgrassshell.h
      qgsgrassattributes.h
      qgsgrassregion.h
      qgsgrassutils.h
      qgsgrassedittools.h
-     qtermwidget/Emulation.h
-     qtermwidget/Filter.h
-     qtermwidget/Pty.h
-     qtermwidget/ScreenWindow.h
-     qtermwidget/Session.h
-     qtermwidget/TerminalDisplay.h
-     qtermwidget/Vt102Emulation.h
-     qtermwidget/k3process.h
-     qtermwidget/k3processcontroller.h
-     qtermwidget/qtermwidget.h
 )
+
+IF(NOT WIN32)
+	SET (GRASS_PLUGIN_SRCS ${GRASS_PLUGIN_SRCS}
+     		qgsgrassshell.cpp
+		qtermwidget/BlockArray.cpp
+		qtermwidget/Emulation.cpp
+		qtermwidget/Filter.cpp
+		qtermwidget/History.cpp
+		qtermwidget/KeyboardTranslator.cpp
+		qtermwidget/Pty.cpp
+		qtermwidget/Screen.cpp
+		qtermwidget/ScreenWindow.cpp
+		qtermwidget/Session.cpp
+		qtermwidget/ShellCommand.cpp
+		qtermwidget/TerminalCharacterDecoder.cpp
+		qtermwidget/TerminalDisplay.cpp
+		qtermwidget/Vt102Emulation.cpp
+		qtermwidget/k3process.cpp
+		qtermwidget/k3processcontroller.cpp
+		qtermwidget/konsole_wcwidth.cpp
+		qtermwidget/kpty.cpp
+		qtermwidget/qtermwidget.cpp
+		)
+
+	SET (GRASS_PLUGIN_MOC_HDRS ${GRASS_PLUGIN_MOC_HDRS}
+     		qgsgrassshell.h
+		qtermwidget/Emulation.h
+		qtermwidget/Filter.h
+		qtermwidget/Pty.h
+		qtermwidget/ScreenWindow.h
+		qtermwidget/Session.h
+		qtermwidget/TerminalDisplay.h
+		qtermwidget/Vt102Emulation.h
+		qtermwidget/k3process.h
+		qtermwidget/k3processcontroller.h
+		qtermwidget/qtermwidget.h
+		)
+ENDIF(NOT WIN32)
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)
 
@@ -143,7 +152,6 @@ TARGET_LINK_LIBRARIES(grassplugin
   qgis_gui
   qgisgrass
   ${QT_QTSQL_LIBRARY}
-  ${QT_QT3SUPPORT_LIBRARY} 
   ${GRASS_LIBRARIES}
 )
 
