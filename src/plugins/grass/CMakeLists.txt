@@ -16,9 +16,9 @@ IF (NOT MSVC)
 ENDIF (NOT MSVC)
 
 IF (WIN32)
-  ADD_DEFINITIONS("\"-DGRASS_EXPORT=__declspec(dllimport)\"")
+  ADD_DEFINITIONS("\"-DHAVE_GETPT -DGRASS_EXPORT=__declspec(dllimport)\"")
 ELSE (WIN32)
-  ADD_DEFINITIONS("-DGRASS_EXPORT=")
+  ADD_DEFINITIONS("-DHAVE_POSIX_OPENPT -DGRASS_EXPORT=")
 ENDIF (WIN32)
 
 ########################################################
@@ -39,6 +39,24 @@ SET (GRASS_PLUGIN_SRCS
      qgsgrassattributes.cpp
      qgsgrassregion.cpp
      qgsgrassutils.cpp
+     qtermwidget/BlockArray.cpp
+     qtermwidget/Emulation.cpp
+     qtermwidget/Filter.cpp
+     qtermwidget/History.cpp
+     qtermwidget/KeyboardTranslator.cpp
+     qtermwidget/Pty.cpp
+     qtermwidget/Screen.cpp
+     qtermwidget/ScreenWindow.cpp
+     qtermwidget/Session.cpp
+     qtermwidget/ShellCommand.cpp
+     qtermwidget/TerminalCharacterDecoder.cpp
+     qtermwidget/TerminalDisplay.cpp
+     qtermwidget/Vt102Emulation.cpp
+     qtermwidget/k3process.cpp
+     qtermwidget/k3processcontroller.cpp
+     qtermwidget/konsole_wcwidth.cpp
+     qtermwidget/kpty.cpp
+     qtermwidget/qtermwidget.cpp
 )
 
 SET (GRASS_PLUGIN_UIS
@@ -48,7 +66,6 @@ SET (GRASS_PLUGIN_UIS
      qgsgrassmapcalcbase.ui
      qgsgrassmodulebase.ui
      qgsgrassnewmapsetbase.ui
-     qgsgrassshellbase.ui
      qgsgrassattributesbase.ui
      qgsgrassregionbase.ui
      ../../ui/qgsprojectionselectorbase.ui
@@ -69,6 +86,16 @@ SET (GRASS_PLUGIN_MOC_HDRS
      qgsgrassregion.h
      qgsgrassutils.h
      qgsgrassedittools.h
+     qtermwidget/Emulation.h
+     qtermwidget/Filter.h
+     qtermwidget/Pty.h
+     qtermwidget/ScreenWindow.h
+     qtermwidget/Session.h
+     qtermwidget/TerminalDisplay.h
+     qtermwidget/Vt102Emulation.h
+     qtermwidget/k3process.h
+     qtermwidget/k3processcontroller.h
+     qtermwidget/qtermwidget.h
 )
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)
@@ -106,9 +133,9 @@ INCLUDE_DIRECTORIES(
      ${GRASS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
      ${PROJ_INCLUDE_DIR}
+     qtermwidget
 )
 
-SET( QT_USE_QT3SUPPORT TRUE )
 INCLUDE( ${QT_USE_FILE} )
 
 TARGET_LINK_LIBRARIES(grassplugin
