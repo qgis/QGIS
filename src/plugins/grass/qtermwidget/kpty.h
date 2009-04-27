@@ -82,6 +82,7 @@ public:
    */
   void setCTty();
 
+#ifndef Q_OS_MAC
   /**
    * Creates an utmp entry for the tty.
    * This function must be called after calling setCTty and
@@ -98,6 +99,7 @@ public:
    * Removes the utmp entry for this tty.
    */
   void logout();
+#endif
 
   /**
    * Wrapper around tcgetattr(3).

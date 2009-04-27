@@ -636,8 +636,10 @@ bool K3Process::closeStderr()
 bool K3Process::closePty()
 {
   if (d->pty && d->pty->masterFd() >= 0) {
+#ifndef Q_OS_MAC
     if (d->addUtmp)
       d->pty->logout();
+#endif
     d->pty->close();
     return true;
   } else
@@ -948,8 +950,10 @@ int K3Process::commSetupDoneC()
   // PTY stuff //
   if (d->usePty) {
     d->pty->setCTty();
+#ifndef Q_OS_MAC
     if (d->addUtmp)
       d->pty->login(getenv("USER"), getenv("DISPLAY"));
+#endif
   }
 
   return ok;
