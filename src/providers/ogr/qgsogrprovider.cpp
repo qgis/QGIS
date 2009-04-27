@@ -337,6 +337,8 @@ bool QgsOgrProvider::featureAtId( int featureId,
     getFeatureAttribute( fet, feature, *it );
   }
 
+  OGR_F_Destroy( fet );
+  feature.setValid( true );
   return true;
 }
 
