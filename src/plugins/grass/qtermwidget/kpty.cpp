@@ -417,6 +417,7 @@ void KPty::setCTty()
 #endif
 }
 
+#ifndef Q_OS_MAC
 void KPty::login(const char *user, const char *remotehost)
 {
 #ifdef HAVE_UTEMPTER
@@ -561,6 +562,7 @@ void KPty::logout()
 # endif
 #endif
 }
+#endif
 
 // XXX Supposedly, tc[gs]etattr do not work with the master on Solaris.
 // Please verify.
