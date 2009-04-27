@@ -1707,7 +1707,7 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
     }
   }
 
-  //else, if must be contained in mCachedGeometries
+  //else look in mCachedGeometries to make access faster
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( featureId );
   if ( cachedIt != mCachedGeometries.end() )
   {
@@ -1718,6 +1718,23 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
       setModified( true, true );
     }
     return errorCode;
+  }
+
+  //else get the geometry from provider (may be slow)
+  QgsFeature f;
+  if(mDataProvider && mDataProvider->featureAtId(featureId, f, true))
+  {
+      if(f.geometry())
+      {
+          QgsGeometry translateGeom(*(f.geometry()));
+          int errorCode = translateGeom.translate(dx, dy);
+          if(errorCode == 0)
+          {
+            mChangedGeometries.insert(featureId, translateGeom);
+            setModified(true, true);
+          }
+          return errorCode;
+      }
   }
   return 1; //geometry not found
 }
