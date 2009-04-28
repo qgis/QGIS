@@ -505,7 +505,8 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     QString type = attributeElement.attribute( "type" );
 
     //is it a geometry attribute?
-    if ( type.startsWith( "gml:" ) && type.endsWith( "PropertyType" ) )
+    //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
+    if ( (type.startsWith( "gml:" ) && type.endsWith( "PropertyType" )) || name.isEmpty() )
     {
       geometryAttribute = name;
     }
