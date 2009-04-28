@@ -560,7 +560,7 @@ bool QgsDbSourceSelect::getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly
                 "and pg_namespace.oid = pg_class.relnamespace "
                 "and has_schema_privilege(pg_namespace.nspname,'usage') "
                 "and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select') " // user has select privilege
-                "order by f_table_schema,f_table_name";
+                "order by f_table_schema,f_table_name,f_geometry_column";
 
   PGresult *result = PQexec( pg, sql.toUtf8() );
   if ( result )
