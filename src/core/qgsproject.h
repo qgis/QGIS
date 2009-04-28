@@ -266,6 +266,11 @@ class CORE_EXPORT QgsProject : public QObject
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );
 
+    //! emitted when a layer from a projects was read
+    // @param i current layer
+    // @param n number of layers
+    void layerLoaded( int i, int n );
+
   private:
 
     QgsProject(); // private 'cause it's a singleton
@@ -278,6 +283,8 @@ class CORE_EXPORT QgsProject : public QObject
     std::auto_ptr<Imp> imp_;
 
     static QgsProject * theProject_;
+
+    std::pair< bool, std::list<QDomNode> > _getMapLayers( QDomDocument const &doc );
 
 }; // QgsProject
 
