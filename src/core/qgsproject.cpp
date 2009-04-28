@@ -642,7 +642,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
    </maplayer>
 
 */
-static std::pair< bool, std::list<QDomNode> > _getMapLayers( QDomDocument const &doc )
+std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
 {
   // Layer order is implicit in the order they are stored in the project file
 
@@ -670,6 +670,8 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers( QDomDocument const 
   }
 
   bool returnStatus = true;
+
+  emit layerLoaded( 0, nl.count() );
 
   for ( int i = 0; i < nl.count(); i++ )
   {
@@ -715,6 +717,8 @@ static std::pair< bool, std::list<QDomNode> > _getMapLayers( QDomDocument const 
 
       brokenNodes.push_back( node );
     }
+
+    emit layerLoaded( i + 1, nl.count() );
   }
 
   return make_pair( returnStatus, brokenNodes );

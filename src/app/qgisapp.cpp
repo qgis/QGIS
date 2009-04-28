@@ -1555,6 +1555,8 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), SIGNAL( oldProjectVersionWarning( QString ) ),
            this, SLOT( oldProjectVersionWarning( QString ) ) );
 
+  connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ), this, SLOT( showProgress( int, int ) ) );
+
 }
 void QgisApp::createCanvas()
 {
@@ -3182,7 +3184,6 @@ void QgisApp::fileOpen()
 } // QgisApp::fileOpen
 
 
-
 /**
   adds a saved project to qgis, usually called on startup by specifying a
   project file on the command line
@@ -3190,6 +3191,8 @@ void QgisApp::fileOpen()
 bool QgisApp::addProject( QString projectFile )
 {
   mMapCanvas->freeze( true );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // clear the map canvas
   removeAllLayers();
@@ -3253,6 +3256,8 @@ bool QgisApp::addProject( QString projectFile )
     mMapCanvas->refresh();
     return false;
   }
+
+  QApplication::restoreOverrideCursor();
 
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
