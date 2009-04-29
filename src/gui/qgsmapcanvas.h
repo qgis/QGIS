@@ -220,7 +220,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Zoom out with fixed factor
     void zoomOut( );
 
-    //! Zoom with the factor supplied. Factor > 1 zooms in
+    //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
     void zoomByFactor( double scaleFactor );
 
     //! Zooms in/out with a given center
