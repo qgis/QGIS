@@ -2659,11 +2659,15 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   {
     newRing = createGeosLinearRing( ring.toVector() );
     if ( !GEOSisValid( newRing ) )
-      throw GEOSException( "ring is invalid" );
+    {
+        throwGEOSException("ring is invalid");
+    }
 
     newRingPolygon = createGeosPolygon( newRing );
     if ( !GEOSisValid( newRingPolygon ) )
-      throw GEOSException( "ring polygon is invalid" );
+    {
+        throwGEOSException("ring is invalid");
+    }
   }
   catch ( GEOSException &e )
   {
