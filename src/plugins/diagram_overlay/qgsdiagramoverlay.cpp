@@ -95,7 +95,7 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
           //error
         }
 
-        mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( height, width, 0, currentFeature.geometryAndOwnership() ) );
+        mOverlayObjects.insert( currentFeature.id(), new QgsOverlayObject( width, height, 0, currentFeature.geometryAndOwnership() ) );
       }
     }
   }
@@ -149,7 +149,9 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
             {
               painter->save();
               painter->scale( 1.0 / context.rasterScaleFactor(), 1.0 / context.rasterScaleFactor() );
+              //painter->drawRect(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, it.value()->width(), it.value()->height());
               painter->drawImage(( int )( overlayPosition.x() * context.rasterScaleFactor() ) - shiftX, ( int )( overlayPosition.y() * context.rasterScaleFactor() ) - shiftY, *currentDiagramImage );
+
               painter->restore();
             }
           }

@@ -58,7 +58,7 @@ void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorO
       return; //error
   }
 
-  pal::Layer* positionLayer = mPositionEngine.addLayer( QString::number( mNumberOfLayers ).toLocal8Bit().data(), 0, 1000000, labelArrangement, pal::PIXEL, 0.5, true, true, true );
+  pal::Layer* positionLayer = mPositionEngine.addLayer( QString::number( mNumberOfLayers ).toLocal8Bit().data(), -1, -1, labelArrangement, pal::PIXEL, 0.5, true, true, true );
   ++mNumberOfLayers;
 
   if ( !positionLayer )
@@ -116,8 +116,11 @@ void QgsPALObjectPositionManager::findObjectPositions( const QgsRenderContext& r
     default:
       return;
   }
+
   mPositionEngine.setMapUnit( mapUnits );
-  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, true );
+  mPositionEngine.setDpi(renderContext.scaleFactor() * 25.4);
+
+  std::list<pal::Label*>* resultLabelList = mPositionEngine.labeller( renderContext.rendererScale(), bbox, &stat, false );
   delete stat;
 
   //and read the positions back to the overlay objects
