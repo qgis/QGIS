@@ -51,7 +51,7 @@ extern "C"
 static QString getShortPath( const QString &path )
 {
   TCHAR buf[MAX_PATH];
-  GetShortPathName( path.ascii(), buf, MAX_PATH );
+  GetShortPathName( path.toAscii().data(), buf, MAX_PATH );
   return buf;
 }
 #endif
@@ -610,7 +610,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
         QgsDebugMsg( "source = " + source );
 
         // Check GISBASE and LOCATION
-        QStringList split = QStringList::split( sep, source );
+        QStringList split = source.split( sep );
 
         if ( split.size() < 4 ) continue;
         split.pop_back(); // layer
@@ -682,7 +682,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
         QgsDebugMsg( "source = " + source );
 
         // Check GISBASE and LOCATION
-        QStringList split = QStringList::split( sep, source );
+        QStringList split = source.split( sep );
 
         if ( split.size() < 4 ) continue;
         split.pop_back(); // layer
