@@ -41,6 +41,7 @@ class QgsGeomTypeDialog: public QDialog, private Ui::QgsGeomTypeDialogBase
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();
     void on_buttonBox_helpRequested();
+    void on_mTypeBox_currentIndexChanged( int index );
 
   private:
     QPushButton * mOkButton;
