@@ -28,9 +28,9 @@ QgsGeomTypeDialog::QgsGeomTypeDialog( QWidget *parent, Qt::WFlags fl )
   setupUi( this );
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  mTypeBox->addItem( tr( "Real" ), "Real" );
-  mTypeBox->addItem( tr( "Integer" ), "Integer" );;
   mTypeBox->addItem( tr( "String" ), "String" );
+  mTypeBox->addItem( tr( "Integer" ), "Integer" );
+  mTypeBox->addItem( tr( "Real" ), "Real" );
 
   mPointRadioButton->setChecked( true );
   mFileFormatComboBox->addItem( "ESRI Shapefile" );
@@ -43,6 +43,11 @@ QgsGeomTypeDialog::QgsGeomTypeDialog( QWidget *parent, Qt::WFlags fl )
 
 QgsGeomTypeDialog::~QgsGeomTypeDialog()
 {
+}
+
+void QgsGeomTypeDialog::on_mTypeBox_currentIndexChanged( int index )
+{
+  mPrecision->setEnabled( index == 2 );  // Real
 }
 
 QGis::WkbType QgsGeomTypeDialog::selectedType() const
@@ -65,9 +70,11 @@ QGis::WkbType QgsGeomTypeDialog::selectedType() const
 void QgsGeomTypeDialog::on_mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
+  QString myWidth = mWidth->text();
+  QString myPrecision = mPrecision->text();
   //use userrole to avoid translated type string
   QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
-  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType ) );
+  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
   if ( mAttributeView->topLevelItemCount() > 0 )
   {
     mOkButton->setEnabled( true );
@@ -95,8 +102,9 @@ void QgsGeomTypeDialog::attributes( std::list<std::pair<QString, QString> >& at 
   while ( *it )
   {
     QTreeWidgetItem *item = *it;
-    at.push_back( std::make_pair( item->text( 0 ), item->text( 1 ) ) );
-    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( item->text( 1 ) ) );
+    QString type = QString( "%1;%2;%3" ).arg( item->text( 1 ) ).arg( item->text( 2 ) ).arg( item->text( 3 ) );
+    at.push_back( std::make_pair( item->text( 0 ), type ) );
+    QgsDebugMsg( QString( "appending %1//%2" ).arg( item->text( 0 ) ).arg( type ) );
     ++it;
   }
 }

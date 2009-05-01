@@ -1410,32 +1410,51 @@ QGISEXTERN bool createEmptyDataSource( const QString& uri,
 
   for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
-    if ( it->second == "Real" )
+    QStringList fields = it->second.split( ";" );
+
+    if ( fields.size() == 0 )
+      continue;
+
+    int width = fields.size() > 1 ? fields[1].toInt() : -1;
+    int precision = fields.size() > 2 ? fields[2].toInt() : -1;
+
+    OGRFieldDefnH field;
+    if ( fields[0] == "Real" )
     {
-      OGRFieldDefnH field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTReal );
-      OGR_Fld_SetPrecision( field, 3 );
-      OGR_Fld_SetWidth( field, 32 );
-      if ( OGR_L_CreateField( layer, field, TRUE ) != OGRERR_NONE )
-      {
-        QgsLogger::warning( "creation of OFTReal field failed" );
-      }
+      if ( width == -1 )
+        width = 32;
+      if ( precision == -1 )
+        precision = 3;
+
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTReal );
+      OGR_Fld_SetWidth( field, width );
+      OGR_Fld_SetPrecision( field, precision );
     }
-    else if ( it->second == "Integer" )
+    else if ( fields[0] == "Integer" )
     {
-      OGRFieldDefnH field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTInteger );
-      OGR_Fld_SetWidth( field, 10 ); // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
-      if ( OGR_L_CreateField( layer, field, TRUE ) != OGRERR_NONE )
-      {
-        QgsLogger::warning( "creation of OFTInteger field failed" );
-      }
+      if ( width == -1 || width > 10 )
+        width = 10;
+
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTInteger );
+      // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
+      OGR_Fld_SetWidth( field, width );
     }
-    else if ( it->second == "String" )
+    else if ( fields[0] == "String" )
     {
-      OGRFieldDefnH field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTString );
-      if ( OGR_L_CreateField( layer, field, TRUE ) != OGRERR_NONE )
-      {
-        QgsLogger::warning( "creation of OFTString field failed" );
-      }
+      if ( width == -1 )
+        width = 80;
+
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).data(), OFTString );
+      OGR_Fld_SetWidth( field, width );
+    }
+    else
+    {
+      continue;
+    }
+
+    if ( OGR_L_CreateField( layer, field, TRUE ) != OGRERR_NONE )
+    {
+      QgsLogger::warning( "creation of field failed" );
     }
   }
 
