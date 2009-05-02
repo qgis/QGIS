@@ -3274,6 +3274,22 @@ Diese QGIS-Kopie enthält keine SpatiaLite-Unterstützung.</translation>
         <source>Zoom to Forward Extent</source>
         <translation type="unfinished">Zur nächsten Zoomeinstellung zurückkehren</translation>
     </message>
+    <message>
+        <source>Simplify Feature</source>
+        <translation type="unfinished">Objekt vereinfachen</translation>
+    </message>
+    <message>
+        <source>Delete Ring</source>
+        <translation type="unfinished">Ring löschen</translation>
+    </message>
+    <message>
+        <source>Delete Part</source>
+        <translation type="unfinished">Teil löschen</translation>
+    </message>
+    <message>
+        <source>Advanced Digitizing</source>
+        <translation type="unfinished">Erweiterte Digitalisierung</translation>
+    </message>
 </context>
 <context>
     <name>QgisAppBase</name>
@@ -5097,7 +5113,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; zeigt ein Copyright Symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -6311,6 +6327,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Add attribute</source>
         <translation type="unfinished">Attribute hinzufügen</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Breite</translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished">Genauigkeit</translation>
     </message>
 </context>
 <context>
@@ -8274,18 +8298,26 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassShell</name>
     <message>
         <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
+        <translation type="unfinished">Schließen</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+V</source>
+        <translation type="unfinished">Strg+Umschalt+V</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+C</source>
+        <translation type="unfinished">Strg+Umschalt+C</translation>
     </message>
 </context>
 <context>
     <name>QgsGrassShellBase</name>
     <message>
         <source>GRASS Shell</source>
-        <translation>GRASS Kommandozeile</translation>
+        <translation type="obsolete">GRASS Kommandozeile</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Schließen</translation>
+        <translation type="obsolete">Schließen</translation>
     </message>
 </context>
 <context>
@@ -8905,7 +8937,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maximaler Massstab bis zu dem dieser Layer angezeigt wird.</translation>
     </message>
-    <message>
+    <message utf8="true">
         <source>°</source>
         <translation type="unfinished">°</translation>
     </message>
@@ -9335,6 +9367,21 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Error, could not add ring</source>
         <translation type="unfinished">Es ist ein Fehler beim Einfügen des Rings aufgetreten.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolDeletePart</name>
+    <message>
+        <source>Delete part</source>
+        <translation type="unfinished">Teil löschen</translation>
+    </message>
+    <message>
+        <source>This isn&apos;t a multipart geometry.</source>
+        <translation type="unfinished">Dies ist keine mehrteilige Geometrie.</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t remove the selected part.</source>
+        <translation type="unfinished">Konnte den gewählten Teil nicht löschen.</translation>
     </message>
 </context>
 <context>
@@ -12625,15 +12672,15 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <source>&amp;Execute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Ausführen</translation>
     </message>
     <message>
         <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Zurück</translation>
     </message>
     <message>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Weiter</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -15916,6 +15963,21 @@ URL %1 versucht</translation>
     <message>
         <source>Alt+L</source>
         <translation type="unfinished">Alt+L</translation>
+    </message>
+</context>
+<context>
+    <name>SimplifyLineDialog</name>
+    <message>
+        <source>Simplify line tolerance</source>
+        <translation type="unfinished">Linienvereinfachungstoleranz</translation>
+    </message>
+    <message>
+        <source>Set tolerance</source>
+        <translation type="unfinished">Toleranz setzen</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished">OK</translation>
     </message>
 </context>
 <context>
