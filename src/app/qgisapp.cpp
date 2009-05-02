@@ -1098,12 +1098,12 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionAddVertex );
   mEditMenu->addAction( mActionMoveVertex );
   mEditMenu->addAction( mActionDeleteVertex );
-  mEditMenu->addAction( mActionAddRing );
-  mEditMenu->addAction( mActionAddIsland );
 
   mActionEditSeparator2 = mEditMenu->addSeparator();
 
   mEditMenu->addAction( mActionSimplifyFeature );
+  mEditMenu->addAction( mActionAddRing );
+  mEditMenu->addAction( mActionAddIsland );
   mEditMenu->addAction( mActionDeleteHole );
   mEditMenu->addAction( mActionDeletePart );
 
@@ -1289,8 +1289,6 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCapturePoint );
   mDigitizeToolBar->addAction( mActionCaptureLine );
   mDigitizeToolBar->addAction( mActionCapturePolygon );
-  mDigitizeToolBar->addAction( mActionAddRing );
-  mDigitizeToolBar->addAction( mActionAddIsland );
   mDigitizeToolBar->addAction( mActionSplitFeatures );
   mDigitizeToolBar->addAction( mActionMoveFeature );
   mDigitizeToolBar->addAction( mActionMoveVertex );
@@ -1306,6 +1304,8 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->setIconSize( myIconSize );
   mAdvancedDigitizeToolBar->setObjectName( "Advanced Digitizing" );
   mAdvancedDigitizeToolBar->addAction( mActionSimplifyFeature );
+  mAdvancedDigitizeToolBar->addAction( mActionAddRing );
+  mAdvancedDigitizeToolBar->addAction( mActionAddIsland );
   mAdvancedDigitizeToolBar->addAction( mActionDeleteHole );
   mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
   mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
