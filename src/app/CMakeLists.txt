@@ -27,12 +27,15 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdisland.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolcapture.cpp
+  qgsmaptooldeletehole.cpp
+  qgsmaptooldeletepart.cpp
   qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovevertex.cpp
   qgsmaptoolselect.cpp
+  qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolvertexedit.cpp
   qgsmeasuredialog.cpp
@@ -115,6 +118,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdring.h
   qgsmaptoolmovefeature.h
   qgsmaptoolselect.h
+  qgsmaptoolsimplify.h
 
   qgsmeasuretool.h
   qgsmeasuredialog.h

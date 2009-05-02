@@ -157,6 +157,8 @@
 #include "qgsmaptooladdisland.h"
 #include "qgsmaptooladdring.h"
 #include "qgsmaptooladdvertex.h"
+#include "qgsmaptooldeletehole.h"
+#include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmovefeature.h"
@@ -166,6 +168,7 @@
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
+#include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
 
 //
@@ -465,6 +468,9 @@ QgisApp::~QgisApp()
   delete mMapTools.mVertexMove;
   delete mMapTools.mVertexDelete;
   delete mMapTools.mAddRing;
+  delete mMapTools.mSimplifyFeature;
+  delete mMapTools.mDeleteHole;
+  delete mMapTools.mDeletePart;
   delete mMapTools.mAddIsland;
 
   delete mPythonConsole;
@@ -666,6 +672,22 @@ void QgisApp::createActions()
   mActionAddIsland->setStatusTip( tr( "Add Island to multipolygon" ) );
   connect( mActionAddIsland, SIGNAL( triggered() ), this, SLOT( addIsland() ) );
   mActionAddIsland->setEnabled( false );
+
+  mActionSimplifyFeature = new QAction( getThemeIcon( "mActionSimplify.png" ), tr( "Simplify Feature" ), this );
+  mActionSimplifyFeature->setStatusTip( tr( "Simplify Feature" ) );
+  connect( mActionSimplifyFeature, SIGNAL( triggered() ), this, SLOT( simplifyFeature() ) );
+  mActionSimplifyFeature->setEnabled( false );
+
+  mActionDeleteHole = new QAction( getThemeIcon( "mActionDeleteHole.png" ), tr( "Delete Hole" ), this );
+  mActionDeleteHole->setStatusTip( tr( "Delete Hole" ) );
+  connect( mActionDeleteHole, SIGNAL( triggered() ), this, SLOT( deleteHole() ) );
+  mActionDeleteHole->setEnabled( false );
+
+  mActionDeletePart = new QAction( getThemeIcon( "mActionDeletePart.png" ), tr( "Delete Part" ), this );
+  mActionDeletePart->setStatusTip( tr( "Delete Part" ) );
+  connect( mActionDeletePart, SIGNAL( triggered() ), this, SLOT( deletePart() ) );
+  mActionDeletePart->setEnabled( false );
+
 
   // View Menu Items
 
@@ -990,6 +1012,12 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionAddRing );
   mActionAddIsland->setCheckable( true );
   mMapToolGroup->addAction( mActionAddIsland );
+  mActionSimplifyFeature->setCheckable( true );
+  mMapToolGroup->addAction( mActionSimplifyFeature );
+  mActionDeleteHole->setCheckable( true );
+  mMapToolGroup->addAction( mActionDeleteHole );
+  mActionDeletePart->setCheckable( true );
+  mMapToolGroup->addAction( mActionDeletePart );
 }
 
 void QgisApp::createMenus()
@@ -1073,9 +1101,15 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionAddRing );
   mEditMenu->addAction( mActionAddIsland );
 
+  mActionEditSeparator2 = mEditMenu->addSeparator();
+
+  mEditMenu->addAction( mActionSimplifyFeature );
+  mEditMenu->addAction( mActionDeleteHole );
+  mEditMenu->addAction( mActionDeletePart );
+
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
-    mActionEditSeparator2 = mEditMenu->addSeparator();
+    mActionEditSeparator3 = mEditMenu->addSeparator();
     mEditMenu->addAction( mActionOptions );
     mEditMenu->addAction( mActionCustomProjection );
   }
@@ -1267,6 +1301,16 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCopyFeatures );
   mDigitizeToolBar->addAction( mActionPasteFeatures );
   mToolbarMenu->addAction( mDigitizeToolBar->toggleViewAction() );
+
+  mAdvancedDigitizeToolBar = addToolBar( tr( "Advanced Digitizing" ) );
+  mAdvancedDigitizeToolBar->setIconSize( myIconSize );
+  mAdvancedDigitizeToolBar->setObjectName( "Advanced Digitizing" );
+  mAdvancedDigitizeToolBar->addAction( mActionSimplifyFeature );
+  mAdvancedDigitizeToolBar->addAction( mActionDeleteHole );
+  mAdvancedDigitizeToolBar->addAction( mActionDeletePart );
+  mToolbarMenu->addAction( mAdvancedDigitizeToolBar->toggleViewAction() );
+
+
   //
   // Map Navigation Toolbar
   mMapNavToolBar = addToolBar( tr( "Map Navigation" ) );
@@ -1606,6 +1650,12 @@ void QgisApp::createCanvas()
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mAddIsland = new QgsMapToolAddIsland( mMapCanvas );
+  mMapTools.mSimplifyFeature = new QgsMapToolSimplify( mMapCanvas );
+  mMapTools.mSimplifyFeature->setAction( mActionSimplifyFeature );
+  mMapTools.mDeleteHole = new QgsMapToolDeleteHole( mMapCanvas );
+  mMapTools.mDeleteHole->setAction( mActionDeleteHole );
+  mMapTools.mDeletePart = new QgsMapToolDeletePart( mMapCanvas );
+  mMapTools.mDeletePart->setAction( mActionDeletePart );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
 }
@@ -3979,6 +4029,21 @@ void QgisApp::moveFeature()
   mMapCanvas->setMapTool( mMapTools.mMoveFeature );
 }
 
+void QgisApp::simplifyFeature()
+{
+  mMapCanvas->setMapTool( mMapTools.mSimplifyFeature );
+}
+
+void QgisApp::deleteHole()
+{
+  mMapCanvas->setMapTool( mMapTools.mDeleteHole );
+}
+
+void QgisApp::deletePart()
+{
+  mMapCanvas->setMapTool( mMapTools.mDeletePart );
+}
+
 void QgisApp::splitFeatures()
 {
   mMapCanvas->setMapTool( mMapTools.mSplitFeatures );
@@ -5215,11 +5280,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         {
           mActionCapturePoint->setEnabled( true );
           mActionCapturePoint->setVisible( true );
+          mActionDeletePart->setEnabled( true );
         }
         else
         {
           mActionCapturePoint->setEnabled( false );
           mActionCapturePoint->setVisible( false );
+          mActionDeletePart->setEnabled( false );
         }
         mActionCaptureLine->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
@@ -5231,6 +5298,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
         mActionSplitFeatures->setEnabled( false );
+        mActionSimplifyFeature->setEnabled( false );
+        mActionDeleteHole->setEnabled( false );
+
         if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
         {
           mActionMoveVertex->setEnabled( true );
@@ -5244,12 +5314,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionCaptureLine->setEnabled( true );
           mActionCaptureLine->setVisible( true );
           mActionSplitFeatures->setEnabled( true );
+          mActionSimplifyFeature->setEnabled( true );
+          mActionDeletePart->setEnabled( true );
         }
         else
         {
           mActionCaptureLine->setEnabled( false );
           mActionCaptureLine->setVisible( false );
           mActionSplitFeatures->setEnabled( false );
+          mActionSimplifyFeature->setEnabled( false );
+          mActionDeletePart->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
@@ -5257,6 +5331,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionCapturePolygon->setVisible( false );
         mActionAddRing->setEnabled( false );
         mActionAddIsland->setEnabled( false );
+        mActionDeleteHole->setEnabled( false );
       }
       else if ( vlayer->geometryType() == QGis::Polygon )
       {
@@ -5267,6 +5342,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionAddRing->setEnabled( true );
           mActionAddIsland->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
+          mActionSimplifyFeature->setEnabled( true );
+          mActionDeleteHole->setEnabled( true );
+          mActionDeletePart->setEnabled( true );
         }
         else
         {
@@ -5275,6 +5353,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionAddRing->setEnabled( false );
           mActionAddIsland->setEnabled( false );
           mActionSplitFeatures->setEnabled( false );
+          mActionSimplifyFeature->setEnabled( false );
+          mActionDeleteHole->setEnabled( false );
+          mActionDeletePart->setEnabled( false );
         }
         mActionCapturePoint->setEnabled( false );
         mActionCaptureLine->setEnabled( false );
