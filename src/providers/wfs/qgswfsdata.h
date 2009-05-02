@@ -135,6 +135,10 @@ class QgsWFSData: public QObject
 
     /**Returns pointer to main window or 0 if it does not exist*/
     QWidget* findMainWindow() const;
+    /**This function evaluates the layer bounding box from the features and sets it to mExtent.
+    Less efficient compared to reading the bbox from the provider, so it is only done if the wfs server \
+    does not provider extent information.*/
+    void calculateExtentFromFeatures() const;
 
     QString mUri;
     //results are members such that handler routines are able to manipulate them
