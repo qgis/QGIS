@@ -39,30 +39,15 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   QObject::connect( btnMaxValue, SIGNAL( clicked() ), this, SLOT( selectMaximumColor() ) );
 
   //find out the numerical fields of mVectorLayer
-  QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
-  if ( provider )
-  {
-    const QgsFieldMap & fields = provider->fields();
-    int fieldNumber( 0 ), comboNumber( 0 );
-    QString str;
+  const QgsFieldMap & fields = mVectorLayer->pendingFields();
 
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
-    {
-      QVariant::Type type = ( *it ).type();
-      if ( type == QVariant::Int || type == QVariant::Double )
-      {
-        str = ( *it ).name();
-        classificationComboBox->addItem( str );
-        mFieldMap.insert( std::make_pair( comboNumber, fieldNumber ) );
-        comboNumber++;
-      }
-      fieldNumber++;
-    }
-  }
-  else
+  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
-    QgsDebugMsg( "data provider is null" );
-    return;
+    QVariant::Type type = it->type();
+    if ( type == QVariant::Int || type == QVariant::Double )
+    {
+      classificationComboBox->addItem( it->name(), it.key() );
+    }
   }
 
   //restore the correct colors for minimum and maximum values
@@ -71,21 +56,7 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
 
   if ( renderer )
   {
-    // Awkard - here we want to search through mFieldMap for a
-    // particular value, while elsewhere in this code we need to search
-    // for a particular key, so one or the other loses out, which is here.
-
-    std::map<int, int>::const_iterator iter = mFieldMap.begin();
-    while ( iter != mFieldMap.end() )
-    {
-      if ( iter->second == renderer->classificationField() )
-        break;
-      iter++;
-    }
-    if ( iter != mFieldMap.end() )
-      classificationComboBox->setCurrentIndex( iter->first );
-    else
-      classificationComboBox->setCurrentIndex( -1 );
+    classificationComboBox->setCurrentIndex( classificationComboBox->findData( renderer->classificationField() ) );
 
     const QgsSymbol* minsymbol = renderer->minimumSymbol();
     const QgsSymbol* maxsymbol = renderer->maximumSymbol();
@@ -147,16 +118,7 @@ QgsContinuousColorDialog::~QgsContinuousColorDialog()
 
 void QgsContinuousColorDialog::apply()
 {
-  int comboIndex = classificationComboBox->currentIndex();
-  if ( comboIndex == -1 )  //don't do anything, if there is no classification field
-  {
-    return;
-  }
-  std::map < int, int >::iterator iter = mFieldMap.find( comboIndex );
-  // Should never happen...
-  assert( iter != mFieldMap.end() );
-
-  int classfield = iter->second;
+  int classfield = classificationComboBox->itemData( classificationComboBox->currentIndex() ).toInt();
 
   //find the minimum and maximum for the classification variable
   double minimum, maximum;
