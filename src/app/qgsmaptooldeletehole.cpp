@@ -111,8 +111,7 @@ void QgsMapToolDeleteHole::deleteHole( int fId, int beforeVertexNr, QgsVectorLay
 
   if (g->deleteHole( ringNum, partNum ))
   {
-    vlayer->deleteFeature( fId );
-    vlayer->addFeature(f);
+    vlayer->changeGeometry( fId, g );
     mCanvas->refresh();
   }
   
