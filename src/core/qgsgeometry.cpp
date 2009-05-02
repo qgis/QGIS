@@ -5542,7 +5542,7 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 }
 
 
-bool QgsGeometry::deleteHole( int ringNum, int partNum )
+bool QgsGeometry::deleteRing( int ringNum, int partNum )
 {
   if (ringNum <= 0 || partNum < 0)
     return FALSE;

@@ -223,7 +223,7 @@ class QgisApp : public QMainWindow
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
-    QAction *actionDeleteHole() { return mActionDeleteHole; }
+    QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
 
@@ -502,8 +502,8 @@ class QgisApp : public QMainWindow
     void addIsland();
     //! simplifies feature
     void simplifyFeature();
-    //! deletes hole in polygon
-    void deleteHole();
+    //! deletes ring in polygon
+    void deleteRing();
     //! deletes part of polygon
     void deletePart();
 
@@ -714,7 +714,7 @@ class QgisApp : public QMainWindow
     QAction *mActionAddIsland;
     QAction *mActionEditSeparator2;
     QAction *mActionSimplifyFeature;
-    QAction *mActionDeleteHole;
+    QAction *mActionDeleteRing;
     QAction *mActionDeletePart;
     QAction *mActionEditSeparator3;
 
@@ -833,7 +833,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mAddRing;
         QgsMapTool* mAddIsland;
         QgsMapTool* mSimplifyFeature;
-        QgsMapTool* mDeleteHole;
+        QgsMapTool* mDeleteRing;
         QgsMapTool* mDeletePart;
     } mMapTools;
 

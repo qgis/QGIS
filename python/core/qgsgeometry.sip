@@ -289,11 +289,11 @@ not disjoint with existing polygons of the feature*/
     // TODO: destruction of created geometries??
     QList<QgsGeometry*> asGeometryCollection() /Factory/;
 
-    /** delete a hole in polygon or multipolygon.
+    /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
       @return TRUE on success
       @note added in version 1.2 */
-    bool deleteHole( int ringNum, int partNum = 0 );
+    bool deleteRing( int ringNum, int partNum = 0 );
 
     /** delete part identified by the part number
       @return TRUE on success

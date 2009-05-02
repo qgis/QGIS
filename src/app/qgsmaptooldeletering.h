@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooldeletehole.h  - delete a hole from polygon
+    qgsmaptooldeletering.h  - delete a ring from polygon
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,20 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLDELETEHOLE_H
-#define QGSMAPTOOLDELETEHOLE_H
+#ifndef QGSMAPTOOLDELETERING_H
+#define QGSMAPTOOLDELETERING_H
 
 #include "qgsmaptoolvertexedit.h"
-#include <QUndoCommand>
 
 class QgsVertexMarker;
 /**Map tool to delete vertices from line/polygon features*/
 
-class QgsMapToolDeleteHole: public QgsMapToolVertexEdit
+class QgsMapToolDeleteRing : public QgsMapToolVertexEdit
 {
   public:
-    QgsMapToolDeleteHole( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolDeleteHole();
+    QgsMapToolDeleteRing( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolDeleteRing();
 
     void canvasMoveEvent( QMouseEvent * e );
 
@@ -40,8 +39,8 @@ class QgsMapToolDeleteHole: public QgsMapToolVertexEdit
   private:
     QgsVertexMarker* mCross;
 
-    //! delete hole from the geometry
-    void deleteHole( int fId, int beforeVertexNr, QgsVectorLayer* vlayer);
+    //! delete inner ring from the geometry
+    void deleteRing( int fId, int beforeVertexNr, QgsVectorLayer* vlayer);
 
     //! return ring number in polygon
     int ringNumInPolygon( QgsGeometry* g, int vertexNr );

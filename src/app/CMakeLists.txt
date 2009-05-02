@@ -27,7 +27,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdisland.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolcapture.cpp
-  qgsmaptooldeletehole.cpp
+  qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
   qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
