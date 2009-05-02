@@ -504,6 +504,35 @@
 		721DDCEC0F6E97D4006DD13E /* v.in.ogr.qgis.loc.2.png in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE50F6E97C2006DD13E /* v.in.ogr.qgis.loc.2.png */; };
 		721DDCED0F6E97D4006DD13E /* v.in.ogr.qgis.loc.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE40F6E97C2006DD13E /* v.in.ogr.qgis.loc.qgm */; };
 		721DDCEE0F6E97D4006DD13E /* v.in.ogr.qgis.qgm in Copy - modules */ = {isa = PBXBuildFile; fileRef = 721DDCE30F6E97C2006DD13E /* v.in.ogr.qgis.qgm */; };
+		721E07000FABDC6700558FF9 /* qgsgrassshell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */; };
+		721E07360FABDDBA00558FF9 /* BlockArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07050FABDCAB00558FF9 /* BlockArray.cpp */; };
+		721E07370FABDDBA00558FF9 /* Emulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E070C0FABDCAB00558FF9 /* Emulation.cpp */; };
+		721E07380FABDDBA00558FF9 /* Filter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E070F0FABDCAB00558FF9 /* Filter.cpp */; };
+		721E07390FABDDBA00558FF9 /* History.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07110FABDCAC00558FF9 /* History.cpp */; };
+		721E073A0FABDDBA00558FF9 /* k3process.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07130FABDCAC00558FF9 /* k3process.cpp */; };
+		721E073B0FABDDBA00558FF9 /* k3processcontroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07150FABDCAC00558FF9 /* k3processcontroller.cpp */; };
+		721E073C0FABDDBA00558FF9 /* KeyboardTranslator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E071B0FABDCAC00558FF9 /* KeyboardTranslator.cpp */; };
+		721E073D0FABDDBA00558FF9 /* konsole_wcwidth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E071D0FABDCAC00558FF9 /* konsole_wcwidth.cpp */; };
+		721E073E0FABDDBA00558FF9 /* kpty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E071F0FABDCAC00558FF9 /* kpty.cpp */; };
+		721E073F0FABDDBA00558FF9 /* Pty.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07240FABDCAC00558FF9 /* Pty.cpp */; };
+		721E07400FABDDBA00558FF9 /* qtermwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07260FABDCAC00558FF9 /* qtermwidget.cpp */; };
+		721E07410FABDDBA00558FF9 /* Screen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07280FABDCAC00558FF9 /* Screen.cpp */; };
+		721E07420FABDDBA00558FF9 /* ScreenWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E072A0FABDCAC00558FF9 /* ScreenWindow.cpp */; };
+		721E07430FABDDBA00558FF9 /* Session.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E072C0FABDCAC00558FF9 /* Session.cpp */; };
+		721E07440FABDDBA00558FF9 /* ShellCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E072E0FABDCAC00558FF9 /* ShellCommand.cpp */; };
+		721E07450FABDDBA00558FF9 /* TerminalCharacterDecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07300FABDCAC00558FF9 /* TerminalCharacterDecoder.cpp */; };
+		721E07460FABDDBA00558FF9 /* TerminalDisplay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07320FABDCAC00558FF9 /* TerminalDisplay.cpp */; };
+		721E07470FABDDBA00558FF9 /* Vt102Emulation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721E07340FABDCAC00558FF9 /* Vt102Emulation.cpp */; };
+		721E07480FABDDE900558FF9 /* Emulation.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E070D0FABDCAB00558FF9 /* Emulation.h */; };
+		721E07490FABDDE900558FF9 /* Filter.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07100FABDCAB00558FF9 /* Filter.h */; };
+		721E074A0FABDDE900558FF9 /* k3process.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07140FABDCAC00558FF9 /* k3process.h */; };
+		721E074B0FABDDE900558FF9 /* k3processcontroller.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07160FABDCAC00558FF9 /* k3processcontroller.h */; };
+		721E074C0FABDDE900558FF9 /* Pty.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07250FABDCAC00558FF9 /* Pty.h */; };
+		721E074D0FABDDE900558FF9 /* qtermwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07270FABDCAC00558FF9 /* qtermwidget.h */; };
+		721E074E0FABDDE900558FF9 /* ScreenWindow.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E072B0FABDCAC00558FF9 /* ScreenWindow.h */; };
+		721E074F0FABDDE900558FF9 /* Session.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E072D0FABDCAC00558FF9 /* Session.h */; };
+		721E07500FABDDE900558FF9 /* TerminalDisplay.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07330FABDCAC00558FF9 /* TerminalDisplay.h */; };
+		721E07510FABDDE900558FF9 /* Vt102Emulation.h in Sources */ = {isa = PBXBuildFile; fileRef = 721E07350FABDCAC00558FF9 /* Vt102Emulation.h */; };
 		7223B7860F96A96500D905B4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7223B7870F96A96500D905B4 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		7223B7980F96A99500D905B4 /* qgsoracle_plugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7223B7760F969A9D00D905B4 /* qgsoracle_plugin.cpp */; };
@@ -1336,7 +1365,6 @@
 		72A56D610F3CC0DE00BA32A1 /* qgsgrassmapcalc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB2E0F39E57B003DC336 /* qgsgrassmapcalc.cpp */; };
 		72A56D620F3CC0E400BA32A1 /* qgsgrassmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB330F39E57B003DC336 /* qgsgrassmodule.cpp */; };
 		72A56D630F3CC0E700BA32A1 /* qgsgrassnewmapset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB360F39E57B003DC336 /* qgsgrassnewmapset.cpp */; };
-		72A56D640F3CC0EA00BA32A1 /* qgsgrassshell.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB410F39E57B003DC336 /* qgsgrassshell.cpp */; };
 		72A56D650F3CC0EE00BA32A1 /* qgsgrassattributes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB240F39E57B003DC336 /* qgsgrassattributes.cpp */; };
 		72A56D660F3CC0F200BA32A1 /* qgsgrassregion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB3B0F39E57B003DC336 /* qgsgrassregion.cpp */; };
 		72A56D670F3CC0F400BA32A1 /* qgsgrassutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EB470F39E57B003DC336 /* qgsgrassutils.cpp */; };
@@ -8186,6 +8214,54 @@
 		721DDCE60F6E97C2006DD13E /* v.in.ogr.qgis.loc.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.loc.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.loc.1.svg; sourceTree = SOURCE_ROOT; };
 		721DDCE70F6E97C2006DD13E /* v.in.ogr.qgis.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.2.png; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.2.png; sourceTree = SOURCE_ROOT; };
 		721DDCE80F6E97C2006DD13E /* v.in.ogr.qgis.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.1.svg; path = ../../src/plugins/grass/modules/v.in.ogr.qgis.1.svg; sourceTree = SOURCE_ROOT; };
+		721E07050FABDCAB00558FF9 /* BlockArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockArray.cpp; path = ../../src/plugins/grass/qtermwidget/BlockArray.cpp; sourceTree = SOURCE_ROOT; };
+		721E07060FABDCAB00558FF9 /* BlockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockArray.h; path = ../../src/plugins/grass/qtermwidget/BlockArray.h; sourceTree = SOURCE_ROOT; };
+		721E07070FABDCAB00558FF9 /* Character.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Character.h; path = ../../src/plugins/grass/qtermwidget/Character.h; sourceTree = SOURCE_ROOT; };
+		721E07080FABDCAB00558FF9 /* CharacterColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CharacterColor.h; path = ../../src/plugins/grass/qtermwidget/CharacterColor.h; sourceTree = SOURCE_ROOT; };
+		721E07090FABDCAB00558FF9 /* ColorTables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorTables.h; path = ../../src/plugins/grass/qtermwidget/ColorTables.h; sourceTree = SOURCE_ROOT; };
+		721E070A0FABDCAB00558FF9 /* default.keytab */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = default.keytab; path = ../../src/plugins/grass/qtermwidget/default.keytab; sourceTree = SOURCE_ROOT; };
+		721E070B0FABDCAB00558FF9 /* DefaultTranslatorText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultTranslatorText.h; path = ../../src/plugins/grass/qtermwidget/DefaultTranslatorText.h; sourceTree = SOURCE_ROOT; };
+		721E070C0FABDCAB00558FF9 /* Emulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Emulation.cpp; path = ../../src/plugins/grass/qtermwidget/Emulation.cpp; sourceTree = SOURCE_ROOT; };
+		721E070D0FABDCAB00558FF9 /* Emulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Emulation.h; path = ../../src/plugins/grass/qtermwidget/Emulation.h; sourceTree = SOURCE_ROOT; };
+		721E070E0FABDCAB00558FF9 /* ExtendedDefaultTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExtendedDefaultTranslator.h; path = ../../src/plugins/grass/qtermwidget/ExtendedDefaultTranslator.h; sourceTree = SOURCE_ROOT; };
+		721E070F0FABDCAB00558FF9 /* Filter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Filter.cpp; path = ../../src/plugins/grass/qtermwidget/Filter.cpp; sourceTree = SOURCE_ROOT; };
+		721E07100FABDCAB00558FF9 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = ../../src/plugins/grass/qtermwidget/Filter.h; sourceTree = SOURCE_ROOT; };
+		721E07110FABDCAC00558FF9 /* History.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = History.cpp; path = ../../src/plugins/grass/qtermwidget/History.cpp; sourceTree = SOURCE_ROOT; };
+		721E07120FABDCAC00558FF9 /* History.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = History.h; path = ../../src/plugins/grass/qtermwidget/History.h; sourceTree = SOURCE_ROOT; };
+		721E07130FABDCAC00558FF9 /* k3process.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = k3process.cpp; path = ../../src/plugins/grass/qtermwidget/k3process.cpp; sourceTree = SOURCE_ROOT; };
+		721E07140FABDCAC00558FF9 /* k3process.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = k3process.h; path = ../../src/plugins/grass/qtermwidget/k3process.h; sourceTree = SOURCE_ROOT; };
+		721E07150FABDCAC00558FF9 /* k3processcontroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = k3processcontroller.cpp; path = ../../src/plugins/grass/qtermwidget/k3processcontroller.cpp; sourceTree = SOURCE_ROOT; };
+		721E07160FABDCAC00558FF9 /* k3processcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = k3processcontroller.h; path = ../../src/plugins/grass/qtermwidget/k3processcontroller.h; sourceTree = SOURCE_ROOT; };
+		721E07180FABDCAC00558FF9 /* default.keytab */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = default.keytab; path = "../../src/plugins/grass/qtermwidget/kb-layouts/default.keytab"; sourceTree = SOURCE_ROOT; };
+		721E07190FABDCAC00558FF9 /* linux.keytab */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = linux.keytab; path = "../../src/plugins/grass/qtermwidget/kb-layouts/linux.keytab"; sourceTree = SOURCE_ROOT; };
+		721E071A0FABDCAC00558FF9 /* vt420pc.keytab */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vt420pc.keytab; path = "../../src/plugins/grass/qtermwidget/kb-layouts/vt420pc.keytab"; sourceTree = SOURCE_ROOT; };
+		721E071B0FABDCAC00558FF9 /* KeyboardTranslator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardTranslator.cpp; path = ../../src/plugins/grass/qtermwidget/KeyboardTranslator.cpp; sourceTree = SOURCE_ROOT; };
+		721E071C0FABDCAC00558FF9 /* KeyboardTranslator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyboardTranslator.h; path = ../../src/plugins/grass/qtermwidget/KeyboardTranslator.h; sourceTree = SOURCE_ROOT; };
+		721E071D0FABDCAC00558FF9 /* konsole_wcwidth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = konsole_wcwidth.cpp; path = ../../src/plugins/grass/qtermwidget/konsole_wcwidth.cpp; sourceTree = SOURCE_ROOT; };
+		721E071E0FABDCAC00558FF9 /* konsole_wcwidth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = konsole_wcwidth.h; path = ../../src/plugins/grass/qtermwidget/konsole_wcwidth.h; sourceTree = SOURCE_ROOT; };
+		721E071F0FABDCAC00558FF9 /* kpty.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = kpty.cpp; path = ../../src/plugins/grass/qtermwidget/kpty.cpp; sourceTree = SOURCE_ROOT; };
+		721E07200FABDCAC00558FF9 /* kpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kpty.h; path = ../../src/plugins/grass/qtermwidget/kpty.h; sourceTree = SOURCE_ROOT; };
+		721E07210FABDCAC00558FF9 /* kpty_p.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kpty_p.h; path = ../../src/plugins/grass/qtermwidget/kpty_p.h; sourceTree = SOURCE_ROOT; };
+		721E07220FABDCAC00558FF9 /* LineFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LineFont.h; path = ../../src/plugins/grass/qtermwidget/LineFont.h; sourceTree = SOURCE_ROOT; };
+		721E07230FABDCAC00558FF9 /* LineFont.src */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LineFont.src; path = ../../src/plugins/grass/qtermwidget/LineFont.src; sourceTree = SOURCE_ROOT; };
+		721E07240FABDCAC00558FF9 /* Pty.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Pty.cpp; path = ../../src/plugins/grass/qtermwidget/Pty.cpp; sourceTree = SOURCE_ROOT; };
+		721E07250FABDCAC00558FF9 /* Pty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pty.h; path = ../../src/plugins/grass/qtermwidget/Pty.h; sourceTree = SOURCE_ROOT; };
+		721E07260FABDCAC00558FF9 /* qtermwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qtermwidget.cpp; path = ../../src/plugins/grass/qtermwidget/qtermwidget.cpp; sourceTree = SOURCE_ROOT; };
+		721E07270FABDCAC00558FF9 /* qtermwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qtermwidget.h; path = ../../src/plugins/grass/qtermwidget/qtermwidget.h; sourceTree = SOURCE_ROOT; };
+		721E07280FABDCAC00558FF9 /* Screen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Screen.cpp; path = ../../src/plugins/grass/qtermwidget/Screen.cpp; sourceTree = SOURCE_ROOT; };
+		721E07290FABDCAC00558FF9 /* Screen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Screen.h; path = ../../src/plugins/grass/qtermwidget/Screen.h; sourceTree = SOURCE_ROOT; };
+		721E072A0FABDCAC00558FF9 /* ScreenWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenWindow.cpp; path = ../../src/plugins/grass/qtermwidget/ScreenWindow.cpp; sourceTree = SOURCE_ROOT; };
+		721E072B0FABDCAC00558FF9 /* ScreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScreenWindow.h; path = ../../src/plugins/grass/qtermwidget/ScreenWindow.h; sourceTree = SOURCE_ROOT; };
+		721E072C0FABDCAC00558FF9 /* Session.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Session.cpp; path = ../../src/plugins/grass/qtermwidget/Session.cpp; sourceTree = SOURCE_ROOT; };
+		721E072D0FABDCAC00558FF9 /* Session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Session.h; path = ../../src/plugins/grass/qtermwidget/Session.h; sourceTree = SOURCE_ROOT; };
+		721E072E0FABDCAC00558FF9 /* ShellCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShellCommand.cpp; path = ../../src/plugins/grass/qtermwidget/ShellCommand.cpp; sourceTree = SOURCE_ROOT; };
+		721E072F0FABDCAC00558FF9 /* ShellCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShellCommand.h; path = ../../src/plugins/grass/qtermwidget/ShellCommand.h; sourceTree = SOURCE_ROOT; };
+		721E07300FABDCAC00558FF9 /* TerminalCharacterDecoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerminalCharacterDecoder.cpp; path = ../../src/plugins/grass/qtermwidget/TerminalCharacterDecoder.cpp; sourceTree = SOURCE_ROOT; };
+		721E07310FABDCAC00558FF9 /* TerminalCharacterDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerminalCharacterDecoder.h; path = ../../src/plugins/grass/qtermwidget/TerminalCharacterDecoder.h; sourceTree = SOURCE_ROOT; };
+		721E07320FABDCAC00558FF9 /* TerminalDisplay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerminalDisplay.cpp; path = ../../src/plugins/grass/qtermwidget/TerminalDisplay.cpp; sourceTree = SOURCE_ROOT; };
+		721E07330FABDCAC00558FF9 /* TerminalDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerminalDisplay.h; path = ../../src/plugins/grass/qtermwidget/TerminalDisplay.h; sourceTree = SOURCE_ROOT; };
+		721E07340FABDCAC00558FF9 /* Vt102Emulation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Vt102Emulation.cpp; path = ../../src/plugins/grass/qtermwidget/Vt102Emulation.cpp; sourceTree = SOURCE_ROOT; };
+		721E07350FABDCAC00558FF9 /* Vt102Emulation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vt102Emulation.h; path = ../../src/plugins/grass/qtermwidget/Vt102Emulation.h; sourceTree = SOURCE_ROOT; };
 		7223B7730F969A9D00D905B4 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/oracle_raster/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7223B7740F969A9D00D905B4 /* oracleplugin.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = oracleplugin.png; path = ../../src/plugins/oracle_raster/oracleplugin.png; sourceTree = SOURCE_ROOT; };
 		7223B7750F969A9D00D905B4 /* oracleplugin.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = oracleplugin.qrc; path = ../../src/plugins/oracle_raster/oracleplugin.qrc; sourceTree = SOURCE_ROOT; };
@@ -9988,6 +10064,7 @@
 				7209EB480F39E57B003DC336 /* qgsgrassutils.h */,
 				7209E82F0F39E57B003DC336 /* CMakeLists.txt */,
 				7209E8360F39E57B003DC336 /* locations.gml */,
+				721E07040FABDCAB00558FF9 /* qtermwidget */,
 				7209E8300F39E57B003DC336 /* config */,
 				7209E8340F39E57B003DC336 /* images */,
 				7209E8370F39E57B003DC336 /* modules */,
@@ -12557,6 +12634,71 @@
 			path = ../../doc/plugins/geoprocessing/buffer;
 			sourceTree = SOURCE_ROOT;
 		};
+		721E07040FABDCAB00558FF9 /* qtermwidget */ = {
+			isa = PBXGroup;
+			children = (
+				721E07050FABDCAB00558FF9 /* BlockArray.cpp */,
+				721E07060FABDCAB00558FF9 /* BlockArray.h */,
+				721E07070FABDCAB00558FF9 /* Character.h */,
+				721E07080FABDCAB00558FF9 /* CharacterColor.h */,
+				721E07090FABDCAB00558FF9 /* ColorTables.h */,
+				721E070A0FABDCAB00558FF9 /* default.keytab */,
+				721E070B0FABDCAB00558FF9 /* DefaultTranslatorText.h */,
+				721E070C0FABDCAB00558FF9 /* Emulation.cpp */,
+				721E070D0FABDCAB00558FF9 /* Emulation.h */,
+				721E070E0FABDCAB00558FF9 /* ExtendedDefaultTranslator.h */,
+				721E070F0FABDCAB00558FF9 /* Filter.cpp */,
+				721E07100FABDCAB00558FF9 /* Filter.h */,
+				721E07110FABDCAC00558FF9 /* History.cpp */,
+				721E07120FABDCAC00558FF9 /* History.h */,
+				721E07130FABDCAC00558FF9 /* k3process.cpp */,
+				721E07140FABDCAC00558FF9 /* k3process.h */,
+				721E07150FABDCAC00558FF9 /* k3processcontroller.cpp */,
+				721E07160FABDCAC00558FF9 /* k3processcontroller.h */,
+				721E07170FABDCAC00558FF9 /* kb-layouts */,
+				721E071B0FABDCAC00558FF9 /* KeyboardTranslator.cpp */,
+				721E071C0FABDCAC00558FF9 /* KeyboardTranslator.h */,
+				721E071D0FABDCAC00558FF9 /* konsole_wcwidth.cpp */,
+				721E071E0FABDCAC00558FF9 /* konsole_wcwidth.h */,
+				721E071F0FABDCAC00558FF9 /* kpty.cpp */,
+				721E07200FABDCAC00558FF9 /* kpty.h */,
+				721E07210FABDCAC00558FF9 /* kpty_p.h */,
+				721E07220FABDCAC00558FF9 /* LineFont.h */,
+				721E07230FABDCAC00558FF9 /* LineFont.src */,
+				721E07240FABDCAC00558FF9 /* Pty.cpp */,
+				721E07250FABDCAC00558FF9 /* Pty.h */,
+				721E07260FABDCAC00558FF9 /* qtermwidget.cpp */,
+				721E07270FABDCAC00558FF9 /* qtermwidget.h */,
+				721E07280FABDCAC00558FF9 /* Screen.cpp */,
+				721E07290FABDCAC00558FF9 /* Screen.h */,
+				721E072A0FABDCAC00558FF9 /* ScreenWindow.cpp */,
+				721E072B0FABDCAC00558FF9 /* ScreenWindow.h */,
+				721E072C0FABDCAC00558FF9 /* Session.cpp */,
+				721E072D0FABDCAC00558FF9 /* Session.h */,
+				721E072E0FABDCAC00558FF9 /* ShellCommand.cpp */,
+				721E072F0FABDCAC00558FF9 /* ShellCommand.h */,
+				721E07300FABDCAC00558FF9 /* TerminalCharacterDecoder.cpp */,
+				721E07310FABDCAC00558FF9 /* TerminalCharacterDecoder.h */,
+				721E07320FABDCAC00558FF9 /* TerminalDisplay.cpp */,
+				721E07330FABDCAC00558FF9 /* TerminalDisplay.h */,
+				721E07340FABDCAC00558FF9 /* Vt102Emulation.cpp */,
+				721E07350FABDCAC00558FF9 /* Vt102Emulation.h */,
+			);
+			name = qtermwidget;
+			path = ../../src/plugins/grass/qtermwidget;
+			sourceTree = SOURCE_ROOT;
+		};
+		721E07170FABDCAC00558FF9 /* kb-layouts */ = {
+			isa = PBXGroup;
+			children = (
+				721E07180FABDCAC00558FF9 /* default.keytab */,
+				721E07190FABDCAC00558FF9 /* linux.keytab */,
+				721E071A0FABDCAC00558FF9 /* vt420pc.keytab */,
+			);
+			name = "kb-layouts";
+			path = "../../src/plugins/grass/qtermwidget/kb-layouts";
+			sourceTree = SOURCE_ROOT;
+		};
 		7223B7720F969A9D00D905B4 /* oracle_raster */ = {
 			isa = PBXGroup;
 			children = (
@@ -14674,6 +14816,7 @@
 			files = (
 				72A56D5A0F3CC0C300BA32A1 /* qgsgrassplugin.cpp in Sources */,
 				72A56D5B0F3CC0C800BA32A1 /* qgsgrassselect.cpp in Sources */,
+				721E07000FABDC6700558FF9 /* qgsgrassshell.cpp in Sources */,
 				72A56D5C0F3CC0CC00BA32A1 /* qgsgrassbrowser.cpp in Sources */,
 				72A56D5D0F3CC0D000BA32A1 /* qgsgrassedit.cpp in Sources */,
 				72A56D5E0F3CC0D200BA32A1 /* qgsgrassedittools.cpp in Sources */,
@@ -14682,7 +14825,6 @@
 				72A56D610F3CC0DE00BA32A1 /* qgsgrassmapcalc.cpp in Sources */,
 				72A56D620F3CC0E400BA32A1 /* qgsgrassmodule.cpp in Sources */,
 				72A56D630F3CC0E700BA32A1 /* qgsgrassnewmapset.cpp in Sources */,
-				72A56D640F3CC0EA00BA32A1 /* qgsgrassshell.cpp in Sources */,
 				72A56D650F3CC0EE00BA32A1 /* qgsgrassattributes.cpp in Sources */,
 				72A56D660F3CC0F200BA32A1 /* qgsgrassregion.cpp in Sources */,
 				72A56D670F3CC0F400BA32A1 /* qgsgrassutils.cpp in Sources */,
@@ -14701,6 +14843,34 @@
 				729288520F71F56A006D9489 /* qgsgrassedittools.h in Sources */,
 				729288530F71F56A006D9489 /* qgsgrassmodel.h in Sources */,
 				729288450F71F54F006D9489 /* qgsgrass_plugin.qrc in Sources */,
+				721E07360FABDDBA00558FF9 /* BlockArray.cpp in Sources */,
+				721E07370FABDDBA00558FF9 /* Emulation.cpp in Sources */,
+				721E07380FABDDBA00558FF9 /* Filter.cpp in Sources */,
+				721E07390FABDDBA00558FF9 /* History.cpp in Sources */,
+				721E073A0FABDDBA00558FF9 /* k3process.cpp in Sources */,
+				721E073B0FABDDBA00558FF9 /* k3processcontroller.cpp in Sources */,
+				721E073C0FABDDBA00558FF9 /* KeyboardTranslator.cpp in Sources */,
+				721E073D0FABDDBA00558FF9 /* konsole_wcwidth.cpp in Sources */,
+				721E073E0FABDDBA00558FF9 /* kpty.cpp in Sources */,
+				721E073F0FABDDBA00558FF9 /* Pty.cpp in Sources */,
+				721E07400FABDDBA00558FF9 /* qtermwidget.cpp in Sources */,
+				721E07410FABDDBA00558FF9 /* Screen.cpp in Sources */,
+				721E07420FABDDBA00558FF9 /* ScreenWindow.cpp in Sources */,
+				721E07430FABDDBA00558FF9 /* Session.cpp in Sources */,
+				721E07440FABDDBA00558FF9 /* ShellCommand.cpp in Sources */,
+				721E07450FABDDBA00558FF9 /* TerminalCharacterDecoder.cpp in Sources */,
+				721E07460FABDDBA00558FF9 /* TerminalDisplay.cpp in Sources */,
+				721E07470FABDDBA00558FF9 /* Vt102Emulation.cpp in Sources */,
+				721E07480FABDDE900558FF9 /* Emulation.h in Sources */,
+				721E07490FABDDE900558FF9 /* Filter.h in Sources */,
+				721E074A0FABDDE900558FF9 /* k3process.h in Sources */,
+				721E074B0FABDDE900558FF9 /* k3processcontroller.h in Sources */,
+				721E074C0FABDDE900558FF9 /* Pty.h in Sources */,
+				721E074D0FABDDE900558FF9 /* qtermwidget.h in Sources */,
+				721E074E0FABDDE900558FF9 /* ScreenWindow.h in Sources */,
+				721E074F0FABDDE900558FF9 /* Session.h in Sources */,
+				721E07500FABDDE900558FF9 /* TerminalDisplay.h in Sources */,
+				721E07510FABDDE900558FF9 /* Vt102Emulation.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16875,6 +17045,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
+					HAVE_POSIX_OPENPT,
 					"GRASS_EXPORT=",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
@@ -16886,6 +17057,7 @@
 					"$(inherited)",
 					../../src/plugins,
 					../../src/plugins/grass,
+					../../src/plugins/grass/qtermwidget,
 					../../src/core,
 					../../src/core/raster,
 					../../src/core/renderer,
@@ -16910,7 +17082,6 @@
 					"$(QT_LIB_SQL)",
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
-					"$(QT_LIB_QT3)",
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = grassplugin.so;
@@ -16926,6 +17097,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
+					HAVE_POSIX_OPENPT,
 					"GRASS_EXPORT=",
 					"$(GCC_PREPROCESSOR_DEFINITIONS_QUOTED_FOR_TARGET_1)",
 					"HAVE_OPENPTY=$(HAVE_OPENPTY)",
@@ -16937,6 +17109,7 @@
 					"$(inherited)",
 					../../src/plugins,
 					../../src/plugins/grass,
+					../../src/plugins/grass/qtermwidget,
 					../../src/core,
 					../../src/core/raster,
 					../../src/core/renderer,
@@ -16961,7 +17134,6 @@
 					"$(QT_LIB_SQL)",
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_XML)",
-					"$(QT_LIB_QT3)",
 					"$(GDAL_LIB)",
 				);
 				PRODUCT_NAME = grassplugin.so;
