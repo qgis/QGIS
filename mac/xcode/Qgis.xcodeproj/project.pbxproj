@@ -1073,11 +1073,11 @@
 		72745A130F770319007F4218 /* spit.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A030F770252007F4218 /* spit.png */; };
 		72745A140F770319007F4218 /* wfs.png in Copy - theme-gis-plugins */ = {isa = PBXBuildFile; fileRef = 72745A040F770252007F4218 /* wfs.png */; };
 		72745A190F770356007F4218 /* coordinate_capture.png in Copy - theme-gis-plug-cc */ = {isa = PBXBuildFile; fileRef = 727459F80F770252007F4218 /* coordinate_capture.png */; };
-		72820FE10FACCE770011C963 /* qgsmaptooldeletehole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDE0FACCE520011C963 /* qgsmaptooldeletehole.cpp */; };
+		72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */; };
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
 		72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDF0FACCE520011C963 /* qgsmaptoolsimplify.h */; };
-		72820FEF0FACCFA90011C963 /* mActionDeleteHole.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEE0FACCF970011C963 /* mActionDeleteHole.png */; };
+		72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEE0FACCF970011C963 /* mActionDeleteRing.png */; };
 		72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FED0FACCF970011C963 /* mActionDeletePart.png */; };
 		72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */ = {isa = PBXBuildFile; fileRef = 72820FEC0FACCF970011C963 /* mActionSimplify.png */; };
 		7292873D0F71C0DF006D9489 /* qgssearchstringparser.yy in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CE0F39E57A003DC336 /* qgssearchstringparser.yy */; };
@@ -4106,7 +4106,7 @@
 				7256F4930F41C4DD0022BE1F /* transformed.png in Copy - theme-default */,
 				7256F4940F41C4DD0022BE1F /* user.png in Copy - theme-default */,
 				7262ED8A0F7A760B00498385 /* mActionAddSpatiaLiteLayer.png in Copy - theme-default */,
-				72820FEF0FACCFA90011C963 /* mActionDeleteHole.png in Copy - theme-default */,
+				72820FEF0FACCFA90011C963 /* mActionDeleteRing.png in Copy - theme-default */,
 				72820FF00FACCFA90011C963 /* mActionDeletePart.png in Copy - theme-default */,
 				72820FF10FACCFA90011C963 /* mActionSimplify.png in Copy - theme-default */,
 			);
@@ -8362,16 +8362,16 @@
 		72745A020F770252007F4218 /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/gis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		72745A030F770252007F4218 /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/gis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		72745A040F770252007F4218 /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/gis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
-		72820FDB0FACCE520011C963 /* qgsmaptooldeletehole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletehole.h; path = ../../src/app/qgsmaptooldeletehole.h; sourceTree = SOURCE_ROOT; };
+		72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletering.h; path = ../../src/app/qgsmaptooldeletering.h; sourceTree = SOURCE_ROOT; };
 		72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletepart.h; path = ../../src/app/qgsmaptooldeletepart.h; sourceTree = SOURCE_ROOT; };
 		72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletepart.cpp; path = ../../src/app/qgsmaptooldeletepart.cpp; sourceTree = SOURCE_ROOT; };
-		72820FDE0FACCE520011C963 /* qgsmaptooldeletehole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletehole.cpp; path = ../../src/app/qgsmaptooldeletehole.cpp; sourceTree = SOURCE_ROOT; };
+		72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletering.cpp; path = ../../src/app/qgsmaptooldeletering.cpp; sourceTree = SOURCE_ROOT; };
 		72820FDF0FACCE520011C963 /* qgsmaptoolsimplify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolsimplify.h; path = ../../src/app/qgsmaptoolsimplify.h; sourceTree = SOURCE_ROOT; };
 		72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolsimplify.cpp; path = ../../src/app/qgsmaptoolsimplify.cpp; sourceTree = SOURCE_ROOT; };
 		72820FEB0FACCF370011C963 /* qgssimplifytolerancedialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgssimplifytolerancedialog.ui; path = ../../src/ui/qgssimplifytolerancedialog.ui; sourceTree = SOURCE_ROOT; };
 		72820FEC0FACCF970011C963 /* mActionSimplify.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSimplify.png; path = ../../images/themes/default/mActionSimplify.png; sourceTree = SOURCE_ROOT; };
 		72820FED0FACCF970011C963 /* mActionDeletePart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeletePart.png; path = ../../images/themes/default/mActionDeletePart.png; sourceTree = SOURCE_ROOT; };
-		72820FEE0FACCF970011C963 /* mActionDeleteHole.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeleteHole.png; path = ../../images/themes/default/mActionDeleteHole.png; sourceTree = SOURCE_ROOT; };
+		72820FEE0FACCF970011C963 /* mActionDeleteRing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeleteRing.png; path = ../../images/themes/default/mActionDeleteRing.png; sourceTree = SOURCE_ROOT; };
 		7299E8B70F90EFB9002F58DE /* TRANSLATORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TRANSLATORS; path = ../../TRANSLATORS; sourceTree = SOURCE_ROOT; };
 		729BBEFF0F40770B001BCB63 /* qgis_help.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = qgis_help.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		729BBF010F40770B001BCB63 /* qgis_help-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "qgis_help-Info.plist"; sourceTree = "<group>"; };
@@ -9267,10 +9267,10 @@
 				7262ED800F7A74B700498385 /* qgsspatialitesourceselect.cpp */,
 				7262ED810F7A74B700498385 /* qgsspatialitesourceselect.h */,
 				7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */,
-				72820FDB0FACCE520011C963 /* qgsmaptooldeletehole.h */,
+				72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */,
 				72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */,
 				72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */,
-				72820FDE0FACCE520011C963 /* qgsmaptooldeletehole.cpp */,
+				72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */,
 				72820FDF0FACCE520011C963 /* qgsmaptoolsimplify.h */,
 				72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */,
 				72A239420F74A62200AFC35B /* attributetable */,
@@ -12353,7 +12353,7 @@
 				7209EF5B0F39E5D9003DC336 /* mMapserverExport.png */,
 				72820FEC0FACCF970011C963 /* mActionSimplify.png */,
 				72820FED0FACCF970011C963 /* mActionDeletePart.png */,
-				72820FEE0FACCF970011C963 /* mActionDeleteHole.png */,
+				72820FEE0FACCF970011C963 /* mActionDeleteRing.png */,
 				7209EF5C0F39E5D9003DC336 /* qgis.xpm */,
 				7209EF5D0F39E5D9003DC336 /* tracking.png */,
 				7209EF5E0F39E5D9003DC336 /* tracking.svg */,
@@ -15206,7 +15206,7 @@
 				7262EDCD0F7A9FFC00498385 /* qgsspatialitetablemodel.h in Sources */,
 				7262ED870F7A754100498385 /* qgsspatialitesourceselect.cpp in Sources */,
 				7262ED880F7A754100498385 /* qgsspatialitesourceselect.h in Sources */,
-				72820FE10FACCE770011C963 /* qgsmaptooldeletehole.cpp in Sources */,
+				72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */,
 				72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */,
 				72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */,
 				72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */,
