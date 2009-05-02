@@ -5540,3 +5540,117 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 
   return geomCollection;
 }
+
+
+bool QgsGeometry::deleteHole( int ringNum, int partNum )
+{
+  if (ringNum <= 0 || partNum < 0)
+    return FALSE;
+
+  switch ( wkbType() )
+  {
+    case QGis::WKBPolygon25D:
+    case QGis::WKBPolygon:
+    {
+      if (partNum != 0)
+        return FALSE;
+
+      QgsPolygon polygon = asPolygon();
+      if ( ringNum >= polygon.count() )
+        return FALSE;
+
+      polygon.remove( ringNum );
+
+      QgsGeometry* g2 = QgsGeometry::fromPolygon( polygon );
+      *this = *g2;
+      delete g2;
+      return TRUE;
+    }
+
+    case QGis::WKBMultiPolygon25D:
+    case QGis::WKBMultiPolygon:
+    {
+      QgsMultiPolygon mpolygon = asMultiPolygon();
+
+      if (partNum >= mpolygon.count())
+        return FALSE;
+
+      if ( ringNum >= mpolygon[partNum].count() )
+        return FALSE;
+
+      mpolygon[partNum].remove( ringNum );
+
+      QgsGeometry* g2 = QgsGeometry::fromMultiPolygon( mpolygon );
+      *this = *g2;
+      delete g2;
+      return TRUE;
+    }
+
+    default:
+      return FALSE; // only makes sense with polygons and multipolygons
+  }
+}
+
+
+bool QgsGeometry::deletePart( int partNum )
+{
+  if (partNum < 0)
+    return FALSE;
+
+  switch ( wkbType() )
+  {
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiPoint:
+    {
+      QgsMultiPoint mpoint = asMultiPoint();
+
+      if (partNum >= mpoint.size() || mpoint.size() == 1)
+        return FALSE;
+
+      mpoint.remove( partNum );
+
+      QgsGeometry* g2 = QgsGeometry::fromMultiPoint( mpoint );
+      *this = *g2;
+      delete g2;
+      break;
+    }
+
+    case QGis::WKBMultiLineString25D:
+    case QGis::WKBMultiLineString:
+    {
+      QgsMultiPolyline mline = asMultiPolyline();
+
+      if (partNum >= mline.size() || mline.size() == 1)
+        return FALSE;
+
+      mline.remove( partNum );
+
+      QgsGeometry* g2 = QgsGeometry::fromMultiPolyline( mline );
+      *this = *g2;
+      delete g2;
+      break;
+    }
+
+    case QGis::WKBMultiPolygon25D:
+    case QGis::WKBMultiPolygon:
+    {
+      QgsMultiPolygon mpolygon = asMultiPolygon();
+
+      if (partNum >= mpolygon.size() || mpolygon.size() == 1)
+        return FALSE;
+
+      mpolygon.remove( partNum );
+
+      QgsGeometry* g2 = QgsGeometry::fromMultiPolygon( mpolygon );
+      *this = *g2;
+      delete g2;
+      break;
+    }
+
+    default:
+      // single part geometries are ignored
+      return FALSE;
+  }
+
+  return TRUE;
+}

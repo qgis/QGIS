@@ -42,6 +42,8 @@ class QgisAppInterface;
 class QgsClipboard;
 class QgsComposer;
 class QgsHelpViewer;
+class QgsFeature;
+
 class QgsLegend;
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -62,7 +64,6 @@ class QgsVectorLayer;
 
 #include "qgsconfig.h"
 #include "qgspoint.h"
-
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -221,6 +222,9 @@ class QgisApp : public QMainWindow
     QAction *actionMoveVertex() { return mActionMoveVertex; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
+    QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
+    QAction *actionDeleteHole() { return mActionDeleteHole; }
+    QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionEditSeparator2() { return mActionEditSeparator2; }
 
     QAction *actionPan() { return mActionPan; }
@@ -318,6 +322,7 @@ class QgisApp : public QMainWindow
     QToolBar *layerToolBar() { return mLayerToolBar; }
     QToolBar *mapNavToolToolBar() { return mMapNavToolBar; }
     QToolBar *digitizeToolBar() { return mDigitizeToolBar; }
+    QToolBar *advancedDigitizeToolBar() { return mAdvancedDigitizeToolBar; }
     QToolBar *attributesToolBar() { return mAttributesToolBar; }
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
@@ -495,6 +500,12 @@ class QgisApp : public QMainWindow
     void addRing();
     //! activates the add island tool
     void addIsland();
+    //! simplifies feature
+    void simplifyFeature();
+    //! deletes hole in polygon
+    void deleteHole();
+    //! deletes part of polygon
+    void deletePart();
 
     //! activates the selection tool
     void select();
@@ -666,6 +677,7 @@ class QgisApp : public QMainWindow
     QToolBar *mLayerToolBar;
     QToolBar *mMapNavToolBar;
     QToolBar *mDigitizeToolBar;
+    QToolBar *mAdvancedDigitizeToolBar;
     QToolBar *mAttributesToolBar;
     QToolBar *mPluginToolBar;
     QToolBar *mHelpToolBar;
@@ -701,6 +713,10 @@ class QgisApp : public QMainWindow
     QAction *mActionAddRing;
     QAction *mActionAddIsland;
     QAction *mActionEditSeparator2;
+    QAction *mActionSimplifyFeature;
+    QAction *mActionDeleteHole;
+    QAction *mActionDeletePart;
+    QAction *mActionEditSeparator3;
 
     QAction *mActionPan;
     QAction *mActionZoomIn;
@@ -816,6 +832,9 @@ class QgisApp : public QMainWindow
         QgsMapTool* mVertexDelete;
         QgsMapTool* mAddRing;
         QgsMapTool* mAddIsland;
+        QgsMapTool* mSimplifyFeature;
+        QgsMapTool* mDeleteHole;
+        QgsMapTool* mDeletePart;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;
@@ -921,6 +940,7 @@ class QgisApp : public QMainWindow
     QgsPythonUtils* mPythonUtils;
 
     static QgisApp *smInstance;
+
 };
 
 #endif
