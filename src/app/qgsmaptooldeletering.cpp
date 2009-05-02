@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsmaptooldeletehole.h  - delete a hole from polygon
+    qgsmaptooldeletering.cpp  - delete a ring from polygon
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooldeletehole.h"
+#include "qgsmaptooldeletering.h"
 
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
@@ -22,22 +22,22 @@
 #include <QMouseEvent>
 #include <QMessageBox>
 
-QgsMapToolDeleteHole::QgsMapToolDeleteHole( QgsMapCanvas* canvas )
+QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
   : QgsMapToolVertexEdit( canvas ), mCross( 0 )
 {
 }
 
-QgsMapToolDeleteHole::~QgsMapToolDeleteHole()
+QgsMapToolDeleteRing::~QgsMapToolDeleteRing()
 {
   delete mCross;
 }
 
-void QgsMapToolDeleteHole::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolDeleteRing::canvasMoveEvent( QMouseEvent * e )
 {
   //nothing to do
 }
 
-void QgsMapToolDeleteHole::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolDeleteRing::canvasPressEvent( QMouseEvent * e )
 {
   delete mCross;
   mCross = 0;
@@ -64,7 +64,7 @@ void QgsMapToolDeleteHole::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolDeleteHole::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent * e )
 {
   delete mCross;
   mCross = 0;
@@ -83,13 +83,13 @@ void QgsMapToolDeleteHole::canvasReleaseEvent( QMouseEvent * e )
     QList<QgsSnappingResult>::iterator sr_it = mRecentSnappingResults.begin();
     for ( ; sr_it != mRecentSnappingResults.end(); ++sr_it )
     {
-      deleteHole( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer);
+      deleteRing( sr_it->snappedAtGeometry, sr_it->snappedVertexNr, vlayer);
     }
   }
 }
 
 
-void QgsMapToolDeleteHole::deleteHole( int fId, int beforeVertexNr, QgsVectorLayer* vlayer)
+void QgsMapToolDeleteRing::deleteRing( int fId, int beforeVertexNr, QgsVectorLayer* vlayer)
 {
   QgsFeature f;
   vlayer->featureAtId( fId, f );
@@ -109,7 +109,7 @@ void QgsMapToolDeleteHole::deleteHole( int fId, int beforeVertexNr, QgsVectorLay
   else
     return;
 
-  if (g->deleteHole( ringNum, partNum ))
+  if (g->deleteRing( ringNum, partNum ))
   {
     vlayer->changeGeometry( fId, g );
     mCanvas->refresh();
@@ -117,7 +117,7 @@ void QgsMapToolDeleteHole::deleteHole( int fId, int beforeVertexNr, QgsVectorLay
   
 }
 
-int QgsMapToolDeleteHole::ringNumInPolygon( QgsGeometry* g, int vertexNr )
+int QgsMapToolDeleteRing::ringNumInPolygon( QgsGeometry* g, int vertexNr )
 {
   QgsPolygon polygon = g->asPolygon();
   for (int ring = 0; ring < polygon.count(); ring++)
@@ -130,7 +130,7 @@ int QgsMapToolDeleteHole::ringNumInPolygon( QgsGeometry* g, int vertexNr )
   return -1;
 }
 
-int QgsMapToolDeleteHole::ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum )
+int QgsMapToolDeleteRing::ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, int& partNum )
 {
   QgsMultiPolygon mpolygon = g->asMultiPolygon();
   for (int part = 0; part < mpolygon.count(); part++)
@@ -151,7 +151,7 @@ int QgsMapToolDeleteHole::ringNumInMultiPolygon( QgsGeometry* g, int vertexNr, i
 }
 
 
-void QgsMapToolDeleteHole::deactivate()
+void QgsMapToolDeleteRing::deactivate()
 {
   delete mCross;
   mCross = 0;
