@@ -193,18 +193,16 @@ QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_
 QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
 QT_CXXFLAGS_APP = $(PGSQL_HAVE)
-QT_INC_QT3 = /Library/Frameworks/Qt3Support.framework/Headers
 QT_LIB_CORE = -framework QtCore
 QT_LIB_GUI = -framework QtGui
 QT_LIB_NET = -framework QtNetwork
 QT_LIB_XML = -framework QtXml
 QT_LIB_SVG = -framework QtSvg
 QT_LIB_SQL = -framework QtSql
-QT_LIB_QT3 = -framework Qt3Support
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
 // list of Qt frameworks used
-QTLISTQG = Qt3Support QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
+QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
 // list of PyQt modules used
 PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
 
