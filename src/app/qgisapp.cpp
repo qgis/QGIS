@@ -1531,8 +1531,11 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
   mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
   mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+  mActionSimplifyFeature->setIcon( getThemeIcon( "/mActionSimplify.png" ) );
   mActionAddRing->setIcon( getThemeIcon( "/mActionAddRing.png" ) );
   mActionAddIsland->setIcon( getThemeIcon( "/mActionAddIsland.png" ) );
+  mActionDeleteHole->setIcon( getThemeIcon( "/mActionDeleteHole.png" ) );
+  mActionDeletePart->setIcon( getThemeIcon( "/mActionDeletePart.png" ) );
   mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
