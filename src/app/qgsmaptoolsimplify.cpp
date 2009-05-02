@@ -90,9 +90,8 @@ void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
   QgsSimplifyFeature::simplifyLine(mSelectedFeature, mTolerance);
-  // TODO(md): change geometry of feature instead of delete+add
-  vlayer->deleteFeature( mSelectedFeature.id() );
-  vlayer->addFeature(mSelectedFeature);
+
+  vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
 
   mCanvas->refresh();
 }

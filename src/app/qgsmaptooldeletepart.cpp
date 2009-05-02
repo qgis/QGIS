@@ -106,8 +106,7 @@ void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLay
 
   if (g->deletePart( partNum ))
   {
-    vlayer->deleteFeature( fId );
-    vlayer->addFeature(f);
+    vlayer->changeGeometry( fId, g );
     mCanvas->refresh();
   }
   else

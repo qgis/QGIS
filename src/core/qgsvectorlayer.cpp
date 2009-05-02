@@ -2553,6 +2553,20 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   return true;
 }
 
+
+bool QgsVectorLayer::changeGeometry(int fid, QgsGeometry* geom)
+{
+  if ( !mEditable || !mDataProvider )
+  {
+    return false;
+  }
+
+  mChangedGeometries[ fid ] = *geom;
+  setModified( true, true );
+  return true;
+}
+
+
 bool QgsVectorLayer::changeAttributeValue( int fid, int field, QVariant value, bool emitSignal )
 {
   if ( !isEditable() )

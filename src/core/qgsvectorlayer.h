@@ -378,6 +378,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Make layer editable */
     bool startEditing();
 
+    /** change feature's geometry
+      @note added in version 1.2 */
+    bool changeGeometry(int fid, QgsGeometry* geom);
+
     /** changed an attribute value (but does not commit it) */
     bool changeAttributeValue( int fid, int field, QVariant value, bool emitSignal = true );
 
