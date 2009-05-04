@@ -2479,6 +2479,12 @@
 		72EBCB3C0F49E8240016BA3C /* index.html in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F01B0F39E5DA003DC336 /* index.html */; };
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
+		72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */; };
+		72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */; };
+		72FB54CB0FAF3ADA00AB2F8D /* qgsattributetableidcolumnpair.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C70FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.cpp */; };
+		72FB54CC0FAF3ADB00AB2F8D /* qgsattributetablememorymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */; };
+		72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */; };
+		72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -8627,6 +8633,14 @@
 		72F8D9590F89268C00D10CE5 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3.h; sourceTree = SOURCE_ROOT; };
 		72F8D95A0F89268C00D10CE5 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = ../../src/core/spatialite/headers/spatialite/sqlite3ext.h; sourceTree = SOURCE_ROOT; };
 		72F8D95B0F89268C00D10CE5 /* spatialite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spatialite.h; path = ../../src/core/spatialite/headers/spatialite.h; sourceTree = SOURCE_ROOT; };
+		72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetablememorymodel.cpp; path = ../../src/app/attributetable/qgsattributetablememorymodel.cpp; sourceTree = SOURCE_ROOT; };
+		72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetablememorymodel.h; path = ../../src/app/attributetable/qgsattributetablememorymodel.h; sourceTree = SOURCE_ROOT; };
+		72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetabledelegate.cpp; path = ../../src/app/attributetable/qgsattributetabledelegate.cpp; sourceTree = SOURCE_ROOT; };
+		72FB54C40FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetableidcolumnpair.h; path = ../../src/app/attributetable/qgsattributetableidcolumnpair.h; sourceTree = SOURCE_ROOT; };
+		72FB54C50FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetablefiltermodel.h; path = ../../src/app/attributetable/qgsattributetablefiltermodel.h; sourceTree = SOURCE_ROOT; };
+		72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetabledelegate.h; path = ../../src/app/attributetable/qgsattributetabledelegate.h; sourceTree = SOURCE_ROOT; };
+		72FB54C70FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetableidcolumnpair.cpp; path = ../../src/app/attributetable/qgsattributetableidcolumnpair.cpp; sourceTree = SOURCE_ROOT; };
+		72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetablefiltermodel.cpp; path = ../../src/app/attributetable/qgsattributetablefiltermodel.cpp; sourceTree = SOURCE_ROOT; };
 		8D0C4E960486CD37000505A6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -12814,6 +12828,14 @@
 				72A239460F74A62200AFC35B /* qgsattributetablemodel.h */,
 				72A239470F74A62200AFC35B /* qgsattributetableview.cpp */,
 				72A239480F74A62200AFC35B /* qgsattributetableview.h */,
+				72FB54C10FAF3A5D00AB2F8D /* qgsattributetablememorymodel.cpp */,
+				72FB54C20FAF3A5D00AB2F8D /* qgsattributetablememorymodel.h */,
+				72FB54C30FAF3A5D00AB2F8D /* qgsattributetabledelegate.cpp */,
+				72FB54C40FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.h */,
+				72FB54C50FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.h */,
+				72FB54C60FAF3A5D00AB2F8D /* qgsattributetabledelegate.h */,
+				72FB54C70FAF3A5D00AB2F8D /* qgsattributetableidcolumnpair.cpp */,
+				72FB54C80FAF3A5D00AB2F8D /* qgsattributetablefiltermodel.cpp */,
 			);
 			name = attributetable;
 			path = ../../src/app/attributetable;
@@ -15210,6 +15232,12 @@
 				72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */,
 				72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */,
 				72820FE70FACCEC80011C963 /* qgsmaptoolsimplify.h in Sources */,
+				72FB54C90FAF3AD400AB2F8D /* qgsattributetabledelegate.cpp in Sources */,
+				72FB54CA0FAF3AD800AB2F8D /* qgsattributetablefiltermodel.cpp in Sources */,
+				72FB54CB0FAF3ADA00AB2F8D /* qgsattributetableidcolumnpair.cpp in Sources */,
+				72FB54CC0FAF3ADB00AB2F8D /* qgsattributetablememorymodel.cpp in Sources */,
+				72FB54CE0FAF3B5E00AB2F8D /* qgsattributetabledelegate.h in Sources */,
+				72FB54CF0FAF3B5E00AB2F8D /* qgsattributetablememorymodel.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
